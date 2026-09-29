@@ -82,3 +82,26 @@ asymptotique du spring `heavy` laissait de gros montants faux pendant près d'un
 atteignent la valeur exacte dès 99 % de progression. Vérifié sur le rendu final à 2,2 s (−1 200 €), 11,4 s et
 11,9 s (4 · 23 800 € · 14 820 € · 1 647 € · 23 j · 6 600 €). Notes du round 4 inchangées ; images dans
 `renders/review/r5-*`.
+
+---
+
+# Version 2 — minimaliste (retour : « ça va trop vite, trop d'infos »)
+
+Changement de direction : 3 idées au lieu de 7, un titre et un seul extrait du site par plan de 4 s,
+une carte qui se transforme d'un extrait à l'autre puis en logo, musique calme (pas de clap ni de double-croches),
+16 effets au lieu de 27. Tableau de bord retiré.
+
+## V2 round 1
+Extraits trop petits dans leur carte (plan 3), carte trop haute avec un grand vide dessous, double ligne du ticket
+visible sous la pastille NO GO, 2,9 s sans rien de nouveau au plan 2.
+
+## V2 round 2
+Corrigé : annonce agrandie ×3,4, carte recentrée, extrait du total recadré, soulignement jaune sur le chiffre clé
+de chaque plan (3 s, 6 s, 10,5 s), avancée lente et continue de chaque extrait. Nouveau défaut : le soulignement
+du « 7 500 € » couvrait toute la largeur du bloc (rectangle de la boîte au lieu du texte).
+
+## V2 round 3
+Corrigé : rectangles mesurés sur le texte réel ; plan 2 réduit à « Ne dépassez pas / 7 500 € » (sans la phrase
+d'explication) agrandi ×4,6, carte à la couleur réelle du bloc (#F5F6F8). Mesure du mouvement moyen par plan :
+0,62 / 0,53 / 0,92 / 1,17, aucune frame identique à la précédente : calme mais jamais figé.
+Grille mesurée à 120,0 BPM sur 25 kicks, 16 repères alignés ; mix −14,0 LUFS, true peak −1,3 dBTP.

@@ -1,6 +1,6 @@
 """Musique originale 120 BPM, synthétisée en code (numpy), déterministe.
 Sorties : audio/music.wav (stéréo 48 kHz) et audio/drums.wav (stem batterie, pour beats.py).
-Structure calée sur timeline.json : groove dès 0 s, montée 8–10 s, drop à 10 s, accord final sur le logo à 12 s."""
+Version minimale calée sur timeline.json : pulsation douce, arpège en noires dès 2 s, montée 10,5–12 s, accord final sur le logo à 12 s."""
 import json, os
 import numpy as np
 import soundfile as sf
@@ -59,34 +59,27 @@ ROOTS = [33, 29, 36, 31, 33, 29, 36, 33]
 drums, mus = buf(), buf()
 K, C = kick(), clap()
 LOGO = TL['marks']['logo']
+# version minimale : kick doux sur chaque temps (accents 1 et 3), hat sur les contretemps, pas de clap
 for b in range(int(DUR / BEAT)):
-    t = b * BEAT; bar = b // 4; pos = b % 4
+    t = b * BEAT; pos = b % 4
     if t < LOGO:
-        place(drums, K, t, 1.0)
-        if bar >= 1 and pos in (1, 3): place(drums, C, t, 0.9, 0.1)
-        if bar >= 2 and pos == 3: place(drums, K, t + BEAT * 0.75, 0.55)   # syncope
-        for h in range(2): place(drums, hat(), t + h * BEAT / 2, 0.8 if h else 0.5, -0.3)
-        if 8.0 <= t < 10.0:                                                 # montée : double-croches
-            for h in (1, 3): place(drums, hat(), t + h * BEAT / 4, 0.35 + 0.2 * (t - 8) / 2, 0.3)
-        if t >= 10.0 and pos == 1: place(drums, hat(True), t + BEAT / 2, 0.6, 0.4)
-    elif t < DUR - 0.8 and t > LOGO:                                        # après le logo : pouls léger
-        place(drums, hat(), t, 0.35, -0.3)
-# basse : croches courtes sur la fondamentale, octave sur le contretemps
-for b8 in range(int(LOGO / (BEAT / 2))):
-    t = b8 * BEAT / 2; bar = int(t // 2)
-    if bar == 0 and b8 % 2: continue
-    m = ROOTS[bar] + (12 if b8 % 4 == 3 else 0)
-    place(mus, bass(m, BEAT / 2 * 0.8), t, 0.9)
-# arpège pluck (entrée à 2 s), en double-croches sur la montée
-for b16 in range(int(LOGO / (BEAT / 4))):
-    t = b16 * BEAT / 4; bar = int(t // 2)
-    if t < 2.0 or (b16 % 2 and not (8 <= t < 12)): continue
-    ch = CH[bar]; m = ch[(b16 // (1 if 8 <= t < 12 else 2)) % 3] + 12
-    place(mus, pluck(m, 0.18), t, 0.8, -0.35 if b16 % 4 < 2 else 0.35)
-# montée de bruit filtré 8,5 → 10 s
+        place(drums, K, t, [0.95, 0.5, 0.75, 0.5][pos])
+        if t >= 2.0: place(drums, hat(), t + BEAT / 2, 0.45, -0.3)
+    elif t < DUR - 0.8 and t > LOGO:
+        place(drums, hat(), t, 0.3, -0.3)
+# basse : une note par demi-mesure, tenue
+for bh in range(int(LOGO / 1.0)):
+    t = bh * 1.0; bar = int(t // 2)
+    place(mus, bass(ROOTS[bar] + (12 if bh % 2 else 0), 0.9), t, 0.8)
+# arpège pluck en noires à partir de 2 s
+for bq in range(int(LOGO / BEAT)):
+    t = bq * BEAT; bar = int(t // 2)
+    if t < 2.0: continue
+    place(mus, pluck(CH[bar][bq % 3] + 12, 0.3), t, 0.7, -0.3 if bq % 2 else 0.3)
+# montée douce de bruit filtré 10,5 → 12 s (vers le logo)
 n = int(1.5 * SR); tt = np.arange(n) / SR
 r = noise(n); r = np.concatenate([bp(r[i:i + 2400], 400 + 5000 * (i / n) ** 2, 1200 + 9000 * (i / n) ** 2) for i in range(0, n, 2400)])[:n]
-place(mus, r * (tt / 1.5) ** 2 * 0.18, 8.5, 1.0)
+place(mus, r * (tt / 1.5) ** 2 * 0.12, 10.5, 1.0)
 # accord final sur le logo : basse tenue + accord pluck long
 place(mus, bass(33, 2.4) * np.exp(-np.arange(int(2.4 * SR)) / SR / 1.2), LOGO, 0.9)
 for i, m in enumerate(CH[-1] + [69]): place(mus, pluck(m + 12, 1.1), LOGO + i * 0.03, 0.9, [-0.4, 0, 0.4, 0.1][i])

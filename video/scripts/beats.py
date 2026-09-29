@@ -18,8 +18,12 @@ from scipy.signal import butter, sosfiltfilt
 yk = sosfiltfilt(butter(4, 150, 'low', fs=SR, output='sos'), y)   # kick seul : c'est lui qui porte le beat
 onset = librosa.onset.onset_strength(y=yk, sr=SR, hop_length=HOP, lag=1, max_size=1)
 hits = librosa.onset.onset_detect(onset_envelope=onset, sr=SR, hop_length=HOP, units='time', backtrack=False) - PAD
-strength = np.array([onset[int((h + PAD) * SR / HOP)] for h in hits])
-strong = hits[strength >= 0.3 * strength.max()]
+# attaques du kick : montées de l'enveloppe d'énergie (la queue d'un kick ne monte pas), 350 ms d'écart minimum (moins qu'un beat)
+from scipy.signal import find_peaks
+env = sosfiltfilt(butter(2, 60, 'low', fs=SR, output='sos'), np.abs(yk))
+rise = np.maximum(0, np.diff(env, prepend=env[0]))
+pk, pr = find_peaks(rise, height=0.3 * rise.max(), distance=int(0.35 * SR))
+strong = pk / SR - PAD
 tempo = float(np.atleast_1d(librosa.beat.beat_track(onset_envelope=onset, sr=SR, hop_length=HOP)[0])[0])
 per = 60 / tempo
 # tempo à ±3 % près : on essaie les périodes voisines et on garde celle qui explique le mieux les attaques

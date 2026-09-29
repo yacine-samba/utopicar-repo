@@ -37,7 +37,7 @@ sheet([min(n - 1, int((k + 0.5) * FPS / 2)) for k in range(int(n / (FPS / 2)))],
 diff = np.array([np.abs(fr[i].astype(int) - fr[i - 1].astype(int)).mean() for i in range(1, n)])
 fast = int(np.argmax(diff)) + 1
 sheet(list(range(max(0, fast - 6), min(n, fast + 6))), 6, 220, f'{name}-strip.png', from_full=True)
-key = [int(t * FPS) for t in (0.4, 1.5, 3.6, 4.6, 6.4, 8.2, 9.4, 10.9, 12.6, 14.5)]
+key = [int(t * FPS) for t in (0.3, 1.2, 2.5, 3.5, 5.5, 7.0, 9.2, 10.8, 12.8, 14.5)]
 sheet(key, 5, 360, f'{name}-phone.png', from_full=True)
 sheet([n - 3, n - 2, n - 1, 0, 1, 2], 6, 220, f'{name}-loop.png', from_full=True)
 top = np.argsort(diff)[::-1][:5] + 1

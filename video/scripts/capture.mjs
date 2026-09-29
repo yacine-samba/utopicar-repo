@@ -95,6 +95,10 @@ L.ledger = [];
 for (let i = 1; i <= nLg; i++) { await elShot(`lg${i}`, `#tkLive .ledger .lg:nth-child(${i})`); L.ledger.push(`lg${i}`); }
 L.total = await style('#tkLive .lg.total .v');
 await elShot('plafond', '#tkLive .plafond');
+// rectangles du texte lui-même (les éléments sont des blocs pleine largeur)
+const textRect = (sel) => page.evaluate((sel) => { const e = document.querySelector(sel); const rg = document.createRange(); rg.selectNodeContents(e); const r = rg.getBoundingClientRect(); return { x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height }; }, sel);
+L.plafFig = await textRect('#tkLive .plafond .fig');
+L.plafLabel = await textRect('#tkLive .plafond .cond');
 await elShot('pos', '#tkLive .plafond + .small');
 L.note = await rect('#tkLive .note');
 L.verdict = await rect('#tkLive .verdict');
@@ -124,7 +128,8 @@ L.cote = await page.evaluate((id) => {
   const pick = (re) => { const e = spans.find(s => re.test(s.textContent)); if (!e) return null; const r = e.getBoundingClientRect(); return { text: e.textContent.trim(), x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height }; };
   const tag = [...card.querySelectorAll('.tag')].find(t => /Vraie affaire/.test(t.textContent)); const tr = tag && tag.getBoundingClientRect();
   const pr = card.querySelector('.rt .fig').getBoundingClientRect();
-  return { cote: pick(/^Cote /), sous: pick(/sous la cote/), prix: { x: pr.x + scrollX, y: pr.y + scrollY, w: pr.width, h: pr.height }, vraie: tr ? { x: tr.x + scrollX, y: tr.y + scrollY, w: tr.width, h: tr.height } : null };
+  const R = e => { const r = e.getBoundingClientRect(); return { x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height }; };
+  return { title: R(card.querySelector('.bd b.t')), ago: R(card.querySelector('.bd .ago')), cote: pick(/^Cote /), sous: pick(/sous la cote/), prix: { x: pr.x + scrollX, y: pr.y + scrollY, w: pr.width, h: pr.height }, vraie: tr ? { x: tr.x + scrollX, y: tr.y + scrollY, w: tr.width, h: tr.height } : null };
 }, cardIds[0]);
 await pageShot('live', Math.ceil(cardTop + 1500));
 await pageShot('live-base', Math.ceil(cardTop + 1500), ['#liveList article.lv']);
