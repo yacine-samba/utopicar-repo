@@ -1,0 +1,14 @@
+import { chromium } from 'playwright';
+import fs from 'fs';
+const css = `@font-face{font-family:'Archivo';font-style:normal;font-weight:400 800;font-stretch:62% 125%;src:url(Archivo-latin.woff2) format('woff2');}`;
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: {width:390,height:844}, deviceScaleFactor: 2 });
+await p.route('**/fonts.googleapis.com/**', r => r.fulfill({ contentType:'text/css', body: css.replace('url(Archivo-latin.woff2)', 'url(https://local.font/Archivo-latin.woff2)') }));
+await p.route('https://local.font/**', r => r.fulfill({ contentType:'font/woff2', body: fs.readFileSync('assets/site/Archivo-latin.woff2') }));
+await p.route('**/cdnjs.cloudflare.com/**', r => r.fulfill({ contentType:'text/javascript', body:'' }));
+await p.goto('file://' + process.cwd() + '/assets/site/utopicar-live.html');
+await p.evaluate(() => document.fonts.ready);
+await p.waitForTimeout(800);
+console.log(await p.evaluate(() => [...document.fonts].filter(f=>f.family.includes('Archivo')).map(f=>f.status)));
+await p.screenshot({ path: 'assets/shots/probe-mobile.png' });
+await b.close();

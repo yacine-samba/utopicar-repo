@@ -1,0 +1,114 @@
+// Rendu du film : Chromium peint window.seek(t), FFmpeg encode.
+//   node scripts/render.mjs --at 3.2,3.25        images fixes → renders/stills/
+//   node scripts/render.mjs --range 3,5          une image par frame sur l'intervalle → renders/range/
+//   node scripts/render.mjs --sheet              contact sheet 2 img/s + une par beat → renders/contact.png, renders/beats.png
+//   node scripts/render.mjs --strip 8.3          12 frames autour de t → renders/strip.png
+//   node scripts/render.mjs --phone              frames clés réduites à 360 px de large → renders/phone.png
+//   node scripts/render.mjs --draft              animatic 540x960 → renders/draft.mp4
+//   node scripts/render.mjs --all                film final 1080x1920 → renders/9x16.mp4 (+ audio/mix.wav s'il existe)
+import { chromium } from 'playwright';
+import http from 'http';
+import fs from 'fs';
+import path from 'path';
+import { spawn, execFileSync } from 'child_process';
+import { ROOT } from './ui.mjs';
+
+const TL = JSON.parse(fs.readFileSync(path.join(ROOT, 'timeline.json'), 'utf8'));
+const OUT = path.join(ROOT, 'renders');
+fs.mkdirSync(OUT, { recursive: true });
+const args = process.argv.slice(2);
+const opt = k => { const i = args.indexOf(k); return i < 0 ? null : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
+
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.woff2': 'font/woff2', '.css': 'text/css' };
+const server = http.createServer((req, res) => {
+  const p = path.join(ROOT, decodeURIComponent(req.url.split('?')[0]));
+  if (!p.startsWith(ROOT) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) { res.writeHead(404); return res.end(); }
+  res.writeHead(200, { 'Content-Type': MIME[path.extname(p)] || 'application/octet-stream' });
+  fs.createReadStream(p).pipe(res);
+});
+await new Promise(r => server.listen(0, '127.0.0.1', r));
+const base = `http://127.0.0.1:${server.address().port}`;
+
+const scale = opt('--draft') ? 0.5 : 1;
+const browser = await chromium.launch({ args: ['--force-color-profile=srgb', '--disable-lcd-text', '--font-render-hinting=none'] });
+const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: scale });
+page.on('pageerror', e => console.error('PAGEERR', e.message));
+page.on('console', m => { if (m.type() === 'error') console.error('CONSOLE', m.text()); });
+await page.goto(`${base}/film/index.html?render=1`);
+await page.waitForFunction(() => window.filmReady === true, null, { timeout: 60000 });
+
+async function frame(t, type = 'png') {
+  await page.evaluate(t => window.seek(t), t);
+  return page.screenshot({ type, ...(type === 'jpeg' ? { quality: 92 } : {}) });
+}
+const fmtT = t => t.toFixed(3).padStart(6, '0');
+
+async function grid(times, file, cols, cellW, label = true) {
+  const dir = path.join(OUT, '_cells'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+  for (let i = 0; i < times.length; i++) fs.writeFileSync(path.join(dir, `c${String(i).padStart(3, '0')}.png`), await frame(times[i]));
+  const py = `
+import sys,glob
+from PIL import Image, ImageDraw, ImageFont
+fs=sorted(glob.glob(sys.argv[1]+'/c*.png')); times=[float(x) for x in sys.argv[4].split(',')]
+cols=int(sys.argv[3]); cw=int(sys.argv[5]); ch=int(cw*1920/1080); pad=8; lab=26 if sys.argv[6]=='1' else 0
+rows=(len(fs)+cols-1)//cols
+S=Image.new('RGB',(cols*(cw+pad)+pad, rows*(ch+pad+lab)+pad),'#1b1f27')
+d=ImageDraw.Draw(S)
+try: F=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',18)
+except: F=None
+for i,f in enumerate(fs):
+  im=Image.open(f).convert('RGB').resize((cw,ch),Image.LANCZOS); x=pad+(i%cols)*(cw+pad); y=pad+(i//cols)*(ch+pad+lab)
+  S.paste(im,(x,y+lab))
+  if lab: d.text((x+2,y+2),'%.2fs'%times[i],fill='#FFC928',font=F)
+S.save(sys.argv[2])
+`;
+  execFileSync('python3', ['-c', py, dir, file, String(cols), times.join(','), String(cellW), label ? '1' : '0']);
+  fs.rmSync(dir, { recursive: true, force: true });
+  console.log('→', path.relative(ROOT, file));
+}
+
+if (opt('--at')) {
+  const dir = path.join(OUT, 'stills'); fs.mkdirSync(dir, { recursive: true });
+  for (const t of String(opt('--at')).split(',').map(Number)) { fs.writeFileSync(path.join(dir, `t${fmtT(t)}.png`), await frame(t)); console.log('→ stills/t' + fmtT(t) + '.png'); }
+}
+if (opt('--range')) {
+  const [a, b] = String(opt('--range')).split(',').map(Number); const dir = path.join(OUT, 'range'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+  for (let f = Math.round(a * TL.fps); f <= Math.round(b * TL.fps); f++) fs.writeFileSync(path.join(dir, `f${String(f).padStart(4, '0')}.png`), await frame(f / TL.fps));
+  console.log('→ range/');
+}
+if (opt('--sheet')) {
+  const two = []; for (let t = 0; t < TL.dur; t += 0.5) two.push(+(t + 0.25).toFixed(3));
+  await grid(two, path.join(OUT, 'contact.png'), 10, 200);
+  let beats = []; try { beats = JSON.parse(fs.readFileSync(path.join(ROOT, 'beats.json'), 'utf8')).beats; } catch (e) { for (let t = 0; t < TL.dur; t += 60 / TL.bpm) beats.push(t); }
+  await grid(beats.map(b => +(b + 0.2).toFixed(3)).filter(b => b < TL.dur), path.join(OUT, 'beats.png'), 10, 200);
+}
+if (opt('--strip')) {
+  const c = Number(opt('--strip')); const ts = []; for (let i = -6; i < 6; i++) ts.push(+(c + i / TL.fps).toFixed(4));
+  await grid(ts, path.join(OUT, 'strip.png'), 6, 260);
+}
+if (opt('--phone')) {
+  const ts = String(opt('--phone') === true ? '0.5,1.6,3.6,4.8,6.5,8.2,9.4,10.6,11.5,14' : opt('--phone')).split(',').map(Number);
+  await grid(ts, path.join(OUT, 'phone.png'), 5, 360);
+}
+if (opt('--draft') || opt('--all')) {
+  const final = !!opt('--all');
+  const file = path.join(OUT, final ? '9x16.mp4' : 'draft.mp4');
+  const audio = path.join(ROOT, 'audio/mix.wav');
+  const withAudio = fs.existsSync(audio) && !opt('--mute');
+  const W = final ? 1080 : 540, H = final ? 1920 : 960;
+  const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(TL.fps), '-i', '-',
+    ...(withAudio ? ['-i', audio] : []),
+    '-vf', `scale=${W}:${H}:flags=lanczos,format=yuv420p`, '-c:v', 'libx264', '-preset', final ? 'slow' : 'veryfast', '-crf', final ? '16' : '22',
+    '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-movflags', '+faststart', '-r', String(TL.fps),
+    ...(withAudio ? ['-c:a', 'aac', '-b:a', '256k', '-ar', '48000', '-shortest'] : []), file], { stdio: ['pipe', 'inherit', 'inherit'] });
+  const n = Math.round(TL.dur * TL.fps); const t0 = Date.now();
+  for (let f = 0; f < n; f++) {
+    const buf = await frame(f / TL.fps, final ? 'png' : 'jpeg');
+    if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
+    if (f % 60 === 0) process.stdout.write(`  frame ${f}/${n} (${((Date.now() - t0) / 1000).toFixed(0)} s)\n`);
+  }
+  ff.stdin.end(); await new Promise(r => ff.on('close', r));
+  console.log('→', path.relative(ROOT, file), withAudio ? '(avec audio)' : '(muet)');
+  if (final) fs.writeFileSync(path.join(OUT, 'poster.png'), await frame(14.2));
+}
+await browser.close(); server.close();

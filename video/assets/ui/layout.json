@@ -1,0 +1,483 @@
+{
+ "viewport": {
+  "w": 390,
+  "h": 567,
+  "scale": 3
+ },
+ "shots": {
+  "bar": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 57,
+   "glass": {
+    "backdrop": "blur(18px) saturate(1.5)",
+    "radius": "0px"
+   }
+  },
+  "dock-scan": {
+   "x": 12,
+   "y": 490.25,
+   "w": 366,
+   "h": 66.75,
+   "glass": {
+    "backdrop": "blur(20px) saturate(1.6)",
+    "radius": "20px"
+   }
+  },
+  "launch": {
+   "x": 14,
+   "y": 403.75,
+   "w": 378.484375,
+   "h": 71.25,
+   "glass": {
+    "backdrop": "blur(18px) saturate(1.5)",
+    "radius": "18px"
+   }
+  },
+  "scan": {
+   "w": 390,
+   "h": 1400
+  },
+  "dock-rapport": {
+   "x": 12,
+   "y": 490.25,
+   "w": 366,
+   "h": 66.75,
+   "glass": {
+    "backdrop": "blur(20px) saturate(1.6)",
+    "radius": "20px"
+   }
+  },
+  "rapport": {
+   "w": 390,
+   "h": 1150
+  },
+  "lg1": {
+   "x": 35,
+   "y": 306.890625,
+   "w": 320,
+   "h": 52.75
+  },
+  "lg2": {
+   "x": 35,
+   "y": 359.640625,
+   "w": 320,
+   "h": 33.75
+  },
+  "lg3": {
+   "x": 35,
+   "y": 393.390625,
+   "w": 320,
+   "h": 52.75
+  },
+  "lg4": {
+   "x": 35,
+   "y": 446.140625,
+   "w": 320,
+   "h": 70.75
+  },
+  "lg5": {
+   "x": 35,
+   "y": 516.890625,
+   "w": 320,
+   "h": 52.75
+  },
+  "lg6": {
+   "x": 35,
+   "y": 569.640625,
+   "w": 320,
+   "h": 52.75
+  },
+  "lg7": {
+   "x": 35,
+   "y": 630.390625,
+   "w": 320,
+   "h": 88
+  },
+  "plafond": {
+   "x": 35,
+   "y": 718.390625,
+   "w": 320,
+   "h": 129.75
+  },
+  "pos": {
+   "x": 35,
+   "y": 848.140625,
+   "w": 320,
+   "h": 23.375
+  },
+  "rapport-base": {
+   "w": 390,
+   "h": 1150
+  },
+  "lgTotalNoV": {
+   "x": 35,
+   "y": 630.390625,
+   "w": 320,
+   "h": 88
+  },
+  "dock-live": {
+   "x": 12,
+   "y": 490.25,
+   "w": 366,
+   "h": 66.75,
+   "glass": {
+    "backdrop": "blur(20px) saturate(1.6)",
+    "radius": "20px"
+   }
+  },
+  "card-lv1": {
+   "x": 8,
+   "y": 1469.140625,
+   "w": 374,
+   "h": 779.625
+  },
+  "card-lv2": {
+   "x": 8,
+   "y": 2246.765625,
+   "w": 374,
+   "h": 695.5
+  },
+  "live": {
+   "w": 390,
+   "h": 2976
+  },
+  "live-base": {
+   "w": 390,
+   "h": 2976
+  },
+  "dock-dash": {
+   "x": 12,
+   "y": 490.25,
+   "w": 366,
+   "h": 66.75,
+   "glass": {
+    "backdrop": "blur(20px) saturate(1.6)",
+    "radius": "20px"
+   }
+  },
+  "dash": {
+   "w": 390,
+   "h": 1150
+  },
+  "dash-base": {
+   "w": 390,
+   "h": 1150
+  }
+ },
+ "logo": {
+  "markHTML": "<span class=\"mark\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"#1A1400\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 15l1.6-5A2 2 0 0 1 7.5 8.6h9a2 2 0 0 1 1.9 1.4L20 15\"></path><path d=\"M3 15h18v3H3z\"></path><circle cx=\"7.5\" cy=\"18\" r=\"1.4\"></circle><circle cx=\"16.5\" cy=\"18\" r=\"1.4\"></circle></svg></span>",
+  "markBg": "rgb(255, 201, 40)",
+  "markRadius": "9px",
+  "text": "UTOPICAR",
+  "fontWeight": "800",
+  "fontStretch": "125%",
+  "letterSpacing": "0.31px",
+  "fontSize": "15.5px",
+  "color": "rgb(12, 15, 20)"
+ },
+ "aGo": {
+  "x": 27,
+  "y": 414.75,
+  "w": 194,
+  "h": 49.25
+ },
+ "annonceTxt": {
+  "x": 37,
+  "y": 984.640625,
+  "w": 332.484375,
+  "h": 172.25
+ },
+ "ledger": [
+  "lg1",
+  "lg2",
+  "lg3",
+  "lg4",
+  "lg5",
+  "lg6",
+  "lg7"
+ ],
+ "total": {
+  "text": "− 1 200 €",
+  "x": 180,
+  "y": 645.390625,
+  "w": 175,
+  "h": 48,
+  "fontSize": "32px",
+  "fontWeight": "800",
+  "fontStretch": "125%",
+  "letterSpacing": "-0.96px",
+  "color": "rgb(217, 58, 58)",
+  "lineHeight": "48px",
+  "textAlign": "right",
+  "fontVariantNumeric": "tabular-nums"
+ },
+ "plafFig": {
+  "x": 52,
+  "y": 760.140625,
+  "w": 101,
+  "h": 26
+ },
+ "plafLabel": {
+  "x": 52,
+  "y": 735.390625,
+  "w": 93,
+  "h": 14
+ },
+ "note": {
+  "x": 35,
+  "y": 207.890625,
+  "w": 84,
+  "h": 84
+ },
+ "verdict": {
+  "x": 135,
+  "y": 210.515625,
+  "w": 95.375,
+  "h": 35.25
+ },
+ "ticket": {
+  "x": 35,
+  "y": 207.890625,
+  "w": 320,
+  "h": 663.625
+ },
+ "tkTop": {
+  "x": 35,
+  "y": 207.890625,
+  "w": 320,
+  "h": 84
+ },
+ "position": {
+  "x": 35,
+  "y": 848.140625,
+  "w": 320,
+  "h": 23.375
+ },
+ "cards": [
+  "card-lv1",
+  "card-lv2"
+ ],
+ "cardTop": 1475.140625,
+ "liveTabs": {
+  "x": 14,
+  "y": 987.140625,
+  "w": 362,
+  "h": 43
+ },
+ "cote": {
+  "title": {
+   "x": 133,
+   "y": 1490.140625,
+   "w": 228,
+   "h": 39
+  },
+  "ago": {
+   "x": 133,
+   "y": 1580.140625,
+   "w": 228,
+   "h": 18.75
+  },
+  "cote": {
+   "text": "Cote 7 850 € (7 500 € – 8 200 €)",
+   "x": 133,
+   "y": 1892.390625,
+   "w": 186,
+   "h": 19.5
+  },
+  "sous": {
+   "text": "Prix réel 1 450 € sous la cote",
+   "x": 133,
+   "y": 1915.890625,
+   "w": 163,
+   "h": 19.5
+  },
+  "prix": {
+   "x": 133,
+   "y": 1855.390625,
+   "w": 92,
+   "h": 33
+  },
+  "vraie": {
+   "x": 133,
+   "y": 2115.390625,
+   "w": 88,
+   "h": 23.375
+  }
+ },
+ "kpis": [
+  {
+   "text": "4",
+   "x": 33,
+   "y": 287.390625,
+   "w": 137,
+   "h": 31.5,
+   "fontSize": "30px",
+   "fontWeight": "720",
+   "fontStretch": "122%",
+   "letterSpacing": "-0.6px",
+   "color": "rgb(12, 15, 20)",
+   "lineHeight": "31.5px",
+   "textAlign": "start",
+   "fontVariantNumeric": "tabular-nums"
+  },
+  {
+   "text": "23 800 €",
+   "x": 220,
+   "y": 287.390625,
+   "w": 147,
+   "h": 31.5,
+   "fontSize": "30px",
+   "fontWeight": "720",
+   "fontStretch": "122%",
+   "letterSpacing": "-0.6px",
+   "color": "rgb(12, 15, 20)",
+   "lineHeight": "31.5px",
+   "textAlign": "start",
+   "fontVariantNumeric": "tabular-nums"
+  },
+  {
+   "text": "14 820 €",
+   "x": 33,
+   "y": 411.140625,
+   "w": 147,
+   "h": 31.5,
+   "fontSize": "30px",
+   "fontWeight": "720",
+   "fontStretch": "122%",
+   "letterSpacing": "-0.6px",
+   "color": "rgb(10, 143, 85)",
+   "lineHeight": "31.5px",
+   "textAlign": "start",
+   "fontVariantNumeric": "tabular-nums"
+  },
+  {
+   "text": "1 647 €",
+   "x": 220,
+   "y": 411.140625,
+   "w": 137,
+   "h": 31.5,
+   "fontSize": "30px",
+   "fontWeight": "720",
+   "fontStretch": "122%",
+   "letterSpacing": "-0.6px",
+   "color": "rgb(12, 15, 20)",
+   "lineHeight": "31.5px",
+   "textAlign": "start",
+   "fontVariantNumeric": "tabular-nums"
+  },
+  {
+   "text": "23 j",
+   "x": 33,
+   "y": 534.890625,
+   "w": 137,
+   "h": 31.5,
+   "fontSize": "30px",
+   "fontWeight": "720",
+   "fontStretch": "122%",
+   "letterSpacing": "-0.6px",
+   "color": "rgb(12, 15, 20)",
+   "lineHeight": "31.5px",
+   "textAlign": "start",
+   "fontVariantNumeric": "tabular-nums"
+  },
+  {
+   "text": "6 600 €",
+   "x": 220,
+   "y": 534.890625,
+   "w": 137,
+   "h": 31.5,
+   "fontSize": "30px",
+   "fontWeight": "720",
+   "fontStretch": "122%",
+   "letterSpacing": "-0.6px",
+   "color": "rgb(12, 15, 20)",
+   "lineHeight": "31.5px",
+   "textAlign": "start",
+   "fontVariantNumeric": "tabular-nums"
+  }
+ ],
+ "kpiRects": [
+  {
+   "x": 14,
+   "y": 247.640625,
+   "w": 175,
+   "h": 111.75
+  },
+  {
+   "x": 201,
+   "y": 247.640625,
+   "w": 175,
+   "h": 111.75
+  },
+  {
+   "x": 14,
+   "y": 371.390625,
+   "w": 175,
+   "h": 111.75
+  },
+  {
+   "x": 201,
+   "y": 371.390625,
+   "w": 175,
+   "h": 111.75
+  },
+  {
+   "x": 14,
+   "y": 495.140625,
+   "w": 175,
+   "h": 111.75
+  },
+  {
+   "x": 201,
+   "y": 495.140625,
+   "w": 175,
+   "h": 111.75
+  }
+ ],
+ "pipe": {
+  "x": 37,
+  "y": 1001.359375,
+  "w": 316,
+  "h": 42
+ },
+ "dockBtns": {
+  "scan": {
+   "x": 19,
+   "y": 497.25,
+   "w": 58.65625,
+   "h": 52.75
+  },
+  "live": {
+   "x": 77.65625,
+   "y": 497.25,
+   "w": 58.671875,
+   "h": 52.75
+  },
+  "tri": {
+   "x": 136.328125,
+   "y": 497.25,
+   "w": 58.671875,
+   "h": 52.75
+  },
+  "dossiers": {
+   "x": 195,
+   "y": 497.25,
+   "w": 58.65625,
+   "h": 52.75
+  },
+  "parc": {
+   "x": 253.65625,
+   "y": 497.25,
+   "w": 58.671875,
+   "h": 52.75
+  },
+  "dash": {
+   "x": 312.328125,
+   "y": 497.25,
+   "w": 58.671875,
+   "h": 52.75
+  }
+ }
+}

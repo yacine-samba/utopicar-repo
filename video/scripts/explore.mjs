@@ -1,0 +1,16 @@
+import { chromium } from 'playwright';
+import { openUI, nav } from './ui.mjs';
+const b = await chromium.launch();
+const { page } = await openUI(b, { scale: 1, view: 'dossiers' });
+page.on('pageerror', e => console.log('PAGEERR', e.message));
+page.on('console', m => { if (m.type() === 'error') console.log('CONSOLE', m.text()); });
+await page.waitForTimeout(800);
+await page.screenshot({ path: 'assets/shots/explore/dossiers.png', fullPage: true });
+await page.locator('.dcard[data-rep="demo-golf"]:visible').first().click(); await page.waitForTimeout(800);
+await page.screenshot({ path: 'assets/shots/explore/rapport.png', fullPage: true });
+await nav(page, 'live'); await page.waitForTimeout(1500);
+await page.screenshot({ path: 'assets/shots/explore/live.png', fullPage: true });
+await nav(page, 'dash'); await page.waitForTimeout(800);
+await page.screenshot({ path: 'assets/shots/explore/dash.png', fullPage: true });
+console.log(await page.evaluate(() => [...document.querySelectorAll('#kpis .kpi')].map(k => k.innerText.replace(/\n/g,' | '))));
+await b.close();
