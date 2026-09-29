@@ -122,7 +122,8 @@ const LIVE_H = Math.ceil(L.cardTop + 900);
 const LIVE = pageTex('live', 0, LIVE_H); LIVE.tex.wrapT = THREE.ClampToEdgeWrapping;
 const screenMat = new THREE.MeshBasicMaterial({ map: LIVE.tex });
 const screen = new THREE.Mesh(new THREE.PlaneGeometry(pw, ph), screenMat); screen.position.z = 0.07; gPhone.add(screen);
-const notch = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.17), new THREE.MeshBasicMaterial({ color: 0x0a0a0a })); notch.position.set(0, ph / 2 - 0.16, 0.075); gPhone.add(notch);
+const pill = new THREE.Shape(); { const w = 0.52, h = 0.15, r = 0.075; pill.moveTo(-w / 2 + r, -h / 2); pill.lineTo(w / 2 - r, -h / 2); pill.absarc(w / 2 - r, 0, r, -Math.PI / 2, Math.PI / 2); pill.lineTo(-w / 2 + r, h / 2); pill.absarc(-w / 2 + r, 0, r, Math.PI / 2, Math.PI * 1.5); }
+const notch = new THREE.Mesh(new THREE.ShapeGeometry(pill, 16), new THREE.MeshBasicMaterial({ color: 0x0a0a0a })); notch.position.set(0, ph / 2 - 0.12, 0.075); gPhone.add(notch);
 const C = L.cote;
 const DEAL = compose([{ src: 'live', r: { x: 120, y: C.prix.y - 12, w: 250, h: C.sous.y + C.sous.h + 12 - (C.prix.y - 12) }, x: 0, y: 0 },
   { src: 'live', r: { x: C.vraie.x - 2, y: C.vraie.y - 2, w: C.vraie.w + 4, h: C.vraie.h + 4 }, x: 12, y: C.sous.y + C.sous.h + 18 - (C.prix.y - 12) }],
@@ -161,9 +162,9 @@ const wScale = 860 / (wb.x2 - wb.x1), wx = 540 - (wb.x1 + wb.x2) / 2 * wScale, w
 const NS = 'http://www.w3.org/2000/svg';
 const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('width', W); svg.setAttribute('height', H); draw.appendChild(svg);
 const guides = [wb.y1, wb.y2].map(y => { const l = document.createElementNS(NS, 'line'); l.setAttribute('x1', 40); l.setAttribute('x2', 1040); l.setAttribute('y1', wy + y * wScale); l.setAttribute('y2', wy + y * wScale);
-  l.setAttribute('stroke', '#E5AE00'); l.setAttribute('stroke-width', 3); l.setAttribute('stroke-dasharray', '14 12'); svg.appendChild(l); return l; });
+  l.setAttribute('stroke', '#E5AE00'); l.setAttribute('stroke-width', 4); l.setAttribute('stroke-dasharray', '16 12'); svg.appendChild(l); return l; });
 const gp = document.createElementNS(NS, 'path'); gp.setAttribute('d', wPath.toPathData(3)); gp.setAttribute('transform', `translate(${wx} ${wy}) scale(${wScale})`);
-gp.setAttribute('fill', '#141413'); gp.setAttribute('stroke', '#141413'); gp.setAttribute('stroke-width', (3 / wScale).toFixed(3)); gp.setAttribute('stroke-linejoin', 'round'); svg.appendChild(gp);
+gp.setAttribute('fill', '#141413'); gp.setAttribute('stroke', '#141413'); gp.setAttribute('stroke-width', (5 / wScale).toFixed(3)); gp.setAttribute('stroke-linejoin', 'round'); svg.appendChild(gp);
 const gpLen = gp.getTotalLength();
 // titres
 const heads = TL.headlines.map(Hd => {
@@ -177,6 +178,8 @@ const heads = TL.headlines.map(Hd => {
 });
 // fin : logo + CTA
 $('#lock .mk').innerHTML = markSVG; $('#lock').style.top = '800px';
+const endGlow = el('div', null, $('#endL'), { position: 'absolute', left: '0px', top: '0px', width: '10px', height: '10px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,201,40,.55) 0%,rgba(255,201,40,.18) 38%,rgba(255,201,40,0) 70%)' });
+$('#endL').insertBefore(endGlow, $('#lock'));
 const cta = $('#cta'); const ctaL1 = el('span', 'ln', cta); const c1 = el('span', null, ctaL1); c1.innerHTML = `${TL.cta.pre} <span id="ctaPill">${TL.cta.word}</span>`;
 const ctaL2 = el('span', 'ln', cta, { fontSize: '52px', color: '#5b5b55', marginTop: '10px' }); const c2 = el('span', null, ctaL2); c2.textContent = TL.cta.post;
 // volets diagonaux
@@ -203,23 +206,23 @@ function seek(t) {
     const d = (40 + 190 * g) * pulse, hd = (120 + 760 * g);
     Object.assign($('#orb').style, { width: px(d), height: px(d), marginLeft: px(-d / 2), marginTop: px(-d / 2), transform: `scale(${1 + 6 * clamp(spring(t - (M.mosaic - 0.12), 'snappy'), 0, 1)})` });
     Object.assign($('#halo').style, { width: px(hd), height: px(hd), marginLeft: px(-hd / 2), marginTop: px(-hd / 2) }); }
-  const mosOn = (t >= M.mosaic && t < M.wipe1 + 0.5) || (t >= M.end && t < M.endWord);
+  const w1 = clamp(spring(t - (M.wipe1 - 0.2), 'default'), 0, 1.02), covered = t >= M.wipe1 - 0.2 && w1 > 0.49;
+  const mosOn = (t >= M.mosaic && !covered && t < M.wipe1 + 0.5) || (t >= M.end && t < M.endWord);
   show(mosaic, mosOn);
   if (mosOn) { const t0 = t >= M.end ? M.end : M.mosaic;
     sqs.forEach(({ s, d }) => { const p = clamp(spring(t - t0 - d * 0.00045, 'snappy'), 0, 1.1); s.style.transform = `scale(${p.toFixed(3)})`; });
     const tp = spring(t - t0 - 0.05, 'heavy'); tile.style.transform = `scale(${(0.6 + 0.4 * tp).toFixed(3)})`;
     mosaic.style.transform = `scale(${(1 + 0.03 * (t - t0)).toFixed(4)})`; }
   // 2. volet diagonal → mot-symbole tracé puis rempli
-  const drawOn = t >= M.wipe1 && t < M.extrude; show(draw, drawOn);
+  const drawOn = covered && t < M.extrude; show(draw, drawOn);
   if (drawOn) {
     guides.forEach((l, i) => { const p = smooth(M.wipe1 + 0.1 + 0.1 * i, M.wipe1 + 0.7 + 0.1 * i, t); l.setAttribute('stroke-dashoffset', 0); l.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`; l.style.opacity = 1 - smooth(M.fill, M.extrude, t); });
-    const dp = smooth(M.draw, M.fill - 0.1, t); gp.setAttribute('stroke-dasharray', `${(gpLen * dp).toFixed(1)} ${gpLen}`);
+    const dp = smooth(M.draw, M.draw + 1.0, t); gp.setAttribute('stroke-dasharray', `${(gpLen * dp).toFixed(1)} ${gpLen}`);
     const fp = clamp(spring(t - M.fill, 'snappy'), 0, 1); gp.setAttribute('fill-opacity', fp.toFixed(3));
     svg.style.transform = `scale(${(1 + 0.02 * fp + 0.01 * (t - M.wipe1)).toFixed(4)})`; svg.style.transformOrigin = '540px 960px';
   }
   // volets : ouverture (mosaïque → mot-symbole) et fermeture (titre 2 → fin)
-  const w1 = clamp(spring(t - (M.wipe1 - 0.2), 'default'), 0, 1.02);
-  show(wipes[0], t >= M.wipe1 - 0.2 && t < M.wipe1 + 0.8); band(wipes[0], lerp(-1.2, 1.25, w1), 1100);
+  show(wipes[0], t >= M.wipe1 - 0.2 && t < M.wipe1 + 0.9); band(wipes[0], lerp(-1.25, 1.3, w1), 3400);
   const w2 = [0, 1].map(i => clamp(spring(t - (M.wipe2 + 0.09 * i), 'default'), 0, 1.02));
   show(wipes[1], t >= M.wipe2 && t < M.end); band(wipes[1], lerp(-1.2, 0.0, w2[0]), 1400);
   show(wipes[2], t >= M.wipe2 + 0.09 && t < M.end); band(wipes[2], lerp(-1.3, 0.35, w2[1]), 1600);
@@ -236,14 +239,12 @@ function seek(t) {
     $('#lock .mk').style.transform = `scale(${(0.5 + 0.5 * mp).toFixed(3)})`;
     Object.assign($('#lock .wd').style, { clipPath: `inset(-20% ${((1 - wp) * 100).toFixed(2)}% -20% 0)`, transform: `translateX(${((1 - wp) * -30).toFixed(2)}px)` });
     lineIn(c1, t, M.cta); lineIn(c2, t, M.cta + 0.12);
-    $('#endL').style.transform = `scale(${(1 + 0.02 * (t - M.endWord) / 3).toFixed(4)})`;
-    // lueur finale derrière le logo
-    const og = spring(t - M.orbEnd, 'heavy'); show($('#orbL'), t >= M.orbEnd);
-    if (t >= M.orbEnd) { const d = 190 * og, hd = 700 * og; $('#orbL').style.zIndex = 0;
-      Object.assign($('#orb').style, { width: px(d), height: px(d), marginLeft: px(-d / 2), marginTop: px(-d / 2), transform: 'none', left: '540px', top: '1500px' });
-      Object.assign($('#halo').style, { width: px(hd), height: px(hd), marginLeft: px(-hd / 2), marginTop: px(-hd / 2), left: '540px', top: '1500px' }); }
+    $('#endL').style.transform = `scale(${(1 + 0.06 * (t - M.endWord) / (TL.dur - M.endWord)).toFixed(4)})`;
+    // lueur finale derrière le logo (dans le calque de fin, sous le logo)
+    const og = spring(t - M.orbEnd, 'heavy'), mk = $('#lock .mk').getBoundingClientRect(), d = 900 * og;
+    Object.assign(endGlow.style, { width: px(d), height: px(d), left: px(mk.left + mk.width / 2 - d / 2), top: px(mk.top + mk.height / 2 - d / 2), opacity: clamp(og, 0, 1) });
   }
-  $('#stage').style.background = t >= M.wipe1 && t < M.extrude ? '#FAF9F5' : '#FFFFFF';
+  $('#stage').style.background = covered && t < M.extrude ? '#FAF9F5' : '#FFFFFF';
 
   /* --- 3D --- */
   const shot = t >= M.extrude && t < M.fly ? 'word' : t >= M.fly && t < M.h1 ? 'scan' : t >= M.cards && t < M.phone ? 'cards' : t >= M.phone && t < M.dash ? 'phone' : t >= M.dash && t < M.h2 ? 'dash' : null;
