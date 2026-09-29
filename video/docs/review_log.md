@@ -105,3 +105,47 @@ Corrigé : rectangles mesurés sur le texte réel ; plan 2 réduit à « Ne dép
 d'explication) agrandi ×4,6, carte à la couleur réelle du bloc (#F5F6F8). Mesure du mouvement moyen par plan :
 0,62 / 0,53 / 0,92 / 1,17, aucune frame identique à la précédente : calme mais jamais figé.
 Grille mesurée à 120,0 BPM sur 25 kicks, 16 repères alignés ; mix −14,0 LUFS, true peak −1,3 dBTP.
+
+---
+
+# Version 3 — lancement, d'après la grammaire de la référence 1
+
+Demande : s'inspirer de la référence 1 (film de lancement produit) pour le son, le design, l'animation des lettres
+et le tempo. Analyse dans `docs/launch_style_guide.md` ; seule la grammaire est reprise (monochrome, 3D mate,
+profondeur de champ, halo, grain, texte fin oblique mot à mot, flash blanc vers le logo, sound design sans beat).
+Contenu, formes, textes et sons sont originaux ; la référence et ses images restent hors du dépôt.
+
+## V3 round 1
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 6 | Intro gris moyen au lieu de noir ; « Voici » peu lisible derrière l'anneau trop lumineux. |
+| Lisibilité | 7 | Plans 3 et 4 lisibles, carte Clio petite et pâle. |
+| Mouvement | 7 | Sphères qui s'écartent trop vite (pic mesuré à 9,3 s). |
+| Composition | 6 | L'anneau barre le mot-symbole UTOPICAR de 1,75 à 3,25 s. |
+| Profondeur | 8 | Flou d'avant-plan, halo, grain présents. |
+| Synchro | 6 | Impact du logo hors downbeat (1,5 s). |
+| Polish | 6 | Bloom qui brûlait les panneaux (corrigé avant ce rendu), noirs relevés. |
+| Marque / fidélité à la référence | 8 / 6 | Fin claire au jaune unique ; intro encore loin du noir profond de la référence. |
+
+## V3 round 2
+Corrigé : fond noir et halo discret, anneau fin dans le tiers supérieur, logo sur le downbeat de 2 s
+(downbeats lus sur les accents de la pulsation), accord final à 12 s, CTA à 13 s, sphères plus fines et lentes.
+Reste : des sphères passent devant la carte Clio (9,25–10,25 s) ; ligne « 1 450 € sous la cote » petite.
+Notes : hook 8, lisibilité 7, mouvement 8, composition 7, profondeur 8, synchro 8, polish 8, marque 8, fidélité 8.
+
+## V3 round 3 — version livrée
+Corrigé : sphères du premier plan toujours hors de la carte, avancée finale de la caméra sur la ligne clé,
+captures étalonnées (niveaux de gris, contraste +40 %) pour un texte dense sur les panneaux.
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 8 | Noir, anneau lumineux, « Voici » net à 0,75 s, impact et logo à 2 s. |
+| Lisibilité à 360 px | 8 | −1 200 €, 7 500 €, 6 400 € / cote 7 850 € nets ; phrases à 70 px. |
+| Mouvement | 8 | Caméra toujours en mouvement lent, mots qui sortent du flou, aucun plan figé. |
+| Composition | 8 | Rien ne masque les extraits, textes dans la zone sûre. |
+| Profondeur | 8 | Trois plans de netteté, halo, grain, vignettage. |
+| Synchro | 8 | 120,0 BPM mesurés, logo et accord final sur des downbeats, notes cristallines sur chaque mot. |
+| Polish | 8 | 1080×1920, 24 i/s, 15,0 s, −14,0 LUFS, true peak −1,1 dBTP. |
+| Marque | 8 | Vrais extraits, Archivo, le jaune UTOPICAR seule couleur du film. |
+| Fidélité à la référence | 8 | Même grammaire (palette, lumière, typo, entrée des mots, flash, sound design) sans en reprendre le contenu. |
+
+Limite : l'audio a été vérifié par mesure, pas écouté ; une écoute au casque reste à faire.

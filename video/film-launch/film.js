@@ -27,6 +27,7 @@ function panel(parts, w, h, bg, radius = 22) {
   const c = document.createElement('canvas'); c.width = w * DPR; c.height = h * DPR;
   const g = c.getContext('2d'); g.scale(DPR, DPR);
   g.beginPath(); g.roundRect(0, 0, w, h, radius); g.fillStyle = bg; g.fill(); g.clip();
+  g.filter = 'grayscale(1) contrast(1.4) brightness(1.06)'; // étalonnage des captures : texte plus dense, blanc intact
   for (const p of parts) g.drawImage(IMG[p.src], p.r.x * DPR, p.r.y * DPR, p.r.w * DPR, p.r.h * DPR, p.x, p.y, p.r.w, p.r.h);
   const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
   return { tex, aspect: h / w };
@@ -43,6 +44,7 @@ const P2 = panel([{ src: 'rapport', r: PC, x: 22, y: 22 }], PC.w + 44, PC.h + 44
 const C = L.cote; let y3 = 22; const p3 = [];
 for (const [r, gap] of [[C.title, 8], [C.ago, 22], [C.prix, 8], [C.cote, 4], [C.sous, 14], [pad(C.vraie, 2), 0]]) { p3.push({ src: 'live', r, x: 22, y: y3 }); y3 += r.h + gap; }
 const P3 = panel(p3, Math.max(C.title.w, C.cote.w) + 44, y3 + 22, '#FFFFFF');
+const P3W = Math.max(C.title.w, C.cote.w) + 44, P3H = y3 + 22, SOUS = p3[4]; // position de « Prix réel … sous la cote » dans la carte
 
 /* ---------------- 3D ---------------- */
 const canvas = $('#gl');
@@ -105,7 +107,7 @@ for (let i = 0; i < 18; i++) {
   const a = i * 2.39996, d = 0.7 + 1.5 * Math.sqrt((i + 0.5) / 18);
   const z = -3 + 6.5 * (0.5 + 0.5 * noise(i, 13.7));
   const m = new THREE.Mesh(new THREE.SphereGeometry(r, 48, 32), sphMat);
-  m.userData = { a, d, z, y: 1.3 * noise(i, 17.1) };
+  m.userData = { a, d: z > -0.3 ? Math.max(d, 1.75) : d, front: z > -0.3, z, y: 1.3 * noise(i, 17.1) }; // devant la carte : jamais sur elle
   g5.add(m); spheres.push(m);
 }
 
@@ -215,11 +217,14 @@ function seek(t) {
     focusOn = pan2;
   } else {
     const k = smooth(M.shot5, M.flash + 0.4, t);
-    cp = new THREE.Vector3(lerp(-0.3, 0.15, k), lerp(0.2, 0.05, k), lerp(9.6, 7.6, k));
+    const w3 = 2.5, h3 = w3 * P3.aspect;
+    const sx = (-0.5 + (SOUS.x + SOUS.r.w / 2) / P3W) * w3, sy = 0.15 + (0.5 - (SOUS.y + SOUS.r.h / 2) / P3H) * h3;
+    cp = new THREE.Vector3(lerp(-0.3, sx * 0.6, k), lerp(0.2, sy * 0.7, k), lerp(9.6, 6.4, k));
+    look.set(lerp(0, sx * 0.6, k), lerp(0, sy * 0.7, k), 0);
     const pp = spring(t - M.shot5, 'default');
     pan3.position.set(0, 0.15, lerp(-2, 0, pp)); pan3.rotation.set(0, lerp(0.25, 0, pp), 0);
     const part = smooth(M.part, M.flash, t); // écartement lent et continu, comme la référence
-    spheres.forEach(s => { const U = s.userData; const d = U.d * lerp(0.7, 1.75, part);
+    spheres.forEach(s => { const U = s.userData; const d = U.d * (U.front ? lerp(1.05, 1.6, part) : lerp(0.7, 1.75, part));
       s.position.set(Math.cos(U.a + t * 0.07) * d, Math.sin(U.a + t * 0.07) * d * 1.45 + U.y * 0.3, U.z); });
     focusOn = pan3;
   }
