@@ -1,7 +1,12 @@
 # Shotlist — UTOPICAR, 15 s, 9:16 (1080x1920), 120 BPM
 
-Grille : beat = 0,5 s, downbeat = 2 s. Les montants ci-dessous sont des valeurs cibles :
-au build, les données démo seront réglées pour que l'outil calcule lui-même ces chiffres.
+Grille : beat = 0,5 s, downbeat = 2 s (mesurée : 119,97 BPM, voir beats.json).
+
+> **Mise à jour après construction.** Les chiffres affichés sont ceux que l'outil calcule lui-même à partir des
+> données démo : plafond **7 500 €** (offre de départ 7 050 €) au lieu de 8 100 €, et **1 450 € sous la cote**
+> au lieu de 1 400 €. Le plan 3 fait défiler un indicateur jaune sur les lignes du calcul. Le plan 5 garde les
+> KPI sans la barre pipeline. Le logo tombe à 12 s (downbeat), le mot-symbole à 12,5 s, le CTA à 13 s. L'écran
+> de l'app mesure 900 × 1309 px (x 90, y 520). La timeline exacte est dans `timeline.json`.
 
 | # | Temps | Action | Texte à l'écran | Asset | Mouvement / transition | Son |
 |---|---|---|---|---|---|---|

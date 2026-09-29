@@ -1,0 +1,275 @@
+{
+  "fps": 30,
+  "dur": 15,
+  "bpm": 120,
+  "size": [
+    1080,
+    1920
+  ],
+  "marks": {
+    "tapAnalyse": 0.75,
+    "report": 1,
+    "dezoom": 2,
+    "lines": [
+      1.05,
+      1.11,
+      1.17,
+      1.23,
+      1.29,
+      1.35
+    ],
+    "total": 1.4,
+    "scrollPlafond": 5,
+    "plafond": 5.5,
+    "zoomPlafond": 6,
+    "tapLive": 7,
+    "liveScroll": 7.25,
+    "card": 7.5,
+    "cardScroll": 8,
+    "zoomCote": 8.5,
+    "tapDash": 10,
+    "kpis": [
+      10.25,
+      10.3125,
+      10.375,
+      10.4375,
+      10.5,
+      10.5625
+    ],
+    "kpiZoom": 11,
+    "logo": 12,
+    "wordmark": 12.5,
+    "cta": 13,
+    "walk": [
+      2.5,
+      2.75,
+      3.0,
+      3.25,
+      3.5,
+      3.75,
+      4.0
+    ],
+    "zoomTotal": 4.0
+  },
+  "titles": [
+    {
+      "t": 0,
+      "lines": [
+        "Cette Golf",
+        "à 9 500 € ?"
+      ],
+      "key": "9 500 €"
+    },
+    {
+      "t": 1,
+      "lines": [
+        "Tu perds",
+        "1 200 €."
+      ],
+      "key": "1 200 €"
+    },
+    {
+      "t": 2,
+      "lines": [
+        "Il calcule ce",
+        "qu'il te reste."
+      ],
+      "key": "reste"
+    },
+    {
+      "t": 4,
+      "lines": [
+        "Tous les frais",
+        "déduits."
+      ],
+      "key": "déduits"
+    },
+    {
+      "t": 6,
+      "lines": [
+        "Ton prix max :",
+        "7 500 €."
+      ],
+      "key": "7 500 €"
+    },
+    {
+      "t": 7.5,
+      "lines": [
+        "Les affaires",
+        "arrivent seules."
+      ],
+      "key": "seules"
+    },
+    {
+      "t": 9,
+      "lines": [
+        "1 450 € sous",
+        "la cote."
+      ],
+      "key": "1 450 €"
+    },
+    {
+      "t": 10,
+      "lines": [
+        "Ton parc.",
+        "Ta marge."
+      ],
+      "key": "marge"
+    },
+    {
+      "t": 11,
+      "lines": [
+        "En un coup",
+        "d'œil."
+      ],
+      "key": "d'œil"
+    },
+    {
+      "t": 11.8,
+      "lines": [],
+      "key": ""
+    }
+  ],
+  "cta": {
+    "pre": "Commente",
+    "word": "GARAGE",
+    "post": "pour l'accès"
+  },
+  "cues": [
+    {
+      "t": 0.0,
+      "sfx": "impact",
+      "beat": true
+    },
+    {
+      "t": 0.75,
+      "sfx": "click",
+      "beat": true
+    },
+    {
+      "t": 1.0,
+      "sfx": "hit",
+      "beat": true
+    },
+    {
+      "t": 2.0,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 2.5,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 2.75,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 3.0,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 3.25,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 3.5,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 3.75,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 4.0,
+      "sfx": "hit",
+      "beat": true
+    },
+    {
+      "t": 5.0,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 6.0,
+      "sfx": "impact",
+      "beat": true
+    },
+    {
+      "t": 7.0,
+      "sfx": "click",
+      "beat": true
+    },
+    {
+      "t": 7.05,
+      "sfx": "whoosh",
+      "beat": false
+    },
+    {
+      "t": 7.5,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 8.5,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 9.0,
+      "sfx": "hit",
+      "beat": true
+    },
+    {
+      "t": 10.0,
+      "sfx": "click",
+      "beat": true
+    },
+    {
+      "t": 10.05,
+      "sfx": "whoosh",
+      "beat": false
+    },
+    {
+      "t": 10.25,
+      "sfx": "tick",
+      "beat": true
+    },
+    {
+      "t": 10.5,
+      "sfx": "tick",
+      "beat": true
+    },
+    {
+      "t": 10.75,
+      "sfx": "tick",
+      "beat": true
+    },
+    {
+      "t": 11.0,
+      "sfx": "impact",
+      "beat": true
+    },
+    {
+      "t": 12.0,
+      "sfx": "thump",
+      "beat": true
+    },
+    {
+      "t": 12.5,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 13.0,
+      "sfx": "pop",
+      "beat": true
+    }
+  ]
+}

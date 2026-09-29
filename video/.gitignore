@@ -1,6 +1,13 @@
 node_modules/
-renders/*.mp4
-renders/frames/
+renders/draft.mp4
+renders/range/
+renders/stills/
+renders/_cells/
+renders/review/r1-*
+renders/review/r2-*
+renders/review/r3-*
+renders/review/r4-*
 refs/frames/
+assets/shots/explore/
 audio/*.wav
 .env
