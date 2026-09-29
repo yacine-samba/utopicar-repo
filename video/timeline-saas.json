@@ -1,0 +1,201 @@
+{
+  "version": 4,
+  "style": "film produit lumineux, d'après la grammaire de la référence 2",
+  "fps": 30,
+  "dur": 30,
+  "bpm": 108,
+  "size": [
+    1080,
+    1920
+  ],
+  "poster": 28.8,
+  "reviewKeys": [
+    0.8,
+    1.6,
+    3.3,
+    5.5,
+    7.5,
+    9.6,
+    12.3,
+    14.6,
+    16.3,
+    19.0,
+    21.0,
+    23.0,
+    25.6,
+    28.2,
+    29.5
+  ],
+  "marks": {
+    "orb": 0.0,
+    "mosaic": 1.1111,
+    "wipe1": 2.2222,
+    "draw": 2.5,
+    "fill": 3.8889,
+    "extrude": 4.4444,
+    "fly": 6.6667,
+    "button": 8.8889,
+    "press": 9.4444,
+    "h1": 11.1111,
+    "h1mark": 12.2222,
+    "cards": 13.3333,
+    "card1": 13.3333,
+    "card2": 14.4444,
+    "card3": 15.5556,
+    "phone": 17.7778,
+    "pop": 20.0,
+    "dash": 22.2222,
+    "kpi1": 22.7778,
+    "kpi2": 23.3333,
+    "h2": 24.4444,
+    "h2mark": 25.5556,
+    "wipe2": 26.1111,
+    "end": 26.6667,
+    "endWord": 27.2222,
+    "cta": 27.7778,
+    "orbEnd": 28.8889,
+    "logo": 26.6667
+  },
+  "headlines": [
+    {
+      "t": 11.1111,
+      "out": 13.1833,
+      "lines": [
+        "Achète au",
+        "bon prix."
+      ],
+      "key": "bon prix"
+    },
+    {
+      "t": 24.4444,
+      "out": 26.1111,
+      "lines": [
+        "Pilote ta",
+        "marge."
+      ],
+      "key": "marge"
+    }
+  ],
+  "cta": {
+    "pre": "Commente",
+    "word": "GARAGE",
+    "post": "pour l'accès"
+  },
+  "cues": [
+    {
+      "t": 1.1111,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 2.2222,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 3.8889,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 4.4444,
+      "sfx": "impact",
+      "beat": true
+    },
+    {
+      "t": 6.6667,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 8.8889,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 9.4444,
+      "sfx": "click",
+      "beat": true
+    },
+    {
+      "t": 11.1111,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 12.2222,
+      "sfx": "tick",
+      "beat": true
+    },
+    {
+      "t": 13.3333,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 14.4444,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 15.5556,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 17.7778,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 20.0,
+      "sfx": "hit",
+      "beat": true
+    },
+    {
+      "t": 22.2222,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 22.7778,
+      "sfx": "tick",
+      "beat": true
+    },
+    {
+      "t": 23.3333,
+      "sfx": "tick",
+      "beat": true
+    },
+    {
+      "t": 24.4444,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 25.5556,
+      "sfx": "tick",
+      "beat": true
+    },
+    {
+      "t": 26.1111,
+      "sfx": "whoosh",
+      "beat": true
+    },
+    {
+      "t": 26.6667,
+      "sfx": "impact",
+      "beat": true
+    },
+    {
+      "t": 27.2222,
+      "sfx": "pop",
+      "beat": true
+    },
+    {
+      "t": 27.7778,
+      "sfx": "pop",
+      "beat": true
+    }
+  ]
+}
