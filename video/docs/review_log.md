@@ -149,3 +149,42 @@ captures étalonnées (niveaux de gris, contraste +40 %) pour un texte dense sur
 | Fidélité à la référence | 8 | Même grammaire (palette, lumière, typo, entrée des mots, flash, sound design) sans en reprendre le contenu. |
 
 Limite : l'audio a été vérifié par mesure, pas écouté ; une écoute au casque reste à faire.
+
+---
+
+# Version 4 — film produit 30 s, d'après la grammaire de la référence 2
+
+Demande : « faire pareil » avec la référence 2 (film de présentation d'un logiciel), en 30 s. Analyse dans
+`docs/saas_style_guide.md`, plans dans `docs/saas_shotlist.md`. Seule la grammaire est reprise (fond clair, accent
+saturé en aplats et volets, mosaïque, mot-symbole tracé puis extrudé, survols 3D de l'interface, cartes épaisses,
+téléphone, titres à mot d'accent) ; contenu, textes, formes et musique sont originaux, la référence reste hors du dépôt.
+
+## V4 round 1
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 7 | Lueur puis mosaïque réussies, mais le volet ne faisait pas la transition : coupe sèche vers un écran presque vide (2,2–2,7 s). |
+| Lisibilité à 360 px | 8 | Bouton, cartes, téléphone, KPI et titres lisibles. |
+| Mouvement | 7 | Tracé du mot-symbole trop fin et lent (2,8–3,9 s mesurés quasi figés) ; fin figée 29,2–29,9 s (lueur cachée sous le fond blanc). |
+| Composition | 8 | Corrigée avant ce rendu : mot-symbole, cartes et téléphone recadrés. |
+| Profondeur | 8 | Plans inclinés, flou de profondeur, cartes épaisses et ombres portées. |
+| Synchro | 8 | 108,0 BPM mesurés, chaque idée sur un downbeat, 23 effets alignés. |
+| Polish | 7 | Encoche du téléphone en rectangle noir, lue comme une censure. |
+| Marque / fidélité à la référence | 8 / 8 | Jaune UTOPICAR à la place de l'accent de la référence, vraies captures, contours réels d'Archivo. |
+
+## V4 round 2 — version livrée
+Corrigé : volet jaune qui couvre tout le cadre avant de dévoiler le tracé, tracé plus épais et plus rapide,
+lueur jaune derrière le logo et avancée lente en fin, encoche en pastille.
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 8 | Lueur (0,8 s), mosaïque et carré du logo (1,6 s), volet plein cadre, tracé net dès 2,6 s. |
+| Lisibilité à 360 px | 8 | « Analyser le dossier », −1 200 €, 7 500 €, 1 450 € sous la cote, 14 820 €, titres, CTA. |
+| Mouvement | 8 | Seul passage calme : 3,17–3,87 s, contour tracé qui attend son remplissage sur le temps fort (3,89 s), assumé. |
+| Composition | 8 | Rien d'essentiel coupé ; textes dans la zone sûre. |
+| Profondeur | 8 | Inchangée. |
+| Synchro | 8 | Inchangée ; mix −14,0 LUFS, true peak −1,3 dBTP. |
+| Polish | 8 | 1080×1920, 30 i/s, 30,0 s, 8,4 Mo. |
+| Marque / fidélité | 8 / 8 | Inchangées. |
+
+Point à connaître : au survol de la page « Analyser », le champ vide affiche le texte d'exemple réel de l'app
+(« https://www.leboncoin.fr/ad/voitures/… »), petit et flou. C'est la vraie interface, mais il nomme une plateforme tierce.
+Limite : audio vérifié par mesure, pas écouté.
