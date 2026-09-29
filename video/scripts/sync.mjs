@@ -4,9 +4,10 @@
 import fs from 'fs';
 import path from 'path';
 import { ROOT } from './ui.mjs';
-const TLp = path.join(ROOT, 'timeline.json');
+const CUT = process.env.CUT ? '-' + process.env.CUT : '';
+const TLp = path.join(ROOT, `timeline${CUT}.json`);
 const TL = JSON.parse(fs.readFileSync(TLp, 'utf8'));
-const B = JSON.parse(fs.readFileSync(path.join(ROOT, 'beats.json'), 'utf8'));
+const B = JSON.parse(fs.readFileSync(path.join(ROOT, `beats${CUT}.json`), 'utf8'));
 const grid = []; B.beats.forEach((b, i) => { grid.push(b); if (i < B.beats.length - 1) grid.push((b + B.beats[i + 1]) / 2); });
 const near = t => grid.reduce((a, g) => Math.abs(g - t) < Math.abs(a - t) ? g : a, grid[0]);
 let bad = 0, moved = 0; const rows = [];

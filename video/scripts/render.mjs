@@ -6,6 +6,7 @@
 //   node scripts/render.mjs --phone              frames clés réduites à 360 px de large → renders/phone.png
 //   node scripts/render.mjs --draft              animatic 540x960 → renders/draft.mp4
 //   node scripts/render.mjs --all                film final 1080x1920 → renders/9x16.mp4 (+ audio/mix.wav s'il existe)
+//   CUT=launch node scripts/render.mjs --all     version lancement → film-launch/, timeline-launch.json, renders/9x16-launch.mp4
 import { chromium } from 'playwright';
 import http from 'http';
 import fs from 'fs';
@@ -13,7 +14,8 @@ import path from 'path';
 import { spawn, execFileSync } from 'child_process';
 import { ROOT } from './ui.mjs';
 
-const TL = JSON.parse(fs.readFileSync(path.join(ROOT, 'timeline.json'), 'utf8'));
+const CUT = process.env.CUT ? '-' + process.env.CUT : '';   // CUT=launch → timeline-launch.json, film-launch/, 9x16-launch.mp4
+const TL = JSON.parse(fs.readFileSync(path.join(ROOT, `timeline${CUT}.json`), 'utf8'));
 const OUT = path.join(ROOT, 'renders');
 fs.mkdirSync(OUT, { recursive: true });
 const args = process.argv.slice(2);
@@ -30,11 +32,11 @@ await new Promise(r => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;
 
 const scale = opt('--draft') ? 0.5 : 1;
-const browser = await chromium.launch({ args: ['--force-color-profile=srgb', '--disable-lcd-text', '--font-render-hinting=none'] });
+const browser = await chromium.launch({ args: ['--force-color-profile=srgb', '--disable-lcd-text', '--font-render-hinting=none', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: scale });
 page.on('pageerror', e => console.error('PAGEERR', e.message));
 page.on('console', m => { if (m.type() === 'error') console.error('CONSOLE', m.text()); });
-await page.goto(`${base}/film/index.html?render=1`);
+await page.goto(`${base}/film${CUT}/index.html?render=1`);
 await page.waitForFunction(() => window.filmReady === true, null, { timeout: 60000 });
 
 async function frame(t, type = 'png') {
@@ -79,7 +81,7 @@ if (opt('--range')) {
 if (opt('--sheet')) {
   const two = []; for (let t = 0; t < TL.dur; t += 0.5) two.push(+(t + 0.25).toFixed(3));
   await grid(two, path.join(OUT, 'contact.png'), 10, 200);
-  let beats = []; try { beats = JSON.parse(fs.readFileSync(path.join(ROOT, 'beats.json'), 'utf8')).beats; } catch (e) { for (let t = 0; t < TL.dur; t += 60 / TL.bpm) beats.push(t); }
+  let beats = []; try { beats = JSON.parse(fs.readFileSync(path.join(ROOT, `beats${CUT}.json`), 'utf8')).beats; } catch (e) { for (let t = 0; t < TL.dur; t += 60 / TL.bpm) beats.push(t); }
   await grid(beats.map(b => +(b + 0.2).toFixed(3)).filter(b => b < TL.dur), path.join(OUT, 'beats.png'), 10, 200);
 }
 if (opt('--strip')) {
@@ -92,8 +94,8 @@ if (opt('--phone')) {
 }
 if (opt('--draft') || opt('--all')) {
   const final = !!opt('--all');
-  const file = path.join(OUT, final ? '9x16.mp4' : 'draft.mp4');
-  const audio = path.join(ROOT, 'audio/mix.wav');
+  const file = path.join(OUT, final ? `9x16${CUT}.mp4` : `draft${CUT}.mp4`);
+  const audio = path.join(ROOT, `audio/mix${CUT}.wav`);
   const withAudio = fs.existsSync(audio) && !opt('--mute');
   const W = final ? 1080 : 540, H = final ? 1920 : 960;
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(TL.fps), '-i', '-',
@@ -109,6 +111,6 @@ if (opt('--draft') || opt('--all')) {
   }
   ff.stdin.end(); await new Promise(r => ff.on('close', r));
   console.log('→', path.relative(ROOT, file), withAudio ? '(avec audio)' : '(muet)');
-  if (final) fs.writeFileSync(path.join(OUT, 'poster.png'), await frame(14.2));
+  if (final) fs.writeFileSync(path.join(OUT, `poster${CUT}.png`), await frame(TL.poster ?? 14.2));
 }
 await browser.close(); server.close();

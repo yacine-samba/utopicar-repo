@@ -5,7 +5,8 @@ import fs from 'fs';
 import path from 'path';
 import { ROOT } from './ui.mjs';
 
-const TL = JSON.parse(fs.readFileSync(path.join(ROOT, 'timeline.json'), 'utf8'));
+const CUT = process.env.CUT ? '-' + process.env.CUT : '';
+const TL = JSON.parse(fs.readFileSync(path.join(ROOT, `timeline${CUT}.json`), 'utf8'));
 const SR = 48000, N = Math.ceil(TL.dur * SR);
 const L = new Float32Array(N), R = new Float32Array(N);
 
@@ -53,5 +54,5 @@ for (let i = 0; i < N; i++) for (const [k, ch] of [[0, L], [1, R]]) {
   const v = Math.max(-1, Math.min(1, ch[i])) * 8388607 | 0; buf.writeIntLE(v, 44 + i * 6 + k * 3, 3);
 }
 fs.mkdirSync(path.join(ROOT, 'audio'), { recursive: true });
-fs.writeFileSync(path.join(ROOT, 'audio/sfx.wav'), buf);
-console.log(`audio/sfx.wav : ${TL.cues.length} effets`);
+fs.writeFileSync(path.join(ROOT, `audio/sfx${CUT}.wav`), buf);
+console.log(`audio/sfx${CUT}.wav : ${TL.cues.length} effets`);

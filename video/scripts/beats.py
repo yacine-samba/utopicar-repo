@@ -48,6 +48,7 @@ bp = max(range(4), key=lambda q: np.mean([nov[i] for i in range(q, len(beats), 4
 jit = np.abs(strong[ok] - (phase + idx[ok] * period)).max() * 1000
 out = {'bpm': round(60 / period, 3), 'period': round(float(period), 5), 'beats': [round(b, 4) for b in beats],
        'downbeats': [round(b, 4) for b in beats[bp::4]], 'hits': [round(float(h), 4) for h in hits if h >= -0.005]}
-json.dump(out, open(os.path.join(ROOT, 'beats.json'), 'w'), indent=1)
+CUT = '-' + os.environ['CUT'] if os.environ.get('CUT') else ''
+json.dump(out, open(os.path.join(ROOT, f'beats{CUT}.json'), 'w'), indent=1)
 print(f"BPM {out['bpm']} (librosa brut {tempo:.2f}), {len(beats)} beats, premier {beats[0]:.3f} s, "
       f"downbeats {out['downbeats'][:4]}…, {ok.sum()} attaques sur la grille, écart max {jit:.1f} ms")

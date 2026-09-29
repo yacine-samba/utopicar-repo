@@ -8,14 +8,9 @@ renders/review/r2-*
 renders/review/r3-*
 renders/review/r4-*
 renders/review/r5-*
-refs/*.mp4
-refs/*.webm
-refs/*.json
-refs/frames/
-refs/scenes/
-refs/contact.jpg
-refs/*.txt
-refs/frames/
 assets/shots/explore/
 audio/*.wav
 .env
+refs/
+renders/stills-row.png
+renders/9x16-launch.mp4.part

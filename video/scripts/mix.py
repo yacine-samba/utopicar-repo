@@ -9,12 +9,14 @@ import pyloudnorm as pyln
 from scipy.signal import resample_poly
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CUT = '-' + os.environ['CUT'] if os.environ.get('CUT') else ''
 A = lambda p: os.path.join(ROOT, p)
-music, sr = sf.read(A('audio/music.wav'))
-sfx, sr2 = sf.read(A('audio/sfx.wav'))
-assert sr == sr2 == 48000
-n = min(len(music), len(sfx))
-mix = music[:n] * 0.72 + sfx[:n] * 0.9
+music, sr = sf.read(A(f'audio/music{CUT}.wav'))
+if os.path.exists(A(f'audio/sfx{CUT}.wav')):
+    sfx, sr2 = sf.read(A(f'audio/sfx{CUT}.wav')); assert sr == sr2 == 48000
+    n = min(len(music), len(sfx)); mix = music[:n] * 0.72 + sfx[:n] * 0.9
+else:  # bande-son complète déjà dans la musique (sound design)
+    n = len(music); mix = music.copy()
 
 TARGET, CEIL = -14.0, -1.0
 meter = pyln.Meter(sr)
@@ -41,15 +43,15 @@ for it in range(6):
     if tp <= CEIL - 0.05: break
     mix = limit(mix, CEIL - 0.3)
 lufs, tp = meter.integrated_loudness(mix), true_peak_db(mix)
-sf.write(A('audio/mix.wav'), mix, sr, subtype='PCM_24')
+sf.write(A(f'audio/mix{CUT}.wav'), mix, sr, subtype='PCM_24')
 
 # vérification indépendante
-r = subprocess.run(['ffmpeg', '-hide_banner', '-nostats', '-i', A('audio/mix.wav'), '-af', 'ebur128=peak=true', '-f', 'null', '-'], capture_output=True, text=True).stderr
+r = subprocess.run(['ffmpeg', '-hide_banner', '-nostats', '-i', A(f'audio/mix{CUT}.wav'), '-af', 'ebur128=peak=true', '-f', 'null', '-'], capture_output=True, text=True).stderr
 I = re.findall(r'I:\s+(-?[\d.]+) LUFS', r)[-1]; TP = re.findall(r'Peak:\s+(-?[\d.]+) dBFS', r)[-1]
 rep = (f"Mix : {n / sr:.2f} s, 48 kHz stéréo 24 bits\n"
        f"pyloudnorm : {lufs:.2f} LUFS intégrés, true peak {tp:.2f} dBTP (x4)\n"
        f"ffmpeg ebur128 : I = {I} LUFS, true peak = {TP} dBTP\n"
        f"Cible : -14 LUFS, true peak <= -1 dBTP → {'OK' if abs(float(I) + 14) <= 0.5 and float(TP) <= -1.0 else 'HORS CIBLE'}\n")
 os.makedirs(A('docs'), exist_ok=True)
-open(A('docs/mix_report.txt'), 'w').write(rep)
+open(A(f'docs/mix_report{CUT}.txt'), 'w').write(rep)
 print(rep, end='')
