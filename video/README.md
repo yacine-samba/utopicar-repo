@@ -4,7 +4,18 @@ Film de 15 s en 9:16 (1080×1920, 30 i/s) pour une campagne TikTok, réalisé en
 interface d'UTOPICAR Garage**, chargée dans Chromium avec des **données démo** (aucune donnée réelle du parc).
 Tous les chiffres à l'écran sont calculés par l'outil lui-même.
 
-## Livrables
+## Versions
+
+| Version | Fichier | Direction |
+|---|---|---|
+| v1 | historique git (`e9e81bb`) | écran complet de l'app, 9 titres, rythme rapide |
+| v2 | `renders/9x16.mp4` | minimaliste : un titre et un extrait du site par plan, musique calme |
+| **v3** | **`renders/9x16-launch.mp4`** | **lancement cinématographique monochrome d'après la référence 1** : 3D (Three.js), profondeur de champ, halo, grain, texte fin mot à mot, sound design original, 24 i/s ; le jaune UTOPICAR est la seule couleur du film |
+
+Refaire la v3 : `python3 scripts/music-launch.py && CUT=launch python3 scripts/beats.py audio/music-launch.wav --stem audio/drums-launch.wav && CUT=launch node scripts/sync.mjs && CUT=launch python3 scripts/mix.py && CUT=launch node scripts/render.mjs --all` (≈ 12 min, rendu WebGL logiciel).
+Style et plans : `docs/launch_style_guide.md`, `docs/launch_shotlist.md`. La référence n'est pas versionnée (`refs/` ignoré).
+
+## Livrables (v2)
 
 | Fichier | Contenu |
 |---|---|
