@@ -67,7 +67,7 @@ const white = (o = 1, hdr = 2.6) => new THREE.MeshBasicMaterial({ color: new THR
 
 // plans 1–2 : anneau lumineux, traînée de lumière
 const gIntro = new THREE.Group(); scene.add(gIntro);
-const ring = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.007, 8, 420), white()); gIntro.add(ring);
+const ring = new THREE.Mesh(new THREE.TorusGeometry(0.72, 0.0045, 8, 420), white(1, 1.7)); ring.position.set(0.15, 1.35, 0); gIntro.add(ring);
 const streak = new THREE.Mesh(new THREE.SphereGeometry(0.06, 24, 16), white()); gIntro.add(streak);
 
 // plan 3 : annonce (point lumineux en orbite) → verdict (arcs qui se referment)
@@ -97,13 +97,13 @@ for (let i = 0; i < 14; i++) {
 
 // plan 5 : sphères sombres qui s'écartent et révèlent la bonne affaire
 const g5 = new THREE.Group(); scene.add(g5);
-const pan3 = mkPanel(P3, 2.15); pan3.material.color.setRGB(1, 1, 1); g5.add(pan3); // scène claire : carte à pleine luminosité pour se détacher du fond
+const pan3 = mkPanel(P3, 2.5); pan3.material.color.setRGB(1, 1, 1); g5.add(pan3); // scène claire : carte à pleine luminosité pour se détacher du fond
 const sphMat = new THREE.MeshStandardMaterial({ color: 0x161616, roughness: 0.32, metalness: 0.25 });
 const spheres = [];
 for (let i = 0; i < 18; i++) {
-  const r = 0.2 + 0.4 * (0.5 + 0.5 * noise(i, 11.2));
+  const r = 0.14 + 0.3 * (0.5 + 0.5 * noise(i, 11.2));
   const a = i * 2.39996, d = 0.7 + 1.5 * Math.sqrt((i + 0.5) / 18);
-  const z = -3 + 8.5 * (0.5 + 0.5 * noise(i, 13.7));
+  const z = -3 + 6.5 * (0.5 + 0.5 * noise(i, 13.7));
   const m = new THREE.Mesh(new THREE.SphereGeometry(r, 48, 32), sphMat);
   m.userData = { a, d, z, y: 1.3 * noise(i, 17.1) };
   g5.add(m); spheres.push(m);
@@ -125,7 +125,7 @@ const grade = new ShaderPass({
   fragmentShader: `uniform sampler2D tDiffuse; uniform float uExpo; uniform float uVig; varying vec2 vUv;
     void main(){ vec3 c = texture2D(tDiffuse, vUv).rgb; float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
       l = l * uExpo; l = l / (1.0 + max(0.0, l - 1.0));
-      l = mix(l, l * l * (3.0 - 2.0 * l), 0.35); l = 0.018 + l * 0.975;
+      l = mix(l, l * l * (3.0 - 2.0 * l), 0.35); l = 0.008 + l * 0.985;
       vec2 d = vUv - 0.5; d.x *= 0.7; float v = 1.0 - uVig * smoothstep(0.25, 0.8, length(d));
       gl_FragColor = vec4(vec3(l * v), 1.0); }`,
 });
@@ -176,7 +176,7 @@ function seek(t) {
   const lum = track(t, [[0, 0.018], [M.shot4, 0.2, 'heavy'], [M.shot5, 0.74, 'heavy']]);
   scene.background = gray(lum); scene.fog.color.setRGB(lum, lum, lum);
   bloom.strength = track(t, [[0, 1.15], [M.shot4, 0.45, 'heavy'], [M.shot5, 0.1, 'heavy']]);
-  glowMat.opacity = track(t, [[0, 0.0], [0.05, 0.55, 'heavy'], [M.logo, 0.8, 'default'], [M.shot3, 0.3, 'heavy'], [M.shot4, 0.25, 'heavy'], [M.shot5, 0.0, 'heavy']]);
+  glowMat.opacity = track(t, [[0, 0.0], [0.05, 0.3, 'heavy'], [M.logo, 0.5, 'default'], [M.shot3, 0.22, 'heavy'], [M.shot4, 0.2, 'heavy'], [M.shot5, 0.0, 'heavy']]);
   glow.position.x = -3.5 + 1.4 * Math.sin(t * 0.25);
   const shot = t < M.shot3 ? 1 : t < M.shot4 ? 3 : t < M.shot5 ? 4 : 5;
   gIntro.visible = shot === 1; g3.visible = shot === 3; g4.visible = shot === 4; g5.visible = shot === 5;
@@ -185,11 +185,11 @@ function seek(t) {
   let cp, look = new THREE.Vector3(0, 0, 0), focusOn = null;
   if (shot === 1) {
     cp = new THREE.Vector3(0.3 * Math.sin(t * 0.4), 0.15, lerp(9.4, 8.2, smooth(0, M.shot3, t)));
-    ring.rotation.set(1.15 + 0.12 * Math.sin(t * 0.6), 0.35 + t * 0.22, t * 0.1);
+    ring.rotation.set(0.35 + 0.1 * Math.sin(t * 0.6), 0.25 + t * 0.12, t * 0.05);
     const rs = spring(t - 0.1, 'heavy'); ring.scale.setScalar(0.72 + 0.28 * rs); ring.material.opacity = 1;
     // point lumineux qui traverse l'anneau et éclate au logo
     const sp = smooth(M.streak - 0.1, M.logo, t);
-    streak.position.set(lerp(-2.6, 0, sp), lerp(1.8, 0, sp), lerp(-3, 0.5, sp));
+    streak.position.set(lerp(-1.6, 0.15, sp), lerp(2.4, 1.35, sp), lerp(-3, 0.2, sp));
     const burst = bump(t, M.logo, 0.12);
     streak.scale.set(1 + 5 * (1 - sp) * (sp > 0 ? 1 : 0) + 7 * burst, 1 + 7 * burst, 1 + 7 * burst);
     streak.rotation.z = Math.atan2(1.8, 2.6);
@@ -215,11 +215,11 @@ function seek(t) {
     focusOn = pan2;
   } else {
     const k = smooth(M.shot5, M.flash + 0.4, t);
-    cp = new THREE.Vector3(lerp(-0.4, 0.2, k), lerp(0.2, 0, k), lerp(10.2, 7.9, k));
+    cp = new THREE.Vector3(lerp(-0.3, 0.15, k), lerp(0.2, 0.05, k), lerp(9.6, 7.6, k));
     const pp = spring(t - M.shot5, 'default');
     pan3.position.set(0, 0.15, lerp(-2, 0, pp)); pan3.rotation.set(0, lerp(0.25, 0, pp), 0);
-    const part = spring(t - M.part, 'default');
-    spheres.forEach(s => { const U = s.userData; const d = U.d * lerp(0.55, 1.9, part);
+    const part = smooth(M.part, M.flash, t); // écartement lent et continu, comme la référence
+    spheres.forEach(s => { const U = s.userData; const d = U.d * lerp(0.7, 1.75, part);
       s.position.set(Math.cos(U.a + t * 0.07) * d, Math.sin(U.a + t * 0.07) * d * 1.45 + U.y * 0.3, U.z); });
     focusOn = pan3;
   }
@@ -232,7 +232,7 @@ function seek(t) {
   bokeh.uniforms.aperture.value = track(t, [[0, 0.0022], [M.shot5, 0.0036, 'heavy']]) * (1 + pull * 3);
   bokeh.uniforms.maxblur.value = 0.012 + pull * 0.02;
   grade.uniforms.uExpo.value = 1 + 3.5 * clamp(spring(t - (M.flash - 0.2), 'snappy'), 0, 1) * (t < M.end + 0.5 ? 1 : 0);
-  grade.uniforms.uVig.value = track(t, [[0, 0.42], [M.shot5, 0.18, 'heavy']]);
+  grade.uniforms.uVig.value = track(t, [[0, 0.55], [M.shot4, 0.4, 'heavy'], [M.shot5, 0.16, 'heavy']]);
   composer.render();
 
   /* textes */

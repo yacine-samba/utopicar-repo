@@ -44,11 +44,15 @@ chroma = librosa.feature.chroma_cqt(y=ym, sr=SR, hop_length=512)
 def chroma_at(t0, t1):
     i0, i1 = int(t0 * SR / 512), max(int(t0 * SR / 512) + 1, int(t1 * SR / 512)); return chroma[:, i0:i1].mean(1)
 nov = [np.linalg.norm(chroma_at(b, b + period) - chroma_at(max(0, b - period), b)) if i else 0 for i, b in enumerate(beats)]
-bp = max(range(4), key=lambda q: np.mean([nov[i] for i in range(q, len(beats), 4) if i]))
+# accents de la batterie (hauteur des montées d'énergie sur chaque beat) : s'ils désignent nettement un temps fort, ils priment
+acc = [np.mean([pr['peak_heights'][np.argmin(np.abs(strong - b))] for b in beats[q::4] if np.min(np.abs(strong - b)) < 0.03] or [0]) for q in range(4)]
+srt = sorted(acc)
+if srt[-1] > 1.15 * srt[-2]: bp = int(np.argmax(acc)); how = 'accents'
+else: bp = max(range(4), key=lambda q: np.mean([nov[i] for i in range(q, len(beats), 4) if i])); how = 'harmonie'
 jit = np.abs(strong[ok] - (phase + idx[ok] * period)).max() * 1000
 out = {'bpm': round(60 / period, 3), 'period': round(float(period), 5), 'beats': [round(b, 4) for b in beats],
        'downbeats': [round(b, 4) for b in beats[bp::4]], 'hits': [round(float(h), 4) for h in hits if h >= -0.005]}
 CUT = '-' + os.environ['CUT'] if os.environ.get('CUT') else ''
 json.dump(out, open(os.path.join(ROOT, f'beats{CUT}.json'), 'w'), indent=1)
 print(f"BPM {out['bpm']} (librosa brut {tempo:.2f}), {len(beats)} beats, premier {beats[0]:.3f} s, "
-      f"downbeats {out['downbeats'][:4]}…, {ok.sum()} attaques sur la grille, écart max {jit:.1f} ms")
+      f"downbeats {out['downbeats'][:4]}… ({how}), {ok.sum()} attaques sur la grille, écart max {jit:.1f} ms")

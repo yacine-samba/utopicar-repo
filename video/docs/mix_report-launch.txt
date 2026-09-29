@@ -1,4 +1,4 @@
 Mix : 15.00 s, 48 kHz stéréo 24 bits
-pyloudnorm : -14.00 LUFS intégrés, true peak -1.12 dBTP (x4)
+pyloudnorm : -14.00 LUFS intégrés, true peak -1.10 dBTP (x4)
 ffmpeg ebur128 : I = -14.0 LUFS, true peak = -1.1 dBTP
 Cible : -14 LUFS, true peak <= -1 dBTP → OK

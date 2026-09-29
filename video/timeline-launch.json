@@ -36,9 +36,9 @@
     "shot5": 8.75,
     "part": 9.25,
     "flash": 11.5,
-    "end": 12.25,
-    "endLogo": 12.5,
-    "cta": 13.25
+    "end": 12.0,
+    "endLogo": 12.25,
+    "cta": 13.0
   },
   "phrases": [
     {
@@ -98,7 +98,7 @@
     }
   ],
   "cta": {
-    "t": 13.25,
+    "t": 13.0,
     "words": [
       "Commente",
       "GARAGE",
@@ -149,12 +149,12 @@
       "beat": true
     },
     {
-      "t": 12.25,
+      "t": 12.0,
       "sfx": "chord",
       "beat": true
     },
     {
-      "t": 13.25,
+      "t": 13.0,
       "sfx": "glass",
       "beat": true
     }
