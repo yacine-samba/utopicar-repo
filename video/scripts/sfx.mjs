@@ -6,6 +6,8 @@ import path from 'path';
 import { ROOT } from './ui.mjs';
 
 const CUT = process.env.CUT ? '-' + process.env.CUT : '';
+// HOOK=A|B : garde les repères communs + ceux de l'ouverture choisie ; sortie audio/sfx<CUT>-<HOOK>.wav
+const HOOK = process.env.HOOK || '';
 const TL = JSON.parse(fs.readFileSync(path.join(ROOT, `timeline${CUT}.json`), 'utf8'));
 const SR = 48000, N = Math.ceil(TL.dur * SR);
 const L = new Float32Array(N), R = new Float32Array(N);
@@ -20,7 +22,7 @@ function bandNoise(n, lo, hi) { const x = new Float32Array(n).map(rnd); return o
 const env = (i, a, d) => Math.min(1, i / (a * SR)) * Math.exp(-i / (d * SR));
 
 const S = {
-  click(n = 0.05 * SR) { const x = bandNoise(n, 2500, 9000); return x.map((v, i) => (v * 1.4 + Math.sin(2 * Math.PI * 3200 * i / SR) * 0.4) * env(i, 0.0005, 0.006)); },
+  click(n = 0.05 * SR) { const x = bandNoise(n, 2500, 7000); return x.map((v, i) => (v * 1.4 + Math.sin(2 * Math.PI * 3200 * i / SR) * 0.4) * env(i, 0.0012, 0.006)); },
   tick(n = 0.04 * SR) { return new Float32Array(n).map((_, i) => Math.sin(2 * Math.PI * 2100 * i / SR) * env(i, 0.0005, 0.008) * 0.6); },
   pop(n = 0.12 * SR) { let ph = 0; return new Float32Array(n).map((_, i) => { const f = 900 + 700 * Math.exp(-i / (0.012 * SR)); ph += 2 * Math.PI * f / SR; return Math.sin(ph) * env(i, 0.001, 0.03) * 0.55; }); },
   whoosh(n = 0.42 * SR) {
@@ -38,11 +40,11 @@ const S = {
 // frappe clavier douce : une touche par lettre (variation déterministe de hauteur et de niveau)
 S.key = (n = 0.035 * SR) => { const f = 1400 + 900 * (rnd() * 0.5 + 0.5); const x = bandNoise(n, 1800, 7000);
   return x.map((v, i) => (v * 0.9 + Math.sin(2 * Math.PI * f * i / SR) * 0.25) * env(i, 0.0003, 0.004)); };
-const GAIN = { key: 0.16, click: 0.5, tick: 0.3, pop: 0.35, whoosh: 0.32, hit: 0.55, impact: 0.6, thump: 0.75 };
+const GAIN = { key: 0.16, click: 0.38, tick: 0.3, pop: 0.35, whoosh: 0.32, hit: 0.55, impact: 0.6, thump: 0.75 };
 const PAN = { key: 0.05, click: 0.15, tick: -0.1, pop: 0.1, whoosh: 0, hit: 0, impact: 0, thump: 0 };
 
 // une ligne tapée ({sfx:'type', n, rate}) devient une touche toutes les deux lettres
-const CUES = TL.cues.flatMap(c => c.sfx !== 'type' ? [c] : Array.from({ length: Math.ceil(c.n / 2) }, (_, i) => ({ t: c.t + i * 2 * c.rate, sfx: 'key' })));
+const CUES = TL.cues.filter(c => !c.hook || c.hook === HOOK).flatMap(c => c.sfx !== 'type' ? [c] : Array.from({ length: Math.ceil(c.n / 2) }, (_, i) => ({ t: c.t + i * 2 * c.rate, sfx: 'key' })));
 for (const c of CUES) {
   const x = S[c.sfx](); const g = GAIN[c.sfx], p = PAN[c.sfx];
   // le whoosh démarre avant le repère pour que son sommet tombe dessus
@@ -59,5 +61,6 @@ for (let i = 0; i < N; i++) for (const [k, ch] of [[0, L], [1, R]]) {
   const v = Math.max(-1, Math.min(1, ch[i])) * 8388607 | 0; buf.writeIntLE(v, 44 + i * 6 + k * 3, 3);
 }
 fs.mkdirSync(path.join(ROOT, 'audio'), { recursive: true });
-fs.writeFileSync(path.join(ROOT, `audio/sfx${CUT}.wav`), buf);
-console.log(`audio/sfx${CUT}.wav : ${CUES.length} effets`);
+const OUTF = `audio/sfx${CUT}${HOOK ? '-' + HOOK : ''}.wav`;
+fs.writeFileSync(path.join(ROOT, OUTF), buf);
+console.log(`${OUTF} : ${CUES.length} effets`);

@@ -102,8 +102,9 @@ if (opt('--phone')) {
 if (opt('--draft') || opt('--all')) {
   const final = !!opt('--all');
   const file = path.join(OUT, final ? `${TAG}${CUT}${VAR}.mp4` : `draft${CUT}${VAR}-${TAG}.mp4`);
-  const audioL = path.join(ROOT, `audio/mix${CUT}${LANG ? '-' + LANG : ''}.wav`);
-  const audio = fs.existsSync(audioL) ? audioL : path.join(ROOT, `audio/mix${CUT}.wav`);
+  // mix le plus précis disponible : ouverture + langue, langue, ouverture, puis mix commun
+  const cands = [VAR, LANG ? '-' + LANG : null, HOOK ? '-' + HOOK : null, ''].filter(v => v !== null).map(v => path.join(ROOT, `audio/mix${CUT}${v}.wav`));
+  const audio = cands.find(f => fs.existsSync(f)) || cands[cands.length - 1];
   const withAudio = fs.existsSync(audio) && !opt('--mute');
   const W = final ? SIZE[0] : SIZE[0] / 2, H = final ? SIZE[1] : SIZE[1] / 2;
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(TL.fps), '-i', '-',

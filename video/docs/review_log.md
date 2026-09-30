@@ -275,3 +275,17 @@ Contrôle son sur le MP4 livré (et plus seulement sur le WAV) : l'encodage AAC 
 (v5 : +0,9 dBTP). Mix refait avec un plafond de travail à −3,5 dBTP (`MIX_CEIL`), audio remuxé sans réencoder l'image :
 v5 −14,0 LUFS / −1,5 dBTP, v6 −14,0 LUFS / −3,0 dBTP. Limite : audio vérifié par mesure, pas écouté.
 La v4 (`9x16-saas.mp4`) mesurait −0,6 dBTP après AAC : même correction, audio remuxé → −14,0 LUFS / −2,2 dBTP. v2 et v3 : −1,1 dBTP, dans la cible.
+
+## V7 « Ah ouais » 28 s, sans voix (A et B)
+Mesures `qa_video.py` sur les MP4 finaux : −14,0 LUFS ; true peak −3,0 dBTP (A) / −2,5 dBTP (B) ; image 0 pleine ;
+aucune image vide ; aucun plan figé ; 35 % d'énergie sous 150 Hz (v5 : 88 %) ; son des 2 premières s à ~2 LU du reste.
+Seul WARN restant : zones sûres pendant les entrées/sorties en mouvement (≤ 0,25 s), aucun texte posé hors zone.
+- Round 1 : « − 1 200 € » débordait (mesure de largeur fausse : espaces non comptés) → mesure de l'étendue réelle des
+  lettres ; chrono collé au libellé → zone de texte descendue ; annonce Clio trop haute → fenêtre qui défile ;
+  true peak +0,5 dBTP après AAC (clic du bouton sur un kick) → clic adouci ; 80 % d'énergie sous 150 Hz → kick
+  plus haut, passe-haut 75 Hz musique / 90 Hz bruitages.
+- Round 2 : aplat orange vide à 22,0 s → texte déjà entré à la coupe ; carton final figé → poussée + second clic ;
+  logo de fin hors zone gauche → pastille réduite.
+- Round 3 : lignes de frais illisibles à 360 px → agrandies avec marge intérieure ; phrase finale figée → poussée.
+Notes : hook 8, clarté 8, lisibilité 360 px 8, zones sûres 8, mouvement 8, rythme 8, marque 8, son 8 (mesuré, non
+écouté), conformité 9.

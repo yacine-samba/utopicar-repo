@@ -73,3 +73,28 @@ Les voix « Oris », « Noé » et d'autres demandent l'offre Creator.
 Sources : ads.tiktok.com/help/article/creative-best-practices · zeely.ai/blog/hooks-for-tiktok-video-ads ·
 voiceoverguy.co.uk/apple-voice-style · enchantingmarketing.com/write-like-apple ·
 medium.com/better-marketing (The Underdogs) · elevenlabs.io/blog/v3-audiotags
+
+---
+
+## Décision finale : version **sans voix** (choix de l'utilisateur)
+Les voix de synthèse sonnaient encore « IA » et ElevenLabs a coupé l'accès gratuit : la pub repose sur l'écran, la
+musique et les bruitages, avec le même concept « Ah ouais ». Durée 28 s (carton final ≤ 3 s).
+
+| t (s) | Écran | Image | Son |
+|---|---|---|---|
+| 0–3,5 (A) | « 9 500 €. Bonne affaire ? » → « On vérifie ? » | vraie carte Golf dès l'image 0, surligneur sur le prix, le curseur la glisse dans UTOPICAR | groove + attaque à 0 s |
+| 0–3,5 (B) | « Bonne affaire ou pas ? » + compte à rebours 2 s → « UTOPICAR, lui, sait. » | même carte, anneau qui se vide | tics du compte à rebours |
+| 3,5–5 | chrono « 0,0 → 1,8 s » | le texte de l'annonce est collé (vraie page Analyser), clic sur « Analyser le dossier » | clic, tics |
+| 5–6 | « Ah. » « Non. » | vrai rapport : 38/100, NO GO | **la musique s'arrête net** (disque qui ralentit), impact |
+| 6–10 | « − 1 200 € » « frais compris. » | les vraies lignes de frais tombent une à une | reprise basse + kick |
+| 10–12 | « Colle l'annonce. 2 secondes. » | logo UTOPICAR | groove complet |
+| 12–14,7 | « Les frais. » « Ta vraie marge. » « Ton prix max. » | une vraie ligne du rapport sous chaque mot | |
+| 14,7–16,3 | « 7 500 € à ne pas dépasser » | chiffre géant, cartes réelles floues | |
+| 16,3–18 | « Et celle-là ? » | vraie annonce en direct (Clio), défilement jusqu'à « 1 450 € sous la cote » surligné | |
+| 18–20 | « 1 450 € sous la cote » | chiffre géant vert | montée |
+| 20–22 | « Ah ouais. » | vraie carte GO, « + 1 932 € » surligné | accent |
+| 22–25 | « Tu sais avant d'acheter. Pas après. » | aplat orange | accent sur « Pas après » |
+| 25–28 | « Commente GARAGE pour l'essayer. » | logo, bouton cliqué | accord final |
+
+Mention « Données de démonstration » visible tout le film (zone sûre). Fichiers : `film-pub30/`, `timeline-pub30.json`,
+`scripts/music-pub30.py`, rendus `renders/9x16-pub30-A.mp4` et `renders/9x16-pub30-B.mp4`.
