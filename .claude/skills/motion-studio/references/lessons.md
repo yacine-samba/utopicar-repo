@@ -37,6 +37,9 @@
 | Logo | Logo reçu en image dans la conversation, retracé | Demander le fichier source (SVG/PNG HD) dès le brief |
 | Critique | Rounds notés 8/8 à l'œil malgré des défauts mesurables | Mesures automatiques à chaque round, notes plafonnées par les FAIL |
 | Livraison | Fichier > 30 Mo refusé à l'envoi | Aperçu compressé + chemin du fichier complet |
+| v7 | Voix posées (« trop IA, trop calmes »), puis énergiques (« pas assez humaines »), puis bande-annonce (« trop dramatique ») | Chercher la voix par l'**intention** : une démo commentée avec le sourire, des **réactions** (surprise, petit rire, « Ah ouais. ») jouées avec les balises eleven_v3 ; retenue à la Apple, jamais d'emphase |
+| v7 | Voix écoutées à sec, hors contexte | Chaque extrait posé sur un lit musical calé sur ses mots (`voice_demo.py`, transcription mot à mot) |
+| v7 | Voix de la bibliothèque bloquées (« creator tier »), puis accès gratuit coupé par ElevenLabs en cours de casting | `estimate_only` sur chaque voix avant de promettre un casting ; le dire tout de suite ; l'offre se change côté utilisateur |
 | Git | Tentation de committer un MP4 en cours de rendu | Attendre la fin du rendu, expliquer au besoin |
 
 ## Ce qui a marché (à reprendre)
