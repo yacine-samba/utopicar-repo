@@ -1,4 +1,4 @@
-# UTOPICAR — pub TikTok 15 s (motion design en code)
+# UTOPICAR — films TikTok (motion design en code)
 
 Film de 15 s en 9:16 (1080×1920, 30 i/s) pour une campagne TikTok, réalisé en code à partir de la **vraie
 interface d'UTOPICAR Garage**, chargée dans Chromium avec des **données démo** (aucune donnée réelle du parc).
@@ -11,6 +11,15 @@ Tous les chiffres à l'écran sont calculés par l'outil lui-même.
 | v1 | historique git (`e9e81bb`) | écran complet de l'app, 9 titres, rythme rapide |
 | v2 | `renders/9x16.mp4` | minimaliste : un titre et un extrait du site par plan, musique calme |
 | **v3** | **`renders/9x16-launch.mp4`** | **lancement cinématographique monochrome d'après la référence 1** : 3D (Three.js), profondeur de champ, halo, grain, texte fin mot à mot, sound design original, 24 i/s ; le jaune UTOPICAR est la seule couleur du film |
+
+| v4 | `renders/9x16-saas.mp4` | film produit 30 s d'après la référence 2 : mosaïque, mot-symbole tracé puis extrudé, survols 3D |
+| **v5** | **`renders/9x16-explainer.mp4`** | **explicatif 60 s d'après la référence 3** : grille blanche, phrases tapées, chapitres « mot géant + interrupteur », curseur sur la vraie UI, chiffres géants, Sans / Avec, récap, pastille logo |
+| **v6** | **`renders/9x16-chat.mp4`** | **« conversation » 60 s d'après la référence 4** : recherche tapée, phrases adressées au spectateur, anneau, essaim, fenêtre inclinée, panneaux pastel par fonction, pause noire, kaléidoscope, bouton cliqué |
+
+v5 et v6 utilisent le **logo fourni par l'utilisateur** (retracé en vecteur : `assets/brand/logo.svg`) et son orange
+`#FF5A1F` comme accent. Calques d'UI supplémentaires : `node scripts/capture2.mjs` → `assets/ui2/`.
+Refaire la v5 (ou la v6 avec `chat`) : `python3 scripts/music-explainer.py && CUT=explainer python3 scripts/beats.py audio/music-explainer.wav --stem audio/drums-explainer.wav && CUT=explainer node scripts/sync.mjs && CUT=explainer node scripts/sfx.mjs && CUT=explainer python3 scripts/mix.py && CUT=explainer node scripts/render.mjs --all` (≈ 6 min).
+Style et plans : `docs/explainer_style_guide.md`, `docs/explainer_shotlist.md`, `docs/chat_style_guide.md`, `docs/chat_shotlist.md`.
 
 Refaire la v3 : `python3 scripts/music-launch.py && CUT=launch python3 scripts/beats.py audio/music-launch.wav --stem audio/drums-launch.wav && CUT=launch node scripts/sync.mjs && CUT=launch python3 scripts/mix.py && CUT=launch node scripts/render.mjs --all` (≈ 12 min, rendu WebGL logiciel).
 Style et plans : `docs/launch_style_guide.md`, `docs/launch_shotlist.md`. La référence n'est pas versionnée (`refs/` ignoré).

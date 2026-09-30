@@ -188,3 +188,41 @@ lueur jaune derrière le logo et avancée lente en fin, encoche en pastille.
 Point à connaître : au survol de la page « Analyser », le champ vide affiche le texte d'exemple réel de l'app
 (« https://www.leboncoin.fr/ad/voitures/… »), petit et flou. C'est la vraie interface, mais il nomme une plateforme tierce.
 Limite : audio vérifié par mesure, pas écouté.
+
+# V5 — explicatif 60 s (grammaire de la référence 3)
+
+Logo fourni par l'utilisateur en cours de production (image dans la conversation) : retracé en vecteur
+(`assets/brand/logo.svg`), accent du film passé du jaune du site à l'orange du logo `#FF5A1F`.
+
+## V5 round 1
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 7 | Chips d'UI qui flottent et phrase en deux graisses dès 0,2 s, mais texte 74 px trop petit sur téléphone. |
+| Lisibilité à 360 px | 7 | Chiffres géants, titres de chapitre et CTA nets ; phrases du problème petites. |
+| Mouvement | 6 | Plans figés mesurés : 12,1–13,7 s (pastille), 39,7–43,7 s (Sans / Avec), récap 44,7–49,8 s, fin 57,3–60 s. Sortie de Sans / Avec en simple fondu (interdit). |
+| Variété | 8 | Chips, flash, chapitres, rapport, recherche, parc, KPI, chiffres, Sans / Avec, récap, explosion, fin. |
+| Marque | 8 | Logo au flash (8 s), au centre (9,5–14 s), dans « Avec », pastille de fin. |
+| Synchro | 8 | 120,0 BPM mesurés, 41 repères sur la grille, logo sur un downbeat (52 s), CTA sur un beat (54 s). |
+
+## V5 round 2
+Corrigé : phrases du problème à 88 px ; poussée lente et flottement sur la pastille et la phrase (10–14 s) ;
+Sans / Avec : poussée continue, « ? » qui oscille, cartes qui remontent, sortie en mouvement (plus de fondu seul) ;
+récap : frappe immédiate et poussée lente ; fin : cartes qui dérivent plus, le curseur clique « GARAGE » à 57 s.
+
+# V6 — « conversation » 60 s (grammaire de la référence 4)
+
+## V6 round 1
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 6 | À 0,2 s, petite tuile seule ; barre de recherche et texte petits sur téléphone. |
+| Lisibilité à 360 px | 7 | Phrases de l'aplat très lisibles ; légendes des panneaux (50 px) petites. |
+| Mouvement | 6 | Figés : anneau-minuteur 5,4–7,2 s, logo 9,9–11,3 s, panneaux (35,3–36,6 s, 39,7–40,9 s), fin 57,6–59,3 s ; 25,7–26,2 s cadre vide après la fenêtre. |
+| Variété | 9 | Recherche, aplat, minuteur, logo, anneau, tableau, essaim, fenêtre 3D, macro, 4 panneaux, icônes, pause, message, kaléidoscope. |
+| Marque | 8 | Logo dans la barre (0 s), pop (9,4 s), macro (28 s), centre de l'anneau (43 s), fin. Tuile invisible sur l'aplat avant correction (même couleur) : fond passé à `#2B1D16` + liseré clair. |
+| Synchro | 8 | 128,0 BPM mesurés, 46 repères sur la grille, silence net sur la pause noire, logo sur un downbeat (52,5 s). |
+
+## V6 round 2
+Corrigé : la tuile s'ouvre en grand (×2) puis devient une barre de 930 px, texte 48 px sans toucher la loupe ;
+poussée lente sur la phrase du minuteur ; logo : poussée + deux ondes orange sur les temps ; panneaux : poussée
+continue, légendes 64 px ; fenêtre qui sort juste avant la coupe ; fin : poussée plus nette, second clic sur le
+bouton (57,19 s, sur le temps), logo de fin réduit pour rester hors de la marge droite.

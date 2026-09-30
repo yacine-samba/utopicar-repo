@@ -35,10 +35,15 @@ const S = {
   thump(n = 1.4 * SR) { let ph = 0; const nz = bandNoise(n, 150, 2500);
     return new Float32Array(n).map((_, i) => { const f = 36 + 70 * Math.exp(-i / (0.05 * SR)); ph += 2 * Math.PI * f / SR; return Math.tanh(2.2 * Math.sin(ph) * env(i, 0.002, 0.5)) * 0.95 + nz[i] * env(i, 0.001, 0.05) * 0.35; }); },
 };
-const GAIN = { click: 0.5, tick: 0.3, pop: 0.35, whoosh: 0.32, hit: 0.55, impact: 0.6, thump: 0.75 };
-const PAN = { click: 0.15, tick: -0.1, pop: 0.1, whoosh: 0, hit: 0, impact: 0, thump: 0 };
+// frappe clavier douce : une touche par lettre (variation déterministe de hauteur et de niveau)
+S.key = (n = 0.035 * SR) => { const f = 1400 + 900 * (rnd() * 0.5 + 0.5); const x = bandNoise(n, 1800, 7000);
+  return x.map((v, i) => (v * 0.9 + Math.sin(2 * Math.PI * f * i / SR) * 0.25) * env(i, 0.0003, 0.004)); };
+const GAIN = { key: 0.16, click: 0.5, tick: 0.3, pop: 0.35, whoosh: 0.32, hit: 0.55, impact: 0.6, thump: 0.75 };
+const PAN = { key: 0.05, click: 0.15, tick: -0.1, pop: 0.1, whoosh: 0, hit: 0, impact: 0, thump: 0 };
 
-for (const c of TL.cues) {
+// une ligne tapée ({sfx:'type', n, rate}) devient une touche toutes les deux lettres
+const CUES = TL.cues.flatMap(c => c.sfx !== 'type' ? [c] : Array.from({ length: Math.ceil(c.n / 2) }, (_, i) => ({ t: c.t + i * 2 * c.rate, sfx: 'key' })));
+for (const c of CUES) {
   const x = S[c.sfx](); const g = GAIN[c.sfx], p = PAN[c.sfx];
   // le whoosh démarre avant le repère pour que son sommet tombe dessus
   const start = Math.round((c.t - (c.sfx === 'whoosh' ? 0.18 : 0)) * SR);
@@ -55,4 +60,4 @@ for (let i = 0; i < N; i++) for (const [k, ch] of [[0, L], [1, R]]) {
 }
 fs.mkdirSync(path.join(ROOT, 'audio'), { recursive: true });
 fs.writeFileSync(path.join(ROOT, `audio/sfx${CUT}.wav`), buf);
-console.log(`audio/sfx${CUT}.wav : ${TL.cues.length} effets`);
+console.log(`audio/sfx${CUT}.wav : ${CUES.length} effets`);
