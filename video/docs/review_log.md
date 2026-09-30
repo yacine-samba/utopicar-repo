@@ -274,3 +274,4 @@ en continu une fois à plat.
 Contrôle son sur le MP4 livré (et plus seulement sur le WAV) : l'encodage AAC ajoutait jusqu'à 2 dB sur les crêtes
 (v5 : +0,9 dBTP). Mix refait avec un plafond de travail à −3,5 dBTP (`MIX_CEIL`), audio remuxé sans réencoder l'image :
 v5 −14,0 LUFS / −1,5 dBTP, v6 −14,0 LUFS / −3,0 dBTP. Limite : audio vérifié par mesure, pas écouté.
+La v4 (`9x16-saas.mp4`) mesurait −0,6 dBTP après AAC : même correction, audio remuxé → −14,0 LUFS / −2,2 dBTP. v2 et v3 : −1,1 dBTP, dans la cible.
