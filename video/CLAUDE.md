@@ -44,11 +44,16 @@
 3. Noter le hook, la lisibilité, le mouvement, la variété, la marque et la synchro sonore.
 4. Corriger les trois problèmes les plus importants.
 5. Recommencer au moins trois fois et ne livrer que si tous les scores sont à 8 ou plus.
+6. Mesurer chaque MP4 livré avec `.claude/skills/motion-studio/scripts/qa_video.py` : zones sûres, première image,
+   images vides, plans figés, loudness et true peak du fichier encodé (l'AAC ajoute jusqu'à 2 dB : masteriser à
+   −3,5 dBTP), son des 2 premières secondes, équilibre pour haut-parleur de téléphone. Un FAIL bloque la livraison.
 
 ## Spécifique UTOPICAR
 - L'UI filmée est le vrai fichier assets/site/utopicar-live.html, chargé dans Chromium
   avec une fausse base démo (window.claude mocké). Aucune donnée réelle du parc.
 - Les chiffres affichés sont ceux que calcule l'outil lui-même à partir des données démo.
 - Pas de logo Leboncoin, La Centrale ou autre plateforme à l'écran.
-- Zones sûres TikTok en 1080x1920 : rien d'important dans les 160 px du haut,
-  les 420 px du bas et les 140 px de droite.
+- Zones sûres en 1080x1920 (union TikTok / Reels / Shorts) : rien d'important dans les 220 px du haut,
+  les 440 px du bas, les 140 px de droite et les 60 px de gauche. Square : 60 px partout. Desktop : 96 × 54 px, bas 108 px.
+- Chiffres démo dans une pub : mention « Données de démonstration » à l'écran.
+- Processus complet (brief, script, voix, A/B, langues, formats, livraison) : skill `/motion-studio`.

@@ -24,6 +24,18 @@ Style et plans : `docs/explainer_style_guide.md`, `docs/explainer_shotlist.md`, 
 Refaire la v3 : `python3 scripts/music-launch.py && CUT=launch python3 scripts/beats.py audio/music-launch.wav --stem audio/drums-launch.wav && CUT=launch node scripts/sync.mjs && CUT=launch python3 scripts/mix.py && CUT=launch node scripts/render.mjs --all` (≈ 12 min, rendu WebGL logiciel).
 Style et plans : `docs/launch_style_guide.md`, `docs/launch_shotlist.md`. La référence n'est pas versionnée (`refs/` ignoré).
 
+## Faire un nouveau film : le master prompt
+
+- Dans ce dépôt : tape **`/motion-studio`** (skill `.claude/skills/motion-studio/`). Il pose le questionnaire (contexte,
+  demande, voix, langues, type de voix, script, musique, ouvertures A/B, formats), puis déroule script bilingue,
+  voix off ElevenLabs, direction artistique, son, construction, critique mesurée et livraison
+  (2 ouvertures × 2 langues × Vertical / Square / Desktop).
+- Ailleurs (claude.ai, autre dépôt) : colle **`MASTER_PROMPT.md`** (version compilée du skill ; la régénérer avec
+  `python3 .claude/skills/motion-studio/scripts/build_master_prompt.py`). Paquet installable : `renders/skill/motion-studio.skill`.
+- Contrôle mesuré d'un MP4 : `python3 .claude/skills/motion-studio/scripts/qa_video.py renders/<film>.mp4 --out renders/qa`.
+- Rendu des déclinaisons (films qui lisent `?fmt=&lang=&hook=`) : `CUT=<projet> FMT=square VLANG=en HOOK=B node scripts/render.mjs --all`.
+- Analyse critique de la v5 : `docs/analyse_v5_explainer.md`.
+
 ## Livrables (v2)
 
 | Fichier | Contenu |
