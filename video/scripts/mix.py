@@ -26,7 +26,8 @@ else:  # bande-son complète déjà dans la musique (sound design)
 
 # voix off (audio/vo<CUT>.wav|mp3) : posée à voLead, filtrée sous 80 Hz, légèrement compressée, devant la musique
 # (la musique et les effets baissent sous la voix : attaque 20 ms, relâchement 250 ms, ≈ −9 dB)
-VO = next((A(f'audio/vo{CUT}.{e}') for e in ('wav', 'mp3') if os.path.exists(A(f'audio/vo{CUT}.{e}'))), None)
+# NO_VO=1 : version sans voix (même film, sous-titres seuls)
+VO = None if os.environ.get('NO_VO') else next((A(f'audio/vo{CUT}.{e}') for e in ('wav', 'mp3') if os.path.exists(A(f'audio/vo{CUT}.{e}'))), None)
 if VO:
     import json, librosa
     from scipy.signal import butter, sosfilt

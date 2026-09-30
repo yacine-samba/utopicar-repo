@@ -54,7 +54,7 @@ const GAIN = { key: 0.16, click: 0.38, tick: 0.3, pop: 0.35, whoosh: 0.32, hit: 
 const PAN = { key: 0.05, click: 0.15, tick: -0.1, pop: 0.1, whoosh: 0, hit: 0, impact: 0, thump: 0 };
 
 // une ligne tapée ({sfx:'type', n, rate}) devient une touche toutes les deux lettres
-const CUES = TL.cues.filter(c => !c.hook || c.hook === HOOK).flatMap(c => c.sfx !== 'type' ? [c] : Array.from({ length: Math.ceil(c.n / 2) }, (_, i) => ({ t: c.t + i * 2 * c.rate, sfx: 'key' })));
+const CUES = TL.cues.filter(c => !c.hook || c.hook === HOOK).flatMap(c => c.sfx !== 'type' ? [c] : Array.from({ length: Math.ceil(c.n / 2) }, (_, i) => ({ t: c.t + i * 2 * c.rate, sfx: 'key', g: c.g })));
 for (const c of CUES) {
   let x, g, p;
   if (c.sfx.startsWith('s:')) {
@@ -65,7 +65,7 @@ for (const c of CUES) {
     for (let i = 0; i < x.length; i++) { const j = start + i; if (j < 0 || j >= N) continue; L[j] += x[i] * gl; R[j] += x[i] * gr; }
     continue;
   }
-  x = S[c.sfx](); g = GAIN[c.sfx]; p = PAN[c.sfx];
+  x = S[c.sfx](); g = GAIN[c.sfx] * (c.g ?? 1); p = c.pan ?? PAN[c.sfx];
   // le whoosh démarre avant le repère pour que son sommet tombe dessus
   const start = Math.round((c.t - (c.sfx === 'whoosh' ? 0.18 : 0)) * SR);
   const gl = g * Math.sqrt((1 - p) / 2) * Math.SQRT2, gr = g * Math.sqrt((1 + p) / 2) * Math.SQRT2;
