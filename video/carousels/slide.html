@@ -7,23 +7,24 @@
 @font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;src:url(../assets/site/Archivo-latin.woff2) format('woff2');}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1080px;height:1920px;overflow:hidden}
-body{font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;--ink:#0C0F14;--lt:#9AA1AD;--body:#3A4150;--acc:#FF5A1F}
+body{font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;--ink:#0C0F14;--lt:#9AA1AD;--body:#3A4150;--acc:#FF5A1F;--chip:#FFE3D6}
 #s{position:absolute;inset:0;overflow:hidden;background-color:#FFFFFF;background-image:linear-gradient(rgba(12,15,20,.045) 2px,transparent 2px),linear-gradient(90deg,rgba(12,15,20,.045) 2px,transparent 2px);background-size:90px 90px;background-position:-15px 15px}
-#s.dark{--ink:#FFFFFF;--lt:#8C95A3;--body:#C9CED6;background-color:#0C0F14;background-image:linear-gradient(rgba(255,255,255,.04) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.04) 2px,transparent 2px)}
-#s.orange{--ink:#1A1310;--lt:#7A2E10;--body:#2A1A12;--acc:#FFFFFF;background-color:#FF5A1F;background-image:linear-gradient(rgba(26,19,16,.09) 2px,transparent 2px),linear-gradient(90deg,rgba(26,19,16,.09) 2px,transparent 2px)}
+#s.dark{--ink:#FFFFFF;--lt:#8C95A3;--body:#C9CED6;--chip:#2A2F38;background-color:#0C0F14;background-image:linear-gradient(rgba(255,255,255,.04) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.04) 2px,transparent 2px)}
+#s.orange{--ink:#1A1310;--lt:#7A2E10;--body:#2A1A12;--acc:#FFFFFF;--chip:#FFD1BC;background-color:#FF5A1F;background-image:linear-gradient(rgba(26,19,16,.09) 2px,transparent 2px),linear-gradient(90deg,rgba(26,19,16,.09) 2px,transparent 2px)}
 /* zone sûre TikTok : x 60 → 940, y 220 → 1480 */
-#safe{position:absolute;left:60px;top:230px;width:880px;height:1240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px;text-align:center}
+#safe{position:absolute;left:60px;top:230px;width:880px;height:1240px;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:44px;text-align:center}
 .brand{position:absolute;left:60px;top:236px;width:880px;display:flex;justify-content:center;align-items:center;gap:14px;font-weight:800;font-stretch:125%;letter-spacing:.02em;font-size:30px;color:var(--ink);opacity:.85}
-.brand svg{width:44px;height:42px;border-radius:10px}
-#s.dark .brand svg{box-shadow:0 0 0 2px rgba(255,255,255,.28)}
+.brand .ico{width:48px;height:48px;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
 .brand .pg{font-weight:600;font-stretch:100%;letter-spacing:0;color:var(--lt);margin-left:10px}
 .num{min-width:124px;height:124px;padding:0 30px;white-space:nowrap;border-radius:62px;background:var(--acc);color:#1A1310;font-weight:800;font-size:76px;display:flex;align-items:center;justify-content:center;flex:none}
 #s.orange .num{background:#1A1310;color:#FF5A1F}
 .kick{font-weight:700;font-size:44px;color:var(--lt);letter-spacing:.01em}
+/* image 1 : la mise en contexte au-dessus du hook, lisible mais secondaire */
+.kick.k1{font-weight:600;font-size:58px;line-height:1.22;color:var(--ink);opacity:.78;max-width:860px;letter-spacing:-.01em;margin-bottom:-14px;text-wrap:balance}
 .title{font-weight:800;color:var(--ink);letter-spacing:-.025em;line-height:1.06;white-space:nowrap}
 .title .l{font-weight:400;color:var(--lt)}
-.title .mk,.body .mk{position:relative;z-index:0;white-space:nowrap}
-.title .mk::after,.body .mk::after{content:'';position:absolute;left:-.06em;right:-.06em;bottom:.06em;height:.36em;background:var(--acc);z-index:-1}
+.title .mk,.body .mk,.check .mk{position:relative;z-index:0;white-space:nowrap}
+.title .mk::after,.body .mk::after,.check .mk::after{content:'';position:absolute;left:-.06em;right:-.06em;bottom:.06em;height:.36em;background:var(--acc);z-index:-1}
 #s.orange .title .mk::after{background:#FFFFFF}
 .title .rd{color:#E5484D}.title .gr{color:#0E9F6E}
 #s.dark .title .rd{color:#FF5C5C}#s.dark .title .gr{color:#22C38E}
@@ -39,10 +40,12 @@ body{font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;--ink:#
 .cta .g{background:#FF5A1F;color:#1A1310;border-radius:22px;padding:6px 26px 4px}
 .cta2{font-weight:500;font-size:56px;color:#8C95A3}
 .pill{display:flex;align-items:center;gap:26px;height:150px;padding:0 52px 0 22px;border-radius:75px;background:#FF5A1F;box-shadow:inset 0 -8px 0 rgba(0,0,0,.08)}
-.pill svg{width:112px;height:107px}
+.pill .ico{width:112px;height:112px;display:block;filter:drop-shadow(0 6px 12px rgba(0,0,0,.25))}
 .pill .wm{font-weight:800;font-stretch:125%;letter-spacing:.02em;font-size:72px;color:#1A1310;line-height:1}
 .swipe{position:absolute;left:60px;top:1330px;width:880px;display:flex;justify-content:center}
 .swipe span{font-weight:700;font-size:40px;color:var(--ink);border:3px solid var(--ink);border-radius:40px;padding:12px 30px;opacity:.9}
+.relance{position:absolute;left:60px;bottom:500px;width:880px;display:flex;justify-content:center}
+.relance span{font-weight:700;font-size:34px;line-height:1.2;color:var(--ink);background:var(--chip);border-radius:40px;padding:14px 30px;max-width:880px;text-align:center}
 .demo{position:absolute;left:60px;top:1440px;width:880px;text-align:center;font-size:27px;font-weight:600;color:var(--lt);letter-spacing:.01em}
 .check{display:flex;flex-direction:column;gap:22px;align-items:flex-start;text-align:left}
 .check{gap:34px}.check div{font-weight:800;font-size:76px;color:var(--ink);display:flex;gap:22px;align-items:center;white-space:nowrap}
@@ -57,12 +60,13 @@ const DPR = 3;
 const q = new URLSearchParams(location.search);
 const DATA = await (await fetch('carousels.json')).json();
 const C = DATA.carousels[+q.get('c')]; const N = +q.get('s'); const SL = C.slides[N];
-const LOGO = (await (await fetch('../assets/brand/logo.svg')).text()).replace(/<!--.*?-->/s, '');
+const { appIcon } = await import('../film-mo/icon.js'); const LOGO = await appIcon();
 const S = document.getElementById('s');
 const bg = SL.bg || (N === 4 ? 'dark' : C.bg || 'white'); if (bg !== 'white') S.classList.add(bg);
 const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (parent) parent.appendChild(e); return e; };
 // balisage léger : **gras**, _léger_, ==surligné==, [rd]rouge[/rd], [gr]vert[/gr], \n = ligne
-const md = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>')
+// espaces insécables : « 1 450 € », « 9 h 02 », « 38/100 » ne se coupent jamais en fin de ligne
+const md = (s) => s.replace(/(\d) (?=\d{3}(\D|$))/g, '$1\u00A0').replace(/ (€|h\b|%|km|CV)/g, '\u00A0$1').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>')
   .replace(/==(.+?)==/g, '<span class="mk">$1</span>').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/_(.+?)_/g, '<span class="l">$1</span>')
   .replace(/\[rd\](.+?)\[\/rd\]/g, '<span class="rd">$1</span>').replace(/\[gr\](.+?)\[\/gr\]/g, '<span class="gr">$1</span>');
 const UI = {};
@@ -90,10 +94,10 @@ async function ui(parent, spec) {
 function fit(e, base, max = 860) { e.style.fontSize = base + 'px'; const w = e.scrollWidth; if (w > max) e.style.fontSize = (base * max / w).toFixed(1) + 'px'; }
 
 // petite signature de marque en haut (zone sûre) + numéro de page
-const brand = el('div', 'brand', S, `${LOGO}<span>UTOPICAR</span><span class="pg">${N + 1}/5</span>`);
+if (N > 0) el('div', 'brand', S, `${LOGO()}<span>UTOPICAR</span><span class="pg">${N + 1}/5</span>`);
 const box = el('div', '', S); box.id = 'safe';
 if (SL.num != null) el('div', 'num', box, String(SL.num));
-if (SL.kicker) el('div', 'kick', box, md(SL.kicker));
+if (SL.kicker) el('div', N === 0 ? 'kick k1' : 'kick', box, md(SL.kicker));
 if (SL.title) { const t = el('div', 'title', box, md(SL.title)); t.dataset.size = SL.size || (N === 0 ? 124 : 104); }
 if (SL.body) el('div', 'body', box, md(SL.body));
 if (SL.check) { const c = el('div', 'check', box); for (const x of SL.check) el('div', '', c, md(x)); }
@@ -108,23 +112,28 @@ if (SL.ui) {
 if (SL.body2) el('div', 'body', box, md(SL.body2));
 if (N === 4) {
   box.innerHTML = '';
-  el('div', 'pill', box, `${LOGO}<span class="wm">UTOPICAR</span>`);
+  el('div', 'pill', box, `${LOGO()}<span class="wm">UTOPICAR</span>`);
   if (SL.title) { const t = el('div', 'title', box, md(SL.title)); t.dataset.size = SL.size || 84; }
   if (SL.body) el('div', 'body', box, md(SL.body));
   el('div', 'cta', box, `Commente <span class="g">GARAGE</span>`);
-  el('div', 'cta2', box, "pour recevoir l'accès.");
+  el('div', 'cta2', box, 'et reçois ton accès.');
 }
 if (N === 0) el('div', 'swipe', S, '<span>Glisse →</span>');
+if (SL.relance) el('div', 'relance', S, `<span>${md(SL.relance)}</span>`);
+// place réservée en bas pour « Glisse → » ou la relance
+// sous la signature (images 2 à 5), la zone de contenu commence plus bas pour ne jamais la toucher
+const TOP = N > 0 ? 306 : 230, BOT = SL.relance ? 1290 : N === 0 ? 1320 : 1470;
+const H = BOT - TOP; box.style.top = TOP + 'px'; box.style.height = H + 'px';
 if (C.demo !== false && (SL.demo || SL.ui || N === 4)) el('div', 'demo', S, 'Données de démonstration');
 await document.fonts.ready; await document.fonts.load("800 96px 'Archivo'"); await document.fonts.load("400 96px 'Archivo'");
 document.querySelectorAll('.title').forEach(t => fit(t, +t.dataset.size));
 // garde-fou : si le contenu déborde la zone sûre, on réduit tout d'un cran
-for (let i = 0; i < 6 && box.scrollHeight > 1240; i++) {
+for (let i = 0; i < 6 && box.scrollHeight > H; i++) {
   document.querySelectorAll('.title').forEach(t => fit(t, parseFloat(t.style.fontSize) * 0.9));
   document.querySelectorAll('.ui').forEach(u => { u.style.transform = (u.style.transform || '') + ' scale(0.9)'; u.style.margin = `${-u.offsetHeight * 0.05}px 0`; });
   document.querySelectorAll('.body').forEach(b => b.style.fontSize = (parseFloat(getComputedStyle(b).fontSize) * 0.92) + 'px');
 }
-window.overflow = box.scrollHeight > 1240;
+window.overflow = box.scrollHeight > H;
 window.ready = true;
 </script>
 </body>

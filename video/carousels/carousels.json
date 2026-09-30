@@ -3,10 +3,12 @@
   {
    "slug": "golf-1200",
    "bg": "white",
-   "caption": "Cette Golf avait l'air parfaite… jusqu'aux frais. Avant d'acheter, colle l'annonce dans UTOPICAR.",
+   "caption": "Cette Golf à 9 500 € avait l'air rentable. Sauf que 4 frais passent avant ta marge : remise en état, carte grise, trajet, frais fixes. Tu les comptes avant d'acheter ?",
    "slides": [
     {
-     "title": "_Cette Golf à 9 500 €…_\n[rd]t'aurait coûté 1 200 €.[/rd]",
+     "kicker": "Cette Golf à 9 500 € avait l'air rentable.",
+     "title": "Sauf qu'elle\nt'aurait fait\n[rd]PERDRE 1 200 €.[/rd]",
+     "size": 124,
      "ui": [
       {
        "ui": "dcard1",
@@ -16,7 +18,7 @@
         362,
         110
        ],
-       "w": 820,
+       "w": 760,
        "hl": [
         [
          211,
@@ -29,8 +31,8 @@
      ]
     },
     {
-     "title": "Le prix affiché\n==ne dit rien.==",
-     "body": "Revente estimée : **9 800 €**. Tu te dis « +300 € ». Sauf que…",
+     "title": "Tu compares le prix\n_à la revente : + 300 €._",
+     "body": "Tu signes. Sauf que le prix affiché **ne compte aucun frais**.",
      "ui": [
       {
        "ui": "lg1",
@@ -43,12 +45,12 @@
      ]
     },
     {
-     "title": "Les frais tombent.",
+     "title": "Les 4 frais\n==qui tombent après.==",
      "ui": [
       {
        "ui": "lg3",
        "r": null,
-       "w": 780,
+       "w": 740,
        "hl": [],
        "rad": 10,
        "pad": 10
@@ -56,7 +58,7 @@
       {
        "ui": "lg4",
        "r": null,
-       "w": 780,
+       "w": 740,
        "hl": [],
        "rad": 10,
        "pad": 10
@@ -64,7 +66,7 @@
       {
        "ui": "lg5",
        "r": null,
-       "w": 780,
+       "w": 740,
        "hl": [],
        "rad": 10,
        "pad": 10
@@ -72,97 +74,74 @@
       {
        "ui": "lg6",
        "r": null,
-       "w": 780,
+       "w": 740,
        "hl": [],
        "rad": 10,
        "pad": 10
       }
-     ]
+     ],
+     "relance": "Image 4 : ce qu'il te reste vraiment sur cette Golf."
     },
     {
-     "title": "Résultat :\n[rd]− 1 200 €.[/rd]",
+     "title": "Il te reste :\n[rd]− 1 200 €.[/rd]",
      "ui": [
       {
        "ui": "ticket",
        "r": [
-        10,
-        10,
-        320,
-        84
+        0,
+        0,
+        340,
+        98
        ],
        "w": 820,
-       "hl": []
+       "hl": [],
+       "pad": 16
       },
       {
        "ui": "ticket",
        "r": [
-        10,
-        432,
-        320,
-        88
+        0,
+        442,
+        340,
+        76
        ],
        "w": 820,
        "hl": [
         [
          155,
-         454,
-         170,
-         44
+         456,
+         172,
+         32
         ]
-       ]
+       ],
+       "pad": 18
       }
      ]
     },
     {
-     "title": "Avant d'acheter,\n_colle l'annonce._"
+     "title": "Tes frais, comptés\n_avant d'acheter._"
     }
    ]
   },
   {
    "slug": "5-frais-oublies",
    "bg": "dark",
-   "caption": "Les 5 frais qui mangent ta marge en achat-revente. Enregistre ce post.",
+   "caption": "Ta marge en achat-revente auto, ce n'est pas revente moins achat. Les 5 frais qui la mangent : enregistre ce post avant ton prochain achat.",
    "slides": [
     {
-     "title": "5 frais\nque tout le monde\n==oublie.==",
-     "body": "(et qui mangent ta marge)"
+     "kicker": "Ta marge en achat-revente, ce n'est pas revente − achat.",
+     "title": "5 frais la\n==MANGENT== avant.",
+     "size": 124
     },
     {
-     "num": 1,
-     "title": "La remise en état",
-     "body": "Pneus, freins, carrosserie : prévois un scénario **prudent**, pas optimiste.",
+     "title": "Ils arrivent\n_après l'achat._",
+     "body": "C'est pour ça qu'on les oublie. Et c'est **ta marge** qui paie."
+    },
+    {
+     "title": "1. La remise en état\n2. La carte grise",
      "ui": [
       {
        "ui": "lg3",
-       "r": null,
-       "w": 820,
-       "hl": [],
-       "rad": 10,
-       "pad": 10
-      }
-     ]
-    },
-    {
-     "num": 2,
-     "title": "La carte grise",
-     "body": "Elle dépend des **chevaux fiscaux**, de ta **région** et de l'**âge** de la voiture.",
-     "ui": [
-      {
-       "ui": "lg4",
-       "r": null,
-       "w": 820,
-       "hl": [],
-       "rad": 10,
-       "pad": 10
-      }
-     ]
-    },
-    {
-     "title": "3. Le trajet\n4. Les frais fixes\n5. Le temps",
-     "body": "Contrôle, nettoyage, annonce… et chaque jour en stock immobilise ton argent.",
-     "ui": [
-      {
-       "ui": "lg5",
        "r": null,
        "w": 760,
        "hl": [],
@@ -170,9 +149,32 @@
        "pad": 10
       },
       {
-       "ui": "lg6",
+       "ui": "lg4",
        "r": null,
        "w": 760,
+       "hl": [],
+       "rad": 10,
+       "pad": 10
+      }
+     ],
+     "relance": "Image 4 : le 5ᵉ frais n'apparaît sur aucune facture."
+    },
+    {
+     "title": "3. Le trajet\n4. Les frais fixes\n5. Le temps en stock",
+     "body": "Chaque jour en stock, ton argent est **bloqué**.",
+     "ui": [
+      {
+       "ui": "lg5",
+       "r": null,
+       "w": 740,
+       "hl": [],
+       "rad": 10,
+       "pad": 10
+      },
+      {
+       "ui": "lg6",
+       "r": null,
+       "w": 740,
        "hl": [],
        "rad": 10,
        "pad": 10
@@ -180,26 +182,45 @@
      ]
     },
     {
-     "title": "UTOPICAR les compte\n_tous, en 2 secondes._"
+     "title": "Tes 5 frais, comptés\n_sur chaque annonce._"
     }
    ]
   },
   {
    "slug": "prix-max",
    "bg": "white",
-   "caption": "Le seul chiffre à connaître avant d'appeler un vendeur : ton prix max.",
+   "caption": "N'appelle jamais le vendeur d'une voiture avant d'avoir calculé ton prix max : revente, frais, marge minimum. Le calcul complet sur une vraie annonce.",
    "slides": [
     {
-     "title": "Avant d'appeler\nun vendeur,\n==connais ton prix max.==",
-     "size": 112
+     "kicker": "Tu repères une voiture à revendre ?",
+     "title": "N'appelle JAMAIS\nle vendeur sans\n==ce chiffre==.",
+     "size": 124,
+     "ui": [
+      {
+       "ui": "dcard1",
+       "r": [
+        8,
+        8,
+        362,
+        110
+       ],
+       "w": 700,
+       "hl": []
+      }
+     ]
     },
     {
-     "title": "La formule",
+     "title": "Sans lui, tu négocies\n_à l'instinct._",
+     "body": "Le vendeur, lui, **connaît son prix**. Et tu paies trop."
+    },
+    {
+     "title": "Ton prix max",
      "body": "**Revente estimée**\n− tous les frais\n− ta marge minimum\n= **ton prix plafond**",
-     "size": 110
+     "size": 110,
+     "relance": "Image 4 : le calcul sur une vraie annonce."
     },
     {
-     "title": "Ne dépasse pas\n==7 500 €.==",
+     "title": "Pour cette Golf :\n==7 500 € maximum.==",
      "ui": [
       {
        "ui": "plaf",
@@ -220,25 +241,50 @@
        ]
       }
      ],
-     "body2": "Offre de départ conseillée : **7 050 €**."
+     "body2": "Au-dessus, il te reste moins de 800 €. Offre de départ : **7 050 €**."
     },
     {
-     "title": "Au-dessus ?\n[rd]Tu travailles gratuitement.[/rd]",
-     "body": "Au-delà du plafond, il te reste moins que ta marge minimum."
-    },
-    {
-     "title": "Ton prix max,\n_calculé pour chaque annonce._"
+     "title": "Ton prix max,\n_calculé sur chaque annonce._"
     }
    ]
   },
   {
    "slug": "go-nogo",
    "bg": "orange",
-   "caption": "GO ou NO GO ? UTOPICAR tranche en 2 secondes.",
+   "caption": "Golf ou Clio : une seule te fait gagner de l'argent. Tu aurais choisi laquelle ? Réponse en commentaire avant de glisser.",
    "slides": [
     {
-     "title": "GO ou NO GO ?\n_Tu as 2 secondes._",
-     "size": 130
+     "kicker": "Golf ou Clio :",
+     "title": "une seule\nte fait ==GAGNER==\nde l'argent.",
+     "size": 124,
+     "ui": [
+      {
+       "ui": "dcard1",
+       "r": [
+        8,
+        8,
+        362,
+        110
+       ],
+       "w": 640,
+       "hl": []
+      },
+      {
+       "ui": "dcard2",
+       "r": [
+        8,
+        8,
+        362,
+        110
+       ],
+       "w": 640,
+       "hl": []
+      }
+     ]
+    },
+    {
+     "title": "Tu regardes le prix\n_et le kilométrage._",
+     "body": "C'est justement le piège : ce qui compte, c'est **ce qu'il te reste après frais**."
     },
     {
      "title": "La Golf :\n[rd]38/100. NO GO.[/rd]",
@@ -261,7 +307,8 @@
         ]
        ]
       }
-     ]
+     ],
+     "relance": "Image 4 : l'écart entre les deux dépasse 3 000 €."
     },
     {
      "title": "La Clio :\n==92/100. GO.==",
@@ -284,34 +331,33 @@
         ]
        ]
       }
-     ]
+     ],
+     "body2": "**+ 1 932 €** de marge estimée, contre **− 1 200 €** pour la Golf."
     },
     {
-     "title": "Note, verdict,\nce qu'il te reste,\nprix max.",
-     "body": "Tout est calculé à partir de l'annonce que tu colles."
-    },
-    {
-     "title": "Sache avant\n_d'acheter._"
+     "title": "Colle tes deux annonces :\n_le verdict en 2 secondes._"
     }
    ]
   },
   {
    "slug": "sous-la-cote",
    "bg": "white",
-   "caption": "1 450 € sous la cote, publiée il y a 12 minutes. UTOPICAR surveille les annonces pour toi.",
+   "caption": "Une Clio à 1 450 € sous la cote publiée il y a 12 minutes. Les bonnes affaires en voiture d'occasion partent vite : voilà comment les voir avant les autres.",
    "slides": [
     {
-     "title": "Publiée il y a 12 min.\n[gr]1 450 € sous la cote.[/gr]",
+     "kicker": "Une Clio à 1 450 € sous la cote vient d'être publiée.",
+     "title": "Pourtant, tu ne\nl'as ==PAS== vue.",
+     "size": 124,
      "ui": [
       {
        "ui": "card-lv1",
        "r": [
-        6,
-        372,
-        362,
-        98
+        115,
+        384,
+        236,
+        86
        ],
-       "w": 840,
+       "w": 780,
        "hl": [
         [
          125,
@@ -319,30 +365,18 @@
          163,
          19.5
         ]
-       ]
+       ],
+       "rad": 16,
+       "pad": 14
       }
      ]
     },
     {
-     "title": "UTOPICAR surveille\n_tes recherches._",
-     "ui": [
-      {
-       "ui": "schip",
-       "r": [
-        4,
-        4,
-        171,
-        37
-       ],
-       "w": 620,
-       "hl": [],
-       "rad": 20
-      }
-     ],
-     "body2": "Tu crées ta recherche une fois. Il la suit pour toi."
+     "title": "Les bonnes affaires\n_partent vite._",
+     "body": "Et toi, tu les cherches **à la main**, quand tu as le temps."
     },
     {
-     "title": "Les nouvelles annonces,\n==comparées à la cote.==",
+     "title": "UTOPICAR suit ta recherche\n_et compare à la cote._",
      "ui": [
       {
        "ui": "lvmini",
@@ -352,7 +386,7 @@
         362,
         432
        ],
-       "w": 680,
+       "w": 620,
        "hl": [
         [
          125,
@@ -363,7 +397,8 @@
        ],
        "maxH": null
       }
-     ]
+     ],
+     "relance": "Image 4 : ce que cette Clio te laisse après frais."
     },
     {
      "title": "[gr]+ 1 932 €[/gr]\n_de marge estimée._",
@@ -389,25 +424,22 @@
      ]
     },
     {
-     "title": "Sois le premier\n_sur les bonnes affaires._"
+     "title": "Les annonces sous la cote,\n_avant les autres._"
     }
    ]
   },
   {
    "slug": "pov-feeling",
    "bg": "dark",
-   "caption": "POV : tu achètes au feeling. Spoiler : la facture arrive toujours.",
+   "caption": "La voiture brille, le vendeur est sympa, tu signes. Puis la facture du garage tombe. La question à te poser avant de signer.",
    "slides": [
     {
-     "title": "POV :\ntu achètes\n==au feeling.==",
-     "size": 130
+     "kicker": "La voiture brille. Le vendeur est sympa.",
+     "title": "Mais la facture\ndu ==GARAGE==\ntombe après.",
+     "size": 124
     },
     {
-     "title": "Le vendeur est sympa.\nLa voiture brille.",
-     "body": "Tu signes."
-    },
-    {
-     "title": "Puis la facture\n_du garage arrive._",
+     "title": "Pneus, freins, carrosserie :\n[rd]1 100 € de remise en état.[/rd]",
      "ui": [
       {
        "ui": "lg3",
@@ -425,35 +457,68 @@
       {
        "ui": "ticket",
        "r": [
-        10,
-        432,
-        320,
-        88
+        0,
+        442,
+        340,
+        76
        ],
        "w": 820,
        "hl": [
         [
          155,
-         454,
-         170,
-         44
+         456,
+         172,
+         32
         ]
-       ]
+       ],
+       "pad": 18
       }
-     ]
+     ],
+     "relance": "Image 4 : la question à te poser avant de signer."
     },
     {
-     "title": "Achète avec des chiffres,\n_pas au feeling._"
+     "title": "Avant de signer :\n==combien il te reste==\n==après frais ?==",
+     "size": 100
+    },
+    {
+     "title": "Signe avec un chiffre,\n_pas au feeling._"
     }
    ]
   },
   {
    "slug": "parc-clair",
    "bg": "white",
-   "caption": "Combien de voitures dorment dans ton parc ? Avec UTOPICAR, tu le vois d'un coup d'œil.",
+   "caption": "Le problème de ton parc auto, ce n'est pas les voitures qui se vendent : c'est celles qui dorment. Repère-les en un coup d'œil.",
    "slides": [
     {
-     "title": "Combien de voitures\n==dorment==\ndans ton parc ?"
+     "kicker": "Le problème de ton parc auto :",
+     "title": "les voitures\nqui ==DORMENT==.",
+     "size": 124,
+     "ui": [
+      {
+       "ui": "vrow1",
+       "r": [
+        2,
+        2,
+        360,
+        145
+       ],
+       "w": 700,
+       "hl": [
+        [
+         251,
+         111,
+         54,
+         19
+        ]
+       ],
+       "rad": 20
+      }
+     ]
+    },
+    {
+     "title": "Une voiture qui dort\n_bloque ton argent._",
+     "body": "Chaque jour, **ta trésorerie** reste immobilisée dedans."
     },
     {
      "title": "Chaque voiture\n_a son statut._",
@@ -469,39 +534,11 @@
        "w": 840,
        "hl": []
       }
-     ]
+     ],
+     "relance": "Image 4 : celles qui dorment sautent aux yeux."
     },
     {
-     "title": "Achat, vente, marge,\n_jours en stock._",
-     "ui": [
-      {
-       "ui": "vrow1",
-       "r": [
-        2,
-        2,
-        360,
-        145
-       ],
-       "w": 800,
-       "hl": [],
-       "rad": 20
-      },
-      {
-       "ui": "vrow2",
-       "r": [
-        2,
-        2,
-        360,
-        145
-       ],
-       "w": 800,
-       "hl": [],
-       "rad": 20
-      }
-     ]
-    },
-    {
-     "title": "Celles qui dorment\n==sautent aux yeux.==",
+     "title": "Les jours en stock,\n==voiture par voiture.==",
      "ui": [
       {
        "ui": "vrow1",
@@ -544,17 +581,19 @@
      ]
     },
     {
-     "title": "Ton parc,\n_enfin clair._"
+     "title": "Tu vois ton parc\n_d'un coup d'œil._"
     }
    ]
   },
   {
    "slug": "tableau-de-bord",
    "bg": "dark",
-   "caption": "14 820 € de marge. Et zéro tableur. Le tableau de bord UTOPICAR.",
+   "caption": "Tu passes ton dimanche sur un tableur alors que ta marge peut se calculer toute seule. Stock, capital, marge, rotation : le tableau de bord UTOPICAR.",
    "slides": [
     {
-     "title": "[gr]14 820 €[/gr] de marge.\n==Zéro tableur.==",
+     "kicker": "Tu passes ton dimanche sur un tableur ?",
+     "title": "Alors que\nta marge se calcule\n==TOUTE== seule.",
+     "size": 124,
      "ui": [
       {
        "ui": "kpi3",
@@ -564,11 +603,15 @@
         175,
         112
        ],
-       "w": 520,
+       "w": 480,
        "hl": [],
        "rad": 18
       }
      ]
+    },
+    {
+     "title": "Un tableur\n_oublie ce que tu oublies._",
+     "body": "Un frais pas saisi, et **ta marge du mois est fausse**."
     },
     {
      "title": "Stock, capital,\n_marge, rotation._",
@@ -581,14 +624,15 @@
         362,
         359
        ],
-       "w": 760,
+       "w": 740,
        "hl": [],
        "rad": 18
       }
-     ]
+     ],
+     "relance": "Image 4 : tes voitures les plus rentables, classées."
     },
     {
-     "title": "Tes meilleures affaires,\n_repérées pour toi._",
+     "title": "Tes meilleures affaires,\n_classées pour toi._",
      "ui": [
       {
        "ui": "best",
@@ -604,39 +648,23 @@
      ]
     },
     {
-     "title": "La marge nette\n_de chaque voiture._",
-     "ui": [
-      {
-       "ui": "mchart",
-       "r": [
-        10,
-        10,
-        362,
-        446
-       ],
-       "w": 560,
-       "hl": [],
-       "maxH": 760
-      }
-     ]
-    },
-    {
-     "title": "Tes chiffres,\n_sans tableur._"
+     "title": "Tes chiffres à jour,\n_sans tableur._"
     }
    ]
   },
   {
    "slug": "3-questions",
    "bg": "white",
-   "caption": "3 questions à te poser avant d'acheter une voiture pour la revendre.",
+   "caption": "Avant d'acheter une voiture pour la revendre, 3 questions. La 3ᵉ, peu de gens se la posent. Enregistre pour ton prochain achat.",
    "slides": [
     {
-     "title": "3 questions\n_avant d'acheter_\n==pour revendre.==",
-     "size": 120
+     "kicker": "Avant d'acheter une voiture pour la revendre : 3 questions.",
+     "title": "La 3ᵉ, peu de gens\nse la ==POSENT==.",
+     "size": 124
     },
     {
      "num": 1,
-     "title": "À combien je la\nrevends vraiment ?",
+     "title": "À combien tu la\nrevends vraiment ?",
      "body": "Pas au doigt mouillé : avec une **revente estimée**.",
      "ui": [
       {
@@ -651,23 +679,24 @@
     },
     {
      "num": 2,
-     "title": "Combien elle me coûte\navant la revente ?",
+     "title": "Combien elle te coûte\navant la revente ?",
      "body": "Remise en état, carte grise, trajet, frais fixes.",
      "ui": [
       {
        "ui": "lg3",
        "r": null,
-       "w": 760,
+       "w": 740,
        "hl": [],
        "rad": 10,
        "pad": 10
       }
-     ]
+     ],
+     "relance": "Image 4 : la question que peu de gens se posent."
     },
     {
      "num": 3,
-     "title": "Combien de temps\nelle reste chez moi ?",
-     "body": "Une voiture qui dort, c'est de l'argent qui dort.",
+     "title": "Combien de temps\nelle va dormir chez toi ?",
+     "body": "Une voiture qui dort, c'est **ton argent qui dort**.",
      "ui": [
       {
        "ui": "kpi5",
@@ -677,29 +706,30 @@
         175,
         112
        ],
-       "w": 460,
+       "w": 440,
        "hl": [],
        "rad": 18
       }
      ]
     },
     {
-     "title": "UTOPICAR répond\n_aux trois._"
+     "title": "Les 3 réponses\n_en 2 secondes._"
     }
    ]
   },
   {
    "slug": "avant-apres",
    "bg": "orange",
-   "caption": "Achat-revente : avant / après UTOPICAR.",
+   "caption": "Tu analyses une annonce de voiture avec 10 onglets ouverts, alors qu'il suffit de la coller. Avant / après.",
    "slides": [
     {
-     "title": "Achat-revente :\n_avant / après._",
-     "size": 130
+     "kicker": "Tu analyses une annonce avec 10 onglets ouverts ?",
+     "title": "Alors qu'il suffit\nde la ==COLLER==.",
+     "size": 124
     },
     {
-     "title": "Avant :",
-     "body": "10 onglets ouverts, une calculette,\net **beaucoup d'espoir**."
+     "title": "Chaque onglet,\n_c'est un frais\nque tu peux oublier._",
+     "body": "Cote, carte grise, trajet, réparations… **à la main**."
     },
     {
      "title": "Après :\n_tu colles l'annonce._",
@@ -707,24 +737,26 @@
       {
        "ui": "scan",
        "r": [
-        30,
-        952,
-        345,
-        212
+        25,
+        955,
+        357,
+        207
        ],
        "w": 820,
        "hl": [],
-       "rad": 20
+       "rad": 20,
+       "pad": 12
       },
       {
        "ui": "launch",
        "r": null,
-       "w": 700,
+       "w": 680,
        "hl": [],
        "rad": 18,
        "bare": true
       }
-     ]
+     ],
+     "relance": "Image 4 : le verdict, en 2 secondes."
     },
     {
      "title": "Et tu as\n==le verdict.==",
@@ -737,7 +769,7 @@
         362,
         215
        ],
-       "w": 760,
+       "w": 620,
        "hl": [
         [
          184,
@@ -755,7 +787,7 @@
         362,
         215
        ],
-       "w": 760,
+       "w": 620,
        "hl": [
         [
          184,
@@ -768,26 +800,28 @@
      ]
     },
     {
-     "title": "Deux secondes,\n_plus de doute._"
+     "title": "Une annonce, un collage,\n_un verdict._"
     }
    ]
   },
   {
    "slug": "marge-au-pif",
    "bg": "white",
-   "caption": "Ta marge, tu la calcules au pif ? La vraie marge = revente − achat − tous les frais.",
+   "caption": "Le problème de ta marge en achat-revente : tu la calcules avant les frais. La vraie marge, ligne par ligne.",
    "slides": [
     {
-     "title": "Ta marge,\ntu la calcules\n==au pif ?==",
-     "size": 130
+     "kicker": "Le problème de ta marge en achat-revente :",
+     "title": "tu la calcules\n==AVANT== les frais.",
+     "size": 124
     },
     {
      "title": "« Ça devrait passer. »",
-     "body": "Prix d'achat, revente… et le reste, on verra."
+     "body": "Revente moins achat… et **le reste, on verra**."
     },
     {
      "title": "La vraie marge",
-     "body": "**Revente** − **achat** − **tous les frais**.\nPas un de moins."
+     "body": "**Revente** − **achat** − **tous les frais**.\nPas un de moins.",
+     "relance": "Image 4 : le détail ligne par ligne sur une vraie annonce."
     },
     {
      "title": "Ligne par ligne.",
@@ -795,14 +829,15 @@
       {
        "ui": "ticket",
        "r": [
-        10,
+        0,
         90,
-        320,
+        340,
         340
        ],
-       "w": 700,
+       "w": 680,
        "hl": [],
-       "rad": 18
+       "rad": 18,
+       "pad": 12
       }
      ]
     },
@@ -814,14 +849,15 @@
   {
    "slug": "piege-bonne-affaire",
    "bg": "dark",
-   "caption": "Moins cher ≠ bonne affaire. Une bonne affaire, c'est une marge après frais.",
+   "caption": "Tu crois qu'une voiture pas chère est une bonne affaire. Sauf qu'un prix bas peut cacher 1 100 € de réparations.",
    "slides": [
     {
-     "title": "Moins cher\n≠\n==bonne affaire.==",
-     "size": 140
+     "kicker": "Tu crois qu'une voiture pas chère est une bonne affaire ?",
+     "title": "Un prix bas peut\n==CACHER== 1 100 €\nde réparations.",
+     "size": 124
     },
     {
-     "title": "Une Golf à 9 500 €\n_peut sembler donnée…_",
+     "title": "Cette Golf à 9 500 €\n_se revend 9 800 €._",
      "ui": [
       {
        "ui": "dcard1",
@@ -841,10 +877,11 @@
         ]
        ]
       }
-     ]
+     ],
+     "body2": "Sur le papier : **+ 300 €**."
     },
     {
-     "title": "…si elle demande\n[rd]1 100 € de remise en état.[/rd]",
+     "title": "Mais elle demande\n[rd]1 100 € de remise en état.[/rd]",
      "ui": [
       {
        "ui": "lg3",
@@ -854,10 +891,11 @@
        "rad": 10,
        "pad": 10
       }
-     ]
+     ],
+     "relance": "Image 4 : à quoi reconnaître une vraie bonne affaire."
     },
     {
-     "title": "Une bonne affaire,\n==c'est une marge\naprès frais.==",
+     "title": "Une bonne affaire,\n==c'est une marge==\n==après frais.==",
      "ui": [
       {
        "ui": "dcard2",
@@ -867,7 +905,7 @@
         362,
         215
        ],
-       "w": 760,
+       "w": 740,
        "hl": [
         [
          184,
@@ -880,21 +918,26 @@
      ]
     },
     {
-     "title": "Compte avant\n_d'acheter._"
+     "title": "Tu reconnais une bonne affaire\n_en 2 secondes._"
     }
    ]
   },
   {
    "slug": "negocie-chiffre",
    "bg": "white",
-   "caption": "Tu négocies avec quel chiffre ? Offre de départ et plafond, calculés par UTOPICAR.",
+   "caption": "Ta première offre sur une voiture, tu la fais au hasard ? Le vendeur, lui, a déjà son chiffre. Ton offre et ton plafond, calculés.",
    "slides": [
     {
-     "title": "Tu négocies\n==avec quel chiffre ?==",
-     "size": 120
+     "kicker": "Tu achètes une voiture : le vendeur, lui, a déjà son chiffre.",
+     "title": "Ta première offre,\ntu la fais\nau ==HASARD== ?",
+     "size": 124
     },
     {
-     "title": "Le vendeur annonce\n_9 500 €._",
+     "title": "Trop haute : ta marge part.\n_Trop basse : il raccroche._",
+     "body": "Sans chiffre, tu négocies **à l'affect**."
+    },
+    {
+     "title": "Il annonce\n_9 500 €._",
      "ui": [
       {
        "ui": "dcard1",
@@ -907,7 +950,8 @@
        "w": 820,
        "hl": []
       }
-     ]
+     ],
+     "relance": "Image 4 : ton offre et ton plafond, calculés."
     },
     {
      "title": "Ton offre : ==7 050 €==\n_Ton plafond : 7 500 €_",
@@ -933,42 +977,45 @@
      ]
     },
     {
-     "title": "Tu sais\noù t'arrêter.",
-     "body": "Tu ne te fais plus embarquer par l'affect."
-    },
-    {
-     "title": "Négocie\n_avec un chiffre._"
+     "title": "Tu négocies avec un chiffre,\n_pas au hasard._"
     }
    ]
   },
   {
    "slug": "lu-sans-ia",
    "bg": "orange",
-   "caption": "Tu colles l'annonce, UTOPICAR la lit pour toi : CT, distribution, propriétaires.",
+   "caption": "Tu relis chaque annonce de voiture 3 fois pour trouver le CT et la distribution ? Les infos qui comptent tiennent en 4 lignes.",
    "slides": [
     {
-     "title": "Tu colles l'annonce.\n==UTOPICAR la lit.==",
-     "size": 110
+     "kicker": "Tu relis chaque annonce de voiture 3 fois ?",
+     "title": "Ce qui compte tient\nen ==4 LIGNES==.",
+     "size": 124
     },
     {
-     "title": "Le texte,\n_tel quel._",
+     "title": "Et une info ratée\n_peut te coûter une réparation._",
+     "body": "Une distribution pas faite, et **ta marge** y passe."
+    },
+    {
+     "title": "Tu colles le texte,\n_tel quel._",
      "ui": [
       {
        "ui": "scan",
        "r": [
-        30,
-        952,
-        345,
-        212
+        25,
+        955,
+        357,
+        207
        ],
        "w": 820,
        "hl": [],
-       "rad": 20
+       "rad": 20,
+       "pad": 12
       }
-     ]
+     ],
+     "relance": "Image 4 : les 4 lignes qui comptent."
     },
     {
-     "title": "Il repère\n_ce qui compte._",
+     "title": "CT, distribution,\n==propriétaires : repérés.==",
      "ui": [
       {
        "ui": "lu",
@@ -984,35 +1031,34 @@
      ]
     },
     {
-     "title": "CT, distribution,\npropriétaires…",
-     "body": "Les infos clés, sans relire l'annonce trois fois."
-    },
-    {
-     "title": "Lis moins,\n_décide mieux._"
+     "title": "Tu lis moins,\n_tu décides mieux._"
     }
    ]
   },
   {
    "slug": "4-papiers",
    "bg": "white",
-   "caption": "Avant d'acheter, demande ces 4 papiers. UTOPICAR te dit ce qui manque au dossier.",
+   "caption": "N'achète jamais une voiture pour la revendre sans demander ces 4 papiers : HistoVec, PV de contrôle technique, carnet d'entretien, carte grise.",
    "slides": [
     {
-     "title": "Avant d'acheter,\ndemande\n==ces 4 papiers.==",
-     "size": 120
+     "kicker": "Tu achètes une voiture pour la revendre ?",
+     "title": "JAMAIS sans\n==ces 4 papiers==.",
+     "size": 124
+    },
+    {
+     "title": "Sans eux,\n_c'est ta revente qui bloque._",
+     "body": "L'acheteur suivant les demandera. **À toi.**"
     },
     {
      "num": "1–2",
      "title": "HistoVec\n_et le PV de contrôle technique._",
-     "size": 90
+     "size": 90,
+     "relance": "Image 4 : les 2 derniers, et ce qui manque à ton dossier."
     },
     {
      "num": "3–4",
      "title": "Le carnet d'entretien\n_et la carte grise._",
-     "size": 90
-    },
-    {
-     "title": "Ton dossier\n_à 30 % ?_",
+     "size": 90,
      "ui": [
       {
        "ui": "scan",
@@ -1022,7 +1068,7 @@
         330,
         112
        ],
-       "w": 860,
+       "w": 820,
        "hl": [],
        "rad": 16
       }
@@ -1030,21 +1076,26 @@
      "body2": "UTOPICAR te dit **ce qui manque**."
     },
     {
-     "title": "Un dossier complet,\n_une revente sereine._"
+     "title": "Ton dossier complet\n_avant de revendre._"
     }
    ]
   },
   {
    "slug": "jours-en-stock",
    "bg": "dark",
-   "caption": "23 jours : le temps moyen pour revendre. Chaque jour en plus, c'est de l'argent qui dort.",
+   "caption": "Ta voiture est garée, elle ne roule pas. Pourtant, elle te coûte de l'argent chaque jour. Tes jours en stock, voiture par voiture.",
    "slides": [
     {
-     "title": "==23 jours.==\n_Le temps moyen_\n_pour revendre._",
-     "size": 130
+     "kicker": "Ta voiture est garée, elle ne roule pas.",
+     "title": "Pourtant, elle te\n==COÛTE==\nchaque jour.",
+     "size": 124
     },
     {
-     "title": "Ta rotation,\n_calculée._",
+     "title": "Ton argent est bloqué dedans.\n_Et sa cote baisse._",
+     "body": "Plus elle dort, **moins il te reste**."
+    },
+    {
+     "title": "Tes jours en stock,\n_calculés._",
      "ui": [
       {
        "ui": "kpi5",
@@ -1054,11 +1105,12 @@
         175,
         112
        ],
-       "w": 520,
+       "w": 500,
        "hl": [],
        "rad": 18
       }
-     ]
+     ],
+     "relance": "Image 4 : le compteur de jours, voiture par voiture."
     },
     {
      "title": "Voiture par voiture,\n_le compteur tourne._",
@@ -1104,38 +1156,31 @@
      ]
     },
     {
-     "title": "Chaque jour en plus,\n[rd]c'est de l'argent qui dort.[/rd]",
-     "ui": [
-      {
-       "ui": "kpi2",
-       "r": [
-        8,
-        8,
-        175,
-        112
-       ],
-       "w": 520,
-       "hl": [],
-       "rad": 18
-      }
-     ]
-    },
-    {
-     "title": "Vends plus vite,\n_immobilise moins._"
+     "title": "Tu vends plus vite,\n_tu immobilises moins._"
     }
    ]
   },
   {
    "slug": "papiers-vente",
    "bg": "white",
-   "caption": "Tu vends demain : ton dossier est complet ? Les alertes UTOPICAR.",
+   "caption": "Imagine : ton acheteur arrive demain et ton contrôle technique a plus de 6 mois. Les papiers pour vendre une voiture d'occasion, et l'alerte qui te prévient.",
    "slides": [
     {
-     "title": "Tu vends demain.\n==Ton dossier\nest complet ?==",
-     "size": 120
+     "kicker": "Imagine : ton acheteur arrive demain.",
+     "title": "Ton contrôle\ntechnique a plus\nde ==6 MOIS==.",
+     "size": 124
     },
     {
-     "title": "UTOPICAR\n_te prévient._",
+     "title": "Pas de CT récent,\n_pas de vente._",
+     "body": "Pour vendre, le contrôle technique doit avoir **moins de 6 mois**."
+    },
+    {
+     "title": "CT de moins de 6 mois,\nnon-gage de moins de 15 jours,\ncarte grise.",
+     "size": 80,
+     "relance": "Image 4 : l'alerte qui te prévient avant."
+    },
+    {
+     "title": "UTOPICAR te prévient,\n_voiture par voiture._",
      "ui": [
       {
        "ui": "alerts",
@@ -1151,27 +1196,6 @@
      ]
     },
     {
-     "title": "CT de moins de 6 mois,\nnon-gage de moins de 15 jours,\ncarte grise.",
-     "size": 80
-    },
-    {
-     "title": "L'alerte s'affiche\n_sur la bonne voiture._",
-     "ui": [
-      {
-       "ui": "vrow1",
-       "r": [
-        2,
-        2,
-        360,
-        145
-       ],
-       "w": 820,
-       "hl": [],
-       "rad": 20
-      }
-     ]
-    },
-    {
      "title": "Plus de vente\n_bloquée par un papier._"
     }
    ]
@@ -1179,14 +1203,19 @@
   {
    "slug": "pipeline",
    "bg": "orange",
-   "caption": "Repéré, en préparation, en vente, vendu : tu sais toujours où en est chaque voiture.",
+   "caption": "Où en est chaque voiture de ton parc ? Si la réponse est dans ta tête, tu finiras par en oublier une. Repéré, en préparation, en vente, vendu.",
    "slides": [
     {
-     "title": "Repéré →\nEn préparation →\nEn vente →\n==Vendu.==",
-     "size": 110
+     "kicker": "Où en est chaque voiture de ton parc ? Si la réponse est dans ta tête :",
+     "title": "tu finiras par\nen ==OUBLIER== une.",
+     "size": 124
     },
     {
-     "title": "Ton pipeline,\n_d'un coup d'œil._",
+     "title": "Une voiture oubliée\nen préparation,\n_c'est une vente en retard._",
+     "size": 96
+    },
+    {
+     "title": "Repéré, en préparation,\n_en vente, vendu._",
      "ui": [
       {
        "ui": "pipe",
@@ -1199,7 +1228,8 @@
        "w": 840,
        "hl": []
       }
-     ]
+     ],
+     "relance": "Image 4 : ton parc filtré en un geste."
     },
     {
      "title": "Filtre\n_par statut._",
@@ -1218,42 +1248,19 @@
      ]
     },
     {
-     "title": "Tu sais toujours\noù en est\n==chaque voiture.==",
-     "size": 110
-    },
-    {
-     "title": "Ton activité,\n_organisée._"
+     "title": "Tu sais où en est\n_chaque voiture._"
     }
    ]
   },
   {
    "slug": "recherche-suivie",
    "bg": "white",
-   "caption": "Les bonnes affaires ne restent pas longtemps en ligne. Crée ta recherche, UTOPICAR la suit.",
+   "caption": "Une voiture sous la cote est publiée à 7 h. Le premier qui appelle la récupère. Crée ta recherche une fois, UTOPICAR la suit pour toi.",
    "slides": [
     {
-     "title": "Les bonnes affaires\n==ne restent pas\nlongtemps en ligne.==",
-     "size": 110
-    },
-    {
-     "title": "Tu crées\n_ta recherche une fois._",
-     "ui": [
-      {
-       "ui": "qsform",
-       "r": [
-        10,
-        10,
-        362,
-        440
-       ],
-       "w": 600,
-       "hl": [],
-       "rad": 20
-      }
-     ]
-    },
-    {
-     "title": "UTOPICAR\n_la suit pour toi._",
+     "kicker": "Une voiture sous la cote est publiée à 7 h.",
+     "title": "Le premier\nqui appelle\nla ==RÉCUPÈRE==.",
+     "size": 124,
      "ui": [
       {
        "ui": "schip",
@@ -1263,14 +1270,36 @@
         171,
         37
        ],
-       "w": 620,
+       "w": 560,
        "hl": [],
        "rad": 20
       }
      ]
     },
     {
-     "title": "Les nouvelles annonces,\n_comparées à la cote._",
+     "title": "Toi, tu cherches\n_à la main, le soir._",
+     "body": "Quand tu la trouves, **elle est déjà partie**."
+    },
+    {
+     "title": "Tu crées ta recherche\n_une seule fois._",
+     "ui": [
+      {
+       "ui": "qsform",
+       "r": [
+        10,
+        10,
+        362,
+        440
+       ],
+       "w": 470,
+       "hl": [],
+       "rad": 20
+      }
+     ],
+     "relance": "Image 4 : chaque nouvelle annonce, comparée à la cote."
+    },
+    {
+     "title": "Les nouvelles annonces,\n==comparées à la cote.==",
      "ui": [
       {
        "ui": "lvmini",
@@ -1280,7 +1309,7 @@
         362,
         432
        ],
-       "w": 660,
+       "w": 640,
        "hl": [
         [
          125,
@@ -1294,18 +1323,23 @@
      ]
     },
     {
-     "title": "Arrive\n_avant les autres._"
+     "title": "Tu arrives\n_avant les autres._"
     }
    ]
   },
   {
    "slug": "revente-estimee",
    "bg": "dark",
-   "caption": "À combien tu la revends vraiment ? Tout le calcul part de là.",
+   "caption": "Toute ta marge en achat-revente dépend d'un seul chiffre, et ce n'est pas le prix d'achat. C'est ton prix de revente réel.",
    "slides": [
     {
-     "title": "À combien\ntu la revends,\n==vraiment ?==",
-     "size": 130
+     "kicker": "Toute ta marge en achat-revente dépend d'un seul chiffre.",
+     "title": "Et ce n'est ==PAS==\nle prix d'achat.",
+     "size": 124
+    },
+    {
+     "title": "C'est ton prix de revente.\n_Et tu le vois souvent trop haut._",
+     "body": "Une revente rêvée, c'est **une marge rêvée**."
     },
     {
      "title": "Revente estimée\n_et délai._",
@@ -1318,26 +1352,25 @@
        "rad": 10,
        "pad": 10
       }
-     ]
+     ],
+     "relance": "Image 4 : comment savoir si l'estimation est fiable."
     },
     {
-     "title": "Avec un niveau\n_de confiance affiché._",
-     "body": "Tu sais si l'estimation est solide ou fragile."
-    },
-    {
-     "title": "Tout le calcul\n_part de là._",
+     "title": "Un niveau de confiance\n==affiché.==",
+     "body": "Tu sais si l'estimation est **solide ou fragile**.",
      "ui": [
       {
        "ui": "ticket",
        "r": [
-        10,
+        0,
         90,
-        320,
+        340,
         340
        ],
-       "w": 640,
+       "w": 620,
        "hl": [],
-       "rad": 18
+       "rad": 18,
+       "pad": 12
       }
      ]
     },
@@ -1349,49 +1382,53 @@
   {
    "slug": "checklist",
    "bg": "orange",
-   "caption": "La checklist avant d'acheter une voiture pour la revendre. Enregistre-la.",
+   "caption": "9 points à cocher avant d'acheter une voiture pour la revendre. Le dernier, beaucoup l'oublient. Enregistre la checklist.",
    "slides": [
     {
-     "title": "La checklist\navant d'acheter\n_(enregistre-la)_",
-     "size": 120
+     "kicker": "9 points à cocher avant d'acheter une voiture à revendre.",
+     "title": "Le dernier,\nbeaucoup\nl'==OUBLIENT==.",
+     "size": 124
     },
     {
      "check": [
       "Revente estimée",
       "Remise en état",
       "Carte grise"
-     ]
+     ],
+     "body": "Un seul point oublié, et **ta marge y passe**."
     },
     {
      "check": [
       "Trajet",
       "Frais fixes",
       "Papiers du dossier"
-     ]
+     ],
+     "relance": "Image 4 : le point que beaucoup oublient."
     },
     {
      "check": [
       "Prix max",
       "Offre de départ",
-      "Marge minimum"
+      "==Marge minimum=="
      ]
     },
     {
-     "title": "Ou : colle l'annonce\n_dans UTOPICAR._"
+     "title": "Les 9 points,\n_vérifiés en 2 secondes._"
     }
    ]
   },
   {
    "slug": "calcul-de-tete",
    "bg": "white",
-   "caption": "« Je calcule de tête. » Vraiment, pour chaque annonce ?",
+   "caption": "Tu calcules tes frais de tête ? Calcule la carte grise d'une 5 CV de plus de 10 ans en 10 secondes. Réponse image 2.",
    "slides": [
     {
-     "title": "« Je calcule\n==de tête.== »",
-     "size": 140
+     "kicker": "Tu calcules tes frais de tête ? Carte grise d'une 5 CV de plus de 10 ans :",
+     "title": "tu as\n==10 SECONDES==.",
+     "size": 124
     },
     {
-     "title": "Carte grise :",
+     "title": "Réponse :\n==186 €.==",
      "ui": [
       {
        "ui": "lg4",
@@ -1402,10 +1439,10 @@
        "pad": 10
       }
      ],
-     "body2": "5 CV × 68,95 € ÷ 2 + 13,76 €…"
+     "body2": "5 CV × 68,95 € ÷ 2 + 13,76 €. Et le tarif **change selon ta région**."
     },
     {
-     "title": "Trajet :",
+     "title": "Trajet :\n_128 km aller-retour._",
      "ui": [
       {
        "ui": "lg5",
@@ -1416,49 +1453,53 @@
        "pad": 10
       }
      ],
-     "body2": "128 km × 2 × 0,25 €…"
+     "body2": "128 km × 2 × 0,25 € = **64 €**.",
+     "relance": "Image 4 : combien de fois tu refais ça par jour."
     },
     {
      "title": "Pour chaque\nannonce ?",
-     "body": "Tu veux vraiment refaire ça dix fois par jour ?"
+     "body": "Tu veux vraiment refaire ça **dix fois par jour** ?"
     },
     {
-     "title": "UTOPICAR le fait\n_en 2 secondes._"
+     "title": "Tous tes frais calculés,\n_en 2 secondes._"
     }
    ]
   },
   {
    "slug": "ma-journee",
    "bg": "dark",
-   "caption": "Ma journée d'achat-revente, version simple.",
+   "caption": "9 h : une Clio sort 1 450 € sous la cote. 9 h 02 : tu sais déjà si elle est rentable. Ta journée d'achat-revente, version simple.",
    "slides": [
     {
-     "title": "Ma journée\nd'achat-revente,\n==version simple.==",
-     "size": 120
-    },
-    {
-     "title": "9 h :\n_nouvelles annonces\nsous la cote._",
+     "kicker": "9 h : une Clio sort 1 450 € sous la cote.",
+     "title": "9 h 02 :\ntu sais si elle\nest ==RENTABLE==.",
+     "size": 124,
      "ui": [
       {
-       "ui": "lvmini",
+       "ui": "card-lv1",
        "r": [
-        10,
-        10,
-        362,
-        432
+        115,
+        384,
+        236,
+        86
        ],
-       "w": 620,
+       "w": 760,
        "hl": [
         [
          125,
-         148,
-         82,
-         38
+         446.75,
+         163,
+         19.5
         ]
        ],
-       "maxH": 760
+       "rad": 16,
+       "pad": 14
       }
      ]
+    },
+    {
+     "title": "Sans outil, à 9 h 02,\n_tu es encore sur ta calculette._",
+     "size": 96
     },
     {
      "title": "9 h 02 :\n==GO, 92/100.==",
@@ -1471,7 +1512,7 @@
         362,
         215
        ],
-       "w": 760,
+       "w": 740,
        "hl": [
         [
          184,
@@ -1481,10 +1522,11 @@
         ]
        ]
       }
-     ]
+     ],
+     "relance": "Image 4 : ta fin de journée, en un écran."
     },
     {
-     "title": "18 h :\n_ma marge du mois._",
+     "title": "18 h :\n_ta marge du mois._",
      "ui": [
       {
        "ui": "kpi3",
@@ -1494,7 +1536,7 @@
         175,
         112
        ],
-       "w": 520,
+       "w": 500,
        "hl": [],
        "rad": 18
       }
@@ -1508,11 +1550,16 @@
   {
    "slug": "marge-moyenne",
    "bg": "white",
-   "caption": "Combien tu gagnes vraiment par voiture ?",
+   "caption": "Tu connais le prix de vente de chaque voiture, mais ta marge par voiture, tu la devines ? Marge moyenne et marge nette, voiture par voiture.",
    "slides": [
     {
-     "title": "[gr]1 647 €.[/gr]\n_Marge moyenne\npar voiture._",
-     "size": 130
+     "kicker": "Tu connais le prix de vente de chaque voiture.",
+     "title": "Mais ta marge,\ntu la ==DEVINES==.",
+     "size": 124
+    },
+    {
+     "title": "Et certaines voitures\n_te coûtent plus\nqu'elles ne rapportent._",
+     "size": 96
     },
     {
      "title": "Ta marge moyenne,\n_calculée._",
@@ -1525,11 +1572,12 @@
         175,
         112
        ],
-       "w": 520,
+       "w": 500,
        "hl": [],
        "rad": 18
       }
-     ]
+     ],
+     "relance": "Image 4 : laquelle te rapporte le plus."
     },
     {
      "title": "Voiture\n_par voiture._",
@@ -1542,29 +1590,39 @@
         362,
         446
        ],
-       "w": 560,
+       "w": 540,
        "hl": [],
-       "maxH": 760
+       "maxH": 740
       }
      ]
     },
     {
-     "title": "Tu sais lesquelles\n==te rapportent vraiment.==",
-     "size": 100
-    },
-    {
-     "title": "Ta rentabilité,\n_sans deviner._"
+     "title": "Tu sais ce que chaque voiture\n_te rapporte vraiment._"
     }
    ]
   },
   {
    "slug": "pourquoi-38",
    "bg": "orange",
-   "caption": "Cette Golf a eu 38/100. Voilà pourquoi.",
+   "caption": "Cette Golf a un bon dossier. Pourtant, elle est NO GO : 38/100. Voilà comment se calcule la note.",
    "slides": [
     {
-     "title": "Cette Golf\na eu ==38/100.==\n_Voilà pourquoi._",
-     "size": 120
+     "kicker": "Cette Golf a un bon dossier.",
+     "title": "Pourtant, elle est\n[rd]NO GO : 38/100.[/rd]",
+     "size": 124,
+     "ui": [
+      {
+       "ui": "dcard1",
+       "r": [
+        8,
+        8,
+        362,
+        110
+       ],
+       "w": 700,
+       "hl": []
+      }
+     ]
     },
     {
      "title": "La note =\n_moyenne de deux notes._",
@@ -1572,19 +1630,21 @@
       {
        "ui": "ticket",
        "r": [
-        10,
-        10,
-        320,
-        84
+        0,
+        0,
+        340,
+        98
        ],
        "w": 820,
-       "hl": []
+       "hl": [],
+       "pad": 16
       }
      ]
     },
     {
      "title": "Dossier : 76/100.",
-     "body": "Les papiers et l'annonce sont plutôt bons."
+     "body": "Les papiers et l'annonce sont **plutôt bons**.",
+     "relance": "Image 4 : la note qui fait tout chuter."
     },
     {
      "title": "Marge : 0/100.",
@@ -1593,39 +1653,46 @@
       {
        "ui": "ticket",
        "r": [
-        10,
-        432,
-        320,
-        88
+        0,
+        442,
+        340,
+        76
        ],
        "w": 820,
        "hl": [
         [
          155,
-         454,
-         170,
-         44
+         456,
+         172,
+         32
         ]
-       ]
+       ],
+       "pad": 18
       }
      ]
     },
     {
-     "title": "Une note\n_que tu comprends._"
+     "title": "Une note que tu comprends,\n_sur chaque annonce._"
     }
    ]
   },
   {
    "slug": "seuil-marge",
    "bg": "white",
-   "caption": "Quelle marge minimum tu t'autorises ? Fixe ton seuil.",
+   "caption": "Acheter une voiture pour 200 € de marge, c'est souvent travailler gratuitement. Fixe ta marge minimum : ton prix plafond en découle.",
    "slides": [
     {
-     "title": "Quelle marge minimum\n==tu t'autorises ?==",
-     "size": 110
+     "kicker": "Acheter une voiture pour 200 € de marge :",
+     "title": "c'est souvent\ntravailler\n==GRATUITEMENT==.",
+     "size": 124
     },
     {
-     "title": "Fixe ton seuil.\n_Par exemple : 800 €._"
+     "title": "Ton temps, ton risque,\n_ta trésorerie :_\n_ils ont un prix._",
+     "size": 100
+    },
+    {
+     "title": "Fixe ton seuil.\n_Par exemple : 800 €._",
+     "relance": "Image 4 : ce que ton seuil change sur une vraie annonce."
     },
     {
      "title": "Il te reste\n[rd]− 1 200 €[/rd]\n_pour un seuil de 800 €._",
@@ -1633,67 +1700,49 @@
       {
        "ui": "ticket",
        "r": [
-        10,
-        432,
-        320,
-        88
+        0,
+        442,
+        340,
+        76
        ],
        "w": 820,
        "hl": [
         [
          155,
-         454,
-         170,
-         44
+         456,
+         172,
+         32
         ]
-       ]
-      }
-     ]
-    },
-    {
-     "title": "Ton plafond\n_découle de ton seuil._",
-     "ui": [
-      {
-       "ui": "plaf",
-       "r": [
-        8,
-        8,
-        320,
-        130
        ],
-       "w": 820,
-       "hl": [
-        [
-         18,
-         50,
-         108,
-         30
-        ]
-       ]
+       "pad": 18
       }
-     ]
+     ],
+     "body2": "Ton prix plafond en découle : **7 500 €**."
     },
     {
-     "title": "Ta marge,\n_protégée._"
+     "title": "Ta marge minimum,\n_protégée à chaque achat._"
     }
    ]
   },
   {
    "slug": "5-infos-annonce",
    "bg": "dark",
-   "caption": "5 infos à chercher dans une annonce de voiture d'occasion.",
+   "caption": "5 infos à trouver dans une annonce de voiture d'occasion. La 5ᵉ n'est écrite nulle part : tu dois la calculer.",
    "slides": [
     {
-     "title": "5 infos à chercher\n==dans une annonce.==",
-     "size": 120
+     "kicker": "5 infos à trouver dans une annonce de voiture.",
+     "title": "La 5ᵉ, tu dois\nla ==CALCULER==.",
+     "size": 124
     },
     {
      "title": "1. Le contrôle technique\n2. La distribution",
+     "body": "Sans elles, tu appelles pour rien.",
      "size": 90
     },
     {
      "title": "3. Le nombre\nde propriétaires\n4. Le carnet d'entretien",
-     "size": 90
+     "size": 90,
+     "relance": "Image 4 : la 5ᵉ, celle qu'il faut calculer."
     },
     {
      "title": "5. Le kilométrage\n_par rapport à l'âge._",
@@ -1713,87 +1762,145 @@
      "body2": "UTOPICAR repère les infos clés **dans le texte**."
     },
     {
-     "title": "Ne rate plus\n_un détail._"
+     "title": "Les infos clés,\n_trouvées pour toi._"
     }
    ]
   },
   {
    "slug": "debutant",
    "bg": "white",
-   "caption": "Tu débutes en achat-revente ? 3 règles simples.",
+   "caption": "Tu débutes en achat-revente auto ? 3 règles pour éviter ta première voiture à perte. Enregistre-les.",
    "slides": [
     {
-     "title": "Tu débutes\n==en achat-revente ?==",
-     "size": 130
+     "kicker": "Tu débutes en achat-revente auto ?",
+     "title": "3 règles pour éviter\nta 1ʳᵉ voiture\nà ==PERTE==.",
+     "size": 124
     },
     {
      "num": 1,
-     "title": "Jamais d'achat\n_sans prix max._"
+     "title": "Jamais d'achat\n_sans prix max._",
+     "ui": [
+      {
+       "ui": "plaf",
+       "r": [
+        8,
+        8,
+        320,
+        130
+       ],
+       "w": 700,
+       "hl": [
+        [
+         18,
+         50,
+         108,
+         30
+        ]
+       ]
+      }
+     ],
+     "body": "La perte vient souvent **des frais**, pas du prix."
     },
     {
      "num": 2,
-     "title": "Compte tous les frais,\n_même les petits._"
+     "title": "Compte tous les frais,\n_même les petits._",
+     "ui": [
+      {
+       "ui": "lg6",
+       "r": null,
+       "w": 740,
+       "hl": [],
+       "rad": 10,
+       "pad": 10
+      }
+     ],
+     "relance": "Image 4 : la règle qui protège ta trésorerie."
     },
     {
      "num": 3,
-     "title": "Ne laisse pas\n_dormir une voiture._"
+     "title": "Ne laisse pas\n_dormir une voiture._",
+     "ui": [
+      {
+       "ui": "vrow1",
+       "r": [
+        2,
+        2,
+        360,
+        145
+       ],
+       "w": 760,
+       "hl": [
+        [
+         251,
+         111,
+         54,
+         19
+        ]
+       ],
+       "rad": 20
+      }
+     ]
     },
     {
-     "title": "UTOPICAR applique\n_les trois pour toi._"
+     "title": "Les 3 règles,\n_appliquées pour toi._"
     }
    ]
   },
   {
    "slug": "vois-vs-gagnes",
    "bg": "orange",
-   "caption": "Ce que tu vois : 6 400 €. Ce que tu gagnes : + 1 932 €.",
+   "caption": "Cette Clio est affichée 6 400 €. Ce qu'elle te fait gagner, l'annonce ne le dit pas. + 1 932 € après frais.",
    "slides": [
     {
-     "title": "Ce que tu vois :\n_6 400 €._\nCe que tu gagnes :\n==?==",
-     "size": 120
-    },
-    {
-     "title": "Une Clio IV\n_à 6 400 €._",
+     "kicker": "Cette Clio est affichée 6 400 €.",
+     "title": "Ce qu'elle te fait\n==GAGNER==,\nl'annonce le tait.",
+     "size": 124,
      "ui": [
       {
-       "ui": "card-lv1",
+       "ui": "dcard2",
        "r": [
-        6,
-        372,
+        8,
+        8,
         362,
-        98
+        110
        ],
-       "w": 840,
+       "w": 720,
        "hl": [
         [
-         125,
-         446.75,
-         163,
-         19.5
+         162,
+         96,
+         42,
+         15
         ]
        ]
       }
      ]
     },
     {
-     "title": "Revente, frais,\n_papiers : tout compté._",
+     "title": "Le prix est écrit.\n_La marge, jamais._",
+     "size": 110
+    },
+    {
+     "title": "Revente, frais, papiers :\n_tout compté._",
      "ui": [
       {
        "ui": "ticket",
        "r": [
-        10,
+        0,
         90,
-        320,
+        340,
         340
        ],
-       "w": 620,
+       "w": 600,
        "hl": [],
-       "rad": 18
+       "rad": 18,
+       "pad": 12
       }
-     ]
+     ],
+     "relance": "Image 4 : le chiffre que l'annonce ne montre pas."
     },
     {
-     "title": "Ce que tu gagnes :\n==+ 1 932 €.==",
+     "title": "Ce qu'elle te fait gagner :\n==+ 1 932 €.==",
      "ui": [
       {
        "ui": "dcard2",
@@ -1803,7 +1910,7 @@
         362,
         215
        ],
-       "w": 760,
+       "w": 740,
        "hl": [
         [
          184,
@@ -1816,18 +1923,23 @@
      ]
     },
     {
-     "title": "Vois plus loin\n_que le prix._"
+     "title": "Tu vois la marge,\n_pas seulement le prix._"
     }
    ]
   },
   {
    "slug": "en-5-ecrans",
    "bg": "dark",
-   "caption": "UTOPICAR en 5 écrans : analyser, recherche en direct, parc, tableau de bord.",
+   "caption": "Tableur, calculette, onglets d'annonces : tu jongles entre 3 outils pour une seule voiture ? Analyse, recherche, parc et marge au même endroit.",
    "slides": [
     {
-     "title": "UTOPICAR\n==en 5 écrans.==",
-     "size": 140
+     "kicker": "Tableur, calculette, onglets d'annonces :",
+     "title": "3 ==OUTILS==\npour une seule\nvoiture ?",
+     "size": 124
+    },
+    {
+     "title": "Et entre les trois,\n_un frais finit par tomber._",
+     "size": 100
     },
     {
      "title": "Analyser\n_une annonce._",
@@ -1835,36 +1947,39 @@
       {
        "ui": "ticket",
        "r": [
-        10,
-        10,
-        320,
-        84
+        0,
+        0,
+        340,
+        98
        ],
        "w": 820,
-       "hl": []
+       "hl": [],
+       "pad": 16
       },
       {
        "ui": "ticket",
        "r": [
-        10,
-        432,
-        320,
-        88
+        0,
+        442,
+        340,
+        76
        ],
        "w": 820,
        "hl": [
         [
          155,
-         454,
-         170,
-         44
+         456,
+         172,
+         32
         ]
-       ]
+       ],
+       "pad": 18
       }
-     ]
+     ],
+     "relance": "Image 4 : la recherche et le parc, au même endroit."
     },
     {
-     "title": "Recherche\n_en direct._",
+     "title": "Recherche\n_et parc._",
      "ui": [
       {
        "ui": "lvmini",
@@ -1874,7 +1989,7 @@
         362,
         432
        ],
-       "w": 640,
+       "w": 560,
        "hl": [
         [
          125,
@@ -1883,36 +1998,7 @@
          38
         ]
        ],
-       "maxH": 760
-      }
-     ]
-    },
-    {
-     "title": "Parc\n_et tableau de bord._",
-     "ui": [
-      {
-       "ui": "vrow1",
-       "r": [
-        2,
-        2,
-        360,
-        145
-       ],
-       "w": 760,
-       "hl": [],
-       "rad": 20
-      },
-      {
-       "ui": "kpis",
-       "r": [
-        8,
-        8,
-        362,
-        359
-       ],
-       "w": 620,
-       "hl": [],
-       "rad": 18
+       "maxH": 700
       }
      ]
     },

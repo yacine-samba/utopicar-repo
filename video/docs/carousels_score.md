@@ -1,5 +1,10 @@
 # Score de conversion prévisionnel — 30 carrousels TikTok UTOPICAR
 
+> **Mise à jour** : les hooks et la chaîne tension → relance → CTA ont été refaits (méthode « L'art du hook » + bonnes
+> pratiques web) — voir `docs/hooks_carrousels.md`. Les notes ci-dessous portent sur la **première version** ; les
+> faiblesses listées (accroches centrées sur la fonction, statistiques sans enjeu, pas de relance, « je ») sont
+> corrigées dans la nouvelle version, sauf l'offre derrière « Commente GARAGE », qui reste à préciser.
+
 **Ce n'est pas une mesure.** Aucun carrousel n'est encore publié : c'est une grille d'audit (bonnes pratiques TikTok
 carrousel + ce qui a marché dans nos pubs) pour décider quoi publier en premier et quoi corriger. Le vrai score se lit
 dans TikTok Analytics après publication (voir en bas).
