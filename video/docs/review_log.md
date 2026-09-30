@@ -339,3 +339,11 @@ Même récit, mêmes repères sur la voix de Simon, même musique ; bruitages pr
 - Icône invisible au premier essai (même SVG inséré deux fois : dégradé référencé dans un élément masqué) →
   identifiants uniques par insertion.
 Versions sans voix : même film, « Écoute. » → « Regarde. » (1,5–2,9 s rendus à part puis incrustés), mix sans voix.
+- Round 4 (rendus finaux) : carton final « figé » 1 s selon `qa_video.py` → le CTA bat trois fois et, sur MO1, la goutte
+  orange tourne autour du logo et du CTA ; CTA aligné sur les carrousels : « Commente GARAGE et reçois ton accès. ».
+- Incrustation : le filtre ffmpeg `overlay` avec décalage de temps laissait passer l'ancienne image en encodage
+  complet (vérifié image par image) → nouveau `scripts/splice.py` (découpe à l'image près + concat, contrôle du nombre
+  d'images) ; écart moyen entre l'image livrée et l'image rendue ≈ 1,3 (bruit d'encodage).
+Mesures `qa_video.py` sur les 4 MP4 finaux : 10 contrôles OK sur 10 (zones sûres, image 0, aucune image vide, aucun plan
+figé, −14,0 LUFS, true peak −3,1 à −1,6 dBTP, son dès les 2 premières secondes, 24–33 % d'énergie sous 150 Hz).
+Son mesuré, pas écouté.
