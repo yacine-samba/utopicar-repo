@@ -41,7 +41,7 @@ const BEATS = beats(M, VOICE).map(b => {
   if (b.ui) { b.g = makeUI(uiL, b.ui, shadow); }
   return b;
 });
-const fitW = (box, max = 860) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
+const fitW = (box, max = 820) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
 const at = (box, y, s = 1) => { box.style.transform = `translate(0px,${(y - box.offsetHeight / 2).toFixed(1)}px) scale(${s.toFixed(4)})`; };
 // lettres qui arrivent floues et se posent, puis repartent vers le haut en se floutant (grammaire de la référence)
 function letters(box, t, a, b, rate = 0.018, rise = 30, blur = 12) {
@@ -106,8 +106,13 @@ window.seek = function (t) {
   show(blob, bo > 0.01); if (bo > 0.01) place(blob, CX, BY, (0.4 + 0.8 * clamp(bo, 0, 1)) * (1 + noise(2, t * 0.5) * 0.04), t * 18, clamp(bo, 0, 1) * 0.9, 2);
   // goutte orange (cachée pendant les transitions et la fin)
   const dOn = t < M.logo - 0.3 && !inWin(t, M.voici - 0.35, M.poche);
-  show(dropL, dOn);
-  if (dOn) {
+  const oOn = inWin(t, M.voici + 0.3, M.poche - 0.15);             // plan logo : la goutte tourne autour du logo
+  show(dropL, dOn || oOn);
+  if (oOn) {
+    const orb = u => { const k = spring(u - (M.voici + 0.3), 'default'), a = (u - M.voici) * 2.4 - 1.2; return [CX + Math.cos(a) * 400 * k, BY + Math.sin(a) * 180 * k]; };
+    const [x, y] = orb(t); place(drop, x, y, 1.2, 0, 1);
+    ghosts.forEach(g => { const [gx, gy] = orb(t - g._d * 1.5); place(g, gx, gy, 1, 0, 0.35); });
+  } else if (dOn) {
     const [x, y] = dropAt(t); place(drop, x, y, 1 + bump(t, DROP.find(d => d[0] <= t && t < d[0] + 0.3)?.[0] ?? -9, 0.1) * 0.4, 0, 1);
     ghosts.forEach(g => { const [gx, gy] = dropAt(t - g._d); place(g, gx, gy, 1, 0, 0.35); });
   }
@@ -118,12 +123,12 @@ window.seek = function (t) {
   // logo (après la première fleur)
   const lb = BEATS.find(b => b.kind === 'lockup');
   const lOn = inWin(t, lb.a, lb.b); show(lock, lOn);
-  if (lOn) { const p = spring(t - lb.a, 'heavy'), q = spring(t - (lb.b - 0.25), 'default'); place(lock, CX, BY - q * 300, 0.8 * (1.2 - 0.2 * p) * (1 + smooth(lb.a, lb.b, t) * 0.04), 0, clamp(p * 2 - q * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10 + q * 10); }
+  if (lOn) { const p = spring(t - lb.a, 'heavy'), q = spring(t - (lb.b - 0.25), 'default'); place(lock, CX, BY - q * 300, 0.8 * (1.2 - 0.2 * p) * (1 + smooth(lb.a, lb.b, t) * 0.09), 0, clamp(p * 2 - q * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10 + q * 10); }
   // fin
   const eOn = t >= M.logo; show(lock2, eOn); show(cta, eOn && t >= M.cta - 0.1); show(cta2, eOn && t >= M.cta + 0.3);
   if (eOn) {
     const p = spring(t - M.logo, 'heavy'), push = smooth(M.logo, M.end, t);
-    place(lock2, CX, 700 - push * 20, (1.25 - 0.25 * p) * 0.8 * (1 + push * 0.03), 0, clamp(p * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10);
+    place(lock2, CX, 700 - push * 20, (1.18 - 0.18 * p) * 0.8 * (1 + push * 0.03), 0, clamp(p * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10);
     const c = spring(t - M.cta, 'default'); const beat = bump(t, M.end - 0.8, 0.16);
     place(cta, CX, 960 + (1 - c) * 60, (0.9 + 0.1 * c) * (1 + beat * 0.06), 0, clamp(c * 2, 0, 1), (1 - clamp(c, 0, 1)) * 8);
     letters(cta2, t, M.cta + 0.35, 1e9, 0.02); at(cta2, 1080);

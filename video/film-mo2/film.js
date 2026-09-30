@@ -71,7 +71,7 @@ const cta = el('div', 'cta', stage); cta.innerHTML = `Commente <span class="g">G
 const cta2 = text(stage, [["pour recevoir l'accès.", '']], 'sub');
 const demo = el('div', 'demo', stage); demo.textContent = 'Données de démonstration';
 
-const fitW = (box, max = 860) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
+const fitW = (box, max = 820) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
 const at = (box, y, s = 1) => { box.style.transform = `translate(0px,${(y - box.offsetHeight / 2).toFixed(1)}px) scale(${s.toFixed(4)})`; };
 function letters(box, t, a, b, rate = 0.03, rise = 50, blur = 18) {
   box.chars.forEach((c, i) => {
@@ -127,7 +127,7 @@ window.seek = function (t) {
     place(orbLogo, CX, ocy - q * 200, (0.6 + 0.4 * p) * (1 - q * 0.3), 0, clamp(p * 2 - q * 2, 0, 1));
     TAGS.forEach((g, i) => {
       const tp = spring(t - (M.voici + 0.35 + i * 0.12), 'default'); const ang = g._a + (t - M.voici) * 0.35;
-      place(g, CX + Math.cos(ang) * 380 * tp, ocy + Math.sin(ang) * 330 * tp - q * 200, 0.6 + 0.4 * tp, 0, clamp(tp * 2 - q * 2, 0, 1), (1 - clamp(tp, 0, 1)) * 8);
+      place(g, CX + Math.cos(ang) * 270 * tp, ocy + Math.sin(ang) * 340 * tp - q * 200, 0.6 + 0.4 * tp, 0, clamp(tp * 2 - q * 2, 0, 1), (1 - clamp(tp, 0, 1)) * 8);
     });
     const wp = spring(t - (M.voici + 0.2), 'heavy'); show(wm, t < M.poche + 0.2); letters(wm, t, M.voici + 0.2, M.poche + 0.2, 0.03); at(wm, 460, 0.55);
   }

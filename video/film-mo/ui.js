@@ -50,7 +50,7 @@ export function makeUI(parent, key, frame, s = 1) {
     case 'tktop': { const c = C('ticket', { x: 10, y: 10, w: 320, h: 84 }, 2.6, 20); g = group(parent, [[c, 0, 0]]); g.hls = [hl(c, 110, 10, 100, 36)]; break; }
     case 'tktot': { const c = C('ticket', { x: 10, y: 432, w: 320, h: 88 }, 2.6, 20); g = group(parent, [[c, 0, 0]]); g.hls = [hl(c, 155, 454, 170, 44)]; break; }
     case 'plaf': { const c = C('plaf', { x: 8, y: 8, w: 320, h: 130 }, 2.5, 20); g = group(parent, [[c, 0, 0]]); g.hls = [hl(c, 18, 50, 108, 30)]; break; }
-    case 'duo': { const a = C('dcard1', { x: 8, y: 8, w: 362, h: 215 }, 1.18), b = C('dcard2', { x: 8, y: 8, w: 362, h: 215 }, 1.18); g = group(parent, [[a, -222, 0, -2], [b, 222, 0, 2]]); break; }
+    case 'duo': { const a = C('dcard1', { x: 8, y: 8, w: 362, h: 215 }, 1.08), b = C('dcard2', { x: 8, y: 8, w: 362, h: 215 }, 1.08); g = group(parent, [[a, -206, 0, -2], [b, 206, 0, 2]]); break; }
     case 'golffull': { const c = C('dcard1', { x: 8, y: 8, w: 362, h: 215 }, 2.2); g = group(parent, [[c, 0, 0]]); g.hls = [hl(c, 184, 154, 120, 22)]; break; }
     case 'clio': { const c = C('dcard2', { x: 8, y: 8, w: 362, h: 215 }, 2.2); g = group(parent, [[c, 0, 0]]); g.hls = [hl(c, 184, 154, 120, 22)]; break; }
     case 'lvmini': { const c = C('lvmini', { x: 10, y: 10, w: 362, h: 432 }, 1.25); g = group(parent, [[c, 0, 0]]); g.hls = [hl(c, 125, 148, 82, 38)]; break; }
