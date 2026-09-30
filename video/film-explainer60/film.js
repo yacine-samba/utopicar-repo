@@ -84,7 +84,7 @@ const CHIPS = [['dcard1', { x: 129, y: 122, w: 71, h: 23 }], ['vrow1', { x: 20, 
 const CHIP_POS = [[230, 470, 1.0], [760, 400, 0.85], [190, 1180, 0.9], [720, 1260, 1.05], [520, 330, 0.7], [800, 1080, 0.8], [260, 1390, 0.75], [700, 560, 0.9]];
 const chips = CHIPS.map(([k, r]) => { const c = lift(cardR(s0, k, r, 2.7, 8)); c.style.padding = '0'; return c; });
 const H1 = T(s0, [['Achat-revente', 'lt'], ['\n', ''], ['auto ?', 'bd']], 150);
-const H2 = T(s0, [['Écoute ', 'lt'], ['bien.', 'bd k']], 150); const mkH2 = addMark(H2);
+const H2 = T(s0, [['Regarde ', 'lt'], ['bien.', 'bd k']], 150); const mkH2 = addMark(H2);
 
 /* ================= 1 : l'annonce « top » ================= */
 const s1 = el('div', 'layer', stage);
@@ -157,7 +157,7 @@ const PREM = T(s6, [["T'es le ", 'lt'], ['premier.', 'bd']], 96);
 const s7 = el('div', 'layer', stage);
 const hd4 = header(s7, 4, 'Parc', 'parc');
 const filt = card(s7, 'filters', 2.2, 6);
-const rows = ['vrow1', 'vrow2', 'vrow3'].map(k => lift(cardR(s7, k, { x: 2, y: 2, w: SRC[k].w / 3 - 4, h: SRC[k].h / 3 - 4 }, 1.75, 20)));
+const rows = ['vrow1', 'vrow2', 'vrow3'].map(k => lift(cardR(s7, k, { x: 2, y: 2, w: SRC[k].w / 3 - 4, h: SRC[k].h / 3 - 4 }, 1.55, 20)));
 const hlDays = rows.map(r => hlOn(r, { x: 251, y: 111, w: 54, h: 19 }, [4, 2]));
 const hlMarge = rows.map(r => hlOn(r, { x: 20, y: 111, w: 80, h: 19 }, [4, 2]));
 
@@ -178,12 +178,35 @@ CTA.querySelector('.g').classList.add('ctaw'); const ctaBg = el('div', 'ctabg', 
 const CTA2 = T(en, [["pour recevoir l'accès.", 'lt onDark']], 62);
 
 const demo = el('div', 'demo', stage); demo.textContent = 'Données de démonstration';
+// version sans voix : une légende courte par étape (≤ 6 mots), sous l'en-tête du chapitre
+const capL = el('div', 'layer', stage);
+const CAPS = [
+  [[['frais ', 'lt'], ['compris.', 'bd']], 'rien', 'p1', 640, 84, 0.3],
+  [[['Colle ', 'lt'], ["l'annonce.", 'bd']], 'colle', 'deux', 420, 72],
+  [[['Une note. ', 'lt'], ['Un verdict.', 'bd']], 'note', 'reste', 420, 72],
+  [[['Ce qu\'il te reste, ', 'lt'], ['vraiment.', 'bd']], 'reste', 'plafond', 420, 72],
+  [[['Ton ', 'lt'], ['prix max.', 'bd']], 'plafond', 'f2', 420, 72],
+  [[['Tous tes ', 'lt'], ['dossiers.', 'bd']], 'dossiers', 'comparer', 410, 72],
+  [[['Tu ', 'lt'], ['compares.', 'bd']], 'comparer', 'meilleure', 410, 72],
+  [[['Il surveille ', 'lt'], ['les annonces.', 'bd']], 'surveille', 'sous', 410, 72],
+  [[['Et sort ', 'lt'], ['les bonnes.', 'bd']], 'sous', 'mille', 410, 72],
+  [[['Chaque voiture, ', 'lt'], ['sa marge.', 'bd']], 'chaque', 'dort', 395, 72],
+  [[['Et ses ', 'lt'], ['jours en stock.', 'bd']], 'dort', 'f5', 395, 72],
+  [[['Ton ', 'lt'], ['stock.', 'bd']], 'stock', 'argent', 410, 72],
+  [[['Ton argent ', 'lt'], ['immobilisé.', 'bd']], 'argent', 'marge', 410, 72],
+  [[['Ta marge ', 'lt'], ['réalisée.', 'bd']], 'marge', 'coup', 410, 72],
+  [[['Tout, ', 'lt'], ["d'un coup d'œil.", 'bd']], 'coup', 'sais', 1395, 66],
+].map(([segs, a, b, y, size, d = 0]) => ({ box: T(capL, segs, size), a, b, y, d }));
 const cur = cursor(stage, false), curD = cursor(stage, true);
 const HOLD = -3;
 const E = (p) => (p > 0.0005 ? 1 : 0);
 
 const push = (layer, t, a, b, k = 0.045) => { layer.style.transformOrigin = '500px 850px'; layer.style.transform = `translateY(${(-smooth(a, b, t) * 24).toFixed(1)}px) scale(${(1 + smooth(a, b, t) * k).toFixed(4)})`; };
 window.seek = function (t) {
+  CAPS.forEach(c => {
+    const a = M[c.a] + c.d, b = M[c.b]; const on = inWin(t, a - 0.05, b - 0.12); show(c.box, on);
+    if (on) { typeText(c.box, t, a, b - 0.42, 0.02, 26); at(c.box, c.y); }
+  });
   const dark = inWin(t, M.logo, 1e9);
   const yel = inWin(t, M.voici, M.f1) || inWin(t, M.sais, M.logo);
   show(bgD, dark); show(bgY, yel); show(bgW, !dark && !yel);
@@ -209,13 +232,13 @@ window.seek = function (t) {
     push(s1, t, M.annonce, M.p1);
     const { dy, q } = inOutY(t, M.annonce, M.p1);
     const dim = spring(t - M.rien, 'default');
-    place(golf, CX, 760 + dy + dim * -80, (1 + smooth(M.annonce, M.p1, t) * 0.04) * (1 - dim * 0.1), 0, 1 - dim * 0.5, dim * 4);
+    place(golf, CX, 760 + dy + dim * 60, (1 + smooth(M.annonce, M.p1, t) * 0.04) * (1 - dim * 0.1), 0, 1 - dim * 0.5, dim * 4);
     marker(t, hlPrix, M.annonce + 0.3, null); hlPrix.style.opacity = '0.8';
     typeText(TOP, t, M.annonce + 0.05, M.rien - 0.2, 0.03); show(TOP, t < M.rien + 0.3); at(TOP, 460 + dy);
     let y = 960;
     costs.forEach((c, i) => {
       const t0 = M.frais + i * 0.25, p = spring(t - t0, 'default'); const cy = y + c._h / 2; y += c._h + 10;
-      place(c, CX + (1 - p) * (i % 2 ? -700 : 700), cy + dy - dim * 40, 1 - dim * 0.06, (1 - p) * (i % 2 ? -8 : 8), p, dim * 3);
+      place(c, CX + (1 - p) * (i % 2 ? -700 : 700), cy + dy + dim * 50, 1 - dim * 0.06, (1 - p) * (i % 2 ? -8 : 8), p, dim * 3);
     });
     RIEN.chars.forEach((c, i) => { const p = spring(t - (M.rien + i * 0.035), 'heavy'); c.style.opacity = clamp(p * 1.8, 0, 1).toFixed(3); c.style.transform = `translateY(${((1 - p) * 120).toFixed(1)}px)`; });
     show(RIEN, t >= M.rien - 0.05); at(RIEN, 470 + dy, 1 + smooth(M.rien, M.p1, t) * 0.05);
@@ -268,7 +291,7 @@ window.seek = function (t) {
     const out = spring(t - (M.f2 - 0.3), 'default');
     // zone de texte : entre, reçoit l'annonce (Ctrl+V), bouton « Analyser le dossier »
     const ai = spring(t - (M.f1 + 0.2), 'default'), go = spring(t - (M.note - 0.1), 'default');
-    const ay = 700 + (1 - ai) * 1000 - go * 1300;
+    const ay = 760 + (1 - ai) * 1000 - go * 1300;
     place(area, CX, ay, 1, 0, E(ai));
     const pasted = t >= M.colle + 0.55; show(mask, !pasted);
     area.style.boxShadow = pasted ? `0 0 0 ${(8 * (1 - spring(t - (M.colle + 0.55), 'snappy'))).toFixed(1)}px rgba(255,90,31,.35),${SHADOW}` : SHADOW;
@@ -316,7 +339,7 @@ window.seek = function (t) {
     drawHeader(hd3, t, M.f3, Math.min(M.f4, M.mille + 0.1));
     const out = spring(t - (M.f4 - 0.18), 'default');
     const ci = spring(t - (M.f3 + 0.35), 'default'), toLive = spring(t - M.sous, 'default');
-    place(chip, CX, 480 + (1 - ci) * 1300 - toLive * 1800, 1 + bump(t, M.surveille + 0.2, 0.12) * 0.05, 0, E(ci) * (1 - toLive));
+    place(chip, CX, 540 + (1 - ci) * 1300 - toLive * 1800, 1 + bump(t, M.surveille + 0.2, 0.12) * 0.05, 0, E(ci) * (1 - toLive));
     const li = spring(t - M.surveille, 'default');
     place(lvm, CX, 1000 + (1 - li) * 1300 - toLive * 1800, 1, 0, E(li) * (1 - toLive));
     // clic sur la nouvelle annonce → sa fiche, qui défile jusqu'à « sous la cote »
@@ -344,10 +367,10 @@ window.seek = function (t) {
     drawHeader(hd4, t, M.f4, M.f5);
     const out = spring(t - (M.f5 - 0.3), 'default');
     const fi = spring(t - (M.f4 + 0.3), 'default');
-    place(filt, CX, 500 + (1 - fi) * 1300 - out * 1300, 1, 0, E(fi));
+    place(filt, CX, 600 + (1 - fi) * 1300 - out * 1300, 1, 0, E(fi));
     rows.forEach((r, i) => {
       const p = spring(t - (M.chaque + i * 0.22), 'default');
-      place(r, CX + (1 - p) * (i % 2 ? -900 : 900), 790 + i * (r._h + 16) - out * 1300, 1, (1 - p) * (i % 2 ? -5 : 5), E(p));
+      place(r, CX + (1 - p) * (i % 2 ? -900 : 900), 850 + i * (r._h + 12) - out * 1300, 1, (1 - p) * (i % 2 ? -5 : 5), E(p));
       marker(t, hlMarge[i], M.chaque + 1.0 + i * 0.1, null); hlMarge[i].style.opacity = '0.7';
       marker(t, hlDays[i], M.dort + 0.4 + i * 0.12, null); hlDays[i].style.opacity = '0.85';
     });

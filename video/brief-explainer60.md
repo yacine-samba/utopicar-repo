@@ -33,3 +33,12 @@ Tu sais avant d'acheter. Tu revends avec de la marge. [pause] UTOPICAR. [excited
 État : film, musique, bruitages et mix prêts ; **voix bloquée** (ElevenLabs a désactivé l'accès gratuit du compte :
 « Unusual activity… Please upgrade to a paid subscription »). Aperçu 540p sur minutage provisoire :
 `renders/draft-explainer60-9x16.mp4`.
+
+## Décision : version **sans voix** (choix de l'utilisateur, ElevenLabs bloqué)
+Le film garde le rythme du script de Simon (minutage estimé à 3,0 mots/s, 59 s) et porte le récit à l'écran :
+une légende courte (≤ 6 mots) sous l'en-tête de chaque étape — « Colle l'annonce. », « Une note. Un verdict. »,
+« Ce qu'il te reste, vraiment. », « Ton prix max. », « Tous tes dossiers. », « Tu compares. », « Il surveille les
+annonces. », « Et sort les bonnes. », « Chaque voiture, sa marge. », « Et ses jours en stock. », « Ton stock. »,
+« Ton argent immobilisé. », « Ta marge réalisée. », « Tout, d'un coup d'œil. ». L'accroche devient « Regarde bien. ».
+Frappe douce sous chaque légende (`scripts/cues-explainer60.py`). Si la voix de Simon arrive plus tard : la déposer en
+`audio/vo-explainer60.mp3` et relancer la chaîne ci-dessus ; les légendes peuvent rester (visionnage sans son).
