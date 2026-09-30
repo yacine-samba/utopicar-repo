@@ -312,3 +312,13 @@ TikTok basse (remontées), « Regarde bien. » → « Écoute bien. ».
 Rendu 1 : image vide à 35,75 s et dernière seconde figée → « 1 450 € » entre avant la sortie de la fiche, fin animée
 (poussée, second clic sur GARAGE). Rendu 2 : −14,0 LUFS, −3,2 dBTP, aucune image vide, aucun plan figé, 24 % d'énergie
 sous 150 Hz ; seul WARN : zones sûres pendant les entrées/sorties en mouvement.
+
+## 3 pubs TikTok 10–15 s (voix Simon)
+Mesures `qa_video.py` sur les MP4 finaux : ads1 12,2 s / ads2 12,5 s / ads3 14,1 s ; −14,0 LUFS ; true peak −3,4 à
+−3,6 dBTP ; image 0 pleine ; aucune image vide ; aucun plan figé ; 21–28 % d'énergie sous 150 Hz. Seul WARN : zones
+sûres pendant les entrées/sorties en mouvement (≤ 0,25 s).
+- Round 1 (images fixes) : fiche de l'ads2 coupée en haut (« l'annonce ») → recadrée sur le prix ; « 14 820 € » en
+  double dans la zone basse (ads3) → retiré, la vraie carte KPI suffit.
+- Round 2 (rendus) : image vide avant « En 2 secondes » (ads1) et à la coupe du carton final → relais anticipés, carton
+  visible dès sa première image ; « Commente GARAGE » hors marge gauche pendant la poussée → 84 px, poussée réduite.
+- Round 3 : chevauchement « frais compris » / « En 2 secondes » (ads1) → relais décalé.

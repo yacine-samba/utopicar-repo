@@ -57,7 +57,7 @@ const bgD = el('div', 'layer grid dark', stage);
 const S = el('div', 'layer', stage);                      // scène de la pub
 const en = el('div', 'layer', stage);
 const pill = el('div', 'pill', en); pill.innerHTML = `${LOGO}<span class="wm">${U1.logo.text}</span>`;
-const CTA = T(en, [['Commente ', 'bdw'], ['GARAGE', 'bd g']], 92);
+const CTA = T(en, [['Commente ', 'bdw'], ['GARAGE', 'bd g']], 84);
 CTA.querySelector('.g').classList.add('ctaw'); const ctaBg = el('div', 'ctabg', CTA.querySelector('.g'));
 const CTA2 = T(en, [["pour recevoir l'accès.", 'lt onDark']], 62);
 const demo = el('div', 'demo', stage); demo.textContent = 'Données de démonstration';
@@ -102,13 +102,13 @@ if (V === '1') {
     const bx = CX - bar._w / 2 + (13 + 97) * bar._k, byy = by - bar._h / 2 + 36 * bar._k;
     if (inWin(t, M.colle - 0.2, M.moins)) { moveCursor(cur, t, [[M.colle - 0.2, CX + 120, 860], [M.colle + 0.4, bx, byy]], [M.colle - 0.1, click], M.colle - 0.2, M.moins); } else show(cur, false);
     // verdict : NO GO puis − 1 200 €
-    const vi = spring(t - M.moins, 'snappy'), vq = spring(t - (M.deux - 0.25), 'default');
+    const vi = spring(t - M.moins, 'snappy'), vq = spring(t - (M.deux - 0.42), 'default');
     const sh = Math.exp(-Math.max(0, t - M.moins) / 0.12);
     place(tk, CX + noise(7, t * 30) * 12 * sh, 1080 + (1 - vi) * 200 - vq * 1400, 1.2 - 0.2 * vi, 0, E(vi));
     show(MIN, t >= M.moins - 0.05); giant(MIN, t, M.moins + 0.05); at(MIN, 560 - vq * 1400, 1 + smooth(M.moins, M.deux, t) * 0.05);
     typeText(FR, t, M.frais, null, 0.025); show(FR, t >= M.frais - 0.05); at(FR, 740 - vq * 1400);
     // « En 2 secondes, tu sais. »
-    show(D2, inWin(t, M.deux - 0.05, M.cta)); typeText(D2, t, M.deux, M.cta - 0.3, 0.03, 36); at(D2, 820); marker(t, mkD2, M.deux + 0.4, M.cta - 0.3);
+    show(D2, inWin(t, M.deux - 0.3, M.cta)); typeText(D2, t, M.deux - 0.25, M.cta - 0.3, 0.03, 36); at(D2, 820); marker(t, mkD2, M.deux + 0.4, M.cta - 0.3);
   };
 } else if (V === '2') {
   // « 1 450 € sous la cote. Publiée il y a douze minutes. UTOPICAR surveille les annonces et te prévient avant tout le
@@ -199,11 +199,11 @@ window.seek = function (t) {
   demo.style.color = endOn ? '#6B7482' : '#8C95A3';
   if (!endOn) draw(t); else show(cur, false);
   if (endOn) {
-    const p = spring(t - M.cta, 'heavy'), pu = smooth(M.cta, M.end, t);
+    const p = spring(t - (M.cta - 0.2), 'heavy'), pu = smooth(M.cta, M.end, t);
     const click = M.cta + 0.9, press = bump(t, click - 0.03, 0.11), beat = bump(t, M.end - 0.7, 0.16);
-    en.style.transformOrigin = '500px 850px'; en.style.transform = `translateY(${(-pu * 24).toFixed(1)}px) scale(${(1 + pu * 0.06).toFixed(4)})`;
+    en.style.transformOrigin = '500px 850px'; en.style.transform = `translateY(${(-pu * 24).toFixed(1)}px) scale(${(1 + pu * 0.035).toFixed(4)})`;
     place(pill, CX, 660, 0.85 * (0.55 + 0.45 * p), 0, clamp(p * 2, 0, 1));
-    typeText(CTA, t, M.cta + 0.05, null, 0.03, 30); at(CTA, 900); marker(t, ctaBg, M.cta + 0.3, null);
+    typeText(CTA, t, M.cta - 0.12, null, 0.03, 30); at(CTA, 900); marker(t, ctaBg, M.cta + 0.3, null);
     const gar = CTA.querySelector('.g'); gar.style.display = 'inline-block';
     gar.style.transform = `scale(${(1 - press * 0.08 + spring(t - click, 'snappy') * 0.05 - spring(t - (click + 0.4), 'default') * 0.05 + beat * 0.07).toFixed(4)})`;
     typeText(CTA2, t, M.cta + 0.5, null, 0.025); at(CTA2, 1030);
