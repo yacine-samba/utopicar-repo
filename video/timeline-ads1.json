@@ -1,0 +1,276 @@
+{
+ "version": 10,
+ "style": "pub TikTok 1, 10–15 s, voix Simon",
+ "fps": 30,
+ "dur": 12.233333333333333,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "poster": 2.0,
+ "voLead": 0.1,
+ "voRate": 3.2,
+ "vo": "[excited] Stop. Ne l'achète pas. Cette Golf à neuf mille cinq cents euros, je la colle dans UTOPICAR… [surprised] moins mille deux cents euros, frais compris. En deux secondes, tu sais. [excited] Commente GARAGE.",
+ "anchors": {
+  "stop": "Stop",
+  "golf": "Cette Golf",
+  "colle": [
+   "je la colle",
+   "la colle dans"
+  ],
+  "moins": [
+   "moins mille deux cents",
+   "moins 1200",
+   "1200 euros"
+  ],
+  "frais": "frais compris",
+  "deux": [
+   "En deux secondes",
+   "en 2 secondes",
+   "secondes tu sais"
+  ],
+  "cta": [
+   "Commente GARAGE",
+   "commente garage"
+  ]
+ },
+ "marksFixed": {
+  "start": 0
+ },
+ "cues": [
+  {
+   "t": 0.0,
+   "sfx": "hit"
+  },
+  {
+   "t": 1.78,
+   "sfx": "s:slide",
+   "g": 0.6
+  },
+  {
+   "t": 3.58,
+   "sfx": "s:slide",
+   "g": 0.6
+  },
+  {
+   "t": 4.08,
+   "sfx": "s:paste"
+  },
+  {
+   "t": 4.68,
+   "sfx": "s:click"
+  },
+  {
+   "t": 5.36,
+   "sfx": "s:scratch"
+  },
+  {
+   "t": 5.54,
+   "sfx": "impact"
+  },
+  {
+   "t": 6.68,
+   "sfx": "s:slide",
+   "g": 0.5
+  },
+  {
+   "t": 7.6,
+   "sfx": "s:whoosh",
+   "pre": 0.25
+  },
+  {
+   "t": 8.8,
+   "sfx": "s:whoosh",
+   "pre": 0.2
+  },
+  {
+   "t": 8.8,
+   "sfx": "thump"
+  },
+  {
+   "t": 9.7,
+   "sfx": "s:click"
+  },
+  {
+   "t": 11.533,
+   "sfx": "s:click",
+   "g": 0.8
+  }
+ ],
+ "marks": {
+  "start": 0,
+  "stop": 0.1,
+  "golf": 1.78,
+  "colle": 3.78,
+  "moins": 5.54,
+  "frais": 6.68,
+  "deux": 7.6,
+  "cta": 8.8,
+  "end": 12.233333333333333
+ },
+ "words": [
+  [
+   "Stop.",
+   0.1,
+   0.38
+  ],
+  [
+   "Ne",
+   0.92,
+   0.94
+  ],
+  [
+   "l",
+   0.94,
+   1.04
+  ],
+  [
+   "'achète",
+   1.04,
+   1.24
+  ],
+  [
+   "pas.",
+   1.24,
+   1.44
+  ],
+  [
+   "Cette",
+   1.78,
+   1.94
+  ],
+  [
+   "Golf",
+   1.94,
+   2.22
+  ],
+  [
+   "à",
+   2.22,
+   2.44
+  ],
+  [
+   "neuf",
+   2.44,
+   2.72
+  ],
+  [
+   "mille",
+   2.72,
+   2.92
+  ],
+  [
+   "cinq",
+   2.92,
+   3.06
+  ],
+  [
+   "cents",
+   3.06,
+   3.24
+  ],
+  [
+   "euros,",
+   3.24,
+   3.48
+  ],
+  [
+   "je",
+   3.78,
+   3.88
+  ],
+  [
+   "la",
+   3.88,
+   4.0
+  ],
+  [
+   "colle",
+   4.0,
+   4.2
+  ],
+  [
+   "dans",
+   4.2,
+   4.36
+  ],
+  [
+   "UTOPICAR…",
+   4.36,
+   5.52
+  ],
+  [
+   "moins",
+   5.54,
+   5.66
+  ],
+  [
+   "mille",
+   5.66,
+   6.0
+  ],
+  [
+   "deux",
+   6.0,
+   6.12
+  ],
+  [
+   "cents",
+   6.12,
+   6.3
+  ],
+  [
+   "euros,",
+   6.3,
+   6.58
+  ],
+  [
+   "frais",
+   6.68,
+   6.98
+  ],
+  [
+   "compris.",
+   6.98,
+   7.2
+  ],
+  [
+   "En",
+   7.6,
+   7.68
+  ],
+  [
+   "deux",
+   7.68,
+   7.88
+  ],
+  [
+   "secondes,",
+   7.88,
+   8.18
+  ],
+  [
+   "tu",
+   8.22,
+   8.3
+  ],
+  [
+   "sais.",
+   8.3,
+   8.46
+  ],
+  [
+   "Commente",
+   8.8,
+   9.28
+  ],
+  [
+   "GARAGE.",
+   9.28,
+   10.04
+  ]
+ ],
+ "voSource": "audio/vo-ads1.wav",
+ "voEnd": 10.04
+}

@@ -1,0 +1,292 @@
+{
+ "version": 10,
+ "style": "pub TikTok 3, 10–15 s, voix Simon (extrait de la prise de l'explainer)",
+ "fps": 30,
+ "dur": 14.066666666666666,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "poster": 2.0,
+ "voLead": 0.1,
+ "voRate": 3.2,
+ "vo": "Ton stock, ton argent immobilisé, ta marge réalisée… tout, en un coup d'œil. Tu sais avant d'acheter. Tu revends avec de la marge. UTOPICAR. Commente GARAGE pour recevoir l'accès.",
+ "anchors": {
+  "stock": "Ton stock",
+  "argent": [
+   "ton argent immobilisé",
+   "argent immobilisé"
+  ],
+  "marge": [
+   "ta marge réalisée",
+   "marge réalisée"
+  ],
+  "coup": [
+   "tout en un coup",
+   "en un coup d'œil"
+  ],
+  "sais": [
+   "Tu sais avant",
+   "sais avant d'acheter"
+  ],
+  "revends": [
+   "tu revends avec",
+   "revends avec"
+  ],
+  "cta": [
+   "commente garage",
+   "Commente GARAGE"
+  ]
+ },
+ "marksFixed": {
+  "start": 0
+ },
+ "cues": [
+  {
+   "t": 0.0,
+   "sfx": "hit"
+  },
+  {
+   "t": 0.1,
+   "sfx": "s:slide",
+   "g": 0.6
+  },
+  {
+   "t": 1.08,
+   "sfx": "s:slide",
+   "g": 0.6
+  },
+  {
+   "t": 2.44,
+   "sfx": "s:slide",
+   "g": 0.6
+  },
+  {
+   "t": 2.7399999999999998,
+   "sfx": "pop"
+  },
+  {
+   "t": 3.76,
+   "sfx": "s:whoosh",
+   "pre": 0.25
+  },
+  {
+   "t": 3.91,
+   "sfx": "s:slide",
+   "g": 0.4
+  },
+  {
+   "t": 4.03,
+   "sfx": "s:slide",
+   "g": 0.4
+  },
+  {
+   "t": 4.15,
+   "sfx": "s:slide",
+   "g": 0.4
+  },
+  {
+   "t": 5.4,
+   "sfx": "s:whoosh",
+   "pre": 0.25
+  },
+  {
+   "t": 7.2,
+   "sfx": "pop"
+  },
+  {
+   "t": 9.72,
+   "sfx": "s:whoosh",
+   "pre": 0.2
+  },
+  {
+   "t": 9.72,
+   "sfx": "thump"
+  },
+  {
+   "t": 10.62,
+   "sfx": "s:click"
+  },
+  {
+   "t": 13.367,
+   "sfx": "s:click",
+   "g": 0.8
+  }
+ ],
+ "marks": {
+  "start": 0,
+  "stock": 0.1,
+  "argent": 1.08,
+  "marge": 2.44,
+  "coup": 3.76,
+  "sais": 5.4,
+  "revends": 6.9,
+  "cta": 9.72,
+  "end": 14.066666666666666
+ },
+ "words": [
+  [
+   "Ton",
+   0.1,
+   0.4
+  ],
+  [
+   "stock,",
+   0.4,
+   0.76
+  ],
+  [
+   "ton",
+   1.08,
+   1.14
+  ],
+  [
+   "argent",
+   1.14,
+   1.38
+  ],
+  [
+   "immobilisé,",
+   1.38,
+   2.1
+  ],
+  [
+   "ta",
+   2.44,
+   2.56
+  ],
+  [
+   "marge",
+   2.56,
+   2.86
+  ],
+  [
+   "réalisée,",
+   2.86,
+   3.44
+  ],
+  [
+   "tout",
+   3.76,
+   3.98
+  ],
+  [
+   "en",
+   3.98,
+   4.42
+  ],
+  [
+   "un",
+   4.42,
+   4.68
+  ],
+  [
+   "coup",
+   4.68,
+   4.8
+  ],
+  [
+   "d",
+   4.8,
+   4.92
+  ],
+  [
+   "'œil.",
+   4.92,
+   5.14
+  ],
+  [
+   "Tu",
+   5.4,
+   5.52
+  ],
+  [
+   "sais",
+   5.52,
+   5.82
+  ],
+  [
+   "avant",
+   5.82,
+   6.08
+  ],
+  [
+   "d",
+   6.08,
+   6.2
+  ],
+  [
+   "'acheter,",
+   6.2,
+   6.48
+  ],
+  [
+   "tu",
+   6.9,
+   6.98
+  ],
+  [
+   "revends",
+   6.98,
+   7.42
+  ],
+  [
+   "avec",
+   7.42,
+   7.68
+  ],
+  [
+   "de",
+   7.68,
+   7.84
+  ],
+  [
+   "la",
+   7.84,
+   7.96
+  ],
+  [
+   "marge.",
+   7.96,
+   8.38
+  ],
+  [
+   "Utopicar,",
+   8.82,
+   9.38
+  ],
+  [
+   "commente",
+   9.72,
+   10.26
+  ],
+  [
+   "garage",
+   10.26,
+   10.6
+  ],
+  [
+   "pour",
+   10.6,
+   11.14
+  ],
+  [
+   "recevoir",
+   11.14,
+   11.54
+  ],
+  [
+   "l",
+   11.54,
+   11.62
+  ],
+  [
+   "'accès.",
+   11.62,
+   11.88
+  ]
+ ],
+ "voSource": "audio/vo-ads3.wav",
+ "voEnd": 11.88
+}

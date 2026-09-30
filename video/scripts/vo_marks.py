@@ -35,7 +35,9 @@ words = []
 if src:
     from faster_whisper import WhisperModel
     m = WhisperModel('small', device='cpu', compute_type='int8')
-    segs, _ = m.transcribe(src, language='fr', word_timestamps=True, initial_prompt=re.sub(r'\[[^\]]+\]', '', TL['vo']))
+    # le script en indice aide parfois la transcription, mais peut lui faire sauter le début : optionnel (VO_PROMPT=1)
+    hint = re.sub(r'\[[^\]]+\]', '', TL['vo']) if os.environ.get('VO_PROMPT') else None
+    segs, _ = m.transcribe(src, language='fr', word_timestamps=True, initial_prompt=hint)
     for s in segs:
         for w in s.words:
             k = norm(w.word); k = NUM.get(k, k)
