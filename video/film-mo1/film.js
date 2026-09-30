@@ -73,7 +73,7 @@ const burst = el('div', 'flower', stage); burst.innerHTML = FLOWER('#FF5A1F');
 const lock = el('div', 'lock', stage); lock.innerHTML = `${LOGO()}<span class="wm">UTOPICAR</span>`;
 const lock2 = el('div', 'lock', stage); lock2.innerHTML = `${LOGO()}<span class="wm">UTOPICAR</span>`;
 const cta = el('div', 'cta', stage); cta.innerHTML = `Commente <span class="g">GARAGE</span>`;
-const cta2 = text(stage, [["pour recevoir l'accès.", '']], 'sub');
+const cta2 = text(stage, [['et reçois ton accès.', '']], 'sub');
 const demo = el('div', 'demo', stage); demo.textContent = 'Données de démonstration';
 const BURSTS = [M.voici, M.logo];
 
@@ -108,9 +108,11 @@ window.seek = function (t) {
   // goutte orange (cachée pendant les transitions et la fin)
   const dOn = t < M.logo - 0.3 && !inWin(t, M.voici - 0.35, M.poche);
   const oOn = inWin(t, M.voici + 0.3, M.poche - 0.15);             // plan logo : la goutte tourne autour du logo
-  show(dropL, dOn || oOn);
-  if (oOn) {
-    const orb = u => { const k = spring(u - (M.voici + 0.3), 'default'), a = (u - M.voici) * 2.4 - 1.2; return [CX + Math.cos(a) * 400 * k, BY + Math.sin(a) * 180 * k]; };
+  const fOn = t >= M.cta + 0.4;                                      // carton final : elle tourne autour du logo et du CTA
+  show(dropL, dOn || oOn || fOn);
+  if (oOn || fOn) {
+    const [t0, cy, rx, ry] = fOn ? [M.cta + 0.4, 860, 390, 300] : [M.voici + 0.3, BY, 400, 180];
+    const orb = u => { const k = spring(u - t0, 'default'), a = (u - t0) * 2.4 - 1.5; return [CX + Math.cos(a) * rx * k, cy + Math.sin(a) * ry * k]; };
     const [x, y] = orb(t); place(drop, x, y, 1.2, 0, 1);
     ghosts.forEach(g => { const [gx, gy] = orb(t - g._d * 1.5); place(g, gx, gy, 1, 0, 0.35); });
   } else if (dOn) {

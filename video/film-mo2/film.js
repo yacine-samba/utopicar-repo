@@ -69,7 +69,7 @@ const loadBar = load.querySelector('.bar2 i');
 const plane = el('div', 'plane', stage); plane.innerHTML = PLANE;
 const lock = el('div', 'lock', stage); lock.innerHTML = `${LOGO()}<span class="wm">UTOPICAR</span>`;
 const cta = el('div', 'cta', stage); cta.innerHTML = `Commente <span class="g">GARAGE</span>`;
-const cta2 = text(stage, [["pour recevoir l'accès.", '']], 'sub');
+const cta2 = text(stage, [['et reçois ton accès.', '']], 'sub');
 const demo = el('div', 'demo', stage); demo.textContent = 'Données de démonstration';
 
 const fitW = (box, max = 760) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
