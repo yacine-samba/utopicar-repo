@@ -17,11 +17,13 @@ PLAF = lambda w=820: U('plaf', [8, 8, 320, 130], w, [[18, 50, 108, 30]])
 LG = lambda n, w=820: U(f'lg{n}', None, w, rad=10, pad=10)
 LU = lambda w=820: U('lu', [8, 8, 332, 144], w)
 TEXTE = lambda w=820: U('scan', [25, 955, 357, 207], w, rad=20, pad=12)
-DOSSIER = lambda w=860: U('scan', [14, 200, 330, 112], w, rad=16)
+# bloc « dossier » de l'écran Analyser (capture mobile) en deux cartes : les pastilles entières, puis le texte.
+# Les pastilles suivantes (« Entretien », « Carte grise ») sont écrasées par l'interface en 390 px : on ne les montre pas.
+DOSSIER = lambda w=760: [U('scan', [4, 206, 282, 50], w, rad=16, pad=10, bgc='#F2F4F7'), U('scan', [4, 254, 330, 58], w, rad=16, pad=10, bgc='#F2F4F7')]
 LIVE_PRIX = lambda w=840: U('card-lv1', [115, 384, 236, 86], w, [[125, 446.75, 163, 19.5]], rad=16, pad=14)
 LVMINI = lambda w=720, maxH=None: U('lvmini', [10, 10, 362, 432], w, [[125, 148, 82, 38]], maxH=maxH)
 SCHIP = lambda w=620: U('schip', [4, 4, 171, 37], w, rad=20)
-QS = lambda w=640: U('qsform', [10, 10, 362, 440], w, rad=20)
+QS = lambda w=640: U('qsform', [10, 10, 362, 480], w, rad=20)
 FILTERS = lambda w=840: U('filters', [6, 6, 366, 114], w)
 VROW = lambda n=1, w=820, days=True: U(f'vrow{n}', [2, 2, 360, 145], w, [[251, 111, 54, 19]] if days else [], rad=20)
 KPI = lambda n, w=400: U(f'kpi{n}', [8, 8, 175, 112], w, rad=18)
@@ -150,7 +152,7 @@ car('4-papiers', 'white', "N'achète jamais une voiture pour la revendre sans de
   S(kicker="Tu achètes une voiture pour la revendre ?", title="JAMAIS sans\n==ces 4 papiers==.", size=124),
   S(title="Sans eux,\n_c'est ta revente qui bloque._", body="L'acheteur suivant les demandera. **À toi.**"),
   S(num='1–2', title="HistoVec\n_et le PV de contrôle technique._", size=90, relance="Image 4 : les 2 derniers, et ce qui manque à ton dossier."),
-  S(num='3–4', title="Le carnet d'entretien\n_et la carte grise._", size=90, ui=[DOSSIER(820)], body2="UTOPICAR te dit **ce qui manque**."),
+  S(num='3–4', title="Le carnet d'entretien\n_et la carte grise._", size=90, ui=DOSSIER(), body2="UTOPICAR te dit **ce qui manque**."),
   S(title="Ton dossier complet\n_avant de revendre._"),
 ]),
 car('jours-en-stock', 'dark', "Ta voiture est garée, elle ne roule pas. Pourtant, elle te coûte de l'argent chaque jour. Tes jours en stock, voiture par voiture.", [

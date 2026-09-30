@@ -83,6 +83,7 @@ async function ui(parent, spec) {
   const box = el('div', 'ui', parent);
   Object.assign(box.style, { width: r[2] * k + 2 * pad + 'px', height: r[3] * k + 2 * pad + 'px', borderRadius: (spec.rad ?? 22) * k + 'px' });
   if (spec.bare) { box.style.background = 'transparent'; box.style.boxShadow = 'none'; }
+  if (spec.bgc) box.style.background = spec.bgc;   // marge intérieure de la couleur du fond de la capture
   const c = el('div', 'img', box);
   Object.assign(c.style, { left: pad + 'px', top: pad + 'px', width: r[2] * k + 'px', height: r[3] * k + 'px', backgroundImage: `url(${im.url})`,
     backgroundSize: `${im.w / DPR * k}px ${im.h / DPR * k}px`, backgroundPosition: `${-r[0] * k}px ${-r[1] * k}px` });
