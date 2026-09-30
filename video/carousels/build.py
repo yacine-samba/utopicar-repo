@@ -269,5 +269,5 @@ with open(os.path.join(HERE, 'captions.md'), 'w') as f:
     f.write('# Légendes des 30 carrousels TikTok UTOPICAR\n\nÀ coller en description de chaque carrousel (5 images, 1080×1920). '
             'Hooks et méthode : docs/hooks_carrousels.md.\n\n')
     for i, c in enumerate(C, 1):
-        f.write(f"## {i:02d} · {c['slug']}\n{c['caption']}\n\n👉 Commente GARAGE et reçois ton accès.\n\n{HTS[i % 3]}\n\n")
+        f.write(f"## {i:02d} · {c['slug']}\n{c['caption']}\n\n👉 Commente DÉBUTANT ou PRO : tu reçois le guide qui correspond à ton niveau + ta place sur la liste d'attente.\n\n{HTS[i % 3]}\n\n")
 print(len(C), 'carrousels,', sum(len(c['slides']) for c in C), 'images')

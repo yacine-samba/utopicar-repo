@@ -703,7 +703,7 @@ Fais plus de ce qui marche, sans jamais recopier une phrase.
 - **Relance** : une pastille « Image 4 : … » sur l'image 3 de chaque carrousel. Elle est vraie, et tenue par l'image 4.
 - **Image 5.**
   - Promesse du hook en « tu ».
-  - « Commente GARAGE ».
+  - « Commente DÉBUTANT ou PRO ».
   - « et reçois ton accès. » remplace « pour recevoir l'accès ».
 - **Captures.**
   - Mêmes corrections que dans les vidéos : chaque capture a sa marge intérieure.
@@ -716,5 +716,9 @@ Fais plus de ce qui marche, sans jamais recopier une phrase.
   - CTA en « tu ».
   - 3 jeux de hashtags en rotation au lieu d'un seul.
 
-**Reste à trancher par l'équipe :** que reçoit exactement la personne qui commente GARAGE (essai gratuit, liste
-d'attente, démo, prix) ? Tant que l'offre n'est pas dite, c'est le premier frein à la conversion, quel que soit le hook.
+**Offre derrière le CTA :** une place sur la liste d'attente + le guide qui correspond au niveau (débutant ou pro),
+envoyés en message privé. Le mot commenté trie les prospects : DÉBUTANT → `guides/guide-debutant.pdf`,
+PRO → `guides/guide-pro.pdf`. À régler dans l'outil de réponse automatique aux commentaires : 2 mots-clés.
+
+**Mention « Données de démonstration » :** affichée seulement quand l'image montre une capture ou un chiffre de
+l'exemple (Golf, Clio, note /100, marge démo), plus sur l'image 5 ni sur les images de texte général.
