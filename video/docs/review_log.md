@@ -301,3 +301,14 @@ aucun plan figé, 33 % d'énergie sous 150 Hz ; seul WARN : zones sûres pendant
   4,7 s → 3,5 s.
 Notes : hook 8, clarté 8, lisibilité 8, zones sûres 8, mouvement 8, rythme 8, marque 8, son 8 (mesuré, non écouté),
 conformité 9.
+
+## V9 explainer 60 s, voix de Simon + sound design réel
+Voix : Simon (eleven_v3), prise A sur 2 (transcription plus propre), 69 s resserrée à 57,8 s (32 silences ramenés à
+0,28 s, atempo 1,10), 40 repères du film posés sur ses mots. Bruitages réels ElevenLabs : clic, Ctrl+V, whoosh,
+carte qui glisse, notification, scratch ; synthèse pour les impacts sous les chiffres et le logo.
+Review de la version sans voix → corrections : lignes du parc et puce de recherche trop petites (agrandies, 2 lignes),
+dossiers qui se chevauchaient (espacés), titre de l'annonce coupé (fiche entière), cartes des douleurs dans la zone
+TikTok basse (remontées), « Regarde bien. » → « Écoute bien. ».
+Rendu 1 : image vide à 35,75 s et dernière seconde figée → « 1 450 € » entre avant la sortie de la fiche, fin animée
+(poussée, second clic sur GARAGE). Rendu 2 : −14,0 LUFS, −3,2 dBTP, aucune image vide, aucun plan figé, 24 % d'énergie
+sous 150 Hz ; seul WARN : zones sûres pendant les entrées/sorties en mouvement.
