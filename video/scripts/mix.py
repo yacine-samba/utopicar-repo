@@ -24,6 +24,30 @@ if os.path.exists(A(f'audio/sfx{CUT}{HK}.wav')):
 else:  # bande-son complète déjà dans la musique (sound design)
     n = len(music); mix = music.copy()
 
+# voix off (audio/vo<CUT>.wav|mp3) : posée à voLead, filtrée sous 80 Hz, légèrement compressée, devant la musique
+# (la musique et les effets baissent sous la voix : attaque 20 ms, relâchement 250 ms, ≈ −9 dB)
+VO = next((A(f'audio/vo{CUT}.{e}') for e in ('wav', 'mp3') if os.path.exists(A(f'audio/vo{CUT}.{e}'))), None)
+if VO:
+    import json, librosa
+    from scipy.signal import butter, sosfilt
+    lead = json.load(open(A(f'timeline{CUT}.json'))).get('voLead', 0.15)
+    v, _ = librosa.load(VO, sr=sr, mono=True)
+    v = sosfilt(butter(2, 80, 'high', fs=sr, output='sos'), v)
+    v = np.concatenate([np.zeros(int(lead * sr)), v])[:n]; v = np.pad(v, (0, n - len(v)))
+    def follow(x, a, r):
+        out = np.empty_like(x); c = 0.0; ka, kr = np.exp(-1 / (a * sr)), np.exp(-1 / (r * sr))
+        for i, s_ in enumerate(np.abs(x)):
+            k = ka if s_ > c else kr; c = s_ + (c - s_) * k; out[i] = c
+        return out
+    step = 16; ev = np.repeat(follow(v[::step], 0.02 / step * step, 0.25), step)[:n]
+    ref = np.percentile(ev[ev > 1e-4], 70) if np.any(ev > 1e-4) else 1
+    comp = np.minimum(1, (ref / np.maximum(ev, 1e-6)) ** 0.35)          # compression douce ≈ 1:1,5 au-dessus du niveau typique
+    v = v * comp
+    duck = 1 - 0.65 * np.clip(ev / ref, 0, 1)
+    vr = np.sqrt(np.mean(v[np.abs(v) > 1e-4] ** 2)); mr = np.sqrt(np.mean(mix ** 2)) + 1e-9
+    mix = mix * duck[:, None] + (v * (mr * 2.4 / vr))[:, None]
+    print(f'voix : {os.path.relpath(VO, ROOT)} posée à {lead:.2f} s, musique baissée sous la voix')
+
 TARGET, CEIL = -14.0, -1.0
 # plafond de travail plus bas que la cible : l'encodage AAC ajoute jusqu'à ~2 dB de dépassement sur les crêtes
 # (mesuré sur le MP4 de la v5) ; MIX_CEIL permet de régler cette marge.

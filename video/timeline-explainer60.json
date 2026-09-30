@@ -1,0 +1,1200 @@
+{
+ "version": 8,
+ "style": "explainer pub 60 s, voix Simon, chaque fonction de l'outil sur la vraie interface",
+ "fps": 30,
+ "dur": 57.63333333333333,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "poster": 36.0,
+ "voLead": 0.15,
+ "voRate": 3.1,
+ "vo": "[excited] Tu fais de l'achat-revente auto ? Alors écoute bien. Une annonce qui a l'air top… [sarcastic] une fois les frais payés, il te reste parfois moins que rien. Des annonces partout, des calculs à la main, une marge au pif. [pause] C'est fini. [excited] Voici UTOPICAR : ton outil d'achat-revente, dans ta poche. Un : tu analyses. Tu colles l'annonce, et en deux secondes : une note sur cent, un verdict, ce qu'il te reste vraiment, frais compris… et le prix à ne jamais dépasser. Deux : tes rapports. Tous tes dossiers au même endroit, pour comparer et garder la meilleure affaire. Trois : la recherche en direct. UTOPICAR surveille les nouvelles annonces et te sort celles qui sont sous la cote. [happy] Mille quatre cent cinquante euros en dessous ? T'es le premier au courant. Quatre : ton parc. Chaque voiture, son statut, sa marge, et depuis combien de jours elle dort. Et cinq : ton tableau de bord. Ton stock, ton argent immobilisé, ta marge réalisée… [pause] tout, en un coup d'œil. Tu sais avant d'acheter. Tu revends avec de la marge. [pause] UTOPICAR. [excited] Commente GARAGE pour recevoir l'accès.",
+ "anchors": {
+  "ecoute": "Alors écoute bien",
+  "annonce": "Une annonce qui a l'air top",
+  "frais": "une fois les frais payés",
+  "rien": "moins que rien",
+  "p1": "Des annonces partout",
+  "p2": "des calculs à la main",
+  "p3": "une marge au pif",
+  "fini": "C'est fini",
+  "voici": "Voici UTOPICAR",
+  "poche": "dans ta poche",
+  "f1": "Un tu analyses",
+  "colle": "Tu colles l'annonce",
+  "deux": "en deux secondes",
+  "note": "une note sur cent",
+  "verdict": "un verdict",
+  "reste": "ce qu'il te reste",
+  "plafond": "et le prix à ne jamais",
+  "f2": "Deux tes rapports",
+  "dossiers": "Tous tes dossiers",
+  "comparer": "pour comparer",
+  "meilleure": "la meilleure affaire",
+  "f3": "Trois la recherche",
+  "surveille": "UTOPICAR surveille",
+  "sous": "sous la cote",
+  "mille": "Mille quatre cent cinquante",
+  "premier": "T'es le premier",
+  "f4": "Quatre ton parc",
+  "chaque": "Chaque voiture",
+  "dort": "depuis combien de jours",
+  "f5": "Et cinq ton tableau",
+  "stock": "Ton stock",
+  "argent": "ton argent immobilisé",
+  "marge": "ta marge réalisée",
+  "coup": "tout en un coup",
+  "sais": "Tu sais avant",
+  "revends": "Tu revends avec",
+  "logo": "UTOPICAR Commente",
+  "cta": "Commente GARAGE"
+ },
+ "marksFixed": {
+  "start": 0,
+  "end": 60
+ },
+ "cues": [
+  {
+   "t": 1.864,
+   "sfx": "pop"
+  },
+  {
+   "t": 2.944,
+   "sfx": "pop"
+  },
+  {
+   "t": 6.668,
+   "sfx": "hit"
+  },
+  {
+   "t": 7.678,
+   "sfx": "pop"
+  },
+  {
+   "t": 8.628,
+   "sfx": "pop"
+  },
+  {
+   "t": 9.816,
+   "sfx": "pop"
+  },
+  {
+   "t": 11.431,
+   "sfx": "impact"
+  },
+  {
+   "t": 12.218,
+   "sfx": "thump"
+  },
+  {
+   "t": 14.081,
+   "sfx": "whoosh"
+  },
+  {
+   "t": 15.068,
+   "sfx": "whoosh"
+  },
+  {
+   "t": 15.118,
+   "sfx": "pop"
+  },
+  {
+   "t": 16.859,
+   "sfx": "click"
+  },
+  {
+   "t": 17.540000000000003,
+   "sfx": "click"
+  },
+  {
+   "t": 18.437,
+   "sfx": "pop"
+  },
+  {
+   "t": 19.425,
+   "sfx": "tick"
+  },
+  {
+   "t": 20.035,
+   "sfx": "pop"
+  },
+  {
+   "t": 22.156,
+   "sfx": "pop"
+  },
+  {
+   "t": 23.991,
+   "sfx": "whoosh"
+  },
+  {
+   "t": 24.041,
+   "sfx": "pop"
+  },
+  {
+   "t": 25.351,
+   "sfx": "pop"
+  },
+  {
+   "t": 25.551,
+   "sfx": "pop"
+  },
+  {
+   "t": 27.913,
+   "sfx": "pop"
+  },
+  {
+   "t": 29.063,
+   "sfx": "whoosh"
+  },
+  {
+   "t": 29.113,
+   "sfx": "pop"
+  },
+  {
+   "t": 30.893,
+   "sfx": "pop"
+  },
+  {
+   "t": 33.627,
+   "sfx": "click"
+  },
+  {
+   "t": 34.642,
+   "sfx": "hit"
+  },
+  {
+   "t": 38.4,
+   "sfx": "whoosh"
+  },
+  {
+   "t": 38.449999999999996,
+   "sfx": "pop"
+  },
+  {
+   "t": 39.714,
+   "sfx": "pop"
+  },
+  {
+   "t": 39.934,
+   "sfx": "pop"
+  },
+  {
+   "t": 40.153999999999996,
+   "sfx": "pop"
+  },
+  {
+   "t": 42.168,
+   "sfx": "tick"
+  },
+  {
+   "t": 43.542,
+   "sfx": "whoosh"
+  },
+  {
+   "t": 43.592,
+   "sfx": "pop"
+  },
+  {
+   "t": 45.457,
+   "sfx": "pop"
+  },
+  {
+   "t": 46.044,
+   "sfx": "pop"
+  },
+  {
+   "t": 47.017,
+   "sfx": "pop"
+  },
+  {
+   "t": 48.508,
+   "sfx": "whoosh"
+  },
+  {
+   "t": 49.989,
+   "sfx": "whoosh"
+  },
+  {
+   "t": 53.378,
+   "sfx": "thump"
+  },
+  {
+   "t": 55.035,
+   "sfx": "click"
+  }
+ ],
+ "marks": {
+  "start": 0,
+  "ecoute": 1.864,
+  "annonce": 2.944,
+  "frais": 4.516,
+  "rien": 6.668,
+  "p1": 7.678,
+  "p2": 8.628,
+  "p3": 9.816,
+  "fini": 11.431,
+  "voici": 12.218,
+  "poche": 14.081,
+  "f1": 15.068,
+  "colle": 16.359,
+  "deux": 17.44,
+  "note": 18.437,
+  "verdict": 19.425,
+  "reste": 20.035,
+  "plafond": 22.156,
+  "f2": 23.991,
+  "dossiers": 25.351,
+  "comparer": 26.925,
+  "meilleure": 27.913,
+  "f3": 29.063,
+  "surveille": 30.893,
+  "sous": 33.677,
+  "mille": 34.642,
+  "premier": 36.919,
+  "f4": 38.4,
+  "chaque": 39.714,
+  "dort": 41.768,
+  "f5": 43.542,
+  "stock": 45.457,
+  "argent": 46.044,
+  "marge": 47.017,
+  "coup": 48.508,
+  "sais": 49.989,
+  "revends": 51.293,
+  "logo": 53.378,
+  "cta": 54.035,
+  "end": 57.63333333333333
+ },
+ "words": [
+  [
+   "Tu",
+   0.15,
+   0.327
+  ],
+  [
+   "fais",
+   0.327,
+   0.551
+  ],
+  [
+   "de",
+   0.551,
+   0.728
+  ],
+  [
+   "l'achat-revente",
+   0.728,
+   1.16
+  ],
+  [
+   "auto",
+   1.16,
+   1.384
+  ],
+  [
+   "?",
+   1.384,
+   1.524
+  ],
+  [
+   "Alors",
+   1.864,
+   2.111
+  ],
+  [
+   "écoute",
+   2.111,
+   2.381
+  ],
+  [
+   "bien.",
+   2.381,
+   2.604
+  ],
+  [
+   "Une",
+   2.944,
+   3.145
+  ],
+  [
+   "annonce",
+   3.145,
+   3.438
+  ],
+  [
+   "qui",
+   3.438,
+   3.638
+  ],
+  [
+   "a",
+   3.638,
+   3.792
+  ],
+  [
+   "l'air",
+   3.792,
+   4.015
+  ],
+  [
+   "top…",
+   4.015,
+   4.216
+  ],
+  [
+   "une",
+   4.516,
+   4.716
+  ],
+  [
+   "fois",
+   4.716,
+   4.94
+  ],
+  [
+   "les",
+   4.94,
+   5.14
+  ],
+  [
+   "frais",
+   5.14,
+   5.387
+  ],
+  [
+   "payés,",
+   5.387,
+   5.634
+  ],
+  [
+   "il",
+   5.774,
+   5.951
+  ],
+  [
+   "te",
+   5.951,
+   6.128
+  ],
+  [
+   "reste",
+   6.128,
+   6.375
+  ],
+  [
+   "parfois",
+   6.375,
+   6.668
+  ],
+  [
+   "moins",
+   6.668,
+   6.915
+  ],
+  [
+   "que",
+   6.915,
+   7.115
+  ],
+  [
+   "rien.",
+   7.115,
+   7.338
+  ],
+  [
+   "Des",
+   7.678,
+   7.879
+  ],
+  [
+   "annonces",
+   7.879,
+   8.195
+  ],
+  [
+   "partout,",
+   8.195,
+   8.488
+  ],
+  [
+   "des",
+   8.628,
+   8.829
+  ],
+  [
+   "calculs",
+   8.829,
+   9.122
+  ],
+  [
+   "à",
+   9.122,
+   9.276
+  ],
+  [
+   "la",
+   9.276,
+   9.453
+  ],
+  [
+   "main,",
+   9.453,
+   9.676
+  ],
+  [
+   "une",
+   9.816,
+   10.017
+  ],
+  [
+   "marge",
+   10.017,
+   10.264
+  ],
+  [
+   "au",
+   10.264,
+   10.441
+  ],
+  [
+   "pif.",
+   10.441,
+   10.641
+  ],
+  [
+   "C'est",
+   11.431,
+   11.655
+  ],
+  [
+   "fini.",
+   11.655,
+   11.878
+  ],
+  [
+   "Voici",
+   12.218,
+   12.465
+  ],
+  [
+   "UTOPICAR",
+   12.465,
+   12.781
+  ],
+  [
+   ":",
+   12.781,
+   12.921
+  ],
+  [
+   "ton",
+   13.061,
+   13.262
+  ],
+  [
+   "outil",
+   13.262,
+   13.508
+  ],
+  [
+   "d'achat-revente,",
+   13.508,
+   13.941
+  ],
+  [
+   "dans",
+   14.081,
+   14.305
+  ],
+  [
+   "ta",
+   14.305,
+   14.482
+  ],
+  [
+   "poche.",
+   14.482,
+   14.728
+  ],
+  [
+   "Un",
+   15.068,
+   15.245
+  ],
+  [
+   ":",
+   15.245,
+   15.385
+  ],
+  [
+   "tu",
+   15.525,
+   15.703
+  ],
+  [
+   "analyses.",
+   15.703,
+   16.019
+  ],
+  [
+   "Tu",
+   16.359,
+   16.536
+  ],
+  [
+   "colles",
+   16.536,
+   16.806
+  ],
+  [
+   "l'annonce,",
+   16.806,
+   17.123
+  ],
+  [
+   "et",
+   17.263,
+   17.44
+  ],
+  [
+   "en",
+   17.44,
+   17.617
+  ],
+  [
+   "deux",
+   17.617,
+   17.84
+  ],
+  [
+   "secondes",
+   17.84,
+   18.157
+  ],
+  [
+   ":",
+   18.157,
+   18.297
+  ],
+  [
+   "une",
+   18.437,
+   18.637
+  ],
+  [
+   "note",
+   18.637,
+   18.861
+  ],
+  [
+   "sur",
+   18.861,
+   19.061
+  ],
+  [
+   "cent,",
+   19.061,
+   19.285
+  ],
+  [
+   "un",
+   19.425,
+   19.602
+  ],
+  [
+   "verdict,",
+   19.602,
+   19.895
+  ],
+  [
+   "ce",
+   20.035,
+   20.212
+  ],
+  [
+   "qu'il",
+   20.212,
+   20.435
+  ],
+  [
+   "te",
+   20.435,
+   20.613
+  ],
+  [
+   "reste",
+   20.613,
+   20.859
+  ],
+  [
+   "vraiment,",
+   20.859,
+   21.176
+  ],
+  [
+   "frais",
+   21.316,
+   21.563
+  ],
+  [
+   "compris…",
+   21.563,
+   21.856
+  ],
+  [
+   "et",
+   22.156,
+   22.333
+  ],
+  [
+   "le",
+   22.333,
+   22.51
+  ],
+  [
+   "prix",
+   22.51,
+   22.734
+  ],
+  [
+   "à",
+   22.734,
+   22.887
+  ],
+  [
+   "ne",
+   22.887,
+   23.065
+  ],
+  [
+   "jamais",
+   23.065,
+   23.335
+  ],
+  [
+   "dépasser.",
+   23.335,
+   23.651
+  ],
+  [
+   "Deux",
+   23.991,
+   24.215
+  ],
+  [
+   ":",
+   24.215,
+   24.355
+  ],
+  [
+   "tes",
+   24.495,
+   24.695
+  ],
+  [
+   "rapports.",
+   24.695,
+   25.011
+  ],
+  [
+   "Tous",
+   25.351,
+   25.575
+  ],
+  [
+   "tes",
+   25.575,
+   25.775
+  ],
+  [
+   "dossiers",
+   25.775,
+   26.092
+  ],
+  [
+   "au",
+   26.092,
+   26.269
+  ],
+  [
+   "même",
+   26.269,
+   26.492
+  ],
+  [
+   "endroit,",
+   26.492,
+   26.785
+  ],
+  [
+   "pour",
+   26.925,
+   27.149
+  ],
+  [
+   "comparer",
+   27.149,
+   27.465
+  ],
+  [
+   "et",
+   27.465,
+   27.643
+  ],
+  [
+   "garder",
+   27.643,
+   27.913
+  ],
+  [
+   "la",
+   27.913,
+   28.09
+  ],
+  [
+   "meilleure",
+   28.09,
+   28.429
+  ],
+  [
+   "affaire.",
+   28.429,
+   28.723
+  ],
+  [
+   "Trois",
+   29.063,
+   29.309
+  ],
+  [
+   ":",
+   29.309,
+   29.449
+  ],
+  [
+   "la",
+   29.589,
+   29.766
+  ],
+  [
+   "recherche",
+   29.766,
+   30.106
+  ],
+  [
+   "en",
+   30.106,
+   30.283
+  ],
+  [
+   "direct.",
+   30.283,
+   30.553
+  ],
+  [
+   "UTOPICAR",
+   30.893,
+   31.21
+  ],
+  [
+   "surveille",
+   31.21,
+   31.549
+  ],
+  [
+   "les",
+   31.549,
+   31.75
+  ],
+  [
+   "nouvelles",
+   31.75,
+   32.089
+  ],
+  [
+   "annonces",
+   32.089,
+   32.406
+  ],
+  [
+   "et",
+   32.406,
+   32.583
+  ],
+  [
+   "te",
+   32.583,
+   32.76
+  ],
+  [
+   "sort",
+   32.76,
+   32.984
+  ],
+  [
+   "celles",
+   32.984,
+   33.254
+  ],
+  [
+   "qui",
+   33.254,
+   33.454
+  ],
+  [
+   "sont",
+   33.454,
+   33.677
+  ],
+  [
+   "sous",
+   33.677,
+   33.901
+  ],
+  [
+   "la",
+   33.901,
+   34.078
+  ],
+  [
+   "cote.",
+   34.078,
+   34.302
+  ],
+  [
+   "Mille",
+   34.642,
+   34.888
+  ],
+  [
+   "quatre",
+   34.888,
+   35.158
+  ],
+  [
+   "cent",
+   35.158,
+   35.382
+  ],
+  [
+   "cinquante",
+   35.382,
+   35.722
+  ],
+  [
+   "euros",
+   35.722,
+   35.968
+  ],
+  [
+   "en",
+   35.968,
+   36.145
+  ],
+  [
+   "dessous",
+   36.145,
+   36.439
+  ],
+  [
+   "?",
+   36.439,
+   36.579
+  ],
+  [
+   "T'es",
+   36.919,
+   37.119
+  ],
+  [
+   "le",
+   37.119,
+   37.296
+  ],
+  [
+   "premier",
+   37.296,
+   37.589
+  ],
+  [
+   "au",
+   37.589,
+   37.766
+  ],
+  [
+   "courant.",
+   37.766,
+   38.06
+  ],
+  [
+   "Quatre",
+   38.4,
+   38.67
+  ],
+  [
+   ":",
+   38.67,
+   38.81
+  ],
+  [
+   "ton",
+   38.95,
+   39.15
+  ],
+  [
+   "parc.",
+   39.15,
+   39.374
+  ],
+  [
+   "Chaque",
+   39.714,
+   39.984
+  ],
+  [
+   "voiture,",
+   39.984,
+   40.277
+  ],
+  [
+   "son",
+   40.417,
+   40.617
+  ],
+  [
+   "statut,",
+   40.617,
+   40.887
+  ],
+  [
+   "sa",
+   41.027,
+   41.204
+  ],
+  [
+   "marge,",
+   41.204,
+   41.451
+  ],
+  [
+   "et",
+   41.591,
+   41.768
+  ],
+  [
+   "depuis",
+   41.768,
+   42.038
+  ],
+  [
+   "combien",
+   42.038,
+   42.331
+  ],
+  [
+   "de",
+   42.331,
+   42.508
+  ],
+  [
+   "jours",
+   42.508,
+   42.755
+  ],
+  [
+   "elle",
+   42.755,
+   42.979
+  ],
+  [
+   "dort.",
+   42.979,
+   43.202
+  ],
+  [
+   "Et",
+   43.542,
+   43.719
+  ],
+  [
+   "cinq",
+   43.719,
+   43.943
+  ],
+  [
+   ":",
+   43.943,
+   44.083
+  ],
+  [
+   "ton",
+   44.223,
+   44.423
+  ],
+  [
+   "tableau",
+   44.423,
+   44.716
+  ],
+  [
+   "de",
+   44.716,
+   44.894
+  ],
+  [
+   "bord.",
+   44.894,
+   45.117
+  ],
+  [
+   "Ton",
+   45.457,
+   45.657
+  ],
+  [
+   "stock,",
+   45.657,
+   45.904
+  ],
+  [
+   "ton",
+   46.044,
+   46.245
+  ],
+  [
+   "argent",
+   46.245,
+   46.515
+  ],
+  [
+   "immobilisé,",
+   46.515,
+   46.877
+  ],
+  [
+   "ta",
+   47.017,
+   47.195
+  ],
+  [
+   "marge",
+   47.195,
+   47.441
+  ],
+  [
+   "réalisée…",
+   47.441,
+   47.758
+  ],
+  [
+   "tout,",
+   48.508,
+   48.731
+  ],
+  [
+   "en",
+   48.871,
+   49.048
+  ],
+  [
+   "un",
+   49.048,
+   49.225
+  ],
+  [
+   "coup",
+   49.225,
+   49.449
+  ],
+  [
+   "d'œil.",
+   49.449,
+   49.649
+  ],
+  [
+   "Tu",
+   49.989,
+   50.166
+  ],
+  [
+   "sais",
+   50.166,
+   50.39
+  ],
+  [
+   "avant",
+   50.39,
+   50.637
+  ],
+  [
+   "d'acheter.",
+   50.637,
+   50.953
+  ],
+  [
+   "Tu",
+   51.293,
+   51.47
+  ],
+  [
+   "revends",
+   51.47,
+   51.764
+  ],
+  [
+   "avec",
+   51.764,
+   51.987
+  ],
+  [
+   "de",
+   51.987,
+   52.164
+  ],
+  [
+   "la",
+   52.164,
+   52.341
+  ],
+  [
+   "marge.",
+   52.341,
+   52.588
+  ],
+  [
+   "UTOPICAR.",
+   53.378,
+   53.695
+  ],
+  [
+   "Commente",
+   54.035,
+   54.351
+  ],
+  [
+   "GARAGE",
+   54.351,
+   54.621
+  ],
+  [
+   "pour",
+   54.621,
+   54.845
+  ],
+  [
+   "recevoir",
+   54.845,
+   55.161
+  ],
+  [
+   "l'accès.",
+   55.161,
+   55.431
+  ]
+ ],
+ "voSource": "estimation (3.1 mots/s)",
+ "voEnd": 55.431
+}
