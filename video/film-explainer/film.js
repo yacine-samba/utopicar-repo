@@ -69,7 +69,7 @@ const addMark = (box) => { const w = box.querySelector('.k'); const m = el('div'
 const mkP4 = addMark(P4), mkALL = addMark(ALL);
 
 /* ================= flash jaune + logo ================= */
-const lockY = el('div', 'lock', stage); lockY.innerHTML = `<span class="logo">${LOGO.replace('<svg', '<svg width="176" height="168"')}</span><span class="wm" style="color:#1A1310">${U1.logo.text}</span>`;
+const lockY = el('div', 'lock', stage); lockY.innerHTML = `<span class="logo">${LOGO.replace('<svg', '<svg width="150" height="143"')}</span><span class="wm" style="color:#1A1310">${U1.logo.text}</span>`;
 const markB = el('div', 'mark', stage); markB.innerHTML = CAR;
 
 /* ================= chapitres ================= */
@@ -236,13 +236,13 @@ window.seek = function (t) {
   });
 
   // ---- textes du problème
-  const tx = [[P1, M.p1 + 0.2, M.p2 - 0.2], [P2, M.p2 + 0.1, M.p3 - 0.2], [P3, M.p3 + 0.1, M.p4 - 0.2], [P4, M.p4 + 0.1, M.flash - 0.25]];
-  for (const [b, a, o] of tx) { const on = inWin(t, a - 0.05, o + 0.5); show(b, on); if (on) { typeText(b, t, a, o, 0.03); b.style.transform = `translate(0px,${960 - b.offsetHeight / 2}px)`; } }
+  const tx = [[P1, M.p1 + 0.2, M.p2 - 0.2, M.p2], [P2, M.p2 + 0.1, M.p3 - 0.2, M.p3], [P3, M.p3 + 0.1, M.p4 - 0.2, M.p4], [P4, M.p4 + 0.1, M.flash - 0.25, M.flash]];
+  for (const [b, a, o, cut] of tx) { const on = inWin(t, a - 0.05, Math.min(o + 0.5, cut)); show(b, on); if (on) { typeText(b, t, a, o, 0.03); b.style.transformOrigin = '540px 60px'; b.style.transform = `translate(0px,${960 - b.offsetHeight / 2}px) scale(${(1 + smooth(a, o + 0.2, t) * 0.08).toFixed(4)})`; } }
   marker(t, mkP4, M.p4 + 1.0, M.flash - 0.25);
 
   // ---- flash jaune + logo monochrome
   const fOn = inWin(t, M.flash, M.all); show(lockY, fOn);
-  if (fOn) { const p = spring(t - M.flash, 'heavy'); place(lockY, 540, 960 + (1 - p) * 40, 1.18 - 0.18 * p, 0, clamp(p * 2, 0, 1)); }
+  if (fOn) { const p = spring(t - M.flash, 'heavy'); place(lockY, 540, 960 + (1 - p) * 40, (1.18 - 0.18 * p) * (1 + smooth(M.flash, M.all, t) * 0.06), 0, clamp(p * 2, 0, 1)); }
 
   // ---- tout-en-un : pastille, chips aspirées, phrase
   const bOn = inWin(t, M.all, M.ch1); show(markB, bOn);
@@ -301,7 +301,7 @@ window.seek = function (t) {
     const t0 = M.demo2; const qd = dims('qsform', K2, 10);
     const qi = spring(t - t0, 'default'), qo = spring(t - (t0 + 1.5), 'default');
     const qx = 540, qy = 900 + (1 - qi) * 1300 - qo * 700;
-    place(qsC, qx, qy, 1 - qo * 0.25, 0, 1 - qo * 0.9, qo * 8);
+    place(qsC, qx, qy, (1 - qo * 0.25) * (1 + smooth(t0, t0 + 1.5, t) * 0.04), 0, 1 - qo * 0.9, qo * 8);
     qsShade.style.opacity = bump(t, t0 + 1.0, 0.15).toFixed(3);
     const li1 = spring(t - (t0 + 1.5), 'default'), li2 = spring(t - (t0 + 1.7), 'default');
     const push = smooth(t0 + 1.5, t0 + 4, t);
@@ -355,8 +355,8 @@ window.seek = function (t) {
   }
 
   // ---- récap
-  const rc = [[R1, M.r1 + 0.02, M.r2 - 0.25], [R2, M.r2 + 0.02, M.r3 - 0.25], [R3, M.r3 + 0.02, M.burst - 0.25]];
-  for (const [b, a, o] of rc) { const on = inWin(t, a - 0.05, o + 0.4); show(b, on); if (on) { typeText(b, t, a, o, 0.035, 40); b.style.transformOrigin = '540px 60px'; b.style.transform = `translate(0px,${960 - b.offsetHeight / 2}px) scale(${(1 + smooth(a, o + 0.25, t) * 0.12).toFixed(4)})`; } }
+  const rc = [[R1, M.r1 + 0.02, M.r2 - 0.25, M.r2], [R2, M.r2 + 0.02, M.r3 - 0.25, M.r3], [R3, M.r3 + 0.02, M.burst - 0.25, M.burst]];
+  for (const [b, a, o, cut] of rc) { const on = inWin(t, a - 0.05, Math.min(o + 0.4, cut)); show(b, on); if (on) { typeText(b, t, a, o, 0.035, 40); b.style.transformOrigin = '540px 60px'; b.style.transform = `translate(0px,${960 - b.offsetHeight / 2}px) scale(${(1 + smooth(a, o + 0.25, t) * 0.12).toFixed(4)})`; } }
   R3.querySelectorAll('.bd').forEach(e => e.style.color = '#1A1310');
 
   // ---- explosion

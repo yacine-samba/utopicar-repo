@@ -226,3 +226,27 @@ Corrigé : la tuile s'ouvre en grand (×2) puis devient une barre de 930 px, tex
 poussée lente sur la phrase du minuteur ; logo : poussée + deux ondes orange sur les temps ; panneaux : poussée
 continue, légendes 64 px ; fenêtre qui sort juste avant la coupe ; fin : poussée plus nette, second clic sur le
 bouton (57,19 s, sur le temps), logo de fin réduit pour rester hors de la marge droite.
+
+## V5 round 2 (rendu) → round 3
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 8 | Phrases 88 px lisibles à 360 px dès 0,9 s, chips d'UI nettes autour. |
+| Lisibilité à 360 px | 8 | Chiffres géants, titres, rapport, CTA. |
+| Mouvement | 8 | Figés restants : 7,1–7,8 s (phrase finie), 8,7–9,5 s (flash), 24,8–25,5 s (formulaire avant le clic). |
+| Variété | 8 | Inchangée. |
+| Marque | 8 | Mais le mot-symbole du flash touchait la marge droite (x ≈ 1060). |
+| Synchro | 8 | Inchangée. |
+Corrigé pour le round 3 : logo du flash réduit (80 px, dans la zone sûre) et poussée lente ; poussée sur les phrases et
+le formulaire ; les textes sont coupés net au changement de plan (ils finissaient de sortir sur l'aplat orange).
+
+## V6 round 2 (rendu) → round 3
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 7 | La tuile s'ouvre en grand, mais « UTOPICAR en 60 secondes » reste petit à 360 px. |
+| Lisibilité à 360 px | 8 | Légendes 64 px, phrases de l'aplat, chiffres. |
+| Mouvement | 7 | Figés : 22,0–22,6 s et 24,1–25,1 s (fenêtre posée) ; pause noire et « Mais » voulus. |
+| Variété | 9 | Inchangée. |
+| Marque | 8 | Logo lisible sur l'aplat (liseré). |
+| Synchro | 8 | 47 repères sur la grille. |
+Corrigé pour le round 3 : recherche raccourcie « UTOPICAR en 60 s » en 62 px ; la fenêtre avance, grossit et respire
+en continu une fois à plat.

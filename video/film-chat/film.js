@@ -43,8 +43,8 @@ const sLogo = logoEl(sbar, 96); Object.assign(sLogo.style, { left: '18px', top: 
 const sQ = el('div', 'q', sbar); sQ.style.left = '138px';
 const sCaret = el('div', 'caret', sbar);
 const sIc = el('div', 'ic', sbar); sIc.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#1A1310" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>';
-const Q0 = 'UTOPICAR en 60 secondes';
-sQ.style.fontSize = '48px';
+const Q0 = 'UTOPICAR en 60 s';
+sQ.style.fontSize = '62px';
 
 /* ---------- 2. aplat : phrases ---------- */
 const s1 = el('div', 'layer', stage);
@@ -253,7 +253,8 @@ window.seek = function (t) {
     const t0 = M.window, a = spring(t - t0, 'default'), flat = spring(t - (M.pillLab + 0.9), 'default'), gone = spring(t - (M.mais - 0.32), 'default');
     const ry = lerp(-28, -12, spring(t - (t0 + 0.8), 'heavy')) * (1 - flat) + gone * 38, rx = 8 * (1 - flat);
     const x = 540 + (1 - a) * 900 + 60 * (1 - flat) - gone * 1300, y = 1000;
-    win.style.transform = `translate(${x.toFixed(1)}px,${y}px) translate(-50%,-50%) rotateY(${ry.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg)`;
+    const wp = smooth(t0, M.mais, t), wd = noise(21, t * 0.6) * 4 * flat;
+    win.style.transform = `translate(${x.toFixed(1)}px,${(y - wp * 40).toFixed(1)}px) translate(-50%,-50%) scale(${(1 + wp * 0.08).toFixed(4)}) rotateY(${(ry + wd).toFixed(2)}deg) rotateX(${(rx + noise(22, t * 0.5) * 2 * flat).toFixed(2)}deg)`;
     const pl = spring(t - M.pillLab, 'default'), plOut = spring(t - (M.mais - 0.4), 'default');
     plabel.style.transform = `translate(${(lerp(-500, 330, pl) - plOut * 900).toFixed(1)}px,${(560 + 30 * flat).toFixed(1)}px) translate(-50%,-50%) rotateY(${lerp(-40, -14, pl).toFixed(2)}deg) rotate(${(-6 + 3 * flat).toFixed(2)}deg)`;
     marker(t, winHl, M.pillLab + 0.35, null); winHl.style.opacity = '0.85';

@@ -2,7 +2,7 @@
 
 | Temps | Plan | Contenu | Son |
 |---|---|---|---|
-| 0–3,75 | Recherche | Blanc chaud ; la tuile logo s'ouvre en barre de recherche, « UTOPICAR en 60 secondes » tapé, clic loupe | plucks, claquements |
+| 0–3,75 | Recherche | Blanc chaud ; la tuile logo s'ouvre en barre de recherche, « UTOPICAR en 60 s » tapé, clic loupe | plucks, claquements |
 | 3,75–7,5 | Aplat | « Bon. » puis « Tu as 60 secondes ? », anneau-minuteur orange qui se trace | kick doux, basse |
 | 7,5–9,4 | Aplat | « Assez pour ne plus jamais » / « acheter **trop cher.** » | |
 | 9,4–11,25 | Logo | Pop de la tuile logo | impact, groove entre |
