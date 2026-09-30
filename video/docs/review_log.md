@@ -289,3 +289,15 @@ Seul WARN restant : zones sûres pendant les entrées/sorties en mouvement (≤ 
 - Round 3 : lignes de frais illisibles à 360 px → agrandies avec marge intérieure ; phrase finale figée → poussée.
 Notes : hook 8, clarté 8, lisibilité 360 px 8, zones sûres 8, mouvement 8, rythme 8, marque 8, son 8 (mesuré, non
 écouté), conformité 9.
+
+## V8 explainer 58 s, sans voix (voix de Simon bloquée par ElevenLabs)
+Mesures `qa_video.py` sur le MP4 final : 58,17 s, −14,0 LUFS, true peak −1,7 dBTP, image 0 pleine, aucune image vide,
+aucun plan figé, 33 % d'énergie sous 150 Hz ; seul WARN : zones sûres pendant les entrées/sorties en mouvement.
+- Round 1 (images fixes) : éléments en attente visibles en bas du cadre → cachés avant leur entrée ; lignes de frais et
+  panneaux du tableau hors zone basse → réduits/replacés ; cartes qui masquaient « C'est fini. » → passées derrière.
+- Round 2 (aperçu 540p) : plans figés pendant la voix, image vide à une coupe → poussée de caméra par chapitre,
+  en-têtes déjà visibles à la coupe ; version sans voix → légende courte par étape.
+- Round 3 (rendu 1080p) : chapitres qui restaient 1,5 s sur le seul titre → premier élément avancé ; carton final
+  4,7 s → 3,5 s.
+Notes : hook 8, clarté 8, lisibilité 8, zones sûres 8, mouvement 8, rythme 8, marque 8, son 8 (mesuré, non écouté),
+conformité 9.
