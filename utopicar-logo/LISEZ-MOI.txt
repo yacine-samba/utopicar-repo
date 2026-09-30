@@ -1,0 +1,30 @@
+UTOPICAR — PACK LOGO
+
+Couleurs
+  Orange   #ff5a1f
+  Bitume   #15110d
+  Papier   #f4f1ec
+
+Dossiers
+  01-symbole        La voiture + la flèche seules. SVG + PNG transparent 512 à 4096 px.
+                    Couleur (fond sombre / fond clair), blanc, noir, orange.
+  02-icones         Tuiles arrondies (noir, clair, orange) + avatars ronds. SVG + PNG 64 à 2048 px.
+  03-logo-complet   Symbole + « utopicar ».
+                    horizontal = tuile + texte (comme sur le site)
+                    ligne      = symbole + texte, sans tuile
+                    empile     = symbole au-dessus du texte
+                    SVG (vectoriel), PNG transparent 800/1600/3200, JPG avec fond, WebP.
+  04-favicon-web    favicon.ico, favicon.svg, apple-touch-icon, android 192/512, manifest
+                    + le code à coller dans le <head>.
+  05-reseaux-sociaux Photos de profil (rondes et carrées), image de partage 1200x630,
+                    bannières LinkedIn, X et Facebook. PNG, JPG, WebP + sources SVG.
+  06-impression-PDF Versions vectorielles pour imprimeur (flyers, cartes, stickers, covering).
+
+Quel fichier utiliser
+  Site / app ............ SVG
+  Word, Canva, slides ... PNG 1600 px
+  Imprimeur ............. PDF ou SVG
+  Réseaux ............... dossier 05
+
+Note : le texte « utopicar » est vectorisé (pas besoin d'installer de police).
+Police utilisée pour ces fichiers : Poppins Bold.

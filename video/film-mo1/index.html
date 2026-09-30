@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>UTOPICAR — explainer 60 s, style référence 1 (typo marine)</title>
+<style>
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;src:url(../assets/site/Archivo-latin.woff2) format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#07182A}
+#stage{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;color:#FFFFFF;
+  background:radial-gradient(ellipse 70% 55% at 50% 45%,#020A15 0%,#051526 45%,#0A2238 100%)}
+.layer{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden}
+.abs{position:absolute;left:0;top:0}
+.crop{position:absolute}
+.txt{position:absolute;left:140px;top:0;width:800px;text-align:center;white-space:nowrap;transform-origin:400px 50%}
+.txt .ln{display:block}.txt .wd{display:inline-block;position:relative}.txt .ch{display:inline-block}
+.ph{font-weight:600;font-size:76px;line-height:1.15;letter-spacing:-.01em;color:#FFFFFF}
+.ph .o{color:#FF7A45}
+.big{font-weight:800;font-size:200px;line-height:1;letter-spacing:-.03em;color:#FFFFFF}
+.big .rd{color:#FF6B6B}.big .gr{color:#3FE0A0}
+.sub{font-weight:500;font-size:64px;color:#8FA3B8}
+.kick{position:absolute;left:0;top:0;display:flex;align-items:center;gap:18px;white-space:nowrap;font-size:40px;font-weight:600;color:#DCE6F0}
+.kick b{color:#FF7A45;font-weight:800}
+.kick .pl{display:flex;align-items:center;gap:10px;font-size:28px;font-weight:700;color:#DCE6F0;background:#12314A;border-radius:30px;padding:8px 12px 8px 20px}
+.kick .pl i{width:26px;height:26px;border-radius:13px;background:#FF5A1F;box-shadow:0 0 18px 4px rgba(255,90,31,.55)}
+.drop{position:absolute;left:0;top:0;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFD2BC 0%,#FF7A45 35%,#FF5A1F 70%);box-shadow:0 0 30px 10px rgba(255,90,31,.45)}
+.ghost{position:absolute;left:0;top:0;border-radius:50%;background:#FF5A1F}
+.flower{position:absolute;left:0;top:0;width:600px;height:600px}
+.flower svg{width:600px;height:600px;display:block}
+.card{position:absolute;left:0;top:0;background:#FFFFFF;box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+.hl{position:absolute;background:#FFC4A8;mix-blend-mode:multiply;border-radius:6px;transform-origin:0 50%}
+.lock{position:absolute;left:0;top:0;display:flex;align-items:center;gap:36px;white-space:nowrap}
+.lock .ico{width:156px;height:156px;display:block;flex:none;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55)) drop-shadow(0 0 1px rgba(255,255,255,.25))}
+.lock .wm{font-weight:800;font-stretch:125%;letter-spacing:.02em;font-size:100px;line-height:1;color:#FFFFFF}
+.cta{position:absolute;left:0;top:0;display:flex;align-items:center;gap:20px;white-space:nowrap;font-weight:800;font-size:68px;color:#FFFFFF}
+.cta .g{background:#FF5A1F;color:#1A1310;border-radius:24px;padding:8px 28px 6px;box-shadow:0 0 40px 6px rgba(255,90,31,.35)}
+.demo{position:absolute;left:140px;top:1446px;width:800px;text-align:center;font-size:27px;font-weight:600;color:#5E7388}
+.cursor{z-index:50}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../lib/motion.js"></script>
+<script src="../lib/kit.js"></script>
+<script type="module" src="film.js"></script>
+</body>
+</html>

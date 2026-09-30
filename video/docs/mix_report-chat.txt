@@ -1,0 +1,5 @@
+Mix : 60.00 s, 48 kHz stéréo 24 bits
+pyloudnorm : -14.00 LUFS intégrés, true peak -3.71 dBTP (x4)
+ffmpeg ebur128 : I = -14.0 LUFS, true peak = -3.7 dBTP
+Cible : -14 LUFS, true peak <= -1 dBTP → OK
+MP4 final (AAC 256 k) :  I: -14.0 LUFS  Peak: -3.0 dBFS 

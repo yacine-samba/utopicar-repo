@@ -11,9 +11,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 name = sys.argv[1] if len(sys.argv) > 1 else 'round'
-src = os.path.join(ROOT, sys.argv[2] if len(sys.argv) > 2 else 'renders/9x16.mp4')
+CUT = '-' + os.environ['CUT'] if os.environ.get('CUT') else ''
+src = os.path.join(ROOT, sys.argv[2] if len(sys.argv) > 2 else f'renders/9x16{CUT}.mp4')
 out = os.path.join(ROOT, 'renders/review'); os.makedirs(out, exist_ok=True)
-TL = json.load(open(os.path.join(ROOT, 'timeline.json'))); FPS = TL['fps']
+TL = json.load(open(os.path.join(ROOT, f'timeline{CUT}.json'))); FPS = TL['fps']
 W, H = 270, 480
 raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', src, '-vf', f'scale={W}:{H}', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], capture_output=True).stdout
 fr = np.frombuffer(raw, np.uint8).reshape(-1, H, W, 3)
@@ -37,7 +38,7 @@ sheet([min(n - 1, int((k + 0.5) * FPS / 2)) for k in range(int(n / (FPS / 2)))],
 diff = np.array([np.abs(fr[i].astype(int) - fr[i - 1].astype(int)).mean() for i in range(1, n)])
 fast = int(np.argmax(diff)) + 1
 sheet(list(range(max(0, fast - 6), min(n, fast + 6))), 6, 220, f'{name}-strip.png', from_full=True)
-key = [int(t * FPS) for t in (0.3, 1.2, 2.5, 3.5, 5.5, 7.0, 9.2, 10.8, 12.8, 14.5)]
+key = [int(t * FPS) for t in TL.get('reviewKeys', (0.3, 1.2, 2.5, 3.5, 5.5, 7.0, 9.2, 10.8, 12.8, 14.5))]
 sheet(key, 5, 360, f'{name}-phone.png', from_full=True)
 sheet([n - 3, n - 2, n - 1, 0, 1, 2], 6, 220, f'{name}-loop.png', from_full=True)
 top = np.argsort(diff)[::-1][:5] + 1

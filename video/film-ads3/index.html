@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>UTOPICAR — pub TikTok 3 (10–15 s)</title>
+<style>
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;src:url(../assets/site/Archivo-latin.woff2) format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#FFFFFF}
+#stage{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:#FFFFFF;font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;color:#0C0F14}
+.layer{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden}
+.grid{background-color:#FFFFFF;background-image:linear-gradient(rgba(12,15,20,.045) 2px,transparent 2px),linear-gradient(90deg,rgba(12,15,20,.045) 2px,transparent 2px);background-size:90px 90px;background-position:-15px 15px}
+.grid.dark{background-color:#0C0F14;background-image:linear-gradient(rgba(255,255,255,.04) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.04) 2px,transparent 2px)}
+.grid.yel{background-color:#FF5A1F;background-image:linear-gradient(rgba(26,19,16,.09) 2px,transparent 2px),linear-gradient(90deg,rgba(26,19,16,.09) 2px,transparent 2px)}
+.abs{position:absolute;left:0;top:0}
+.crop{position:absolute}
+/* textes */
+.txt{position:absolute;left:60px;top:0;width:880px;text-align:center;transform-origin:440px 50%;font-size:76px;line-height:1.12;letter-spacing:-.02em;white-space:nowrap}
+.txt .ln{display:block}
+.txt .wd{display:inline-block;position:relative}
+.txt .ch{display:inline-block}
+.lt{font-weight:400;color:#9AA1AD}
+.bd{font-weight:800;color:#0C0F14}
+.dark .lt,.lt.onDark{color:#8C95A3}
+.bdw{font-weight:800;color:#FFFFFF}
+.mk{position:absolute;left:-.06em;right:-.06em;bottom:.06em;height:.38em;background:#FF5A1F;transform-origin:0 50%;z-index:-1}
+/* chapitres */
+.giant{position:absolute;left:0;top:0;white-space:nowrap;font-weight:800;font-size:330px;letter-spacing:-.04em;color:#EEF0F3;line-height:1}
+.label{font-size:66px}
+.tog{position:absolute;left:0;top:0;width:156px;height:88px;border-radius:44px;background:#E6E9EE}
+.tog .kn{position:absolute;left:8px;top:8px;width:72px;height:72px;border-radius:50%;background:#FFFFFF;box-shadow:0 2px 6px rgba(12,15,20,.18)}
+/* cartes et captures */
+.card{position:absolute;left:0;top:0;background:#FFFFFF;border-radius:40px;box-shadow:0 4px 12px rgba(12,15,20,.06),0 60px 120px -48px rgba(12,15,20,.30)}
+.card>.crop{position:absolute}
+.abs>.crop{position:relative;display:block}
+.tile{position:absolute;left:0;top:0;background:#FFFFFF;border-radius:26px;padding:18px 20px;box-shadow:0 2px 6px rgba(12,15,20,.06),0 24px 48px -20px rgba(12,15,20,.22)}
+.tile .crop,.tile svg{position:relative;display:block}
+.shade{position:absolute;background:rgba(12,15,20,.10);border-radius:22px}
+.hl{position:absolute;background:#FFC4A8;mix-blend-mode:multiply;border-radius:6px;transform-origin:0 50%}
+/* logo */
+.mark{position:absolute;left:0;top:0;width:250px;height:239px;filter:drop-shadow(0 30px 40px rgba(26,19,16,.28))}
+.mark svg{width:250px;height:239px;display:block}
+.logo svg{display:block}
+.lock{position:absolute;left:0;top:0;display:flex;align-items:center;gap:30px;white-space:nowrap}
+.lock .wm{font-weight:800;font-stretch:125%;letter-spacing:.02em;font-size:80px;line-height:1}
+.pill{position:absolute;left:0;top:0;display:flex;align-items:center;gap:28px;height:176px;padding:0 60px 0 24px;border-radius:88px;background:#FF5A1F;box-shadow:inset 0 -8px 0 rgba(0,0,0,.08)}
+.pill svg{width:134px;height:128px}
+.pill .wm{font-weight:800;font-stretch:125%;letter-spacing:.02em;font-size:84px;color:#1A1310;line-height:1}
+.ctaw{display:inline-block;color:#1A1310;border-radius:22px;padding:6px 22px 4px;margin-left:6px}
+/* sans / avec */
+.skel{position:absolute;left:0;top:0;width:760px;height:430px;border-radius:40px;background:#1A1F26;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.skel .ph{position:absolute;left:40px;top:40px;width:190px;height:190px;border-radius:26px;background:#252B34}
+.skel .b{position:absolute;height:24px;border-radius:12px;background:#2A313B}
+.skel .pr{position:absolute;left:270px;top:250px;font-weight:800;font-size:92px;color:#FFFFFF;letter-spacing:-.02em;white-space:nowrap;line-height:1}
+.skel .q{position:absolute;right:48px;top:236px;font-weight:800;font-size:130px;color:#394150;line-height:1}
+.tag{position:absolute;left:0;top:0;font-weight:700;font-size:46px;color:#8C95A3;white-space:nowrap;display:flex;align-items:center;gap:18px}
+.tag .mini{display:block}
+.tag .mini svg{width:66px;height:63px;display:block}
+.tag b{color:#FFFFFF;font-weight:800;font-stretch:125%;letter-spacing:.02em}
+.cursor{z-index:50}
+.ctaw .ch{position:relative}
+.ctabg{position:absolute;left:-4px;right:-4px;top:0;bottom:0;background:#FF5A1F;border-radius:22px;transform-origin:0 50%;z-index:-1}
+
+.rd{font-weight:800;color:#FF5C5C}
+.gr{font-weight:800;color:#0E9F6E}
+.demo{position:absolute;left:60px;top:1438px;width:880px;text-align:center;font-size:27px;font-weight:600;letter-spacing:.01em;color:#8C95A3;white-space:nowrap}
+.mask{position:absolute;background:#F5F6F8}
+.caret{position:absolute;width:5px;background:#0C0F14;border-radius:2px}
+.ring{position:absolute;left:0;top:0;width:190px;height:190px}
+.ring svg{position:absolute;left:0;top:0}
+.ring .dg{position:absolute;left:0;top:0;width:190px;height:190px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:96px;letter-spacing:-.03em;color:#0C0F14;font-variant-numeric:tabular-nums}
+.cnt{position:absolute;left:0;top:0;white-space:nowrap;font-weight:800;font-stretch:112%;font-size:150px;letter-spacing:-.03em;color:#0C0F14;font-variant-numeric:tabular-nums;line-height:1}
+.cnt small{font-size:.5em;font-weight:600;color:#9AA1AD;margin-left:.15em}
+.yel .lt{color:#7A2E10}
+
+.hd{position:absolute;left:0;top:0;display:flex;align-items:center;gap:26px;white-space:nowrap}
+.hd .n{width:104px;height:104px;border-radius:52px;background:#FF5A1F;color:#1A1310;font-weight:800;font-size:64px;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.hd .l{font-weight:800;font-size:78px;letter-spacing:-.02em;color:#0C0F14}
+.hd .ic{width:64px;height:64px;color:#9AA1AD}
+.hd .ic svg{width:64px;height:64px;display:block}
+.dot{position:absolute;width:26px;height:26px;border-radius:13px;background:#0A8F55}
+</style>
+</head>
+<body data-v="3">
+<div id="stage"></div>
+<script src="../lib/motion.js"></script>
+<script src="../lib/kit.js"></script>
+<script type="module" src="../film-ads/film.js"></script>
+</body>
+</html>

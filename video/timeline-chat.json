@@ -1,0 +1,416 @@
+{
+ "version": 6,
+ "style": "film conversationnel, d'après la grammaire de la référence 4",
+ "fps": 30,
+ "dur": 60,
+ "bpm": 128,
+ "size": [
+  1080,
+  1920
+ ],
+ "poster": 56.0,
+ "reviewKeys": [
+  1.8,
+  4.2,
+  6.5,
+  8.9,
+  10.2,
+  12.2,
+  14.0,
+  15.4,
+  17.5,
+  21.5,
+  23.8,
+  26.8,
+  29.0,
+  31.5,
+  35.5,
+  39.5,
+  42.4,
+  44.0,
+  45.8,
+  48.2,
+  49.8,
+  51.5,
+  53.2,
+  54.8,
+  56.0,
+  59.5
+ ],
+ "marks": {
+  "search": 0,
+  "type0": 1.0,
+  "click0": 2.8125,
+  "bon": 3.75,
+  "t60": 4.6875,
+  "assez": 7.5,
+  "trop": 8.4375,
+  "pop": 9.375,
+  "ringUI": 11.25,
+  "table": 13.125,
+  "dabord": 15.0,
+  "swarm": 15.9375,
+  "swarmIn": 19.6875,
+  "window": 20.625,
+  "pillLab": 22.5,
+  "winClick": 24.375,
+  "mais": 26.25,
+  "pastout": 27.1875,
+  "macro": 28.125,
+  "pRap": 30.0,
+  "pParc": 33.75,
+  "pKpi": 37.5,
+  "pSearch": 41.25,
+  "searchClick": 42.65625,
+  "icons": 43.125,
+  "black": 45.0,
+  "msg": 46.875,
+  "send": 48.75,
+  "dots": 49.21875,
+  "kaleido": 50.625,
+  "logo": 52.5,
+  "cta": 53.4375,
+  "click": 54.375,
+  "cta2": 55.3125,
+  "end": 60
+ },
+ "cues": [
+  {
+   "t": 0.0,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 1.0,
+   "sfx": "type",
+   "n": 13,
+   "rate": 0.035
+  },
+  {
+   "t": 2.8125,
+   "sfx": "click",
+   "beat": true
+  },
+  {
+   "t": 3.75,
+   "sfx": "type",
+   "n": 4,
+   "rate": 0.035
+  },
+  {
+   "t": 3.75,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 4.6875,
+   "sfx": "type",
+   "n": 15,
+   "rate": 0.035
+  },
+  {
+   "t": 7.5,
+   "sfx": "type",
+   "n": 21,
+   "rate": 0.035
+  },
+  {
+   "t": 8.4375,
+   "sfx": "type",
+   "n": 16,
+   "rate": 0.035
+  },
+  {
+   "t": 9.375,
+   "sfx": "impact",
+   "beat": true
+  },
+  {
+   "t": 11.25,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 11.25,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 11.48438,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 11.71875,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 11.95312,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 12.1875,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 12.42188,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 13.125,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 15.0,
+   "sfx": "type",
+   "n": 8,
+   "rate": 0.035
+  },
+  {
+   "t": 15.0,
+   "sfx": "hit",
+   "beat": true
+  },
+  {
+   "t": 15.9375,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 19.6875,
+   "sfx": "hit",
+   "beat": true
+  },
+  {
+   "t": 20.625,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 22.5,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 24.375,
+   "sfx": "click",
+   "beat": true
+  },
+  {
+   "t": 26.25,
+   "sfx": "type",
+   "n": 4,
+   "rate": 0.035
+  },
+  {
+   "t": 26.25,
+   "sfx": "hit",
+   "beat": true
+  },
+  {
+   "t": 27.1875,
+   "sfx": "type",
+   "n": 13,
+   "rate": 0.035
+  },
+  {
+   "t": 28.125,
+   "sfx": "impact",
+   "beat": true
+  },
+  {
+   "t": 30.0,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 30.2,
+   "sfx": "type",
+   "n": 20,
+   "rate": 0.035
+  },
+  {
+   "t": 32.8125,
+   "sfx": "click",
+   "beat": true
+  },
+  {
+   "t": 33.75,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 33.95,
+   "sfx": "type",
+   "n": 13,
+   "rate": 0.035
+  },
+  {
+   "t": 36.5625,
+   "sfx": "click",
+   "beat": true
+  },
+  {
+   "t": 37.5,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 37.7,
+   "sfx": "type",
+   "n": 17,
+   "rate": 0.035
+  },
+  {
+   "t": 39.375,
+   "sfx": "click",
+   "beat": true
+  },
+  {
+   "t": 41.25,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 41.45,
+   "sfx": "type",
+   "n": 23,
+   "rate": 0.03
+  },
+  {
+   "t": 41.75,
+   "sfx": "type",
+   "n": 5,
+   "rate": 0.035
+  },
+  {
+   "t": 42.65625,
+   "sfx": "click",
+   "beat": true
+  },
+  {
+   "t": 43.125,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 43.125,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 43.35938,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 43.425,
+   "sfx": "type",
+   "n": 13,
+   "rate": 0.035
+  },
+  {
+   "t": 43.59375,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 43.82812,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 44.0625,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 44.29688,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 47.175,
+   "sfx": "type",
+   "n": 16,
+   "rate": 0.035
+  },
+  {
+   "t": 48.75,
+   "sfx": "whoosh",
+   "beat": true
+  },
+  {
+   "t": 49.21875,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 49.45312,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 49.6875,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 50.625,
+   "sfx": "hit",
+   "beat": true
+  },
+  {
+   "t": 51.09375,
+   "sfx": "hit",
+   "beat": true
+  },
+  {
+   "t": 51.5625,
+   "sfx": "hit",
+   "beat": true
+  },
+  {
+   "t": 52.03125,
+   "sfx": "hit",
+   "beat": true
+  },
+  {
+   "t": 52.5,
+   "sfx": "thump",
+   "beat": true
+  },
+  {
+   "t": 53.4375,
+   "sfx": "type",
+   "n": 14,
+   "rate": 0.035
+  },
+  {
+   "t": 53.4375,
+   "sfx": "pop",
+   "beat": true
+  },
+  {
+   "t": 54.375,
+   "sfx": "click",
+   "beat": true
+  },
+  {
+   "t": 55.3125,
+   "sfx": "type",
+   "n": 20,
+   "rate": 0.035
+  },
+  {
+   "t": 57.1875,
+   "sfx": "click",
+   "beat": true
+  }
+ ]
+}

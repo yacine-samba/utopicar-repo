@@ -1,0 +1,271 @@
+{
+ "version": 10,
+ "style": "pub TikTok 2, 10–15 s, voix Simon",
+ "fps": 30,
+ "dur": 12.533333333333333,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "poster": 2.0,
+ "voLead": 0.1,
+ "voRate": 3.2,
+ "vo": "[excited] Mille quatre cent cinquante euros sous la cote. Publiée il y a douze minutes. UTOPICAR surveille les annonces et te prévient avant tout le monde. [happy] Presque deux mille euros de marge. [excited] Commente GARAGE.",
+ "anchors": {
+  "mille": [
+   "Mille quatre cent cinquante",
+   "1450"
+  ],
+  "publiee": [
+   "Publiée il y a",
+   "il y a douze",
+   "il y a 12"
+  ],
+  "surveille": [
+   "UTOPICAR surveille",
+   "surveille les annonces"
+  ],
+  "presque": [
+   "Presque deux mille",
+   "presque 2000",
+   "deux mille euros"
+  ],
+  "cta": [
+   "Commente GARAGE",
+   "commente garage"
+  ]
+ },
+ "marksFixed": {
+  "start": 0
+ },
+ "cues": [
+  {
+   "t": 0.0,
+   "sfx": "hit"
+  },
+  {
+   "t": 2.28,
+   "sfx": "s:slide",
+   "g": 0.5
+  },
+  {
+   "t": 2.38,
+   "sfx": "s:ping"
+  },
+  {
+   "t": 4.22,
+   "sfx": "s:whoosh",
+   "pre": 0.2
+  },
+  {
+   "t": 4.72,
+   "sfx": "pop"
+  },
+  {
+   "t": 7.18,
+   "sfx": "s:slide",
+   "g": 0.7
+  },
+  {
+   "t": 7.28,
+   "sfx": "hit"
+  },
+  {
+   "t": 9.06,
+   "sfx": "s:whoosh",
+   "pre": 0.2
+  },
+  {
+   "t": 9.06,
+   "sfx": "thump"
+  },
+  {
+   "t": 9.96,
+   "sfx": "s:click"
+  },
+  {
+   "t": 11.833,
+   "sfx": "s:click",
+   "g": 0.8
+  }
+ ],
+ "marks": {
+  "start": 0,
+  "mille": 0.1,
+  "publiee": 2.48,
+  "surveille": 4.22,
+  "presque": 7.28,
+  "cta": 9.06,
+  "end": 12.533333333333333
+ },
+ "words": [
+  [
+   "Mille",
+   0.1,
+   0.44
+  ],
+  [
+   "quatre",
+   0.44,
+   0.66
+  ],
+  [
+   "cent",
+   0.66,
+   0.9
+  ],
+  [
+   "cinquante",
+   0.9,
+   1.36
+  ],
+  [
+   "euros",
+   1.36,
+   1.54
+  ],
+  [
+   "sous",
+   1.54,
+   1.78
+  ],
+  [
+   "la",
+   1.78,
+   1.9
+  ],
+  [
+   "cote.",
+   1.9,
+   2.22
+  ],
+  [
+   "Publier",
+   2.48,
+   2.96
+  ],
+  [
+   "il",
+   2.96,
+   3.08
+  ],
+  [
+   "y",
+   3.08,
+   3.14
+  ],
+  [
+   "a",
+   3.14,
+   3.22
+  ],
+  [
+   "douze",
+   3.22,
+   3.46
+  ],
+  [
+   "minutes.",
+   3.46,
+   3.7
+  ],
+  [
+   "UTOPICAR",
+   4.22,
+   4.7
+  ],
+  [
+   "surveille",
+   4.7,
+   5.08
+  ],
+  [
+   "les",
+   5.08,
+   5.2
+  ],
+  [
+   "annonces",
+   5.2,
+   5.62
+  ],
+  [
+   "et",
+   5.62,
+   5.78
+  ],
+  [
+   "te",
+   5.78,
+   5.88
+  ],
+  [
+   "prévient",
+   5.88,
+   6.3
+  ],
+  [
+   "avant",
+   6.3,
+   6.46
+  ],
+  [
+   "tout",
+   6.46,
+   6.7
+  ],
+  [
+   "le",
+   6.7,
+   6.74
+  ],
+  [
+   "monde.",
+   6.74,
+   6.92
+  ],
+  [
+   "Presque",
+   7.28,
+   7.76
+  ],
+  [
+   "deux",
+   7.76,
+   8.06
+  ],
+  [
+   "mille",
+   8.06,
+   8.3
+  ],
+  [
+   "euros",
+   8.3,
+   8.42
+  ],
+  [
+   "de",
+   8.42,
+   8.58
+  ],
+  [
+   "marge.",
+   8.58,
+   8.98
+  ],
+  [
+   "Commente",
+   9.06,
+   9.76
+  ],
+  [
+   "GARAGE.",
+   9.76,
+   10.34
+  ]
+ ],
+ "voSource": "audio/vo-ads2.wav",
+ "voEnd": 10.34
+}

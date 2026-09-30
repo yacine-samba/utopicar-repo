@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>UTOPICAR — explainer 60 s, style référence 2 (verre bleu)</title>
+<style>
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;src:url(../assets/site/Archivo-latin.woff2) format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;color:#FFFFFF;background:#02040F}
+.layer{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden}
+.abs{position:absolute;left:0;top:0}
+.crop{position:absolute}
+.glow{position:absolute;left:-400px;top:-200px;width:1880px;height:2320px;background:radial-gradient(ellipse 45% 38% at 50% 46%,#8FD3FF 0%,#3F7BFF 22%,#1B3FC2 45%,#0A1650 68%,#02040F 90%)}
+.bar{position:absolute;top:-100px;height:2120px;filter:blur(7px)}
+.bk{position:absolute;left:0;top:0;border-radius:50%;background:#D8ECFF}
+.txt{position:absolute;left:140px;top:0;width:800px;text-align:center;white-space:nowrap;transform-origin:400px 50%}
+.txt .ln{display:block}.txt .wd{display:inline-block;position:relative}.txt .ch{display:inline-block}
+.big{font-weight:800;font-size:190px;line-height:1;letter-spacing:-.03em;color:#FFFFFF;text-shadow:0 10px 60px rgba(20,60,200,.55)}
+.big .rd{color:#FF7B7B}.big .gr{color:#5BF0B4}
+.sub{font-weight:600;font-size:62px;color:#DCE8FF}
+/* champ en verre dépoli (la barre « Hey, AI… » de la référence) */
+.pill{position:absolute;left:0;top:0;display:flex;align-items:center;gap:22px;padding:30px 44px;border-radius:70px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(226,234,255,.82));
+  box-shadow:0 0 0 2px rgba(255,255,255,.7),0 30px 70px -20px rgba(4,12,60,.7),inset 0 -6px 14px rgba(120,150,255,.25);white-space:nowrap}
+.pill .tx{font-weight:600;font-size:60px;letter-spacing:-.01em;color:#1B2340}
+.pill .tx .o{color:#FF5A1F}
+.pill .caret{width:5px;height:64px;border-radius:3px;background:#1B2340}
+.frame{box-shadow:0 0 0 16px rgba(255,255,255,.22),0 0 0 18px rgba(255,255,255,.55),0 40px 90px -20px rgba(2,8,50,.8)}
+.card{position:absolute;left:0;top:0;background:#FFFFFF}
+.hl{position:absolute;background:#FFC4A8;mix-blend-mode:multiply;border-radius:6px;transform-origin:0 50%}
+.orb{position:absolute;left:0;top:0;width:560px;height:560px;border-radius:50%;
+  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.95) 0%,rgba(255,255,255,.25) 12%,transparent 22%),radial-gradient(circle at 70% 78%,rgba(160,220,255,.55) 0%,transparent 35%),radial-gradient(circle at 50% 50%,rgba(90,150,255,.25) 0%,rgba(40,90,230,.55) 60%,rgba(170,210,255,.85) 100%);
+  box-shadow:inset 0 0 60px rgba(255,255,255,.55),inset 0 -30px 80px rgba(20,60,200,.5),0 40px 120px rgba(10,30,140,.6)}
+.tag{position:absolute;left:0;top:0;padding:14px 28px;border-radius:40px;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(220,232,255,.8));box-shadow:0 0 0 2px rgba(255,255,255,.7),0 16px 40px -10px rgba(4,12,60,.6);
+  font-weight:700;font-size:38px;color:#1B2340;white-space:nowrap}
+.load{position:absolute;left:0;top:0;width:640px;padding:44px 48px;border-radius:44px;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(224,232,255,.8));box-shadow:0 0 0 2px rgba(255,255,255,.7),0 40px 90px -20px rgba(4,12,60,.7);text-align:center}
+.load .t{font-weight:700;font-size:44px;color:#1B2340}.load .s{font-weight:500;font-size:30px;color:#5A6488;margin-top:8px}
+.load .bar2{margin-top:30px;height:22px;border-radius:11px;background:rgba(27,35,64,.12);overflow:hidden}
+.load .bar2 i{display:block;height:100%;border-radius:11px;background:linear-gradient(90deg,#FFC928,#FFB000)}
+.plane{position:absolute;left:0;top:0;width:96px;height:96px}
+.lock{position:absolute;left:0;top:0;display:flex;align-items:center;gap:34px;white-space:nowrap}
+.lock .ico{width:156px;height:156px;display:block;flex:none;filter:drop-shadow(0 20px 34px rgba(4,12,60,.6)) drop-shadow(0 0 1px rgba(255,255,255,.4))}
+.lock .wm{font-weight:800;font-stretch:125%;letter-spacing:.02em;font-size:100px;line-height:1;color:#FFFFFF;text-shadow:0 10px 60px rgba(20,60,200,.6)}
+.cta{position:absolute;left:0;top:0;display:flex;align-items:center;gap:20px;white-space:nowrap;padding:24px 34px 24px 44px;border-radius:70px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(226,234,255,.82));box-shadow:0 0 0 2px rgba(255,255,255,.7),0 30px 70px -20px rgba(4,12,60,.7);font-weight:800;font-size:62px;color:#1B2340}
+.cta .g{background:#FF5A1F;color:#1A1310;border-radius:22px;padding:6px 24px 4px}
+.demo{position:absolute;left:140px;top:1446px;width:800px;text-align:center;font-size:27px;font-weight:600;color:#9DB4E8}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../lib/motion.js"></script>
+<script src="../lib/kit.js"></script>
+<script type="module" src="film.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>UTOPICAR — film conversation 60 s</title>
+<style>
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;src:url(../assets/site/Archivo-latin.woff2) format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#FFF8F4}
+#stage{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:#FFF8F4;font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;color:#0C0F14}
+.layer{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden}
+.abs{position:absolute;left:0;top:0}
+.crop{position:absolute}
+.abs>.crop{position:relative;display:block}
+.bg{position:absolute;left:0;top:0;width:1080px;height:1920px}
+/* textes */
+.txt{position:absolute;left:0;top:0;width:1080px;text-align:center;font-size:92px;line-height:1.1;letter-spacing:-.02em;white-space:nowrap;font-weight:800}
+.txt .ln{display:block}
+.txt .wd{display:inline-block;position:relative}
+.txt .ch{display:inline-block}
+.w{color:#FFFFFF}
+.o{color:#FF5A1F}
+.i{color:#0C0F14}
+.g{color:#8A7F78;font-weight:600}
+.cap{font-size:50px;font-weight:700}
+/* barre de recherche / champ de message */
+.sbar{position:absolute;left:0;top:0;height:132px;border-radius:66px;background:#FFFFFF;box-shadow:0 2px 6px rgba(26,19,16,.06),0 30px 60px -30px rgba(26,19,16,.25);overflow:hidden}
+.sbar .q{position:absolute;left:56px;top:0;line-height:132px;font-size:50px;font-weight:600;color:#0C0F14;white-space:nowrap}
+.sbar .caret{position:absolute;top:36px;width:4px;height:60px;background:#0C0F14}
+.sbar .ic{position:absolute;right:30px;top:26px;width:80px;height:80px;border-radius:40px;background:#FF5A1F;display:grid;place-items:center}
+.sbar .ic svg{width:44px;height:44px}
+.msg{border-radius:36px;height:150px}
+/* logo */
+.logo svg{display:block;width:100%;height:100%}
+.lock{position:absolute;left:0;top:0;display:flex;align-items:center;gap:34px;white-space:nowrap}
+.lock .lg{width:160px;height:153px}
+.lock .wm{font-weight:800;font-stretch:125%;letter-spacing:.02em;font-size:86px;line-height:1;color:#1A1310}
+/* anneau */
+svg.lines{position:absolute;left:0;top:0}
+.chip{position:absolute;left:0;top:0;background:#FFFFFF;border-radius:30px;padding:16px 18px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5)}
+.chip .crop{position:relative;display:block}
+.ico{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:44px;background:#FFFFFF;display:grid;place-items:center;box-shadow:0 2px 6px rgba(26,19,16,.06),0 24px 48px -22px rgba(26,19,16,.3)}
+.ico svg{width:74px;height:74px;color:#0C0F14}
+/* bulles */
+.bub{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;background:#FFFFFF;display:grid;place-items:center;font-weight:800;font-size:34px;color:#1A1310;white-space:nowrap;letter-spacing:-.01em}
+.bub.o2{background:#FF5A1F;color:#1A1310}
+.bub.d2{background:#2A1F19;color:#FFFFFF}
+/* pastille flottante */
+.plabel{position:absolute;left:0;top:0;background:#E4F6EC;color:#0A8F55;border:3px solid #BFE6CF;font-weight:800;font-size:54px;border-radius:44px;padding:20px 40px;white-space:nowrap;box-shadow:0 30px 60px -30px rgba(10,143,85,.45)}
+/* cartes */
+.shadow{box-shadow:0 4px 12px rgba(26,19,16,.06),0 60px 120px -48px rgba(26,19,16,.35)}
+.hl{position:absolute;background:#FFC4A8;mix-blend-mode:multiply;border-radius:6px;transform-origin:0 50%}
+.shade{position:absolute;background:rgba(12,15,20,.12);border-radius:20px}
+.typed{position:absolute;background:#F5F6F8;font-weight:600;color:#0C0F14;white-space:nowrap;overflow:hidden}
+/* points */
+.dot{position:absolute;left:0;top:0;width:110px;height:110px;border-radius:50%}
+/* fin */
+.ctab{position:absolute;left:0;top:0;background:#1A1310;color:#FFFFFF;font-weight:800;font-size:60px;border-radius:60px;padding:30px 60px 28px;white-space:nowrap;box-shadow:0 30px 60px -30px rgba(26,19,16,.6)}
+.ctab b{color:#FF5A1F;font-weight:800}
+.cursor{z-index:50}
+.persp{perspective:1800px}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../lib/motion.js"></script>
+<script src="../lib/kit.js"></script>
+<script type="module" src="film.js"></script>
+</body>
+</html>
