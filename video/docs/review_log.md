@@ -322,3 +322,20 @@ sûres pendant les entrées/sorties en mouvement (≤ 0,25 s).
 - Round 2 (rendus) : image vide avant « En 2 secondes » (ads1) et à la coupe du carton final → relais anticipés, carton
   visible dès sa première image ; « Commente GARAGE » hors marge gauche pendant la poussée → 84 px, poussée réduite.
 - Round 3 : chevauchement « frais compris » / « En 2 secondes » (ads1) → relais décalé.
+
+## Remakes de la vidéo validée : MO1 (réf. 1, typo marine) et MO2 (réf. 2, verre bleu), avec et sans voix
+Même récit, mêmes repères sur la voix de Simon, même musique ; bruitages propres à chaque style (`cues-mo.mjs`).
+- Round 1 (rendu MO1) : « Commente GARAGE » hors marge gauche, cartes « dossiers » trop larges, plan logo figé 1,3 s
+  → CTA réduit, cartes resserrées, la goutte orange tourne autour du logo.
+- Round 2 (rendu MO2) : mot « UTOPICAR » au-dessus de la bulle décalé à droite et hors zone (texte plus large que sa
+  boîte) → mis à la largeur puis centré ; étiquettes en orbite hors marges → orbite resserrée.
+- Round 3 (retour utilisateur sur téléphone : « marges trop serrées, logo juste posé, on dirait que c'est décalé ») :
+  captures collées au bord de leur carte (frais, « Il vous reste », note, texte de l'annonce, « sous la cote ») →
+  chaque capture posée dans une coque blanche avec marge intérieure, recadrages refaits sur les sources, surlignage
+  « − 1 200 € » recalé ; logo = carré sombre non carré avec liseré → vraie icône d'app iOS (superellipse, dégradé,
+  liseré de lumière, ombre portée), mot-symbole proportionné ; tout était centré sur x = 500 (centre de la zone sûre)
+  et paraissait décalé à gauche sur un téléphone → centre visuel 540, largeur utile 800 px (140 → 940) pour rester
+  hors des boutons TikTok ; cartes des frais qui recouvraient « Données de démonstration » → remontées.
+- Icône invisible au premier essai (même SVG inséré deux fois : dégradé référencé dans un élément masqué) →
+  identifiants uniques par insertion.
+Versions sans voix : même film, « Écoute. » → « Regarde. » (1,5–2,9 s rendus à part puis incrustés), mix sans voix.

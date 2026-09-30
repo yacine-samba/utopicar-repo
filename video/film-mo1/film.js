@@ -6,14 +6,15 @@
 // ?hook=voix | sansvoix. Zone sûre TikTok : x 60 → 940, y 220 → 1480. Contrat : window.seek(t) peint la frame t.
 import { beats, segs } from '../film-mo/beats.js';
 import { loadUI, makeUI } from '../film-mo/ui.js';
+import { appIcon } from '../film-mo/icon.js';
 const { spring, clamp, lerp, noise } = Motion;
 const { el, show, smooth, bump, place, text, marker } = Kit;
 const TL = await (await fetch('../timeline-mo1.json')).json();
 const M = TL.marks;
 const VOICE = (new URLSearchParams(location.search).get('hook') || 'voix') !== 'sansvoix';
-const LOGO = (await (await fetch('../assets/brand/logo.svg')).text()).replace(/<!--.*?-->/s, '');
+const LOGO = await appIcon();
 const stage = document.getElementById('stage');
-const CX = 500, TY = 700, BY = 860, UY = 1170;
+const CX = 540, TY = 700, BY = 860, UY = 1170;
 const inWin = (t, a, b) => t >= a && t < b;
 await loadUI();
 
@@ -41,7 +42,7 @@ const BEATS = beats(M, VOICE).map(b => {
   if (b.ui) { b.g = makeUI(uiL, b.ui, shadow); }
   return b;
 });
-const fitW = (box, max = 820) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
+const fitW = (box, max = 760) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
 const at = (box, y, s = 1) => { box.style.transform = `translate(0px,${(y - box.offsetHeight / 2).toFixed(1)}px) scale(${s.toFixed(4)})`; };
 // lettres qui arrivent floues et se posent, puis repartent vers le haut en se floutant (grammaire de la référence)
 function letters(box, t, a, b, rate = 0.018, rise = 30, blur = 12) {
@@ -69,8 +70,8 @@ function dropAt(t) {
 /* ================= kicker, transitions fleur, fin ================= */
 const kick = el('div', 'kick', stage); kick.innerHTML = `<b>UTOPICAR</b><span>Achat-revente</span><span class="pl">C'est parti <i></i></span>`;
 const burst = el('div', 'flower', stage); burst.innerHTML = FLOWER('#FF5A1F');
-const lock = el('div', 'lock', stage); lock.innerHTML = `${LOGO}<span class="wm">UTOPICAR</span>`;
-const lock2 = el('div', 'lock', stage); lock2.innerHTML = `${LOGO}<span class="wm">UTOPICAR</span>`;
+const lock = el('div', 'lock', stage); lock.innerHTML = `${LOGO()}<span class="wm">UTOPICAR</span>`;
+const lock2 = el('div', 'lock', stage); lock2.innerHTML = `${LOGO()}<span class="wm">UTOPICAR</span>`;
 const cta = el('div', 'cta', stage); cta.innerHTML = `Commente <span class="g">GARAGE</span>`;
 const cta2 = text(stage, [["pour recevoir l'accès.", '']], 'sub');
 const demo = el('div', 'demo', stage); demo.textContent = 'Données de démonstration';
@@ -97,7 +98,7 @@ window.seek = function (t) {
     if (b.g) {
       const p = spring(t - b.a, 'default'), q = spring(t - (b.b - 0.25), 'default');
       const bl = (1 - clamp(p, 0, 1)) * 14 + q * 14;
-      place(b.g, CX + noise(9, t * 0.3) * 6, UY + (1 - p) * 120 - q * 90, (0.9 + 0.1 * p) * (1 + smooth(b.a, b.b, t) * 0.03), 0, clamp(p * 1.8 - q * 1.8, 0, 1), bl);
+      place(b.g, CX + noise(9, t * 0.3) * 6, UY + (b.g._dy || 0) + (1 - p) * 120 - q * 90, (0.9 + 0.1 * p) * (1 + smooth(b.a, b.b, t) * 0.03), 0, clamp(p * 1.8 - q * 1.8, 0, 1), bl);
       b.g.hls.forEach((h, i) => { marker(t, h, b.a + 0.45 + i * 0.15, null); h.style.opacity = '0.85'; });
     }
   }
@@ -128,7 +129,7 @@ window.seek = function (t) {
   const eOn = t >= M.logo; show(lock2, eOn); show(cta, eOn && t >= M.cta - 0.1); show(cta2, eOn && t >= M.cta + 0.3);
   if (eOn) {
     const p = spring(t - M.logo, 'heavy'), push = smooth(M.logo, M.end, t);
-    place(lock2, CX, 700 - push * 20, (1.18 - 0.18 * p) * 0.8 * (1 + push * 0.03), 0, clamp(p * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10);
+    place(lock2, CX, 700 - push * 20, (1.1 - 0.1 * p) * 0.85 * (1 + push * 0.03), 0, clamp(p * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10);
     const c = spring(t - M.cta, 'default'); const beat = bump(t, M.end - 0.8, 0.16);
     place(cta, CX, 960 + (1 - c) * 60, (0.9 + 0.1 * c) * (1 + beat * 0.06), 0, clamp(c * 2, 0, 1), (1 - clamp(c, 0, 1)) * 8);
     letters(cta2, t, M.cta + 0.35, 1e9, 0.02); at(cta2, 1080);

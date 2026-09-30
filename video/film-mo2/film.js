@@ -6,14 +6,15 @@
 // ?hook=voix | sansvoix. Zone sûre TikTok : x 60 → 940, y 220 → 1480. Contrat : window.seek(t) peint la frame t.
 import { beats, segs } from '../film-mo/beats.js';
 import { loadUI, makeUI } from '../film-mo/ui.js';
+import { appIcon } from '../film-mo/icon.js';
 const { spring, clamp, lerp, noise } = Motion;
 const { el, show, smooth, inOut, bump, place, text, marker, hash } = Kit;
 const TL = await (await fetch('../timeline-mo2.json')).json();
 const M = TL.marks;
 const VOICE = (new URLSearchParams(location.search).get('hook') || 'voix') !== 'sansvoix';
-const LOGO = (await (await fetch('../assets/brand/logo.svg')).text()).replace(/<!--.*?-->/s, '');
+const LOGO = await appIcon();
 const stage = document.getElementById('stage');
-const CX = 500, PY = 640, BY = 860, UY = 1160;
+const CX = 540, PY = 640, BY = 860, UY = 1160;
 const inWin = (t, a, b) => t >= a && t < b;
 await loadUI();
 
@@ -57,7 +58,7 @@ const cmpL = text(uiL, [['NO GO', '']], 'sub'), cmpR = text(uiL, [['GO', '']], '
 // bulle de verre liquide + 5 fonctions en orbite (voici → f1)
 const orbL = el('div', 'layer', stage);
 const orb = el('div', 'orb', orbL);
-const orbLogo = el('div', 'lock', orbL); orbLogo.innerHTML = `${LOGO}`;
+const orbLogo = el('div', 'lock', orbL); orbLogo.innerHTML = `${LOGO()}`;
 const TAGS = ['Analyser', 'Rapports', 'Recherche en direct', 'Parc', 'Tableau de bord'].map((s, i) => { const g = el('div', 'tag', orbL); g.textContent = s; g._a = i / 5 * Math.PI * 2 - Math.PI / 2; return g; });
 const wm = text(orbL, [['UTOPICAR', '']], 'big'); wm.style.fontStretch = '125%'; wm.style.letterSpacing = '.02em';
 
@@ -66,12 +67,12 @@ const load = el('div', 'load', uiL); load.innerHTML = `<div class="t">Analyse du
 const loadBar = load.querySelector('.bar2 i');
 
 const plane = el('div', 'plane', stage); plane.innerHTML = PLANE;
-const lock = el('div', 'lock', stage); lock.innerHTML = `${LOGO}<span class="wm">UTOPICAR</span>`;
+const lock = el('div', 'lock', stage); lock.innerHTML = `${LOGO()}<span class="wm">UTOPICAR</span>`;
 const cta = el('div', 'cta', stage); cta.innerHTML = `Commente <span class="g">GARAGE</span>`;
 const cta2 = text(stage, [["pour recevoir l'accès.", '']], 'sub');
 const demo = el('div', 'demo', stage); demo.textContent = 'Données de démonstration';
 
-const fitW = (box, max = 820) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
+const fitW = (box, max = 760) => { const tf = box.style.transform; box.style.transform = 'none'; const r = [...box.querySelectorAll('.ch')].map(c => c.getBoundingClientRect()).filter(r => r.width); const w = r.length ? Math.max(...r.map(x => x.right)) - Math.min(...r.map(x => x.left)) : 0; if (w > max) box.style.fontSize = (parseFloat(getComputedStyle(box).fontSize) * max / w).toFixed(1) + 'px'; box.style.transform = tf; };
 const at = (box, y, s = 1) => { box.style.transform = `translate(0px,${(y - box.offsetHeight / 2).toFixed(1)}px) scale(${s.toFixed(4)})`; };
 function letters(box, t, a, b, rate = 0.03, rise = 50, blur = 18) {
   box.chars.forEach((c, i) => {
@@ -103,7 +104,7 @@ window.seek = function (t) {
     if (b.kind === 'phrase') {
       const p = spring(t - (b.a === 0 ? -2 : b.a), 'default'), q = spring(t - (b.b - 0.25), 'default');
       const y = (b.g || b.ui === 'dock' || b.ui === 'duo' ? PY : BY) + (b.ui === 'dock' ? -260 : 0);
-      const w = b.box.offsetWidth, sc = Math.min(1, 880 / w);
+      const w = b.box.offsetWidth, sc = Math.min(1, 780 / w);
       place(b.box, CX, y + (1 - p) * 60 - q * 80, sc * (0.92 + 0.08 * p), 0, clamp(p * 2 - q * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10 + q * 12);
       const f = typed(b.box, t, a0 + 0.12, b.b);
       planeTo = [CX + w * sc / 2 - 30, y + 60]; planeOn = true;
@@ -111,7 +112,7 @@ window.seek = function (t) {
     else { letters(b.box, t, b.a, b.b); at(b.box, 780, 1 + smooth(b.a, b.b, t) * 0.05); letters(b.sub, t, b.a + 0.3, b.b, 0.02, 30, 10); at(b.sub, 960); }
     if (b.g) {
       const p = spring(t - (b.a + 0.1), 'default'), q = spring(t - (b.b - 0.25), 'default');
-      place(b.g, CX, UY + (1 - p) * 160 - q * 120, (0.88 + 0.12 * p) * (1 + smooth(b.a, b.b, t) * 0.03), 0, clamp(p * 1.8 - q * 1.8, 0, 1), (1 - clamp(p, 0, 1)) * 16 + q * 16);
+      place(b.g, CX, UY + (b.g._dy || 0) + (1 - p) * 160 - q * 120, (0.88 + 0.12 * p) * (1 + smooth(b.a, b.b, t) * 0.03), 0, clamp(p * 1.8 - q * 1.8, 0, 1), (1 - clamp(p, 0, 1)) * 16 + q * 16);
       b.g.hls.forEach((h, i) => { marker(t, h, b.a + 0.5 + i * 0.15, null); h.style.opacity = '0.85'; });
     }
   }
@@ -129,7 +130,7 @@ window.seek = function (t) {
       const tp = spring(t - (M.voici + 0.35 + i * 0.12), 'default'); const ang = g._a + (t - M.voici) * 0.35;
       place(g, CX + Math.cos(ang) * 270 * tp, ocy + Math.sin(ang) * 340 * tp - q * 200, 0.6 + 0.4 * tp, 0, clamp(tp * 2 - q * 2, 0, 1), (1 - clamp(tp, 0, 1)) * 8);
     });
-    const wp = spring(t - (M.voici + 0.2), 'heavy'); show(wm, t < M.poche + 0.2); letters(wm, t, M.voici + 0.2, M.poche + 0.2, 0.03); at(wm, 460, 0.55);
+    const wp = spring(t - (M.voici + 0.2), 'heavy'); show(wm, t < M.poche + 0.2); letters(wm, t, M.voici + 0.2, M.poche + 0.2, 0.03); at(wm, 460, 0.7);
   }
   // « 2 secondes » : carte de chargement
   const lOn = inWin(t, M.deux - 0.05, M.note); show(load, lOn);
@@ -149,7 +150,7 @@ window.seek = function (t) {
   const eOn = t >= M.logo; show(lock, eOn); show(cta, eOn && t >= M.cta - 0.1); show(cta2, eOn && t >= M.cta + 0.3);
   if (eOn) {
     const p = spring(t - M.logo, 'heavy'), push = smooth(M.logo, M.end, t);
-    place(lock, CX, 720 - push * 20, (1.3 - 0.3 * p) * 0.8 * (1 + push * 0.03), 0, clamp(p * 2, 0, 1), (1 - clamp(p, 0, 1)) * 16);
+    place(lock, CX, 720 - push * 20, (1.1 - 0.1 * p) * 0.85 * (1 + push * 0.03), 0, clamp(p * 2, 0, 1), (1 - clamp(p, 0, 1)) * 16);
     const c = spring(t - M.cta, 'default'), beat = bump(t, M.end - 0.8, 0.16);
     place(cta, CX, 980 + (1 - c) * 60, (0.9 + 0.1 * c) * (1 + beat * 0.05), 0, clamp(c * 2, 0, 1), (1 - clamp(c, 0, 1)) * 10);
     letters(cta2, t, M.cta + 0.35, 1e9, 0.02, 30, 10); at(cta2, 1120);
@@ -160,6 +161,6 @@ window.seek = function (t) {
 await document.fonts.ready;
 await document.fonts.load("800 190px 'Archivo'"); await document.fonts.load("600 60px 'Archivo'");
 for (const b of BEATS) { if (b.box && !b.box.classList.contains('pill')) fitW(b.box); if (b.sub) fitW(b.sub); }
-fitW(cta2);
+fitW(cta2); fitW(wm);
 window.seek(0);
 window.filmReady = true;
