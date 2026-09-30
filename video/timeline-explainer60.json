@@ -2,7 +2,7 @@
  "version": 8,
  "style": "explainer pub 60 s, voix Simon, chaque fonction de l'outil sur la vraie interface",
  "fps": 30,
- "dur": 59.0,
+ "dur": 58.166666666666664,
  "bpm": 120,
  "size": [
   1080,
@@ -368,7 +368,7 @@
   "revends": 52.578,
   "logo": 54.706,
   "cta": 55.373,
-  "end": 59.0
+  "end": 58.166666666666664
  },
  "words": [
   [

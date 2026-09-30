@@ -321,7 +321,7 @@ window.seek = function (t) {
     push(s5, t, M.f2, M.f3);
     drawHeader(hd2, t, M.f2, M.f3);
     const out = spring(t - (M.f3 - 0.3), 'default');
-    const a = spring(t - M.dossiers, 'default'), b = spring(t - (M.dossiers + 0.2), 'default');
+    const dIn = Math.min(M.dossiers, M.f2 + 0.45); const a = spring(t - dIn, 'default'), b = spring(t - (dIn + 0.2), 'default');
     const cmp = spring(t - M.comparer, 'default'), best = spring(t - M.meilleure, 'default');
     // les deux dossiers, puis côte à côte (comparer), puis le meilleur reste seul
     place(r1, CX - cmp * 30 - best * 900, 680 + (1 - a) * 1300 - out * 1300, 1 - cmp * 0.06, -cmp * 3, E(a));
@@ -340,7 +340,7 @@ window.seek = function (t) {
     const out = spring(t - (M.f4 - 0.18), 'default');
     const ci = spring(t - (M.f3 + 0.35), 'default'), toLive = spring(t - M.sous, 'default');
     place(chip, CX, 540 + (1 - ci) * 1300 - toLive * 1800, 1 + bump(t, M.surveille + 0.2, 0.12) * 0.05, 0, E(ci) * (1 - toLive));
-    const li = spring(t - M.surveille, 'default');
+    const li = spring(t - Math.min(M.surveille, M.f3 + 0.8), 'default');
     place(lvm, CX, 1000 + (1 - li) * 1300 - toLive * 1800, 1, 0, E(li) * (1 - toLive));
     // clic sur la nouvelle annonce → sa fiche, qui défile jusqu'à « sous la cote »
     const x = CX + (1 - toLive) * 1000, y = 830 - toStat * 1300;
@@ -368,8 +368,9 @@ window.seek = function (t) {
     const out = spring(t - (M.f5 - 0.3), 'default');
     const fi = spring(t - (M.f4 + 0.3), 'default');
     place(filt, CX, 600 + (1 - fi) * 1300 - out * 1300, 1, 0, E(fi));
+    const rIn = Math.min(M.chaque, M.f4 + 0.7);
     rows.forEach((r, i) => {
-      const p = spring(t - (M.chaque + i * 0.22), 'default');
+      const p = spring(t - (rIn + i * 0.22), 'default');
       place(r, CX + (1 - p) * (i % 2 ? -900 : 900), 850 + i * (r._h + 12) - out * 1300, 1, (1 - p) * (i % 2 ? -5 : 5), E(p));
       marker(t, hlMarge[i], M.chaque + 1.0 + i * 0.1, null); hlMarge[i].style.opacity = '0.7';
       marker(t, hlDays[i], M.dort + 0.4 + i * 0.12, null); hlDays[i].style.opacity = '0.85';
@@ -384,7 +385,7 @@ window.seek = function (t) {
     const out = spring(t - (M.sais - 0.3), 'default');
     const zoom = spring(t - M.coup, 'default');
     const kw = kp[0]._w, kh = kp[0]._h;
-    const when = [M.stock, M.argent, M.marge, M.marge + 0.35, M.marge + 0.5, M.marge + 0.65];
+    const when = [Math.min(M.stock, M.f5 + 0.5), M.argent, M.marge, M.marge + 0.35, M.marge + 0.5, M.marge + 0.65];
     kp.forEach((c, i) => {
       const col = i % 2, row = Math.floor(i / 2), p = spring(t - when[i], 'default');
       const x0 = CX + (col ? 1 : -1) * (kw / 2 + 10), y0 = 620 + row * (kh + 20);
