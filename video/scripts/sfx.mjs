@@ -40,13 +40,32 @@ const S = {
 // frappe clavier douce : une touche par lettre (variation déterministe de hauteur et de niveau)
 S.key = (n = 0.035 * SR) => { const f = 1400 + 900 * (rnd() * 0.5 + 0.5); const x = bandNoise(n, 1800, 7000);
   return x.map((v, i) => (v * 0.9 + Math.sin(2 * Math.PI * f * i / SR) * 0.25) * env(i, 0.0003, 0.004)); };
+// bruitages réels (ElevenLabs, préparés par scripts/sfx_lib.py) : repère { sfx: 's:<nom>', pre?: s, g?: gain }
+function readWav16(file) {
+  const b = fs.readFileSync(file); let o = 12, data = null, ch = 1;
+  while (o < b.length - 8) { const id = b.toString('ascii', o, o + 4), sz = b.readUInt32LE(o + 4); if (id === 'fmt ') ch = b.readUInt16LE(o + 10); if (id === 'data') { data = b.subarray(o + 8, o + 8 + sz); break; } o += 8 + sz; }
+  const n = data.length / 2 / ch, x = new Float32Array(n);
+  for (let i = 0; i < n; i++) x[i] = data.readInt16LE(i * 2 * ch) / 32768;
+  return x;
+}
+const LIB = {};
+const SGAIN = { click: 0.42, whoosh: 0.32, ping: 0.5, scratch: 0.62, slide: 0.34, paste: 0.45 };
 const GAIN = { key: 0.16, click: 0.38, tick: 0.3, pop: 0.35, whoosh: 0.32, hit: 0.55, impact: 0.6, thump: 0.75 };
 const PAN = { key: 0.05, click: 0.15, tick: -0.1, pop: 0.1, whoosh: 0, hit: 0, impact: 0, thump: 0 };
 
 // une ligne tapée ({sfx:'type', n, rate}) devient une touche toutes les deux lettres
 const CUES = TL.cues.filter(c => !c.hook || c.hook === HOOK).flatMap(c => c.sfx !== 'type' ? [c] : Array.from({ length: Math.ceil(c.n / 2) }, (_, i) => ({ t: c.t + i * 2 * c.rate, sfx: 'key' })));
 for (const c of CUES) {
-  const x = S[c.sfx](); const g = GAIN[c.sfx], p = PAN[c.sfx];
+  let x, g, p;
+  if (c.sfx.startsWith('s:')) {
+    const k = c.sfx.slice(2); LIB[k] ??= readWav16(path.join(ROOT, `audio/sfx-lib/${k}.wav`));
+    x = LIB[k]; g = (c.g ?? 1) * (SGAIN[k] ?? 0.4); p = c.pan ?? 0;
+    const start = Math.round((c.t - (c.pre ?? 0)) * SR);
+    const gl = g * Math.sqrt((1 - p) / 2) * Math.SQRT2, gr = g * Math.sqrt((1 + p) / 2) * Math.SQRT2;
+    for (let i = 0; i < x.length; i++) { const j = start + i; if (j < 0 || j >= N) continue; L[j] += x[i] * gl; R[j] += x[i] * gr; }
+    continue;
+  }
+  x = S[c.sfx](); g = GAIN[c.sfx]; p = PAN[c.sfx];
   // le whoosh démarre avant le repère pour que son sommet tombe dessus
   const start = Math.round((c.t - (c.sfx === 'whoosh' ? 0.18 : 0)) * SR);
   const gl = g * Math.sqrt((1 - p) / 2) * Math.SQRT2, gr = g * Math.sqrt((1 + p) / 2) * Math.SQRT2;

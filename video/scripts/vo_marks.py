@@ -59,13 +59,16 @@ pos = 0
 for w in words: starts.append(pos); pos += len(w[3])
 marks = {k: v for k, v in TL.get('marksFixed', {}).items() if k != 'end'}
 cur = 0
-for name, phrase in TL['anchors'].items():
-    key = norm(phrase)
-    for a, b in NUM.items(): key = key.replace(a, b)
-    i = flat.find(key, cur)
-    if i < 0:
-        i = flat.find(key[:max(6, len(key) // 2)], cur)
-    if i < 0: print('ancre introuvable :', name, phrase, file=sys.stderr); continue
+for name, phrases in TL['anchors'].items():
+    # une ancre peut lister des variantes (la transcription entend parfois « Tout est dossier » ou « 1450 »)
+    i = -1
+    for phrase in ([phrases] if isinstance(phrases, str) else phrases):
+        key = norm(phrase)
+        for a, b in NUM.items(): key = key.replace(a, b)
+        i = flat.find(key, cur)
+        if i < 0: i = flat.find(key[:max(6, len(key) // 2)], cur)
+        if i >= 0: break
+    if i < 0: print('ancre introuvable :', name, phrases, file=sys.stderr); continue
     wi = max(j for j, s in enumerate(starts) if s <= i)
     marks[name] = words[wi][1]; cur = i + 1
 TL['marks'] = dict(sorted(marks.items(), key=lambda kv: kv[1]))

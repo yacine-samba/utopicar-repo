@@ -84,7 +84,7 @@ const CHIPS = [['dcard1', { x: 129, y: 122, w: 71, h: 23 }], ['vrow1', { x: 20, 
 const CHIP_POS = [[230, 470, 1.0], [760, 400, 0.85], [190, 1180, 0.9], [720, 1260, 1.05], [520, 330, 0.7], [800, 1080, 0.8], [260, 1390, 0.75], [700, 560, 0.9]];
 const chips = CHIPS.map(([k, r]) => { const c = lift(cardR(s0, k, r, 2.7, 8)); c.style.padding = '0'; return c; });
 const H1 = T(s0, [['Achat-revente', 'lt'], ['\n', ''], ['auto ?', 'bd']], 150);
-const H2 = T(s0, [['Regarde ', 'lt'], ['bien.', 'bd k']], 150); const mkH2 = addMark(H2);
+const H2 = T(s0, [[TL.voSource && !TL.voSource.startsWith('estimation') ? 'Écoute ' : 'Regarde ', 'lt'], ['bien.', 'bd k']], 150); const mkH2 = addMark(H2);
 
 /* ================= 1 : l'annonce « top » ================= */
 const s1 = el('div', 'layer', stage);
@@ -101,7 +101,7 @@ const P1 = T(s2, [['Des annonces ', 'lt'], ['partout.', 'bd']], 96);
 const P2 = T(s2, [['Des calculs ', 'lt'], ['à la main.', 'bd']], 96);
 const P3 = T(s2, [['Une marge ', 'lt'], ['au pif.', 'bd']], 96);
 const FINI = T(s2, [["C'est ", 'bd'], ['fini.', 'bd k']], 190); const mkFini = addMark(FINI);
-const ads = [['card-lv1', { x: 6, y: 6, w: 362, h: 150 }, 250, 470, -7], ['card-lv2', { x: 6, y: 6, w: 362, h: 150 }, 760, 560, 6], ['lvmini', { x: 8, y: 60, w: 366, h: 120 }, 300, 1300, 5], ['dcard2', { x: 8, y: 8, w: 362, h: 110 }, 740, 1360, -5]]
+const ads = [['card-lv1', { x: 6, y: 6, w: 362, h: 150 }, 250, 470, -7], ['card-lv2', { x: 6, y: 6, w: 362, h: 150 }, 760, 560, 6], ['lvmini', { x: 8, y: 60, w: 366, h: 120 }, 300, 1200, 5], ['dcard2', { x: 8, y: 8, w: 362, h: 110 }, 740, 1260, -5]]
   .map(([k, r, x, y, rot]) => { const c = lift(cardR(s2b, k, r, 1.4, 16)); c._p = [x, y, rot]; return c; });
 const calc = ['lg3', 'lg4', 'lg5'].map((k, i) => { const c = line(s2b, k, 1.5); c._p = [[220, 760, 1220][i] ? [230, 780, 300][i] : 0, [900, 1000, 1150][i], [-6, 5, -3][i]]; return c; });
 
@@ -133,16 +133,16 @@ const D2S = T(s4, [['2 ', 'bd k'], ['secondes.', 'bd']], 120); const mkD2 = addM
 /* ================= 5 : 2 Rapports ================= */
 const s5 = el('div', 'layer', stage);
 const hd2 = header(s5, 2, 'Rapports', 'dossiers');
-const r1 = card(s5, 'dcard1', 2.25), r2 = card(s5, 'dcard2', 2.25);
+const r1 = card(s5, 'dcard1', 2.1), r2 = card(s5, 'dcard2', 2.1);
 const hlR2 = hlOn(r2, { x: U2.dcard2Fig.x - 12, y: U2.dcard2Fig.y - 1, w: U2.dcard2Fig.w + 14, h: U2.dcard2Fig.h }, [4, 3]);
 const BEST = T(s5, [['La ', 'lt'], ['meilleure', 'bd k'], [' affaire.', 'bd']], 88); const mkBest = addMark(BEST);
 
 /* ================= 6 : 3 Recherche en direct ================= */
 const s6 = el('div', 'layer', stage);
 const hd3 = header(s6, 3, 'Recherche en direct', 'live');
-const chip = lift(cardR(s6, 'schip', { x: 4, y: 4, w: SRC.schip.w / 3 - 8, h: SRC.schip.h / 3 - 8 }, 2.6, 20));
+const chip = lift(cardR(s6, 'schip', { x: 4, y: 4, w: SRC.schip.w / 3 - 8, h: SRC.schip.h / 3 - 8 }, 3.2, 20));
 const lvm = card(s6, 'lvmini', 1.95, 10);
-const LV = { x: 6, y: 6, w: 362, h: 462 }, LVK = 2.15, LVH = 300;
+const LV = { x: 6, y: 6, w: 362, h: 462 }, LVK = 1.62, LVH = 462;
 const live = lift(el('div', 'abs', s6));
 Object.assign(live.style, { width: LV.w * LVK + 'px', height: LVH * LVK + 'px', borderRadius: 22 * LVK + 'px', overflow: 'hidden', background: '#FFFFFF' });
 const liveIn = cardR(live, 'card-lv1', LV, LVK, 0); liveIn.style.position = 'absolute'; liveIn.style.left = '0px';
@@ -157,7 +157,7 @@ const PREM = T(s6, [["T'es le ", 'lt'], ['premier.', 'bd']], 96);
 const s7 = el('div', 'layer', stage);
 const hd4 = header(s7, 4, 'Parc', 'parc');
 const filt = card(s7, 'filters', 2.2, 6);
-const rows = ['vrow1', 'vrow2', 'vrow3'].map(k => lift(cardR(s7, k, { x: 2, y: 2, w: SRC[k].w / 3 - 4, h: SRC[k].h / 3 - 4 }, 1.55, 20)));
+const rows = ['vrow1', 'vrow2'].map(k => lift(cardR(s7, k, { x: 2, y: 2, w: SRC[k].w / 3 - 4, h: SRC[k].h / 3 - 4 }, 2.2, 20)));
 const hlDays = rows.map(r => hlOn(r, { x: 251, y: 111, w: 54, h: 19 }, [4, 2]));
 const hlMarge = rows.map(r => hlOn(r, { x: 20, y: 111, w: 80, h: 19 }, [4, 2]));
 
@@ -324,8 +324,8 @@ window.seek = function (t) {
     const dIn = Math.min(M.dossiers, M.f2 + 0.45); const a = spring(t - dIn, 'default'), b = spring(t - (dIn + 0.2), 'default');
     const cmp = spring(t - M.comparer, 'default'), best = spring(t - M.meilleure, 'default');
     // les deux dossiers, puis côte à côte (comparer), puis le meilleur reste seul
-    place(r1, CX - cmp * 30 - best * 900, 680 + (1 - a) * 1300 - out * 1300, 1 - cmp * 0.06, -cmp * 3, E(a));
-    place(r2, CX + cmp * 30, 1140 + (1 - b) * 1300 - best * 280 - out * 1300, (1 - cmp * 0.06) * (1 + best * 0.1), cmp * 3 * (1 - best), E(b));
+    place(r1, CX - cmp * 30 - best * 900, 680 + (1 - a) * 1300 - out * 1300, 1 - cmp * 0.04, -cmp * 3, E(a));
+    place(r2, CX + cmp * 30, 1160 + (1 - b) * 1300 - best * 280 - out * 1300, (1 - cmp * 0.06) * (1 + best * 0.1), cmp * 3 * (1 - best), E(b));
     r2.style.zIndex = 2;
     marker(t, hlR2, M.meilleure + 0.2, null); hlR2.style.opacity = '0.85';
     typeText(BEST, t, M.meilleure + 0.1, null, 0.028); at(BEST, 1300 - out * 1300); marker(t, mkBest, M.meilleure + 0.6, null);
@@ -371,7 +371,7 @@ window.seek = function (t) {
     const rIn = Math.min(M.chaque, M.f4 + 0.7);
     rows.forEach((r, i) => {
       const p = spring(t - (rIn + i * 0.22), 'default');
-      place(r, CX + (1 - p) * (i % 2 ? -900 : 900), 850 + i * (r._h + 12) - out * 1300, 1, (1 - p) * (i % 2 ? -5 : 5), E(p));
+      place(r, CX + (1 - p) * (i % 2 ? -900 : 900), 905 + i * (r._h + 16) - out * 1300, 1, (1 - p) * (i % 2 ? -5 : 5), E(p));
       marker(t, hlMarge[i], M.chaque + 1.0 + i * 0.1, null); hlMarge[i].style.opacity = '0.7';
       marker(t, hlDays[i], M.dort + 0.4 + i * 0.12, null); hlDays[i].style.opacity = '0.85';
     });
