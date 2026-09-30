@@ -1,0 +1,10 @@
+# Projet Supabase : rvdfifhgosovdapdltps (lier avec `supabase link --project-ref rvdfifhgosovdapdltps`)
+project_id = "utopicar"
+
+# Endpoints publics appelés par les formulaires des sites : pas de JWT,
+# la protection est faite dans le code (validation, pot de miel, limite par IP, clé interne pour le cron).
+[functions.inscription]
+verify_jwt = false
+
+[functions.contact]
+verify_jwt = false
