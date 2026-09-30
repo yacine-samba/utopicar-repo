@@ -34,7 +34,7 @@ c.append({'t': M['dort'] + 0.4, 'sfx': 'tick'})
 for k in ['stock', 'argent', 'marge']: c.append({'t': M[k], 'sfx': 'pop'})
 S('whoosh', M['coup'], pre=0.25)
 # fin
-S('whoosh', M['sais'], pre=0.25); c.append({'t': M['logo'], 'sfx': 'thump'}); S('click', M['cta'] + 1.0)
+S('whoosh', M['sais'], pre=0.25); c.append({'t': M['logo'], 'sfx': 'thump'}); S('click', M['cta'] + 1.0); S('click', M['end'] - 0.9, g=0.8)
 if not voice:
     for k, n in [('colle', 16), ('note', 20), ('reste', 26), ('plafond', 13), ('dossiers', 17), ('comparer', 12), ('surveille', 25),
                  ('sous', 18), ('chaque', 24), ('dort', 21), ('stock', 10), ('argent', 21), ('marge', 17), ('coup', 21), ('sais', 23), ('revends', 28), ('cta', 15)]:

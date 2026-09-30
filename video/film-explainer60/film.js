@@ -353,8 +353,8 @@ window.seek = function (t) {
       moveCursor(cur, t, [[M.surveille + 0.5, 980, 1650], [M.surveille + 0.55, ix, iy], [M.sous + 0.9, sx, sy]], [M.sous - 0.05], M.surveille + 0.5, M.mille - 0.2); curOn = true;
     }
     // chiffre géant
-    show(N1450, t >= M.mille - 0.05);
-    N1450.chars.forEach((c, i) => { const p = spring(t - (M.mille + i * 0.04), 'heavy'); c.style.opacity = clamp(p * 1.8, 0, 1).toFixed(3); c.style.transform = `translateY(${((1 - p) * 120).toFixed(1)}px)`; });
+    show(N1450, t >= M.mille - 0.3);
+    N1450.chars.forEach((c, i) => { const p = spring(t - (M.mille - 0.25 + i * 0.04), 'heavy'); c.style.opacity = clamp(p * 1.8, 0, 1).toFixed(3); c.style.transform = `translateY(${((1 - p) * 120).toFixed(1)}px)`; });
     at(N1450, 720 - out * 1300, 1 + smooth(M.mille, M.f4, t) * 0.04);
     typeText(SOUS, t, M.mille + 0.3, null, 0.025); at(SOUS, 900 - out * 1300); marker(t, mkSous, M.mille + 0.7, null);
     typeText(PREM, t, M.premier, null, 0.03); at(PREM, 1120 - out * 1300);
@@ -412,13 +412,14 @@ window.seek = function (t) {
   if (enOn) {
     const p = spring(t - M.logo, 'heavy'), push = smooth(M.logo, M.end, t);
     const click = M.cta + 1.0, press = bump(t, click - 0.03, 0.11);
-    en.style.transformOrigin = '500px 850px'; en.style.transform = `scale(${(1 + push * 0.04).toFixed(4)})`;
+    en.style.transformOrigin = '500px 850px'; en.style.transform = `translateY(${(-push * 30).toFixed(1)}px) scale(${(1 + push * 0.07).toFixed(4)})`;
     place(pill, CX, 660, 0.85 * (0.55 + 0.45 * p), 0, clamp(p * 2, 0, 1));
     typeText(CTA, t, M.cta, null, 0.03, 30); at(CTA, 900); marker(t, ctaBg, M.cta + 0.25, null);
     const gar = CTA.querySelector('.g'); gar.style.display = 'inline-block';
-    gar.style.transform = `scale(${(1 - press * 0.08 + spring(t - click, 'snappy') * 0.05 - spring(t - (click + 0.4), 'default') * 0.05).toFixed(4)})`;
+    const beat = bump(t, M.end - 0.9, 0.16);
+    gar.style.transform = `scale(${(1 - press * 0.08 + spring(t - click, 'snappy') * 0.05 - spring(t - (click + 0.4), 'default') * 0.05 + beat * 0.07).toFixed(4)})`;
     typeText(CTA2, t, M.cta + 0.6, null, 0.025); at(CTA2, 1030);
-    moveCursor(curD, t, [[M.logo + 0.4, 1000, 1700], [M.logo + 0.45, 760, 930], [click + 0.4, 850, 1080]], [click], M.logo + 0.4, 1e9);
+    moveCursor(curD, t, [[M.logo + 0.4, 1000, 1700], [M.logo + 0.45, 760, 930], [click + 0.4, 850, 1080], [M.end - 1.2, 780, 935]], [click, M.end - 0.9], M.logo + 0.4, 1e9);
   } else show(curD, false);
   if (!curOn) show(cur, false);
 };
