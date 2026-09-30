@@ -250,3 +250,27 @@ le formulaire ; les textes sont coupés net au changement de plan (ils finissaie
 | Synchro | 8 | 47 repères sur la grille. |
 Corrigé pour le round 3 : recherche raccourcie « UTOPICAR en 60 s » en 62 px ; la fenêtre avance, grossit et respire
 en continu une fois à plat.
+
+## V5 round 3 — version livrée
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 8 | Chips d'UI + « Des annonces partout… » 88 px dès 0,5 s. |
+| Lisibilité à 360 px | 8 | Toutes les phrases, chiffres géants, CTA ; UI lue grâce au curseur et aux surligneurs. |
+| Mouvement | 8 | Seuls passages calmes : logo sur l'aplat (8,5–9,5 s, poussée lente), « Tu revends. » (48,5–49,8 s), dernière seconde. |
+| Variété | 8 | Une idée nouvelle toutes les 2 s (grille de 2 s). |
+| Marque | 8 | Logo fourni, orange du logo, dans la zone sûre. |
+| Synchro | 8 | 120,0 BPM mesurés, 42 repères sur la grille, logo sur le downbeat de 52 s. |
+
+## V6 round 3 — version livrée
+| Critère | Note | Constat |
+|---|---|---|
+| Hook | 8 | La tuile logo s'ouvre en barre, « UTOPICAR en 60 s » en 62 px, clic loupe à 2,8 s, coupe sur « Bon. ». |
+| Lisibilité à 360 px | 8 | Phrases de l'aplat, légendes 64 px, chiffres, bouton final. |
+| Mouvement | 8 | Passages calmes voulus seulement : « Mais » avant « c'est pas tout. », pause noire (curseur qui clignote), frappe du message. |
+| Variété | 9 | 16 plans différents en 60 s. |
+| Marque | 8 | Logo au début, au pop, en macro, au centre des icônes, à la fin. |
+| Synchro | 8 | 128,0 BPM mesurés, 47 repères sur la grille, silence net sur la pause noire. |
+
+Contrôle son sur le MP4 livré (et plus seulement sur le WAV) : l'encodage AAC ajoutait jusqu'à 2 dB sur les crêtes
+(v5 : +0,9 dBTP). Mix refait avec un plafond de travail à −3,5 dBTP (`MIX_CEIL`), audio remuxé sans réencoder l'image :
+v5 −14,0 LUFS / −1,5 dBTP, v6 −14,0 LUFS / −3,0 dBTP. Limite : audio vérifié par mesure, pas écouté.

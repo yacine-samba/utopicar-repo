@@ -19,6 +19,9 @@ else:  # bande-son complète déjà dans la musique (sound design)
     n = len(music); mix = music.copy()
 
 TARGET, CEIL = -14.0, -1.0
+# plafond de travail plus bas que la cible : l'encodage AAC ajoute jusqu'à ~2 dB de dépassement sur les crêtes
+# (mesuré sur le MP4 de la v5) ; MIX_CEIL permet de régler cette marge.
+WORK = float(os.environ.get('MIX_CEIL', CEIL))
 meter = pyln.Meter(sr)
 def true_peak_db(x):
     up = resample_poly(x, 4, 1, axis=0)
@@ -40,8 +43,8 @@ for it in range(6):
     lufs = meter.integrated_loudness(mix)
     mix = mix * 10 ** ((TARGET - lufs) / 20)
     tp = true_peak_db(mix)
-    if tp <= CEIL - 0.05: break
-    mix = limit(mix, CEIL - 0.3)
+    if tp <= WORK - 0.05: break
+    mix = limit(mix, WORK - 0.3)
 lufs, tp = meter.integrated_loudness(mix), true_peak_db(mix)
 sf.write(A(f'audio/mix{CUT}.wav'), mix, sr, subtype='PCM_24')
 

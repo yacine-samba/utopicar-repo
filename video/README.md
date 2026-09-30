@@ -18,7 +18,7 @@ Tous les chiffres à l'écran sont calculés par l'outil lui-même.
 
 v5 et v6 utilisent le **logo fourni par l'utilisateur** (retracé en vecteur : `assets/brand/logo.svg`) et son orange
 `#FF5A1F` comme accent. Calques d'UI supplémentaires : `node scripts/capture2.mjs` → `assets/ui2/`.
-Refaire la v5 (ou la v6 avec `chat`) : `python3 scripts/music-explainer.py && CUT=explainer python3 scripts/beats.py audio/music-explainer.wav --stem audio/drums-explainer.wav && CUT=explainer node scripts/sync.mjs && CUT=explainer node scripts/sfx.mjs && CUT=explainer python3 scripts/mix.py && CUT=explainer node scripts/render.mjs --all` (≈ 6 min).
+Refaire la v5 (ou la v6 avec `chat`) : `python3 scripts/music-explainer.py && CUT=explainer python3 scripts/beats.py audio/music-explainer.wav --stem audio/drums-explainer.wav && CUT=explainer node scripts/sync.mjs && CUT=explainer node scripts/sfx.mjs && MIX_CEIL=-3.5 CUT=explainer python3 scripts/mix.py && CUT=explainer node scripts/render.mjs --all` (≈ 6 min).
 Style et plans : `docs/explainer_style_guide.md`, `docs/explainer_shotlist.md`, `docs/chat_style_guide.md`, `docs/chat_shotlist.md`.
 
 Refaire la v3 : `python3 scripts/music-launch.py && CUT=launch python3 scripts/beats.py audio/music-launch.wav --stem audio/drums-launch.wav && CUT=launch node scripts/sync.mjs && CUT=launch python3 scripts/mix.py && CUT=launch node scripts/render.mjs --all` (≈ 12 min, rendu WebGL logiciel).
