@@ -130,7 +130,7 @@ window.seek = function (t) {
   if (eOn) {
     const p = spring(t - M.logo, 'heavy'), push = smooth(M.logo, M.end, t);
     place(lock2, CX, 700 - push * 20, (1.1 - 0.1 * p) * 0.85 * (1 + push * 0.03), 0, clamp(p * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10);
-    const c = spring(t - M.cta, 'default'); const beat = bump(t, M.end - 0.8, 0.16);
+    const c = spring(t - M.cta, 'default'); const beat = Math.max(...[2.4, 1.6, 0.8].map(d => bump(t, M.end - d, 0.16)));   // le CTA bat trois fois : jamais de carton figé
     place(cta, CX, 960 + (1 - c) * 60, (0.9 + 0.1 * c) * (1 + beat * 0.06), 0, clamp(c * 2, 0, 1), (1 - clamp(c, 0, 1)) * 8);
     letters(cta2, t, M.cta + 0.35, 1e9, 0.02); at(cta2, 1080);
   }
