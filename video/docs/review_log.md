@@ -347,3 +347,19 @@ Versions sans voix : même film, « Écoute. » → « Regarde. » (1,5–2,9 s 
 Mesures `qa_video.py` sur les 4 MP4 finaux : 10 contrôles OK sur 10 (zones sûres, image 0, aucune image vide, aucun plan
 figé, −14,0 LUFS, true peak −3,1 à −1,6 dBTP, son dès les 2 premières secondes, 24–33 % d'énergie sous 150 Hz).
 Son mesuré, pas écouté.
+
+## MO1 v2 (`film-mo1b/`) : voix de Simon plus naturelle, éléments graphiques animés, curseur actif
+Retours : plus de mouvement et de graphiques dans la vidéo, une voix moins « IA » (pauses, vraies phrases, mimiques,
+personnalité) et un curseur de MO2 « sans vie ». Détail dans `brief-mo1b.md`.
+- Round 1 (planche contact 1 image / 2 s) : « Regarde. » plus large que le chrono (dépassait à droite) → les deux mots
+  tiennent dans l'anneau ; « =SOMME(B2:B9) » recouvert par « #REF! » → colonnes du tableur recalées ; calendrier
+  « jours en stock » hors zone droite → réduit et rentré ; au CTA, la goutte passait devant le logo → elle tourne
+  derrière.
+- Round 2 (`qa_video.py`) : compteur « + 300 € » collé en haut de l'écran pendant 0,3 s (échelle calculée à NaN avant
+  le premier ticket de frais) → corrigé ; tampon NO GO, réglette de prix et « cote 7 850 € » dans la zone des boutons
+  TikTok → rentrés ; la goutte recouvrait « 6 k€ » → réglette remontée.
+- Round 3 (rendus finaux) : restent en WARN le curseur qui entre par la droite et le tampon NO GO pendant son impact
+  (< 0,25 s, échelle 2,2) ; l'image « vide » à 16,5 s est la fleur orange plein écran de la transition, voulue.
+Plages corrigées rendues à part puis incrustées avec `scripts/splice.py` (1 879 images contrôlées).
+Mesures : −14,0 LUFS sur les deux ; true peak −2,8 dBTP (voix) et −3,3 dBTP (sans voix) ; son dès les 2 premières
+secondes ; aucun plan figé. Son mesuré, pas écouté.

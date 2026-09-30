@@ -66,7 +66,7 @@ const kick = el('div', 'kick', txtL); kick.innerHTML = `<img src="../assets/bran
 say("Tu fais de\nl'[achat-revente] auto ?", -3, M.ecoute, 880, 'ph', { size: 96 });
 
 /* ================= S1 · « Écoute. » + chrono 2 s ================= */
-const bigE = say(VOICE ? 'Écoute.' : 'Regarde.', M.ecoute, M.golf, 900, 'big', { big: true });
+const bigE = say(VOICE ? 'Écoute.' : 'Regarde.', M.ecoute, M.golf, 900, 'big', { big: true, maxW: 590 });
 const chrono = svgBox(gL, 760, 760);
 const chR = sv('circle', { cx: 380, cy: 380, r: 330, fill: 'none', stroke: '#FF5A1F', 'stroke-width': 14, 'stroke-linecap': 'round', transform: 'rotate(-90 380 380)' }, chrono);
 const chB = sv('circle', { cx: 380, cy: 380, r: 330, fill: 'none', stroke: 'rgba(255,255,255,.08)', 'stroke-width': 14 }, chrono); chrono.insertBefore(chB, chR);
@@ -185,7 +185,7 @@ const chart = svgBox(gL, 800, 600);
 const CY0 = 500, PY = v => CY0 - (v - 5500) * 0.16;
 sv('line', { x1: 40, y1: CY0, x2: 770, y2: CY0, stroke: 'rgba(255,255,255,.2)', 'stroke-width': 3 }, chart);
 const coteL = sv('line', { x1: 40, y1: PY(7850), x2: 770, y2: PY(7850), stroke: '#8FA3B8', 'stroke-width': 4, 'stroke-dasharray': '14 12' }, chart);
-const coteT = sv('text', { x: 770, y: PY(7850) - 18, 'text-anchor': 'end', class: 'lbl', 'font-size': 34, fill: '#8FA3B8' }, chart); coteT.textContent = 'cote 7 850 €';
+const coteT = sv('text', { x: 770, y: PY(7850) + 46, 'text-anchor': 'end', class: 'lbl', 'font-size': 34, fill: '#8FA3B8' }, chart); coteT.textContent = 'cote 7 850 €';
 const LIST = [[110, 8200], [210, 7900], [310, 8050], [410, 7700], [520, 6400], [630, 8100], [720, 7950]];
 const pts = LIST.map(([x, v], i) => { const c = sv('circle', { cx: x, cy: PY(v), r: i === 4 ? 22 : 15, fill: i === 4 ? '#FF5A1F' : '#DCE6F0' }, chart); c._v = v; return c; });
 const gap = sv('line', { x1: 520, y1: PY(7850), x2: 520, y2: PY(6400), stroke: '#2FD597', 'stroke-width': 6, 'stroke-dasharray': 240 }, chart);
@@ -218,7 +218,7 @@ const grid = [];
 for (let i = 0; i <= 6; i++) grid.push(sv('line', { x1: 10, y1: 10 + i * 83, x2: 710, y2: 10 + i * 83, stroke: '#9FB0BF', 'stroke-width': 3 }, shG));
 for (let j = 0; j <= 5; j++) grid.push(sv('line', { x1: 10 + j * 140, y1: 10, x2: 10 + j * 140, y2: 510, stroke: '#9FB0BF', 'stroke-width': 3 }, shG));
 const CELLS = ['=SOMME(B2:B9)', '#REF!', '9 500', '??', '=B4-C4', '1 100 ?'];
-const cells = CELLS.map((s, i) => { const x = sv('text', { x: 30 + (i % 3) * 230, y: 130 + Math.floor(i / 3) * 170, class: 'lbl', 'font-size': 34, fill: i === 1 ? '#D93A2B' : '#34424f' }, shG); x.textContent = s; return x; });
+const cells = CELLS.map((s, i) => { const x = sv('text', { x: [30, 330, 560][i % 3], y: 130 + Math.floor(i / 3) * 170, class: 'lbl', 'font-size': 34, fill: i === 1 ? '#D93A2B' : '#34424f' }, shG); x.textContent = s; return x; });
 const strike = sv('line', { x1: 40, y1: 470, x2: 680, y2: 60, stroke: '#FF5C5C', 'stroke-width': 18, 'stroke-linecap': 'round', 'stroke-dasharray': 800 }, sheet);
 
 /* ================= S17–S18 · tu sais avant d'acheter, tu revends avec de la marge ================= */
@@ -294,7 +294,7 @@ window.seek = function (t) {
     fees.forEach((e, i) => { const k = pop(e, t, e._t, b + 0.3, CX + (i % 2 ? 26 : -26), 590 + i * 118, { pre: 'snappy', dy: -260, s0: 0.9, r: i % 2 ? 6 : -6, rot: i % 2 ? 1.5 : -1.5 }); if (t >= e._t + 0.12) val += e._v * clamp((t - e._t - 0.12) / 0.3, 0, 1); });
     const on = inWin(t, a + 0.3, b + 0.25); show(cnt, on);
     if (on) { const p = spring(t - (a + 0.3), 'default'), q = spring(t - b, 'snappy'); cnt.innerHTML = `${fmt(val)}<small>ce qu'il te reste</small>`; cnt.style.color = val < 0 ? '#FF5C5C' : '#2FD597';
-      cnt.style.transform = `translate(0px,${(1080 + (1 - p) * 80).toFixed(1)}px) scale(${(0.9 + 0.1 * p + bump(t, fees.find(f => f._t + 0.12 <= t && t < f._t + 0.4)?._t + 0.12 ?? -9, 0.12) * 0.05).toFixed(4)})`; cnt.style.opacity = clamp(p * 2 - q * 3, 0, 1).toFixed(3); cnt.style.transformOrigin = '400px 50%'; } }
+      cnt.style.transform = `translate(0px,${(1080 + (1 - p) * 80).toFixed(1)}px) scale(${(0.9 + 0.1 * p + bump(t, (fees.find(f => f._t + 0.12 <= t && t < f._t + 0.4)?._t ?? -9.12) + 0.12, 0.12) * 0.05).toFixed(4)})`; cnt.style.opacity = clamp(p * 2 - q * 3, 0, 1).toFixed(3); cnt.style.transformOrigin = '400px 50%'; } }
 
   // S4 · fissures sous « − 1 200 € »
   { const on = inWin(t, M.moins, M.colle - 0.3); show(crack, on);
@@ -316,7 +316,7 @@ window.seek = function (t) {
     if (on) { const p = spring(t - a, 'default'), q = spring(t - (b - 0.22), 'snappy'); place(gauge, CX, 950, 0.8 + 0.2 * p, 0, clamp(p * 2 - q * 2, 0, 1), q * 12);
       const k = 0.38 * inOut(a + 0.15, a + 1.0, t); gR.setAttribute('stroke-dashoffset', (2 * Math.PI * 240 * (1 - k)).toFixed(1)); gT.textContent = Math.round(k * 100); }
     const so = inWin(t, tVerdict - 0.05, b); show(stamp, so);
-    if (so) { const s = spring(t - tVerdict, 'snappy'), q = spring(t - (b - 0.22), 'snappy'); place(stamp, CX + 170, 1250, 2.2 - 1.2 * s, -12, clamp(s * 3 - q * 2, 0, 1)); } }
+    if (so) { const s = spring(t - tVerdict, 'snappy'), q = spring(t - (b - 0.22), 'snappy'); place(stamp, CX + 90, 1250, 2.2 - 1.2 * s, -12, clamp(s * 3 - q * 2, 0, 1)); } }
 
   // S8 · ce qu'il te reste : carte + cercle tracé à la main
   { const a = M.reste, b = M.prix; pop(tktot, t, a + 0.1, b, CX, 940, { dy: 140, drift: 0.02 });
@@ -324,7 +324,7 @@ window.seek = function (t) {
 
   // S9 · réglette : le prix glisse de 9 500 € à 7 500 €
   { const a = M.prix, b = M.tel; const on = inWin(t, a - 0.05, b); show(ruler, on);
-    if (on) { const p = spring(t - a, 'default'), q = spring(t - (b - 0.22), 'snappy'); place(ruler, CX, 1000, 1.08, 0, clamp(p * 2 - q * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10 + q * 12);
+    if (on) { const p = spring(t - a, 'default'), q = spring(t - (b - 0.22), 'snappy'); place(ruler, CX, 920, 0.98, 0, clamp(p * 2 - q * 2, 0, 1), (1 - clamp(p, 0, 1)) * 10 + q * 12);
       rLim.setAttribute('stroke-dashoffset', (170 * (1 - inOut(a + 0.3, a + 0.8, t))).toFixed(1)); rLimT.style.opacity = smooth(a + 0.6, a + 0.9, t);
       const v = lerp(9500, 7500, inOut(Wd('dépasser', a), Wd('dépasser', a) + 1.0, t)); rKnob.setAttribute('transform', `translate(${RX(v).toFixed(1)} 0)`); rKnobT.textContent = fmtN(v) + ' €';
       rOver.style.opacity = smooth(a + 0.9, a + 1.2, t); } }
@@ -352,7 +352,7 @@ window.seek = function (t) {
 
   // S13 · courbe « sous la cote »
   { const a = M.clio, b = M.premier; const on = inWin(t, a - 0.05, b); show(chart, on);
-    if (on) { const p = spring(t - a, 'default'), q = spring(t - (b - 0.22), 'snappy'); place(chart, CX, 1010, 1.2, 0, clamp(p * 2 - q * 2, 0, 1), q * 12);
+    if (on) { const p = spring(t - a, 'default'), q = spring(t - (b - 0.22), 'snappy'); place(chart, CX, 1010, 1.05, 0, clamp(p * 2 - q * 2, 0, 1), q * 12);
       coteL.setAttribute('x2', (40 + 730 * inOut(a + 0.1, a + 0.7, t)).toFixed(1)); coteT.style.opacity = smooth(a + 0.5, a + 0.8, t);
       pts.forEach((c, i) => { const s = spring(t - (a + 0.2 + i * 0.08), 'snappy'); c.setAttribute('opacity', clamp(s, 0, 1).toFixed(2)); c.setAttribute('cy', (PY(c._v) - (1 - clamp(s, 0, 1)) * 40).toFixed(1)); });
       const tg = Wd('sous', a); gap.setAttribute('stroke-dashoffset', (240 * (1 - inOut(tg - 0.3, tg + 0.2, t))).toFixed(1)); gapT.style.opacity = smooth(tg, tg + 0.3, t);
@@ -365,7 +365,7 @@ window.seek = function (t) {
   // S15 · parc : lignes, calendrier qui défile, tableau de bord
   { const a = M.parc, b = M.tableur; pop(rows, t, a + 0.1, tLa + 0.1, CX - 70, 900, { dy: 140 });
     const on = inWin(t, tJours - 0.1, tLa + 0.1); show(cal, on);
-    if (on) { const p = spring(t - (tJours - 0.1), 'snappy'), q = spring(t - (tLa - 0.12), 'snappy'); place(cal, 830, 760, 0.6 + 0.4 * p, 6 * (1 - p), clamp(p * 2 - q * 2, 0, 1)); calN.textContent = Math.round(lerp(1, 12, inOut(tJours, tJours + 0.9, t))); }
+    if (on) { const p = spring(t - (tJours - 0.1), 'snappy'), q = spring(t - (tLa - 0.12), 'snappy'); place(cal, 790, 760, (0.6 + 0.4 * p) * 0.8, 6 * (1 - p), clamp(p * 2 - q * 2, 0, 1)); calN.textContent = Math.round(lerp(1, 12, inOut(tJours, tJours + 0.9, t))); }
     pop(kpis, t, tLa, b, CX, 930, { dy: 160, s0: 0.7, drift: 0.04 }); }
 
   // S16 · tableur barré qui s'effondre
@@ -403,6 +403,7 @@ window.seek = function (t) {
   // goutte orange : guide l'œil de plan en plan
   const dOn = t < M.cta - 0.3 && !inWin(t, M.colle - 0.35, M.colle + 0.4);
   show(dropL, dOn || t >= M.cta + 0.4);
+  dropL.style.zIndex = t >= M.cta ? '1' : ''; txtL.style.zIndex = t >= M.cta ? '2' : '';   // au CTA, la goutte tourne derrière le logo
   const DROP = CUTS.map((c, i) => [c, [820, 220, 860, 200, 840, 240][i % 6], [600, 560, 1000, 1040, 640, 560][i % 6]]);
   const dropAt = u => { let x = DROP[0][1], y = DROP[0][2]; for (let i = 1; i < DROP.length; i++) { const s = spring(u - DROP[i][0], { f: 1.4, z: 0.9 }); x += (DROP[i][1] - DROP[i - 1][1]) * s; y += (DROP[i][2] - DROP[i - 1][2]) * s; } return [x + noise(4, u * 0.8) * 14, y + noise(5, u * 0.7) * 14]; };
   const orb = u => { const k = spring(u - (M.cta + 0.4), 'default'), an = (u - M.cta) * 2.2 - 1.5; return [CX + Math.cos(an) * 390 * k, 850 + Math.sin(an) * 330 * k]; };
@@ -418,6 +419,6 @@ window.seek = function (t) {
 await document.fonts.ready;
 await Promise.all([...document.querySelectorAll('img')].map(i => i.decode().catch(() => {})));
 await document.fonts.load("800 190px 'Archivo'"); await document.fonts.load("700 74px 'Archivo'");
-for (const X of TEXTS) { if (X.size) X.box.style.fontSize = X.size + 'px'; fitW(X.box, X.big ? 800 : 760); }
+for (const X of TEXTS) { if (X.size) X.box.style.fontSize = X.size + 'px'; fitW(X.box, X.maxW || (X.big ? 800 : 760)); }
 window.seek(0);
 window.filmReady = true;
