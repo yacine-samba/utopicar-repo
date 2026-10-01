@@ -214,5 +214,10 @@ window.seek = function (t) {
 await document.fonts.ready;
 await document.fonts.load("800 76px 'Archivo'"); await document.fonts.load("400 76px 'Archivo'"); await document.fonts.load("600 27px 'Archivo'");
 for (const [b, s] of FITS) fitW(b, s);
+// recentrage : le film était composé autour de x = 500 (centre de la zone sûre) et paraissait décalé à gauche sur un
+// téléphone. Tout le contenu (hors fonds plein écran) passe sur l'axe de l'écran x = 540, colonne 140 → 940 (× 0,909).
+const view = el('div', 'layer', stage); view.style.overflow = 'visible';
+view.style.transformOrigin = '500px 850px'; view.style.transform = 'translate(40px,0px) scale(0.9091)';
+for (const c of [...stage.children]) if (c !== view && !c.classList.contains('grid')) { view.appendChild(c); if (c.classList.contains('layer')) c.style.overflow = 'visible'; }
 window.seek(0);
 window.filmReady = true;

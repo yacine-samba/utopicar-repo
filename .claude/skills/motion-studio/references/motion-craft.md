@@ -31,6 +31,12 @@
 | Desktop 16:9 | 1920×1080 | YouTube, site, LinkedIn, présentation | titre 5 % (96 × 54 px), bas 108 px (barre de lecture, sous-titres) |
 | Feed 4:5 (option) | 1080×1350 | Feed Meta | 60 px partout, bas 120 |
 
+**Centrer sur l'axe de l'écran, jamais sur le centre de la zone sûre.** En 9:16, la zone sûre (60 → 940) a son centre à
+x = 500 : y centrer les éléments les décale de 40 px vers la gauche, ce qui se voit tout de suite sur un téléphone (retour
+utilisateur : « tout est décalé à gauche, c'est bâclé »). Règle : centre x = 540 et colonne symétrique 140 → 940
+(800 px utiles) pour tout ce qui est centré (textes, cartes, logo, CTA). Mesurer le centre de l'encre de chaque bloc
+(écart toléré ± 4 px) sur les images réellement rendues.
+
 **Recomposer, ne pas recadrer.** Un 9:16 recadré en 16:9 perd tout. Le film lit `?fmt=` et place chaque élément avec
 des repères propres au format :
 ```js

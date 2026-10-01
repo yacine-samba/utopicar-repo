@@ -19,7 +19,7 @@ Grille : beat = 0,5 s, downbeat = 2 s (mesurée : 119,97 BPM, voir beats.json).
 
 ## Notes format vertical
 - Titres entre y 180 et 560, alignés à gauche à 72 px, 2 lignes max, ≥ 104 px.
-- Téléphone : 820 px de large, centré sur x = 500 (légèrement à gauche pour éviter la colonne de boutons TikTok).
+- Téléphone : 820 px de large, centré sur x = 500 (ancienne règle, abandonnée : tout est désormais centré sur x = 540).
 - CTA final au-dessus de y = 1450 pour ne pas passer sous la légende TikTok.
 - Rien d'important à droite de x = 940.
 

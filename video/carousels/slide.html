@@ -11,16 +11,16 @@ body{font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;--ink:#
 #s{position:absolute;inset:0;overflow:hidden;background-color:#FFFFFF;background-image:linear-gradient(rgba(12,15,20,.045) 2px,transparent 2px),linear-gradient(90deg,rgba(12,15,20,.045) 2px,transparent 2px);background-size:90px 90px;background-position:-15px 15px}
 #s.dark{--ink:#FFFFFF;--lt:#8C95A3;--body:#C9CED6;--chip:#2A2F38;background-color:#0C0F14;background-image:linear-gradient(rgba(255,255,255,.04) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.04) 2px,transparent 2px)}
 #s.orange{--ink:#1A1310;--lt:#7A2E10;--body:#2A1A12;--acc:#FFFFFF;--chip:#FFD1BC;background-color:#FF5A1F;background-image:linear-gradient(rgba(26,19,16,.09) 2px,transparent 2px),linear-gradient(90deg,rgba(26,19,16,.09) 2px,transparent 2px)}
-/* zone sûre TikTok : x 60 → 940, y 220 → 1480 */
-#safe{position:absolute;left:60px;top:230px;width:880px;height:1240px;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:44px;text-align:center}
-.brand{position:absolute;left:60px;top:224px;width:880px;display:flex;justify-content:center;align-items:center;gap:6px;font-size:30px;color:var(--ink);opacity:.9}
+/* zone sûre TikTok : x 60 → 940, y 220 → 1480 ; colonne de contenu centrée sur l'axe de l'écran (x = 540) : 140 → 940 */
+#safe{position:absolute;left:140px;top:230px;width:800px;height:1240px;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:44px;text-align:center}
+.brand{position:absolute;left:140px;top:224px;width:800px;display:flex;justify-content:center;align-items:center;gap:6px;font-size:30px;color:var(--ink);opacity:.9}
 .brand img{height:80px;display:block}
 .brand .pg{font-weight:600;font-stretch:100%;letter-spacing:0;color:var(--lt);margin-left:10px}
 .num{min-width:124px;height:124px;padding:0 30px;white-space:nowrap;border-radius:62px;background:var(--acc);color:#1A1310;font-weight:800;font-size:76px;display:flex;align-items:center;justify-content:center;flex:none}
 #s.orange .num{background:#1A1310;color:#FF5A1F}
 .kick{font-weight:700;font-size:44px;color:var(--lt);letter-spacing:.01em}
 /* image 1 : la mise en contexte au-dessus du hook, lisible mais secondaire */
-.kick.k1{font-weight:600;font-size:58px;line-height:1.22;color:var(--ink);opacity:.78;max-width:860px;letter-spacing:-.01em;margin-bottom:-14px;text-wrap:balance}
+.kick.k1{font-weight:600;font-size:58px;line-height:1.22;color:var(--ink);opacity:.78;max-width:800px;letter-spacing:-.01em;margin-bottom:-14px;text-wrap:balance}
 .title{font-weight:800;color:var(--ink);letter-spacing:-.025em;line-height:1.06;white-space:nowrap}
 .title .l{font-weight:400;color:var(--lt)}
 .title .mk,.body .mk,.check .mk{position:relative;z-index:0;white-space:nowrap}
@@ -29,7 +29,7 @@ body{font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;--ink:#
 .title .rd{color:#E5484D}.title .gr{color:#0E9F6E}
 #s.dark .title .rd{color:#FF5C5C}#s.dark .title .gr{color:#22C38E}
 #s.orange .title .rd,#s.orange .title .gr{color:#FFFFFF}
-.body{font-weight:500;font-size:50px;line-height:1.28;color:var(--body);max-width:860px}
+.body{font-weight:500;font-size:50px;line-height:1.28;color:var(--body);max-width:800px}
 .body b{font-weight:800;color:var(--ink)}
 .ui{position:relative;overflow:hidden;background:#FFFFFF;box-shadow:0 4px 12px rgba(12,15,20,.06),0 50px 100px -40px rgba(12,15,20,.35);flex:none}
 .ui .img{position:absolute;left:0;top:0;background-repeat:no-repeat}
@@ -40,11 +40,11 @@ body{font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;--ink:#
 .cta .g{display:inline-block;background:#FF5A1F;color:#1A1310;border-radius:22px;padding:4px 24px 2px;margin:6px 0}
 .cta2{font-weight:500;font-size:50px;line-height:1.3;color:#AEB5C0;text-align:center}
 .endlogo{height:170px;display:block}
-.swipe{position:absolute;left:60px;top:1330px;width:880px;display:flex;justify-content:center}
+.swipe{position:absolute;left:140px;top:1330px;width:800px;display:flex;justify-content:center}
 .swipe span{font-weight:700;font-size:40px;color:var(--ink);border:3px solid var(--ink);border-radius:40px;padding:12px 30px;opacity:.9}
-.relance{position:absolute;left:60px;bottom:500px;width:880px;display:flex;justify-content:center}
-.relance span{font-weight:700;font-size:34px;line-height:1.2;color:var(--ink);background:var(--chip);border-radius:40px;padding:14px 30px;max-width:880px;text-align:center}
-.demo{position:absolute;left:60px;top:1440px;width:880px;text-align:center;font-size:27px;font-weight:600;color:var(--lt);letter-spacing:.01em}
+.relance{position:absolute;left:140px;bottom:500px;width:800px;display:flex;justify-content:center}
+.relance span{font-weight:700;font-size:34px;line-height:1.2;color:var(--ink);background:var(--chip);border-radius:40px;padding:14px 30px;max-width:800px;text-align:center}
+.demo{position:absolute;left:140px;top:1440px;width:800px;text-align:center;font-size:27px;font-weight:600;color:var(--lt);letter-spacing:.01em}
 .check{display:flex;flex-direction:column;gap:22px;align-items:flex-start;text-align:left}
 .check{gap:34px}.check div{font-weight:800;font-size:76px;color:var(--ink);display:flex;gap:22px;align-items:center;white-space:nowrap}
 .check div::before{content:'';width:64px;height:64px;border:7px solid var(--acc);border-radius:14px;flex:none}
@@ -78,7 +78,7 @@ async function img(key) {
 // morceau de vraie capture : r = [x, y, w, h] en px CSS, largeur visée w (px), surligneurs hl = [[x, y, w, h], …]
 async function ui(parent, spec) {
   const im = await img(spec.ui); const r = spec.r || [0, 0, im.w / DPR, im.h / DPR];
-  let k = (spec.w || 820) / r[2]; if (spec.maxH && r[3] * k > spec.maxH) k = spec.maxH / r[3];
+  let k = (spec.w || 790) / r[2]; if (spec.maxH && r[3] * k > spec.maxH) k = spec.maxH / r[3];
   const pad = spec.pad ? spec.pad * k : 0;
   const box = el('div', 'ui', parent);
   Object.assign(box.style, { width: r[2] * k + 2 * pad + 'px', height: r[3] * k + 2 * pad + 'px', borderRadius: (spec.rad ?? 22) * k + 'px' });
@@ -91,7 +91,7 @@ async function ui(parent, spec) {
   if (spec.rot) box.style.transform = `rotate(${spec.rot}deg)`;
   return box;
 }
-function fit(e, base, max = 860) { e.style.fontSize = base + 'px'; const w = e.scrollWidth; if (w > max) e.style.fontSize = (base * max / w).toFixed(1) + 'px'; }
+function fit(e, base, max = 790) { e.style.fontSize = base + 'px'; const w = e.scrollWidth; if (w > max) e.style.fontSize = (base * max / w).toFixed(1) + 'px'; }
 
 // petite signature de marque en haut (zone sûre) + numéro de page
 if (N > 0 && N < 4) el('div', 'brand', S, `${LOGO_H(bg)}<span class="pg">${N + 1}/5</span>`);
@@ -128,6 +128,8 @@ const DEMO = /Golf|Clio|\/100|1\s?647|14\s?820/.test([SL.kicker, SL.title, SL.bo
 if (C.demo !== false && (SL.demo || SL.ui || DEMO)) el('div', 'demo', S, 'Données de démonstration');
 await document.fonts.ready; await document.fonts.load("800 96px 'Archivo'"); await document.fonts.load("400 96px 'Archivo'");
 document.querySelectorAll('.title').forEach(t => fit(t, +t.dataset.size));
+// aucune capture ni rangée de captures plus large que la colonne (800 px, ombre comprise)
+document.querySelectorAll('.uis > *, .cta').forEach(e => { const w = e.offsetWidth; if (w > 790) e.style.zoom = (790 / w).toFixed(4); });
 // garde-fou : si le contenu déborde la zone sûre, on réduit tout d'un cran
 for (let i = 0; i < 6 && box.scrollHeight > H; i++) {
   document.querySelectorAll('.title').forEach(t => fit(t, parseFloat(t.style.fontSize) * 0.9));

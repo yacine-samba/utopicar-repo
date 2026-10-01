@@ -4,10 +4,10 @@ Format détecté : **vertical**, zones interdites {'top': 220, 'bottom': 440, 'l
 
 | Niveau | Contrôle | Détail |
 |---|---|---|
-| WARN | Zones sûres | contenu net dans une zone interdite ({'top': 220, 'bottom': 440, 'left': 60, 'right': 140}) : haut : 3.50–3.75s, 5.25–5.50s; gauche : 4.00–4.25s; droite : 4.00–4.25s, 10.00–10.25s — vérifier sur 9x16-ads3-safe.png ; si c'est un texte, un logo ou le CTA, c'est un FAIL |
+| WARN | Zones sûres | contenu net dans une zone interdite ({'top': 220, 'bottom': 440, 'left': 60, 'right': 140}) : haut : 3.50–3.75s, 5.25–5.50s; gauche : 3.75–4.00s; droite : 4.00–4.25s, 10.00–10.25s — vérifier sur 9x16-ads3-safe.png ; si c'est un texte, un logo ou le CTA, c'est un FAIL |
 | OK | Codec vidéo | h264 yuv420p 1080×1920 30.00 i/s, 14.07 s (vertical) |
 | OK | Codec audio | aac 48000 Hz |
-| OK | Première image | écart-type 31.8 — contient déjà du contenu |
+| OK | Première image | écart-type 28.9 — contient déjà du contenu |
 | OK | Images vides | aucune |
 | OK | Plans figés > 0,9 s | aucun |
 | OK | Loudness intégrée (MP4) | -14.0 LUFS (cible −14 ±1) |

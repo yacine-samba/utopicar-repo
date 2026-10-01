@@ -363,9 +363,9 @@ window.seek = function (t) {
     pings.forEach((r, i) => { const on = inWin(t, a + 0.3, b); show(r, on); if (on) { const k = ((t - a - 0.3 - i * 0.35) % 1.05 + 1.05) % 1.05; place(r, CX - 322, 820, 0.8 + k * 1.6, 0, (1 - k / 1.05) * 0.8); } }); }
 
   // S15 · parc : lignes, calendrier qui défile, tableau de bord
-  { const a = M.parc, b = M.tableur; pop(rows, t, a + 0.1, tLa + 0.1, CX - 70, 900, { dy: 140 });
+  { const a = M.parc, b = M.tableur; pop(rows, t, a + 0.1, tLa + 0.1, CX, 880, { dy: 140 });
     const on = inWin(t, tJours - 0.1, tLa + 0.1); show(cal, on);
-    if (on) { const p = spring(t - (tJours - 0.1), 'snappy'), q = spring(t - (tLa - 0.12), 'snappy'); place(cal, 790, 760, (0.6 + 0.4 * p) * 0.8, 6 * (1 - p), clamp(p * 2 - q * 2, 0, 1)); calN.textContent = Math.round(lerp(1, 12, inOut(tJours, tJours + 0.9, t))); }
+    if (on) { const p = spring(t - (tJours - 0.1), 'snappy'), q = spring(t - (tLa - 0.12), 'snappy'); place(cal, CX, 1290, (0.6 + 0.4 * p) * 0.8, 6 * (1 - p), clamp(p * 2 - q * 2, 0, 1)); calN.textContent = Math.round(lerp(1, 12, inOut(tJours, tJours + 0.9, t))); }
     pop(kpis, t, tLa, b, CX, 930, { dy: 160, s0: 0.7, drift: 0.04 }); }
 
   // S16 · tableur barré qui s'effondre
