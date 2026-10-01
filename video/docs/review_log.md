@@ -363,3 +363,15 @@ personnalité) et un curseur de MO2 « sans vie ». Détail dans `brief-mo1b.md`
 Plages corrigées rendues à part puis incrustées avec `scripts/splice.py` (1 879 images contrôlées).
 Mesures : −14,0 LUFS sur les deux ; true peak −2,8 dBTP (voix) et −3,3 dBTP (sans voix) ; son dès les 2 premières
 secondes ; aucun plan figé. Son mesuré, pas écouté.
+
+## Recentrage sur l'axe de l'écran (retour utilisateur : « tout est décalé à gauche, c'est bâclé »)
+Mesure du centre de l'encre de chaque bloc sur les images rendues (`center.py`, bande par bande) :
+- carrousels (150 images), pubs 1-3 et explainer60 : tout était centré sur x = 500 (centre de la zone sûre 60 → 940),
+  soit 40 px à gauche de l'axe de l'écran ; MO1, MO2 et MO1 v2 : cartons centrés à ± 3 px, mais dans MO1 v2 les fiches
+  du parc étaient posées à x = 470 pour laisser place au calendrier.
+- Corrections : carrousels sur une colonne symétrique 140 → 940 (captures ≤ 790 px, garde-fou de largeur) ; pubs et
+  explainer60 : tout le contenu (hors fonds) recentré d'un bloc (+ 40 px, × 0,909 autour de x = 500 : 60 → 140,
+  940 → 940) ; MO1 v2 : parc centré, calendrier sous les fiches.
+- Après : écart médian des blocs larges − 0,5 px (carrousels), + 1 à + 2 px (pubs), − 1 px (explainer60), + 1 px (MO1 v2).
+  Les écarts restants sont voulus (texte aligné à gauche dans les captures, curseur, tampons inclinés, entrées en cours).
+Règle ajoutée à `video/CLAUDE.md` et au skill motion-studio : centrer sur x = 540, jamais sur le centre de la zone sûre.
