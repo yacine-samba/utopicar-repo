@@ -13,7 +13,7 @@ ev = {
     'fee0': -FEES + 0.12,           # 1er ticket ; les suivants toutes les 0,27 s
     'ouais': a(0), 'frais': a(1), 'voiture': a(3), 'parfaite': a(4),
     'zoom': b(4) + 0.05,            # zoom à travers « parfaite. », bascule de palette
-    'logo': b(4) + 0.42,            # logo + éclat de traits
+    'logo': b(4) + 0.3,             # logo + éclat de traits (entre pendant la fin de la traversée : pas d'image vide)
     'maint': a(5), 'colle': a(6), 'paste': a(6) + 0.32, 'clic': b(6) + 0.22,
     'deux': a(7), 'note': a(8), 'nogo': a(9), 'dit': a(11),
     'prix': a(12), 'slide': b(12) - 0.7, 'sept': a(13),

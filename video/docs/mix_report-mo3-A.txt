@@ -1,1 +1,1 @@
-MO3 ouverture A : 41.33 s · -14.5 LUFS intégrés · true peak -3.8 dBTP (WAV) · 2 premières secondes -16.3 LUFS
+MO3 ouverture A : 41.33 s · -14.5 LUFS intégrés · true peak -4.0 dBTP (WAV) · 2 premières secondes -16.0 LUFS

@@ -158,6 +158,7 @@ if (HOOK === 'A') {          // scène vécue : il hésite, il achète
 const FEES = [['Remise en état', -1100], ['Carte grise', -186], ['Trajet', -64], ['Frais fixes', -150]];
 const fees = FEES.map(([s, v], i) => { const e = el('div', 'chip', gL); e.innerHTML = `<span>${s}</span><b>${fmt(v)}</b>`; e._t = T.fee0 + i * 0.27; e._v = v; return e; });
 const cnt = el('div', 'count', gL);
+const cntC = handPath(gL, 400, 190, CIRCLE, 10); cntC._p.setAttribute('stroke', RED);
 cap('Ouais.', BR[0][0], BR[0][1], 470, '', { out: BR[1][0] - 0.05 });
 cap('Les *frais*.', BR[1][0], BR[1][1], 470, '', { out: T.voiture - 0.08, acc: RED });
 const feeOut = T.voiture - 0.1;
@@ -255,7 +256,7 @@ const rip = el('div', 'ripple', topL);
 const demo = el('div', 'demo', topL); demo.textContent = 'Données de démonstration';
 
 /* ================= caméra ================= */
-const SC = [0, H, T.voiture - 0.15, T.logo, T.colle, T.deux, T.note, T.dit, T.prix, T.sept, T.clio, T.prem, T.sais, T.cta, END];
+const SC = [0, H, T.frais, T.voiture - 0.15, T.logo, T.colle, T.deux, T.note, T.nogo, T.dit, T.prix, T.sept, T.clio, T.cote, T.prem, T.sais, T.apres, T.cta, T.guide, END].sort((p, q) => p - q);
 const SHAKES = [[T.nogo + 0.06, 1], [T.fee0 + 3 * 0.27 + 0.15, 0.35]];
 if (HOOK === 'C') SHAKES.push([HR[1][0] + 0.02, 0.9]);
 if (HOOK === 'A') SHAKES.push([hk.tClick, 0.5]);
@@ -264,6 +265,9 @@ function camera(t) {
   let s = 1.04 - 0.04 * spring(t - a, 'heavy') + 0.03 * smooth(a, b, t), x = noise(21, t * 0.25) * 7, y = noise(22, t * 0.22) * 7, r = noise(23, t * 0.2) * 0.25;
   // traversée de « parfaite. » : la caméra plonge
   const z = inOut(T.zoom, T.zoom + 0.45, t) * (1 - smooth(T.zoom + 0.45, T.zoom + 0.5, t)); s *= 1 + z * 1.4;
+  // ouverture A : la caméra suit son hésitation (poussée sur « propre », plus près sur le prix, recul sur « allez »)
+  if (HOOK === 'A' && t < H + 0.3) { const k = Motion.track(t, [[0, 1], [HR[1][0], 1.12, 'heavy'], [HR[2][0], 1.24, 'heavy'], [HR[3][0], 1.0, 'default']]); s *= k; y += (k - 1) * -260; r += (k - 1) * -4; }
+  if (HOOK === 'C' && t < H + 0.3) s *= 1.12 - 0.12 * inOut(0, HR[1][0] + 0.2, t) + 0.06 * bump(t, HR[1][0], 0.25);
   for (const [ts, k] of SHAKES) { const e = t - ts; if (e > 0 && e < 0.6) { const d = Math.exp(-e * 9) * k; x += Math.sin(e * 70) * 18 * d; y += Math.cos(e * 55) * 14 * d; r += Math.sin(e * 40) * 0.9 * d; } }
   cam.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) scale(${s.toFixed(4)}) rotate(${r.toFixed(3)}deg)`;
 }
@@ -318,14 +322,17 @@ window.seek = function (t) {
       cnt.style.transform = `translate(0px,${(1150 + (1 - p) * 90 + q * 60).toFixed(1)}px) scale(${(0.9 + 0.1 * p + kick * 0.06 - q * 0.2).toFixed(4)})`; cnt.style.transformOrigin = '400px 50%';
       cnt.style.opacity = clamp(p * 2 - q * 2, 0, 1).toFixed(3); cnt.style.filter = q > 0.02 ? `blur(${(q * 14).toFixed(1)}px)` : ''; } }
 
+  { const tc = BR[1][0] + 0.1, on = inWin(t, tc, feeOut + 0.1); show(cntC, on);
+    if (on) { place(cntC, CX, 1222, 1.95, -3, 1 - smooth(feeOut - 0.2, feeOut + 0.05, t)); cntC._p.setAttribute('stroke-dashoffset', (2000 - 1100 * inOut(tc, tc + 0.5, t)).toFixed(1)); } }
+
   // ---------- la voiture « parfaite », puis la traversée ----------
-  { const a = T.voiture - 0.12, z = inOut(T.zoom, T.zoom + 0.42, t);
+  { const a = T.voiture - 0.38, z = inOut(T.zoom, T.zoom + 0.42, t);
     const p = pop(card2, t, a, T.zoom + 0.42, CX, 1110, { dy: 300, rx: 26, rx2: 5, ry2: -4 });
     if (p && z > 0) { card2.style.transform += ` scale(${(1 + z * 2).toFixed(3)})`; card2.style.filter = `blur(${(z * 22).toFixed(1)}px)`; card2.style.opacity = (1 - z).toFixed(3); }
     okP.forEach((e, i) => { pop(e, t, a + 0.45 + i * 0.3, T.zoom + 0.1, e._x, e._y, { pre: 'snappy', dy: 60, s0: 0.5, rx: 0, rot: e._r }); });
     // « parfaite. » grossit jusqu'à remplir l'écran (on passe à travers)
     parf.scale = 1 + Math.pow(z, 2.2) * 22; parf.box.style.transformOrigin = `400px ${parf.box.offsetHeight / 2}px`;
-    if (z > 0) for (const w of parf.words) { w.e.style.filter = `blur(${(z * 16).toFixed(1)}px)`; w.e.style.opacity = (1 - smooth(0.55, 1, z)).toFixed(3); }
+    if (z > 0) for (const w of parf.words) { w.e.style.filter = `blur(${(z * 16).toFixed(1)}px)`; w.e.style.opacity = (1 - smooth(0.22, 0.6, z)).toFixed(3); }   // on traverse : les lettres s'effacent avant de griser l'écran
   }
 
   // ---------- logo + éclat ----------
