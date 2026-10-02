@@ -2,15 +2,43 @@
 
 ## 1. Étudier une référence (grammaire seulement)
 
-1. Récupérer le fichier : `yt-dlp` pour les liens publics dans `video/refs/` (ignoré par git). Lien privé ou exigeant
-   une connexion (Vimeo privé, compte X) : demander à l'utilisateur de déposer le fichier.
-2. `python3 video/scripts/analyze-ref.py video/refs/<ref>.mp4` : une image toutes les 0,5 s, coupes détectées, palette
-   k-means, énergie de mouvement, planche contact. Regarder réellement la planche, puis 6 images en pleine définition.
-3. Audio : BPM, part percussive, tonalité (chroma), loudness.
-4. Écrire le **style guide** : tableau « ce que dit la référence » (palette, ouverture/fin, typo, animation des lettres,
-   transitions, caméra, texture, rythme, son) puis « adaptation au produit ». Rien de la référence n'entre dans le film :
-   ni logo, ni texte (même une tournure : « À nous de changer ça » a été réécrit en « Il est temps de compter juste »),
-   ni image, ni son.
+1. Récupérer le fichier : `yt-dlp` pour les liens publics dans `video/refs/<ref>/` (ignoré par git). Lien privé ou
+   exigeant une connexion (Vimeo privé, compte X) : demander à l'utilisateur de déposer le fichier (et ses sous-titres
+   s'il les a). Ne jamais contourner l'accès.
+2. **Analyse image par image** (outil par défaut) :
+   `python3 scripts/ref-frames.py refs/<ref>/<video>.mp4 --step 0.1` (langue de la voix détectée ; copie dans
+   `scripts/` du skill).
+   Chaque image est lue à sa cadence native (1/60 s pour du 60 i/s) : coupes à l'image près, **scènes enchaînées sans
+   coupe** (flou, zoom, traversée), nature de chaque
+   transition (franche, flash, glissée, transition sur N images), mouvement de caméra par plan (px/s), couleur
+   dominante ; planches toutes les 0,1 s (une ligne = 1 s, ✂ aux coupes) ; bande −4…+4 images autour de chaque coupe ;
+   voix mot à mot (faster-whisper) avec hauteur (Hz, plage en demi-tons), énergie, débit et pauses par phrase ;
+   bruitages (onsets percussifs classés whoosh / grave / aigu / médium, sur la voix ou dans les trous) ; tempo,
+   loudness. Sorties : `refs/<ref>/analysis/{report,shots,audio}.md`, `frames.csv`, `words.json`, `sheets/`, `cuts/`.
+   `analyze-ref.py` (0,5 s) ne sert plus qu'au survol rapide d'une référence longue.
+3. **Regarder réellement** : toutes les planches 0,1 s, chaque bande de coupe, puis les images clés en pleine
+   définition. Les chiffres disent *où* regarder ; seule la lecture des images dit *ce qui se passe* (un « mouvement »
+   peut être un zoom, un masque, un texte qui défile). Comparer la transcription aux sous-titres fournis.
+4. Écrire le **style guide** en deux tableaux mesurés :
+   - « ce que fait la référence » : ouverture 0–3 s (image 0, premier mot, premier son), durée moyenne et médiane des
+     plans, transitions et leurs durées en images, caméra, typo et animation des lettres, éléments graphiques, palette,
+     voix (débit, hauteur, pauses, ton, rires et réactions), bruitages par type et leur position par rapport aux mots,
+     musique (tempo, place sous la voix) ;
+   - « adaptation au produit » : la même grammaire avec nos images, nos mots, nos sons.
+   Rien de la référence n'entre dans le film : ni logo, ni texte (même une tournure : « À nous de changer ça » a été
+   réécrit en « Il est temps de compter juste »), ni image, ni son, ni gag repris tel quel.
+
+### Sans référence : proposer un motion original « full smooth »
+
+Quand l'utilisateur n'a pas de référence, ne pas copier une tendance : proposer **deux directions originales** sous
+forme de planche (3 images clés chacune, rendues) et laisser choisir. Socle commun d'un film fluide :
+- une caméra continue (le cadre ne saute jamais sans raison : dérive lente, poussée, raccords dans le mouvement —
+  un élément du plan A devient le support du plan B) ;
+- des springs fermés partout, aucune entrée linéaire, aucune opacité seule ;
+- 2–4 s par idée, une nouveauté visuelle toutes les 1–2 s dans le hook ;
+- une couleur d'accent, une police display, un fond qui vit (grain léger, dégradé lent, formes qui respirent) ;
+- le son dessine le mouvement : un whoosh par grand déplacement, un impact par chiffre, un clic par action.
+Le dire clairement : « direction originale, pas d'après une référence ».
 
 ## 2. Style guide, shotlist, storyboard
 

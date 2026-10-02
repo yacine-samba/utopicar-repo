@@ -17,10 +17,19 @@ Structure pub in-feed (30 s) qui marche :
 
 Version longue (45–60 s) : mêmes blocs, 3–4 preuves, un « Sans / Avec », CTA avant la 45e seconde.
 
-## 2. Deux ouvertures A/B
+## 2. Ouvertures A/B (ou A/B/C)
 
-Les deux variantes ne changent **que les 0–3 premières secondes** (image + voix + texte) et se raccordent au même
-corps de film à la même frame. Sinon on ne sait pas ce qu'on teste.
+Les variantes ne changent **que les 0–3 premières secondes** (image + voix + texte) et se raccordent au même
+corps de film à la même frame. Sinon on ne sait pas ce qu'on teste. Deux par défaut ; trois (A/B/C) quand
+l'utilisateur veut tester des hooks forts — chacune d'un angle vraiment différent, même durée à ±0,2 s, même
+dernière image avant le raccord.
+
+**Un « gros hook »** se joue dans la première seconde, pas dans la troisième :
+- image 0 déjà pleine et en mouvement, sujet au centre, gros texte (≥ 120 px en 9:16) ;
+- premier mot à ≤ 0,3 s, son qui attaque à la frame 0 (impact, voix, ou les deux) ;
+- une rupture avant 1,5 s : coupe, zoom choc, changement de couleur plein cadre, objet qui tombe ;
+- une tension ouverte (question, chiffre absurde, aveu) que seule la suite referme ;
+- jamais de logo ni de « Bonjour » en ouverture.
 
 Paires d'angles éprouvées (choisis-en deux vraiment différents) :
 - **Problème vécu** : « Tu as déjà acheté une voiture… et perdu de l'argent en la revendant ? »
@@ -79,6 +88,25 @@ Livre le script sous cette forme :
 
 Contrôle d'une prise : débit dans le budget, noms et chiffres bien prononcés, pas de souffle ou de clic en tête,
 énergie qui démarre à la première syllabe (le hook se joue là).
+
+### Voix incarnée (« plus d'humain »)
+
+Une voix humaine n'est pas une voix plus forte : c'est un **personnage qui réagit**. Les retours de la v7 (« trop IA »,
+puis « pas assez humaine », puis « trop dramatique ») montrent qu'on ne règle pas ça par l'énergie mais par l'écriture.
+- **Un personnage** écrit en trois lignes (métier, humeur, rapport au spectateur), pas un « narrateur ».
+- **Une histoire vécue** au lieu d'une liste de fonctions : un avant raté, un déclic, un après.
+- **Des réactions** à ce que montre l'image : « Ah. », « Attends… », un petit rire, un soupir, une auto-correction
+  (« enfin… presque »). Une réaction toutes les 2–3 phrases, jamais deux d'affilée.
+- **Des ruptures de registre** : une phrase à voix basse (`[whispers]`) au milieu d'un passage enlevé, une phrase
+  très courte après une longue, un silence volontaire de 0,4–0,8 s avant le chiffre clé.
+- **Les balises eleven_v3** jouent sans être lues : `[sighs]`, `[chuckles]`, `[laughs]`, `[sarcastic]`, `[curious]`,
+  `[excited]`, `[whispers]`, `[short pause]`, `[pause]`, points de suspension. Vérifier à la transcription qu'aucune
+  n'est prononcée.
+- **Mesurer** chaque prise (`ref-frames.py` sur le WAV, ou la transcription Scribe) : débit 2,3–2,8 mots/s, plage de
+  hauteur ≥ 6 demi-tons sur une phrase expressive (une voix plate en a 2–3), des pauses de 0,3–0,8 s entre idées.
+  Comparer ces chiffres à ceux de la référence quand il y en a une.
+- Garder 2–3 prises par bloc et choisir à la transcription (prononciation de la marque, débit, pauses) — dire que le
+  choix est fait sur mesures et non à l'écoute.
 
 ## 5. Sous-titres
 

@@ -49,17 +49,22 @@ A/B, formats. Écris `video/brief-<projet>.md` (modèle dans intake.md), montre-
 ### Phase 2 — Script et voix (porte 2)
 
 Suis `references/script-voice.md` :
-1. Angle et promesse en une phrase ; **deux ouvertures** (0–3 s) d'angles différents, même corps de film.
+1. Angle et promesse en une phrase ; **deux ouvertures** (0–3 s) d'angles différents, même corps de film — trois
+   (A/B/C) si l'utilisateur veut tester des hooks forts. Un gros hook se joue dans la **première seconde**.
 2. Script minuté dans les **deux langues**, écrit pour l'oreille (VO) et séparément pour l'œil (textes à l'écran,
    ≤ 6 mots par écran). Budget de mots par durée (FR ≈ 2,5 mots/s, EN ≈ 2,7 mots/s), 10 % de respiration.
 3. Voix : propose 2–3 voix réelles (`creative_list_voices`), fais écouter une phrase du script, fais choisir.
+   Pour une voix « humaine », écris un **personnage qui réagit** (réactions, chuchotements, silences, balises
+   eleven_v3) et mesure la prise (débit, plage de hauteur, pauses) — voir « Voix incarnée » dans script-voice.md.
 4. Génère la VO par langue (native, pas de doublage automatique si la voix parle au spectateur), transcris-la avec
    Scribe pour obtenir le **minutage mot à mot** : c'est lui qui cale l'image et les sous-titres.
 Montre script + prises, attends la validation.
 
 ### Phase 3 — Direction artistique et storyboard (porte 3)
 
-Suis `references/motion-craft.md` : analyse des références (`analyze-ref.py`), style guide, shotlist minutée sur la
+Suis `references/motion-craft.md` : analyse **image par image** des références (`scripts/ref-frames.py` : coupes,
+transitions, caméra, voix mot à mot avec intonation, bruitages, planches 0,1 s), style guide mesuré — ou, sans
+référence, deux directions originales « full smooth » à choisir sur planche —, shotlist minutée sur la
 VO et la grille musicale, **storyboard rendu** (une image clé par plan, dans les 3 formats). Attends la validation
 avant d'animer : changer un plan ici coûte une minute, après le rendu il en coûte vingt.
 
@@ -100,3 +105,4 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 | `references/qa-delivery.md` | Phases 6 et 7 : grille de notes, contrôles, matrice de livraison, git, envoi |
 | `references/lessons.md` | Avant de construire : erreurs réelles des v1–v6 et ce qui a marché |
 | `scripts/qa_video.py` | Sur chaque MP4 livré : `python3 scripts/qa_video.py film.mp4 --out renders/qa` |
+| `scripts/ref-frames.py` | Sur chaque référence (et sur nos prises de voix) : `python3 scripts/ref-frames.py ref.mp4 --step 0.1` |

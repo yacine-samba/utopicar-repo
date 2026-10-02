@@ -23,7 +23,7 @@ Avant de poser une question, regarde si la réponse est déjà dans la conversat
 |---|---|---|
 | 5 | Quel type de film ? | Pub courte à hook · Explainer produit · Film de lancement cinématique · Teaser |
 | 6 | Quelle durée ? | 30 s (idéal pub in-feed, 21–34 s) · 15 s · 45–60 s (version longue) · 6 s (bumper) |
-| 7 | As-tu une référence de style ? | Oui, je donne un lien ou un fichier · Style maison UTOPICAR · Je décris ce que je veux |
+| 7 | As-tu une référence de style ? | Oui, je donne un lien ou un fichier · Style maison UTOPICAR · Pas de référence : propose-moi une direction originale · Je décris ce que je veux |
 | 8 | Que faut-il prouver à l'écran ? (multiSelect) | Analyser une annonce · Recherche en direct · Rapports · Parc et tableau de bord |
 
 Pour un autre produit que UTOPICAR, remplace la question 8 par « Quelles 2–3 fonctions ou preuves montrer ? » en
@@ -37,6 +37,7 @@ texte libre, et demande l'URL et l'accès à l'interface réelle.
 | 10 | Quelles deux langues ? | Français + anglais · Français + espagnol · Français + arabe · Français + portugais |
 | 11 | Quel type de voix ? | Jeune et directe (réseaux) · Posée et experte · Féminine dynamique · Grave et premium |
 | 12 | Quel registre ? | Tutoiement direct · Vouvoiement professionnel · Humour léger · Sérieux, factuel |
+| 12b | Quel degré d'humain ? | Voix incarnée : un personnage qui réagit, rit, chuchote · Présence à l'écran (mains, visage, captations) · Narration posée |
 
 Si « Non » à la question 9, saute 11 et garde 10 (les textes à l'écran sont traduits) et 12 (ton des textes).
 Pour la voix, précise ensuite âge approximatif, genre, accent (France, Québec, neutre…), débit ; ce sont les filtres
@@ -48,7 +49,7 @@ de `creative_list_voices`.
 |---|---|---|
 | 13 | Le script ? | Tu l'écris, je valide · J'ai déjà un script · On part de mes points clés |
 | 14 | La musique ? | Musique originale générée (ElevenLabs Music, instrumentale) · Synthèse en code (100 % maîtrisée, plus simple) · J'ai une musique sous licence · Pas de musique |
-| 15 | Les deux ouvertures A/B ? | Problème vécu vs chiffre choc · Question directe vs démo immédiate · Je choisis les angles |
+| 15 | Les ouvertures ? | 2 ouvertures A/B (problème vécu vs chiffre choc) · 3 ouvertures A/B/C (gros hooks à tester) · Question directe vs démo immédiate · Je choisis les angles |
 | 16 | Quels formats ? (multiSelect) | Vertical 9:16 · Square 1:1 · Desktop 16:9 · (option) Feed 4:5 |
 
 ## En texte libre, si ce n'est pas déjà connu
@@ -75,7 +76,7 @@ Public :                   Promesse (1 phrase) :  CTA (dit + écrit) :
 Type / durée :             Référence(s) :         Preuves à montrer :
 Voix : oui/non — langues L1 + L2 — voix (genre, âge, accent, débit) — registre
 Script : qui écrit         Musique : source, BPM visé, humeur
-Ouvertures : A = <angle> / B = <angle> (0–3 s, même corps)
+Ouvertures : A = <angle> / B = <angle> [/ C = <angle>] (0–3 s, même corps)
 Formats : 9:16 · 1:1 · 16:9         Données : démo (mention à l'écran) / réelles
 Livrables : 2 ouvertures × 2 langues × N formats = <n> MP4 + posters + SRT
 Interdits : logos tiers, interface inventée, chiffres non vérifiables sans mention
