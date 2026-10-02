@@ -298,8 +298,8 @@ window.seek = function (t) {
   } else if (HOOK === 'B') {
     // − 1 200 € déjà là à l'image 0, glisse avec ses lignes de vitesse
     const on = t < H + 0.14; show(hk.giant, on);
-    if (on) { const p = spring(t + 0.22, { f: 2.4, z: 0.9 }), q = inOut(H - 0.16, H + 0.12, t); const x = lerp(820, CX, p) - (t * 18), bl = (1 - p) * 22, fs = hk.gs;
-      hk.giant.style.transform = `translate(${(x - hk.giant.offsetWidth / 2).toFixed(1)}px,${(860 - 125 - q * 120).toFixed(1)}px) scale(${(fs * (1 + 0.02 * t) * (1 - 0.3 * q)).toFixed(4)})`;
+    if (on) { const p = spring(t + 0.3, { f: 2.4, z: 0.9 }), q = inOut(H - 0.16, H + 0.12, t); const x = lerp(600, CX, p), bl = (1 - p) * 22, fs = hk.gs * 0.89;   // centré dès l'image 0 (colonne 140 → 940)
+      hk.giant.style.transform = `translate(${(x - hk.giant.offsetWidth / 2).toFixed(1)}px,${(860 - 125 - q * 120).toFixed(1)}px) scale(${(fs * (1 + 0.012 * t) * (1 - 0.3 * q)).toFixed(4)})`;
       hk.giant.style.filter = (bl + q * 18) > 0.3 ? `blur(${(bl + q * 18).toFixed(1)}px)` : ''; hk.giant.style.opacity = (1 - q).toFixed(3); }
     drawSpeed(hk.speed, t, 0, 1.3, 860);
     const tc = HR[2][0] + 0.25, on2 = inWin(t, tc, H + 0.06); show(hk.circ, on2);

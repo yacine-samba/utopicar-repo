@@ -397,3 +397,7 @@ mesurées sur l'énergie (`vo-mo3.py`) car whisper glisse jusqu'à 1 s aux pause
 Restent en WARN (transitoires, < 0,5 s) : le logo flou pendant la plongée, le curseur qui entre, l'éclat de traits
 autour de « 7 500 € ». Mesures sur les MP4 : −14,4 LUFS, true peak −4,0 dBTP, son dès l'image 0, aucune image vide,
 aucun plan figé. Son mesuré, pas écouté.
+- Round 5 (ouvertures B et C, `qa_video.py`) : en B, « − 1 200 € » glissait depuis la droite et débordait de la colonne
+  pendant 0,5 s (l'image vignette) → centré dès l'image 0, il vit en place (flou, échelle) ; mesuré x 177–926 sur
+  toute l'ouverture. Plage 0–4,4 s incrustée. Le WARN restant à 0–0,5 s vient des lignes de vitesse (décor).
+  C : aucun problème trouvé ; mêmes WARN transitoires que A.
