@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>utopicar — MO3 (plus d'humain, gros hooks)</title>
+<style>
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;src:url(../assets/site/Archivo-latin.woff2) format('woff2');}
+@font-face{font-family:'Archivo';font-style:italic;font-weight:100 900;src:url(../assets/site/Archivo-italic-latin.woff2) format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#F6F8FB}
+:root{--ink:#0C0F14;--mute:#6B7480;--gray:#B8BEC8;--or:#FF5A1F;--blue:#2447D6;--red:#D93A3A;--grn:#0A8F55}
+#stage{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;color:var(--ink);background:#F6F8FB}
+#bg{position:absolute;left:0;top:0;width:1080px;height:1920px}
+.layer{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#cam{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:540px 960px;perspective:2200px;perspective-origin:540px 900px}
+.abs{position:absolute;left:0;top:0}
+.crop{position:absolute}
+/* typo cinétique : un mot = un span */
+.cap{position:absolute;left:140px;top:0;width:800px;text-align:center;white-space:nowrap;font-weight:700;font-size:70px;line-height:1.14;letter-spacing:-.018em}
+.cap .w{display:inline-block;white-space:pre}
+.cap.big{font-weight:800;font-size:150px;letter-spacing:-.035em;line-height:1}
+.cap.ital{font-style:italic;font-weight:800;font-size:150px;letter-spacing:-.03em;line-height:1}
+.cap.whisper{font-weight:600;font-size:50px;letter-spacing:.14em;text-transform:lowercase}
+.cap.side{font-weight:700;font-size:84px}
+/* éléments graphiques */
+.card{position:absolute;left:0;top:0;background:#FFFFFF}
+.hl{position:absolute;background:#FFD2BC;mix-blend-mode:multiply;border-radius:6px;transform-origin:0 50%}
+.list{position:absolute;left:0;top:0;width:780px;padding:34px;border-radius:40px;background:#FFFFFF;display:flex;gap:30px;align-items:center;
+  box-shadow:0 50px 100px -40px rgba(20,30,50,.35),0 2px 0 rgba(20,30,50,.04)}
+.list .ph{flex:none;width:200px;height:200px;border-radius:30px;background:linear-gradient(160deg,#F2F4F7,#E6EAF0);display:flex;align-items:center;justify-content:center}
+.list .t1{font-weight:800;font-size:48px;line-height:1.1;white-space:nowrap}.list .t2{font-weight:500;font-size:32px;color:var(--mute);margin-top:12px;line-height:1.3}
+.list .lbl{display:inline-block;margin-top:16px;font-weight:700;font-size:26px;letter-spacing:.08em;text-transform:uppercase;color:#97A0AB}
+.pill{position:absolute;left:0;top:0;display:flex;align-items:center;gap:14px;white-space:nowrap;padding:18px 30px;border-radius:60px;font-weight:700;font-size:42px;background:#FFFFFF;color:var(--ink);
+  box-shadow:0 24px 50px -24px rgba(20,30,50,.45)}
+.pill i{font-style:normal;display:inline-flex;width:50px;height:50px;border-radius:25px;align-items:center;justify-content:center;background:#E4F6EC;color:var(--grn);font-weight:900;font-size:32px}
+.pill.q i{background:#FFF2DA;color:#B26A00}
+.pill.or{background:var(--or);color:#1A1310}.pill.or i{background:#1A1310;color:#FF7A45}
+.btn{position:absolute;left:0;top:0;padding:30px 70px;border-radius:70px;background:var(--ink);color:#FFFFFF;font-weight:800;font-size:52px;white-space:nowrap;box-shadow:0 30px 60px -26px rgba(12,15,20,.6)}
+.flat{position:absolute;left:0;top:0;width:1080px;height:1920px;background:var(--or)}
+.flatT{position:absolute;left:140px;top:0;width:800px;text-align:center;font-weight:800;font-size:170px;letter-spacing:-.04em;color:#FFFFFF;white-space:nowrap}
+.chip{position:absolute;left:0;top:0;display:flex;justify-content:space-between;align-items:center;gap:40px;width:660px;padding:26px 36px;border-radius:28px;background:#FFFFFF;color:var(--ink);
+  font-weight:700;font-size:42px;box-shadow:0 30px 60px -30px rgba(20,30,50,.45)}
+.chip b{font-weight:800;color:var(--red)}
+.count{position:absolute;left:140px;top:0;width:800px;text-align:center;font-weight:800;font-size:150px;letter-spacing:-.04em;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1}
+.count small{display:block;font-size:40px;font-weight:600;letter-spacing:0;color:var(--mute);margin-top:14px}
+.giant{position:absolute;left:0;top:0;white-space:nowrap;font-weight:800;font-size:250px;letter-spacing:-.05em;line-height:1}
+.stamp{position:absolute;left:0;top:0;padding:12px 40px 8px;border:11px solid var(--red);border-radius:28px;color:var(--red);font-weight:900;font-size:124px;letter-spacing:.02em;white-space:nowrap;background:rgba(255,255,255,.75)}
+.toast{position:absolute;left:0;top:0;width:790px;display:flex;gap:26px;align-items:center;padding:28px 32px;border-radius:36px;background:#FFFFFF;color:var(--ink);
+  box-shadow:0 40px 80px -30px rgba(20,30,50,.45)}
+.toast img{width:96px;height:96px;flex:none;border-radius:22px}
+.toast .t1{font-weight:800;font-size:36px}.toast .t2{font-weight:500;font-size:32px;color:var(--mute);margin-top:4px}.toast .t2 b{color:var(--grn);font-weight:800}
+.logo{position:absolute;left:0;top:0;width:640px}
+.cta{position:absolute;left:140px;top:0;width:800px;text-align:center;font-weight:800;font-size:76px;letter-spacing:-.02em;white-space:nowrap}
+.ctap{position:absolute;left:0;top:0;padding:22px 44px 18px;border-radius:30px;background:var(--or);color:#1A1310;font-weight:800;font-size:66px;white-space:nowrap;box-shadow:0 26px 50px -24px rgba(255,90,31,.7)}
+.sub{position:absolute;left:140px;top:0;width:800px;text-align:center;font-weight:500;font-size:46px;color:var(--mute)}
+.demo{position:absolute;left:140px;top:1440px;width:800px;text-align:center;font-size:27px;font-weight:600;color:#8A93A0}
+.ripple{position:absolute;left:0;top:0;width:120px;height:120px;border-radius:50%;border:6px solid var(--or)}
+.cursor{z-index:50}
+svg.g{position:absolute;left:0;top:0;overflow:visible}
+.lbl{font-family:'Archivo',sans-serif;font-weight:700}
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="bg" width="1080" height="1920"></canvas></div>
+<script src="../lib/motion.js"></script>
+<script src="../lib/kit.js"></script>
+<script type="module" src="film.js"></script>
+</body>
+</html>

@@ -23,6 +23,8 @@ const SIZE = { vertical: [1080, 1920], square: [1080, 1080], desktop: [1920, 108
 const TAG = { vertical: '9x16', square: '1x1', desktop: '16x9' }[FMT || 'vertical'];
 const VAR = (HOOK ? '-' + HOOK : '') + (LANG ? '-' + LANG : '');
 const TL = JSON.parse(fs.readFileSync(path.join(ROOT, `timeline${CUT}.json`), 'utf8'));
+// films dont la durée dépend de l'ouverture (timeline.hooks[HOOK].dur, ex. MO3) ; poster propre à l'ouverture
+if (TL.hooks && HOOK && TL.hooks[HOOK]) { TL.dur = TL.hooks[HOOK].dur; if (TL.hooks[HOOK].poster != null) TL.poster = TL.hooks[HOOK].poster; }
 const OUT = path.join(ROOT, 'renders');
 fs.mkdirSync(OUT, { recursive: true });
 const args = process.argv.slice(2);
