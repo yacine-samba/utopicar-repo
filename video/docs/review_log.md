@@ -375,3 +375,25 @@ Mesure du centre de l'encre de chaque bloc sur les images rendues (`center.py`, 
 - Après : écart médian des blocs larges − 0,5 px (carrousels), + 1 à + 2 px (pubs), − 1 px (explainer60), + 1 px (MO1 v2).
   Les écarts restants sont voulus (texte aligné à gauche dans les captures, curseur, tampons inclinés, entrées en cours).
 Règle ajoutée à `video/CLAUDE.md` et au skill motion-studio : centrer sur x = 540, jamais sur le centre de la zone sûre.
+
+## MO3 (`film-mo3/`) : plus d'humain, gros hooks, d'après la référence 5
+Brief et script : `brief-mo3.md`. Grammaire mesurée image par image : `docs/ref5_style_guide.md`
+(`scripts/ref-frames.py`, 4 246 images lues, planches à 0,1 s). Voix : Simon (eleven_v3), 2 prises par bloc,
+choisies sur transcription (prise du corps B écartée : une phrase manquante) ; silences resserrés et régions de parole
+mesurées sur l'énergie (`vo-mo3.py`) car whisper glisse jusqu'à 1 s aux pauses.
+- Round 1 (images clés) : titre de l'annonce sur deux lignes, compteur collé à la mention démo, « Je sais ce qu'il me
+  reste » coupé au mauvais endroit, éclat de traits sur « 7 500 € » → corrigés ; « − 1 200 € » (B) plus large que
+  l'écran → ajusté à la colonne de 800 px.
+- Round 2 (images clés des ouvertures) : image 0 presque vide en A et C, image vide au raccord de B (le chiffre sortait
+  avant l'arrivée des frais) → l'ouverture chevauche la pluie de frais ; lignes de vitesse qui barraient le chiffre →
+  deux bandes au-dessus et au-dessous.
+- Round 3 (notre rendu repassé dans `ref-frames.py`) : une scène toutes les 2,07 s (réf. 2,14 s), mais ouverture A
+  figée 3,2 s (réf. : une nouveauté toutes les 0,8 s) et deux images presque vides (9,0 s et 11,8 s) → la caméra suit
+  l'hésitation de Simon, cercle rouge tracé sur « − 1 200 € » pendant « Les frais. », raccords qui se chevauchent ;
+  traversée de « parfaite. » qui grisait l'écran → les lettres s'effacent avant.
+- Round 4 (`qa_video.py`) : avec la poussée de caméra, « Volkswagen Golf VII » et « Le prix » entraient dans la zone
+  des boutons TikTok (x 963) → carte réduite, poussée adoucie, mesuré : contenu entre x 200 et 909. Plage 0–4,8 s
+  rendue à part et incrustée (`splice.py`, FPS=60).
+Restent en WARN (transitoires, < 0,5 s) : le logo flou pendant la plongée, le curseur qui entre, l'éclat de traits
+autour de « 7 500 € ». Mesures sur les MP4 : −14,4 LUFS, true peak −4,0 dBTP, son dès l'image 0, aucune image vide,
+aucun plan figé. Son mesuré, pas écouté.

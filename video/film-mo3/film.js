@@ -266,7 +266,7 @@ function camera(t) {
   // traversée de « parfaite. » : la caméra plonge
   const z = inOut(T.zoom, T.zoom + 0.45, t) * (1 - smooth(T.zoom + 0.45, T.zoom + 0.5, t)); s *= 1 + z * 1.4;
   // ouverture A : la caméra suit son hésitation (poussée sur « propre », plus près sur le prix, recul sur « allez »)
-  if (HOOK === 'A' && t < H + 0.3) { const k = Motion.track(t, [[0, 1], [HR[1][0], 1.12, 'heavy'], [HR[2][0], 1.24, 'heavy'], [HR[3][0], 1.0, 'default']]); s *= k; y += (k - 1) * -260; r += (k - 1) * -4; }
+  if (HOOK === 'A' && t < H + 0.3) { const k = Motion.track(t, [[0, 1], [HR[1][0], 1.08, 'heavy'], [HR[2][0], 1.15, 'heavy'], [HR[3][0], 1.0, 'default']]); s *= k; y += (k - 1) * -260; r += (k - 1) * -4; }
   if (HOOK === 'C' && t < H + 0.3) s *= 1.12 - 0.12 * inOut(0, HR[1][0] + 0.2, t) + 0.06 * bump(t, HR[1][0], 0.25);
   for (const [ts, k] of SHAKES) { const e = t - ts; if (e > 0 && e < 0.6) { const d = Math.exp(-e * 9) * k; x += Math.sin(e * 70) * 18 * d; y += Math.cos(e * 55) * 14 * d; r += Math.sin(e * 40) * 0.9 * d; } }
   cam.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) scale(${s.toFixed(4)}) rotate(${r.toFixed(3)}deg)`;
@@ -281,9 +281,9 @@ window.seek = function (t) {
   // ---------- ouvertures ----------
   if (HOOK === 'A') {
     const tc = hk.tClick;
-    pop(hk.card, t, -0.32, H + 0.2, CX, 980, { dy: 520, s0: 0.9, rx: 30, rx2: 6, pre: 'default' });
-    pop(hk.p1, t, HR[1][0] + 0.05, tc + 0.1, 330, 1240, { pre: 'snappy', dy: 60, s0: 0.5, rx: 0, rot: -4 });
-    pop(hk.p2, t, HR[2][0] + 0.1, tc + 0.1, 760, 1250, { pre: 'snappy', dy: 60, s0: 0.5, rx: 0, rot: 3 });
+    pop(hk.card, t, -0.32, H + 0.2, CX, 980, { dy: 520, s0: 0.9, rx: 30, rx2: 6, pre: 'default', s: 0.9 });
+    pop(hk.p1, t, HR[1][0] + 0.05, tc + 0.1, 380, 1240, { pre: 'snappy', dy: 60, s0: 0.5, rx: 0, rot: -4 });
+    pop(hk.p2, t, HR[2][0] + 0.1, tc + 0.1, 690, 1250, { pre: 'snappy', dy: 60, s0: 0.5, rx: 0, rot: 3 });
     pop(hk.btn, t, HR[3][0] - 0.25, tc + 0.15, CX, 1400, { pre: 'snappy', dy: 80, s0: 0.6, rx: 0, s: 1 - 0.08 * bump(t, tc - 0.04, 0.12) });
     if (inWin(t, 0.35, tc + 0.2)) {   // il hésite : le curseur tourne autour de l'annonce, puis va cliquer
       const k = [[0.35, 1100, 1500], [0.6, 760, 1080], [1.3, 600, 1020], [1.9, 780, 1120], [2.5, 640, 1060], [HR[3][0] - 0.05, 700, 1240], [HR[3][0] + 0.35, 560, 1410]];
