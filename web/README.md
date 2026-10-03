@@ -58,15 +58,7 @@ Supabase n'envoie plus aucun email. La fonction **`compte`** (`../supabase/funct
 
 1. Règles fixes, sans IA (`src/lib/analyse/`) : lecture de l'annonce, 38 défauts chiffrés, moteurs et boîtes à éviter, coûts.
 2. API Claude côté serveur (`ia.ts`) : version, cote du marché, distance, photos, entretien à prévoir, négociation, contrôle sur place, synthèse.
-   Le modèle dépend de la formule (`MODELES` dans `ia.ts`) :
-
-   | Formules | Modèle | Coût indicatif par analyse |
-   |---|---|---|
-   | Découverte, Essentiel | Claude Haiku 4.5 (le moins cher) | environ 0,03 € |
-   | Sérénité, Benef Starter | Claude Sonnet 5.5, effort bas | environ 0,05 € |
-   | Benef Croissance, Benef Pro, comptes illimités | Claude Sonnet 5.5, effort moyen | environ 0,08 € |
-
-   Pour changer de modèle sans toucher au code : `ANTHROPIC_MODEL_ECO` (formules d'entrée) et `ANTHROPIC_MODEL_PRECIS` (les autres). Chaque appel écrit dans les journaux Vercel le modèle et le nombre de jetons, pour suivre le coût réel.
+   Un seul modèle pour toutes les formules : **Claude Haiku 4.5**, le moins cher (environ 0,03 € par analyse, photos comprises). L'IA s'appuie sur les paramètres de l'outil (étape 1) et ne les remplace jamais ; elle complète ce que les règles ne lisent pas (cote du marché, photos, questions et messages à copier). `ANTHROPIC_MODEL` permet d'en changer sans toucher au code. Chaque appel écrit dans les journaux Vercel le modèle et le nombre de jetons, pour suivre le coût réel.
 3. Calculs d'argent par l'outil (`couts.ts`) : marge, plafond et offre pour Benef ; coût réel pour les particuliers.
 
 Une analyse n'est décomptée que si elle aboutit. La copie de l'extension Chrome (texte et photos) est reconnue au collage.
@@ -84,7 +76,7 @@ Réservé aux personnes connectées, 30 imports par jour et par personne (table 
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | clé publique du projet Supabase |
 | `SUPABASE_SERVICE_ROLE_KEY` | clé secrète : enregistrement des abonnements Stripe, portail de paiement, suppression de compte. Les analyses n'en ont plus besoin (fonction SQL `enregistrer_analyse`). |
 | `ANTHROPIC_API_KEY` | analyse |
-| `ANTHROPIC_MODEL_ECO`, `ANTHROPIC_MODEL_PRECIS` | facultatifs : remplacent les modèles par défaut (voir « Comment l'analyse est faite ») |
+| `ANTHROPIC_MODEL` | facultatif : `claude-haiku-4-5` par défaut, pour toutes les formules |
 | `STRIPE_SECRET_KEY` | paiements |
 | `STRIPE_WEBHOOK_SECRET` | signature du webhook |
 | `NEXT_PUBLIC_SITE_URL` | `https://utopicar.fr` |
