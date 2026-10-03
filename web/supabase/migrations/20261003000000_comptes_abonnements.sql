@@ -43,6 +43,8 @@ $$;
 drop trigger if exists creer_profil on auth.users;
 create trigger creer_profil after insert on auth.users
   for each row execute function public.creer_profil();
+-- Fonction réservée au déclencheur : personne ne l'appelle directement.
+revoke execute on function public.creer_profil() from public, anon, authenticated;
 
 -- ---------------------------------------------------------------- abonnements (écrits par le webhook Stripe)
 create table if not exists public.abonnements (
@@ -120,6 +122,9 @@ as $$
       and a.statut in ('active', 'trialing', 'past_due')
   );
 $$;
+-- Utilisée par les règles du parc : appelable par les personnes connectées seulement.
+revoke execute on function public.a_offre(text[]) from public, anon;
+grant execute on function public.a_offre(text[]) to authenticated;
 
 create table if not exists public.parc (
   id uuid primary key default gen_random_uuid(),
@@ -138,6 +143,7 @@ create table if not exists public.parc (
   updated_at timestamptz not null default now()
 );
 create index if not exists parc_user_idx on public.parc (user_id, created_at desc);
+create index if not exists parc_rapport_idx on public.parc (rapport_id);
 alter table public.parc enable row level security;
 create policy "parc : lecture par le titulaire" on public.parc
   for select to authenticated using ((select auth.uid()) = user_id);
