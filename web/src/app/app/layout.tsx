@@ -4,7 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { compteCourant, type Compte } from "@/lib/compte";
 import { comptesActifs } from "@/lib/supabase/config";
-import { familleEspace, navEspace, nomFormule } from "@/lib/espace";
+import { familleEspace, navEspace, nomFormule, texteRestantes } from "@/lib/espace";
 import { Logo } from "@/components/site/Logo";
 import { Ico } from "@/components/espace/Icones";
 import { NavCote, NavMobile } from "@/components/espace/NavEspace";
@@ -21,16 +21,16 @@ function CarteFormule({ c }: { c: Compte }) {
       <div className="flex items-baseline justify-between gap-2">
         <span className="text-xs uppercase tracking-[0.12em] text-ink-3">Formule</span>
         <Link href="/app/compte#formule" className="text-xs text-o2 underline-offset-4 hover:underline">
-          {o.id === "pro" ? "Gérer" : "Changer"}
+          {o.id === "pro" || c.illimite ? "Gérer" : "Changer"}
         </Link>
       </div>
       <p className="mt-1 font-display text-lg font-semibold">{nomFormule(c)}</p>
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
-        <div className={`h-full rounded-full ${c.restantes <= Math.max(1, o.analyses * 0.1) ? "bg-warn" : "bg-gradient-to-r from-o to-o2"}`} style={{ width: `${part}%` }} />
-      </div>
-      <p className="mt-2 text-sm text-ink-3">
-        <b className="num font-semibold text-ink">{c.restantes}</b> analyse{c.restantes > 1 ? "s" : ""} restante{c.restantes > 1 ? "s" : ""} {o.parMois ? "ce mois" : ""}
-      </p>
+      {!c.illimite && (
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
+          <div className={`h-full rounded-full ${c.restantes <= Math.max(1, o.analyses * 0.1) ? "bg-warn" : "bg-gradient-to-r from-o to-o2"}`} style={{ width: `${part}%` }} />
+        </div>
+      )}
+      <p className="mt-2 text-sm text-ink-3">{texteRestantes(c)}</p>
     </div>
   );
 }
@@ -100,7 +100,13 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
           }
           droite={
             <Link href="/app/compte#formule" className="rounded-full border border-line-2 px-3 py-1.5 text-xs text-ink-2">
-              <b className="num text-ink">{c.restantes}</b> analyse{c.restantes > 1 ? "s" : ""}
+              {c.illimite ? (
+                "Illimité"
+              ) : (
+                <>
+                  <b className="num text-ink">{c.restantes}</b> analyse{c.restantes > 1 ? "s" : ""}
+                </>
+              )}
             </Link>
           }
         />

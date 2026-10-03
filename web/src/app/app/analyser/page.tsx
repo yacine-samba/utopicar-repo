@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { compteBenef } from "@/lib/benef";
-import { familleEspace } from "@/lib/espace";
+import { familleEspace, texteRestantes } from "@/lib/espace";
 import { BENEF } from "@/lib/offres";
 import { OutilBenef } from "@/components/benef/OutilBenef";
 import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
@@ -49,7 +49,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
             Collez le lien Leboncoin : l&apos;annonce et ses photos se remplissent toutes seules et l&apos;analyse démarre. Pour un autre site, collez le texte de l&apos;annonce.
           </p>
           <p className="text-sm text-ink-3">
-            {c.restantes > 0 ? `${c.restantes} analyse${c.restantes > 1 ? "s" : ""} restante${c.restantes > 1 ? "s" : ""}${o.parMois ? " ce mois" : ""}.` : "Plus d'analyse disponible pour le moment."}{" "}
+            {c.restantes > 0 ? `${texteRestantes(c)}.` : "Plus d'analyse disponible pour le moment."}{" "}
             {o.prix === 0 && <Link href="/app/compte#formule" className="text-o2 underline underline-offset-4">Voir les formules</Link>}
           </p>
         </div>

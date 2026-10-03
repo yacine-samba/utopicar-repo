@@ -59,7 +59,7 @@ async function TableauParticulier({ c }: { c: Compte }) {
       <div className="grid gap-4 sm:grid-cols-3">
         <Tuile
           l={o.parMois ? "Analyses restantes ce mois" : "Analyse offerte"}
-          v={`${c.restantes} / ${o.analyses}`}
+          v={c.illimite ? "Illimité" : `${c.restantes} / ${o.analyses}`}
           sous={c.restantes ? (o.parMois ? "Elles reviennent le 1er du mois." : "Sans carte bancaire.") : o.parMois ? "Elles reviennent le 1er du mois." : "Votre analyse offerte a servi."}
           alerte={c.restantes === 0}
           lien={o.id === "serenite" ? undefined : { href: "/app/compte#formule", l: o.prix ? "Plus d'analyses" : "Voir les formules" }}
@@ -127,7 +127,7 @@ async function TableauBenef({ c }: { c: Compte }) {
 
   return (
     <div className="grid gap-8">
-      <Bonjour c={c} texte={`Benef ${c.offre.nom} · vos chiffres du mois, depuis le 1er.`} />
+      <Bonjour c={c} texte={`${nomFormule(c)} · vos chiffres du mois, depuis le 1er.`} />
       <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
 
       <section aria-labelledby="tb-analyses">
@@ -135,7 +135,7 @@ async function TableauBenef({ c }: { c: Compte }) {
           Analyses du mois
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Tuile l="Analyses utilisées" v={`${c.utilisees} / ${c.offre.analyses}`} sous={`${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} alerte={c.restantes <= 3} />
+          <Tuile l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} sous={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} alerte={!c.illimite && c.restantes <= 3} />
           <Tuile l="Affaires GO repérées" v={String(go.length)} sous={`sur ${n} annonce${n > 1 ? "s" : ""} analysée${n > 1 ? "s" : ""}`} />
           <Tuile l="Marge moyenne des GO" v={eur(marges.length ? marges.reduce((s, x) => s + x, 0) / marges.length : null)} sous="estimée avant achat" />
           <Tuile l="Meilleure affaire" v={eur(meilleure?.marge ?? null)} sous={meilleure?.titre ?? "aucune ce mois"} />
