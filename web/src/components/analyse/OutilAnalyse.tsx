@@ -4,7 +4,7 @@ import type { Analyse } from "@/lib/analyse/couts";
 import { Saisie } from "../Saisie";
 import { ResultatParticulier } from "./ResultatParticulier";
 
-export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode }) {
+export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres, restantes = null }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode; restantes?: number | null }) {
   const [a, setA] = useState<Analyse | null>(null);
   if (a)
     return (
@@ -26,6 +26,7 @@ export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", li
         <Saisie
           mode="particulier"
           maxPhotos={maxPhotos}
+          restantes={restantes}
           villeInitiale={ville}
           villeLabel="Votre ville"
           villeAide="Pour calculer le trajet jusqu'à la voiture."

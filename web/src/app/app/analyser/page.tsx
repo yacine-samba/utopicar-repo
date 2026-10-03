@@ -28,13 +28,14 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
           </p>
         </div>
       );
-    return <OutilBenef maxPhotos={o.photos} parc={o.parc} villeCompte={c.ville} lienInitial={lien} />;
+    return <OutilBenef maxPhotos={o.photos} parc={o.parc} villeCompte={c.ville} lienInitial={lien} restantes={c.illimite ? null : c.restantes} />;
   }
 
   return (
     <OutilAnalyse
       ville={c.ville}
       maxPhotos={o.photos}
+      restantes={c.illimite ? null : c.restantes}
       retour="/app/analyser"
       lienInitial={lien}
       apres={

@@ -92,6 +92,7 @@ MISSION : audit complet d'un véhicule d'occasion par un expert, puis décision 
  - "argumentaire" : chaque défaut RÉEL (écrit dans l'annonce, vu sur les photos, relevé au CT, entretien arrivé à échéance) avec son coût, du plus fort au plus faible. N'invente aucun défaut.
  - "annonceOffre" : 2 à 3 phrases pour annoncer l'offre sur place APRÈS l'inspection, calmes et factuelles, appuyées sur 2 arguments chiffrés, avec le marqueur exact {OFFRE} à la place du montant (l'outil calcule le montant).
  - "contreOffre" : si le vendeur refuse, remonter UNE seule fois à {CIBLE}, puis tenir. "sortie" : phrase polie pour partir si le vendeur reste au-dessus de {PLAFOND}.
+16. CONCISION (la rapidité compte) : chaque texte libre tient en 1 phrase courte (25 mots au plus), sauf les messages et scripts ; 4 éléments au plus par liste, sauf "controles" et "annonceDecortiquee" ; n'écris jamais deux fois la même information dans deux champs ; JSON compact sur une seule ligne, sans indentation.
 ${p.nbPhotos ? `${p.nbPhotos} photo(s) de l'annonce jointe(s). Inspecte les photos du véhicule (carrosserie, alignement, chocs, peinture, phares, jantes, pneus, sellerie, volant, tableau de bord, ciel de toit, coffre, moteur, éléments manquants) et LIS les documents photographiés.` : "Aucune image jointe : le bloc visuel doit le dire."}
 
 ${p.faits.length ? `FAITS LUS DIRECTEMENT SUR L'ANNONCE PAR L'OUTIL (fiables : ne les contredis pas, sers-t'en ; "annoncé" reste une affirmation du vendeur sans preuve) :
@@ -112,6 +113,6 @@ ${p.texte.slice(0, 9000)}
 === ENTRETIEN ET FACTURES === → NON FOURNI (sauf s'il est dans le texte ou les photos de l'annonce)
 === CARTE GRISE === → NON FOURNI
 
-Réponds UNIQUEMENT avec un objet JSON valide, en français, sans texte autour ni balises de code, suivant exactement ce schéma :
+Réponds UNIQUEMENT avec un objet JSON valide et compact (une seule ligne), en français, sans texte autour ni balises de code, suivant exactement ce schéma :
 ${A_SCHEMA}`;
 }

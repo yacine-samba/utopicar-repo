@@ -11,7 +11,7 @@ const GRAVITE: Record<string, string> = { lourd: "border-bad/40 bg-bad/10 text-b
 
 export function AnalysePhotos({ photos, vignettes = [], regles, chiffrer = true }: { photos: IaVue["photos"] | undefined; vignettes?: string[]; regles?: boolean; chiffrer?: boolean }) {
   const [vue, setVue] = useState<number | null>(null);
-  const examinees = !!photos?.fournies && photos.score != null && !regles;
+  const examinees = !regles && !!photos && (photos.fournies || photos.score != null || (photos.defauts ?? []).length > 0 || !!photos.resume);
   if (!examinees && !vignettes.length) return null;
   const score = photos?.score ?? null;
   const ton = score == null ? "text-ink" : score >= 75 ? "text-ok" : score >= 50 ? "text-warn" : "text-bad";
@@ -51,10 +51,10 @@ export function AnalysePhotos({ photos, vignettes = [], regles, chiffrer = true 
       ) : (
         <>
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <p>
+            {score == null ? <p className="text-sm text-ink-3">Pas de note d&apos;état : les photos ne montrent pas assez la voiture pour la juger.</p> : <p>
               État visible : <b className={cx("num font-display text-2xl", ton)}>{score}</b>
               <span className="text-ink-3"> / 100</span>
-            </p>
+            </p>}
             {photos?.compteurLu != null && <p className="text-sm text-ink-2">Compteur lu sur la photo : <b className="num">{photos.compteurLu.toLocaleString("fr-FR")} km</b></p>}
           </div>
           {photos?.resume && <p className="text-ink-2">{photos.resume}</p>}
