@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { compteCourant } from "@/lib/compte";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { prixTxt } from "@/lib/offres";
+import { confirmerRetour } from "@/lib/stripe-synchro";
 import { BoutonPortail, BoutonSupprimer, FormMotDePasse, FormProfil } from "@/components/compte/ActionsCompte";
 
 export const metadata: Metadata = { title: "Mon compte", robots: { index: false } };
@@ -12,10 +13,15 @@ const dateFr = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "nu
 const STATUTS: Record<string, string> = { active: "Active", trialing: "Période d'essai", past_due: "Paiement en attente", canceled: "Résiliée", unpaid: "Impayée", incomplete: "Paiement incomplet" };
 const NIVEAUX: Record<string, string> = { bon: "Bonne affaire", correct: "Prix correct", cher: "Trop cher", prudence: "Prudence", eviter: "À éviter", inconnu: "Prix non évalué" };
 
-export default async function Compte({ searchParams }: { searchParams: Promise<{ paiement?: string; motdepasse?: string }> }) {
+export default async function Compte({ searchParams }: { searchParams: Promise<{ paiement?: string; motdepasse?: string; session_id?: string }> }) {
   const compte = await compteCourant();
   if (!compte) redirect("/connexion?next=/compte");
-  const { paiement, motdepasse } = await searchParams;
+  const { paiement, motdepasse, session_id } = await searchParams;
+  // Retour de Stripe : l'abonnement est enregistré tout de suite, puis on recharge pour l'afficher.
+  if (paiement === "ok" && session_id) {
+    await confirmerRetour(session_id, compte.id);
+    redirect("/compte?paiement=ok");
+  }
   const o = compte.offre;
   const sb = await supabaseServeur();
   const { data: rapports } = await sb.from("rapports").select("id, titre, verdict, prix, created_at, mode").eq("user_id", compte.id).order("created_at", { ascending: false }).limit(5);
