@@ -8,7 +8,7 @@ import { Reglages, ResultatBenef } from "./ResultatBenef";
 import { RapportComplet } from "./RapportComplet";
 import { AjouterParc } from "./AjouterParc";
 
-export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial }: { maxPhotos: number; parc: boolean; villeCompte: string; lienInitial?: string }) {
+export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restantes = null }: { maxPhotos: number; parc: boolean; villeCompte: string; lienInitial?: string; restantes?: number | null }) {
   const [reg, setReg] = useReglages<ParamsPro>("utp-pro", { ...DEFAUTS_PRO, ville: villeCompte || DEFAUTS_PRO.ville });
   const [a, setA] = useState<Analyse | null>(null);
   const [prix, setPrix] = useState("");
@@ -68,6 +68,7 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial }: { maxP
           key={reg.ville}
           mode="benef"
           maxPhotos={maxPhotos}
+          restantes={restantes}
           villeInitiale={reg.ville}
           villeLabel="Ville de départ et de revente"
           villeAide="Sert au trajet et à la cote de revente."

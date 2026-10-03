@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
+import { Patience, type Apercu } from "./analyse/Patience";
 import { lienLeboncoin, photosDepuisHtml, texteDepuisExtension, texteDepuisImport } from "@/lib/analyse/import";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
@@ -56,13 +57,14 @@ async function depuisDataUrl(u: string, i: number) {
   return reduire(new File([b], `photo-${i + 1}.jpg`, { type: b.type || "image/jpeg" }));
 }
 
+const QUOTA_EPUISE = "Vous n'avez plus d'analyse disponible pour le moment. Elles reviennent le 1er du mois, ou passez à la formule supérieure pour continuer tout de suite.";
+
 const ERREURS_IMPORT: Record<string, string> = {
   lien: "Ce lien n'est pas celui d'une annonce Leboncoin. Pour La Centrale ou AutoScout24, copiez la page et collez-la ci-dessous.",
   introuvable: "Annonce introuvable : elle a peut-être été retirée ou vendue.",
   trop: "Vous avez importé beaucoup d'annonces aujourd'hui. Copiez la page de l'annonce et collez-la ci-dessous.",
 };
 
-const ETAPES = ["Lecture du texte de l'annonce", "Recherche des défauts qui coûtent cher", "Estimation du prix du marché", "Calcul des frais"];
 
 export function Saisie({
   mode,
@@ -74,6 +76,7 @@ export function Saisie({
   retour,
   lienInitial,
   enPlus,
+  restantes = null,
   onResultat,
 }: {
   mode: "particulier" | "benef";
@@ -87,6 +90,8 @@ export function Saisie({
   /** Lien Leboncoin reçu par l'adresse (?lien=…, depuis le tableau de bord) : importé dès l'ouverture. */
   lienInitial?: string;
   enPlus?: ReactNode;
+  /** Analyses restantes du compte (null : inconnu ou sans limite). À 0, rien n'est envoyé : ni import, ni analyse. */
+  restantes?: number | null;
   onResultat: (a: Analyse, ville: string) => void;
 }) {
   const router = useRouter();
@@ -99,6 +104,8 @@ export function Saisie({
   const [erreur, setErreur] = useState<{ t: string; offres?: string } | null>(null);
   const [lien, setLien] = useState("");
   const [lecture, setLecture] = useState(false);
+  const [apercu, setApercu] = useState<Apercu | null>(null);
+  const [nbEnvoyees, setNbEnvoyees] = useState(0);
   const fichier = useRef<HTMLInputElement>(null);
 
   // Annonce collée avant l'inscription : on la retrouve au retour.
@@ -163,9 +170,17 @@ export function Saisie({
     router.push(`/inscription?next=${encodeURIComponent(retour)}`);
   }
 
+  /** Plus d'analyse disponible : on l'annonce tout de suite, sans aucune requête (l'import Leboncoin est payant). */
+  function quotaEpuise() {
+    if (restantes !== 0) return false;
+    setErreur({ t: QUOTA_EPUISE, offres: mode });
+    return true;
+  }
+
   /** Lien Leboncoin collé : la fonction `annonce` (Apify) lit l'annonce et ses photos, puis l'analyse part toute seule. */
   async function importer(url: string, villeChoisie = ville) {
     setErreur(null);
+    if (quotaEpuise()) return;
     if (!lienLeboncoin(url)) {
       setErreur({ t: ERREURS_IMPORT.lien });
       return;
@@ -190,6 +205,7 @@ export function Saisie({
       });
       const j = await r.json().catch(() => null);
       if (r.status === 401) return versInscription({ lien: url, ville: villeChoisie });
+      if (r.status === 402) return setErreur({ t: QUOTA_EPUISE, offres: mode });
       if (!r.ok || !j?.ok) {
         setErreur({ t: ERREURS_IMPORT[j?.erreur] ?? "Lecture de l'annonce impossible pour le moment. Copiez la page de l'annonce et collez-la ci-dessous." });
         return;
@@ -210,12 +226,20 @@ export function Saisie({
 
   async function lancer(t = texte, ph = photos, v = ville) {
     setErreur(null);
+    if (quotaEpuise()) return;
     if (t.trim().length < 30) {
       setErreur({ t: "Collez le texte complet de l'annonce : titre, prix, kilométrage et description." });
       return;
     }
     setCharge(true);
     setSec(0);
+    setApercu(null);
+    setNbEnvoyees(ph.length);
+    // aperçu instantané (règles et cote de l'outil) affiché pendant l'analyse complète
+    fetch("/api/analyse/apercu", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texte: t }) })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((x) => x && setApercu(x as Apercu))
+      .catch(() => {});
     try {
       const r = await fetch("/api/analyse", {
         method: "POST",
@@ -229,6 +253,7 @@ export function Saisie({
         return;
       }
       onResultat({ ...(j as Analyse), vignettes: ph.map((p) => p.url) }, v);
+      router.refresh(); // compteur d'analyses à jour dans le menu et à la prochaine saisie
     } catch {
       setErreur({ t: "Connexion impossible. Vérifiez votre réseau et réessayez." });
     } finally {
@@ -236,7 +261,7 @@ export function Saisie({
     }
   }
 
-  const etape = Math.min(ETAPES.length - 1, Math.floor(sec / 6));
+  if (charge || lecture) return <Patience phase={lecture ? "import" : "analyse"} sec={sec} apercu={apercu} nbPhotos={lecture ? 0 : nbEnvoyees} benef={mode === "benef"} />;
 
   return (
     <form
@@ -317,12 +342,6 @@ export function Saisie({
         <p id="lien-aide" className="text-xs text-ink-3">
           Collez le lien : l&apos;annonce et ses photos sont récupérées, puis l&apos;analyse démarre toute seule (environ une minute).
         </p>
-        {lecture && (
-          <p className="flex items-center gap-2 text-sm text-ink-2" role="status">
-            <span className="size-4 animate-spin rounded-full border-2 border-o/30 border-t-o" aria-hidden="true" />
-            Lecture de l&apos;annonce sur Leboncoin… <span className="num text-ink-3">{sec} s</span>
-          </p>
-        )}
       </div>
 
       <div className="flex items-center gap-3 text-xs uppercase tracking-[.12em] text-ink-3" aria-hidden="true">
@@ -406,12 +425,6 @@ export function Saisie({
         <button type="submit" disabled={charge || lecture} className="btn btn-o">
           {charge ? "Analyse en cours…" : bouton}
         </button>
-        {charge && (
-          <span className="flex items-center gap-2 text-sm text-ink-2" role="status">
-            <span className="size-4 animate-spin rounded-full border-2 border-o/30 border-t-o" aria-hidden="true" />
-            {ETAPES[etape]}… <span className="num text-ink-3">{sec} s</span>
-          </span>
-        )}
       </div>
       {erreur && (
         <div role="alert" className="rounded-2xl border border-warn/40 bg-warn/10 p-4 text-sm">

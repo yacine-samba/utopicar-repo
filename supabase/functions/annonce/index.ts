@@ -134,6 +134,10 @@ Deno.serve(async (req) => {
   const url = lienLbc(String(body.url || ""));
   if (!url) return json({ ok: false, erreur: "lien" }, 400);
 
+  // plus d'analyse disponible : aucun import (Apify est payant), la personne est invitée à changer de formule
+  const { data: reste } = await sb.rpc("analyses_restantes", { p_uid: user.id });
+  if (typeof reste === "number" && reste <= 0) return json({ ok: false, erreur: "quota" }, 402);
+
   const depuis = new Date(Date.now() - 86400_000).toISOString();
   const { count } = await sb.from("imports_annonces").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", depuis);
   if ((count ?? 0) >= MAX_PAR_JOUR) return json({ ok: false, erreur: "trop" }, 429);
@@ -144,7 +148,7 @@ Deno.serve(async (req) => {
   let items: any[] = [];
   let statut = "ok";
   try {
-    const r = await fetch(`https://api.apify.com/v2/acts/${ACTEUR}/run-sync-get-dataset-items?token=${encodeURIComponent(cfg.valeur)}&timeout=110&memory=512&maxTotalChargeUsd=0.05`, {
+    const r = await fetch(`https://api.apify.com/v2/acts/${ACTEUR}/run-sync-get-dataset-items?token=${encodeURIComponent(cfg.valeur)}&timeout=110&memory=1024&maxTotalChargeUsd=0.05`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ urls: [url], maxItems: 1 }),
