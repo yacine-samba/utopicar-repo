@@ -4,6 +4,7 @@ import { lireAnnonce } from "@/lib/analyse/texte";
 import { fiabilite } from "@/lib/analyse/fiabilite";
 import { analyseIA, IaIndisponible } from "@/lib/analyse/ia";
 import { filtrer } from "@/lib/analyse/filtre";
+import { coteMarche, marcheDepuisCote } from "@/lib/analyse/cote";
 import { coutParticulier, dealPro, DEFAUTS_PART, DEFAUTS_PRO, type Analyse } from "@/lib/analyse/couts";
 import { compteCourant } from "@/lib/compte";
 import { OFFRES, type Offre } from "@/lib/offres";
@@ -67,10 +68,14 @@ export async function POST(req: Request) {
   const faits = lireAnnonce(texte);
   const fiab = fiabilite({ texte, annee: faits.annee, km: faits.km, energie: faits.energie });
   const detail = mode === "benef" ? "complet" : o.detail;
-  const out: Analyse = { faits, fiab, ia: null };
+  // Cote calculée par l'outil sur les annonces en ligne : elle fait foi pour le prix du marché.
+  const cote = compte ? await coteMarche(texte, faits) : null;
+  const out: Analyse = { faits, fiab, ia: null, cote };
 
   try {
-    out.ia = filtrer(await analyseIA({ texte, faits, fiab, ville, photos, offre: o.id }), detail);
+    const brut = await analyseIA({ texte, faits, fiab, ville, photos, offre: o.id, cote });
+    if (cote) brut.marche = { ...brut.marche, ...marcheDepuisCote(cote) };
+    out.ia = filtrer(brut, detail);
   } catch (e) {
     if (e instanceof IaIndisponible) out.iaErreur = "L'estimation du marché n'est pas configurée sur ce serveur.";
     else if (e instanceof Anthropic.RateLimitError) out.iaErreur = "Trop de demandes en ce moment, réessayez dans une minute.";

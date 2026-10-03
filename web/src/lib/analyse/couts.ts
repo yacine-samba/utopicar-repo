@@ -8,6 +8,8 @@ import type { IaVue } from "./ia-schema";
 import type { Detail, OffreId } from "../offres";
 
 export type Analyse = {
+  /** Cote de l'outil (annonces comparables), quand assez d'annonces ont été trouvées. */
+  cote?: { n: number; p25: number; mediane: number; p75: number } | null;
   faits: Faits;
   fiab: Fiabilite;
   ia: IaVue | null;
@@ -131,7 +133,7 @@ export function dealPro(a: Analyse, p: ParamsPro, prixSaisi: number | null, dist
   else verdict = "NO GO";
 
   const lignes = [
-    { l: `Revente à ${p.ville || "Paris"}, en moins de 3 semaines`, d: revente != null ? `Cote IA, confiance ${a.ia?.marche.confiance}` : "Cote indisponible", v: revente, head: true },
+    { l: `Revente à ${p.ville || "Paris"}, en moins de 3 semaines`, d: revente != null ? a.cote ? `Cote de l'outil sur ${a.cote.n} annonces` : `Cote estimée, confiance ${a.ia?.marche.confiance}` : "Cote indisponible", v: revente, head: true },
     { l: prixSaisi != null ? "Votre prix" : "Prix demandé", d: "", v: prix != null ? -prix : null },
     { l: "Remise en état", d: chiffrables.length ? `${chiffrables.length} poste(s), fourchette haute` : "Aucun poste chiffré", v: -remise },
     { l: "Carte grise", d: cg.d, v: cg.v == null ? null : -cg.v },

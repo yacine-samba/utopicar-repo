@@ -5,6 +5,7 @@ import { IaSchema, type Ia } from "./ia-schema";
 import type { Faits } from "./texte";
 import type { Fiabilite } from "./fiabilite";
 import type { OffreId } from "../offres";
+import type { Cote } from "./cote";
 
 export type Photo = { media_type: "image/jpeg" | "image/png" | "image/webp"; data: string };
 
@@ -13,8 +14,9 @@ export type Photo = { media_type: "image/jpeg" | "image/png" | "image/webp"; dat
    viennent des règles de l'outil ; elle complète ce que les règles ne peuvent pas lire (cote, photos, textes à copier).
    ANTHROPIC_MODEL permet d'en changer sans toucher au code. */
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-haiku-4-5";
-// Haiku 4.5 ne prend ni « effort » ni le repli automatique ; les modèles récents (Sonnet 5.5, Opus 5.5) prennent les deux.
-const RECENT = !/haiku/.test(MODEL);
+// Réglages « effort » et repli automatique : seulement sur les modèles qui les prennent (Opus 5 et 5.5, Sonnet 5.5, Fable).
+// Haiku 4.5, Sonnet 4.6 et les passerelles compatibles (ANTHROPIC_BASE_URL) reçoivent une requête simple.
+const RECENT = /opus-5|sonnet-5-5|fable/.test(MODEL) && !process.env.ANTHROPIC_BASE_URL;
 
 // Partie fixe du prompt : identique à chaque appel, mise en cache.
 const SYSTEME = `Tu es un expert automobile français (mécanique, cote du marché de l'occasion, fraude). Tu analyses une annonce de voiture d'occasion pour UTOPICAR.
@@ -38,7 +40,7 @@ Règles :
 - Vouvoiement partout. Ton clair et respectueux : expliquez sans infantiliser.
 - Réponds en français.`;
 
-function faitsLignes(f: Faits, fiab: Fiabilite): string[] {
+function faitsLignes(f: Faits, fiab: Fiabilite, cote: Cote | null): string[] {
   const L: string[] = [];
   const n = (v: number) => v.toLocaleString("fr-FR");
   if (f.prix != null) L.push(`Prix affiché : ${n(f.prix)} €`);
@@ -56,17 +58,19 @@ function faitsLignes(f: Faits, fiab: Fiabilite): string[] {
   );
   if (fiab.k === "eviter") L.push(`Moteur ou boîte à éviter selon l'outil : ${fiab.pourquoi.join(" ; ")}`);
   else if (fiab.modele) L.push(`Modèle de la liste fiable de l'outil : ${fiab.modele} (bons moteurs : ${fiab.bonsMoteurs})`);
+  if (cote)
+    L.push(`Cote de l'outil (${cote.n} annonces comparables en ligne, prix ramenés à cette année et ce kilométrage) : médiane ${cote.mediane} €, moitié des annonces entre ${cote.p25} et ${cote.p75} €. Utilise ces chiffres pour "marche".`);
   return L;
 }
 
 export class IaIndisponible extends Error {}
 
-export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilite; ville: string; photos: Photo[]; offre: OffreId }): Promise<Ia> {
+export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilite; ville: string; photos: Photo[]; offre: OffreId; cote: Cote | null }): Promise<Ia> {
   if (!process.env.ANTHROPIC_API_KEY) throw new IaIndisponible("ANTHROPIC_API_KEY manquante");
   // Clé créée hors d'un espace de travail Anthropic : l'API demande l'identifiant de l'espace (ANTHROPIC_WORKSPACE_ID, wrkspc_…).
   const espace = process.env.ANTHROPIC_WORKSPACE_ID;
   const client = new Anthropic(espace ? { defaultHeaders: { "anthropic-workspace-id": espace } } : {});
-  const lignes = faitsLignes(p.faits, p.fiab);
+  const lignes = faitsLignes(p.faits, p.fiab, p.cote);
   const consigne = `Ville de l'utilisateur (trajet, revente) : ${p.ville || "Paris"}
 ${p.photos.length ? `${p.photos.length} photo(s) de l'annonce jointe(s).` : "Aucune photo jointe."}
 
