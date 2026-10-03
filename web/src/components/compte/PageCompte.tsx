@@ -8,7 +8,7 @@ import { FormulaireCompte } from "./FormulaireCompte";
 
 /** Écran commun inscription / connexion. */
 export async function PageCompte({ mode, params }: { mode: "inscription" | "connexion"; params: { next?: string; offre?: string; erreur?: string } }) {
-  const suite = suiteSure(params.next, mode === "inscription" ? "/analyse" : "/compte");
+  const suite = suiteSure(params.next, "/app");
   if (await compteCourant()) redirect(suite);
   const offre = params.offre && params.offre in OFFRES ? OFFRES[params.offre as OffreId] : null;
   const autre = `/${mode === "inscription" ? "connexion" : "inscription"}?next=${encodeURIComponent(suite)}${offre ? `&offre=${offre.id}` : ""}`;

@@ -19,7 +19,7 @@ export function MenuMobile({ liens, compte }: { liens: LienNav[]; compte: LienNa
     return () => removeEventListener("keydown", f);
   }, [ouvert]);
   return (
-    <div className="lg:hidden">
+    <div className="md:hidden">
       <button
         type="button"
         aria-expanded={ouvert}

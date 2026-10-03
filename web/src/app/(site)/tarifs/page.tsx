@@ -30,7 +30,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           J&apos;achète pour moi
         </a>
         <a href="#benef" className="whitespace-nowrap rounded-full px-3 py-2 hover:bg-glass sm:px-4">
-          Achat-revente (Benef)
+          Benef (achat-revente)
         </a>
       </nav>
 

@@ -49,6 +49,7 @@ export function Saisie({
   villeAide,
   bouton,
   retour,
+  lienInitial,
   enPlus,
   onResultat,
 }: {
@@ -60,6 +61,8 @@ export function Saisie({
   bouton: string;
   /** Page où revenir après l'inscription, si elle est nécessaire. */
   retour: string;
+  /** Lien Leboncoin reçu par l'adresse (?lien=…, depuis le tableau de bord) : importé dès l'ouverture. */
+  lienInitial?: string;
   enPlus?: ReactNode;
   onResultat: (a: Analyse, ville: string) => void;
 }) {
@@ -88,6 +91,11 @@ export function Saisie({
         setTexte(b.texte);
         if (b.ville) setVille(b.ville);
         sessionStorage.removeItem(BROUILLON);
+      } else if (lienInitial && lienLeboncoin(lienInitial)) {
+        setLien(lienInitial);
+        // Le lien quitte l'adresse : actualiser la page ne relance pas l'import.
+        history.replaceState(null, "", location.pathname);
+        importer(lienInitial, villeInitiale);
       }
     } catch {
       /* stockage indisponible */

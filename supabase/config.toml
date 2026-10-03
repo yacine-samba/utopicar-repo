@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.contact]
 verify_jwt = false
+
+[functions.compte]
+verify_jwt = false
+
+[functions.annonce]
+verify_jwt = false

@@ -2,9 +2,6 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Instrument_Serif } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { EnTete } from "@/components/site/EnTete";
-import { Pied } from "@/components/site/Pied";
-import { Onboarding } from "@/components/site/Onboarding";
 import { Apparitions } from "@/components/site/Apparitions";
 import "./globals.css";
 
@@ -31,12 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a href="#contenu" className="sr-only-focusable fixed left-3 top-3 z-50 rounded-full bg-o px-4 py-2 font-semibold text-[#160904]">
           Aller au contenu
         </a>
-        <EnTete />
-        <main id="contenu" tabIndex={-1} className="outline-none">
-          {children}
-        </main>
-        <Pied />
-        <Onboarding />
+        {children}
         <Apparitions />
         <SpeedInsights />
       </body>

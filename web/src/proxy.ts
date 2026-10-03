@@ -16,7 +16,17 @@ export async function proxy(request: NextRequest) {
       },
     },
   });
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  // Espace personnel : sans session, direction la connexion, avec retour sur la page demandée.
+  const { pathname, search } = request.nextUrl;
+  if (!user && (pathname === "/app" || pathname.startsWith("/app/"))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/connexion";
+    url.search = `?next=${encodeURIComponent(pathname + search)}`;
+    return NextResponse.redirect(url);
+  }
   return response;
 }
 

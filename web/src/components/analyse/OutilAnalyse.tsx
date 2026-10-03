@@ -4,11 +4,12 @@ import type { Analyse } from "@/lib/analyse/couts";
 import { Saisie } from "../Saisie";
 import { ResultatParticulier } from "./ResultatParticulier";
 
-export function OutilAnalyse({ ville, maxPhotos, entete }: { ville: string; maxPhotos: number; entete: React.ReactNode }) {
+export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode }) {
   const [a, setA] = useState<Analyse | null>(null);
   if (a)
     return (
       <div className="mx-auto max-w-3xl">
+        {a.rapportId && apres}
         <ResultatParticulier
           a={a}
           onNouvelle={() => {
@@ -29,7 +30,8 @@ export function OutilAnalyse({ ville, maxPhotos, entete }: { ville: string; maxP
           villeLabel="Votre ville"
           villeAide="Pour calculer le trajet jusqu'à la voiture."
           bouton="Analyser l'annonce"
-          retour="/analyse"
+          retour={retour}
+          lienInitial={lienInitial}
           onResultat={(r) => {
             setA(r);
             scrollTo({ top: 0 });
