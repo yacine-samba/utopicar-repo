@@ -5,6 +5,7 @@ import { fiabilite } from "@/lib/analyse/fiabilite";
 import { analyseIA, IaIndisponible } from "@/lib/analyse/ia";
 import { filtrer } from "@/lib/analyse/filtre";
 import { coteMarche, marcheDepuisCote } from "@/lib/analyse/cote";
+import { iaRegles } from "@/lib/analyse/regles";
 import { coutParticulier, dealPro, DEFAUTS_PART, DEFAUTS_PRO, type Analyse } from "@/lib/analyse/couts";
 import { compteCourant } from "@/lib/compte";
 import { OFFRES, type Offre } from "@/lib/offres";
@@ -48,8 +49,6 @@ export async function POST(req: Request) {
   // Mode démonstration (UTOPICAR_DEMO=1) : seulement quand les comptes ne sont pas configurés, pour tester le site.
   const demo = !comptesActifs() && process.env.UTOPICAR_DEMO === "1";
   if (!comptesActifs() && !demo) return erreur("Les comptes ne sont pas encore ouverts. Revenez très bientôt.", 503);
-  // Sans clé d'analyse, on s'arrête avant tout décompte : rien n'est consommé.
-  if (!demo && !process.env.ANTHROPIC_API_KEY) return erreur("L'analyse ouvre dans quelques instants. Réessayez un peu plus tard.", 503);
 
   const compte = demo ? null : await compteCourant();
   if (!demo && !compte) return erreur("Créez votre compte gratuit pour voir le résultat.", 401, { connexion: true });
@@ -85,6 +84,10 @@ export async function POST(req: Request) {
     else if (e instanceof Anthropic.APIError) out.iaErreur = "Le service d'analyse ne répond pas, réessayez.";
     else out.iaErreur = e instanceof Error ? e.message : "Erreur inconnue.";
     console.error("analyse IA", e);
+    // L'IA ne répond pas : l'analyse reste complète avec les règles et la cote de l'outil, comme l'outil Garage.
+    out.ia = filtrer(iaRegles(texte, faits, fiab, cote), detail);
+    out.regles = true;
+    delete out.iaErreur;
   }
 
   let rapportId: string | null = null;

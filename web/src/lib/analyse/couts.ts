@@ -14,6 +14,8 @@ export type Analyse = {
   fiab: Fiabilite;
   ia: IaVue | null;
   iaErreur?: string;
+  /** Analyse faite par les seules règles de l'outil (IA indisponible). */
+  regles?: boolean;
   /** Renseignés par le serveur après l'analyse. */
   rapportId?: string | null;
   detail?: Detail;
