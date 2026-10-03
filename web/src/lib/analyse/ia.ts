@@ -43,7 +43,8 @@ export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilit
   if (!process.env.ANTHROPIC_API_KEY) throw new IaIndisponible("ANTHROPIC_API_KEY manquante");
   // Clé créée hors d'un espace de travail Anthropic : l'API demande l'identifiant de l'espace (ANTHROPIC_WORKSPACE_ID, wrkspc_…).
   const espace = process.env.ANTHROPIC_BASE_URL ? undefined : process.env.ANTHROPIC_WORKSPACE_ID;
-  const client = new Anthropic(espace ? { defaultHeaders: { "anthropic-workspace-id": espace } } : {});
+  // surcharge passagère de la passerelle (503) : jusqu'à 4 nouvelles tentatives, espacées, avant de retomber sur les règles
+  const client = new Anthropic({ maxRetries: 4, ...(espace ? { defaultHeaders: { "anthropic-workspace-id": espace } } : {}) });
   const c = p.cote;
   const consigne = consigneGarage({
     ville: p.ville || "Paris",
