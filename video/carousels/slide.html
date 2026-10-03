@@ -124,8 +124,7 @@ if (SL.relance) el('div', 'relance', S, `<span>${md(SL.relance)}</span>`);
 // sous la signature (images 2 à 5), la zone de contenu commence plus bas pour ne jamais la toucher
 const TOP = N > 0 ? 306 : 230, BOT = SL.relance ? 1290 : N === 0 ? 1320 : 1470;
 const H = BOT - TOP; box.style.top = TOP + 'px'; box.style.height = H + 'px';
-const DEMO = /Golf|Clio|\/100|1\s?647|14\s?820/.test([SL.kicker, SL.title, SL.body, SL.body2].join(' '));
-if (C.demo !== false && (SL.demo || SL.ui || DEMO)) el('div', 'demo', S, 'Données de démonstration');
+// pas de mention « Données de démonstration » sur les carrousels (décision de l'utilisateur, oct. 2026)
 await document.fonts.ready; await document.fonts.load("800 96px 'Archivo'"); await document.fonts.load("400 96px 'Archivo'");
 document.querySelectorAll('.title').forEach(t => fit(t, +t.dataset.size));
 // aucune capture ni rangée de captures plus large que la colonne (800 px, ombre comprise)

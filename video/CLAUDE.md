@@ -57,5 +57,5 @@
   les 440 px du bas, les 140 px de droite et les 60 px de gauche. Square : 60 px partout. Desktop : 96 × 54 px, bas 108 px.
 - Tout ce qui est centré l'est sur l'axe de l'écran (x = 540), dans une colonne symétrique 140 → 940. Jamais sur x = 500
   (centre de la zone sûre) : le décalage de 40 px vers la gauche se voit sur un téléphone.
-- Chiffres démo dans une pub : mention « Données de démonstration » à l'écran.
+- Chiffres démo dans une pub vidéo : mention « Données de démonstration » à l'écran. Carrousels : aucune mention (décision de l'utilisateur, oct. 2026).
 - Processus complet (brief, script, voix, A/B, langues, formats, livraison) : skill `/motion-studio`.
