@@ -4,6 +4,7 @@ import { useState } from "react";
 import { coutParticulier, DEFAUTS_PART, eur, type Analyse, type Niveau } from "@/lib/analyse/couts";
 import { OFFRES } from "@/lib/offres";
 import { Copier, Panneau, Pastille, cx, inputCls, type Ton } from "../ui";
+import { AnalysePhotos } from "./AnalysePhotos";
 
 const VERDICTS: Record<Niveau, { l: string; ton: Ton; phrase: string }> = {
   bon: { l: "Bonne affaire", ton: "ok", phrase: "Le prix est sous le marché." },
@@ -130,6 +131,17 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
         </label>
         {c.gros.length > 0 && <p className="mt-3 text-sm text-warn">Des gros travaux sont possibles et ne sont pas comptés ici : voir « À vérifier ».</p>}
       </Panneau>
+
+      {plus && (ia?.photos.fournies || (a.vignettes ?? []).length > 0) && (
+        <Panneau titre="Ce que montrent les photos">
+          <AnalysePhotos photos={ia?.photos} vignettes={a.vignettes} regles={a.regles} />
+        </Panneau>
+      )}
+      {plus && !ia?.photos.fournies && !(a.vignettes ?? []).length && (
+        <p className="rounded-2xl border border-line p-4 text-sm text-ink-3">
+          Aucune photo examinée. À la prochaine analyse, ajoutez les photos de l&apos;annonce : l&apos;IA repère les chocs, la rouille, les pneus usés, une teinte différente et lit le compteur.
+        </p>
+      )}
 
       {verifs.length > 0 && (
         <Panneau titre="À vérifier avant d'acheter">

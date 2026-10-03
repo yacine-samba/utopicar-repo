@@ -10,7 +10,7 @@ export function filtrer(ia: Ia, detail: Detail): IaVue {
     ...base,
     marche: { ...ia.marche, bas: null, haut: null, reventeRapide: null, commentaire: "" },
     fiabilite: { ...ia.fiabilite, problemesConnus: [] },
-    photos: { ...ia.photos, defauts: [], vuesManquantes: [] },
+    photos: { ...ia.photos, defauts: [], vuesManquantes: [], resume: "", teinte: [], incoherences: [] },
     alertes: ia.alertes.slice(0, 2),
     pointsForts: [],
     questions: null,

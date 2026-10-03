@@ -11,21 +11,44 @@ import { Champ, cx, inputCls } from "./ui";
 type PhotoLocale = { id: string; url: string; data: string };
 const BROUILLON = "utp-brouillon";
 
+/** Image décodée par le navigateur : createImageBitmap, sinon une balise img (Safari lit ainsi les photos HEIC de l'iPhone). */
+async function decoder(f: Blob): Promise<{ img: CanvasImageSource; w: number; h: number }> {
+  try {
+    const bmp = await createImageBitmap(f);
+    return { img: bmp, w: bmp.width, h: bmp.height };
+  } catch {
+    const u = URL.createObjectURL(f);
+    try {
+      const im = new Image();
+      im.src = u;
+      await im.decode();
+      return { img: im, w: im.naturalWidth, h: im.naturalHeight };
+    } finally {
+      setTimeout(() => URL.revokeObjectURL(u), 1000);
+    }
+  }
+}
+
 /** Réduit une photo (1280 px, JPEG) pour l'envoyer à l'analyse sans dépasser la taille autorisée. */
 async function reduire(f: File): Promise<PhotoLocale | null> {
   try {
-    const bmp = await createImageBitmap(f);
-    const k = Math.min(1, 1280 / Math.max(bmp.width, bmp.height));
+    const { img, w, h } = await decoder(f);
+    if (!w || !h) return null;
+    const k = Math.min(1, 1280 / Math.max(w, h));
     const c = document.createElement("canvas");
-    c.width = Math.round(bmp.width * k);
-    c.height = Math.round(bmp.height * k);
-    c.getContext("2d")!.drawImage(bmp, 0, 0, c.width, c.height);
+    c.width = Math.round(w * k);
+    c.height = Math.round(h * k);
+    c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
     const url = c.toDataURL("image/jpeg", 0.8);
-    return { id: Math.random().toString(36).slice(2), url, data: url.split(",")[1] };
+    const data = url.split(",")[1] ?? "";
+    // canvas vide (image non décodée) ou trop lourde pour l'analyse
+    if (data.length < 2000 || data.length > 1_500_000) return null;
+    return { id: Math.random().toString(36).slice(2), url, data };
   } catch {
     return null;
   }
 }
+const estImage = (f: File) => f.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|gif|bmp|avif)$/i.test(f.name);
 
 /** Photo reçue en data URL (import par lien) : même réduction que les photos ajoutées à la main. */
 async function depuisDataUrl(u: string, i: number) {
@@ -70,6 +93,7 @@ export function Saisie({
   const [texte, setTexte] = useState("");
   const [ville, setVille] = useState(villeInitiale);
   const [photos, setPhotos] = useState<PhotoLocale[]>([]);
+  const [avisPhotos, setAvisPhotos] = useState<string | null>(null);
   const [charge, setCharge] = useState(false);
   const [sec, setSec] = useState(0);
   const [erreur, setErreur] = useState<{ t: string; offres?: string } | null>(null);
@@ -111,9 +135,23 @@ export function Saisie({
   }, [charge, lecture]);
 
   async function ajouter(files: File[]) {
-    const imgs = files.filter((f) => f.type.startsWith("image/")).slice(0, maxPhotos - photos.length);
-    const r = (await Promise.all(imgs.map(reduire))).filter((x): x is PhotoLocale => !!x);
+    const place = maxPhotos - photos.length;
+    const imgs = files.filter(estImage);
+    if (!imgs.length) {
+      setAvisPhotos(files.length ? "Ce fichier n'est pas une photo." : null);
+      return;
+    }
+    const lues = await Promise.all(imgs.slice(0, Math.max(0, place)).map(reduire));
+    const r = lues.filter((x): x is PhotoLocale => !!x);
+    const refusees = lues.length - r.length;
     setPhotos((p) => [...p, ...r].slice(0, maxPhotos));
+    setAvisPhotos(
+      refusees
+        ? `${refusees} photo${refusees > 1 ? "s" : ""} illisible${refusees > 1 ? "s" : ""} : enregistrez-la${refusees > 1 ? "s" : ""} en JPEG (capture d'écran) puis ajoutez-la${refusees > 1 ? "s" : ""} de nouveau.`
+        : imgs.length > place
+          ? `${maxPhotos} photos au plus : les ${imgs.length - Math.max(0, place)} dernières n'ont pas été ajoutées.`
+          : null,
+    );
   }
 
   function versInscription(brouillon: Record<string, string>) {
@@ -160,6 +198,7 @@ export function Saisie({
       setTexte(t);
       const ph = maxPhotos > 0 ? (await Promise.all((j.photos as string[]).slice(0, maxPhotos).map(depuisDataUrl))).filter((x): x is PhotoLocale => !!x) : [];
       setPhotos(ph);
+      if (maxPhotos > 0 && !ph.length) setAvisPhotos("Les photos de l'annonce n'ont pas pu être récupérées : l'analyse part sans elles. Ajoutez-les à la main pour que l'IA examine l'état.");
       setLecture(false);
       await lancer(t, ph, villeChoisie);
     } catch {
@@ -189,7 +228,7 @@ export function Saisie({
         setErreur({ t: j?.erreur || "L'analyse a échoué, réessayez.", offres: j?.offres });
         return;
       }
-      onResultat(j as Analyse, v);
+      onResultat({ ...(j as Analyse), vignettes: ph.map((p) => p.url) }, v);
     } catch {
       setErreur({ t: "Connexion impossible. Vérifiez votre réseau et réessayez." });
     } finally {
@@ -222,8 +261,16 @@ export function Saisie({
           setTexte(converti);
           const urls = photosDepuisHtml(e.clipboardData.getData("text/html")).slice(0, maxPhotos);
           if (urls.length) {
-            const fichiers = await Promise.all(urls.map(async (u, i) => new File([await (await fetch(u)).blob()], `photo-${i + 1}.jpg`, { type: "image/jpeg" })));
-            ajouter(fichiers);
+            // photos distantes : lisibles seulement si le site les autorise ; sinon on le dit au lieu d'échouer en silence
+            const fichiers = (await Promise.all(urls.map(async (u, i) => {
+              try {
+                return new File([await (await fetch(u)).blob()], `photo-${i + 1}.jpg`, { type: "image/jpeg" });
+              } catch {
+                return null;
+              }
+            }))).filter((f): f is File => !!f);
+            if (fichiers.length) ajouter(fichiers);
+            else setAvisPhotos("Les photos copiées n'ont pas pu être lues : collez plutôt le lien Leboncoin, ou ajoutez les photos à la main.");
           }
           return;
         }
@@ -298,8 +345,9 @@ export function Saisie({
       {maxPhotos > 0 ? (
         <div className="grid gap-2">
           <span className="text-sm text-ink-2">
-            Photos <span className="text-ink-3">(facultatif, {maxPhotos} au plus ; vous pouvez aussi les coller)</span>
+            Photos <span className="text-ink-3">(facultatif, {maxPhotos} au plus ; vous pouvez aussi les coller ou les glisser)</span>
           </span>
+          <span className="text-xs text-ink-3">L&apos;IA examine la carrosserie, les jantes, l&apos;intérieur, le compteur et les papiers photographiés. Prenez les photos de l&apos;annonce, ou les vôtres pendant la visite.</span>
           <div
             className="flex flex-wrap gap-2"
             onDragOver={(e) => e.preventDefault()}
@@ -330,7 +378,7 @@ export function Saisie({
             <input
               ref={fichier}
               type="file"
-              accept="image/*"
+              accept="image/*,.heic,.heif"
               multiple
               hidden
               onChange={(e) => {
@@ -339,6 +387,7 @@ export function Saisie({
               }}
             />
           </div>
+          {avisPhotos && <p className="text-sm text-warn" role="status">{avisPhotos}</p>}
         </div>
       ) : (
         <p className="text-sm text-ink-3">

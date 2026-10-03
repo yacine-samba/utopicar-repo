@@ -15,6 +15,7 @@ import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { cx, inputCls } from "@/lib/cx";
 import { Copier } from "../ui";
 import { AjouterParc } from "./AjouterParc";
+import { AnalysePhotos } from "@/components/analyse/AnalysePhotos";
 
 const e = (v: number | null | undefined) => (v == null || !isFinite(v) ? "—" : eur(v));
 const km = (v: number | null | undefined) => (v == null ? null : `${Math.round(v).toLocaleString("fr-FR")} km`);
@@ -423,6 +424,13 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
         </Bloc>
 
         <Bloc id="photos" titre="Ce que montrent les photos" verrou={verrou("photos")}>
+          <div className="mb-5">
+            {a.ia?.photos.fournies || (a.vignettes ?? []).length ? (
+              <AnalysePhotos photos={a.ia?.photos} vignettes={a.vignettes} regles={a.regles} />
+            ) : (
+              <p className="text-sm text-ink-3">Aucune photo examinée : ajoutez les photos de l&apos;annonce à la prochaine analyse (ou collez le lien Leboncoin, elles sont récupérées) pour la note d&apos;état, les défauts chiffrés et la teinte des éléments.</p>
+            )}
+          </div>
           <div className="grid gap-4 sm:grid-cols-3">
             {[["Visible", r.visuel?.visible], ["Probable", r.visuel?.probable], ["Impossible à confirmer", r.visuel?.nonVerifiable]].map(([l, x]) => (
               <div key={l as string}>

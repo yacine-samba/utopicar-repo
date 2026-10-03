@@ -20,6 +20,8 @@ export type Analyse = {
   rapport?: import("./rapport").Rapport | null;
   /** Lien de l'annonce analysée. */
   lien?: string;
+  /** Photos envoyées avec l'analyse (navigateur seulement, pour les montrer à côté du résultat). */
+  vignettes?: string[];
   /** Renseignés par le serveur après l'analyse. */
   rapportId?: string | null;
   detail?: Detail;
