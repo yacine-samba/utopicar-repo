@@ -44,6 +44,15 @@ impressions par variante avant de conclure ; on juge d'abord l'accroche, puis le
 
 ## 3. Écrire pour l'oreille et pour l'œil
 
+**Avant de montrer un texte (brief, script, voix off, textes à l'écran) : passe-le au skill Stop Slop**
+(`anthropic-skills:stop-slop`). Retour de l'utilisateur (oct. 2026) : les textes sonnaient « IA ». Pas d'adverbes de
+remplissage, pas de « ce n'est pas X, c'est Y », pas de tiret long, voix active, détails vécus et chiffrés.
+
+**Verdicts et notes en clair.** Un spectateur, même pro, ne comprend pas « GO / NO GO » ni « 38/100 » seul. On écrit
+le verbe et la conséquence en euros : « N'achète pas à ce prix », « Tu peux l'acheter », « Note de l'affaire : 38/100.
+Tu perds 1 200 € », « Le prix max à payer : 7 500 € », « 1 450 € moins cher que le prix du marché ». Si une vraie
+capture montre « GO » ou « NO GO », on ajoute une légende en clair juste dessous.
+
 - **La voix dit, l'écran montre.** Les textes à l'écran ne recopient pas la voix : ils posent le chiffre ou le mot
   clé (≤ 6 mots par écran, 1 idée), la voix raconte. Les sous-titres de la voix sont une couche à part.
 - Budget de mots (voix), 10 % de respiration comprise :

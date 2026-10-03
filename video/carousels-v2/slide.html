@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>utopicar — carrousel TikTok v2</title>
+<style>
+/* Charte du site utopicar.fr (branche main, web/src/app/globals.css) : fond sombre chaud, orange en accent,
+   Clash Display (titres) + Satoshi (texte) + Instrument Serif italique (le mot mis en avant). */
+@font-face{font-family:'Clash Display';font-weight:500;src:url(../assets/fonts-site/ClashDisplay-500.woff2) format('woff2')}
+@font-face{font-family:'Clash Display';font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:'Clash Display';font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:400;src:url(../assets/fonts-site/Satoshi-400.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:900;src:url(../assets/fonts-site/Satoshi-900.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0b0a09}
+:root{--bg0:#0b0a09;--bg1:#17100b;--ink:#f4f1ec;--ink2:rgba(244,241,236,.8);--ink3:rgba(244,241,236,.62);--line:rgba(244,241,236,.1);--line2:rgba(244,241,236,.2);
+  --glass:rgba(244,241,236,.05);--panel:rgba(22,16,12,.72);--o:#ff5a1f;--o2:#ff8a4c;--o3:#ffb38a;--ok:#3ecb7f;--warn:#ffc53d;--bad:#ff7a7a}
+#s{position:absolute;inset:0;overflow:hidden;color:var(--ink);font-family:'Satoshi',sans-serif;-webkit-font-smoothing:antialiased;
+  background:linear-gradient(160deg,var(--bg0),var(--bg1) 60%,var(--bg0))}
+#glow{position:absolute;inset:0;pointer-events:none}
+#grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 2px,transparent 2px),linear-gradient(90deg,var(--line) 2px,transparent 2px);
+  background-size:120px 120px;background-position:0 0;opacity:.45;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 80%)}
+/* colonne sûre TikTok : x 140 → 940, y 220 → 1480 */
+#safe{position:absolute;left:140px;width:800px;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:46px;text-align:center}
+.brand{position:absolute;left:140px;top:232px;width:800px;display:flex;justify-content:center;align-items:center;gap:18px}
+.tile{display:grid;place-items:center;width:72px;height:72px;border-radius:20px;border:2px solid var(--line2);background:#15110d;overflow:hidden}
+.tile img{width:84%}
+.brand b{font-family:'Clash Display';font-weight:600;font-size:40px;letter-spacing:-.01em}
+.brand .pg{font-weight:500;font-size:30px;color:var(--ink3);margin-left:6px}
+.kicker.k1{font-size:46px;padding:16px 34px}
+.kicker{display:inline-flex;align-items:center;gap:16px;padding:14px 28px;border:2px solid var(--line2);border-radius:999px;background:var(--glass);font-weight:500;font-size:36px;color:var(--ink2);white-space:nowrap}
+.kicker::before{content:'';width:14px;height:14px;border-radius:50%;background:var(--o);box-shadow:0 0 22px var(--o)}
+.title{font-family:'Clash Display';font-weight:600;letter-spacing:-.012em;word-spacing:.04em;line-height:1.04;color:var(--ink);white-space:nowrap}
+.it{font-family:'Instrument Serif';font-style:italic;font-weight:400;letter-spacing:0;padding-right:.06em;
+  background:linear-gradient(100deg,var(--o2),var(--o3) 60%,var(--o2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.title .r,.r{color:var(--bad)}.title .g,.g{color:var(--ok)}
+.body{font-weight:500;font-size:52px;line-height:1.3;color:var(--ink2);max-width:800px;text-wrap:balance}
+.body b{font-weight:700;color:var(--ink)}
+.carte{width:800px;border:2px solid var(--line);border-radius:44px;background:var(--panel);padding:44px 48px;text-align:left;box-shadow:0 60px 120px -60px rgba(0,0,0,.8)}
+.lab{font-weight:500;font-size:32px;color:var(--o2);margin-bottom:22px}
+/* liste numérotée */
+.list{display:flex;flex-direction:column;gap:30px;width:800px;text-align:left}
+.list .li{display:flex;gap:30px;align-items:flex-start}
+.list .n{flex:none;width:84px;height:84px;border-radius:26px;border:2px solid rgba(255,90,31,.45);background:rgba(255,90,31,.1);color:var(--o2);
+  font-family:'Clash Display';font-weight:600;font-size:48px;display:grid;place-items:center}
+.list .t{font-weight:700;font-size:52px;line-height:1.18;color:var(--ink);padding-top:10px}
+.list .t small{display:block;font-weight:500;font-size:41px;color:var(--ink3);margin-top:8px;line-height:1.25}
+/* lignes à cocher : libellé + statut */
+.rows{display:flex;flex-direction:column}
+.row{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:26px 0;border-top:2px solid var(--line);font-weight:500;font-size:46px;color:var(--ink2)}
+.row:first-child{border-top:0;padding-top:4px}.row:last-child{padding-bottom:0}
+.row b{font-weight:700;white-space:nowrap}
+.st{flex:none;font-weight:700;font-size:34px;padding:8px 22px;border-radius:999px;white-space:nowrap}
+.st.ok{color:var(--ok);background:rgba(62,203,127,.12);border:2px solid rgba(62,203,127,.35)}
+.st.warn{color:var(--warn);background:rgba(255,197,61,.1);border:2px solid rgba(255,197,61,.35)}
+.st.bad{color:var(--bad);background:rgba(255,122,122,.1);border:2px solid rgba(255,122,122,.35)}
+/* pastilles moteurs */
+.pills{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;width:800px}
+.pill{font-weight:700;font-size:40px;padding:14px 28px;border-radius:999px;white-space:nowrap}
+.pill.ok{color:var(--ok);background:rgba(62,203,127,.1);border:2px solid rgba(62,203,127,.4)}
+.pill.bad{color:var(--bad);background:rgba(255,122,122,.1);border:2px solid rgba(255,122,122,.4)}
+.pill.neu{color:var(--ink);background:var(--glass);border:2px solid var(--line2)}
+/* annonce citée */
+.quote{font-weight:500;font-size:50px;line-height:1.45;color:var(--ink2)}
+.quote mark{background:rgba(255,122,122,.2);color:var(--ink);border-radius:10px;padding:0 8px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.quote mark.ok{background:rgba(62,203,127,.18)}
+/* ticket de frais */
+.tk .row{font-size:44px}
+.tk .row span:last-child{font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.tk .tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:22px;padding-top:26px;border-top:3px dashed var(--line2)}
+.tk .tot span{font-weight:700;font-size:40px}
+.tk .tot b{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.02em;white-space:nowrap;font-variant-numeric:tabular-nums}
+/* verdict */
+.vd{display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center}
+.vd .chip{font-family:'Clash Display';font-weight:600;font-size:84px;letter-spacing:-.02em;padding:16px 48px;border-radius:999px;white-space:nowrap}
+.vd .chip.ok{color:var(--ok);background:rgba(62,203,127,.12);border:3px solid rgba(62,203,127,.45)}
+.vd .chip.warn{color:var(--warn);background:rgba(255,197,61,.1);border:3px solid rgba(255,197,61,.4)}
+.vd .chip.bad{color:var(--bad);background:rgba(255,122,122,.1);border:3px solid rgba(255,122,122,.45)}
+.vd .sub{font-weight:500;font-size:46px;line-height:1.3;color:var(--ink2)}
+.vd .sub b{color:var(--ink);font-weight:700}
+/* cote : fourchette du marché + annonce */
+.cote .bar{position:relative;height:30px;border-radius:15px;margin:96px 10px 28px;background:linear-gradient(90deg,rgba(62,203,127,.5),rgba(255,197,61,.5) 50%,rgba(255,122,122,.55))}
+.cote .mk{position:absolute;top:50%;transform:translate(-50%,-50%)}
+.cote .mk i{display:block;width:6px;height:72px;border-radius:3px;background:var(--ink)}
+.cote .dot{position:absolute;top:50%;width:52px;height:52px;border-radius:50%;background:var(--o);border:6px solid #17100b;box-shadow:0 0 30px rgba(255,90,31,.8);transform:translate(-50%,-50%)}
+.cote .tag{position:absolute;bottom:58px;transform:translateX(-50%);white-space:nowrap;font-weight:700;font-size:36px}
+.cote .ends{display:flex;justify-content:space-between;font-weight:500;font-size:32px;color:var(--ink3)}
+/* conversation */
+.chat{display:flex;flex-direction:column;gap:22px;width:800px}
+.bub{max-width:660px;padding:26px 34px;border-radius:36px;font-weight:500;font-size:46px;line-height:1.3;text-align:left}
+.bub.v{align-self:flex-start;background:var(--glass);border:2px solid var(--line2);border-bottom-left-radius:10px;color:var(--ink)}
+.bub.m{align-self:flex-end;background:rgba(255,90,31,.16);border:2px solid rgba(255,90,31,.45);border-bottom-right-radius:10px;color:var(--ink)}
+.who{font-weight:500;font-size:28px;color:var(--ink3);margin-bottom:4px}
+.bub.m .who{color:var(--o3)}
+/* notification d'alerte */
+.nt{display:flex;gap:30px;align-items:flex-start}
+.nt .ic{flex:none;width:100px;height:100px;border-radius:28px;border:2px solid var(--line2);background:#15110d;display:grid;place-items:center}
+.nt .ic img{width:84%}
+.nt .h{display:flex;justify-content:space-between;font-weight:500;font-size:30px;color:var(--ink3)}
+.nt .t1{font-weight:700;font-size:42px;margin-top:6px;line-height:1.2}
+.nt .t2{font-weight:500;font-size:38px;color:var(--ink2);margin-top:8px}
+/* grand chiffre */
+.big{font-family:'Clash Display';font-weight:600;font-size:260px;letter-spacing:-.04em;line-height:.95;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bigcap{font-weight:500;font-size:46px;color:var(--ink2);margin-top:10px}
+/* avant / maintenant */
+.vs{display:flex;gap:24px;width:800px}
+.vs .carte{width:388px;padding:36px 34px}
+.vs h4{font-family:'Clash Display';font-weight:600;font-size:46px;margin-bottom:18px}
+.vs .a h4{color:var(--ink3)}.vs .b h4{color:var(--o2)}.vs .b{border-color:rgba(255,90,31,.4)}
+.vs p{font-weight:500;font-size:36px;line-height:1.3;color:var(--ink2);padding:14px 0;border-top:2px solid var(--line)}
+.vs p:first-of-type{border-top:0;padding-top:0}
+/* frise horaire */
+.tl{display:flex;flex-direction:column;width:800px;text-align:left}
+.tl .e{display:flex;gap:30px;padding-bottom:34px;position:relative}
+.tl .e::before{content:'';position:absolute;left:23px;top:50px;bottom:0;width:4px;background:var(--line2)}
+.tl .e:last-child{padding-bottom:0}.tl .e:last-child::before{display:none}
+.tl .d{flex:none;width:50px;height:50px;border-radius:50%;border:4px solid var(--o);background:#17100b;margin-top:4px}
+.tl .e.x .d{border-color:var(--bad)}.tl .e.v .d{border-color:var(--ok)}
+.tl .hh{font-family:'Clash Display';font-weight:600;font-size:46px;color:var(--o2)}
+.tl .e.x .hh{color:var(--bad)}.tl .e.v .hh{color:var(--ok)}
+.tl .tt{font-weight:500;font-size:46px;line-height:1.25;color:var(--ink2);margin-top:2px}
+/* bas d'image */
+.swipe{position:absolute;left:140px;top:1340px;width:800px;display:flex;justify-content:center}
+.swipe span{font-weight:700;font-size:38px;color:var(--ink);border:2px solid var(--line2);background:var(--glass);border-radius:999px;padding:14px 34px}
+.relance{position:absolute;left:140px;top:1350px;width:800px;display:flex;justify-content:center}
+.relance span{font-weight:700;font-size:34px;line-height:1.25;color:var(--o3);border:2px solid rgba(255,90,31,.35);background:rgba(255,90,31,.08);border-radius:999px;padding:14px 32px;text-align:center;max-width:800px}
+/* image 5 */
+.end .tile{width:150px;height:150px;border-radius:42px}
+.cta{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.01em;line-height:1.25;white-space:nowrap}
+.cta .k{display:inline-block;background:var(--o);color:#160904;border-radius:24px;padding:6px 30px 2px;box-shadow:0 24px 60px -20px rgba(255,90,31,.85)}
+.guide{font-weight:500;font-size:44px;line-height:1.3;color:var(--ink2)}
+.guide .it{font-size:1.18em}
+</style>
+</head>
+<body>
+<div id="s"><div id="glow"></div><div id="grid"></div></div>
+<script type="module">
+const q = new URLSearchParams(location.search);
+const DATA = await (await fetch('carousels.json')).json();
+const C = DATA.carousels[+q.get('c')]; const N = +q.get('s'); const SL = C.slides[N]; const LAST = N === C.slides.length - 1;
+const S = document.getElementById('s');
+const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (parent) parent.appendChild(e); return e; };
+// balisage : *mot* = serif italique orange, **gras**, [r]rouge[/r], [g]vert[/g], ==surligné== (annonce), \n = ligne
+const md = (s) => String(s).replace(/(\d) (?=\d{3}(\D|$))/g, '$1 ').replace(/ (€|h\b|%|km|ch\b)/g, ' $1').replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ').replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<span class="it">$1</span>')
+  .replace(/\[r\](.+?)\[\/r\]/g, '<span class="r">$1</span>').replace(/\[g\](.+?)\[\/g\]/g, '<span class="g">$1</span>')
+  .replace(/==(.+?)==/g, '<mark>$1</mark>').replace(/\+\+(.+?)\+\+/g, '<mark class="ok">$1</mark>');
+const SYM = '../assets/brand/official/utopicar-symbole-site.svg';
+// halo orange : position différente à chaque image, pour que le glissement se sente
+const G = [['50% -8%', .2], ['105% 30%', .14], ['-5% 70%', .14], ['100% 105%', .16], ['50% 110%', .22]][Math.min(N, 4)];
+document.getElementById('glow').style.background = `radial-gradient(ellipse 75% 42% at ${G[0]}, rgba(255,90,31,${G[1]}), transparent 70%)`;
+
+if (N > 0 && !LAST) el('div', 'brand', S, `<span class="tile"><img src="${SYM}"></span><b>utopicar</b><span class="pg">${N + 1}/${C.slides.length}</span>`);
+const box = el('div', '', S); box.id = 'safe';
+
+function comp(c, parent) {
+  const k = c.k;
+  if (k === 'list') { const w = el('div', 'list', parent); c.items.forEach((it, i) => { const [t, sm] = Array.isArray(it) ? it : [it]; el('div', 'li', w, `<span class="n">${c.start != null ? c.start + i : i + 1}</span><span class="t">${md(t)}${sm ? `<small>${md(sm)}</small>` : ''}</span>`); }); return; }
+  if (k === 'pills') { const w = el('div', 'pills', parent); for (const [t, tone] of c.items) el('span', 'pill ' + (tone || 'neu'), w, (tone === 'ok' ? '✓ ' : tone === 'bad' ? '✕ ' : '') + md(t)); return; }
+  if (k === 'chat') { const w = el('div', 'chat', parent); for (const [who, t] of c.items) el('div', 'bub ' + who, w, `<div class="who">${who === 'v' ? (c.v || 'Le vendeur') : (c.m || 'Toi')}</div>${md(t)}`); return; }
+  if (k === 'tl') { const w = el('div', 'tl', parent); for (const [h, t, tone] of c.items) el('div', 'e ' + (tone || ''), w, `<span class="d"></span><div><div class="hh">${md(h)}</div><div class="tt">${md(t)}</div></div>`); return; }
+  if (k === 'big') { const w = el('div', '', parent); el('div', 'big' + (c.tone ? ' ' + c.tone : ''), w, md(c.v)); if (c.cap) el('div', 'bigcap', w, md(c.cap)); return; }
+  if (k === 'vs') { const w = el('div', 'vs', parent); for (const [cls, h, items] of [['a', c.a[0], c.a[1]], ['b', c.b[0], c.b[1]]]) { const d = el('div', 'carte ' + cls, w); el('h4', '', d, md(h)); for (const t of items) el('p', '', d, md(t)); } return; }
+  const card = el('div', 'carte' + (k === 'ticket' ? ' tk' : '') + (k === 'cote' ? ' cote' : ''), parent);
+  if (c.lab) el('div', 'lab', card, md(c.lab));
+  if (k === 'rows') { const w = el('div', 'rows', card); for (const [t, st, tone] of c.items) el('div', 'row', w, `<span>${md(t)}</span>${st ? `<span class="st ${tone || 'ok'}">${md(st)}</span>` : ''}`); }
+  if (k === 'ticket') { const w = el('div', 'rows', card); for (const [t, v] of c.items) el('div', 'row', w, `<span>${md(t)}</span><span>${md(v)}</span>`); el('div', 'tot', card, `<span>${md(c.totLab || 'Total')}</span><b class="${c.tone || ''}">${md(c.tot)}</b>`); }
+  if (k === 'quote') el('div', 'quote', card, md(c.t));
+  if (k === 'verdict') { const w = el('div', 'vd', card); el('span', 'chip ' + c.tone, w, md(c.v)); if (c.sub) el('div', 'sub', w, md(c.sub)); }
+  if (k === 'notif') { const w = el('div', 'nt', card); el('span', 'ic', w, `<img src="${SYM}">`); el('div', '', w, `<div class="h"><span>${md(c.h || 'utopicar · alerte')}</span><span>${md(c.time || 'à l\'instant')}</span></div><div class="t1">${md(c.t1)}</div><div class="t2">${md(c.t2)}</div>`); }
+  if (k === 'cote') {
+    const pos = (v) => ((v - c.min) / (c.max - c.min) * 100).toFixed(2) + '%';
+    const bar = el('div', 'bar', card);
+    el('span', 'mk', bar, '<i></i>').style.left = pos(c.cote);
+    el('span', 'tag', bar, `Cote ${md(c.coteTxt)}`).style.left = pos(c.cote);
+    el('span', 'dot', bar).style.left = pos(c.prix);
+    const t2 = el('span', 'tag', bar, `<span style="color:var(--o2)">Annonce ${md(c.prixTxt)}</span>`); t2.style.left = pos(c.prix); t2.style.bottom = 'auto'; t2.style.top = '64px';
+    el('div', 'ends', card, `<span>${md(c.minTxt)}</span><span>${md(c.maxTxt)}</span>`).style.marginTop = '86px';
+  }
+}
+
+if (LAST) {
+  box.classList.add('end');
+  el('span', 'tile', box, `<img src="${SYM}">`);
+  if (SL.title) { const t = el('div', 'title', box, md(SL.title)); t.dataset.size = SL.size || 92; }
+  el('div', 'cta', box, `Commente <span class="k">${C.word}</span>`);
+  el('div', 'guide', box, `je t'envoie le guide<br><span class="it">${md(C.guide)}</span>`);
+} else {
+  if (SL.kicker) el('div', N === 0 ? 'kicker k1' : 'kicker', box, md(SL.kicker));
+  if (SL.title) { const t = el('div', 'title', box, md(SL.title)); t.dataset.size = SL.size || (N === 0 ? 150 : 104); }
+  if (SL.body) el('div', 'body', box, md(SL.body));
+  for (const c of SL.comp || []) comp(c, box);
+  if (SL.body2) el('div', 'body', box, md(SL.body2));
+  if (SL.compFirst && box.querySelector('.title')) { const first = box.lastElementChild; box.insertBefore(first, box.querySelector('.kicker') || box.querySelector('.title')); }
+  if (N === 0) el('div', 'swipe', S, '<span>Glisse →</span>');
+  if (SL.relance) el('div', 'relance', S, `<span>${md(SL.relance)}</span>`);
+}
+const TOP = N > 0 && !LAST ? 330 : 236, BOT = (N === 0 || SL.relance) ? 1306 : 1470;
+box.style.top = TOP + 'px'; box.style.height = (BOT - TOP) + 'px';
+await document.fonts.ready;
+for (const f of ["600 100px 'Clash Display'", "500 40px 'Satoshi'", "700 40px 'Satoshi'", "italic 400 100px 'Instrument Serif'"]) await document.fonts.load(f);
+// largeur réelle du texte (une ligne trop longue déborde des deux côtés quand elle est centrée)
+const textW = (e) => { const r = document.createRange(); r.selectNodeContents(e); return Math.max(e.scrollWidth, r.getBoundingClientRect().width); };
+function fit(e, base, max = 790) { e.style.fontSize = base + 'px'; for (let i = 0; i < 3; i++) { const w = textW(e); if (w <= max) break; e.style.fontSize = (parseFloat(e.style.fontSize) * max / w * 0.995).toFixed(1) + 'px'; } }
+document.querySelectorAll('.title').forEach(t => fit(t, +t.dataset.size));
+document.querySelectorAll('.cta').forEach(t => fit(t, 76));
+// pastille de verdict : tient dans la carte (800 − marges) ; grand chiffre : tient dans la colonne
+document.querySelectorAll('.vd .chip').forEach(t => fit(t, 84, 690));
+document.querySelectorAll('.kicker').forEach(t => fit(t, parseFloat(getComputedStyle(t).fontSize), 720));
+document.querySelectorAll('.big').forEach(t => fit(t, 260, 780));
+document.querySelectorAll('.pill, .st').forEach(t => { if (t.getBoundingClientRect().width > 700) fit(t, parseFloat(getComputedStyle(t).fontSize), 690); });
+const H = BOT - TOP;
+// tout le contenu dans un bloc intérieur : s'il dépasse la zone sûre, on réduit les titres puis on zoome le bloc
+const inner = el('div', '', null); inner.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:inherit;width:800px';
+while (box.firstChild) inner.appendChild(box.firstChild); box.appendChild(inner);
+for (let i = 0; i < 4 && inner.getBoundingClientRect().height > H; i++) document.querySelectorAll('.title').forEach(t => fit(t, parseFloat(t.style.fontSize) * 0.93));
+const hh = inner.getBoundingClientRect().height; if (hh > H) inner.style.zoom = (H / hh).toFixed(3);
+window.overflow = inner.getBoundingClientRect().height > H + 2 || [...box.querySelectorAll('*')].some(e => e.getBoundingClientRect().right > 942 || e.getBoundingClientRect().left < 138);
+window.ready = true;
+</script>
+</body>
+</html>

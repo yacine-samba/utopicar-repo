@@ -95,7 +95,8 @@
        ],
        "w": 770,
        "hl": [],
-       "pad": 16
+       "pad": 16,
+       "key": "nogo"
       },
       {
        "ui": "ticket",
@@ -287,7 +288,7 @@
      "body": "C'est justement le piège : ce qui compte, c'est **ce qu'il te reste après frais**."
     },
     {
-     "title": "La Golf :\n[rd]38/100. NO GO.[/rd]",
+     "title": "La Golf :\n[rd]n'achète pas.[/rd]",
      "ui": [
       {
        "ui": "dcard1",
@@ -305,13 +306,15 @@
          120,
          22
         ]
-       ]
+       ],
+       "key": "nogo"
       }
      ],
+     "body2": "Note **38/100**. Après frais, tu perds **1 200 €**.",
      "relance": "Image 4 : l'écart entre les deux dépasse 3 000 €."
     },
     {
-     "title": "La Clio :\n==92/100. GO.==",
+     "title": "La Clio :\n==tu peux l'acheter.==",
      "ui": [
       {
        "ui": "dcard2",
@@ -329,10 +332,11 @@
          120,
          22
         ]
-       ]
+       ],
+       "key": "go"
       }
      ],
-     "body2": "**+ 1 932 €** de marge estimée, contre **− 1 200 €** pour la Golf."
+     "body2": "Note **92/100**. Il te reste **+ 1 932 €**, la Golf te coûtait **1 200 €**."
     },
     {
      "title": "Colle tes deux annonces :\n_le verdict en 2 secondes._"
@@ -419,7 +423,8 @@
          120,
          22
         ]
-       ]
+       ],
+       "key": "go"
       }
      ]
     },
@@ -777,7 +782,8 @@
          120,
          22
         ]
-       ]
+       ],
+       "key": "nogo"
       },
       {
        "ui": "dcard2",
@@ -795,7 +801,8 @@
          120,
          22
         ]
-       ]
+       ],
+       "key": "go"
       }
      ]
     },
@@ -913,7 +920,8 @@
          120,
          22
         ]
-       ]
+       ],
+       "key": "go"
       }
      ]
     },
@@ -1518,7 +1526,7 @@
      "size": 96
     },
     {
-     "title": "9 h 02 :\n==GO, 92/100.==",
+     "title": "9 h 02 :\n==tu peux l'acheter.==",
      "ui": [
       {
        "ui": "dcard2",
@@ -1536,9 +1544,11 @@
          120,
          22
         ]
-       ]
+       ],
+       "key": "go"
       }
      ],
+     "body2": "Note **92/100**, il te reste **+ 1 932 €**.",
      "relance": "Image 4 : ta fin de journée, en un écran."
     },
     {
@@ -1620,11 +1630,11 @@
   {
    "slug": "pourquoi-38",
    "bg": "orange",
-   "caption": "Cette Golf a un bon dossier. Pourtant, elle est NO GO : 38/100. Voilà comment se calcule la note.",
+   "caption": "Cette Golf a un bon dossier. Pourtant, l'outil te dit de ne pas l'acheter : 38/100. Voilà d'où vient la note.",
    "slides": [
     {
      "kicker": "Cette Golf a un bon dossier.",
-     "title": "Pourtant, elle est\n[rd]NO GO : 38/100.[/rd]",
+     "title": "Pourtant, elle\nte [rd]COÛTE[/rd] 1 200 €.",
      "size": 124,
      "ui": [
       {
@@ -1641,7 +1651,7 @@
      ]
     },
     {
-     "title": "La note =\n_moyenne de deux notes._",
+     "title": "Sa note : 38/100.\n_La moyenne de deux notes._",
      "ui": [
       {
        "ui": "ticket",
@@ -1653,7 +1663,8 @@
        ],
        "w": 770,
        "hl": [],
-       "pad": 16
+       "pad": 16,
+       "key": "nogo"
       }
      ]
     },
@@ -1934,7 +1945,8 @@
          120,
          22
         ]
-       ]
+       ],
+       "key": "go"
       }
      ]
     },
@@ -1970,7 +1982,8 @@
        ],
        "w": 770,
        "hl": [],
-       "pad": 16
+       "pad": 16,
+       "key": "nogo"
       },
       {
        "ui": "ticket",

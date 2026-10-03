@@ -171,7 +171,7 @@ Tu connais le prix de vente de chaque voiture, mais ta marge par voiture, tu la 
 #achatrevente #voitureoccasion #marchandvo #achatreventeauto #utopicar
 
 ## 25 · pourquoi-38
-Cette Golf a un bon dossier. Pourtant, elle est NO GO : 38/100. Voilà comment se calcule la note.
+Cette Golf a un bon dossier. Pourtant, l'outil te dit de ne pas l'acheter : 38/100. Voilà d'où vient la note.
 
 👉 Commente DÉBUTANT ou PRO : tu reçois le guide qui correspond à ton niveau + ta place sur la liste d'attente.
 

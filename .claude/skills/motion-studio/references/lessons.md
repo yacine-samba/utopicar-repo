@@ -56,3 +56,4 @@
 - Fenêtre inclinée en perspective + pastille flottante ; panneaux pastel par fonction (couleurs douces du site).
 - Grille musicale mesurée : impacts à 0 frame des changements d'image ; silence volontaire avant le dernier acte.
 - Film = fonction du temps : rendu reproductible, retouche d'un plan sans tout casser, déclinaisons par paramètres.
+- Oct. 2026 : « GO / NO GO » laissait les spectateurs perdus, pros compris → verdict en verbe + conséquence en euros. Textes jugés « trop IA » → Stop Slop sur tout texte avant de le montrer. Carrousels : plus de mention « Données de démonstration » (décision de l'utilisateur).
