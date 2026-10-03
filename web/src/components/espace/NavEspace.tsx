@@ -70,8 +70,9 @@ export function NavMobile({ entrees, pied, gauche, droite }: { entrees: EntreeNa
           </button>
         </div>
       </header>
-      <div id={id} hidden={!ouvert} className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-line bg-bg0 backdrop-blur-md lg:hidden">
-        <div className="grid gap-6 px-4 py-5">
+      {/* Tiroir au-dessus de la barre du bas (z-50) et grande marge basse : « Se déconnecter » n'est jamais caché. */}
+      <div id={id} hidden={!ouvert} className="fixed inset-x-0 bottom-0 top-16 z-50 overflow-y-auto overscroll-contain border-t border-line bg-bg0 lg:hidden">
+        <div className="grid gap-6 px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-5">
           <NavCote entrees={entrees} />
           {pied}
         </div>

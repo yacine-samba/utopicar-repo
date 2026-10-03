@@ -11,6 +11,8 @@ const TRACES: Record<Icone | "plus" | "fermer" | "sortie" | "site" | "lien", str
   guide: "M5 4.5A2.5 2.5 0 0 1 7.5 2H20v17H7.5A2.5 2.5 0 0 0 5 21.5v-17ZM5 19.5A2.5 2.5 0 0 1 7.5 17H20",
   compte: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0",
   tri: "M4 6h10M4 12h7M4 18h4M17 5v14M14 16l3 3 3-3",
+  cote: "M4 4v16h16M8 15h.01M10.5 11.5h.01M13 13h.01M15.5 8.5h.01M18 10h.01M7 17l5-5 3 2 5-6",
+  alertes: "M6 16v-5a6 6 0 1 1 12 0v5l1.5 2h-15L6 16Zm4 4a2 2 0 0 0 4 0",
   plus: "M5 12h.01M12 12h.01M19 12h.01",
   fermer: "M6 6l12 12M18 6 6 18",
   sortie: "M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10",

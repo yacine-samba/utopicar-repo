@@ -1,0 +1,298 @@
+"use client";
+import { useState } from "react";
+import { cx, inputCls } from "@/lib/cx";
+import type { CatMarque } from "@/lib/vehicules/types";
+import { ChoixVehicule, type Choix } from "./ChoixVehicule";
+
+/* Alertes e-mail : une recherche Leboncoin suivie automatiquement, à la fréquence choisie ;
+   les nouvelles annonces arrivent par e-mail (ou pas), avec leur écart à la cote, éventuellement seulement les bonnes affaires. */
+
+export type Formulaire = {
+  marque: string; modele: string; gen: string; energie: string; boite: string; anneeMin: string; anneeMax: string; prixMin: string; prixMax: string;
+  kmMax: string; vendeur: string; mots: string; exclure: string; sousCote: string;
+};
+type AnnonceAlerte = { id: string; url: string | null; titre: string; prix: number | null; annee: number | null; km: number | null; energie: string | null; boite: string | null; ville: string | null; cp: string | null; vendeur_type: string | null; vignette: string | null; vu: string | null };
+export type Alerte = {
+  id: string; nom: string; actif: boolean; notifier: boolean; email: string | null; intervalle_min: number; filtres: Record<string, unknown> & { utp?: { site?: Formulaire; sous_cote?: number } };
+  derniere_execution: string | null; derniere_erreur: string | null; derniers_nouveaux: number | null; en_cours: boolean; created_at: string; passages: number; mails: number; annonces: AnnonceAlerte[];
+};
+
+const FREQUENCES = [[60, "Toutes les heures"], [120, "Toutes les 2 heures"], [180, "Toutes les 3 heures"], [240, "Toutes les 4 heures"], [360, "Toutes les 6 heures"], [480, "Toutes les 8 heures"], [720, "Toutes les 12 heures"], [1440, "Une fois par jour"]] as const;
+const FUEL: Record<string, string> = { essence: "1", diesel: "2", gpl: "3", electrique: "4", hybride: "6" };
+const PIEGES = "pour pieces|epave|non roulant|ne demarre pas|moteur hs|moteur casse|boite hs|export";
+const VIDE: Formulaire = { marque: "", modele: "", gen: "", energie: "", boite: "", anneeMin: "", anneeMax: "", prixMin: "", prixMax: "", kmMax: "", vendeur: "particulier", mots: "", exclure: "", sousCote: "" };
+const n = (s: string) => (s.trim() && /^\d+$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : undefined);
+const eur = (v: number | null | undefined) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
+const flat = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const echap = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const freqTxt = (m: number) => FREQUENCES.find(([v]) => v === m)?.[1] ?? `Toutes les ${Math.round(m / 60)} h`;
+const quand = (d: string | null) => (d ? new Date(d).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "jamais");
+
+/** Filtres au format de l'acteur Leboncoin (comme les recherches de l'outil Garage). */
+function versFiltres(f: Formulaire, cat: CatMarque[]) {
+  const b = cat.find((x) => x.k === f.marque);
+  const m = b?.m.find((x) => x.k === f.modele);
+  const g = m?.g.find((x) => x.id === f.gen);
+  const out: Record<string, unknown> = {};
+  if (b?.lbc) out.vehicle_brand = b.lbc;
+  if (m?.lbc) out.vehicle_model = m.lbc;
+  const mots = [m && !m.lbc ? m.n : "", f.mots].filter(Boolean).join(" ").trim();
+  if (mots) out.text = mots;
+  const y0 = n(f.anneeMin) ?? g?.y0, y1 = n(f.anneeMax) ?? g?.y1;
+  if (y0) out.year_min = y0;
+  if (y1) out.year_max = y1;
+  if (n(f.prixMin) != null) out.price_min = n(f.prixMin);
+  if (n(f.prixMax) != null) out.price_max = n(f.prixMax);
+  if (n(f.kmMax) != null) out.mileage_max = n(f.kmMax);
+  if (FUEL[f.energie]) out.fuel = [FUEL[f.energie]];
+  if (f.boite) out.gearbox = [f.boite === "auto" ? "2" : "1"];
+  out.owner_type = f.vendeur === "pro" ? "pro" : f.vendeur === "tous" ? "all" : "private";
+  const exclus = flat(f.exclure).split(/[,;]+/).map((x) => x.trim()).filter((x) => x.length >= 2).map(echap);
+  out.utp = {
+    inclure: m?.rx ?? "",
+    exclure: `\\b(${[PIEGES, ...exclus].join("|")})\\b`,
+    ...(g ? { gen: `${f.marque} ${f.modele} ${g.id}` } : {}),
+    ...(n(f.sousCote) ? { sous_cote: n(f.sousCote) } : {}),
+    site: f,
+  };
+  return out;
+}
+
+function resumeCriteres(a: Alerte, cat: CatMarque[]) {
+  const f = a.filtres?.utp?.site;
+  if (!f) return "Recherche créée dans l'outil Garage";
+  const b = cat.find((x) => x.k === f.marque);
+  const m = b?.m.find((x) => x.k === f.modele);
+  const g = m?.g.find((x) => x.id === f.gen);
+  return [
+    [b?.n, g?.l ?? m?.n].filter(Boolean).join(" "),
+    f.energie, f.boite === "auto" ? "automatique" : f.boite,
+    f.anneeMin || f.anneeMax ? `${f.anneeMin || "…"} – ${f.anneeMax || "…"}` : "",
+    f.prixMax ? `≤ ${eur(Number(f.prixMax))}` : "", f.kmMax ? `≤ ${Number(f.kmMax).toLocaleString("fr-FR")} km` : "",
+    f.vendeur === "pro" ? "pros" : f.vendeur === "tous" ? "tous vendeurs" : "particuliers",
+    f.mots ? `« ${f.mots} »` : "", f.sousCote ? `${f.sousCote} % sous la cote` : "",
+  ].filter(Boolean).join(" · ");
+}
+
+async function appel(corps: unknown) {
+  const r = await fetch("/api/alertes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corps) });
+  const j = await r.json().catch(() => null);
+  if (!r.ok) throw new Error(j?.erreur ?? "Action impossible. Réessayez.");
+  return j as { alertes: Alerte[]; id?: string };
+}
+
+export function Alertes({ cat, initiales, prerempli, email }: { cat: CatMarque[]; initiales: Alerte[]; prerempli: Formulaire | null; email: string }) {
+  const [liste, setListe] = useState(initiales);
+  const [edition, setEdition] = useState<{ id?: string; f: Formulaire; nom: string; notifier: boolean; email: string; intervalle: number; actif: boolean } | null>(
+    prerempli ? { f: prerempli, nom: "", notifier: true, email, intervalle: 60, actif: true } : null,
+  );
+  const [etat, setEtat] = useState("");
+  const [occupe, setOccupe] = useState(false);
+  const [ouverte, setOuverte] = useState<string | null>(null);
+  const [aConfirmer, setAConfirmer] = useState<string | null>(null);
+
+  async function faire(corps: unknown, ok?: string) {
+    setOccupe(true);
+    setEtat("");
+    try {
+      const j = await appel(corps);
+      setListe(j.alertes);
+      if (ok) setEtat(ok);
+      return true;
+    } catch (e) {
+      setEtat((e as Error).message);
+      return false;
+    } finally {
+      setOccupe(false);
+    }
+  }
+
+  function nouvelle() {
+    setEdition({ f: VIDE, nom: "", notifier: true, email, intervalle: 60, actif: true });
+    setEtat("");
+  }
+  function modifier(a: Alerte) {
+    setEdition({ id: a.id, f: { ...VIDE, ...(a.filtres?.utp?.site ?? {}) }, nom: a.nom, notifier: a.notifier, email: a.email ?? email, intervalle: a.intervalle_min, actif: a.actif });
+    setEtat("");
+    requestAnimationFrame(() => document.getElementById("al-form")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
+  async function enregistrer(e: React.FormEvent) {
+    e.preventDefault();
+    if (!edition) return;
+    const { f } = edition;
+    if (!f.marque || !f.modele) return setEtat("Choisissez au moins la marque et le modèle.");
+    const b = cat.find((x) => x.k === f.marque), m = b?.m.find((x) => x.k === f.modele), g = m?.g.find((x) => x.id === f.gen);
+    const nom = edition.nom.trim() || [b?.n, g?.l ?? m?.n].filter(Boolean).join(" ");
+    const ok = await faire(
+      { action: "enregistrer", alerte: { id: edition.id, nom, actif: edition.actif, notifier: edition.notifier, email: edition.email.trim() || undefined, intervalle_min: edition.intervalle, filtres: versFiltres(f, cat) } },
+      edition.id ? "Alerte modifiée." : "Alerte créée : le premier passage a lieu dans le quart d'heure (sans e-mail, pour ne pas tout vous envoyer d'un coup).",
+    );
+    if (ok) setEdition(null);
+  }
+
+  const majF = (k: keyof Formulaire) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setEdition((x) => (x ? { ...x, f: { ...x.f, [k]: e.target.value } } : x));
+
+  return (
+    <div className="grid gap-6">
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" onClick={nouvelle} className="btn btn-o btn-sm">Nouvelle alerte</button>
+        <p className="text-sm text-ink-3" role="status" aria-live="polite">{etat}</p>
+      </div>
+
+      {edition && (
+        <form id="al-form" onSubmit={enregistrer} className="carte grid scroll-mt-24 gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 className="font-display text-lg font-semibold sm:col-span-2 lg:col-span-3">{edition.id ? "Modifier l'alerte" : "Nouvelle alerte"}</h2>
+          <ChoixVehicule cat={cat} v={{ marque: edition.f.marque, modele: edition.f.modele, gen: edition.f.gen }} onChange={(c: Choix) => setEdition((x) => (x ? { ...x, f: { ...x.f, ...c } } : x))} idPrefixe="al" />
+          <label className="grid gap-1.5 text-sm">
+            <span className="text-ink-2">Énergie</span>
+            <select value={edition.f.energie} onChange={majF("energie")} className={inputCls}>
+              <option value="">Toutes</option>
+              <option value="essence">Essence</option>
+              <option value="diesel">Diesel</option>
+              <option value="hybride">Hybride</option>
+              <option value="electrique">Électrique</option>
+              <option value="gpl">GPL</option>
+            </select>
+          </label>
+          <label className="grid gap-1.5 text-sm">
+            <span className="text-ink-2">Boîte</span>
+            <select value={edition.f.boite} onChange={majF("boite")} className={inputCls}>
+              <option value="">Toutes</option>
+              <option value="manuelle">Manuelle</option>
+              <option value="auto">Automatique</option>
+            </select>
+          </label>
+          <label className="grid gap-1.5 text-sm">
+            <span className="text-ink-2">Vendeurs</span>
+            <select value={edition.f.vendeur} onChange={majF("vendeur")} className={inputCls}>
+              <option value="particulier">Particuliers</option>
+              <option value="pro">Professionnels</option>
+              <option value="tous">Tous</option>
+            </select>
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="grid gap-1.5 text-sm"><span className="text-ink-2">Année min.</span><input inputMode="numeric" value={edition.f.anneeMin} onChange={majF("anneeMin")} className={inputCls} /></label>
+            <label className="grid gap-1.5 text-sm"><span className="text-ink-2">Année max.</span><input inputMode="numeric" value={edition.f.anneeMax} onChange={majF("anneeMax")} className={inputCls} /></label>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="grid gap-1.5 text-sm"><span className="text-ink-2">Prix min. (€)</span><input inputMode="numeric" value={edition.f.prixMin} onChange={majF("prixMin")} className={inputCls} /></label>
+            <label className="grid gap-1.5 text-sm"><span className="text-ink-2">Prix max. (€)</span><input inputMode="numeric" value={edition.f.prixMax} onChange={majF("prixMax")} className={inputCls} /></label>
+          </div>
+          <label className="grid gap-1.5 text-sm"><span className="text-ink-2">Kilométrage max.</span><input inputMode="numeric" value={edition.f.kmMax} onChange={majF("kmMax")} className={inputCls} /></label>
+          <label className="grid gap-1.5 text-sm"><span className="text-ink-2">Moteur, finition, mots-clés</span><input value={edition.f.mots} onChange={majF("mots")} placeholder="ex. 100 ch" className={inputCls} /></label>
+          <label className="grid gap-1.5 text-sm"><span className="text-ink-2">Exclure (séparés par des virgules)</span><input value={edition.f.exclure} onChange={majF("exclure")} placeholder="ex. utilitaire, société" className={inputCls} /></label>
+
+          <fieldset className="grid gap-3 rounded-2xl border border-line p-4 sm:col-span-2 lg:col-span-3 lg:grid-cols-3">
+            <legend className="px-1 text-sm font-medium">Bonne affaire et e-mail</legend>
+            <label className="grid gap-1.5 text-sm">
+              <span className="text-ink-2">Seulement si sous la cote d&apos;au moins (%)</span>
+              <input inputMode="numeric" value={edition.f.sousCote} onChange={majF("sousCote")} placeholder="vide = toutes les nouvelles" className={inputCls} />
+            </label>
+            <label className="grid gap-1.5 text-sm">
+              <span className="text-ink-2">Fréquence</span>
+              <select value={edition.intervalle} onChange={(e) => setEdition((x) => (x ? { ...x, intervalle: Number(e.target.value) } : x))} className={inputCls}>
+                {FREQUENCES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+              </select>
+            </label>
+            <label className="grid gap-1.5 text-sm">
+              <span className="text-ink-2">Nom de l&apos;alerte</span>
+              <input value={edition.nom} onChange={(e) => setEdition((x) => (x ? { ...x, nom: e.target.value } : x))} placeholder="facultatif" className={inputCls} />
+            </label>
+            <label className="flex items-center gap-2 text-sm text-ink-2">
+              <input type="checkbox" checked={edition.notifier} onChange={(e) => setEdition((x) => (x ? { ...x, notifier: e.target.checked } : x))} className="size-4 accent-[#ff5a1f]" />
+              Recevoir les nouvelles annonces par e-mail
+            </label>
+            <label className="grid gap-1.5 text-sm lg:col-span-2">
+              <span className="text-ink-2">Adresse e-mail</span>
+              <input type="email" disabled={!edition.notifier} value={edition.email} onChange={(e) => setEdition((x) => (x ? { ...x, email: e.target.value } : x))} className={inputCls} />
+            </label>
+          </fieldset>
+          <div className="flex flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-3">
+            <button type="submit" disabled={occupe} className="btn btn-o btn-sm">{edition.id ? "Enregistrer" : "Créer l'alerte"}</button>
+            <button type="button" onClick={() => setEdition(null)} className="btn btn-sm">Annuler</button>
+          </div>
+        </form>
+      )}
+
+      {liste.length ? (
+        <ul className="grid gap-4">
+          {liste.map((a) => (
+            <li key={a.id} className={cx("carte grid gap-4 p-5", !a.actif && "opacity-80")}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-display text-lg font-semibold">{a.nom}</p>
+                  <p className="text-sm text-ink-3">{resumeCriteres(a, cat)}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Interrupteur on={a.actif} label="Active" disabled={occupe} onClick={() => faire({ action: "basculer", id: a.id, actif: !a.actif, notifier: null })} />
+                  <Interrupteur on={a.notifier} label="E-mail" disabled={occupe} onClick={() => faire({ action: "basculer", id: a.id, actif: null, notifier: !a.notifier })} />
+                </div>
+              </div>
+              <div className="grid gap-1 text-sm text-ink-2 sm:grid-cols-3">
+                <p>{freqTxt(a.intervalle_min)}{a.notifier && a.email ? ` · ${a.email}` : " · sans e-mail"}</p>
+                <p>Dernier passage : {a.en_cours ? "en cours…" : quand(a.derniere_execution)}{a.derniers_nouveaux ? ` · ${a.derniers_nouveaux} nouvelle${a.derniers_nouveaux > 1 ? "s" : ""}` : ""}</p>
+                <p>{a.passages} passage{a.passages > 1 ? "s" : ""} · {a.mails} e-mail{a.mails > 1 ? "s" : ""} envoyé{a.mails > 1 ? "s" : ""}</p>
+              </div>
+              {a.derniere_erreur && <p className="rounded-xl border border-warn/40 bg-warn/10 px-3 py-2 text-sm text-warn">{a.derniere_erreur}</p>}
+              <div className="flex flex-wrap gap-2">
+                <button type="button" disabled={occupe || a.en_cours} onClick={() => faire({ action: "lancer", id: a.id }, "Recherche lancée : les annonces arrivent d'ici une à deux minutes. Rechargez la page pour les voir.")} className="btn btn-sm">Chercher maintenant</button>
+                <button type="button" onClick={() => modifier(a)} className="btn btn-sm">Modifier</button>
+                <button type="button" aria-expanded={ouverte === a.id} onClick={() => setOuverte(ouverte === a.id ? null : a.id)} className="btn btn-sm">
+                  Annonces trouvées ({a.annonces.length})
+                </button>
+                {aConfirmer === a.id ? (
+                  <button type="button" onClick={() => { setAConfirmer(null); faire({ action: "retirer", id: a.id }, "Alerte supprimée."); }} className="btn btn-sm border-bad/60 text-bad">Confirmer la suppression</button>
+                ) : (
+                  <button type="button" onClick={() => setAConfirmer(a.id)} className="btn btn-sm text-ink-3">Supprimer</button>
+                )}
+              </div>
+              {ouverte === a.id && (
+                a.annonces.length ? (
+                  <ul className="grid gap-2 sm:grid-cols-2">
+                    {a.annonces.map((x) => (
+                      <li key={x.id} className="flex gap-3 rounded-xl border border-line p-2">
+                        {x.vignette ? (
+                          // eslint-disable-next-line @next/next/no-img-element -- vignette en base64, pas d'optimisation possible
+                          <img src={x.vignette} alt="" className="size-16 shrink-0 rounded-lg object-cover" loading="lazy" />
+                        ) : (
+                          <span className="size-16 shrink-0 rounded-lg bg-glass" aria-hidden="true" />
+                        )}
+                        <span className="min-w-0 text-sm">
+                          {x.url ? <a href={x.url} target="_blank" rel="noopener noreferrer" className="block truncate font-medium underline-offset-4 hover:underline">{x.titre}</a> : <span className="block truncate font-medium">{x.titre}</span>}
+                          <b className="num">{eur(x.prix)}</b>
+                          <span className="block truncate text-xs text-ink-3">{[x.annee, x.km != null ? `${x.km.toLocaleString("fr-FR")} km` : null, x.ville, quand(x.vu)].filter(Boolean).join(" · ")}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-ink-3">Aucune annonce pour l&apos;instant.</p>
+                )
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        !edition && (
+          <div className="carte grid gap-2 p-6">
+            <p className="font-display text-lg font-semibold">Aucune alerte</p>
+            <p className="text-ink-2">Créez une alerte : Utopicar surveille Leboncoin à la fréquence choisie et vous envoie les nouvelles annonces par e-mail, avec leur écart à la cote. Vous pouvez ne recevoir que les bonnes affaires.</p>
+          </div>
+        )
+      )}
+    </div>
+  );
+}
+
+function Interrupteur({ on, label, onClick, disabled }: { on: boolean; label: string; onClick: () => void; disabled?: boolean }) {
+  return (
+    <button type="button" role="switch" aria-checked={on} disabled={disabled} onClick={onClick}
+      className={cx("flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm", on ? "border-o/50 bg-o/12 text-ink" : "border-line-2 text-ink-3")}>
+      <span className={cx("relative h-4 w-7 rounded-full transition", on ? "bg-o" : "bg-line-2")} aria-hidden="true">
+        <span className={cx("absolute top-0.5 size-3 rounded-full bg-white transition", on ? "left-3.5" : "left-0.5")} />
+      </span>
+      {label}
+    </button>
+  );
+}
