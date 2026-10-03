@@ -5,7 +5,7 @@ export type Icone = "accueil" | "analyser" | "rapports" | "parc" | "rentabilite"
 export type EntreeNav = { href: string; label: string; court: string; icone: Icone; verrou?: string; mobile?: boolean };
 
 /** Espace affiché : la famille de la formule payée (ou offerte), sinon l'usage choisi à l'inscription. */
-export const familleEspace = (c: Compte): Famille => (c.offre.prix > 0 || c.offerte ? c.offre.famille : (c.famille ?? "particulier"));
+export const familleEspace = (c: Compte): Famille => (c.illimite ? (c.famille ?? "benef") : c.offre.prix > 0 || c.offerte ? c.offre.famille : (c.famille ?? "particulier"));
 
 /** Menu de l'espace connecté. `mobile` : présent dans la barre du bas du téléphone (5 au plus). */
 export function navEspace(c: Compte): EntreeNav[] {
@@ -32,5 +32,8 @@ export function navEspace(c: Compte): EntreeNav[] {
   ];
 }
 
-export const nomFormule = (c: Compte) => (c.offre.famille === "benef" ? `Benef ${c.offre.nom}` : c.offre.nom);
+export const nomFormule = (c: Compte) => (c.illimite ? "Accès illimité" : c.offre.famille === "benef" ? `Benef ${c.offre.nom}` : c.offre.nom);
+/** « 12 analyses restantes ce mois », ou « Analyses illimitées ». */
+export const texteRestantes = (c: Compte) =>
+  c.illimite ? "Analyses illimitées" : `${c.restantes} analyse${c.restantes > 1 ? "s" : ""} restante${c.restantes > 1 ? "s" : ""}${c.offre.parMois ? " ce mois" : ""}`;
 export const pluriel = (n: number, mot: string) => `${n} ${mot}${n > 1 ? "s" : ""}`;

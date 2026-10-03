@@ -78,6 +78,9 @@ export const OFFRES: Record<OffreId, Offre> = {
   },
 };
 
+/** Comptes illimités (profils.illimite) : tout Benef Pro, sans limite d'analyses. */
+export const ILLIMITE: Offre = { ...OFFRES.pro, nom: "Illimité", prix: 0, analyses: Infinity, lookup: null, bientot: undefined };
+
 export const GUIDE = { lookup: "utp_guide", prix: 9, nom: "Les guides Utopicar" };
 
 export const PARTICULIERS: OffreId[] = ["gratuit", "essentiel", "serenite"];

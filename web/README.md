@@ -46,6 +46,7 @@ Table Editor › table **`profils`** : chaque compte a une ligne avec son `email
 - `formule_offerte` : choisir dans la liste (`gratuit`, `essentiel`, `serenite`, `starter`, `croissance`, `pro`). Elle passe **avant** l'abonnement Stripe. Vide = la formule payée sur Stripe (ou Découverte).
 - `offerte_jusqu_au` : dernier jour inclus. Vide = sans date de fin.
 - `famille` : l'usage de l'espace (`particulier` ou `benef`) quand la personne n'a pas de formule payante.
+- `illimite` : coché = tout est ouvert (Benef Pro complet, espace particulier ou Benef au choix), sans limite d'analyses. Pour les administrateurs et les testeurs.
 
 Le changement s'applique à la page suivante. Vue d'ensemble en lecture seule : vue **`comptes_admin`** (email, formule en vigueur, formule offerte, abonnement Stripe, analyses du mois, nombre de rapports). Elle n'est visible que depuis le tableau de bord Supabase.
 
@@ -57,6 +58,15 @@ Supabase n'envoie plus aucun email. La fonction **`compte`** (`../supabase/funct
 
 1. Règles fixes, sans IA (`src/lib/analyse/`) : lecture de l'annonce, 38 défauts chiffrés, moteurs et boîtes à éviter, coûts.
 2. API Claude côté serveur (`ia.ts`) : version, cote du marché, distance, photos, entretien à prévoir, négociation, contrôle sur place, synthèse.
+   Le modèle dépend de la formule (`MODELES` dans `ia.ts`) :
+
+   | Formules | Modèle | Coût indicatif par analyse |
+   |---|---|---|
+   | Découverte, Essentiel | Claude Haiku 4.5 (le moins cher) | environ 0,03 € |
+   | Sérénité, Benef Starter | Claude Sonnet 5.5, effort bas | environ 0,05 € |
+   | Benef Croissance, Benef Pro, comptes illimités | Claude Sonnet 5.5, effort moyen | environ 0,08 € |
+
+   Pour changer de modèle sans toucher au code : `ANTHROPIC_MODEL_ECO` (formules d'entrée) et `ANTHROPIC_MODEL_PRECIS` (les autres). Chaque appel écrit dans les journaux Vercel le modèle et le nombre de jetons, pour suivre le coût réel.
 3. Calculs d'argent par l'outil (`couts.ts`) : marge, plafond et offre pour Benef ; coût réel pour les particuliers.
 
 Une analyse n'est décomptée que si elle aboutit. La copie de l'extension Chrome (texte et photos) est reconnue au collage.
@@ -74,7 +84,7 @@ Réservé aux personnes connectées, 30 imports par jour et par personne (table 
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | clé publique du projet Supabase |
 | `SUPABASE_SERVICE_ROLE_KEY` | clé secrète : enregistrement des abonnements Stripe, portail de paiement, suppression de compte. Les analyses n'en ont plus besoin (fonction SQL `enregistrer_analyse`). |
 | `ANTHROPIC_API_KEY` | analyse |
-| `ANTHROPIC_MODEL` | facultatif, `claude-opus-5-5` par défaut |
+| `ANTHROPIC_MODEL_ECO`, `ANTHROPIC_MODEL_PRECIS` | facultatifs : remplacent les modèles par défaut (voir « Comment l'analyse est faite ») |
 | `STRIPE_SECRET_KEY` | paiements |
 | `STRIPE_WEBHOOK_SECRET` | signature du webhook |
 | `NEXT_PUBLIC_SITE_URL` | `https://utopicar.fr` |

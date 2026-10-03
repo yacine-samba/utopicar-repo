@@ -4,10 +4,26 @@ import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { IaSchema, type Ia } from "./ia-schema";
 import type { Faits } from "./texte";
 import type { Fiabilite } from "./fiabilite";
+import type { OffreId } from "../offres";
 
 export type Photo = { media_type: "image/jpeg" | "image/png" | "image/webp"; data: string };
 
-const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
+/* Modèle selon la formule : le moins cher pour la découverte et Essentiel, plus fin pour les formules qui décident d'un achat
+   ou d'une marge. Coût indicatif par analyse (texte + photos) : Haiku 4.5 ≈ 0,03 €, Sonnet 5.5 ≈ 0,05 à 0,10 €.
+   ANTHROPIC_MODEL_ECO et ANTHROPIC_MODEL_PRECIS permettent de changer de modèle sans toucher au code. */
+type Reglage = { model: string; effort?: "low" | "medium" | "high" };
+const ECO: Reglage = { model: process.env.ANTHROPIC_MODEL_ECO || "claude-haiku-4-5" };
+const precis = (effort: Reglage["effort"]): Reglage => ({ model: process.env.ANTHROPIC_MODEL_PRECIS || "claude-sonnet-5-5", effort });
+export const MODELES: Record<OffreId, Reglage> = {
+  gratuit: ECO,
+  essentiel: ECO,
+  serenite: precis("low"),
+  starter: precis("low"),
+  croissance: precis("medium"),
+  pro: precis("medium"),
+};
+// Haiku 4.5 ne prend ni « effort » ni le repli automatique ; les modèles récents (Sonnet 5.5, Opus 5.5) prennent les deux.
+const modeleRecent = (m: string) => !/haiku/.test(m);
 
 // Partie fixe du prompt : identique à chaque appel, mise en cache.
 const SYSTEME = `Tu es un expert automobile français (mécanique, cote du marché de l'occasion, fraude). Tu analyses une annonce de voiture d'occasion pour UTOPICAR.
@@ -54,7 +70,7 @@ function faitsLignes(f: Faits, fiab: Fiabilite): string[] {
 
 export class IaIndisponible extends Error {}
 
-export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilite; ville: string; photos: Photo[] }): Promise<Ia> {
+export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilite; ville: string; photos: Photo[]; offre: OffreId }): Promise<Ia> {
   if (!process.env.ANTHROPIC_API_KEY) throw new IaIndisponible("ANTHROPIC_API_KEY manquante");
   const client = new Anthropic();
   const lignes = faitsLignes(p.faits, p.fiab);
@@ -74,15 +90,17 @@ ${p.texte.slice(0, 12000)}
     { type: "text", text: consigne },
   ];
 
+  const { model, effort } = MODELES[p.offre] ?? ECO;
+  const recent = modeleRecent(model);
   const r = await client.beta.messages.parse({
-    model: MODEL,
+    model,
     max_tokens: 16000,
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
+    ...(recent ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const } : {}),
     system: [{ type: "text", text: SYSTEME, cache_control: { type: "ephemeral" } }],
-    output_config: { effort: "medium", format: betaZodOutputFormat(IaSchema) },
+    output_config: { ...(recent && effort ? { effort } : {}), format: betaZodOutputFormat(IaSchema) },
     messages: [{ role: "user", content }],
   });
+  console.info("analyse IA", model, r.usage?.input_tokens, r.usage?.output_tokens);
   if (r.stop_reason === "refusal") throw new Error("L'IA a refusé d'analyser cette annonce.");
   if (!r.parsed_output) throw new Error(r.stop_reason === "max_tokens" ? "Réponse de l'IA coupée, relancez." : "Réponse de l'IA illisible, relancez.");
   return r.parsed_output;

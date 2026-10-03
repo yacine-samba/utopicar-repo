@@ -70,7 +70,7 @@ export async function POST(req: Request) {
   const out: Analyse = { faits, fiab, ia: null };
 
   try {
-    out.ia = filtrer(await analyseIA({ texte, faits, fiab, ville, photos }), detail);
+    out.ia = filtrer(await analyseIA({ texte, faits, fiab, ville, photos, offre: o.id }), detail);
   } catch (e) {
     if (e instanceof IaIndisponible) out.iaErreur = "L'estimation du marché n'est pas configurée sur ce serveur.";
     else if (e instanceof Anthropic.RateLimitError) out.iaErreur = "Trop de demandes en ce moment, réessayez dans une minute.";
