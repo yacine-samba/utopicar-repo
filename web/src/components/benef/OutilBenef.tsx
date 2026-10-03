@@ -5,6 +5,7 @@ import { DEFAUTS_PRO, type Analyse, type ParamsPro } from "@/lib/analyse/couts";
 import { Saisie } from "../Saisie";
 import { Champ, inputCls, useReglages } from "../ui";
 import { Reglages, ResultatBenef } from "./ResultatBenef";
+import { RapportComplet } from "./RapportComplet";
 import { AjouterParc } from "./AjouterParc";
 
 export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial }: { maxPhotos: number; parc: boolean; villeCompte: string; lienInitial?: string }) {
@@ -15,6 +16,25 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial }: { maxP
   if (a) {
     const v = a.ia?.vehicule;
     const titre = [v?.marque, v?.modele, v?.version].filter(Boolean).join(" ") || a.faits.titre || "Annonce";
+    if (a.rapport)
+      return (
+        <div className="grid gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-ink-3">{a.rapportId ? "Rapport enregistré dans vos rapports." : ""}</p>
+            <button
+              type="button"
+              className="btn btn-sm"
+              onClick={() => {
+                setA(null);
+                scrollTo({ top: 0 });
+              }}
+            >
+              Analyser une autre annonce
+            </button>
+          </div>
+          <RapportComplet a={a} r={a.rapport} reg={reg} offre={a.offre ?? "starter"} id={a.rapportId} parc={parc} lien={a.lien} />
+        </div>
+      );
     return (
       <ResultatBenef
         a={a}
@@ -66,7 +86,9 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial }: { maxP
           }}
         />
       </div>
-      <Reglages reg={reg} setReg={setReg} />
+      <div id="reglages" className="scroll-mt-24">
+        <Reglages reg={reg} setReg={setReg} />
+      </div>
     </div>
   );
 }
