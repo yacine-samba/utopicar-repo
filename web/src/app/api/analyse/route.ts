@@ -74,7 +74,9 @@ export async function POST(req: Request) {
   } catch (e) {
     if (e instanceof IaIndisponible) out.iaErreur = "L'estimation du marché n'est pas configurée sur ce serveur.";
     else if (e instanceof Anthropic.RateLimitError) out.iaErreur = "Trop de demandes en ce moment, réessayez dans une minute.";
-    else if (e instanceof Anthropic.BadRequestError) out.iaErreur = "Une photo ou le texte a été refusé. Retirez les photos et relancez.";
+    else if (e instanceof Anthropic.BadRequestError)
+      out.iaErreur = /image|photo|media/i.test(e.message) ? "Une photo a été refusée. Retirez les photos et relancez." : "Le service d'analyse est en cours de réglage. Réessayez dans quelques minutes.";
+    else if (e instanceof Anthropic.AuthenticationError || e instanceof Anthropic.PermissionDeniedError) out.iaErreur = "Le service d'analyse est en cours de réglage. Réessayez dans quelques minutes.";
     else if (e instanceof Anthropic.APIError) out.iaErreur = "Le service d'analyse ne répond pas, réessayez.";
     else out.iaErreur = e instanceof Error ? e.message : "Erreur inconnue.";
     console.error("analyse IA", e);

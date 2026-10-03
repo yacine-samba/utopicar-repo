@@ -63,7 +63,9 @@ export class IaIndisponible extends Error {}
 
 export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilite; ville: string; photos: Photo[]; offre: OffreId }): Promise<Ia> {
   if (!process.env.ANTHROPIC_API_KEY) throw new IaIndisponible("ANTHROPIC_API_KEY manquante");
-  const client = new Anthropic();
+  // Clé créée hors d'un espace de travail Anthropic : l'API demande l'identifiant de l'espace (ANTHROPIC_WORKSPACE_ID, wrkspc_…).
+  const espace = process.env.ANTHROPIC_WORKSPACE_ID;
+  const client = new Anthropic(espace ? { defaultHeaders: { "anthropic-workspace-id": espace } } : {});
   const lignes = faitsLignes(p.faits, p.fiab);
   const consigne = `Ville de l'utilisateur (trajet, revente) : ${p.ville || "Paris"}
 ${p.photos.length ? `${p.photos.length} photo(s) de l'annonce jointe(s).` : "Aucune photo jointe."}
