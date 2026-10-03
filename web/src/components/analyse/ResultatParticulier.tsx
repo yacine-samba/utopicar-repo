@@ -83,6 +83,7 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
             <b className="num font-display text-xl">{eur(c.proposer)}</b>
           </p>
         )}
+        {a.regles && <p className="mt-4 text-sm text-ink-3">Analyse faite avec les règles et la cote de l&apos;outil : les photos n&apos;ont pas été examinées.</p>}
         {a.iaErreur && <p className="mt-4 text-sm text-warn">{a.iaErreur} Le coût et les points à vérifier restent calculés.</p>}
       </section>
 

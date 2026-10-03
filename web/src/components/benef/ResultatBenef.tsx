@@ -83,6 +83,7 @@ export function ResultatBenef({ a, reg, prixInit = "", onNouvelle, actions }: { 
           <p className="text-sm text-ink-3">{infos.join(" · ")}</p>
           <h1 className={cx("mt-4 font-display text-[clamp(30px,6vw,48px)] font-semibold leading-none tracking-tight", VTXT[ton])}>{d.verdict}</h1>
           {ia?.resume && <p className="mt-3 text-ink">{ia.resume}</p>}
+          {a.regles && <p className="mt-3 text-sm text-ink-3">Analyse faite avec les règles et la cote de l&apos;outil : les photos n&apos;ont pas été examinées.</p>}
           {a.iaErreur && <p className="mt-3 text-sm text-warn">{a.iaErreur} Sans cote du marché, la marge ne peut pas être calculée.</p>}
         </div>
         <div className="grid content-start gap-3">
