@@ -8,9 +8,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # --- morceaux de vraie interface (rect = [x, y, w, h] en px CSS) ---
 def U(ui, r=None, w=770, hl=None, **kw): return dict(ui=ui, r=r, w=w, hl=hl or [], **kw)
 GOLF_TOP = lambda w=770, hl=True: U('dcard1', [8, 8, 362, 110], w, [[211, 97, 44, 16]] if hl else [])
-GOLF = lambda w=770: U('dcard1', [8, 8, 362, 215], w, [[184, 154, 120, 22]])
-CLIO = lambda w=770: U('dcard2', [8, 8, 362, 215], w, [[184, 154, 120, 22]])
-TKTOP = lambda w=770: U('ticket', [0, 0, 340, 98], w, pad=16)
+GOLF = lambda w=770: U('dcard1', [8, 8, 362, 215], w, [[184, 154, 120, 22]], key='nogo')
+CLIO = lambda w=770: U('dcard2', [8, 8, 362, 215], w, [[184, 154, 120, 22]], key='go')
+TKTOP = lambda w=770: U('ticket', [0, 0, 340, 98], w, pad=16, key='nogo')
 TKTOT = lambda w=770: U('ticket', [0, 442, 340, 76], w, [[155, 456, 172, 32]], pad=18)
 TKLINES = lambda w=760: U('ticket', [0, 90, 340, 340], w, rad=18, pad=12)
 PLAF = lambda w=770: U('plaf', [8, 8, 320, 130], w, [[18, 50, 108, 30]])
@@ -74,8 +74,8 @@ car('prix-max', 'white', "N'appelle jamais le vendeur d'une voiture avant d'avoi
 car('go-nogo', 'orange', "Golf ou Clio : une seule te fait gagner de l'argent. Tu aurais choisi laquelle ? Réponse en commentaire avant de glisser.", [
   S(kicker="Golf ou Clio :", title="une seule\nte fait ==GAGNER==\nde l'argent.", size=124, ui=[GOLF_TOP(640, False), CLIO_TOP(640, False)]),
   S(title="Tu regardes le prix\n_et le kilométrage._", body="C'est justement le piège : ce qui compte, c'est **ce qu'il te reste après frais**."),
-  S(title="La Golf :\n[rd]38/100. NO GO.[/rd]", ui=[GOLF()], relance="Image 4 : l'écart entre les deux dépasse 3 000 €."),
-  S(title="La Clio :\n==92/100. GO.==", ui=[CLIO()], body2="**+ 1 932 €** de marge estimée, contre **− 1 200 €** pour la Golf."),
+  S(title="La Golf :\n[rd]n'achète pas.[/rd]", ui=[GOLF()], body2="Note **38/100**. Après frais, tu perds **1 200 €**.", relance="Image 4 : l'écart entre les deux dépasse 3 000 €."),
+  S(title="La Clio :\n==tu peux l'acheter.==", ui=[CLIO()], body2="Note **92/100**. Il te reste **+ 1 932 €**, la Golf te coûtait **1 200 €**."),
   S(title="Colle tes deux annonces :\n_le verdict en 2 secondes._"),
 ]),
 car('sous-la-cote', 'white', "Une Clio à 1 450 € sous la cote publiée il y a 12 minutes. Les bonnes affaires en voiture d'occasion partent vite : voilà comment les voir avant les autres.", [
@@ -207,7 +207,7 @@ car('calcul-de-tete', 'white', "Tu calcules tes frais de tête ? Calcule la cart
 car('ma-journee', 'dark', "9 h : une Clio sort 1 450 € sous la cote. 9 h 02 : tu sais déjà si elle est rentable. Ta journée d'achat-revente, version simple.", [
   S(kicker="9 h : une Clio sort 1 450 € sous la cote.", title="9 h 02 :\ntu sais si elle\nest ==RENTABLE==.", size=124, ui=[LIVE_PRIX(760)]),
   S(title="Sans outil, à 9 h 02,\n_tu es encore sur ta calculette._", size=96),
-  S(title="9 h 02 :\n==GO, 92/100.==", ui=[CLIO(740)], relance="Image 4 : ta fin de journée, en un écran."),
+  S(title="9 h 02 :\n==tu peux l'acheter.==", ui=[CLIO(740)], body2="Note **92/100**, il te reste **+ 1 932 €**.", relance="Image 4 : ta fin de journée, en un écran."),
   S(title="18 h :\n_ta marge du mois._", ui=[KPI(3, 500)]),
   S(title="Moins de calculs,\n_plus d'affaires._"),
 ]),
@@ -218,9 +218,9 @@ car('marge-moyenne', 'white', "Tu connais le prix de vente de chaque voiture, ma
   S(title="Voiture\n_par voiture._", ui=[MCHART(540, 740)]),
   S(title="Tu sais ce que chaque voiture\n_te rapporte vraiment._"),
 ]),
-car('pourquoi-38', 'orange', "Cette Golf a un bon dossier. Pourtant, elle est NO GO : 38/100. Voilà comment se calcule la note.", [
-  S(kicker="Cette Golf a un bon dossier.", title="Pourtant, elle est\n[rd]NO GO : 38/100.[/rd]", size=124, ui=[GOLF_TOP(700, False)]),
-  S(title="La note =\n_moyenne de deux notes._", ui=[TKTOP()]),
+car('pourquoi-38', 'orange', "Cette Golf a un bon dossier. Pourtant, l'outil te dit de ne pas l'acheter : 38/100. Voilà d'où vient la note.", [
+  S(kicker="Cette Golf a un bon dossier.", title="Pourtant, elle\nte [rd]COÛTE[/rd] 1 200 €.", size=124, ui=[GOLF_TOP(700, False)]),
+  S(title="Sa note : 38/100.\n_La moyenne de deux notes._", ui=[TKTOP()]),
   S(title="Dossier : 76/100.", body="Les papiers et l'annonce sont **plutôt bons**.", relance="Image 4 : la note qui fait tout chuter."),
   S(title="Marge : 0/100.", body="Après frais, **il ne reste rien**.", ui=[TKTOT()]),
   S(title="Une note que tu comprends,\n_sur chaque annonce._"),

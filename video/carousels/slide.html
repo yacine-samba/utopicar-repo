@@ -48,6 +48,12 @@ body{font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;--ink:#
 .check{display:flex;flex-direction:column;gap:22px;align-items:flex-start;text-align:left}
 .check{gap:34px}.check div{font-weight:800;font-size:76px;color:var(--ink);display:flex;gap:22px;align-items:center;white-space:nowrap}
 .check div::before{content:'';width:64px;height:64px;border:7px solid var(--acc);border-radius:14px;flex:none}
+/* légende du verdict de l'outil : « NO GO » / « GO » traduits en clair sous la capture */
+.keys{display:flex;flex-direction:column;gap:14px;align-items:center}
+.key{display:flex;align-items:center;gap:16px;font-weight:700;font-size:40px;color:var(--ink);white-space:nowrap}
+.key i{font-style:normal;display:inline-flex;align-items:center;gap:10px;padding:8px 20px;border-radius:30px;font-weight:800;font-size:32px;letter-spacing:.02em}
+.key i::before{content:'';width:12px;height:12px;border-radius:6px;background:currentColor}
+.key.nogo i{background:#FDE7E7;color:#D93A3A}.key.go i{background:#E4F6EC;color:#0A8F55}
 #s.orange .check div::before{border-color:#1A1310}
 </style>
 </head>
@@ -108,6 +114,12 @@ if (SL.ui) {
     else await ui(wrap, g);
   }
   if (SL.uiFirst) box.insertBefore(wrap, box.querySelector('.title'));
+  const keys = [...new Set(SL.ui.flat().map(u => u.key).filter(Boolean))];
+  if (keys.length) {
+    const kw = el('div', 'keys', wrap);
+    const T = { nogo: ['NO GO', "= n'achète pas à ce prix"], go: ['GO', '= rentable, tu peux acheter'] };
+    for (const k of keys) el('div', 'key ' + k, kw, `<i>${T[k][0]}</i><span>${T[k][1]}</span>`);
+  }
 }
 if (SL.body2) el('div', 'body', box, md(SL.body2));
 if (N === 4) {
