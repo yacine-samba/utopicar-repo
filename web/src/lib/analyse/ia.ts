@@ -1,6 +1,7 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
+import * as z from "zod/v4";
 import { IaSchema, type Ia } from "./ia-schema";
 import type { Faits } from "./texte";
 import type { Fiabilite } from "./fiabilite";
@@ -63,6 +64,8 @@ function faitsLignes(f: Faits, fiab: Fiabilite, cote: Cote | null): string[] {
   return L;
 }
 
+const SCHEMA_JSON = JSON.stringify(z.toJSONSchema(IaSchema));
+
 export class IaIndisponible extends Error {}
 
 export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilite; ville: string; photos: Photo[]; offre: OffreId; cote: Cote | null }): Promise<Ia> {
@@ -87,6 +90,22 @@ ${p.texte.slice(0, 12000)}
     { type: "text", text: consigne },
   ];
 
+  // Passerelle compatible (ANTHROPIC_BASE_URL, ex. LLMsRelay) : elle ignore la sortie structurée.
+  // On demande le JSON dans la consigne, puis on le valide avec le même schéma ; s'il est invalide, l'outil passe à ses règles.
+  if (process.env.ANTHROPIC_BASE_URL) {
+    const r = await client.beta.messages.create({
+      model: MODEL,
+      max_tokens: 8000,
+      system: `${SYSTEME}\n\nRéponds UNIQUEMENT par un objet JSON valide, sans texte autour ni balises de code, conforme à ce schéma JSON :\n${SCHEMA_JSON}`,
+      messages: [{ role: "user", content }],
+    });
+    const txt = r.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+    console.info("analyse IA", p.offre, MODEL, r.usage?.input_tokens, r.usage?.output_tokens);
+    const json = txt.slice(txt.indexOf("{"), txt.lastIndexOf("}") + 1);
+    const lu = IaSchema.safeParse(JSON.parse(json));
+    if (!lu.success) throw new Error(`Réponse de l'IA hors format : ${lu.error.issues[0]?.path.join(".")}`);
+    return lu.data;
+  }
   const r = await client.beta.messages.parse({
     model: MODEL,
     max_tokens: 16000,
