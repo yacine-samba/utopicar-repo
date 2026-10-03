@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
 
-export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
+import { cx, inputCls } from "@/lib/cx";
+export { cx, inputCls };
 
 export function Panneau({ titre, aside, children, className }: { titre?: ReactNode; aside?: ReactNode; children: ReactNode; className?: string }) {
   return (
@@ -90,6 +91,3 @@ export function Champ({ label, aide, children }: { label: string; aide?: string;
     </label>
   );
 }
-
-export const inputCls =
-  "w-full rounded-xl border border-line-2 bg-black/30 px-3 py-2.5 text-ink placeholder:text-ink-3 outline-none transition focus:border-o/60 focus:ring-2 focus:ring-o/20";

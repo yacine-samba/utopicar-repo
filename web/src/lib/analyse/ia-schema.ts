@@ -72,6 +72,30 @@ export const IaSchema = z.object({
   messageVendeur: z.string().describe("premier message, 2 phrases, 280 caractères max, sans prix"),
   resume: z.string().describe("2 à 3 phrases pour un professionnel de l'achat-revente"),
   resumeSimple: z.string().describe("1 à 2 phrases très simples pour un particulier qui connaît peu l'automobile"),
+  synthese: z.array(z.string()).describe("3 à 5 phrases courtes : l'essentiel du rapport pour décider vite"),
+  negociation: z.object({
+    prixOuverture: z.number().nullable().describe("premier prix à proposer, réaliste et poli, arrondi à 50 €"),
+    arguments: z.array(z.object({ argument: z.string(), montant: z.number().nullable() })).describe("défauts réels et chiffrés, du plus fort au plus faible"),
+    conseils: z.array(z.string()).describe("3 à 5 conseils concrets pour négocier cette voiture-là, sans jargon"),
+  }),
+  visite: z.object({
+    aControler: z.array(z.string()).describe("8 à 12 points à contrôler sur place et à l'essai, adaptés à ce modèle et à ce moteur"),
+    documents: z.array(z.string()).describe("papiers à demander et à vérifier avant de payer"),
+  }),
+  accompagnement: z.object({
+    recommandation: choix(["vous pouvez y aller seul", "venez accompagné", "faites inspecter la voiture"]),
+    pourquoi: z.string().describe("1 à 2 phrases, sans jargon"),
+  }),
 });
 
 export type Ia = z.infer<typeof IaSchema>;
+
+/** Résultat tel qu'il est montré : certaines parties sont retirées selon la formule. */
+export type IaVue = Omit<Ia, "negociation" | "visite" | "accompagnement" | "messageVendeur" | "questions"> & {
+  negociation: Ia["negociation"] | null;
+  visite: Ia["visite"] | null;
+  accompagnement: Ia["accompagnement"] | null;
+  messageVendeur: string | null;
+  questions: string[] | null;
+};
+

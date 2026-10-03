@@ -1,84 +1,18 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
-import { dealPro, DEFAUTS_PRO, eur, type Analyse, type ParamsPro, type Verdict } from "@/lib/analyse/couts";
-import { Entete } from "./Entete";
-import { Saisie } from "./Saisie";
-import { Champ, Copier, Panneau, Pastille, cx, inputCls, useReglages, type Ton } from "./ui";
+import { dealPro, eur, type Analyse, type ParamsPro, type Verdict } from "@/lib/analyse/couts";
+import { Champ, Copier, Panneau, Pastille, cx, inputCls, type Ton } from "../ui";
 
-const MODULES = ["Tableau de bord", "Parc", "Rapports", "Recherches"];
-
-const VTON: Record<Verdict, Ton> = { GO: "ok", "GO SI NÉGOCIÉ": "o", "GO EN MANDAT UNIQUEMENT": "o", "À SURVEILLER": "warn", "NO GO": "bad" };
-const VTXT: Record<Ton, string> = { ok: "text-ok", o: "text-o2", warn: "text-warn", bad: "text-bad", neutre: "text-ink" };
+export const VTON: Record<Verdict, Ton> = { GO: "ok", "GO SI NÉGOCIÉ": "o", "GO EN MANDAT UNIQUEMENT": "o", "À SURVEILLER": "warn", "NO GO": "bad" };
+export const VTXT: Record<Ton, string> = { ok: "text-ok", o: "text-o2", warn: "text-warn", bad: "text-bad", neutre: "text-ink" };
 const VFOND: Record<Ton, string> = { ok: "from-ok/20 border-ok/40", o: "from-o/20 border-o/40", warn: "from-warn/20 border-warn/40", bad: "from-bad/20 border-bad/40", neutre: "from-glass border-line-2" };
 
-const numOrNull = (s: string) => {
-  const v = Number(s.replace(/[\s €]/g, "").replace(",", "."));
+export const numOrNull = (s: string) => {
+  const v = Number(s.replace(/[\s\u00a0€]/g, "").replace(",", "."));
   return s.trim() !== "" && Number.isFinite(v) ? v : null;
 };
 
-export function OutilPro() {
-  const [reg, setReg] = useReglages<ParamsPro>("utp-pro", DEFAUTS_PRO);
-  const [a, setA] = useState<Analyse | null>(null);
-  const [prix, setPrix] = useState("");
-
-  return (
-    <>
-      <Entete href="/app" sous="Pro">
-        <nav className="flex flex-wrap items-center gap-1 text-sm" aria-label="Modules">
-          <span className="rounded-full bg-o/15 px-3 py-1 text-o2" aria-current="page">
-            Analyser
-          </span>
-          {MODULES.map((m) => (
-            <span key={m} className="cursor-not-allowed rounded-full px-3 py-1 text-ink-3" title="Bientôt disponible" aria-disabled="true">
-              {m} <small className="text-[10px] uppercase tracking-wide text-ink-3/70">bientôt</small>
-            </span>
-          ))}
-        </nav>
-        <Link href="/benef" className="ml-auto text-sm text-ink-3 underline-offset-4 hover:text-ink hover:underline">
-          Particulier ? Version simple
-        </Link>
-      </Entete>
-
-      <main className="mx-auto grid max-w-5xl gap-6 px-4 pb-20 pt-8">
-        {a ? (
-          <ResultatPro a={a} reg={reg} prixInit={prix} onNouvelle={() => setA(null)} />
-        ) : (
-          <>
-            <div className="grid gap-2">
-              <h1 className="font-display text-[clamp(28px,5vw,42px)] font-semibold leading-tight tracking-tight">Analyser une annonce</h1>
-              <p className="max-w-2xl text-ink-2">
-                Collez l&apos;annonce. Le rapport calcule ce qu&apos;il vous resterait une fois la voiture revendue, et le prix à ne pas dépasser.
-              </p>
-            </div>
-            <Panneau>
-              <Saisie
-                key={reg.ville}
-                villeInitiale={reg.ville}
-                villeLabel="Ville de départ et de revente"
-                villeAide="Sert au trajet et à la cote de revente."
-                bouton="Analyser l'annonce"
-                enPlus={
-                  <Champ label="Prix envisagé (€)" aide="Facultatif : sinon le prix de l'annonce.">
-                    <input value={prix} onChange={(e) => setPrix(e.target.value)} inputMode="numeric" placeholder="ex. 6 500" className={inputCls} />
-                  </Champ>
-                }
-                onResultat={(r, ville) => {
-                  setReg({ ville });
-                  setA(r);
-                  window.scrollTo({ top: 0 });
-                }}
-              />
-            </Panneau>
-            <Reglages reg={reg} setReg={setReg} />
-          </>
-        )}
-      </main>
-    </>
-  );
-}
-
-function Reglages({ reg, setReg }: { reg: ParamsPro; setReg: (p: Partial<ParamsPro>) => void }) {
+export function Reglages({ reg, setReg }: { reg: ParamsPro; setReg: (p: Partial<ParamsPro>) => void }) {
   const f = (k: keyof ParamsPro, label: string, aide: string) => (
     <Champ label={label} aide={aide}>
       <input
@@ -118,7 +52,7 @@ function Chiffre({ l, v, ton, sous }: { l: string; v: number | null; ton?: strin
   );
 }
 
-function ResultatPro({ a, reg, prixInit, onNouvelle }: { a: Analyse; reg: ParamsPro; prixInit: string; onNouvelle: () => void }) {
+export function ResultatBenef({ a, reg, prixInit = "", onNouvelle, actions }: { a: Analyse; reg: ParamsPro; prixInit?: string; onNouvelle?: () => void; actions?: React.ReactNode }) {
   const [prix, setPrix] = useState(prixInit);
   const [dist, setDist] = useState("");
   const d = dealPro(a, reg, numOrNull(prix), numOrNull(dist));
@@ -128,9 +62,21 @@ function ResultatPro({ a, reg, prixInit, onNouvelle }: { a: Analyse; reg: Params
   const titre = [veh?.marque, veh?.modele, veh?.version].filter(Boolean).join(" ") || a.faits.titre || "Annonce";
   const infos = [veh?.generation, veh?.annee ?? a.faits.annee, (veh?.km ?? a.faits.km) != null ? `${(veh?.km ?? a.faits.km)!.toLocaleString("fr-FR")} km` : null, veh?.energie || a.faits.energie, veh?.boite || a.faits.boite, veh?.localisation || a.faits.ville, veh?.vendeur && veh.vendeur !== "inconnu" ? veh.vendeur : null].filter(Boolean);
   const gainTon = d.gain == null ? "" : d.gain >= reg.margeMin ? "text-ok" : d.gain >= 0 ? "text-warn" : "text-bad";
+  const [vue, setVue] = useState<"complet" | "synthese">("complet");
+  const risques = [...d.postes.filter((p) => p.cat === "piege").map((p) => p.l), ...(a.fiab.k === "eviter" ? [a.fiab.pourquoi[0]] : []), ...(ia?.alertes ?? [])].slice(0, 3);
 
   return (
     <div className="grid gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div role="group" aria-label="Affichage du rapport" className="flex w-fit gap-1 rounded-full border border-line-2 bg-glass p-1 text-sm">
+          {(["complet", "synthese"] as const).map((v) => (
+            <button key={v} type="button" aria-pressed={vue === v} onClick={() => setVue(v)} className="rounded-full px-4 py-1.5 text-ink-2 transition aria-pressed:bg-o aria-pressed:text-[#160904]">
+              {v === "complet" ? "Rapport complet" : "Synthèse"}
+            </button>
+          ))}
+        </div>
+        {a.demo && <span className="text-sm text-warn">Mode démonstration : rien n&apos;est enregistré.</span>}
+      </div>
       <section className={cx("grid gap-5 rounded-3xl border bg-gradient-to-b to-panel p-6 sm:p-8 lg:grid-cols-[1.4fr_1fr]", VFOND[ton])}>
         <div>
           <p className="font-display text-lg font-semibold">{titre}</p>
@@ -158,6 +104,39 @@ function ResultatPro({ a, reg, prixInit, onNouvelle }: { a: Analyse; reg: Params
         <Chiffre l="Revente rapide" v={d.revente} sous={ia ? `confiance ${ia.marche.confiance}` : undefined} />
       </div>
 
+      {vue === "synthese" ? (
+        <Panneau titre="L'essentiel">
+          {ia?.synthese.length ? (
+            <ul className="grid list-disc gap-2 pl-5 marker:text-o2">
+              {ia.synthese.map((x) => (
+                <li key={x}>{x}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-ink-3">Synthèse indisponible pour ce rapport.</p>
+          )}
+          {risques.length > 0 && (
+            <>
+              <h3 className="mb-2 mt-5 font-semibold">Points de vigilance</h3>
+              <ul className="grid gap-1.5 text-sm text-warn">
+                {risques.map((x) => (
+                  <li key={x}>⚠ {x}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {ia?.messageVendeur && (
+            <div className="mt-5">
+              <div className="mb-1 flex items-center justify-between gap-2">
+                <h3 className="text-sm text-ink-3">Premier message au vendeur</h3>
+                <Copier texte={ia.messageVendeur} />
+              </div>
+              <p className="rounded-xl border border-line bg-black/25 p-3 text-ink-2">{ia.messageVendeur}</p>
+            </div>
+          )}
+        </Panneau>
+      ) : (
+        <>
       <div className="grid gap-5 lg:grid-cols-2">
         <Panneau titre="Ticket" aside="tout compris">
           <ul className="divide-y divide-line">
@@ -295,14 +274,51 @@ function ResultatPro({ a, reg, prixInit, onNouvelle }: { a: Analyse; reg: Params
         </Panneau>
       </div>
 
-      {ia && (
+      {ia?.negociation && (
+        <Panneau titre="Négociation">
+          {ia.negociation.prixOuverture != null && (
+            <p className="mb-3 flex flex-wrap items-baseline gap-2">
+              <span className="text-ink-2">Prix d&apos;ouverture conseillé</span>
+              <b className="num font-display text-2xl text-o2">{eur(ia.negociation.prixOuverture)}</b>
+              {d.offre != null && <span className="text-sm text-ink-3">· votre offre calculée : {eur(d.offre)}</span>}
+            </p>
+          )}
+          {ia.negociation.arguments.length > 0 && (
+            <ul className="mb-4 divide-y divide-line">
+              {ia.negociation.arguments.map((x) => (
+                <li key={x.argument} className="flex justify-between gap-4 py-2">
+                  <span>{x.argument}</span>
+                  {x.montant != null && <span className="num shrink-0 text-ink-2">{eur(x.montant)}</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+          <ul className="grid list-disc gap-1.5 pl-5 text-sm text-ink-2 marker:text-o2">
+            {ia.negociation.conseils.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+        </Panneau>
+      )}
+
+      {ia?.visite && (
+        <Panneau titre="Inspection sur place">
+          <ul className="grid list-disc gap-1.5 pl-5 text-ink-2 marker:text-o2 sm:columns-2">
+            {ia.visite.aControler.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+        </Panneau>
+      )}
+
+      {ia?.messageVendeur && (
         <Panneau titre="Contacter le vendeur">
           <div className="mb-2 flex items-center justify-between gap-2">
             <span className="text-sm text-ink-3">Premier message, sans prix</span>
             <Copier texte={ia.messageVendeur} />
           </div>
           <p className="rounded-xl border border-line bg-black/25 p-3 text-ink-2">{ia.messageVendeur}</p>
-          {ia.questions.length > 0 && (
+          {ia.questions && ia.questions.length > 0 && (
             <>
               <div className="mb-2 mt-5 flex items-center justify-between gap-2">
                 <span className="text-sm text-ink-3">Questions à poser</span>
@@ -318,9 +334,17 @@ function ResultatPro({ a, reg, prixInit, onNouvelle }: { a: Analyse; reg: Params
         </Panneau>
       )}
 
-      <button type="button" onClick={onNouvelle} className="justify-self-center rounded-full border border-line-2 px-5 py-2.5 text-ink-2 transition hover:border-o/50 hover:text-ink">
-        Analyser une autre annonce
-      </button>
+        </>
+      )}
+
+      <div className="flex flex-wrap justify-center gap-3">
+        {actions}
+        {onNouvelle && (
+          <button type="button" onClick={onNouvelle} className="btn">
+            Analyser une autre annonce
+          </button>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 // UTOPICAR Scanner — bouton sur les pages d'annonce, copie texte + photos pour le scanner.
 (function(){
   'use strict';
-  const SCANNER_URL = 'https://claude.ai/artifact/8bHqs6YhWoWT2zje3mSF3q';
+  const SCANNER_URL = 'https://utopicar.fr/app/analyser';
   const MAX_PHOTOS = 8;
   const isAdPage = () => {
     const h = location.hostname, p = location.pathname;
@@ -71,11 +71,13 @@
     } catch(e){ return null; }
   }
 
-  function toast(msg, ok){
+  // Message construit en DOM (jamais en HTML brut) : un texte d'erreur ne peut pas injecter de balises.
+  function toast(lignes, ok, lien){
     let t = document.getElementById('utp-toast');
-    if (!t){ t = document.createElement('div'); t.id = 'utp-toast'; document.body.appendChild(t); }
-    t.style.cssText = 'position:fixed;right:20px;bottom:84px;z-index:2147483647;max-width:340px;padding:12px 14px;border-radius:10px;font:600 13px/1.4 system-ui,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.25);background:' + (ok === false ? '#C62E27' : '#0D1522') + ';color:#fff';
-    t.innerHTML = msg;
+    if (!t){ t = document.createElement('div'); t.id = 'utp-toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+    t.style.cssText = 'position:fixed;right:20px;bottom:84px;z-index:2147483647;max-width:340px;padding:12px 14px;border-radius:10px;font:600 13px/1.4 system-ui,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.25);background:' + (ok === false ? '#C62E27' : '#15110d') + ';color:#fff';
+    t.replaceChildren(...lignes.flatMap((l, i) => i ? [document.createElement('br'), document.createTextNode(l)] : [document.createTextNode(l)]));
+    if (lien){ const a = document.createElement('a'); a.href = lien; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Ouvrir Utopicar →'; a.style.cssText = 'display:block;margin-top:6px;color:#ff8a4c'; t.appendChild(a); }
     clearTimeout(t._h); t._h = setTimeout(() => t.remove(), 9000);
   }
 
@@ -94,9 +96,9 @@
         'text/plain': new Blob([text], { type: 'text/plain' }),
         'text/html': new Blob([html], { type: 'text/html' })
       })]);
-      toast('✓ Annonce copiée avec ' + imgs.length + ' photo(s).<br>Ouvrez le scanner et faites <b>Ctrl+V</b>.<br><a href="' + SCANNER_URL + '" target="_blank" style="color:#F5B800">Ouvrir le scanner →</a>');
+      toast(['✓ Annonce copiée avec ' + imgs.length + ' photo(s).', 'Dans Utopicar, cliquez dans le champ « L\'annonce » et faites Ctrl+V.'], true, SCANNER_URL);
     } catch(e){
-      toast('Copie impossible : ' + (e && e.message || e) + '. Cliquez d\'abord dans la page puis réessayez.', false);
+      toast(['Copie impossible : ' + (e && e.message || e) + '.', 'Cliquez d\'abord dans la page puis réessayez.'], false);
     } finally { btn.disabled = false; btn.textContent = label; }
   }
 
@@ -106,7 +108,7 @@
     if (existing) return;
     const b = document.createElement('button');
     b.id = 'utp-btn'; b.type = 'button'; b.textContent = 'Scanner avec UTOPICAR';
-    b.style.cssText = 'position:fixed;right:20px;bottom:24px;z-index:2147483647;background:#F5B800;color:#0D1522;border:0;border-radius:10px;padding:13px 18px;font:800 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)';
+    b.style.cssText = 'position:fixed;right:20px;bottom:24px;z-index:2147483647;background:#ff5a1f;color:#160904;border:0;border-radius:10px;padding:13px 18px;font:800 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)';
     b.addEventListener('click', () => run(b));
     document.body.appendChild(b);
   }

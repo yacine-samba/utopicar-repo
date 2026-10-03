@@ -1,10 +1,13 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
+import { photosDepuisHtml, texteDepuisExtension } from "@/lib/analyse/import";
 import { Champ, cx, inputCls } from "./ui";
 
 type PhotoLocale = { id: string; url: string; data: string };
-const MAX_PHOTOS = 6;
+const BROUILLON = "utp-brouillon";
 
 /** Réduit une photo (1280 px, JPEG) pour l'envoyer à l'analyse sans dépasser la taille autorisée. */
 async function reduire(f: File): Promise<PhotoLocale | null> {
@@ -25,27 +28,50 @@ async function reduire(f: File): Promise<PhotoLocale | null> {
 const ETAPES = ["Lecture du texte de l'annonce", "Recherche des défauts qui coûtent cher", "Estimation du prix du marché", "Calcul des frais"];
 
 export function Saisie({
+  mode,
+  maxPhotos,
   villeInitiale,
   villeLabel,
   villeAide,
   bouton,
+  retour,
   enPlus,
   onResultat,
 }: {
+  mode: "particulier" | "benef";
+  maxPhotos: number;
   villeInitiale: string;
   villeLabel: string;
   villeAide: string;
   bouton: string;
+  /** Page où revenir après l'inscription, si elle est nécessaire. */
+  retour: string;
   enPlus?: ReactNode;
   onResultat: (a: Analyse, ville: string) => void;
 }) {
+  const router = useRouter();
   const [texte, setTexte] = useState("");
   const [ville, setVille] = useState(villeInitiale);
   const [photos, setPhotos] = useState<PhotoLocale[]>([]);
   const [charge, setCharge] = useState(false);
   const [sec, setSec] = useState(0);
-  const [erreur, setErreur] = useState("");
+  const [erreur, setErreur] = useState<{ t: string; offres?: string } | null>(null);
   const fichier = useRef<HTMLInputElement>(null);
+
+  // Annonce collée avant l'inscription : on la retrouve au retour.
+  useEffect(() => {
+    try {
+      const b = JSON.parse(sessionStorage.getItem(BROUILLON) || "null");
+      if (b?.mode === mode && b.texte) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- reprise unique du brouillon
+        setTexte(b.texte);
+        if (b.ville) setVille(b.ville);
+        sessionStorage.removeItem(BROUILLON);
+      }
+    } catch {
+      /* stockage indisponible */
+    }
+  }, [mode]);
 
   useEffect(() => {
     if (!charge) return;
@@ -55,15 +81,15 @@ export function Saisie({
   }, [charge]);
 
   async function ajouter(files: File[]) {
-    const imgs = files.filter((f) => f.type.startsWith("image/")).slice(0, MAX_PHOTOS - photos.length);
+    const imgs = files.filter((f) => f.type.startsWith("image/")).slice(0, maxPhotos - photos.length);
     const r = (await Promise.all(imgs.map(reduire))).filter((x): x is PhotoLocale => !!x);
-    setPhotos((p) => [...p, ...r].slice(0, MAX_PHOTOS));
+    setPhotos((p) => [...p, ...r].slice(0, maxPhotos));
   }
 
   async function lancer() {
-    setErreur("");
+    setErreur(null);
     if (texte.trim().length < 30) {
-      setErreur("Collez le texte complet de l'annonce (titre, prix, kilométrage, description).");
+      setErreur({ t: "Collez le texte complet de l'annonce : titre, prix, kilométrage et description." });
       return;
     }
     setCharge(true);
@@ -72,13 +98,25 @@ export function Saisie({
       const r = await fetch("/api/analyse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texte, ville, photos: photos.map((p) => ({ media_type: "image/jpeg", data: p.data })) }),
+        body: JSON.stringify({ mode, texte, ville, photos: photos.map((p) => ({ media_type: "image/jpeg", data: p.data })) }),
       });
       const j = await r.json().catch(() => null);
-      if (!r.ok || !j) throw new Error(j?.erreur || "L'analyse a échoué, réessayez.");
+      if (r.status === 401) {
+        try {
+          sessionStorage.setItem(BROUILLON, JSON.stringify({ mode, texte, ville }));
+        } catch {
+          /* stockage indisponible */
+        }
+        router.push(`/inscription?next=${encodeURIComponent(retour)}`);
+        return;
+      }
+      if (!r.ok || !j) {
+        setErreur({ t: j?.erreur || "L'analyse a échoué, réessayez.", offres: j?.offres });
+        return;
+      }
       onResultat(j as Analyse, ville);
-    } catch (e) {
-      setErreur(e instanceof Error ? e.message : "L'analyse a échoué, réessayez.");
+    } catch {
+      setErreur({ t: "Connexion impossible. Vérifiez votre réseau et réessayez." });
     } finally {
       setCharge(false);
     }
@@ -93,15 +131,28 @@ export function Saisie({
         e.preventDefault();
         lancer();
       }}
-      onPaste={(e) => {
+      onPaste={async (e) => {
+        // Copie de l'extension UTOPICAR Scanner : texte structuré et photos jointes.
+        const brut = e.clipboardData.getData("text/plain");
+        const converti = texteDepuisExtension(brut);
+        if (converti) {
+          e.preventDefault();
+          setTexte(converti);
+          const urls = photosDepuisHtml(e.clipboardData.getData("text/html")).slice(0, maxPhotos);
+          if (urls.length) {
+            const fichiers = await Promise.all(urls.map(async (u, i) => new File([await (await fetch(u)).blob()], `photo-${i + 1}.jpg`, { type: "image/jpeg" })));
+            ajouter(fichiers);
+          }
+          return;
+        }
         const f = Array.from(e.clipboardData.files);
-        if (f.length) {
+        if (f.length && maxPhotos > 0) {
           e.preventDefault();
           ajouter(f);
         }
       }}
     >
-      <Champ label="L'annonce" aide="Sur Leboncoin, La Centrale ou AutoScout24 : sélectionnez toute la page (Ctrl+A), copiez, collez ici.">
+      <Champ label="L'annonce" aide="Sur Leboncoin, La Centrale ou AutoScout24 : sélectionnez toute la page (Ctrl+A), copiez (Ctrl+C), puis collez ici (Ctrl+V).">
         <textarea
           value={texte}
           onChange={(e) => setTexte(e.target.value)}
@@ -112,55 +163,56 @@ export function Saisie({
         />
       </Champ>
 
-      <div className="grid gap-2">
-        <span className="text-sm text-ink-2">
-          Photos <span className="text-ink-3">(facultatif, {MAX_PHOTOS} maximum, vous pouvez aussi les coller)</span>
-        </span>
-        <div
-          className="flex flex-wrap gap-2"
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            ajouter(Array.from(e.dataTransfer.files));
-          }}
-        >
-          {photos.map((p) => (
-            <div key={p.id} className="relative size-20 overflow-hidden rounded-xl border border-line-2">
-              {/* eslint-disable-next-line @next/next/no-img-element -- aperçu local en data URL */}
-              <img src={p.url} alt="" className="size-full object-cover" />
+      {maxPhotos > 0 ? (
+        <div className="grid gap-2">
+          <span className="text-sm text-ink-2">
+            Photos <span className="text-ink-3">(facultatif, {maxPhotos} au plus ; vous pouvez aussi les coller)</span>
+          </span>
+          <div
+            className="flex flex-wrap gap-2"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              ajouter(Array.from(e.dataTransfer.files));
+            }}
+          >
+            {photos.map((p, i) => (
+              <div key={p.id} className="relative size-20 overflow-hidden rounded-xl border border-line-2">
+                {/* eslint-disable-next-line @next/next/no-img-element -- aperçu local en data URL */}
+                <img src={p.url} alt={`Photo ${i + 1}`} className="size-full object-cover" />
+                <button type="button" aria-label={`Retirer la photo ${i + 1}`} onClick={() => setPhotos((l) => l.filter((x) => x.id !== p.id))} className="absolute right-1 top-1 grid size-7 place-items-center rounded-full bg-black/75 text-xs">
+                  ✕
+                </button>
+              </div>
+            ))}
+            {photos.length < maxPhotos && (
               <button
                 type="button"
-                aria-label="Retirer la photo"
-                onClick={() => setPhotos((l) => l.filter((x) => x.id !== p.id))}
-                className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-black/70 text-xs"
+                onClick={() => fichier.current?.click()}
+                className="grid size-20 place-items-center rounded-xl border border-dashed border-line-2 text-2xl text-ink-3 transition hover:border-o/50 hover:text-o2"
+                aria-label="Ajouter des photos"
               >
-                ✕
+                +
               </button>
-            </div>
-          ))}
-          {photos.length < MAX_PHOTOS && (
-            <button
-              type="button"
-              onClick={() => fichier.current?.click()}
-              className="grid size-20 place-items-center rounded-xl border border-dashed border-line-2 text-2xl text-ink-3 transition hover:border-o/50 hover:text-o2"
-              aria-label="Ajouter des photos"
-            >
-              +
-            </button>
-          )}
-          <input
-            ref={fichier}
-            type="file"
-            accept="image/*"
-            multiple
-            hidden
-            onChange={(e) => {
-              ajouter(Array.from(e.target.files ?? []));
-              e.target.value = "";
-            }}
-          />
+            )}
+            <input
+              ref={fichier}
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              onChange={(e) => {
+                ajouter(Array.from(e.target.files ?? []));
+                e.target.value = "";
+              }}
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <p className="text-sm text-ink-3">
+          L&apos;analyse des photos est comprise dans les formules <Link href="/tarifs" className="text-o2 underline underline-offset-4">Essentiel et Sérénité</Link>.
+        </p>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Champ label={villeLabel} aide={villeAide}>
@@ -170,25 +222,26 @@ export function Saisie({
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
-        <button
-          type="submit"
-          disabled={charge}
-          className="rounded-full bg-o px-6 py-3 font-display text-base font-semibold text-[#160904] shadow-[0_10px_30px_-10px_rgba(255,90,31,.8)] transition hover:bg-o2 disabled:opacity-60"
-        >
+        <button type="submit" disabled={charge} className="btn btn-o">
           {charge ? "Analyse en cours…" : bouton}
         </button>
         {charge && (
-          <span className="flex items-center gap-2 text-sm text-ink-2" aria-live="polite">
-            <span className="size-4 animate-spin rounded-full border-2 border-o/30 border-t-o" />
+          <span className="flex items-center gap-2 text-sm text-ink-2" role="status">
+            <span className="size-4 animate-spin rounded-full border-2 border-o/30 border-t-o" aria-hidden="true" />
             {ETAPES[etape]}… <span className="num text-ink-3">{sec} s</span>
           </span>
         )}
-        {erreur && (
-          <p role="alert" className="text-sm text-bad">
-            {erreur}
-          </p>
-        )}
       </div>
+      {erreur && (
+        <div role="alert" className="rounded-2xl border border-warn/40 bg-warn/10 p-4 text-sm">
+          <p className="text-warn">{erreur.t}</p>
+          {erreur.offres && (
+            <Link href={`/tarifs#${erreur.offres === "benef" ? "benef" : "particuliers"}`} className="btn btn-o btn-sm mt-3">
+              Voir les formules
+            </Link>
+          )}
+        </div>
+      )}
     </form>
   );
 }

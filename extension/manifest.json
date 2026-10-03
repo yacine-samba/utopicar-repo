@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "UTOPICAR Scanner",
-  "version": "1.0.0",
-  "description": "Envoie une annonce auto (texte + photos) vers le scanner UTOPICAR en un clic.",
+  "version": "1.1.0",
+  "description": "Envoie une annonce auto (texte + photos) vers Utopicar en un clic.",
   "permissions": ["clipboardWrite"],
   "host_permissions": [
     "https://*.leboncoin.fr/*",
