@@ -76,6 +76,7 @@ Réservé aux personnes connectées, 30 imports par jour et par personne (table 
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | clé publique du projet Supabase |
 | `SUPABASE_SERVICE_ROLE_KEY` | clé secrète : enregistrement des abonnements Stripe, portail de paiement, suppression de compte. Les analyses n'en ont plus besoin (fonction SQL `enregistrer_analyse`). |
 | `ANTHROPIC_API_KEY` | analyse |
+| `ANTHROPIC_WORKSPACE_ID` | seulement si la clé Anthropic n'est rattachée à aucun espace de travail : identifiant `wrkspc_…` (Console Anthropic › Workspaces) |
 | `ANTHROPIC_MODEL` | facultatif : `claude-haiku-4-5` par défaut, pour toutes les formules |
 | `STRIPE_SECRET_KEY` | paiements |
 | `STRIPE_WEBHOOK_SECRET` | signature du webhook |
