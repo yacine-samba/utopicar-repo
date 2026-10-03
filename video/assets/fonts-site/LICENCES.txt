@@ -1,0 +1,3 @@
+Polices du site utopicar.fr (branche main, web/src/app/layout.tsx), copiées pour le rendu hors ligne des carrousels :
+- Clash Display et Satoshi : Indian Type Foundry, Fontshare (licence gratuite ITF FFL, usage commercial autorisé).
+- Instrument Serif Italic : Google Fonts (SIL Open Font License 1.1).

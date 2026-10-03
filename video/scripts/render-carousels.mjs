@@ -11,18 +11,19 @@ const server = http.createServer((req, res) => {
 });
 await new Promise(r => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;
-const DATA = JSON.parse(fs.readFileSync(path.join(ROOT, 'carousels/carousels.json'), 'utf8'));
+const CAR = process.env.CAR || 'carousels';   // dossier du gabarit (carousels, carousels-v2)
+const DATA = JSON.parse(fs.readFileSync(path.join(ROOT, CAR, 'carousels.json'), 'utf8'));
 const only = process.argv[2] ? process.argv[2].split(',').map(Number) : DATA.carousels.map((_, i) => i);
-const OUT = path.join(ROOT, 'renders/carousels'); fs.mkdirSync(OUT, { recursive: true });
+const OUT = path.join(ROOT, 'renders', CAR === 'carousels' ? 'carousels' : CAR); fs.mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ args: ['--force-color-profile=srgb', '--disable-lcd-text', '--font-render-hinting=none'] });
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
 page.on('pageerror', e => console.error('PAGEERR', e.message));
 const issues = [];
 for (const c of only) {
-  const car = DATA.carousels[c]; const name = `${String(c + 1).padStart(2, '0')}-${car.slug}`; const dir = path.join(OUT, name);
+  const car = DATA.carousels[c]; const name = car.id ? `${car.id}-${car.slug}` : `${String(c + 1).padStart(2, '0')}-${car.slug}`; const dir = path.join(OUT, name);
   fs.mkdirSync(dir, { recursive: true });
   for (let s = 0; s < car.slides.length; s++) {
-    await page.goto(`${base}/carousels/slide.html?c=${c}&s=${s}`);
+    await page.goto(`${base}/${CAR}/slide.html?c=${c}&s=${s}`);
     await page.waitForFunction(() => window.ready === true, null, { timeout: 30000 });
     if (await page.evaluate(() => window.overflow)) issues.push(`${name} image ${s + 1} : contenu trop haut`);
     await page.screenshot({ path: path.join(dir, `${name}-${s + 1}.png`) });
@@ -39,11 +40,12 @@ S.save(sys.argv[1]+'/planche.jpg',quality=88)`, dir]);
 execFileSync('python3', ['-c', `
 import sys,glob
 from PIL import Image
-fs=sorted(glob.glob(sys.argv[1]+'/*/planche.jpg')); ims=[Image.open(f) for f in fs]
-if ims:
+for g in (['A','D','P'] if sys.argv[2]!='carousels' else ['']):
+ fs=sorted(glob.glob(sys.argv[1]+'/'+g+'*/planche.jpg')); ims=[Image.open(f) for f in fs]
+ if ims:
   w=ims[0].width//2; h=ims[0].height//2; cols=2; rows=(len(ims)+1)//2
   S=Image.new('RGB',(cols*w,rows*h),'#1b1f27')
   for i,im in enumerate(ims): S.paste(im.resize((w,h)),((i%cols)*w,(i//cols)*h))
-  S.save(sys.argv[1]+'/apercu-30.jpg',quality=85)`, OUT]);
+  S.save(sys.argv[1]+'/apercu'+('-'+g if g else '-30')+'.jpg',quality=85)`, OUT, CAR]);
 if (issues.length) console.log('À vérifier :\n' + issues.join('\n')); else console.log('Aucun débordement.');
 await browser.close(); server.close();
