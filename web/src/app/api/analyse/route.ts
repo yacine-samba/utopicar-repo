@@ -14,7 +14,7 @@ import { OFFRES, type Offre } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 const Corps = z.object({
   mode: z.enum(["particulier", "benef"]),

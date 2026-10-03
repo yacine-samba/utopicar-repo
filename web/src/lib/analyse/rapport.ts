@@ -31,7 +31,7 @@ export type Rapport = {
   structure?: { choix?: Txt; pourquoi?: Txt };
   etatPhotos?: {
     score?: number | null; photosSuffisantes?: boolean; vuesManquantes?: Liste; teinteDifferente?: { constat?: boolean; elements?: Liste; confiance?: Txt };
-    defauts?: { libelle?: Txt; zone?: Txt; gravite?: Txt; coutMin?: number; coutMax?: number; confiance?: Txt }[]; incoherences?: Liste; compteurLu?: number | null; resume?: Txt; leviers?: Liste;
+    defauts?: { libelle?: Txt; zone?: Txt; gravite?: Txt; coutMin?: number; coutMax?: number; confiance?: Txt; photo?: number | null }[]; incoherences?: Liste; compteurLu?: number | null; resume?: Txt; leviers?: Liste;
   };
   negociation?: { message1?: Txt; relance?: Txt; appel?: Liste; argumentaire?: { argument?: Txt; montant?: number; source?: Txt }[]; annonceOffre?: Txt; contreOffre?: Txt; sortie?: Txt };
   messageVendeur?: Txt; scriptStructure?: Txt; questions?: Liste; leviersNegociation?: Liste; inspection?: Liste; conditionSortie?: Txt; prochaineAction?: Txt;
@@ -44,11 +44,34 @@ const l = (x: unknown): string[] => (Array.isArray(x) ? x.filter((y) => typeof y
 const t = (x: unknown) => (typeof x === "string" ? x : "");
 const conf = (x: unknown) => (x === "forte" || x === "moyenne" || x === "faible" ? x : "moyenne");
 
-/** Lit la réponse JSON de l'IA (texte libre autour toléré). */
+/** Premier objet JSON complet du texte (accolades équilibrées, chaînes respectées) : le texte que l'IA ajoute avant ou après est ignoré. */
+export function extraireJson(txt: string): string {
+  const debut = txt.indexOf("{");
+  if (debut < 0) throw new Error("Réponse de l'IA sans JSON");
+  let prof = 0, chaine = false, echap = false;
+  for (let i = debut; i < txt.length; i++) {
+    const c = txt[i];
+    if (chaine) {
+      if (echap) echap = false;
+      else if (c === "\\") echap = true;
+      else if (c === '"') chaine = false;
+    } else if (c === '"') chaine = true;
+    else if (c === "{") prof++;
+    else if (c === "}" && --prof === 0) return txt.slice(debut, i + 1);
+  }
+  return txt.slice(debut); // réponse coupée : on tente quand même
+}
+
+/** Lit la réponse JSON de l'IA (texte libre autour toléré, virgules en trop réparées). */
 export function lireRapport(txt: string): Rapport {
-  const json = txt.slice(txt.indexOf("{"), txt.lastIndexOf("}") + 1);
-  const r = JSON.parse(json);
-  if (!r || typeof r !== "object" || !r.vehicule) throw new Error("Réponse de l'IA hors format");
+  const json = extraireJson(txt.replace(/```(?:json)?/g, ""));
+  let r: unknown;
+  try {
+    r = JSON.parse(json);
+  } catch {
+    r = JSON.parse(json.replace(/,\s*([}\]])/g, "$1").replace(/[\u0000-\u0019]+/g, " "));
+  }
+  if (!r || typeof r !== "object" || !(r as Rapport).vehicule) throw new Error("Réponse de l'IA hors format");
   return r as Rapport;
 }
 
@@ -71,8 +94,12 @@ export function versIa(r: Rapport): Ia {
     photos: {
       fournies: n(ep.score) != null,
       score: n(ep.score),
-      defauts: (ep.defauts ?? []).filter((d) => d?.libelle).map((d) => ({ libelle: t(d.libelle), gravite: d.gravite === "lourd" ? "lourd" : d.gravite === "moyen" ? "moyen" : "léger", coutMin: n(d.coutMin) ?? 0, coutMax: n(d.coutMax) ?? 0, confiance: conf(d.confiance) })),
+      defauts: (ep.defauts ?? []).filter((d) => d?.libelle).map((d) => ({ libelle: t(d.libelle), gravite: d.gravite === "lourd" ? "lourd" : d.gravite === "moyen" ? "moyen" : "léger", coutMin: n(d.coutMin) ?? 0, coutMax: n(d.coutMax) ?? 0, confiance: conf(d.confiance), zone: t(d.zone), photo: n(d.photo) })),
       vuesManquantes: l(ep.vuesManquantes),
+      resume: t(ep.resume),
+      teinte: ep.teinteDifferente?.constat ? l(ep.teinteDifferente.elements) : [],
+      incoherences: l(ep.incoherences),
+      compteurLu: n(ep.compteurLu),
     },
     travaux: (r.entretienAnalyse?.aPrevoir ?? []).filter((x) => x?.libelle).map((x) => ({ libelle: t(x.libelle) + (x.echeance ? ` (${x.echeance})` : ""), type: "entretien", coutMin: n(x.cout) ?? 0, coutMax: n(x.cout) ?? 0 })),
     fiabilite: { moteur: t(r.fiabilite?.moteur), note: n(r.fiabilite?.note) ?? 5, problemesConnus: (r.fiabilite?.problemesConnus ?? []).map((x) => t(x?.libelle)).filter(Boolean) },

@@ -40,9 +40,15 @@ export const IaSchema = z.object({
         coutMin: z.number(),
         coutMax: z.number(),
         confiance: conf,
+        zone: z.string().optional(),
+        photo: z.number().nullable().optional(),
       }),
     ),
     vuesManquantes: z.array(z.string()),
+    resume: z.string().optional(),
+    teinte: z.array(z.string()).optional(),
+    incoherences: z.array(z.string()).optional(),
+    compteurLu: z.number().nullable().optional(),
   }),
   travaux: z
     .array(
