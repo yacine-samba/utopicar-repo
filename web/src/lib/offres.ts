@@ -85,7 +85,7 @@ export const BENEF: OffreId[] = ["starter", "croissance", "pro"];
 
 export const offre = (id: string | null | undefined): Offre => OFFRES[(id as OffreId) in OFFRES ? (id as OffreId) : "gratuit"];
 export const estPayante = (id: string | null | undefined) => offre(id).prix > 0;
-export const prixTxt = (p: number) => (p === 0 ? "0 €" : `${p.toLocaleString("fr-FR", { minimumFractionDigits: p % 1 ? 2 : 0 })} €`);
+export const prixTxt = (p: number) => (p === 0 ? "0\u00a0€" : `${p.toLocaleString("fr-FR", { minimumFractionDigits: p % 1 ? 2 : 0 })}\u00a0€`);
 
 /** Statuts Stripe qui donnent accès. */
 export const STATUTS_ACTIFS = ["active", "trialing", "past_due"];

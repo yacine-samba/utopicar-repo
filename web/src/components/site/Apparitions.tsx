@@ -6,6 +6,7 @@ import { useEffect } from "react";
 export function Apparitions() {
   const chemin = usePathname();
   useEffect(() => {
+    document.documentElement.dataset.anim = "";
     const els = Array.from(document.querySelectorAll<HTMLElement>(".apparait:not(.vu)"));
     if (!("IntersectionObserver" in window)) {
       els.forEach((e) => e.classList.add("vu"));

@@ -8,7 +8,7 @@ import { cx } from "../ui";
 export type LigneRapport = { id: string; titre: string; created_at: string; prix: number | null; verdict: string | null; marge: number | null; note: number | null };
 
 const ton = (v: string | null) => (!v ? "text-ink-3" : v.startsWith("NO") ? "text-bad" : v.includes("SURVEILLER") ? "text-warn" : v === "GO" ? "text-ok" : "text-o2");
-const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")} €`);
+const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")}\u00a0€`);
 
 export function ListeRapports({ rapports, comparateur, vide = "Aucun rapport pour le moment." }: { rapports: LigneRapport[]; comparateur: boolean; vide?: string }) {
   const router = useRouter();

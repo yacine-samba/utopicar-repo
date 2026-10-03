@@ -1,4 +1,4 @@
-/* Test de lecture des sites d'annonces depuis le serveur (repris de api/probe.js).
+/* Test de lecture des sites d'annonces depuis le serveur (repris de legacy/api/probe.js).
    Protégé par la variable UTP_KEY : sans la bonne clé, la route répond « introuvable ». */
 const SITES = /^https:\/\/(www\.)?(leboncoin\.fr|lacentrale\.fr|autoscout24\.fr|leparking\.fr)\//;
 

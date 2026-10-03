@@ -31,8 +31,8 @@ export async function EnTete() {
           <Link href={lienCompte.href} className="hidden rounded-full px-3.5 py-2 text-[15px] text-ink-2 hover:text-ink sm:inline-flex">
             {compte ? "Mon compte" : "Se connecter"}
           </Link>
-          <Link href="/analyse" className="btn btn-o btn-sm">
-            Estimer une affaire
+          <Link href="/analyse" className="btn btn-o btn-sm whitespace-nowrap">
+            Estimer<span className="hidden sm:inline">&nbsp;une affaire</span>
           </Link>
           <MenuMobile liens={LIENS} compte={lienCompte} />
         </div>

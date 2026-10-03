@@ -6,7 +6,7 @@ const SCENARIOS = [
   { l: "Embrayage oublié", a: 5000, f: 1430, r: 6300 },
   { l: "Petite citadine", a: 2800, f: 450, r: 3700 },
 ];
-const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;
+const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")}\u00a0€`;
 
 function Curseur({ label, aide, v, min, max, pas, onChange }: { label: string; aide: string; v: number; min: number; max: number; pas: number; onChange: (v: number) => void }) {
   const id = useId();
@@ -68,7 +68,7 @@ export function Calculateur() {
         <p className={`mt-1 text-right text-sm ${ton}`}>{verdict}</p>
         {net > 0 && (
           <p className="mt-5 text-sm text-ink-2">
-            Pour 500 € par mois : <b>{Math.ceil(500 / net)}</b> voiture(s). Pour 1 000 € : <b>{Math.ceil(1000 / net)}</b>.
+            Pour 500 € par mois : <b>{Math.ceil(500 / net)}</b> voiture(s). Pour 1 000 € : <b>{Math.ceil(1000 / net)}</b>.
           </p>
         )}
         <p className="mt-3 text-xs text-ink-3">Avant impôts et cotisations. Le guide explique quel statut choisir.</p>

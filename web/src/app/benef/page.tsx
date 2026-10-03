@@ -39,14 +39,14 @@ export default async function Benef() {
     <>
       <section className="relative overflow-hidden pb-16 pt-14 text-center sm:pt-20">
         <div className="wrap">
-          <span className="kicker apparait">Benef par Utopicar · achat-revente automobile</span>
-          <h1 className="apparait mx-auto mt-6 max-w-[18ch] font-display text-[clamp(36px,6.4vw,72px)] font-semibold leading-[1.03] tracking-[-0.03em]" style={{ "--i": 1 } as React.CSSProperties}>
+          <span className="kicker arrivee">Benef par Utopicar · achat-revente automobile</span>
+          <h1 className="arrivee mx-auto mt-6 max-w-[18ch] font-display text-[clamp(36px,6.4vw,72px)] font-semibold leading-[1.03] tracking-[-0.03em]" style={{ "--i": 1 } as React.CSSProperties}>
             Achetez, revendez, <span className="it">gardez la marge</span>
           </h1>
-          <p className="apparait mx-auto mt-6 max-w-2xl text-lg text-ink-2 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
+          <p className="arrivee mx-auto mt-6 max-w-2xl text-lg text-ink-2 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
             Que vous fassiez votre première revente ou votre centième, Benef chiffre chaque annonce avant que vous ne vous déplaciez : marge nette, prix d&apos;offre et prix à ne pas dépasser.
           </p>
-          <div className="apparait mt-9 flex flex-wrap justify-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
+          <div className="arrivee mt-9 flex flex-wrap justify-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
             <Link href="#formules" className="btn btn-o">
               Voir les formules <span aria-hidden="true">→</span>
             </Link>
@@ -54,7 +54,7 @@ export default async function Benef() {
               Ouvrir l&apos;espace Benef
             </Link>
           </div>
-          <p className="apparait mt-5 text-sm text-ink-3" style={{ "--i": 4 } as React.CSSProperties}>
+          <p className="arrivee mt-5 text-sm text-ink-3" style={{ "--i": 4 } as React.CSSProperties}>
             Pas sûr de la formule ? <BoutonOnboarding className="text-o2 underline underline-offset-4">Répondez à 3 questions</BoutonOnboarding>
           </p>
         </div>
@@ -84,7 +84,7 @@ export default async function Benef() {
             <h2 className="h-sec mt-5">
               Combien vous reste-t-il <span className="it">vraiment ?</span>
             </h2>
-            <p className="mt-4 text-lg text-ink-2">500 à 1 000 € par mois, c&apos;est une ou deux voitures bien achetées, pas 10 000 € en une semaine.</p>
+            <p className="mt-4 text-lg text-ink-2">500 à 1 000 € par mois, c&apos;est une ou deux voitures bien achetées, pas 10 000 € en une semaine.</p>
           </div>
           <Calculateur />
         </div>
@@ -137,7 +137,7 @@ export default async function Benef() {
             <h2 className="h-sec mt-5">
               16 chapitres, de zéro <span className="it">à votre première revente</span>
             </h2>
-            <p className="mt-4 text-lg text-ink-2">La méthode complète, étape par étape, avec les chiffres réels. Inclus dans toutes les formules Benef, ou {GUIDE.prix} € seul, accès à vie.</p>
+            <p className="mt-4 text-lg text-ink-2">La méthode complète, étape par étape, avec les chiffres réels. Inclus dans toutes les formules Benef, ou {GUIDE.prix}&nbsp;€ seul, accès à vie.</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="/guide" className="btn btn-o">
                 Lire les premiers chapitres <span aria-hidden="true">→</span>
@@ -166,10 +166,10 @@ export default async function Benef() {
           </div>
           <Faq
             questions={[
-              { cat: "Budget", q: "Faut-il beaucoup d'argent pour commencer ?", r: <p>Pour une citadine fiable, comptez 4 000 à 6 000 € avec une réserve pour les imprévus. Sans ce budget, vous pouvez commencer sans acheter : vendre la voiture d&apos;un particulier contre une commission, avec un mandat écrit. Le guide explique comment.</p> },
+              { cat: "Budget", q: "Faut-il beaucoup d'argent pour commencer ?", r: <p>Pour une citadine fiable, comptez 4 000 à 6 000 € avec une réserve pour les imprévus. Sans ce budget, vous pouvez commencer sans acheter : vendre la voiture d&apos;un particulier contre une commission, avec un mandat écrit. Le guide explique comment.</p> },
               { cat: "Statut", q: "Faut-il un statut ?", r: <p>Pour revendre votre propre voiture de temps en temps, non. Pour acheter et revendre régulièrement, oui : c&apos;est une activité commerciale. La micro-entreprise est le plus simple pour démarrer. Le guide explique les bases ; un comptable ou la CCI valide votre situation.</p> },
               { cat: "Temps", q: "Combien de temps cela demande-t-il ?", r: <p>Pour une voiture : recherche, appels, visite, papiers, préparation, revente. Comptez plusieurs heures par semaine. C&apos;est un complément de revenu, pas un revenu passif. L&apos;outil réduit surtout le temps perdu sur les mauvaises annonces.</p> },
-              { cat: "Résultats", q: "Promettez-vous 1 000 € par mois ?", r: <p>Non. Les résultats dépendent de votre budget, de votre temps et de vos achats. Ce que Benef apporte : des chiffres clairs avant chaque achat, pour éviter les erreurs qui coûtent cher.</p> },
+              { cat: "Résultats", q: "Promettez-vous 1 000 € par mois ?", r: <p>Non. Les résultats dépendent de votre budget, de votre temps et de vos achats. Ce que Benef apporte : des chiffres clairs avant chaque achat, pour éviter les erreurs qui coûtent cher.</p> },
               { cat: "Formules", q: "Quelle formule choisir ?", r: <p>Starter pour vos premières voitures, Croissance dès que vous en faites plusieurs par mois, Pro si vous gérez un stock et voulez suivre vos marges réelles. Vous pouvez changer à tout moment.</p> },
             ]}
           />

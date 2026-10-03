@@ -4,7 +4,7 @@ import { supabaseServeur } from "@/lib/supabase/serveur";
 import { statsParc, type Vehicule } from "@/lib/parc";
 import { ListeRapports } from "@/components/benef/ListeRapports";
 
-const eur = (v: number | null) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
+const eur = (v: number | null) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")}\u00a0€`);
 
 function Tuile({ l, v, sous, alerte }: { l: string; v: string; sous?: string; alerte?: boolean }) {
   return (

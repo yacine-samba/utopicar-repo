@@ -1,15 +1,21 @@
-# Sites Utopicar : pages d'inscription, emails et base des inscrits
+# Site statique utopicar.fr, inscriptions et emails
 
-Deux sites statiques hébergés sur Vercel, un seul backend Supabase, et Resend pour l'envoi des emails.
+`sites/utopicar/` contient exactement ce qui est en ligne sur utopicar.fr (projet Vercel `utopicar-garage`) :
+l'accueil Utopicar, la page Bénef (`/benef`), le guide reçu par email (`/guide`, `/benef/guide`) et les mentions légales.
+Backend : Supabase (fonctions et migrations dans `supabase/` à la racine du dépôt) ; envoi des emails par Resend.
 
-| Dossier | Site | Projet Vercel | URL |
-|---|---|---|---|
-| `utopicar-garage/` | Utopicar (outil pour marchands, garagistes, acheteurs) | `utopicar-garage` | https://utopicar-garage.vercel.app |
-| `premiere-revente/` | Première Revente (guide et ebook achat-revente) | `premiere-revente` | https://premiere-revente.vercel.app |
-| `logo/` | Logo vectorisé et icônes | — | — |
-| `supabase/` | Fonctions `inscription` et `contact`, migrations SQL | projet `rvdfifhgosovdapdltps` | — |
+Ce site sera remplacé par le site Next.js de `web/` (mêmes pages, plus les comptes et l'outil d'analyse) quand le domaine
+utopicar.fr passera du projet `utopicar-garage` au projet `utopicar`. Les liens déjà envoyés par email (`/guide?t=…`,
+`/guide?stop=…`, `/benef/guide?…`) restent valables après la bascule : `web/` les reprend.
 
-Équipe Vercel : `yacinesambas-projects`. Les fichiers des deux sites sont exactement ceux déployés en production.
+| Dossier | Rôle |
+|---|---|
+| `sites/utopicar/` | Pages en ligne sur utopicar.fr (`vercel.json` : adresses propres, en-têtes, `/benef/guide` → `/guide`) |
+| `supabase/functions/` | Fonctions `inscription` et `contact` (identiques aux versions déployées) |
+| `supabase/migrations/` | Tables `landing_leads`, `contact_messages`, envois automatiques, purge ; puis comptes et abonnements du site Next |
+| `utopicar-logo/07-sites/` | Logo vectorisé et icônes utilisés par les sites |
+
+Équipe Vercel : `yacinesambas-projects`. L'ancien projet `premiere-revente` redirige vers utopicar.fr/benef.
 
 ## Parcours d'un inscrit
 
@@ -45,62 +51,44 @@ from landing_leads order by created_at desc;
 | `email_notif` | Adresse qui reçoit les notifications (nouvel inscrit, contact, liste ebook) |
 | `email_from` | Expéditeur des notifications. Vide : `onboarding@resend.dev` |
 | `email_from_leads` | Expéditeur des guides envoyés aux inscrits. Vide : `onboarding@resend.dev` |
+| `email_reply` | Adresse de réponse des guides |
 | `cle_interne` | Secret du cron et de la signature des liens de désinscription |
 
-## Envoi des emails aux inscrits : ce qui reste à faire
+## Envoi des emails
 
-Sans domaine vérifié, Resend n'envoie qu'au propriétaire du compte (erreur 403 vers les inscrits).
-Les inscriptions sont bien enregistrées et le cron réessaie tout seul : dès qu'un domaine est vérifié, les guides en attente partent.
-
-Resend refuse les domaines `*.vercel.app`. Il faut donc un domaine à soi, avec deux possibilités :
-
-**A. Acheter un domaine chez Vercel** (par exemple `utopicar.app`, 9,99 $ la première année puis 15 $/an).
-Le DNS est alors géré par Vercel : les enregistrements Resend s'ajoutent depuis Vercel et les sites peuvent passer sur ce domaine.
-Les `.fr` ne sont pas vendus par Vercel.
-
-**B. Utiliser `envoi.utopiclabs.fr`, déjà créé dans Resend.** Le DNS de `utopiclabs.fr` est chez IONOS : ajouter ces 4 enregistrements dans IONOS > Domaines > `utopiclabs.fr` > DNS :
-
-| Type | Nom | Valeur | Priorité |
-|---|---|---|---|
-| TXT | `resend._domainkey.envoi` | `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvKfkS0RTAhq+G1xAAHElli9MRsn1UiAHSPVi+lePwbszvfx2MQ66VwFLdD0aU5B3ctDSBePrwJis27z2bFJdVbTcjFtXxYCiKn5G5wSDXy5l5EZeB7LbV/bfQ1GFb4tmxlOIDURv6l5SK7Eno1FXJBOYNrEPLCjne8eCzR56a9wIDAQAB` | |
-| MX | `send.envoi` | `feedback-smtp.eu-west-1.amazonses.com` | 10 |
-| TXT | `send.envoi` | `v=spf1 include:amazonses.com ~all` | |
-| CNAME | `rsend.envoi` | `send.forge.rmta.net` | |
-
-Dans les deux cas, une fois le domaine vérifié dans Resend, activer l'expéditeur :
+Le domaine `utopicar.fr` est vérifié dans Resend (région eu-west-1) : les guides partent de `contact@utopicar.fr`
+(`email_from_leads`), avec `contact@utopicar.fr` en adresse de réponse (`email_reply`).
+Les notifications internes utilisent `email_from` ; vide, c'est `onboarding@resend.dev`, qui n'écrit qu'au propriétaire du compte Resend.
+Pour les envoyer aussi depuis le domaine :
 
 ```sql
-insert into reglages (cle, valeur) values
-  ('email_from_leads', 'Yacine <guide@DOMAINE>'),
-  ('email_from', 'Utopicar <notifications@DOMAINE>')
+insert into reglages (cle, valeur) values ('email_from', 'Utopicar <notifications@utopicar.fr>')
 on conflict (cle) do update set valeur = excluded.valeur, maj = now();
 ```
 
-Le domaine `mail.yacinesamba.fr` (créé le 29/09, jamais vérifié) peut être supprimé de Resend, ainsi que `envoi.utopiclabs.fr` si l'option A est retenue.
+Le domaine `envoi.utopiclabs.fr` (vérification échouée) peut être supprimé de Resend.
 
 ## Déployer
 
-Sites (depuis chaque dossier, lié au bon projet Vercel) :
+Site statique (le projet `utopicar-garage` n'est pas relié à Git : déploiement à la main, depuis ce dossier) :
 
 ```sh
-cd sites/utopicar-garage && vercel deploy --prod
-cd sites/premiere-revente && vercel deploy --prod
+cd sites/utopicar && vercel link --project utopicar-garage && vercel deploy --prod
 ```
 
-Fonctions et base :
+Fonctions (depuis la racine du dépôt) :
 
 ```sh
-cd sites
 supabase link --project-ref rvdfifhgosovdapdltps
 supabase functions deploy inscription --no-verify-jwt
 supabase functions deploy contact --no-verify-jwt
 ```
 
-Les migrations de `supabase/migrations/` sont déjà appliquées sur le projet. Elles ne couvrent que les inscriptions et le contact ;
-la table `reglages` et l'extension `pg_net` viennent des migrations de la veille Leboncoin.
+Les migrations de `supabase/migrations/` sont déjà appliquées sur le projet. La table `reglages` et l'extension `pg_net`
+viennent des migrations de la veille Leboncoin.
 
-Les URL des sites sont codées en dur à deux endroits : `SITES` dans `supabase/functions/inscription/index.ts` (liens des emails)
-et la vérification CORS des deux fonctions (`*.vercel.app` et `localhost`). En cas de passage sur un domaine à soi, mettre à jour les deux.
+Les URL des sites sont codées en dur à deux endroits : `SITES` dans `supabase/functions/inscription/index.ts` (liens des emails :
+utopicar.fr et utopicar.fr/benef) et la vérification CORS des deux fonctions (utopicar.fr, `*.vercel.app`, `localhost`).
 
 ## Règles
 
@@ -112,5 +100,6 @@ et la vérification CORS des deux fonctions (`*.vercel.app` et `localhost`). En 
 ## À faire ensuite
 
 - Mentions légales : ajouter le SIRET.
+- Basculer utopicar.fr sur le projet `utopicar` (site Next de `web/`), puis archiver ce dossier dans `legacy/`.
 - Bandeau de consentement avant d'activer le pixel TikTok.
 - CGV et paiement Stripe avant la vente de l'ebook.

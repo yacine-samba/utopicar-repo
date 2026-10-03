@@ -194,7 +194,10 @@ Deno.serve(async (req) => {
   const { count } = await sb.from("landing_leads").select("id", { count: "exact", head: true }).eq("ip_hash", ip_hash).gte("created_at", depuis);
   if ((count ?? 0) >= 6) return json(h, { ok: false, erreur: "trop" }, 429);
 
-  const { data: exist } = await sb.from("landing_leads").select("id, envoi_tentatives").eq("email", email).limit(1).maybeSingle();
+  const { data: exist } = await sb.from("landing_leads").select("id, envoi_tentatives, dernier_envoi, email_envoye").eq("email", email).limit(1).maybeSingle();
+  // Même adresse redemandée il y a moins de 10 minutes (double clic, ou quelqu'un qui saisit l'email d'un autre en boucle) :
+  // on ne renvoie pas un nouvel email, le précédent suffit.
+  if (exist?.email_envoye && exist.dernier_envoi && Date.now() - new Date(exist.dernier_envoi).getTime() < 10 * 60_000) return json(h, { ok: true, envoye: true });
   let nouveau = false;
   let id: string;
   let tentatives = 0;

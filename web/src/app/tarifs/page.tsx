@@ -26,10 +26,10 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
         )}
       </div>
       <nav aria-label="Familles de formules" className="mx-auto mt-10 flex w-fit gap-1 rounded-full border border-line-2 bg-glass p-1 text-sm">
-        <a href="#particuliers" className="rounded-full px-4 py-2 hover:bg-glass">
+        <a href="#particuliers" className="whitespace-nowrap rounded-full px-3 py-2 hover:bg-glass sm:px-4">
           J&apos;achète pour moi
         </a>
-        <a href="#benef" className="rounded-full px-4 py-2 hover:bg-glass">
+        <a href="#benef" className="whitespace-nowrap rounded-full px-3 py-2 hover:bg-glass sm:px-4">
           Achat-revente (Benef)
         </a>
       </nav>
@@ -55,7 +55,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           <div>
             <h2 id="t-guide" className="font-display text-2xl font-semibold">{GUIDE.nom}</h2>
             <p className="mt-2 text-ink-2">
-              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Accès à vie pour {GUIDE.prix} €, ou inclus dans Sérénité et toutes les formules Benef.
+              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Accès à vie pour {GUIDE.prix}&nbsp;€, ou inclus dans Sérénité et toutes les formules Benef.
             </p>
           </div>
           <div className="grid gap-2 md:w-60">
@@ -64,7 +64,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
                 Lire les guides
               </Link>
             ) : (
-              <BoutonAbonner produit="guide">Acheter pour {GUIDE.prix} €</BoutonAbonner>
+              <BoutonAbonner produit="guide">Acheter pour {GUIDE.prix}&nbsp;€</BoutonAbonner>
             )}
             <Link href="/guide" className="text-center text-sm text-ink-3 underline-offset-4 hover:text-ink hover:underline">
               Lire les premiers chapitres

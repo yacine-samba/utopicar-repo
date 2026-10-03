@@ -43,7 +43,8 @@ export function Rotateur({ mots }: { mots: string[] }) {
   return (
     <>
       <span className="sr-only">{mots[0]}</span>
-      <span className="relative inline-grid" aria-hidden="true">
+      {/* Sur sa propre ligne et centré : la place réservée au mot le plus long ne laisse jamais de vide à côté du titre. */}
+      <span className="grid justify-items-center text-center" aria-hidden="true">
         <span className="invisible col-start-1 row-start-1 whitespace-nowrap pr-[.25em] max-[420px]:whitespace-normal">{plusLong}</span>
         <span className="col-start-1 row-start-1 whitespace-nowrap max-[420px]:whitespace-normal">
           <span className="it">{txt}</span>

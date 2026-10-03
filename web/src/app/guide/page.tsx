@@ -66,7 +66,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Par
           La méthode complète, <span className="it">chiffres réels</span>
         </h1>
         <p className="mt-4 text-lg text-ink-2">
-          {complet ? "Vous avez accès à tous les guides. Bonne lecture." : `Les deux premiers chapitres sont offerts. Accès à vie aux quatre guides pour ${GUIDE.prix} €, ou inclus dans Sérénité et toutes les formules Benef.`}
+          {complet ? "Vous avez accès à tous les guides. Bonne lecture." : `Les deux premiers chapitres sont offerts. Accès à vie aux quatre guides pour ${GUIDE.prix}\u00a0€, ou inclus dans Sérénité et toutes les formules Benef.`}
         </p>
         {p.paiement === "ok" && !complet && (
           <p role="status" className="mx-auto mt-5 w-fit rounded-2xl border border-ok/40 bg-ok/10 px-4 py-2 text-ok">
@@ -98,7 +98,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Par
           <p className="mx-auto mt-2 max-w-xl text-ink-2">Débloquez tous les chapitres des quatre guides, à vie, imprimables en PDF.</p>
           <div className="mx-auto mt-6 grid max-w-sm gap-3">
             {compte ? (
-              <BoutonAbonner produit="guide">Débloquer pour {GUIDE.prix} €</BoutonAbonner>
+              <BoutonAbonner produit="guide">Débloquer pour {GUIDE.prix}&nbsp;€</BoutonAbonner>
             ) : (
               <Link href={`/inscription?next=${encodeURIComponent(`/guide?guide=${id}`)}`} className="btn btn-o">
                 Créer mon compte pour acheter

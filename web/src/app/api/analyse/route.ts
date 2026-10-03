@@ -47,6 +47,8 @@ export async function POST(req: Request) {
   // Mode démonstration (UTOPICAR_DEMO=1) : seulement quand les comptes ne sont pas configurés, pour tester le site.
   const demo = !comptesActifs() && process.env.UTOPICAR_DEMO === "1";
   if (!comptesActifs() && !demo) return erreur("Les comptes ne sont pas encore ouverts. Revenez très bientôt.", 503);
+  // Sans clé d'analyse, on s'arrête avant tout décompte : rien n'est consommé.
+  if (!demo && !process.env.ANTHROPIC_API_KEY) return erreur("L'analyse ouvre dans quelques instants. Réessayez un peu plus tard.", 503);
 
   const compte = demo ? null : await compteCourant();
   if (!demo && !compte) return erreur("Créez votre compte gratuit pour voir le résultat.", 401, { connexion: true });

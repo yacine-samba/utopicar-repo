@@ -78,7 +78,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ i
                   </th>
                   {l.v.map((x, i) => (
                     <td key={i} className={`num px-4 py-3 ${i === b ? "bg-ok/10 font-semibold text-ok" : ""}`}>
-                      {x == null ? "—" : typeof x === "number" && l.euros ? `${x.toLocaleString("fr-FR")} €` : typeof x === "number" ? x.toLocaleString("fr-FR") : x}
+                      {x == null ? "—" : typeof x === "number" && l.euros ? `${x.toLocaleString("fr-FR")}\u00a0€` : typeof x === "number" ? x.toLocaleString("fr-FR") : x}
                       {i === b && <span className="sr-only"> (meilleure valeur)</span>}
                     </td>
                   ))}

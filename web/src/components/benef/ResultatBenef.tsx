@@ -146,7 +146,7 @@ export function ResultatBenef({ a, reg, prixInit = "", onNouvelle, actions }: { 
                   {l.l}
                   {l.d && <span className="block text-xs text-ink-3">{l.d}</span>}
                 </span>
-                <span className={cx("num shrink-0", l.v != null && l.v < 0 ? "text-ink-2" : "text-ink")}>{l.v == null ? "—" : (l.v < 0 ? "− " : "") + eur(Math.abs(l.v))}</span>
+                <span className={cx("num shrink-0", l.v != null && l.v < 0 ? "text-ink-2" : "text-ink")}>{l.v == null ? "—" : (l.v < 0 ? "−\u00a0" : "") + eur(Math.abs(l.v))}</span>
               </li>
             ))}
             <li className="flex items-baseline justify-between gap-4 pt-3">

@@ -1,16 +1,18 @@
 # UTOPICAR
 
-Outil privé d'achat-revente auto.
+Analyse d'annonces de voitures d'occasion, pour acheter (Utopicar) ou faire de l'achat-revente (Benef).
+Une seule source pour tout : ce dépôt.
 
-- `web/` : tout le site utopicar.fr en Next.js : présentation, comptes, abonnements, outil d'analyse (`/analyse`), espace Benef (`/app`), guides. Voir `web/README.md`.
-- `legacy/` : l'outil complet d'origine (UTOPICAR Garage, artifact claude.ai) et l'inventaire de ses fonctionnalités (`legacy/FONCTIONNALITES.md`), gardés pour les ajouts futurs.
-- `api/` : ancien test de lecture des annonces (protégé par `UTP_KEY`), repris dans `web/` sous `/api/probe`.
-- `extension/` : extension Chrome « UTOPICAR Scanner » (Leboncoin, La Centrale, AutoScout24, LeParking). Elle copie l'annonce et ses photos ; on colle dans Utopicar.
-- `scanner/` : ancienne page du scanner publiée sur Claude (remplacée par `web/`).
-=======
-- `api/` : serveur Vercel (lecteur d'annonces, protégé par la variable d'environnement `UTP_KEY`, à définir dans Vercel, jamais dans ce dépôt).
-- `extension/` : extension Chrome « UTOPICAR Scanner » (Leboncoin, La Centrale, AutoScout24, LeParking).
-- `scanner/` : source de la page du scanner publiée sur Claude.
-- `sites/` : sites Utopicar et Première Revente (Vercel), inscriptions stockées dans Supabase, emails par Resend. Voir `sites/README.md`.
+| Dossier | Contenu | Où ça tourne |
+|---|---|---|
+| `web/` | Le site complet en Next.js : pages d'accueil Utopicar (`/`) et Benef (`/benef`), tarifs, comptes, abonnements, outil d'analyse (`/analyse`), espace Benef (`/app`), guides. Voir `web/README.md`. | Projet Vercel `utopicar` (Root Directory `web`), déployé à chaque push |
+| `sites/utopicar/` | Le site statique actuellement en ligne sur utopicar.fr (accueil, `/benef`, guide, mentions légales). Remplacé par `web/` dès que le domaine bascule. Voir `sites/README.md`. | Projet Vercel `utopicar-garage`, déployé à la main |
+| `supabase/` | Base et fonctions du projet Supabase `rvdfifhgosovdapdltps` : migrations SQL (inscrits, contact, comptes, abonnements, rapports, parc) et fonctions `inscription` et `contact`, identiques aux versions déployées. | Supabase |
+| `extension/` | Extension Chrome « UTOPICAR Scanner » (Leboncoin, La Centrale, AutoScout24, LeParking). Elle copie l'annonce et ses photos ; on colle dans Utopicar. | Chrome |
+| `legacy/` | Ce qui a été remplacé, gardé pour mémoire : l'outil d'origine UTOPICAR Garage et l'inventaire de ses fonctionnalités (`legacy/FONCTIONNALITES.md`), l'ancien test `api/probe.js` (repris dans `web/` sous `/api/probe`), l'ancienne page du scanner. | Nulle part |
+| `utopicar-logo/` | Logo, icônes, favicons, visuels réseaux sociaux et impression. | — |
+| `video/` | Vidéos et studio de motion design. | — |
+
+L'ancien projet Vercel `premiere-revente` redirige déjà vers utopicar.fr/benef.
 
 Ne jamais mettre de clé ou de mot de passe dans ce dépôt.
