@@ -9,6 +9,6 @@ export async function POST(req: Request) {
   if (!compte) return Response.json({ erreur: "Connectez-vous pour continuer." }, { status: 401 });
   const { data } = await supabaseService().from("profils").select("stripe_customer_id").eq("id", compte.id).maybeSingle();
   if (!data?.stripe_customer_id) return Response.json({ erreur: "Aucun paiement enregistré sur ce compte." }, { status: 404 });
-  const p = await stripe().billingPortal.sessions.create({ customer: data.stripe_customer_id, return_url: `${urlSite(req)}/compte` });
+  const p = await stripe().billingPortal.sessions.create({ customer: data.stripe_customer_id, return_url: `${urlSite(req)}/app/compte` });
   return Response.json({ url: p.url });
 }

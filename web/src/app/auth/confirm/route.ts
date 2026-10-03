@@ -17,5 +17,5 @@ export async function GET(req: Request) {
       ? await sb.auth.verifyOtp({ token_hash, type })
       : { error: new Error("lien incomplet") };
   if (error) return NextResponse.redirect(new URL(`/connexion?erreur=lien&next=${encodeURIComponent(suite)}`, url.origin));
-  return NextResponse.redirect(new URL(type === "recovery" ? "/compte?motdepasse=1" : suite, url.origin));
+  return NextResponse.redirect(new URL(type === "recovery" ? "/app/compte?motdepasse=1" : suite, url.origin));
 }

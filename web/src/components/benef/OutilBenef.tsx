@@ -7,7 +7,7 @@ import { Champ, inputCls, useReglages } from "../ui";
 import { Reglages, ResultatBenef } from "./ResultatBenef";
 import { AjouterParc } from "./AjouterParc";
 
-export function OutilBenef({ maxPhotos, parc, villeCompte }: { maxPhotos: number; parc: boolean; villeCompte: string }) {
+export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial }: { maxPhotos: number; parc: boolean; villeCompte: string; lienInitial?: string }) {
   const [reg, setReg] = useReglages<ParamsPro>("utp-pro", { ...DEFAUTS_PRO, ville: villeCompte || DEFAUTS_PRO.ville });
   const [a, setA] = useState<Analyse | null>(null);
   const [prix, setPrix] = useState("");
@@ -53,6 +53,7 @@ export function OutilBenef({ maxPhotos, parc, villeCompte }: { maxPhotos: number
           villeAide="Sert au trajet et à la cote de revente."
           bouton="Analyser l'annonce"
           retour="/app/analyser"
+          lienInitial={lienInitial}
           enPlus={
             <Champ label="Prix envisagé (€)" aide="Facultatif : sinon, le prix de l'annonce.">
               <input value={prix} onChange={(e) => setPrix(e.target.value)} inputMode="numeric" placeholder="ex. 6 500" className={inputCls} />

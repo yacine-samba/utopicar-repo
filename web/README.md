@@ -7,16 +7,20 @@ Ton : vouvoiement partout, y compris dans les guides.
 
 ## Pages
 
+Deux mondes séparés : le **site public** (`src/app/(site)/`, en-tête « Benef · Tarifs » et pied de page) et l'**espace connecté** `/app` (sa propre mise en page : menu latéral sur ordinateur, barre du bas et menu sur téléphone). Une personne connectée qui ouvre `/analyse`, `/guide` ou `/compte` est envoyée dans son espace.
+
 | Route | Rôle |
 |---|---|
 | `/` | Accueil. Titre « Voyez en 10 secondes si une occasion est… » (animation corrigée), bouton « Estimer une affaire », démo, deux parcours, formules particuliers, FAQ. |
 | `/benef` | Présentation de Benef (achat-revente) : peurs et réponses, calculateur de marge, espace Benef, formules, guide, FAQ. |
 | `/tarifs` | Toutes les formules : particuliers, Benef, guides. |
-| `/analyse` | Outil particulier : verdict, coût réel d'achat, points à vérifier ; selon la formule : prix à proposer, questions, comment négocier, quoi contrôler sur place, faut-il y aller seul. |
-| `/analyse/[id]` | Une analyse enregistrée. |
-| `/app` | Espace Benef : tableau de bord, analyser, rapports, comparer, parc, recherche. `/benefapp` y redirige. |
+| `/analyse` | Outil particulier pour les visiteurs (première analyse offerte, compte demandé pour voir le résultat). |
 | `/guide` | Les 4 guides : 2 chapitres offerts, la suite pour les acheteurs du guide et les abonnés Sérénité et Benef. Les anciens liens personnels reçus par email (lecture et désinscription, y compris `/benef/guide`) fonctionnent toujours. |
-| `/inscription`, `/connexion`, `/compte` | Comptes (email et mot de passe, lien de connexion, mot de passe oublié), formule, quota, abonnement, profil, suppression du compte. |
+| `/inscription`, `/connexion` | Comptes : email et mot de passe, lien de connexion, mot de passe oublié. Tout passe par la fonction Supabase `compte` (voir plus bas). |
+| `/app` | Espace connecté. Il s'adapte à l'usage : **particulier** (accueil avec le champ « collez le lien », mes analyses, guides, compte) ou **Benef** (tableau de bord, analyser, rapports, parc, rentabilité, comparer, recherche, guides, compte ; les modules hors formule affichent un cadenas). `/benefapp` y redirige. |
+| `/app/analyser` | L'outil d'analyse (particulier ou Benef selon l'espace). `?lien=` lance l'import du lien Leboncoin dès l'ouverture. |
+| `/app/rapports`, `/app/rapports/[id]` | Analyses et rapports enregistrés (`/analyse/[id]` y redirige). |
+| `/app/compte` | Formule, quota, changement de formule, usage (particulier ou Benef), profil, mot de passe, suppression du compte. `/compte` y redirige. |
 | `/legal` | Mentions, confidentialité, conditions d'utilisation, conditions de vente, accessibilité, contact. |
 
 Onboarding : une fenêtre de 3 questions s'ouvre à la première visite de `/`, `/benef` et `/tarifs`, puis recommande un parcours et une formule. Les réponses pré-remplissent l'inscription. Bouton « M'orienter en 3 questions » pour la rouvrir.
@@ -34,6 +38,20 @@ Onboarding : une fenêtre de 3 questions s'ouvre à la première visite de `/`, 
 | Guides | 9 € une fois | | les 4 guides à vie |
 
 Les droits sont appliqués côté serveur : quotas dans `/api/analyse`, parties payantes retirées avant l'envoi au navigateur (`src/lib/analyse/filtre.ts`), parc protégé par une règle RLS (formule Pro). Les rapports Benef s'affichent complets par défaut, avec un bouton « Synthèse » (texte déjà rédigé par l'analyse).
+
+## Changer la formule de quelqu'un (Supabase)
+
+Table Editor › table **`profils`** : chaque compte a une ligne avec son `email`.
+
+- `formule_offerte` : choisir dans la liste (`gratuit`, `essentiel`, `serenite`, `starter`, `croissance`, `pro`). Elle passe **avant** l'abonnement Stripe. Vide = la formule payée sur Stripe (ou Découverte).
+- `offerte_jusqu_au` : dernier jour inclus. Vide = sans date de fin.
+- `famille` : l'usage de l'espace (`particulier` ou `benef`) quand la personne n'a pas de formule payante.
+
+Le changement s'applique à la page suivante. Vue d'ensemble en lecture seule : vue **`comptes_admin`** (email, formule en vigueur, formule offerte, abonnement Stripe, analyses du mois, nombre de rapports). Elle n'est visible que depuis le tableau de bord Supabase.
+
+## Emails de compte
+
+Supabase n'envoie plus aucun email. La fonction **`compte`** (`../supabase/functions/compte`) crée le compte déjà confirmé (connexion immédiate), envoie le lien de connexion et le lien « mot de passe oublié », le tout depuis `contact@utopicar.fr` (Resend) avec des liens vers le site (`/auth/confirm`). Limites : 8 inscriptions par heure et par connexion, 3 liens par email tous les quarts d'heure ; réponses identiques que le compte existe ou non.
 
 ## Comment l'analyse est faite
 
@@ -54,7 +72,7 @@ Réservé aux personnes connectées, 30 imports par jour et par personne (table 
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://rvdfifhgosovdapdltps.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | clé publique du projet Supabase |
-| `SUPABASE_SERVICE_ROLE_KEY` | clé secrète (quotas, rapports, webhook, suppression de compte) |
+| `SUPABASE_SERVICE_ROLE_KEY` | clé secrète : enregistrement des abonnements Stripe, portail de paiement, suppression de compte. Les analyses n'en ont plus besoin (fonction SQL `enregistrer_analyse`). |
 | `ANTHROPIC_API_KEY` | analyse |
 | `ANTHROPIC_MODEL` | facultatif, `claude-opus-5-5` par défaut |
 | `STRIPE_SECRET_KEY` | paiements |
@@ -68,8 +86,8 @@ Sans les variables Supabase, le site s'affiche et les comptes sont fermés (« o
 ## Mise en service, dans l'ordre
 
 1. **Base de données** : fait. `../supabase/migrations/20261003000000_comptes_abonnements.sql` est appliquée au projet Supabase (tables `profils`, `abonnements`, `achats`, `usages`, `rapports`, `parc`, avec RLS).
-2. **Supabase Auth** : Site URL `https://utopicar.fr` ; URL de redirection `https://utopicar.fr/auth/confirm` (plus le domaine de prévisualisation Vercel) ; envoi des emails par SMTP Resend (l'envoi par défaut de Supabase est très limité).
-3. **Stripe** : `STRIPE_SECRET_KEY=sk_... node stripe/prix.mjs` crée les produits et les prix. Puis, dans Stripe : webhook vers `https://utopicar.fr/api/stripe/webhook` (`checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`) ; portail client avec changement de formule et résiliation.
+2. **Supabase Auth** : rien d'obligatoire (les emails passent par la fonction `compte`). Conseillé : Site URL `https://utopicar.fr`.
+3. **Stripe** : les produits et les prix se créent tout seuls au premier paiement (par leur « lookup key »). L'abonnement est enregistré au retour du paiement. Conseillé ensuite, dans Stripe : webhook vers `https://utopicar.fr/api/stripe/webhook` (`checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`) ; portail client avec changement de formule et résiliation.
 4. **Vercel** : projet `utopicar`, relié à ce dépôt, Root Directory `web` (fait). Ajouter les variables ci-dessus, vérifier la prévisualisation, puis déplacer les domaines `utopicar.fr` et `www.utopicar.fr` depuis le projet `utopicar-garage` (site statique de `sites/utopicar/`). Les liens déjà envoyés par email (`/guide?t=`, `/guide?stop=`, `/benef/guide`) continuent de marcher.
 5. **Avant d'encaisser** : compléter dans `/legal` le numéro SIRET et le médiateur de la consommation.
 6. **Ancienne fonction Supabase `inscription`** : elle envoie encore le guide gratuitement à toute inscription. Une fois le nouveau site en ligne, couper la création de nouveaux liens (garder `lire` et `stop` pour les liens déjà envoyés).

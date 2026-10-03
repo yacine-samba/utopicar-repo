@@ -130,3 +130,45 @@ export function BoutonSupprimer() {
     </div>
   );
 }
+
+/** Usage de l'espace (formule gratuite) : acheter pour soi, ou achat-revente avec Benef. */
+export function ChoixUsage({ id, famille }: { id: string; famille: "particulier" | "benef" }) {
+  const router = useRouter();
+  const [v, setV] = useState(famille);
+  const [etat, setEtat] = useState("");
+  const choisir = async (f: "particulier" | "benef") => {
+    setV(f);
+    setEtat("");
+    const { error } = await supabaseNavigateur().from("profils").update({ famille: f, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) {
+      setV(famille);
+      return setEtat("Enregistrement impossible, réessayez.");
+    }
+    setEtat("Enregistré : votre espace s'adapte.");
+    router.refresh();
+  };
+  return (
+    <fieldset className="grid gap-3">
+      <legend className="sr-only">Votre usage</legend>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {(
+          [
+            ["particulier", "J'achète une voiture pour moi", "Verdict, coût réel d'achat, points à vérifier."],
+            ["benef", "Je fais de l'achat-revente", "Espace Benef : marge nette, prix d'offre, parc."],
+          ] as const
+        ).map(([f, t, d]) => (
+          <label key={f} className={`carte flex cursor-pointer gap-3 p-4 transition ${v === f ? "border-o/60 bg-o/10" : "hover:border-line-2"}`}>
+            <input type="radio" name="usage" checked={v === f} onChange={() => choisir(f)} className="mt-1 size-4 accent-[#ff5a1f]" />
+            <span>
+              <span className="block font-medium">{t}</span>
+              <span className="block text-sm text-ink-3">{d}</span>
+            </span>
+          </label>
+        ))}
+      </div>
+      <p role="status" className="text-sm text-ink-3">
+        {etat}
+      </p>
+    </fieldset>
+  );
+}

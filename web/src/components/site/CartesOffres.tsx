@@ -40,7 +40,7 @@ export function CartesOffres({ ids, actuelle }: { ids: OffreId[]; actuelle?: Off
             </ul>
             <div className="mt-7">
               {cetteOffre ? (
-                <Link href="/compte" className="btn w-full">
+                <Link href="/app/compte#formule" className="btn w-full">
                   Votre formule actuelle
                 </Link>
               ) : o.prix === 0 ? (

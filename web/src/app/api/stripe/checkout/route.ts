@@ -36,8 +36,8 @@ export async function POST(req: Request) {
       line_items: [{ price: prix.id, quantity: 1 }],
       metadata: { user_id: compte.id, produit: "guide" },
       locale: "fr",
-      success_url: `${site}/guide?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${site}/guide?paiement=annule`,
+      success_url: `${site}/app/guides?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${site}/app/guides?paiement=annule`,
       custom_text: { submit: { message: "Accès immédiat aux guides après le paiement : vous demandez l'exécution immédiate et renoncez au délai de rétractation pour ce contenu numérique." } },
     });
     return Response.json({ url: s.url });
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
   // Déjà abonné : le changement de formule passe par le portail Stripe, pour ne jamais payer deux abonnements.
   if (compte.abonnement && STATUTS_ACTIFS.includes(compte.abonnement.statut)) {
-    const p = await stripe().billingPortal.sessions.create({ customer, return_url: `${site}/compte` });
+    const p = await stripe().billingPortal.sessions.create({ customer, return_url: `${site}/app/compte` });
     return Response.json({ url: p.url });
   }
 
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     subscription_data: { metadata: { user_id: compte.id, offre: id } },
     allow_promotion_codes: true,
     locale: "fr",
-    success_url: `${site}/compte?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${site}/app/compte?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${site}/tarifs?paiement=annule`,
     custom_text: { submit: { message: "Sans engagement : résiliable à tout moment depuis votre compte. L'accès commence tout de suite." } },
   });

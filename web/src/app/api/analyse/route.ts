@@ -8,7 +8,7 @@ import { coutParticulier, dealPro, DEFAUTS_PART, DEFAUTS_PRO, type Analyse } fro
 import { compteCourant } from "@/lib/compte";
 import { OFFRES, type Offre } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
-import { supabaseService } from "@/lib/supabase/service";
+import { supabaseServeur } from "@/lib/supabase/serveur";
 
 export const maxDuration = 120;
 
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   const demo = !comptesActifs() && process.env.UTOPICAR_DEMO === "1";
   if (!comptesActifs() && !demo) return erreur("Les comptes ne sont pas encore ouverts. Revenez très bientôt.", 503);
   // Sans clé d'analyse, on s'arrête avant tout décompte : rien n'est consommé.
-  if (!demo && (!process.env.ANTHROPIC_API_KEY || !process.env.SUPABASE_SERVICE_ROLE_KEY)) return erreur("L'analyse ouvre dans quelques instants. Réessayez un peu plus tard.", 503);
+  if (!demo && !process.env.ANTHROPIC_API_KEY) return erreur("L'analyse ouvre dans quelques instants. Réessayez un peu plus tard.", 503);
 
   const compte = demo ? null : await compteCourant();
   if (!demo && !compte) return erreur("Créez votre compte gratuit pour voir le résultat.", 401, { connexion: true });
@@ -83,7 +83,6 @@ export async function POST(req: Request) {
   let rapportId: string | null = null;
   // Une analyse n'est décomptée et enregistrée que si elle a abouti.
   if (compte && out.ia) {
-    const svc = supabaseService();
     const v = out.ia.vehicule;
     const titre = [v.marque, v.modele, v.version].filter(Boolean).join(" ").slice(0, 140) || faits.titre || "Annonce";
     const resume =
@@ -96,13 +95,20 @@ export async function POST(req: Request) {
             const c = coutParticulier(out, { ...DEFAUTS_PART, ville }, null);
             return { verdict: c.niveau, marge: null, note: c.etat.score, prix: c.prix };
           })();
-    await svc.from("usages").insert({ user_id: compte.id, mode });
-    const { data } = await svc
-      .from("rapports")
-      .insert({ user_id: compte.id, mode, titre, marque: v.marque || null, ...resume, annonce: texte.slice(0, 8000), resultat: { ...out, ville } })
-      .select("id")
-      .single();
-    rapportId = data?.id ?? null;
+    // Décompte et rapport en une fois, avec la session de la personne (fonction enregistrer_analyse).
+    const { data, error } = await (await supabaseServeur()).rpc("enregistrer_analyse", {
+      p_mode: mode,
+      p_titre: titre,
+      p_marque: v.marque || null,
+      p_prix: resume.prix == null ? null : Math.round(resume.prix),
+      p_verdict: resume.verdict ?? null,
+      p_marge: resume.marge == null ? null : Math.round(resume.marge),
+      p_note: resume.note == null ? null : Math.round(resume.note),
+      p_annonce: texte.slice(0, 8000),
+      p_resultat: { ...out, ville },
+    });
+    if (error) console.error("enregistrer_analyse", error);
+    rapportId = (data as string | null) ?? null;
   }
 
   return Response.json({ ...out, rapportId, detail, offre: o.id, restantes: compte ? Math.max(0, compte.restantes - (out.ia ? 1 : 0)) : null, demo });
