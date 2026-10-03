@@ -24,6 +24,11 @@ Règles :
 - Règles françaises : CT de moins de 6 mois fourni par le vendeur pour une voiture de plus de 4 ans ; contre-visite sous 2 mois ; certificat de non-gage de moins de 15 jours ; HistoVec pour l'historique.
 - "questions" et "messageVendeur" : vouvoiement, simples, polis, prêts à copier. Le premier message ne parle pas de prix.
 - "resumeSimple" : pour quelqu'un qui connaît peu l'automobile, sans jargon, 2 phrases maximum.
+- "synthese" : l'essentiel pour décider vite, phrases courtes, chiffres utiles.
+- "negociation" : arguments réels et chiffrés uniquement (défauts lus, vus sur les photos, entretien à prévoir, prix au-dessus du marché). Conseils concrets et polis, adaptés à un vendeur particulier ou professionnel.
+- "visite" : points à contrôler propres à ce modèle et ce moteur (faiblesses connues), puis l'essentiel valable pour toute voiture (moteur froid, voyants, embrayage, freinage, papiers).
+- "accompagnement" : "faites inspecter la voiture" si gros risque mécanique, prix élevé ou défaut non chiffrable ; "venez accompagné" si un doute raisonnable ; sinon "vous pouvez y aller seul".
+- Vouvoiement partout. Ton clair et respectueux : expliquez sans infantiliser.
 - Réponds en français.`;
 
 function faitsLignes(f: Faits, fiab: Fiabilite): string[] {

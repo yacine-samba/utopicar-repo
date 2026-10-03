@@ -1,59 +1,80 @@
-# Utopicar : outil d'analyse d'annonce (Next.js)
+# utopicar.fr (Next.js)
 
-V1 : une seule fonction, **analyser une annonce de voiture d'occasion**, avec deux publics.
+Tout le site utopicar.fr : présentation, comptes, abonnements, outil d'analyse d'annonces, espace Benef et guides.
+Même stack que les autres projets : Next.js 16, React 19, Tailwind 4, TypeScript. Données et comptes : Supabase. Paiements : Stripe. Analyse : API Claude, côté serveur.
 
-| Route | Public | Ce qui est calculé |
-|---|---|---|
-| `/app` | Pro, achat-revente | marge nette, offre, plafond, verdict GO / NO GO, note, état, fiabilité, message vendeur. Tableau de bord, parc, rapports et recherches sont affichés « bientôt ». |
-| `/benef` | Particulier qui achète pour lui | verdict simple (bonne affaire, prix correct, trop cher, prudence, à éviter), **coût réel d'achat** (prix + carte grise + trajet + CT + petites réparations), 4 points à vérifier, 3 questions au vendeur. Le détail est replié. Pas de revente, pas de marge, pas de gros travaux dans le total. |
-| `/api/analyse` | serveur | lecture de l'annonce + appel à l'IA |
+Ton : vouvoiement partout, y compris dans les guides.
 
-Stack identique aux autres projets : Next.js 16, React 19, Tailwind 4, TypeScript.
+## Pages
+
+| Route | Rôle |
+|---|---|
+| `/` | Accueil. Titre « Voyez en 10 secondes si une occasion est… » (animation corrigée), bouton « Estimer une affaire », démo, deux parcours, formules particuliers, FAQ. |
+| `/benef` | Présentation de Benef (achat-revente) : peurs et réponses, calculateur de marge, espace Benef, formules, guide, FAQ. |
+| `/tarifs` | Toutes les formules : particuliers, Benef, guides. |
+| `/analyse` | Outil particulier : verdict, coût réel d'achat, points à vérifier ; selon la formule : prix à proposer, questions, comment négocier, quoi contrôler sur place, faut-il y aller seul. |
+| `/analyse/[id]` | Une analyse enregistrée. |
+| `/app` | Espace Benef : tableau de bord, analyser, rapports, comparer, parc, recherche. `/benefapp` y redirige. |
+| `/guide` | Les 4 guides : 2 chapitres offerts, la suite pour les acheteurs du guide et les abonnés Sérénité et Benef. Les anciens liens personnels reçus par email (lecture et désinscription) fonctionnent toujours. |
+| `/inscription`, `/connexion`, `/compte` | Comptes (email et mot de passe, lien de connexion, mot de passe oublié), formule, quota, abonnement, profil, suppression du compte. |
+| `/legal` | Mentions, confidentialité, conditions d'utilisation, conditions de vente, accessibilité, contact. |
+
+Onboarding : une fenêtre de 3 questions s'ouvre à la première visite de `/`, `/benef` et `/tarifs`, puis recommande un parcours et une formule. Les réponses pré-remplissent l'inscription. Bouton « M'orienter en 3 questions » pour la rouvrir.
+
+## Formules (`src/lib/offres.ts`, seule source de vérité)
+
+| Formule | Prix | Analyses | Ce qu'elle ajoute |
+|---|---|---|---|
+| Découverte | 0 € | 1 au total | verdict, coût réel, 3 points à vérifier |
+| Essentiel | 4,99 €/mois | 10/mois | prix à proposer, questions au vendeur, marché et fiabilité détaillés, 3 photos, historique |
+| Sérénité | 9,99 €/mois | 30/mois | négociation, contrôle sur place, y aller seul ou accompagné, 6 photos, guides inclus |
+| Benef Starter | 14,99 €/mois | 30/mois | marge, offre, plafond, 20 derniers rapports, tableau de bord, guides |
+| Benef Croissance | 29 €/mois | 100/mois | historique complet, comparateur, 6 photos |
+| Benef Pro | 59 €/mois | 400/mois | tableau de bord complet, parc, recherche avancée, export CSV |
+| Guides | 9 € une fois | | les 4 guides à vie |
+
+Les droits sont appliqués côté serveur : quotas dans `/api/analyse`, parties payantes retirées avant l'envoi au navigateur (`src/lib/analyse/filtre.ts`), parc protégé par une règle RLS (formule Pro). Les rapports Benef s'affichent complets par défaut, avec un bouton « Synthèse » (texte déjà rédigé par l'analyse).
 
 ## Comment l'analyse est faite
 
-1. **Règles fixes, sans IA** (`src/lib/analyse/`), portées de l'outil d'origine :
-   - `texte.ts` lit le prix, l'année, le kilométrage, la puissance fiscale, le CT, la distribution, le carnet et les propriétaires ;
-   - `defauts.ts` contient les 38 défauts chiffrés (joint de culasse, embrayage, pneus…) ;
-   - `fiabilite.ts` liste les moteurs et boîtes à éviter et les modèles fiables.
-2. **IA côté serveur** (`ia.ts`) : identification de la version, cote du marché, distance, inspection des photos, travaux d'entretien à prévoir, alertes, questions. La clé reste sur le serveur ; le navigateur n'appelle jamais l'IA directement (l'outil d'origine passait par `window.claude` dans claude.ai).
-3. **Calculs d'argent par l'outil, jamais par l'IA** (`couts.ts`) : `dealPro` pour le pro (port de `deal()`), `coutParticulier` pour le particulier. Ils tournent dans le navigateur : changer le prix ou la distance recalcule tout de suite.
+1. Règles fixes, sans IA (`src/lib/analyse/`) : lecture de l'annonce, 38 défauts chiffrés, moteurs et boîtes à éviter, coûts.
+2. API Claude côté serveur (`ia.ts`) : version, cote du marché, distance, photos, entretien à prévoir, négociation, contrôle sur place, synthèse.
+3. Calculs d'argent par l'outil (`couts.ts`) : marge, plafond et offre pour Benef ; coût réel pour les particuliers.
 
-Sans clé API, l'outil marche quand même : faits lus, défauts, fiabilité et coût réel (prix, CT, petites réparations). La cote, la distance et la carte grise (si la puissance fiscale n'est pas écrite) manquent alors.
+Une analyse n'est décomptée que si elle aboutit. La copie de l'extension Chrome (texte et photos) est reconnue au collage.
 
-## Variables d'environnement (Vercel, jamais dans le dépôt)
+## Variables d'environnement (Vercel)
 
 | Variable | Rôle |
 |---|---|
-| `ANTHROPIC_API_KEY` | obligatoire pour la cote du marché et l'analyse des photos |
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://rvdfifhgosovdapdltps.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | clé publique du projet Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | clé secrète (quotas, rapports, webhook, suppression de compte) |
+| `ANTHROPIC_API_KEY` | analyse |
 | `ANTHROPIC_MODEL` | facultatif, `claude-opus-5-5` par défaut |
+| `STRIPE_SECRET_KEY` | paiements |
+| `STRIPE_WEBHOOK_SECRET` | signature du webhook |
+| `NEXT_PUBLIC_SITE_URL` | `https://utopicar.fr` |
+| `UTP_KEY` | protège `/api/probe` (repris de l'ancien `api/probe.js`) |
+| `UTOPICAR_DEMO` | `1` seulement pour tester sans Supabase : analyses sans compte, rien n'est enregistré |
 
-Repli automatique côté serveur si le modèle refuse une demande (`fallbacks: "default"`).
-Limite simple : 12 analyses par tranche de 10 minutes et par adresse IP (en mémoire, par instance).
+Sans les variables Supabase, le site s'affiche et les comptes sont fermés (« ouvrent très bientôt »).
+
+## Mise en service, dans l'ordre
+
+1. **Base de données** : appliquer `supabase/migrations/20261003000000_comptes_abonnements.sql` au projet Supabase (tables `profils`, `abonnements`, `achats`, `usages`, `rapports`, `parc`, avec RLS). Elle ne touche à aucune table existante.
+2. **Supabase Auth** : Site URL `https://utopicar.fr` ; URL de redirection `https://utopicar.fr/auth/confirm` (plus le domaine de prévisualisation Vercel) ; envoi des emails par SMTP Resend (l'envoi par défaut de Supabase est très limité).
+3. **Stripe** : `STRIPE_SECRET_KEY=sk_... node stripe/prix.mjs` crée les produits et les prix. Puis, dans Stripe : webhook vers `https://utopicar.fr/api/stripe/webhook` (`checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`) ; portail client avec changement de formule et résiliation.
+4. **Vercel** : projet `utopicar` (déjà relié à ce dépôt) avec **Root Directory = `web`** et les variables ci-dessus. Vérifier la prévisualisation, puis déplacer les domaines `utopicar.fr` et `www.utopicar.fr` depuis le projet `utopicar-garage`.
+5. **Avant d'encaisser** : compléter dans `/legal` le numéro SIRET et le médiateur de la consommation.
+6. **Ancienne fonction Supabase `inscription`** : elle envoie encore le guide gratuitement à toute inscription. Une fois le nouveau site en ligne, couper la création de nouveaux liens (garder `lire` et `stop` pour les liens déjà envoyés).
 
 ## Développer
 
 ```bash
 cd web
 npm install
-npm run dev      # http://localhost:3000/app et /benef
+npm run dev     # ou UTOPICAR_DEMO=1 npm run dev pour tester sans Supabase
 npm run lint
 npm run build
 ```
-
-## Mise en ligne sur utopicar.fr
-
-Aujourd'hui, utopicar.fr est le projet Vercel `utopicar-garage` : un site statique déployé à la main, sans lien Git.
-L'outil se déploie à part, sans toucher au site :
-
-1. Vercel : nouveau projet depuis ce dépôt, **Root Directory = `web`**, avec `ANTHROPIC_API_KEY`.
-2. Dans le `vercel.json` du site statique, ajouter des réécritures vers ce projet (remplacer `OUTIL` par son domaine `.vercel.app`) :
-   ```json
-   "rewrites": [
-     { "source": "/app", "destination": "https://OUTIL/app" },
-     { "source": "/benef", "destination": "https://OUTIL/benef" },
-     { "source": "/api/analyse", "destination": "https://OUTIL/api/analyse" },
-     { "source": "/_next/:path*", "destination": "https://OUTIL/_next/:path*" }
-   ]
-   ```
-3. Retirer `benef/index.html` du site statique : un fichier présent passe avant une réécriture, et `/benef` devient l'outil particulier. Les réécritures existantes `/benef/guide` et `/benef/legal` ne bougent pas.

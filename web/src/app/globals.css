@@ -1,39 +1,48 @@
 @import "tailwindcss";
 
-/* Charte utopicar.fr : fond sombre chaud, orange, Clash Display + Satoshi. */
+/* Charte utopicar.fr : fond sombre chaud, orange, Clash Display + Satoshi + Instrument Serif. */
 @theme {
   --color-bg0: #0b0a09;
   --color-bg1: #17100b;
   --color-ink: #f4f1ec;
-  --color-ink-2: rgb(244 241 236 / 0.78);
-  --color-ink-3: rgb(244 241 236 / 0.55);
+  --color-ink-2: rgb(244 241 236 / 0.8);
+  --color-ink-3: rgb(244 241 236 / 0.62);
   --color-line: rgb(244 241 236 / 0.1);
-  --color-line-2: rgb(244 241 236 / 0.18);
+  --color-line-2: rgb(244 241 236 / 0.2);
   --color-glass: rgb(244 241 236 / 0.05);
   --color-panel: rgb(22 16 12 / 0.72);
   --color-o: #ff5a1f;
   --color-o2: #ff8a4c;
+  --color-o3: #ffb38a;
   --color-ok: #3ecb7f;
   --color-warn: #ffc53d;
-  --color-bad: #ff6b6b;
+  --color-bad: #ff7a7a;
   --font-display: "Clash Display", "Satoshi", system-ui, sans-serif;
   --font-body: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-serif: var(--font-instrument), "Instrument Serif", Georgia, serif;
+  --ease-ressort: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-doux: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 :root {
   color-scheme: dark;
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   color: var(--color-ink);
-  font: 16px/1.55 var(--font-body);
+  font: 16px/1.6 var(--font-body);
   background:
     radial-gradient(ellipse 70% 40% at 50% -10%, rgb(255 90 31 / 0.16), transparent 70%),
     linear-gradient(160deg, var(--color-bg0), var(--color-bg1) 60%, var(--color-bg0)) fixed;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 ::selection {
@@ -51,11 +60,182 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 1140px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+  /* Mot mis en avant dans les titres : italique serif dégradé. */
+  .it {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    background: linear-gradient(100deg, var(--color-o2), var(--color-o3) 60%, var(--color-o2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.06em;
+  }
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-line-2);
+    border-radius: 999px;
+    background: var(--color-glass);
+    font-size: 13px;
+    color: var(--color-ink-2);
+  }
+  .kicker::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-o);
+    box-shadow: 0 0 10px var(--color-o);
+  }
+  .h-sec {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(30px, 4.6vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-2);
+    background: var(--color-glass);
+    color: var(--color-ink);
+    font: 600 16px/1.2 var(--font-display);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform 0.3s var(--ease-ressort),
+      background 0.2s,
+      border-color 0.2s,
+      box-shadow 0.3s;
+  }
+  .btn:hover {
+    border-color: rgb(255 90 31 / 0.5);
+    transform: translateY(-1px);
+  }
+  .btn-o {
+    background: var(--color-o);
+    border-color: var(--color-o);
+    color: #160904;
+    box-shadow: 0 12px 34px -12px rgb(255 90 31 / 0.85);
+  }
+  .btn-o:hover {
+    background: var(--color-o2);
+    border-color: var(--color-o2);
+  }
+  .btn-sm {
+    min-height: 40px;
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  .btn[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .carte {
+    border: 1px solid var(--color-line);
+    border-radius: 26px;
+    background: var(--color-panel);
+    backdrop-filter: blur(10px);
+  }
+  .sr-only-focusable:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* Apparition au défilement (désactivée si les animations sont réduites ou mises en pause). */
+.apparait {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s var(--ease-doux),
+    transform 0.7s var(--ease-doux);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+.apparait.vu {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes defile {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes entree {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+@keyframes clignote {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes pulse-o {
+  0% {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Pause manuelle des animations (bouton du pied de page) et préférence système. */
+:root[data-calme] *,
+:root[data-calme] *::before,
+:root[data-calme] *::after {
+  animation-play-state: paused !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+:root[data-calme] .apparait {
+  opacity: 1;
+  transform: none;
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .apparait {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #111;
   }
 }

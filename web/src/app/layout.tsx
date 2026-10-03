@@ -1,23 +1,42 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { Instrument_Serif } from "next/font/google";
+import { EnTete } from "@/components/site/EnTete";
+import { Pied } from "@/components/site/Pied";
+import { Onboarding } from "@/components/site/Onboarding";
+import { Apparitions } from "@/components/site/Apparitions";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://utopicar.fr"),
-  title: { default: "Utopicar", template: "%s · Utopicar" },
-  description: "Collez une annonce de voiture d'occasion : Utopicar vous dit si c'est une bonne affaire et ce qu'elle va vraiment vous coûter.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://utopicar.fr"),
+  title: { default: "Utopicar : voyez en 10 secondes si une occasion est une vraie affaire", template: "%s · Utopicar" },
+  description: "Collez une annonce de voiture d'occasion : Utopicar estime sa cote, repère les défauts qui coûtent cher et vous dit quoi faire. Première analyse offerte.",
+  openGraph: { siteName: "Utopicar", locale: "fr_FR", type: "website" },
 };
+
+const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: "italic", variable: "--font-instrument", display: "swap" });
 
 export const viewport: Viewport = { themeColor: "#0f0d0b" };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={serif.variable}>
       <head>
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=satoshi@400,500,700&display=swap" />
       </head>
-      <body>{children}</body>
+      <body>
+        <a href="#contenu" className="sr-only-focusable fixed left-3 top-3 z-50 rounded-full bg-o px-4 py-2 font-semibold text-[#160904]">
+          Aller au contenu
+        </a>
+        <EnTete />
+        <main id="contenu" tabIndex={-1} className="outline-none">
+          {children}
+        </main>
+        <Pied />
+        <Onboarding />
+        <Apparitions />
+      </body>
     </html>
   );
 }

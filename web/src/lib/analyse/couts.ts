@@ -4,9 +4,22 @@
 import type { Defaut } from "./defauts";
 import type { Faits } from "./texte";
 import type { Fiabilite } from "./fiabilite";
-import type { Ia } from "./ia-schema";
+import type { IaVue } from "./ia-schema";
+import type { Detail, OffreId } from "../offres";
 
-export type Analyse = { faits: Faits; fiab: Fiabilite; ia: Ia | null; iaErreur?: string };
+export type Analyse = {
+  faits: Faits;
+  fiab: Fiabilite;
+  ia: IaVue | null;
+  iaErreur?: string;
+  /** Renseignés par le serveur après l'analyse. */
+  rapportId?: string | null;
+  detail?: Detail;
+  offre?: OffreId;
+  restantes?: number | null;
+  demo?: boolean;
+  ville?: string;
+};
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 export const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;

@@ -116,7 +116,7 @@ export function lireAnnonce(texte: string): Faits {
 
   const en = (x.match(/[ÉE]nergie\s*:?\s*"?\s*([A-Za-zÀ-ÿ ]{3,25}?)\s*(?:"|\n|\.|$)/) || x.match(/\b(Diesel|Essence|Hybride rechargeable|Hybride|[ÉE]lectrique|GPL)\b/i) || [])[1] || "";
   const bo = (x.match(/Bo[iî]te de vitesses?\s*:?\s*"?\s*(Manuelle|Automatique)/i) || x.match(/\b(Manuelle|Automatique)\b/i) || [])[1] || "";
-  const loc = x.match(/Situ[ée]e? à\s+(.+?)\s+(\d{5})/) || x.match(/(?:^|\n)\s*([A-ZÀ-Ý][^\n\d€:]{1,45}?)\s+(\d{5})(?=\s|$)/);
+  const loc = x.match(/Situ[ée]e? à\s+(.+?)\s+(\d{5})/) || x.match(/Localisation\s*:\s*(.+?)\s+(\d{5})/) || x.match(/(?:^|\n)\s*([A-ZÀ-Ý][^\n\d€:]{1,45}?)\s+(\d{5})(?=\s|$)/);
   const cvm = x.match(/Puissance fiscale\s*:?\s*(\d{1,2})\s*(?:CV|Cv|cv|ch)?/i) || x.match(/\b(\d{1,2})\s*(?:CV|cv)\b(?!\s*din)/);
   let cv = cvm ? Number(cvm[1]) : null;
   if (cv != null && (cv < 2 || cv > 60)) cv = null;
