@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/* Charte utopicar.fr : fond sombre chaud, orange, Clash Display + Satoshi. */
+@theme {
+  --color-bg0: #0b0a09;
+  --color-bg1: #17100b;
+  --color-ink: #f4f1ec;
+  --color-ink-2: rgb(244 241 236 / 0.78);
+  --color-ink-3: rgb(244 241 236 / 0.55);
+  --color-line: rgb(244 241 236 / 0.1);
+  --color-line-2: rgb(244 241 236 / 0.18);
+  --color-glass: rgb(244 241 236 / 0.05);
+  --color-panel: rgb(22 16 12 / 0.72);
+  --color-o: #ff5a1f;
+  --color-o2: #ff8a4c;
+  --color-ok: #3ecb7f;
+  --color-warn: #ffc53d;
+  --color-bad: #ff6b6b;
+  --font-display: "Clash Display", "Satoshi", system-ui, sans-serif;
+  --font-body: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  color: var(--color-ink);
+  font: 16px/1.55 var(--font-body);
+  background:
+    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(255 90 31 / 0.16), transparent 70%),
+    linear-gradient(160deg, var(--color-bg0), var(--color-bg1) 60%, var(--color-bg0)) fixed;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-o);
+  color: #160904;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-o2);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
