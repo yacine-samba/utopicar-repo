@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { confirmerRetour } from "@/lib/stripe-synchro";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { compteCourant } from "@/lib/compte";
@@ -24,7 +26,7 @@ async function ancienLien(corps: Record<string, string>) {
   }
 }
 
-type Params = { guide?: string; t?: string; stop?: string; paiement?: string };
+type Params = { guide?: string; t?: string; stop?: string; paiement?: string; session_id?: string };
 
 export default async function Page({ searchParams }: { searchParams: Promise<Params> }) {
   const p = await searchParams;
@@ -53,6 +55,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<Par
   }
 
   const compte = await compteCourant();
+  // Retour de Stripe après l'achat du guide : accès enregistré tout de suite, puis rechargement.
+  if (compte && p.paiement === "ok" && p.session_id) {
+    await confirmerRetour(p.session_id, compte.id);
+    redirect("/guide?paiement=ok");
+  }
   const defaut: GuideId = compte?.famille === "particulier" ? "acheter-occasion" : "premiere-revente";
   const id = (GUIDES.find((g) => g.id === p.guide)?.id ?? defaut) as GuideId;
   const complet = !!compte?.guide;

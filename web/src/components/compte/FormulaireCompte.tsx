@@ -68,6 +68,23 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
     try {
       if (mode === "inscription") {
         const p = profilOnboarding();
+        // Inscription par le serveur : compte prêt tout de suite, sans email de confirmation à attendre.
+        const r = await fetch("/api/compte/inscription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password: mdp, prenom: prenom.trim(), onboarding: p }),
+        }).catch(() => null);
+        if (r && r.status !== 501) {
+          const j = await r.json().catch(() => null);
+          if (!r.ok) return setErreur(j?.erreur ?? "L'inscription n'a pas marché. Réessayez dans un instant.");
+          if (!j?.connecte) {
+            const { error } = await sb.auth.signInWithPassword({ email, password: mdp });
+            if (error) return setErreur(traduire(error));
+          }
+          router.replace(suite);
+          router.refresh();
+          return;
+        }
         const { data, error } = await sb.auth.signUp({
           email,
           password: mdp,
