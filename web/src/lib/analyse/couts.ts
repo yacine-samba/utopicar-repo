@@ -16,6 +16,10 @@ export type Analyse = {
   iaErreur?: string;
   /** Analyse faite par les seules règles de l'outil (IA indisponible). */
   regles?: boolean;
+  /** Rapport complet au format de l'outil Garage (espace Benef), réduit selon la formule. */
+  rapport?: import("./rapport").Rapport | null;
+  /** Lien de l'annonce analysée. */
+  lien?: string;
   /** Renseignés par le serveur après l'analyse. */
   rapportId?: string | null;
   detail?: Detail;
@@ -79,7 +83,7 @@ export function carteGrise(a: Analyse, tarifCV: number) {
 
 /* ================= PRO : rentabilité ================= */
 export type ParamsPro = { margeMin: number; tarifCV: number; kmCost: number; fraisFixes: number; ville: string };
-export const DEFAUTS_PRO: ParamsPro = { margeMin: 800, tarifCV: 68.95, kmCost: 0.25, fraisFixes: 150, ville: "Paris" };
+export const DEFAUTS_PRO: ParamsPro = { margeMin: 750, tarifCV: 68.95, kmCost: 0.25, fraisFixes: 20, ville: "Paris" };
 
 export type Verdict = "GO" | "GO SI NÉGOCIÉ" | "GO EN MANDAT UNIQUEMENT" | "À SURVEILLER" | "NO GO";
 

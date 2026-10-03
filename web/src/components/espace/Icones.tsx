@@ -10,6 +10,7 @@ const TRACES: Record<Icone | "plus" | "fermer" | "sortie" | "site" | "lien", str
   recherche: "M4 6h16M7 12h10M10 18h4",
   guide: "M5 4.5A2.5 2.5 0 0 1 7.5 2H20v17H7.5A2.5 2.5 0 0 0 5 21.5v-17ZM5 19.5A2.5 2.5 0 0 1 7.5 17H20",
   compte: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0",
+  tri: "M4 6h10M4 12h7M4 18h4M17 5v14M14 16l3 3 3-3",
   plus: "M5 12h.01M12 12h.01M19 12h.01",
   fermer: "M6 6l12 12M18 6 6 18",
   sortie: "M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10",

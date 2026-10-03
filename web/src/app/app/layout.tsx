@@ -8,6 +8,7 @@ import { familleEspace, navEspace, nomFormule, texteRestantes } from "@/lib/espa
 import { Logo } from "@/components/site/Logo";
 import { Ico } from "@/components/espace/Icones";
 import { NavCote, NavMobile } from "@/components/espace/NavEspace";
+import { CommandeK, SeuilMarge } from "@/components/espace/OutilsEspace";
 
 export const metadata: Metadata = { title: { default: "Mon espace", template: "%s · Mon espace Utopicar" }, robots: { index: false } };
 // Espace personnel : toujours rendu à la demande (session, formule, quotas).
@@ -83,8 +84,12 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
         <Link href="/app" className="px-1" aria-label="Mon espace, accueil">
           <Logo sous={benef ? "Benef" : undefined} />
         </Link>
-        <div className="flex-1">
+        <div className="grid flex-1 content-start gap-3">
           <NavCote entrees={entrees} />
+          <div className="grid gap-2">
+            {benef && <SeuilMarge />}
+            <CommandeK entrees={entrees} />
+          </div>
         </div>
         <PiedNav c={c} />
       </aside>

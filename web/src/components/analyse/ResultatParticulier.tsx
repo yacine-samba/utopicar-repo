@@ -43,16 +43,26 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
   const complet = detail === "complet";
   const kmSaisi = km.trim() === "" ? null : Number(km.replace(/\s/g, ""));
   const c = coutParticulier(a, { kmCost, tarifCV, ville: "" }, kmSaisi != null && Number.isFinite(kmSaisi) ? kmSaisi : null);
-  const v = VERDICTS[c.niveau];
+  // Verdict particulier : seulement le prix face au marché (très bonne, bonne ou moyenne affaire). Les risques sont des alertes à part.
+  const realiste = a.ia?.marche.realiste ?? null;
+  const part = realiste && c.ecart != null ? c.ecart / realiste : null;
+  const affaire =
+    part == null
+      ? VERDICTS.inconnu
+      : part > 0.08
+        ? { l: "Très bonne affaire", ton: "ok" as Ton, phrase: `Nettement en dessous du prix du marché : environ ${eur(c.ecart!)} de moins, petites réparations comprises.` }
+        : part >= -0.03
+          ? { l: "Bonne affaire", ton: "ok" as Ton, phrase: part > 0.02 ? `Un peu en dessous du prix du marché : environ ${eur(c.ecart!)} de moins.` : "Au prix du marché." }
+          : { l: "Affaire moyenne", ton: "warn" as Ton, phrase: `${part < -0.1 ? "Nettement" : "Un peu"} au-dessus du prix du marché : environ ${eur(-c.ecart!)} de plus.` };
+  const v = affaire;
+  const risque = c.niveau === "eviter" ? VERDICTS.eviter : c.niveau === "prudence" ? VERDICTS.prudence : null;
   const ia = a.ia;
   const veh = ia?.vehicule;
   const titre = [veh?.marque, veh?.modele, veh?.version].filter(Boolean).join(" ") || a.faits.titre || "Votre annonce";
   const kmVeh = veh?.km ?? a.faits.km;
   const infos = [veh?.annee ?? a.faits.annee, kmVeh != null ? `${kmVeh.toLocaleString("fr-FR")} km` : null, veh?.energie || a.faits.energie, veh?.localisation || a.faits.ville].filter(Boolean);
 
-  let phrasePrix = v.phrase;
-  if (c.niveau === "bon" && c.ecart != null) phrasePrix = `Environ ${eur(c.ecart)} sous le prix du marché, petites réparations comprises.`;
-  if (c.niveau === "cher" && c.ecart != null) phrasePrix = `Environ ${eur(-c.ecart)} au-dessus du prix du marché, petites réparations comprises.`;
+  const phrasePrix = v.phrase;
 
   // À vérifier : du plus grave au moins grave.
   const verifs: { t: string; ton: Ton }[] = [];
@@ -75,8 +85,13 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
         <h1 id="verdict" className={cx("mt-3 font-display text-[clamp(34px,7vw,56px)] font-semibold leading-none tracking-tight", TEXTE[v.ton])}>
           {v.l}
         </h1>
-        <p className="mt-3 max-w-xl text-lg text-ink">{ia?.resumeSimple || phrasePrix}</p>
-        {ia?.resumeSimple && ["bon", "correct", "cher"].includes(c.niveau) && <p className="mt-1 text-ink-2">{phrasePrix}</p>}
+        <p className="mt-3 max-w-xl text-lg text-ink">{phrasePrix}</p>
+        {realiste != null && <p className="mt-1 text-ink-2">Prix du marché pour cette voiture : environ {eur(realiste)}.</p>}
+        {risque && (
+          <p className={cx("mt-4 rounded-2xl border px-4 py-3", risque.ton === "bad" ? "border-bad/40 bg-bad/10 text-bad" : "border-warn/40 bg-warn/10 text-warn")}>
+            <b>{risque.l} :</b> {risque.phrase}
+          </p>
+        )}
         {plus && c.proposer != null && c.prix != null && c.proposer < c.prix && c.niveau !== "eviter" && (
           <p className="mt-4 inline-flex flex-wrap items-baseline gap-2 rounded-2xl border border-line-2 bg-black/25 px-4 py-2">
             <span className="text-ink-2">Prix raisonnable à proposer</span>

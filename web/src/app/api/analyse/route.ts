@@ -6,6 +6,8 @@ import { analyseIA, IaIndisponible } from "@/lib/analyse/ia";
 import { filtrer } from "@/lib/analyse/filtre";
 import { coteMarche, marcheDepuisCote } from "@/lib/analyse/cote";
 import { iaRegles } from "@/lib/analyse/regles";
+import { filtrerRapport } from "@/lib/analyse/sections";
+import { depuisIa } from "@/lib/analyse/rapport";
 import { coutParticulier, dealPro, DEFAUTS_PART, DEFAUTS_PRO, type Analyse } from "@/lib/analyse/couts";
 import { compteCourant } from "@/lib/compte";
 import { OFFRES, type Offre } from "@/lib/offres";
@@ -72,9 +74,15 @@ export async function POST(req: Request) {
   const out: Analyse = { faits, fiab, ia: null, cote };
 
   try {
-    const brut = await analyseIA({ texte, faits, fiab, ville, photos, offre: o.id, cote });
-    if (cote) brut.marche = { ...brut.marche, ...marcheDepuisCote(cote) };
+    const { ia: brut, rapport } = await analyseIA({ texte, faits, fiab, ville, photos, offre: o.id, cote, margeMin: DEFAUTS_PRO.margeMin });
+    // La cote de l'outil (annonces comparables) fait foi pour le prix du marché, dans les deux vues.
+    if (cote) {
+      const mc = marcheDepuisCote(cote);
+      brut.marche = { ...brut.marche, ...mc };
+      rapport.marche = { ...rapport.marche, bas: mc.bas ?? undefined, realiste: mc.realiste ?? undefined, reventeRapide: mc.reventeRapide ?? undefined, confiance: mc.confiance, commentaire: mc.commentaire };
+    }
     out.ia = filtrer(brut, detail);
+    if (mode === "benef") out.rapport = filtrerRapport(rapport, o.id);
   } catch (e) {
     if (e instanceof IaIndisponible) out.iaErreur = "L'estimation du marché n'est pas configurée sur ce serveur.";
     else if (e instanceof Anthropic.RateLimitError) out.iaErreur = "Trop de demandes en ce moment, réessayez dans une minute.";
@@ -85,11 +93,15 @@ export async function POST(req: Request) {
     else out.iaErreur = e instanceof Error ? e.message : "Erreur inconnue.";
     console.error("analyse IA", e);
     // L'IA ne répond pas : l'analyse reste complète avec les règles et la cote de l'outil, comme l'outil Garage.
-    out.ia = filtrer(iaRegles(texte, faits, fiab, cote), detail);
+    const regles = iaRegles(texte, faits, fiab, cote);
+    out.ia = filtrer(regles, detail);
+    if (mode === "benef") out.rapport = filtrerRapport(depuisIa(regles), o.id);
     out.regles = true;
     delete out.iaErreur;
   }
 
+  out.offre = o.id;
+  out.lien = texte.match(/https?:\/\/\S+/)?.[0];
   let rapportId: string | null = null;
   // Une analyse n'est décomptée et enregistrée que si elle a abouti.
   if (compte && out.ia) {
