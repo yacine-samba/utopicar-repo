@@ -25,7 +25,8 @@ export function texteDepuisExtension(brut: string): string | null {
   const ld = lds.find((x) => /Car|Vehicle|Product|Offer/i.test(([] as unknown[]).concat(x["@type"] ?? "").join(" "))) ?? {};
   const out: string[] = [];
   const prixBrut = Array.isArray(ad.price) ? ad.price[0] : typeof ad.price === "object" && ad.price ? pick(obj(ad.price), ["amount", "value", "price"]) : (ad.price ?? pick(obj(ld.offers), ["price"]));
-  out.push(`Source : ${o.src ?? ""}`, `Lien : ${o.url ?? ""}`, `Titre : ${pick(ad, ["subject", "title", "name"]) ?? ld.name ?? o.title ?? o.ogTitle ?? ""}`);
+  // Le titre en première ligne : c'est ce que la lecture de l'annonce prend comme titre.
+  out.push(String(pick(ad, ["subject", "title", "name"]) ?? ld.name ?? o.title ?? o.ogTitle ?? ""), `Source : ${o.src ?? ""}`, `Lien : ${o.url ?? ""}`);
   if (prixBrut != null) out.push(`Prix : ${prixBrut} €`);
   const loc = obj(ad.location);
   const ville = [loc.city ?? loc.city_label, loc.zipcode ?? loc.zip].filter(Boolean).join(" ");
@@ -51,6 +52,18 @@ export function texteDepuisExtension(brut: string): string | null {
   if (desc) out.push("", "Description du vendeur :", String(desc).slice(0, 6000));
   if (!o.ad || !desc) out.push("", "Texte de la page :", String(o.text ?? "").slice(0, 7000));
   return out.join("\n");
+}
+
+/** Lien d'une annonce Leboncoin (seul, éventuellement entouré d'espaces), sinon null. */
+export function lienLeboncoin(s: string): string | null {
+  const t = s.trim();
+  if (!/^https?:\/\/(www\.)?leboncoin\.fr\/\S+\d{6,}/i.test(t) || /\s/.test(t)) return null;
+  return t;
+}
+
+/** Annonce lue par la fonction `annonce` (Apify) : même texte que la copie de l'extension. */
+export function texteDepuisImport(d: { url: string; ad: unknown; brut?: string }): string {
+  return texteDepuisExtension(PREFIXE_EXTENSION + JSON.stringify({ src: "leboncoin", url: d.url, ad: d.ad, text: d.brut ?? "" })) ?? "";
 }
 
 /** Photos jointes par l'extension (balises <img src="data:…"> dans le presse-papiers HTML). */

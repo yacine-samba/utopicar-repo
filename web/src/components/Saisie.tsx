@@ -3,7 +3,9 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
-import { photosDepuisHtml, texteDepuisExtension } from "@/lib/analyse/import";
+import { lienLeboncoin, photosDepuisHtml, texteDepuisExtension, texteDepuisImport } from "@/lib/analyse/import";
+import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
+import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { Champ, cx, inputCls } from "./ui";
 
 type PhotoLocale = { id: string; url: string; data: string };
@@ -24,6 +26,18 @@ async function reduire(f: File): Promise<PhotoLocale | null> {
     return null;
   }
 }
+
+/** Photo reçue en data URL (import par lien) : même réduction que les photos ajoutées à la main. */
+async function depuisDataUrl(u: string, i: number) {
+  const b = await (await fetch(u)).blob();
+  return reduire(new File([b], `photo-${i + 1}.jpg`, { type: b.type || "image/jpeg" }));
+}
+
+const ERREURS_IMPORT: Record<string, string> = {
+  lien: "Ce lien n'est pas celui d'une annonce Leboncoin. Pour La Centrale ou AutoScout24, copiez la page et collez-la ci-dessous.",
+  introuvable: "Annonce introuvable : elle a peut-être été retirée ou vendue.",
+  trop: "Vous avez importé beaucoup d'annonces aujourd'hui. Copiez la page de l'annonce et collez-la ci-dessous.",
+};
 
 const ETAPES = ["Lecture du texte de l'annonce", "Recherche des défauts qui coûtent cher", "Estimation du prix du marché", "Calcul des frais"];
 
@@ -56,14 +70,21 @@ export function Saisie({
   const [charge, setCharge] = useState(false);
   const [sec, setSec] = useState(0);
   const [erreur, setErreur] = useState<{ t: string; offres?: string } | null>(null);
+  const [lien, setLien] = useState("");
+  const [lecture, setLecture] = useState(false);
   const fichier = useRef<HTMLInputElement>(null);
 
   // Annonce collée avant l'inscription : on la retrouve au retour.
   useEffect(() => {
     try {
       const b = JSON.parse(sessionStorage.getItem(BROUILLON) || "null");
-      if (b?.mode === mode && b.texte) {
+      if (b?.mode === mode && b.lien) {
+        sessionStorage.removeItem(BROUILLON);
         // eslint-disable-next-line react-hooks/set-state-in-effect -- reprise unique du brouillon
+        setLien(b.lien);
+        if (b.ville) setVille(b.ville);
+        importer(b.lien, b.ville ?? "");
+      } else if (b?.mode === mode && b.texte) {
         setTexte(b.texte);
         if (b.ville) setVille(b.ville);
         sessionStorage.removeItem(BROUILLON);
@@ -71,14 +92,15 @@ export function Saisie({
     } catch {
       /* stockage indisponible */
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- une seule fois, à l'ouverture
   }, [mode]);
 
   useEffect(() => {
-    if (!charge) return;
+    if (!charge && !lecture) return;
     const t0 = Date.now();
     const i = setInterval(() => setSec(Math.round((Date.now() - t0) / 1000)), 500);
     return () => clearInterval(i);
-  }, [charge]);
+  }, [charge, lecture]);
 
   async function ajouter(files: File[]) {
     const imgs = files.filter((f) => f.type.startsWith("image/")).slice(0, maxPhotos - photos.length);
@@ -86,9 +108,62 @@ export function Saisie({
     setPhotos((p) => [...p, ...r].slice(0, maxPhotos));
   }
 
-  async function lancer() {
+  function versInscription(brouillon: Record<string, string>) {
+    try {
+      sessionStorage.setItem(BROUILLON, JSON.stringify({ mode, ...brouillon }));
+    } catch {
+      /* stockage indisponible */
+    }
+    router.push(`/inscription?next=${encodeURIComponent(retour)}`);
+  }
+
+  /** Lien Leboncoin collé : la fonction `annonce` (Apify) lit l'annonce et ses photos, puis l'analyse part toute seule. */
+  async function importer(url: string, villeChoisie = ville) {
     setErreur(null);
-    if (texte.trim().length < 30) {
+    if (!lienLeboncoin(url)) {
+      setErreur({ t: ERREURS_IMPORT.lien });
+      return;
+    }
+    if (!SUPABASE_URL) {
+      setErreur({ t: "L'import par lien ouvre très bientôt. Copiez la page de l'annonce et collez-la ci-dessous." });
+      return;
+    }
+    const { data } = await supabaseNavigateur().auth.getSession();
+    const jeton = data.session?.access_token;
+    if (!jeton) {
+      versInscription({ lien: url, ville: villeChoisie });
+      return;
+    }
+    setLecture(true);
+    setSec(0);
+    try {
+      const r = await fetch(`${SUPABASE_URL}/functions/v1/annonce`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${jeton}`, apikey: SUPABASE_CLE },
+        body: JSON.stringify({ url }),
+      });
+      const j = await r.json().catch(() => null);
+      if (r.status === 401) return versInscription({ lien: url, ville: villeChoisie });
+      if (!r.ok || !j?.ok) {
+        setErreur({ t: ERREURS_IMPORT[j?.erreur] ?? "Lecture de l'annonce impossible pour le moment. Copiez la page de l'annonce et collez-la ci-dessous." });
+        return;
+      }
+      const t = texteDepuisImport(j);
+      setTexte(t);
+      const ph = maxPhotos > 0 ? (await Promise.all((j.photos as string[]).slice(0, maxPhotos).map(depuisDataUrl))).filter((x): x is PhotoLocale => !!x) : [];
+      setPhotos(ph);
+      setLecture(false);
+      await lancer(t, ph, villeChoisie);
+    } catch {
+      setErreur({ t: "Connexion impossible. Vérifiez votre réseau et réessayez." });
+    } finally {
+      setLecture(false);
+    }
+  }
+
+  async function lancer(t = texte, ph = photos, v = ville) {
+    setErreur(null);
+    if (t.trim().length < 30) {
       setErreur({ t: "Collez le texte complet de l'annonce : titre, prix, kilométrage et description." });
       return;
     }
@@ -98,23 +173,15 @@ export function Saisie({
       const r = await fetch("/api/analyse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode, texte, ville, photos: photos.map((p) => ({ media_type: "image/jpeg", data: p.data })) }),
+        body: JSON.stringify({ mode, texte: t, ville: v, photos: ph.map((p) => ({ media_type: "image/jpeg", data: p.data })) }),
       });
       const j = await r.json().catch(() => null);
-      if (r.status === 401) {
-        try {
-          sessionStorage.setItem(BROUILLON, JSON.stringify({ mode, texte, ville }));
-        } catch {
-          /* stockage indisponible */
-        }
-        router.push(`/inscription?next=${encodeURIComponent(retour)}`);
-        return;
-      }
+      if (r.status === 401) return versInscription({ texte: t, ville: v });
       if (!r.ok || !j) {
         setErreur({ t: j?.erreur || "L'analyse a échoué, réessayez.", offres: j?.offres });
         return;
       }
-      onResultat(j as Analyse, ville);
+      onResultat(j as Analyse, v);
     } catch {
       setErreur({ t: "Connexion impossible. Vérifiez votre réseau et réessayez." });
     } finally {
@@ -134,6 +201,13 @@ export function Saisie({
       onPaste={async (e) => {
         // Copie de l'extension UTOPICAR Scanner : texte structuré et photos jointes.
         const brut = e.clipboardData.getData("text/plain");
+        const url = lienLeboncoin(brut);
+        if (url && (e.target as HTMLElement).tagName === "TEXTAREA") {
+          e.preventDefault();
+          setLien(url);
+          importer(url);
+          return;
+        }
         const converti = texteDepuisExtension(brut);
         if (converti) {
           e.preventDefault();
@@ -152,6 +226,56 @@ export function Saisie({
         }
       }}
     >
+      <div className="grid gap-2">
+        <label htmlFor="lien-annonce" className="text-sm text-ink-2">
+          Lien de l&apos;annonce Leboncoin
+        </label>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            id="lien-annonce"
+            type="url"
+            inputMode="url"
+            value={lien}
+            onChange={(e) => setLien(e.target.value)}
+            onPaste={(e) => {
+              const url = lienLeboncoin(e.clipboardData.getData("text/plain"));
+              if (!url) return;
+              e.preventDefault();
+              e.stopPropagation();
+              setLien(url);
+              importer(url);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                importer(lien);
+              }
+            }}
+            placeholder="https://www.leboncoin.fr/ad/voitures/…"
+            aria-describedby="lien-aide"
+            className={cx(inputCls, "min-w-0 flex-1")}
+          />
+          <button type="button" onClick={() => importer(lien)} disabled={lecture || charge || !lien.trim()} className="btn btn-o shrink-0">
+            {lecture ? "Lecture…" : "Analyser ce lien"}
+          </button>
+        </div>
+        <p id="lien-aide" className="text-xs text-ink-3">
+          Collez le lien : l&apos;annonce et ses photos sont récupérées, puis l&apos;analyse démarre toute seule (environ une minute).
+        </p>
+        {lecture && (
+          <p className="flex items-center gap-2 text-sm text-ink-2" role="status">
+            <span className="size-4 animate-spin rounded-full border-2 border-o/30 border-t-o" aria-hidden="true" />
+            Lecture de l&apos;annonce sur Leboncoin… <span className="num text-ink-3">{sec} s</span>
+          </p>
+        )}
+      </div>
+
+      <div className="flex items-center gap-3 text-xs uppercase tracking-[.12em] text-ink-3" aria-hidden="true">
+        <span className="h-px flex-1 bg-line" />
+        ou collez le texte
+        <span className="h-px flex-1 bg-line" />
+      </div>
+
       <Champ label="L'annonce" aide="Sur Leboncoin, La Centrale ou AutoScout24 : sélectionnez toute la page (Ctrl+A), copiez (Ctrl+C), puis collez ici (Ctrl+V).">
         <textarea
           value={texte}
@@ -222,7 +346,7 @@ export function Saisie({
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
-        <button type="submit" disabled={charge} className="btn btn-o">
+        <button type="submit" disabled={charge || lecture} className="btn btn-o">
           {charge ? "Analyse en cours…" : bouton}
         </button>
         {charge && (
