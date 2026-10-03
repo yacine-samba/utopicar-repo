@@ -16,7 +16,7 @@ const FIAB: [string, RegExp | null, RegExp][] = [
   ['c3', /citroen/, /\bc3\b(?! ?(aircross|picasso))/], ['fiesta', /ford/, /\bfiesta\b/], ['i20rio', /hyundai|kia/, /\bi20\b|\brio\b/], ['i10picanto', /hyundai|kia/, /\bi10\b|\bpicanto\b/],
   ['auris', /toyota/, /\bauris\b/], ['polo', /volkswagen|\bvw\b/, /\bpolo\b/], ['twingo', /renault/, /\btwingo\b/], ['fabia', /skoda/, /\bfabia\b/],
 ];
-const flat = (s: unknown) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const flat = (s: unknown) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 function fiab(r: any): string | null {
   const t = flat([r.marque, r.modele, r.titre].filter(Boolean).join(' '));
   for (const [id, b, m] of FIAB) if ((!b || b.test(t)) && m.test(t)) return id;
@@ -120,7 +120,7 @@ async function ingest(v: any, items: any[], since: number | null = null) {
     for (const [id, t] of Object.entries(thumbs)) await sb.from('annonces').update({ vignette: t }).eq('id', id);
     for (let k = 0; k < photos.length; k += 10) await sb.from('annonce_photos').upsert(photos.slice(k, k + 10), { onConflict: 'annonce_id,idx' });
   }
-  return { recues: all.length, nouvelles: fresh.length, fresh: fresh.map(r => ({ id: r.id, url: r.url, titre: r.titre, prix: r.prix, annee: r.annee, km: r.km, energie: r.energie, boite: r.boite, ville: r.ville, cp: r.cp, fiab: r.fiab, photo: (r.photos || [])[0] || null })) };
+  return { recues: all.length, nouvelles: fresh.length, fresh: fresh.map(r => ({ id: r.id, url: r.url, titre: r.titre, marque: r.marque, modele: r.modele, prix: r.prix, annee: r.annee, km: r.km, energie: r.energie, boite: r.boite, ville: r.ville, cp: r.cp, fiab: r.fiab, photo: (r.photos || [])[0] || null })) };
 }
 
 function runCost(run: any) {
@@ -132,13 +132,16 @@ function runCost(run: any) {
 
 // ---------- E-mail des nouvelles annonces (Resend) ----------
 const APP_URL = 'https://claude.ai/artifact/8bHqs6YhWoWT2zje3mSF3q';
+const SITE_URL = 'https://utopicar.fr/app/alertes'; // alertes créées depuis le site (comptes illimités)
 const escH = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as any)[c]);
 const fmt = (n: unknown) => n == null ? '' : Math.round(Number(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-async function sendMail(R: Record<string, string>, subject: string, html: string): Promise<string> {
-  if (!R.resend_key || !R.email_notif) return 'non configuré';
-  const to = String(R.email_notif).split(/[,;\s]+/).filter(Boolean);
+// destinataire : l'adresse de l'alerte (site), sinon celle des réglages (outil) ; expéditeur : le domaine utopicar.fr vérifié
+async function sendMail(R: Record<string, string>, subject: string, html: string, dest?: string | null): Promise<string> {
+  const dst = dest || R.email_notif;
+  if (!R.resend_key || !dst) return 'non configuré';
+  const to = String(dst).split(/[,;\s]+/).filter(Boolean);
   const r = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { 'Authorization': 'Bearer ' + R.resend_key, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: R.email_from || 'UTOPICAR <onboarding@resend.dev>', to, subject, html }) });
+    body: JSON.stringify({ from: R.email_from || (R.email_from_leads ? `Utopicar <${R.email_from_leads}>` : 'UTOPICAR <onboarding@resend.dev>'), to, subject, html }) });
   if (r.ok) return 'envoyé';
   const t = await r.text(); return `refusé (${r.status}) : ${t.slice(0, 160)}`;
 }
@@ -152,17 +155,34 @@ function mailNouvelles(v: any, list: any[]) {
       <b style="font-size:16px">${a.prix != null ? fmt(a.prix) + ' €' : 'Prix non indiqué'}</b><br>
       <span style="color:#555">${[a.annee, a.km != null ? fmt(a.km) + ' km' : '', a.energie, a.boite].filter(Boolean).map(escH).join(' · ')}</span><br>
       <span style="color:#777">${escH([a.ville, a.cp].filter(Boolean).join(' '))}${a.fiab ? ' · <span style="color:#0a7a43">modèle fiable</span>' : ''}</span>
+      ${a.cote ? `<br><span style="color:${a.cote.ecart >= 0 ? '#0a7a43' : '#9a3412'};font-weight:bold">${a.cote.ecart >= 0 ? fmt(a.cote.ecart) + ' € sous la cote' : fmt(-a.cote.ecart) + ' € au-dessus de la cote'}</span> <span style="color:#777">(cote ${fmt(a.cote.mediane)} € sur ${a.cote.n} annonces)</span>` : ''}
     </td></tr></table></td></tr>`;
   const html = `<div style="max-width:560px;margin:0 auto;font:14px Arial,sans-serif;color:#1d1d1f">
     <p style="font-size:18px;margin:0 0 4px"><b>${list.length} nouvelle${list.length > 1 ? 's' : ''} annonce${list.length > 1 ? 's' : ''}</b></p>
     <p style="margin:0 0 12px;color:#555">Recherche « ${escH(v.nom)} »</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${shown.map(card).join('')}</table>
     ${list.length > shown.length ? `<p style="color:#555">Et ${list.length - shown.length} autre(s) dans l'outil.</p>` : ''}
-    <p style="margin:18px 0"><a href="${APP_URL}" style="background:#15307f;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold">Ouvrir UTOPICAR (cote, état, analyse)</a></p>
-    <p style="color:#999;font-size:12px">Envoyé par votre recherche suivie UTOPICAR. Pour ne plus recevoir ces e-mails, décochez « E-mail » sur la recherche dans l'onglet Recherches.</p></div>`;
+    <p style="margin:18px 0"><a href="${v.user_id ? SITE_URL : APP_URL}" style="background:${v.user_id ? '#ff5a1f' : '#15307f'};color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold">${v.user_id ? 'Voir mes alertes sur Utopicar' : 'Ouvrir UTOPICAR (cote, état, analyse)'}</a></p>
+    <p style="color:#999;font-size:12px">${v.user_id ? 'Envoyé par votre alerte Utopicar. Pour ne plus recevoir ces e-mails, désactivez l\'e-mail de cette alerte dans Mon espace › Alertes.' : 'Envoyé par votre recherche suivie UTOPICAR. Pour ne plus recevoir ces e-mails, décochez « E-mail » sur la recherche dans l\'onglet Recherches.'}</p></div>`;
   const first = list[0];
   const subject = `${list.length} nouvelle${list.length > 1 ? 's' : ''} ${v.nom}${first && first.prix != null ? ` · dès ${fmt(Math.min(...list.map((x: any) => x.prix ?? 1e9)))} €` : ''}`;
   return { subject, html };
+}
+
+// Écart à la cote du marché (médiane des annonces comparables) ; « sous_cote » (en %) : seulement les bonnes affaires.
+async function avecCote(v: any, list: any[]) {
+  const seuil = Number(v.filtres?.utp?.sous_cote) || 0;
+  const out: any[] = [];
+  for (const a of list) {
+    let cote: any = null;
+    try {
+      const { data } = await sb.rpc('cote_marche', { p_marque: a.marque || '', p_modele: a.modele || a.titre || '', p_annee: a.annee, p_km: a.km, p_energie: a.energie || '' });
+      if (data && Number(data.n) >= 5 && Number(data.mediane) > 0 && a.prix != null) cote = { n: data.n, mediane: Math.round(data.mediane), ecart: Math.round(data.mediane - a.prix) };
+    } catch (_) { /* sans cote */ }
+    if (seuil > 0 && !(cote && cote.ecart >= cote.mediane * seuil / 100)) continue;
+    out.push({ ...a, cote });
+  }
+  return out.sort((x, y) => (y.cote?.ecart ?? -1e9) - (x.cote?.ecart ?? -1e9));
 }
 
 async function collect(v: any, R: Record<string, string>) {
@@ -206,8 +226,11 @@ async function collect(v: any, R: Record<string, string>) {
   } else err = `Run Apify ${run.status}` + (run.statusMessage ? ` : ${String(run.statusMessage).slice(0, 160)}` : '');
   // pas d'e-mail au tout premier passage d'une recherche (vous êtes devant l'écran, et tout serait « nouveau »)
   const { count: deja } = !err && res.nouvelles > 0 ? await sb.from('veille_passages').select('id', { count: 'exact', head: true }).eq('veille_id', v.id).eq('statut', 'ok') : { count: 0 } as any;
-  if (!err && res.nouvelles > 0 && (deja || 0) > 0 && v.notifier !== false && R.resend_key && R.email_notif) {
-    try { const m = mailNouvelles(v, res.fresh || []); mail = await sendMail(R, m.subject, m.html); } catch (e) { mail = 'erreur : ' + String((e as Error).message || e).slice(0, 160); }
+  if (!err && res.nouvelles > 0 && (deja || 0) > 0 && v.notifier !== false && R.resend_key && (v.email || R.email_notif)) {
+    try {
+      const list = await avecCote(v, res.fresh || []);
+      if (list.length) { const m = mailNouvelles(v, list); mail = await sendMail(R, m.subject, m.html, v.email); } else mail = 'aucune sous la cote';
+    } catch (e) { mail = 'erreur : ' + String((e as Error).message || e).slice(0, 160); }
   }
   await sb.from('veille_passages').update({ fin: new Date().toISOString(), statut: err ? 'erreur' : 'ok', trouvees: res.recues, recues: res.recues, nouvelles: res.nouvelles, cout_usd: cout, erreur: err, mail, recentes: res.recentes ?? null }).eq('id', v.run_passage);
   await sb.from('veilles').update({ derniere_erreur: err, derniers_nouveaux: res.nouvelles, ...(res.prochain ? { prochain_nb: res.prochain } : {}) }).eq('id', v.id);
