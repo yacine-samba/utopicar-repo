@@ -259,9 +259,11 @@ footer .disc{flex-basis:100%;margin:0;font-size:12.5px}
 .skip:focus-within{top:calc(env(safe-area-inset-top,0px) + 12px)}
 .skip a,.skip button{display:inline-flex;align-items:center;min-height:44px;padding:10px 18px;border-radius:999px;border:0;background:var(--ink);color:#15110d;font:600 14px var(--body);text-decoration:none;cursor:pointer}
 main:focus{outline:none}
-.rot{display:inline-grid;justify-items:start}
+/* Mot animé du titre : sur sa propre ligne, centré, hauteur réservée par .sz (pas de saut, pas de vide après « est »).
+   Le dégradé .it est porté par le mot visible (.ty) seulement : posé sur .rot, il dessinait aussi les mots cachés. */
+.rot{display:grid;justify-items:center}
 .rot>.sz{grid-area:1/1}
-.rot>.ty{position:absolute;left:0;right:0;top:0;white-space:nowrap;background:inherit;-webkit-background-clip:text;background-clip:text}
+.rot>.ty{position:absolute;left:0;right:0;top:0;text-align:center;white-space:nowrap}
 .rot>.sz{display:inline-grid;visibility:hidden;padding-right:.18em;pointer-events:none}
 .rot>.sz>span{grid-area:1/1;white-space:nowrap}
 .chip label{position:relative}

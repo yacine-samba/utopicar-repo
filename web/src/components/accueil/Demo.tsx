@@ -22,20 +22,20 @@ type Exemple = {
 
 const EXEMPLES: Record<string, Exemple> = {
   clio: {
-    onglet: "Clio IV", titre: "Renault Clio IV 1.5 dCi 90 Intens", prix: 7400, infos: "2015 · 142 000 km · Diesel · Manuelle", lieu: "Particulier · Melun (77)", photos: "12 photos", couleur: "#3a342e",
+    onglet: "Clio IV", titre: "Renault Clio IV 1.5 dCi 90 Intens", prix: 7400, infos: "2015 · 142 000 km · Diesel · Manuelle", lieu: "Particulier · Melun (77)", photos: "12 photos", couleur: "#3a342e",
     citation: [{ t: "« Très bon état, CT ok, " }, { t: "petit bruit à l'embrayage", m: true }, { t: ", " }, { t: "pneus à prévoir", m: true }, { t: ". Prix ferme, affaire à saisir. »" }],
     score: 48, ton: "bad", verdict: "Fausse bonne affaire", phrase: "18 % au-dessus de la cote une fois les travaux comptés.",
     lignes: [
       { l: "Cote du marché", s: "Même version, même âge, même kilométrage", v: 6950 },
-      { l: "Défauts repérés dans le texte", s: "Embrayage (500 à 900 €) · pneus (150 à 350 €)", v: 800, sens: "up", avant: "+ " },
+      { l: "Défauts repérés dans le texte", s: "Embrayage (500 à 900 €) · pneus (150 à 350 €)", v: 800, sens: "up", avant: "+\u00a0" },
       { l: "Prix réel (prix + travaux)", s: "Au-dessus de la cote", v: 8200, sens: "up" },
       { l: "Prix à proposer", s: "Pour garder le prix réel sous la cote", v: 6100, sens: "cle" },
     ],
     message: "Bonjour, votre Clio est-elle toujours disponible ? Vous parlez d'un bruit à l'embrayage : a-t-il été diagnostiqué ?",
   },
   p208: {
-    onglet: "208", titre: "Peugeot 208 1.6 BlueHDi 100 Active", prix: 7900, infos: "2016 · 118 000 km · Diesel · Manuelle", lieu: "Particulier · Évry (91)", photos: "18 photos", couleur: "#2f3a44",
-    citation: [{ t: "« Entretien Peugeot, " }, { t: "courroie faite à 110 000 km", m: true }, { t: ", factures, CT vierge. Vente cause achat familiale. »" }],
+    onglet: "208", titre: "Peugeot 208 1.6 BlueHDi 100 Active", prix: 7900, infos: "2016 · 118 000 km · Diesel · Manuelle", lieu: "Particulier · Évry (91)", photos: "18 photos", couleur: "#2f3a44",
+    citation: [{ t: "« Entretien Peugeot, " }, { t: "courroie faite à 110 000 km", m: true }, { t: ", factures, CT vierge. Vente cause achat familiale. »" }],
     score: 82, ton: "ok", verdict: "Bonne affaire", phrase: "Sous la cote, entretien prouvé : à appeler vite.",
     lignes: [
       { l: "Cote du marché", s: "Même version, même âge, même kilométrage", v: 8450 },
@@ -46,12 +46,12 @@ const EXEMPLES: Record<string, Exemple> = {
     message: "Bonjour, votre 208 est-elle toujours disponible ? Je peux passer la voir cette semaine : les factures d'entretien sont-elles disponibles ?",
   },
   yaris: {
-    onglet: "Yaris", titre: "Toyota Yaris III 1.33 VVT-i Dynamic", prix: 8900, infos: "2014 · 96 000 km · Essence · Manuelle", lieu: "Professionnel · Meaux (77)", photos: "9 photos", couleur: "#44322b",
+    onglet: "Yaris", titre: "Toyota Yaris III 1.33 VVT-i Dynamic", prix: 8900, infos: "2014 · 96 000 km · Essence · Manuelle", lieu: "Professionnel · Meaux (77)", photos: "9 photos", couleur: "#44322b",
     citation: [{ t: "« Première main, " }, { t: "carnet partiel", m: true }, { t: ", " }, { t: "plaquettes à changer", m: true }, { t: ". Garantie 3 mois. »" }],
     score: 61, ton: "warn", verdict: "À négocier", phrase: "Moteur fiable, mais prix au-dessus de la cote.",
     lignes: [
       { l: "Cote du marché", s: "Même version, même âge, même kilométrage", v: 8300 },
-      { l: "Défauts repérés dans le texte", s: "Plaquettes (150 à 400 €) · carnet incomplet", v: 275, sens: "up", avant: "+ " },
+      { l: "Défauts repérés dans le texte", s: "Plaquettes (150 à 400 €) · carnet incomplet", v: 275, sens: "up", avant: "+\u00a0" },
       { l: "Prix réel (prix + travaux)", s: "Au-dessus de la cote", v: 9175, sens: "up" },
       { l: "Prix à proposer", s: "Demander les factures manquantes", v: 8000, sens: "cle" },
     ],
@@ -60,7 +60,7 @@ const EXEMPLES: Record<string, Exemple> = {
 };
 const CLES = Object.keys(EXEMPLES);
 const ETAPES = ["Lecture du texte et des photos", "Estimation de la cote du marché", "Recherche des 38 défauts qui coûtent cher", "Calcul du prix à proposer"];
-const euros = (v: number) => (v < 0 ? "− " : "") + Math.abs(Math.round(v)).toLocaleString("fr-FR") + " €";
+const euros = (v: number) => (v < 0 ? "−\u00a0" : "") + Math.abs(Math.round(v)).toLocaleString("fr-FR") + "\u00a0€";
 const TON = { ok: "text-ok border-ok/40 bg-ok/10", warn: "text-warn border-warn/40 bg-warn/10", bad: "text-bad border-bad/40 bg-bad/10" };
 const ANNEAU = { ok: "#3ecb7f", warn: "#ffc53d", bad: "#ff7a7a" };
 
@@ -103,7 +103,7 @@ function Valeur({ ligne, actif, delai }: { ligne: Ligne; actif: boolean; delai: 
   const v = useCompte(Math.abs(ligne.v), go);
   return (
     <span className={cx("num font-display text-lg font-semibold", ligne.sens === "up" && "text-bad", ligne.sens === "dn" && "text-ok", ligne.sens === "cle" && "text-o2")}>
-      {(ligne.avant ?? "") + (ligne.v < 0 ? "− " : "") + Math.round(v).toLocaleString("fr-FR") + " €"}
+      {(ligne.avant ?? "") + (ligne.v < 0 ? "−\u00a0" : "") + Math.round(v).toLocaleString("fr-FR") + "\u00a0€"}
     </span>
   );
 }
@@ -226,7 +226,7 @@ export function Demo() {
             <ol className="grid gap-3">
               {ETAPES.map((e, i) => (
                 <li key={e} className={cx("flex items-center gap-3 text-sm transition", i < etape ? "text-ink-2" : i === etape ? "text-ink" : "text-ink-3/60")}>
-                  <span className={cx("grid size-5 place-items-center rounded-full border text-[10px]", i < etape ? "border-ok bg-ok/20 text-ok" : i === etape ? "animate-pulse border-o" : "border-line-2")} aria-hidden="true">
+                  <span className={cx("grid size-5 shrink-0 place-items-center rounded-full border text-[10px]", i < etape ? "border-ok bg-ok/20 text-ok" : i === etape ? "animate-pulse border-o" : "border-line-2")} aria-hidden="true">
                     {i < etape ? "✓" : ""}
                   </span>
                   {e}

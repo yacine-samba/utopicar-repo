@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Instrument_Serif } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { EnTete } from "@/components/site/EnTete";
 import { Pied } from "@/components/site/Pied";
 import { Onboarding } from "@/components/site/Onboarding";
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="fr" className={serif.variable}>
       <head>
         <link rel="preconnect" href="https://api.fontshare.com" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="" />
         <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=satoshi@400,500,700&display=swap" />
       </head>
       <body>
@@ -36,6 +38,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Pied />
         <Onboarding />
         <Apparitions />
+        <SpeedInsights />
       </body>
     </html>
   );

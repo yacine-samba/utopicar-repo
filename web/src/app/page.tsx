@@ -26,20 +26,20 @@ export default async function Accueil() {
       <section className="relative overflow-hidden pb-16 pt-14 text-center sm:pt-20">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_80%_55%_at_50%_0,#000_25%,transparent_78%)]" aria-hidden="true" />
         <div className="wrap">
-          <span className="kicker apparait">Pour acheter une occasion ou la revendre</span>
-          <h1 className="apparait mx-auto mt-6 max-w-[17ch] font-display text-[clamp(38px,7vw,78px)] font-semibold leading-[1.02] tracking-[-0.03em]" style={{ "--i": 1 } as React.CSSProperties}>
+          <span className="kicker arrivee">Pour acheter une occasion ou la revendre</span>
+          <h1 className="arrivee mx-auto mt-6 max-w-[17ch] font-display text-[clamp(38px,7vw,78px)] font-semibold leading-[1.02] tracking-[-0.03em]" style={{ "--i": 1 } as React.CSSProperties}>
             Voyez en 10 secondes si une occasion est <Rotateur mots={["une vraie affaire", "une arnaque", "à négocier", "au bon prix"]} />
           </h1>
-          <p className="apparait mx-auto mt-6 max-w-2xl text-lg text-ink-2 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
+          <p className="arrivee mx-auto mt-6 max-w-2xl text-lg text-ink-2 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
             Collez une annonce Leboncoin, La Centrale ou AutoScout24. Utopicar estime sa cote, repère les défauts qui coûtent cher et vous dit quoi faire.
           </p>
-          <div className="apparait mt-9 flex flex-wrap justify-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
+          <div className="arrivee mt-9 flex flex-wrap justify-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
             <Link href="/analyse" className="btn btn-o">
               Estimer une affaire <span aria-hidden="true">→</span>
             </Link>
             <BoutonOnboarding>M&apos;orienter en 3 questions</BoutonOnboarding>
           </div>
-          <ul className="apparait mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-2" style={{ "--i": 4 } as React.CSSProperties}>
+          <ul className="arrivee mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-2" style={{ "--i": 4 } as React.CSSProperties}>
             <li className="flex items-center gap-2">
               <Coche />
               Première analyse offerte
@@ -100,11 +100,11 @@ export default async function Accueil() {
                 <path d="M0 160 C60 158 110 150 160 120 S250 30 300 34 S400 110 450 140 S560 158 600 160 Z" fill="url(#aire)" />
                 <path d="M0 160 C60 158 110 150 160 120 S250 30 300 34 S400 110 450 140 S560 158 600 160" fill="none" stroke="#ff8a4c" strokeWidth="2.5" />
                 <line x1="300" x2="300" y1="30" y2="170" stroke="rgb(244 241 236 / .35)" strokeDasharray="4 5" />
-                <text x="306" y="24" fill="#f4f1ec" fontSize="14">Cote 6 950 €</text>
+                <text x="306" y="24" fill="#f4f1ec" fontSize="14" className="max-sm:text-[22px]">Cote 6 950 €</text>
                 <circle cx="408" cy="118" r="7" fill="#ff5a1f" />
-                <text x="420" y="112" fill="#ff8a4c" fontSize="14">Annonce 7 400 €</text>
-                <text x="4" y="192" fill="rgb(244 241 236 / .62)" fontSize="13">5 000 €</text>
-                <text x="530" y="192" fill="rgb(244 241 236 / .62)" fontSize="13">9 000 €</text>
+                <text x="420" y="112" fill="#ff8a4c" fontSize="14" className="max-sm:text-[22px]">Annonce 7 400 €</text>
+                <text x="4" y="194" fill="rgb(244 241 236 / .62)" fontSize="13" className="max-sm:text-[20px]">5 000 €</text>
+                <text x="596" y="194" textAnchor="end" fill="rgb(244 241 236 / .62)" fontSize="13" className="max-sm:text-[20px]">9 000 €</text>
               </svg>
             </article>
             <article className="carte apparait p-6 md:col-span-2" style={{ "--i": 1 } as React.CSSProperties}>
@@ -278,7 +278,7 @@ export default async function Accueil() {
               Estimer une affaire <span aria-hidden="true">→</span>
             </Link>
             <p className="mx-auto mt-10 flex w-fit items-center gap-3 text-left text-sm text-ink-3">
-              <span className="grid size-10 place-items-center rounded-full bg-o/15 font-display text-o2" aria-hidden="true">
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-o/15 font-display text-o2" aria-hidden="true">
                 Y
               </span>
               <span>

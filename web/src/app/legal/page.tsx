@@ -117,7 +117,7 @@ export default function Legal() {
               </li>
             ))}
           <li>
-            {GUIDE.nom} : {GUIDE.prix} €, paiement unique, accès sans limite de durée.
+            {GUIDE.nom} : {GUIDE.prix}&nbsp;€, paiement unique, accès sans limite de durée.
           </li>
         </ul>
         <h3>Abonnement</h3>

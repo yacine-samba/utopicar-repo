@@ -16,8 +16,8 @@ export function Symbole({ className = "h-5 w-auto" }: { className?: string }) {
 export function Logo({ sous }: { sous?: string }) {
   return (
     <span className="flex items-center gap-2.5">
-      <span className="grid size-9 place-items-center rounded-xl border border-line-2 bg-[#15110d]">
-        <Symbole className="h-3.5 w-auto" />
+      <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-xl border border-line-2 bg-[#15110d]">
+        <Symbole className="h-auto w-[84%]" />
       </span>
       <span className="font-display text-lg font-semibold tracking-tight">
         utopicar{sous && <small className="ml-1.5 text-sm font-medium text-o2">{sous}</small>}

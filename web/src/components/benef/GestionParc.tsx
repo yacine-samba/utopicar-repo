@@ -7,7 +7,7 @@ import { joursStock, margeReelle, STATUTS_PARC, type Vehicule } from "@/lib/parc
 import { cx, inputCls } from "../ui";
 import { ExportCsv } from "./ExportCsv";
 
-const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")} €`);
+const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")}\u00a0€`);
 const ent = (s: string) => (s.trim() === "" ? null : Math.max(0, Math.round(Number(s.replace(/[\s €]/g, "").replace(",", "."))) || 0));
 
 function Fiche({ v, onFini }: { v: Partial<Vehicule>; onFini: () => void }) {

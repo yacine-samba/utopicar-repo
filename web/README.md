@@ -15,7 +15,7 @@ Ton : vouvoiement partout, y compris dans les guides.
 | `/analyse` | Outil particulier : verdict, coût réel d'achat, points à vérifier ; selon la formule : prix à proposer, questions, comment négocier, quoi contrôler sur place, faut-il y aller seul. |
 | `/analyse/[id]` | Une analyse enregistrée. |
 | `/app` | Espace Benef : tableau de bord, analyser, rapports, comparer, parc, recherche. `/benefapp` y redirige. |
-| `/guide` | Les 4 guides : 2 chapitres offerts, la suite pour les acheteurs du guide et les abonnés Sérénité et Benef. Les anciens liens personnels reçus par email (lecture et désinscription) fonctionnent toujours. |
+| `/guide` | Les 4 guides : 2 chapitres offerts, la suite pour les acheteurs du guide et les abonnés Sérénité et Benef. Les anciens liens personnels reçus par email (lecture et désinscription, y compris `/benef/guide`) fonctionnent toujours. |
 | `/inscription`, `/connexion`, `/compte` | Comptes (email et mot de passe, lien de connexion, mot de passe oublié), formule, quota, abonnement, profil, suppression du compte. |
 | `/legal` | Mentions, confidentialité, conditions d'utilisation, conditions de vente, accessibilité, contact. |
 
@@ -55,17 +55,17 @@ Une analyse n'est décomptée que si elle aboutit. La copie de l'extension Chrom
 | `STRIPE_SECRET_KEY` | paiements |
 | `STRIPE_WEBHOOK_SECRET` | signature du webhook |
 | `NEXT_PUBLIC_SITE_URL` | `https://utopicar.fr` |
-| `UTP_KEY` | protège `/api/probe` (repris de l'ancien `api/probe.js`) |
+| `UTP_KEY` | protège `/api/probe` (repris de `legacy/api/probe.js`) |
 | `UTOPICAR_DEMO` | `1` seulement pour tester sans Supabase : analyses sans compte, rien n'est enregistré |
 
 Sans les variables Supabase, le site s'affiche et les comptes sont fermés (« ouvrent très bientôt »).
 
 ## Mise en service, dans l'ordre
 
-1. **Base de données** : appliquer `supabase/migrations/20261003000000_comptes_abonnements.sql` au projet Supabase (tables `profils`, `abonnements`, `achats`, `usages`, `rapports`, `parc`, avec RLS). Elle ne touche à aucune table existante.
+1. **Base de données** : fait. `../supabase/migrations/20261003000000_comptes_abonnements.sql` est appliquée au projet Supabase (tables `profils`, `abonnements`, `achats`, `usages`, `rapports`, `parc`, avec RLS).
 2. **Supabase Auth** : Site URL `https://utopicar.fr` ; URL de redirection `https://utopicar.fr/auth/confirm` (plus le domaine de prévisualisation Vercel) ; envoi des emails par SMTP Resend (l'envoi par défaut de Supabase est très limité).
 3. **Stripe** : `STRIPE_SECRET_KEY=sk_... node stripe/prix.mjs` crée les produits et les prix. Puis, dans Stripe : webhook vers `https://utopicar.fr/api/stripe/webhook` (`checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`) ; portail client avec changement de formule et résiliation.
-4. **Vercel** : projet `utopicar` (déjà relié à ce dépôt) avec **Root Directory = `web`** et les variables ci-dessus. Vérifier la prévisualisation, puis déplacer les domaines `utopicar.fr` et `www.utopicar.fr` depuis le projet `utopicar-garage`.
+4. **Vercel** : projet `utopicar`, relié à ce dépôt, Root Directory `web` (fait). Ajouter les variables ci-dessus, vérifier la prévisualisation, puis déplacer les domaines `utopicar.fr` et `www.utopicar.fr` depuis le projet `utopicar-garage` (site statique de `sites/utopicar/`). Les liens déjà envoyés par email (`/guide?t=`, `/guide?stop=`, `/benef/guide`) continuent de marcher.
 5. **Avant d'encaisser** : compléter dans `/legal` le numéro SIRET et le médiateur de la consommation.
 6. **Ancienne fonction Supabase `inscription`** : elle envoie encore le guide gratuitement à toute inscription. Une fois le nouveau site en ligne, couper la création de nouveaux liens (garder `lire` et `stop` pour les liens déjà envoyés).
 

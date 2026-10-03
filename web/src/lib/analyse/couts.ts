@@ -22,7 +22,7 @@ export type Analyse = {
 };
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
-export const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;
+export const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")}\u00a0€`;
 
 /* ---------- postes de travaux : annonce (règles fixes) + photos et entretien (IA) ---------- */
 export function postes(a: Analyse): Defaut[] {
@@ -135,7 +135,7 @@ export function dealPro(a: Analyse, p: ParamsPro, prixSaisi: number | null, dist
     { l: prixSaisi != null ? "Votre prix" : "Prix demandé", d: "", v: prix != null ? -prix : null },
     { l: "Remise en état", d: chiffrables.length ? `${chiffrables.length} poste(s), fourchette haute` : "Aucun poste chiffré", v: -remise },
     { l: "Carte grise", d: cg.d, v: cg.v == null ? null : -cg.v },
-    { l: "Trajet", d: dist != null ? `${dist} km × 2 × ${p.kmCost.toLocaleString("fr-FR")} €` : "Distance inconnue", v: trajet == null ? null : -trajet },
+    { l: "Trajet", d: dist != null ? `${dist} km × 2 × ${p.kmCost.toLocaleString("fr-FR")}\u00a0€` : "Distance inconnue", v: trajet == null ? null : -trajet },
     { l: "Frais fixes", d: "CT, nettoyage, annonce", v: -p.fraisFixes },
   ];
   return { prix, revente, remise, cg, trajet, dist, couts, gain, plafond, offre, note, cap, verdict, lignes, postes: P, etat: E, flags, nonChiffrables };
@@ -189,7 +189,7 @@ export function coutParticulier(a: Analyse, p: ParamsPart, distanceSaisie: numbe
   const lignes = [
     { l: "Prix demandé", d: "", v: prix },
     { l: "Carte grise", d: cg.v == null ? "Puissance fiscale inconnue" : cg.d, v: cg.v },
-    { l: "Trajet aller-retour", d: dist != null ? `${dist} km × 2 × ${p.kmCost.toLocaleString("fr-FR")} €` : "Indiquez votre ville", v: trajet },
+    { l: "Trajet aller-retour", d: dist != null ? `${dist} km × 2 × ${p.kmCost.toLocaleString("fr-FR")}\u00a0€` : "Indiquez votre ville", v: trajet },
     { l: "Contrôle technique", d: ctOk ? "CT récent annoncé" : "À prévoir si le vendeur ne le fournit pas", v: ct },
     { l: "Petites réparations", d: petites.length ? `${petites.length} point(s), entre ${eur(repMin)} et ${eur(repMax)}` : "Rien de signalé", v: rep },
   ];

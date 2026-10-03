@@ -29,7 +29,7 @@ function Verrou({ titre, texte, offre }: { titre: string; texte: string; offre: 
       <h2 className="mt-1 font-display text-lg font-semibold">{titre}</h2>
       <p className="mt-1 text-ink-2">{texte}</p>
       <Link href="/tarifs#particuliers" className="btn btn-sm mt-4">
-        Découvrir {o.nom}, {o.prix.toLocaleString("fr-FR")} € par mois
+        Découvrir {o.nom}, {o.prix.toLocaleString("fr-FR")}&nbsp;€ par mois
       </Link>
     </section>
   );
@@ -101,7 +101,7 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
                 {l.l}
                 {l.d && <span className="block text-xs text-ink-3">{l.d}</span>}
               </span>
-              <span className="num shrink-0 text-ink-2">{l.v == null ? "—" : l.v === 0 ? "0 €" : (l.l === "Prix demandé" ? "" : "+ ") + eur(l.v)}</span>
+              <span className="num shrink-0 text-ink-2">{l.v == null ? "—" : l.v === 0 ? "0\u00a0€" : (l.l === "Prix demandé" ? "" : "+\u00a0") + eur(l.v)}</span>
             </li>
           ))}
         </ul>
