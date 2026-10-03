@@ -43,6 +43,11 @@ Les droits sont appliqués côté serveur : quotas dans `/api/analyse`, parties 
 
 Une analyse n'est décomptée que si elle aboutit. La copie de l'extension Chrome (texte et photos) est reconnue au collage.
 
+**Import par lien (Leboncoin)** : on colle le lien de l'annonce, la fonction Supabase `annonce` lance l'acteur Apify
+`silentflow~leboncoin-details-scraper-ppr` (jeton `apify_token` de la table `reglages`, jamais côté navigateur), renvoie
+l'annonce et jusqu'à 6 photos, puis l'analyse démarre toute seule. Environ une minute, environ 0,001 $ par annonce.
+Réservé aux personnes connectées, 30 imports par jour et par personne (table `imports_annonces`).
+
 ## Variables d'environnement (Vercel)
 
 | Variable | Rôle |
