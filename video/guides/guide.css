@@ -1,0 +1,63 @@
+/* Guides utopicar (PDF A4) — couleurs du pack logo : orange #ff5a1f, bitume #15110d, papier #f4f1ec */
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;src:url(../assets/site/Archivo-latin.woff2) format('woff2');}
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--or:#ff5a1f;--bi:#15110d;--pa:#f4f1ec;--ink:#1d1814;--mute:#6b6259;--line:#e3ddd4;--soft:#fbf9f6}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Archivo',sans-serif;color:var(--ink);font-size:12pt;line-height:1.48;-webkit-font-smoothing:antialiased}
+.page{width:210mm;height:297mm;padding:20mm 18mm 18mm;position:relative;overflow:hidden;page-break-after:always;background:#fff}
+.page:last-child{page-break-after:auto}
+.foot{position:absolute;left:18mm;right:18mm;bottom:9mm;display:flex;justify-content:space-between;align-items:center;font-size:8.5pt;color:var(--mute)}
+.foot img{height:16px}
+/* couverture */
+.cover{background:var(--bi);color:var(--pa);padding:26mm 20mm}
+.cover .logo{height:56px;display:block}
+.cover .lvl{display:inline-block;margin-top:44mm;background:var(--or);color:var(--bi);font-weight:800;font-size:12pt;letter-spacing:.08em;padding:6px 14px;border-radius:8px}
+.cover h1{font-weight:800;font-size:40pt;line-height:1.02;letter-spacing:-.02em;margin-top:8mm}
+.cover h1 em{font-style:normal;color:var(--or)}
+.cover .sub{font-size:14pt;line-height:1.45;color:#cfc7bd;margin-top:8mm;max-width:150mm}
+.cover .toc{position:absolute;left:20mm;right:20mm;bottom:26mm;border-top:1px solid #3a3129;padding-top:7mm;display:grid;grid-template-columns:1fr 1fr;gap:3mm 10mm;font-size:10.5pt;color:#e9e3db}
+.cover .toc b{color:var(--or);font-weight:800;margin-right:6px}
+.cover .demo{position:absolute;right:20mm;top:28mm;font-size:8.5pt;color:#9b9186}
+/* titres */
+.kick{font-weight:800;font-size:9.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--or)}
+h2{font-weight:800;font-size:27pt;line-height:1.08;letter-spacing:-.015em;margin:2mm 0 6mm}
+h3{font-weight:800;font-size:14pt;margin:5.5mm 0 2mm}
+p{margin:0 0 3mm}
+.lead{font-size:13.2pt;line-height:1.45;color:#3d352e;margin-bottom:6mm}
+ul,ol{margin:0 0 3mm 5mm}
+li{margin:0 0 1.6mm}
+b,strong{font-weight:800}
+/* encadrés */
+.box{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:5mm 6mm;margin:4mm 0}
+.box.or{background:#fff2ec;border-color:#ffc9b3}
+.box.dark{background:var(--bi);border-color:var(--bi);color:var(--pa)}
+.box.dark b{color:var(--or)}
+.box h4{font-weight:800;font-size:10.5pt;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2mm;color:var(--or)}
+.formula{font-weight:800;font-size:15.5pt;line-height:1.45}
+.formula span{color:var(--or)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
+.rule{display:flex;gap:5mm;align-items:flex-start;margin:4mm 0}
+.rule .n{flex:none;width:12mm;height:12mm;border-radius:50%;background:var(--or);color:var(--bi);font-weight:800;font-size:15pt;display:flex;align-items:center;justify-content:center}
+.rule h3{margin:1mm 0 1mm}
+/* tableaux */
+table{width:100%;border-collapse:collapse;font-size:11pt;margin:2.5mm 0}
+td,th{padding:1.8mm 3mm;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:9pt;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:700}
+td.r,th.r{text-align:right;white-space:nowrap}
+tr.tot td{border-top:2px solid var(--ink);border-bottom:0;font-weight:800;font-size:12pt}
+.neg{color:#d93a2b}.pos{color:#0e8f63}
+.tag{display:inline-block;font-size:8.5pt;font-weight:700;color:var(--mute);background:#efeae3;border-radius:5px;padding:1px 6px;margin-left:4px;vertical-align:1px}
+/* checklist */
+.check{list-style:none;margin:2mm 0 0}
+.check li{display:flex;gap:3.5mm;align-items:flex-start;margin:0 0 3.2mm}
+.check li::before{content:'';flex:none;width:4.6mm;height:4.6mm;border:2px solid var(--or);border-radius:3px;margin-top:.6mm}
+.cols{columns:2;column-gap:10mm}
+.cols li{break-inside:avoid}
+.note{font-size:10pt;color:var(--mute);line-height:1.45}
+/* dernière page */
+.end{background:var(--bi);color:var(--pa)}
+.end h2{color:var(--pa)}
+.end .lead{color:#d8d0c6}
+.end .box{background:#211b16;border-color:#3a3129;color:var(--pa)}
+.end .check li::before{border-color:var(--or)}

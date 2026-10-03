@@ -347,3 +347,57 @@ Versions sans voix : même film, « Écoute. » → « Regarde. » (1,5–2,9 s 
 Mesures `qa_video.py` sur les 4 MP4 finaux : 10 contrôles OK sur 10 (zones sûres, image 0, aucune image vide, aucun plan
 figé, −14,0 LUFS, true peak −3,1 à −1,6 dBTP, son dès les 2 premières secondes, 24–33 % d'énergie sous 150 Hz).
 Son mesuré, pas écouté.
+
+## MO1 v2 (`film-mo1b/`) : voix de Simon plus naturelle, éléments graphiques animés, curseur actif
+Retours : plus de mouvement et de graphiques dans la vidéo, une voix moins « IA » (pauses, vraies phrases, mimiques,
+personnalité) et un curseur de MO2 « sans vie ». Détail dans `brief-mo1b.md`.
+- Round 1 (planche contact 1 image / 2 s) : « Regarde. » plus large que le chrono (dépassait à droite) → les deux mots
+  tiennent dans l'anneau ; « =SOMME(B2:B9) » recouvert par « #REF! » → colonnes du tableur recalées ; calendrier
+  « jours en stock » hors zone droite → réduit et rentré ; au CTA, la goutte passait devant le logo → elle tourne
+  derrière.
+- Round 2 (`qa_video.py`) : compteur « + 300 € » collé en haut de l'écran pendant 0,3 s (échelle calculée à NaN avant
+  le premier ticket de frais) → corrigé ; tampon NO GO, réglette de prix et « cote 7 850 € » dans la zone des boutons
+  TikTok → rentrés ; la goutte recouvrait « 6 k€ » → réglette remontée.
+- Round 3 (rendus finaux) : restent en WARN le curseur qui entre par la droite et le tampon NO GO pendant son impact
+  (< 0,25 s, échelle 2,2) ; l'image « vide » à 16,5 s est la fleur orange plein écran de la transition, voulue.
+Plages corrigées rendues à part puis incrustées avec `scripts/splice.py` (1 879 images contrôlées).
+Mesures : −14,0 LUFS sur les deux ; true peak −2,8 dBTP (voix) et −3,3 dBTP (sans voix) ; son dès les 2 premières
+secondes ; aucun plan figé. Son mesuré, pas écouté.
+
+## Recentrage sur l'axe de l'écran (retour utilisateur : « tout est décalé à gauche, c'est bâclé »)
+Mesure du centre de l'encre de chaque bloc sur les images rendues (`center.py`, bande par bande) :
+- carrousels (150 images), pubs 1-3 et explainer60 : tout était centré sur x = 500 (centre de la zone sûre 60 → 940),
+  soit 40 px à gauche de l'axe de l'écran ; MO1, MO2 et MO1 v2 : cartons centrés à ± 3 px, mais dans MO1 v2 les fiches
+  du parc étaient posées à x = 470 pour laisser place au calendrier.
+- Corrections : carrousels sur une colonne symétrique 140 → 940 (captures ≤ 790 px, garde-fou de largeur) ; pubs et
+  explainer60 : tout le contenu (hors fonds) recentré d'un bloc (+ 40 px, × 0,909 autour de x = 500 : 60 → 140,
+  940 → 940) ; MO1 v2 : parc centré, calendrier sous les fiches.
+- Après : écart médian des blocs larges − 0,5 px (carrousels), + 1 à + 2 px (pubs), − 1 px (explainer60), + 1 px (MO1 v2).
+  Les écarts restants sont voulus (texte aligné à gauche dans les captures, curseur, tampons inclinés, entrées en cours).
+Règle ajoutée à `video/CLAUDE.md` et au skill motion-studio : centrer sur x = 540, jamais sur le centre de la zone sûre.
+
+## MO3 (`film-mo3/`) : plus d'humain, gros hooks, d'après la référence 5
+Brief et script : `brief-mo3.md`. Grammaire mesurée image par image : `docs/ref5_style_guide.md`
+(`scripts/ref-frames.py`, 4 246 images lues, planches à 0,1 s). Voix : Simon (eleven_v3), 2 prises par bloc,
+choisies sur transcription (prise du corps B écartée : une phrase manquante) ; silences resserrés et régions de parole
+mesurées sur l'énergie (`vo-mo3.py`) car whisper glisse jusqu'à 1 s aux pauses.
+- Round 1 (images clés) : titre de l'annonce sur deux lignes, compteur collé à la mention démo, « Je sais ce qu'il me
+  reste » coupé au mauvais endroit, éclat de traits sur « 7 500 € » → corrigés ; « − 1 200 € » (B) plus large que
+  l'écran → ajusté à la colonne de 800 px.
+- Round 2 (images clés des ouvertures) : image 0 presque vide en A et C, image vide au raccord de B (le chiffre sortait
+  avant l'arrivée des frais) → l'ouverture chevauche la pluie de frais ; lignes de vitesse qui barraient le chiffre →
+  deux bandes au-dessus et au-dessous.
+- Round 3 (notre rendu repassé dans `ref-frames.py`) : une scène toutes les 2,07 s (réf. 2,14 s), mais ouverture A
+  figée 3,2 s (réf. : une nouveauté toutes les 0,8 s) et deux images presque vides (9,0 s et 11,8 s) → la caméra suit
+  l'hésitation de Simon, cercle rouge tracé sur « − 1 200 € » pendant « Les frais. », raccords qui se chevauchent ;
+  traversée de « parfaite. » qui grisait l'écran → les lettres s'effacent avant.
+- Round 4 (`qa_video.py`) : avec la poussée de caméra, « Volkswagen Golf VII » et « Le prix » entraient dans la zone
+  des boutons TikTok (x 963) → carte réduite, poussée adoucie, mesuré : contenu entre x 200 et 909. Plage 0–4,8 s
+  rendue à part et incrustée (`splice.py`, FPS=60).
+Restent en WARN (transitoires, < 0,5 s) : le logo flou pendant la plongée, le curseur qui entre, l'éclat de traits
+autour de « 7 500 € ». Mesures sur les MP4 : −14,4 LUFS, true peak −4,0 dBTP, son dès l'image 0, aucune image vide,
+aucun plan figé. Son mesuré, pas écouté.
+- Round 5 (ouvertures B et C, `qa_video.py`) : en B, « − 1 200 € » glissait depuis la droite et débordait de la colonne
+  pendant 0,5 s (l'image vignette) → centré dès l'image 0, il vit en place (flou, échelle) ; mesuré x 177–926 sur
+  toute l'ouverture. Plage 0–4,4 s incrustée. Le WARN restant à 0–0,5 s vient des lignes de vitesse (décor).
+  C : aucun problème trouvé ; mêmes WARN transitoires que A.

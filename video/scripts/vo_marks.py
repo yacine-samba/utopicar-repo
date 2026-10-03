@@ -79,7 +79,8 @@ TL['voSource'] = source
 TL['voEnd'] = words[-1][2]
 # durée du film : la voix + 2,2 s de carton final (≤ 3 s), arrondie à l'image
 # sans voix (estimation) : carton final ≤ 3 s après le début du CTA ; avec voix : fin de la voix + 2,2 s
-TL['dur'] = min(60, round(((words[-1][2] + 2.2) if src else (marks.get('cta', words[-1][2]) + 2.8)) * TL['fps']) / TL['fps']); marks['end'] = TL['dur']; TL['marks'] = dict(sorted(marks.items(), key=lambda kv: kv[1]))
+# (MAXDUR=64 ENDHOLD=2.6 pour une voix plus posée qui dépasse 60 s)
+TL['dur'] = min(float(os.environ.get('MAXDUR', 60)), round(((words[-1][2] + float(os.environ.get('ENDHOLD', 2.2))) if src else (marks.get('cta', words[-1][2]) + 2.8)) * TL['fps']) / TL['fps']); marks['end'] = TL['dur']; TL['marks'] = dict(sorted(marks.items(), key=lambda kv: kv[1]))
 json.dump(TL, open(P, 'w'), ensure_ascii=False, indent=1)
 print(f'{source} : {len(words)} mots, fin de la voix {words[-1][2]:.2f} s, {len(marks)} repères')
 for k, v in TL['marks'].items(): print(f'  {k:10s} {v:6.2f}')

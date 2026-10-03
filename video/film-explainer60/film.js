@@ -3,7 +3,7 @@
 // numérotées sur la vraie interface : 1 Analyser, 2 Rapports, 3 Recherche en direct, 4 Parc, 5 Tableau de bord ; promesse
 // et CTA. Tous les repères viennent de la voix (timeline-explainer60.json, calculés par scripts/vo_marks.py à partir de
 // l'horodatage mot à mot) : changer de prise ne demande que de relancer vo_marks.py.
-// Zone sûre TikTok : x 60 → 940 (centre 500), y 220 → 1480. Contrat : window.seek(t) peint la frame t.
+// Zone sûre TikTok : x 60 → 940, y 220 → 1480 ; composé autour de x = 500 puis recentré sur x = 540 (voir « recentrage »). Contrat : window.seek(t) peint la frame t.
 const { spring, clamp, lerp, noise } = Motion;
 const { el, show, smooth, inOut, bump, place, crop, text, typeText, marker, cursor, moveCursor, hash } = Kit;
 const TL = await (await fetch('../timeline-explainer60.json')).json();
@@ -427,5 +427,10 @@ window.seek = function (t) {
 await document.fonts.ready;
 await document.fonts.load("800 76px 'Archivo'"); await document.fonts.load("400 76px 'Archivo'"); await document.fonts.load("600 27px 'Archivo'");
 for (const [b, s] of FITS) fitW(b, s);
+// recentrage : le film était composé autour de x = 500 (centre de la zone sûre) et paraissait décalé à gauche sur un
+// téléphone. Tout le contenu (hors fonds plein écran) passe sur l'axe de l'écran x = 540, colonne 140 → 940 (× 0,909).
+const view = el('div', 'layer', stage); view.style.overflow = 'visible';
+view.style.transformOrigin = '500px 850px'; view.style.transform = 'translate(40px,0px) scale(0.9091)';
+for (const c of [...stage.children]) if (c !== view && !c.classList.contains('grid')) { view.appendChild(c); if (c.classList.contains('layer')) c.style.overflow = 'visible'; }
 window.seek(0);
 window.filmReady = true;

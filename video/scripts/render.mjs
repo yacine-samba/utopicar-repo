@@ -23,12 +23,14 @@ const SIZE = { vertical: [1080, 1920], square: [1080, 1080], desktop: [1920, 108
 const TAG = { vertical: '9x16', square: '1x1', desktop: '16x9' }[FMT || 'vertical'];
 const VAR = (HOOK ? '-' + HOOK : '') + (LANG ? '-' + LANG : '');
 const TL = JSON.parse(fs.readFileSync(path.join(ROOT, `timeline${CUT}.json`), 'utf8'));
+// films dont la durée dépend de l'ouverture (timeline.hooks[HOOK].dur, ex. MO3) ; poster propre à l'ouverture
+if (TL.hooks && HOOK && TL.hooks[HOOK]) { TL.dur = TL.hooks[HOOK].dur; if (TL.hooks[HOOK].poster != null) TL.poster = TL.hooks[HOOK].poster; }
 const OUT = path.join(ROOT, 'renders');
 fs.mkdirSync(OUT, { recursive: true });
 const args = process.argv.slice(2);
 const opt = k => { const i = args.indexOf(k); return i < 0 ? null : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
 
-const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.woff2': 'font/woff2', '.css': 'text/css' };
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.woff2': 'font/woff2', '.css': 'text/css', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => {
   const p = path.join(ROOT, decodeURIComponent(req.url.split('?')[0]));
   if (!p.startsWith(ROOT) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) { res.writeHead(404); return res.end(); }

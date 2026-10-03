@@ -41,6 +41,11 @@
 | v7 | Voix écoutées à sec, hors contexte | Chaque extrait posé sur un lit musical calé sur ses mots (`voice_demo.py`, transcription mot à mot) |
 | v7 | Voix de la bibliothèque bloquées (« creator tier »), puis accès gratuit coupé par ElevenLabs en cours de casting | `estimate_only` sur chaque voix avant de promettre un casting ; le dire tout de suite ; l'offre se change côté utilisateur |
 | Git | Tentation de committer un MP4 en cours de rendu | Attendre la fin du rendu, expliquer au besoin |
+| Centrage | Tout centré sur x = 500 (centre de la zone sûre) : « tout est décalé à gauche, c'est bâclé » | Centre x = 540, colonne 140 → 940, centre de l'encre mesuré (± 4 px) |
+| Code | `a?.b ?? -9 + 0.12` : précédence mal lue → `NaN` dans un `transform`, compteur bloqué en haut | Parenthéser chaque `??`, tester le plan à l'image où l'élément doit bouger |
+| Réfs | Analyse à 0,5 s : coupes et transitions ratées | `ref-frames.py` image par image, planches 0,1 s, bandes −4…+4 images |
+| Réfs | Transcription en français forcé d'une voix anglaise : on obtient une traduction, pas les mots | Langue détectée (`--lang auto`) ; vérifier aussi que les sous-titres fournis sont bien ceux de la vidéo (réf. 5 : non) |
+| Réfs | « 4 coupes en 70 s » : le motion design enchaîne sans couper | Compter les **scènes** (corrélation basse définition sur ± 0,15 s), pas seulement les coupes : réf. 5 = 33 scènes, une toutes les 2,1 s |
 
 ## Ce qui a marché (à reprendre)
 

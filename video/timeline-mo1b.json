@@ -1,0 +1,1112 @@
+{
+ "version": 1,
+ "style": "MO1 v2 : voix de Simon naturelle (eleven_v3, prise A), éléments graphiques animés, curseur actif, logo officiel",
+ "fps": 30,
+ "dur": 62.63333333333333,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "poster": 20,
+ "voLead": 0.3,
+ "vo": "[casual] Tu fais de l'achat-revente auto ? [short pause] Bon… écoute-moi deux secondes.\n[sighs] Une Golf. Propre, entretenue, le vendeur est adorable.\n[sarcastic] Et une fois les frais payés ? [pause] Moins mille deux cents euros. [chuckles] Magnifique.\n[warmly] Alors maintenant, tu colles l'annonce dans utopicar. [short pause] Deux secondes… une note, un verdict, et ce qu'il te reste VRAIMENT.\n[mischievously] Avec le prix à ne jamais dépasser. Au téléphone, c'est toi qui tiens le chiffre.\n[curious] Deux voitures en tête ? Tu compares, tu gardes la meilleure.\n[excited] Et pendant que tu dors, il surveille les annonces. [short pause] Une Clio, mille quatre cent cinquante euros sous la cote ? [whispers] T'es le premier au courant.\n[warmly] Ton parc, ta marge, les jours en stock… tout est là. [chuckles] Fini le tableur du dimanche.\n[confident] Tu sais avant d'acheter. Tu revends avec de la marge.\n[excited] Commente DÉBUTANT ou PRO… [short pause] tu reçois le guide qui va avec, et ta place sur la liste d'attente.",
+ "anchors": {
+  "ecoute": "Bon écoute",
+  "golf": "Une Golf",
+  "frais": "Et une fois",
+  "moins": "Moins mille",
+  "magni": "Magnifique",
+  "colle": "Alors maintenant",
+  "deux": "Deux secondes une note",
+  "note": "une note",
+  "reste": "et ce qu'il",
+  "prix": "Avec le prix",
+  "tel": "Au téléphone",
+  "deuxv": "Deux voitures",
+  "dors": "Et pendant que",
+  "clio": "Une Clio",
+  "premier": "T'es le premier",
+  "parc": "Ton parc",
+  "tableur": "Fini le tableur",
+  "sais": "Tu sais avant",
+  "revends": "Tu revends",
+  "cta": "Commente",
+  "guide": "tu reçois"
+ },
+ "marksFixed": {
+  "start": 0
+ },
+ "cues": [
+  {
+   "t": 2.94,
+   "sfx": "s:whoosh",
+   "pre": 0.3,
+   "g": 0.7
+  },
+  {
+   "t": 2.94,
+   "sfx": "pop"
+  },
+  {
+   "t": 5.68,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 5.78,
+   "sfx": "s:slide",
+   "g": 0.7
+  },
+  {
+   "t": 6.42,
+   "sfx": "tick",
+   "g": 1.2
+  },
+  {
+   "t": 7.28,
+   "sfx": "tick",
+   "g": 1.2
+  },
+  {
+   "t": 8.68,
+   "sfx": "tick",
+   "g": 1.2
+  },
+  {
+   "t": 9.9,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 10.55,
+   "sfx": "s:paste",
+   "g": 0.7,
+   "pan": -0.3
+  },
+  {
+   "t": 10.928,
+   "sfx": "s:paste",
+   "g": 0.7,
+   "pan": 0.3
+  },
+  {
+   "t": 11.305,
+   "sfx": "s:paste",
+   "g": 0.7,
+   "pan": -0.3
+  },
+  {
+   "t": 11.683,
+   "sfx": "s:paste",
+   "g": 0.7,
+   "pan": 0.3
+  },
+  {
+   "t": 12.16,
+   "sfx": "hit"
+  },
+  {
+   "t": 12.21,
+   "sfx": "s:scratch",
+   "g": 0.45
+  },
+  {
+   "t": 16.46,
+   "sfx": "s:whoosh",
+   "pre": 0.4
+  },
+  {
+   "t": 16.46,
+   "sfx": "thump"
+  },
+  {
+   "t": 17.7,
+   "sfx": "s:click"
+  },
+  {
+   "t": 17.85,
+   "sfx": "s:paste"
+  },
+  {
+   "t": 19.47,
+   "sfx": "s:click"
+  },
+  {
+   "t": 20.02,
+   "sfx": "tick",
+   "g": 0.7
+  },
+  {
+   "t": 20.32,
+   "sfx": "tick",
+   "g": 0.7
+  },
+  {
+   "t": 20.62,
+   "sfx": "tick",
+   "g": 0.7
+  },
+  {
+   "t": 20.92,
+   "sfx": "tick",
+   "g": 0.7
+  },
+  {
+   "t": 21.05,
+   "sfx": "s:ping",
+   "g": 0.6
+  },
+  {
+   "t": 21.3,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 21.45,
+   "sfx": "s:slide",
+   "g": 0.5
+  },
+  {
+   "t": 22.26,
+   "sfx": "thump",
+   "g": 0.8
+  },
+  {
+   "t": 23.18,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 24.34,
+   "sfx": "s:scratch",
+   "g": 0.25
+  },
+  {
+   "t": 25.6,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 26.96,
+   "sfx": "s:slide",
+   "g": 0.6
+  },
+  {
+   "t": 27.48,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 27.48,
+   "sfx": "tick",
+   "g": 0.9
+  },
+  {
+   "t": 27.62,
+   "sfx": "tick",
+   "g": 0.9
+  },
+  {
+   "t": 27.76,
+   "sfx": "tick",
+   "g": 0.9
+  },
+  {
+   "t": 27.96,
+   "sfx": "tick",
+   "g": 1.2
+  },
+  {
+   "t": 29.2,
+   "sfx": "pop"
+  },
+  {
+   "t": 29.98,
+   "sfx": "pop"
+  },
+  {
+   "t": 31.08,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 32.5,
+   "sfx": "s:slide",
+   "g": 0.7
+  },
+  {
+   "t": 33.82,
+   "sfx": "s:click"
+  },
+  {
+   "t": 33.87,
+   "sfx": "pop"
+  },
+  {
+   "t": 34.9,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 35.3,
+   "sfx": "s:ping",
+   "g": 0.35
+  },
+  {
+   "t": 36.8,
+   "sfx": "s:ping",
+   "g": 0.35
+  },
+  {
+   "t": 38.26,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 40.42,
+   "sfx": "s:slide",
+   "g": 0.5
+  },
+  {
+   "t": 40.72,
+   "sfx": "pop"
+  },
+  {
+   "t": 41.29,
+   "sfx": "s:ping",
+   "g": 0.9
+  },
+  {
+   "t": 43.92,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 44.02,
+   "sfx": "s:slide",
+   "g": 0.6
+  },
+  {
+   "t": 45.78,
+   "sfx": "tick"
+  },
+  {
+   "t": 46.96,
+   "sfx": "pop"
+  },
+  {
+   "t": 48.12,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 49.19,
+   "sfx": "s:scratch",
+   "g": 0.5
+  },
+  {
+   "t": 49.74,
+   "sfx": "s:whoosh",
+   "g": 0.5
+  },
+  {
+   "t": 50.26,
+   "sfx": "pop"
+  },
+  {
+   "t": 51.98,
+   "sfx": "s:whoosh",
+   "pre": 0.25,
+   "g": 0.45
+  },
+  {
+   "t": 52.13,
+   "sfx": "s:slide",
+   "g": 0.5
+  },
+  {
+   "t": 54.62,
+   "sfx": "s:whoosh",
+   "pre": 0.4
+  },
+  {
+   "t": 54.62,
+   "sfx": "thump"
+  },
+  {
+   "t": 56.12,
+   "sfx": "s:click"
+  },
+  {
+   "t": 61.533,
+   "sfx": "s:click",
+   "g": 0.8
+  }
+ ],
+ "marks": {
+  "start": 0,
+  "ecoute": 2.94,
+  "golf": 5.68,
+  "frais": 9.9,
+  "moins": 12.16,
+  "magni": 14.86,
+  "colle": 16.46,
+  "deux": 19.82,
+  "note": 21.3,
+  "reste": 23.18,
+  "prix": 25.6,
+  "tel": 27.48,
+  "deuxv": 31.08,
+  "dors": 34.9,
+  "clio": 38.26,
+  "premier": 41.64,
+  "parc": 43.92,
+  "tableur": 48.12,
+  "sais": 50.26,
+  "revends": 51.98,
+  "cta": 54.62,
+  "guide": 56.82,
+  "end": 62.63333333333333
+ },
+ "words": [
+  [
+   "Tu",
+   0.3,
+   0.48
+  ],
+  [
+   "fais",
+   0.48,
+   0.66
+  ],
+  [
+   "de",
+   0.66,
+   0.76
+  ],
+  [
+   "l",
+   0.76,
+   0.82
+  ],
+  [
+   "'achat",
+   0.82,
+   0.96
+  ],
+  [
+   "revend",
+   0.96,
+   1.22
+  ],
+  [
+   "toteau",
+   1.22,
+   1.56
+  ],
+  [
+   "Bon,",
+   2.94,
+   3.16
+  ],
+  [
+   "écoute",
+   3.5,
+   3.82
+  ],
+  [
+   "-moi",
+   3.82,
+   3.96
+  ],
+  [
+   "deux",
+   3.96,
+   4.1
+  ],
+  [
+   "secondes.",
+   4.1,
+   4.42
+  ],
+  [
+   "Une",
+   5.68,
+   5.76
+  ],
+  [
+   "golf,",
+   5.76,
+   6.02
+  ],
+  [
+   "propre,",
+   6.42,
+   6.88
+  ],
+  [
+   "entretenue,",
+   7.28,
+   7.74
+  ],
+  [
+   "le",
+   8.08,
+   8.18
+  ],
+  [
+   "vendeur",
+   8.18,
+   8.52
+  ],
+  [
+   "est",
+   8.52,
+   8.68
+  ],
+  [
+   "adorable,",
+   8.68,
+   9.24
+  ],
+  [
+   "et",
+   9.9,
+   10.32
+  ],
+  [
+   "une",
+   10.32,
+   10.46
+  ],
+  [
+   "fois",
+   10.46,
+   10.62
+  ],
+  [
+   "les",
+   10.62,
+   10.78
+  ],
+  [
+   "frais",
+   10.78,
+   10.94
+  ],
+  [
+   "payés,",
+   10.94,
+   11.32
+  ],
+  [
+   "moins",
+   12.16,
+   12.6
+  ],
+  [
+   "1200",
+   12.6,
+   13.38
+  ],
+  [
+   "euros.",
+   13.38,
+   13.98
+  ],
+  [
+   "Magnifique.",
+   14.86,
+   15.48
+  ],
+  [
+   "Alors",
+   16.46,
+   16.68
+  ],
+  [
+   "maintenant,",
+   16.68,
+   17.1
+  ],
+  [
+   "tu",
+   17.52,
+   17.6
+  ],
+  [
+   "colles",
+   17.6,
+   17.84
+  ],
+  [
+   "l",
+   17.84,
+   17.96
+  ],
+  [
+   "'annonce",
+   17.96,
+   18.26
+  ],
+  [
+   "dans",
+   18.26,
+   18.36
+  ],
+  [
+   "Utopicar.",
+   18.36,
+   18.98
+  ],
+  [
+   "Deux",
+   19.82,
+   20.34
+  ],
+  [
+   "secondes.",
+   20.34,
+   20.72
+  ],
+  [
+   "Une",
+   21.3,
+   21.5
+  ],
+  [
+   "note,",
+   21.5,
+   21.8
+  ],
+  [
+   "un",
+   22.16,
+   22.26
+  ],
+  [
+   "verdict,",
+   22.26,
+   22.52
+  ],
+  [
+   "et",
+   23.18,
+   23.28
+  ],
+  [
+   "ce",
+   23.28,
+   23.44
+  ],
+  [
+   "qu",
+   23.44,
+   23.54
+  ],
+  [
+   "'il",
+   23.54,
+   23.6
+  ],
+  [
+   "te",
+   23.6,
+   23.74
+  ],
+  [
+   "reste,",
+   23.74,
+   23.98
+  ],
+  [
+   "vraiment.",
+   24.34,
+   24.74
+  ],
+  [
+   "Avec",
+   25.6,
+   25.9
+  ],
+  [
+   "le",
+   25.9,
+   26.12
+  ],
+  [
+   "prix",
+   26.12,
+   26.32
+  ],
+  [
+   "à",
+   26.32,
+   26.46
+  ],
+  [
+   "ne",
+   26.46,
+   26.56
+  ],
+  [
+   "jamais",
+   26.56,
+   26.96
+  ],
+  [
+   "dépasser.",
+   26.96,
+   27.48
+  ],
+  [
+   "Au",
+   27.48,
+   28.24
+  ],
+  [
+   "téléphone,",
+   28.24,
+   28.66
+  ],
+  [
+   "c",
+   29.16,
+   29.24
+  ],
+  [
+   "'est",
+   29.24,
+   29.3
+  ],
+  [
+   "toi",
+   29.3,
+   29.52
+  ],
+  [
+   "qui",
+   29.52,
+   29.7
+  ],
+  [
+   "tient",
+   29.7,
+   29.86
+  ],
+  [
+   "le",
+   29.86,
+   29.98
+  ],
+  [
+   "chiffre.",
+   29.98,
+   30.34
+  ],
+  [
+   "Deux",
+   31.08,
+   31.44
+  ],
+  [
+   "voitures",
+   31.44,
+   31.68
+  ],
+  [
+   "en",
+   31.68,
+   31.84
+  ],
+  [
+   "tête,",
+   31.84,
+   32.02
+  ],
+  [
+   "tu",
+   32.44,
+   32.6
+  ],
+  [
+   "compars,",
+   32.6,
+   33.06
+  ],
+  [
+   "tu",
+   33.4,
+   33.48
+  ],
+  [
+   "gardes",
+   33.48,
+   33.74
+  ],
+  [
+   "la",
+   33.74,
+   33.82
+  ],
+  [
+   "meilleure.",
+   33.82,
+   34.26
+  ],
+  [
+   "Et",
+   34.9,
+   35.06
+  ],
+  [
+   "pendant",
+   35.06,
+   35.34
+  ],
+  [
+   "que",
+   35.34,
+   35.5
+  ],
+  [
+   "tu",
+   35.5,
+   35.6
+  ],
+  [
+   "dors,",
+   35.6,
+   35.9
+  ],
+  [
+   "ils",
+   36.2,
+   36.32
+  ],
+  [
+   "surveillent",
+   36.32,
+   36.72
+  ],
+  [
+   "les",
+   36.72,
+   36.86
+  ],
+  [
+   "annonces.",
+   36.86,
+   37.26
+  ],
+  [
+   "Une",
+   38.26,
+   38.42
+  ],
+  [
+   "clio,",
+   38.42,
+   38.76
+  ],
+  [
+   "1450",
+   39.36,
+   40.26
+  ],
+  [
+   "euros",
+   40.26,
+   40.62
+  ],
+  [
+   "sous",
+   40.62,
+   40.78
+  ],
+  [
+   "la",
+   40.78,
+   40.92
+  ],
+  [
+   "cote,",
+   40.92,
+   41.18
+  ],
+  [
+   "t",
+   41.64,
+   42.06
+  ],
+  [
+   "'es",
+   42.06,
+   42.08
+  ],
+  [
+   "le",
+   42.08,
+   42.2
+  ],
+  [
+   "premier",
+   42.2,
+   42.52
+  ],
+  [
+   "au",
+   42.52,
+   42.76
+  ],
+  [
+   "courant.",
+   42.76,
+   42.98
+  ],
+  [
+   "Ton",
+   43.92,
+   44.16
+  ],
+  [
+   "parc,",
+   44.16,
+   44.54
+  ],
+  [
+   "ta",
+   44.88,
+   45
+  ],
+  [
+   "marge,",
+   45,
+   45.38
+  ],
+  [
+   "les",
+   45.7,
+   45.78
+  ],
+  [
+   "jours",
+   45.78,
+   45.96
+  ],
+  [
+   "en",
+   45.96,
+   46.12
+  ],
+  [
+   "stock,",
+   46.12,
+   46.34
+  ],
+  [
+   "tout",
+   46.96,
+   47.06
+  ],
+  [
+   "est",
+   47.06,
+   47.24
+  ],
+  [
+   "là.",
+   47.24,
+   47.4
+  ],
+  [
+   "Fini",
+   48.12,
+   48.58
+  ],
+  [
+   "le",
+   48.58,
+   48.7
+  ],
+  [
+   "tableur",
+   48.7,
+   49.1
+  ],
+  [
+   "du",
+   49.1,
+   49.24
+  ],
+  [
+   "dimanche.",
+   49.24,
+   49.66
+  ],
+  [
+   "Tu",
+   50.26,
+   50.58
+  ],
+  [
+   "sais",
+   50.58,
+   50.86
+  ],
+  [
+   "avant",
+   50.86,
+   51.14
+  ],
+  [
+   "d",
+   51.14,
+   51.28
+  ],
+  [
+   "'acheter,",
+   51.28,
+   51.5
+  ],
+  [
+   "tu",
+   51.98,
+   52.14
+  ],
+  [
+   "revends",
+   52.14,
+   52.56
+  ],
+  [
+   "avec",
+   52.56,
+   52.84
+  ],
+  [
+   "de",
+   52.84,
+   53
+  ],
+  [
+   "la",
+   53,
+   53.12
+  ],
+  [
+   "marge.",
+   53.12,
+   53.56
+  ],
+  [
+   "Commente",
+   54.62,
+   55.1
+  ],
+  [
+   "débutant",
+   55.1,
+   55.58
+  ],
+  [
+   "ou",
+   55.58,
+   55.86
+  ],
+  [
+   "pro,",
+   55.86,
+   56.14
+  ],
+  [
+   "tu",
+   56.82,
+   56.92
+  ],
+  [
+   "reçois",
+   56.92,
+   57.24
+  ],
+  [
+   "le",
+   57.24,
+   57.34
+  ],
+  [
+   "guide",
+   57.34,
+   57.56
+  ],
+  [
+   "qui",
+   57.56,
+   57.7
+  ],
+  [
+   "va",
+   57.7,
+   57.84
+  ],
+  [
+   "avec",
+   57.84,
+   58.16
+  ],
+  [
+   "et",
+   58.16,
+   58.6
+  ],
+  [
+   "ta",
+   58.6,
+   58.78
+  ],
+  [
+   "place",
+   58.78,
+   59.06
+  ],
+  [
+   "sur",
+   59.06,
+   59.3
+  ],
+  [
+   "la",
+   59.3,
+   59.42
+  ],
+  [
+   "liste",
+   59.42,
+   59.7
+  ],
+  [
+   "d",
+   59.7,
+   59.8
+  ],
+  [
+   "'attente.",
+   59.8,
+   60.04
+  ]
+ ],
+ "voSource": "audio/vo-mo1b.mp3",
+ "voEnd": 60.04
+}
