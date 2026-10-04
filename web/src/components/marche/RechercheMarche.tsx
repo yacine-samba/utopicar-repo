@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabaseNavigateur } from "@/lib/supabase/navigateur";
+import { FILTRES_VIDES, quandRecherche, resumeFiltres, type FiltresRecherche, type Recherche } from "@/lib/recherches";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque, CoteAnnonce } from "@/lib/vehicules/types";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
@@ -9,63 +11,129 @@ type Annonce = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; ch: number | null; pro: boolean; lieu: string | null;
   source: string; vu: string | null; url: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
 };
-type Resultat = { modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[]; incertaines: number }; total: number; trouvees: number; sousLaCote: number; annonces: Annonce[]; ms: number };
-type Filtres = { energie: string; boite: string; anneeMin: string; anneeMax: string; prixMin: string; prixMax: string; kmMax: string; vendeur: string; mots: string; exclure: string; sousCote: string; fiables: boolean; tri: string };
+type Resultat = { recherche: Recherche | null; modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[]; incertaines: number }; total: number; trouvees: number; sousLaCote: number; annonces: Annonce[]; ms: number };
+type Filtres = FiltresRecherche;
 
-const VIDE: Filtres = { energie: "", boite: "", anneeMin: "", anneeMax: "", prixMin: "", prixMax: "", kmMax: "", vendeur: "", mots: "", exclure: "", sousCote: "", fiables: true, tri: "ecart" };
+const VIDE = FILTRES_VIDES;
 const eur = (v: number | null | undefined) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 const n = (s: string) => (s.trim() && /^\d+$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
-const CLE = "utp-recherche";
+const SANS: Choix = { marque: "", modele: "", gen: "" };
 
-export function RechercheMarche({ cat, alertes }: { cat: CatMarque[]; alertes: boolean }) {
-  const [choix, setChoix] = useState<Choix>({ marque: "", modele: "", gen: "" });
+/** Recherche dans la base du marché. Chaque recherche est enregistrée (une par véhicule) et reste ouverte en onglet :
+    on peut chercher une autre voiture sans perdre la précédente, et la retrouver depuis le tableau de bord. */
+export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: { cat: CatMarque[]; alertes: boolean; initiales: Recherche[]; ouvrir?: string | null; prerempli?: Choix | null }) {
+  const [liste, setListe] = useState<Recherche[]>(initiales);
+  const [courant, setCourant] = useState<string | null>(null); // id de l'onglet affiché, null = nouvelle recherche
+  const [choix, setChoix] = useState<Choix>(SANS);
   const [f, setF] = useState<Filtres>(VIDE);
   const [res, setRes] = useState<Resultat | null>(null);
   const [etat, setEtat] = useState("");
   const [charge, setCharge] = useState(false);
-
-  // dernière recherche retrouvée au retour sur la page
-  useEffect(() => {
-    try {
-      const s = JSON.parse(localStorage.getItem(CLE) || "null");
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture unique du stockage local
-      if (s?.choix) { setChoix(s.choix); setF({ ...VIDE, ...s.f }); }
-    } catch {
-      /* stockage indisponible */
-    }
-  }, []);
+  const cache = useRef(new Map<string, Resultat>());
+  const onglets = liste.filter((r) => r.active);
+  const anciennes = liste.filter((r) => !r.active).slice(0, 6);
 
   const maj = (k: keyof Filtres) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setF((x) => ({ ...x, [k]: e.target instanceof HTMLInputElement && e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
-  async function chercher(e?: React.FormEvent) {
-    e?.preventDefault();
-    if (!choix.marque || !choix.modele) return setEtat("Choisissez une marque et un modèle.");
+  async function lancer(c: Choix, fx: Filtres) {
+    if (!c.marque || !c.modele) return setEtat("Choisissez une marque et un modèle.");
     setCharge(true);
     setEtat("Recherche et calcul de la cote de chaque annonce…");
-    try {
-      localStorage.setItem(CLE, JSON.stringify({ choix, f }));
-    } catch {
-      /* rien */
-    }
     try {
       const r = await fetch("/api/marche/recherche", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          marque: choix.marque, modele: choix.modele, gen: choix.gen || undefined, energie: f.energie, boite: f.boite,
-          anneeMin: n(f.anneeMin), anneeMax: n(f.anneeMax), prixMin: n(f.prixMin), prixMax: n(f.prixMax), kmMax: n(f.kmMax),
-          vendeur: f.vendeur, mots: f.mots, exclure: f.exclure, sousCote: n(f.sousCote) ?? 0, fiables: f.fiables, tri: f.tri,
+          marque: c.marque, modele: c.modele, gen: c.gen || undefined, energie: fx.energie, boite: fx.boite,
+          anneeMin: n(fx.anneeMin), anneeMax: n(fx.anneeMax), prixMin: n(fx.prixMin), prixMax: n(fx.prixMax), kmMax: n(fx.kmMax),
+          vendeur: fx.vendeur, mots: fx.mots, exclure: fx.exclure, sousCote: n(fx.sousCote) ?? 0, fiables: fx.fiables, tri: fx.tri, saisie: fx,
         }),
       });
-      const j = await r.json().catch(() => null);
-      if (!r.ok) return setEtat(j?.erreur ?? "La recherche n'a pas abouti. Réessayez.");
+      const j = (await r.json().catch(() => null)) as (Resultat & { erreur?: string }) | null;
+      if (!r.ok || !j) return setEtat(j?.erreur ?? "La recherche n'a pas abouti. Réessayez.");
       setRes(j);
       setEtat("");
+      const rec = j.recherche;
+      if (rec) {
+        cache.current.set(rec.id, j);
+        setCourant(rec.id);
+        // l'onglet du véhicule est mis à jour (ou ajouté à la fin) ; les autres restent ouverts
+        setListe((l) => (l.some((x) => x.id === rec.id) ? l.map((x) => (x.id === rec.id ? rec : x)) : [...l, rec]));
+        history.replaceState(null, "", `/app/recherche?r=${rec.id}`);
+      }
     } finally {
       setCharge(false);
     }
   }
+
+  const chercher = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    void lancer(choix, f);
+  };
+
+  /** Affiche un onglet : ses critères, et ses résultats (déjà chargés, sinon relancés). */
+  function afficher(r: Recherche, relancer = false) {
+    const c = { ...SANS, ...r.criteres.choix };
+    const fx = { ...VIDE, ...r.criteres.f };
+    setCourant(r.id);
+    setChoix(c);
+    setF(fx);
+    history.replaceState(null, "", `/app/recherche?r=${r.id}`);
+    const deja = cache.current.get(r.id);
+    if (deja && !relancer) {
+      setRes(deja);
+      setEtat("");
+    } else {
+      setRes(null);
+      void lancer(c, fx);
+    }
+  }
+
+  function nouvelle() {
+    setCourant(null);
+    setChoix(SANS);
+    setF(VIDE);
+    setRes(null);
+    setEtat("");
+    history.replaceState(null, "", "/app/recherche");
+  }
+
+  async function fermer(r: Recherche) {
+    setListe((l) => l.map((x) => (x.id === r.id ? { ...x, active: false } : x)));
+    await supabaseNavigateur().from("recherches").update({ active: false }).eq("id", r.id);
+    if (courant === r.id) {
+      const reste = onglets.filter((x) => x.id !== r.id);
+      if (reste.length) afficher(reste[reste.length - 1]);
+      else nouvelle();
+    }
+  }
+
+  async function rouvrir(r: Recherche) {
+    setListe((l) => l.map((x) => (x.id === r.id ? { ...x, active: true } : x)));
+    afficher({ ...r, active: true }, true);
+  }
+
+  // à l'arrivée : la recherche demandée (tableau de bord), le véhicule choisi, sinon le dernier onglet ouvert
+  const demarre = useRef(false);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (demarre.current) return;
+      demarre.current = true;
+      const cible = (ouvrir && initiales.find((r) => r.id === ouvrir)) || null;
+      // la recherche relancée revient « active » du serveur et rouvre son onglet
+      if (cible) afficher(cible, true);
+      else if (prerempli?.marque && prerempli.modele) {
+        setChoix(prerempli);
+        void lancer(prerempli, VIDE);
+      } else {
+        const dernier = [...initiales].filter((r) => r.active).sort((x, y) => y.derniere_le.localeCompare(x.derniere_le))[0];
+        if (dernier) afficher(dernier, true);
+      }
+    }, 0);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- une seule fois, à l'arrivée sur la page
+  }, []);
 
   const alerteHref = choix.marque && choix.modele
     ? `/app/alertes?${new URLSearchParams({ marque: choix.marque, modele: choix.modele, gen: choix.gen, energie: f.energie, boite: f.boite, anneeMin: f.anneeMin, anneeMax: f.anneeMax, prixMin: f.prixMin, prixMax: f.prixMax, kmMax: f.kmMax, mots: f.mots, exclure: f.exclure, sousCote: f.sousCote }).toString()}`
@@ -73,6 +141,41 @@ export function RechercheMarche({ cat, alertes }: { cat: CatMarque[]; alertes: b
 
   return (
     <div className="grid gap-6">
+      <nav aria-label="Mes recherches" className="grid gap-3">
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+          {onglets.map((r) => (
+            <div key={r.id} className={cx("flex shrink-0 items-center rounded-2xl border transition", courant === r.id ? "border-o/60 bg-o/12" : "border-line-2 hover:border-o/30")}>
+              <button type="button" onClick={() => afficher(r)} aria-current={courant === r.id ? "true" : undefined} className="grid py-2 pl-4 pr-2 text-left">
+                <span className="flex items-center gap-2 text-sm font-semibold">
+                  <span className="size-2 rounded-full bg-ok" aria-hidden="true" />
+                  {r.nom}
+                </span>
+                <span className="text-xs text-ink-3">
+                  {r.trouvees != null ? `${r.trouvees} annonce${r.trouvees > 1 ? "s" : ""}` : "—"}
+                  {r.sous_cote ? ` · ${r.sous_cote} sous la cote` : ""}
+                </span>
+              </button>
+              <button type="button" onClick={() => fermer(r)} aria-label={`Fermer la recherche ${r.nom}`} className="mr-1.5 grid size-7 place-items-center rounded-full text-ink-3 hover:bg-glass hover:text-ink">
+                ✕
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={nouvelle} aria-current={courant === null ? "true" : undefined} className={cx("shrink-0 rounded-2xl border border-dashed px-4 py-2 text-sm", courant === null ? "border-o/60 text-ink" : "border-line-2 text-ink-2 hover:text-ink")}>
+            + Nouvelle recherche
+          </button>
+        </div>
+        {anciennes.length > 0 && (
+          <p className="flex flex-wrap items-center gap-2 text-xs text-ink-3">
+            Rouvrir :
+            {anciennes.map((r) => (
+              <button key={r.id} type="button" onClick={() => rouvrir(r)} className="rounded-full border border-line px-2.5 py-1 text-ink-2 hover:border-o/40 hover:text-ink">
+                {r.nom} <span className="text-ink-3" suppressHydrationWarning>· {quandRecherche(r.derniere_le)}</span>
+              </button>
+            ))}
+          </p>
+        )}
+      </nav>
+
       <form onSubmit={chercher} className="carte grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3">
         <ChoixVehicule cat={cat} v={choix} onChange={setChoix} idPrefixe="rm" />
         <label className="grid gap-1.5 text-sm">
@@ -155,8 +258,8 @@ export function RechercheMarche({ cat, alertes }: { cat: CatMarque[]; alertes: b
           <button type="submit" disabled={charge} className="btn btn-o btn-sm">
             {charge ? "Recherche…" : "Rechercher"}
           </button>
-          <button type="button" className="btn btn-sm" onClick={() => { setChoix({ marque: "", modele: "", gen: "" }); setF(VIDE); setRes(null); }}>
-            Effacer
+          <button type="button" className="btn btn-sm" onClick={nouvelle}>
+            Nouvelle recherche
           </button>
           {alertes && choix.modele && (
             <Link href={alerteHref} className="btn btn-sm">
@@ -171,7 +274,8 @@ export function RechercheMarche({ cat, alertes }: { cat: CatMarque[]; alertes: b
         <section aria-labelledby="rm-res" className="grid gap-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="rm-res" className="font-display text-xl font-semibold">
-              {res.trouvees} annonce{res.trouvees > 1 ? "s" : ""} · {res.modele.nom}
+              {res.trouvees} annonce{res.trouvees > 1 ? "s" : ""} · {res.recherche?.nom ?? res.modele.nom}
+              {resumeFiltres(f) && <span className="block text-sm font-normal text-ink-3">{resumeFiltres(f)}</span>}
             </h2>
             <p className="text-sm text-ink-3">
               {res.total} annonces de ce modèle en base · {res.sousLaCote} à 5 % ou plus sous la cote

@@ -179,6 +179,8 @@ async function avecCote(v: any, list: any[]) {
       const { data } = await sb.rpc('cote_marche', { p_marque: a.marque || '', p_modele: a.modele || a.titre || '', p_annee: a.annee, p_km: a.km, p_energie: a.energie || '' });
       if (data && Number(data.n) >= 5 && Number(data.mediane) > 0 && a.prix != null) cote = { n: data.n, mediane: Math.round(data.mediane), ecart: Math.round(data.mediane - a.prix) };
     } catch (_) { /* sans cote */ }
+    // prix aberrant (plus de 55 % sous la cote) : pièces, location, acompte ou prix d'appel, jamais envoyé
+    if (cote && a.prix != null && a.prix < cote.mediane * 0.45) continue;
     if (seuil > 0 && !(cote && cote.ecart >= cote.mediane * seuil / 100)) continue;
     out.push({ ...a, cote });
   }
@@ -232,9 +234,17 @@ async function collect(v: any, R: Record<string, string>) {
       if (list.length) { const m = mailNouvelles(v, list); mail = await sendMail(R, m.subject, m.html, v.email); } else mail = 'aucune sous la cote';
     } catch (e) { mail = 'erreur : ' + String((e as Error).message || e).slice(0, 160); }
   }
+  // Leboncoin renvoie parfois une page vide (lecture bloquée) : un seul nouvel essai tout de suite, pas d'attente jusqu'au prochain passage
+  let relance = false;
+  if (err && (err.startsWith('Aucune annonce') || err.startsWith('Run Apify'))) {
+    const { count: rates } = await sb.from('veille_passages').select('id', { count: 'exact', head: true }).eq('veille_id', v.id).eq('statut', 'erreur').gte('debut', new Date(Date.now() - 20 * 60000).toISOString());
+    relance = (rates || 0) === 0;
+    if (relance) err += ' Nouvel essai lancé automatiquement.';
+  }
   await sb.from('veille_passages').update({ fin: new Date().toISOString(), statut: err ? 'erreur' : 'ok', trouvees: res.recues, recues: res.recues, nouvelles: res.nouvelles, cout_usd: cout, erreur: err, mail, recentes: res.recentes ?? null }).eq('id', v.run_passage);
   await sb.from('veilles').update({ derniere_erreur: err, derniers_nouveaux: res.nouvelles, ...(res.prochain ? { prochain_nb: res.prochain } : {}) }).eq('id', v.id);
-  return { veille: v.id, statut: run.status, recues: res.recues, nouvelles: res.nouvelles, cout, err, mail };
+  if (relance) { try { await start(v, R); } catch (_) { /* le prochain passage prendra le relais */ } }
+  return { veille: v.id, statut: run.status, recues: res.recues, nouvelles: res.nouvelles, cout, err, mail, relance };
 }
 
 async function start(v: any, R: Record<string, string>) {
