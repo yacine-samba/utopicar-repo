@@ -15,7 +15,7 @@ export default async function Page() {
   const sb = await supabaseServeur();
 
   if (familleEspace(c) === "particulier") {
-    const { data } = await sb.from("rapports").select("id, titre, verdict, prix, note, created_at").eq("mode", "particulier").order("created_at", { ascending: false }).limit(lim);
+    const { data } = await sb.from("rapports").select("id, titre, verdict, prix, note, created_at, photos, lien").eq("mode", "particulier").order("created_at", { ascending: false }).limit(lim);
     return (
       <div className="grid gap-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
@@ -39,7 +39,7 @@ export default async function Page() {
   }
 
   if (c.offre.famille !== "benef") redirect("/app");
-  const { data } = await sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note").eq("mode", "benef").order("created_at", { ascending: false }).limit(lim);
+  const { data } = await sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(lim);
   return (
     <div className="grid gap-6">
       <div className="flex flex-wrap items-end justify-between gap-3">

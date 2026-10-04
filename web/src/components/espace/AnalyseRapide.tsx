@@ -18,13 +18,13 @@ export function AnalyseRapide({ titre, texte }: { titre: string; texte: string }
     router.push(`/app/analyser?lien=${encodeURIComponent(l)}`);
   };
   return (
-    <section aria-labelledby={`${id}-t`} className="relative overflow-hidden rounded-3xl border border-o/30 bg-[radial-gradient(120%_120%_at_0%_0%,rgb(255_90_31/0.16),transparent_60%)] p-5 sm:p-7">
-      <h2 id={`${id}-t`} className="font-display text-xl font-semibold sm:text-2xl">
+    <section aria-labelledby={`${id}-t`} className="relative overflow-hidden rounded-3xl border border-o/30 bg-[radial-gradient(120%_120%_at_50%_0%,rgb(255_90_31/0.18),transparent_65%)] px-5 py-7 text-center sm:px-10 sm:py-10">
+      <h2 id={`${id}-t`} className="font-display text-2xl font-semibold sm:text-3xl">
         {titre}
       </h2>
-      <p className="mt-1 max-w-2xl text-ink-2">{texte}</p>
+      <p className="mx-auto mt-2 max-w-2xl text-ink-2">{texte}</p>
       <form
-        className="mt-5 flex flex-col gap-3 sm:flex-row"
+        className="mx-auto mt-6 flex max-w-2xl flex-col gap-3 sm:flex-row"
         onSubmit={(e) => {
           e.preventDefault();
           aller(v);
@@ -55,10 +55,10 @@ export function AnalyseRapide({ titre, texte }: { titre: string; texte: string }
             placeholder="https://www.leboncoin.fr/ad/voitures/…"
             aria-invalid={!!err}
             aria-describedby={err ? `${id}-e` : undefined}
-            className={`${inputCls} pl-12`}
+            className={`${inputCls} min-h-14 pl-12 text-base`}
           />
         </div>
-        <button type="submit" className="btn btn-o whitespace-nowrap">
+        <button type="submit" className="btn btn-o min-h-14 whitespace-nowrap px-7">
           Analyser
         </button>
       </form>

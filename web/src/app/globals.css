@@ -60,6 +60,15 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Grilles sans nombre de colonnes : une colonne qui ne s'élargit jamais au-delà de l'écran
+   (un titre tronqué ou un carrousel de photos faisait déborder la page sur téléphone).
+   Couche « base » : toute classe grid-cols-* l'emporte. */
+@layer base {
+  #contenu .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @layer components {
   .wrap {
     width: 100%;

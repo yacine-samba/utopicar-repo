@@ -73,6 +73,12 @@ function normaliser(it: Record<string, any>) {
   const photos = (imgs as any[]).map((x) => (typeof x === "string" ? x : premier(x?.url, x?.large, x?.src) ?? "")).filter((x: string) => /^https?:\/\//.test(x));
   const owner = o(premier(ad.owner, it.owner, it.seller));
   const typeVendeur = premier(owner.type, ad.ownerType, it.ownerType, ad.owner_type, it.owner_type) ?? null;
+  // Leboncoin ne donne pas le numéro (il faut être connecté et cliquer) : seulement le prénom et la présence d'un téléphone.
+  const vendeur = {
+    nom: String(premier(owner.name, ad.ownerName, it.ownerName, "") ?? "").slice(0, 60) || null,
+    type: typeVendeur === "pro" ? "pro" : typeVendeur === "private" ? "particulier" : null,
+    aTel: Boolean(premier(ad.has_phone, ad.hasPhone, it.hasPhone, it.has_phone, false)),
+  };
   return {
     ad: {
       subject: premier(ad.subject, ad.title, it.title, ""),
@@ -87,6 +93,7 @@ function normaliser(it: Record<string, any>) {
       attributes: attrs,
     },
     photos,
+    vendeur,
   };
 }
 
@@ -165,7 +172,9 @@ Deno.serve(async (req) => {
   await sb.from("imports_annonces").insert({ user_id: user.id, url, statut, cout_usd: it ? 0.001 : 0 });
   if (!it) return json({ ok: false, erreur: statut === "introuvable" ? "introuvable" : "apify" }, 502);
 
-  const { ad, photos: liens } = normaliser(it);
+  const { ad, photos: liens, vendeur } = normaliser(it);
   const photos = (await Promise.all(liens.slice(0, MAX_PHOTOS).map(photo))).filter(Boolean);
-  return json({ ok: true, url, ad, brut: aplatir(it).join("\n").slice(0, 6000), photos });
+  // liens d'origine (grand format) : affichés sur les cartes et le rapport, sans rien stocker
+  const grands = liens.slice(0, 12).map((u) => { try { const x = new URL(u); if (/leboncoin/.test(x.hostname)) x.searchParams.set("rule", "ad-large"); return x.toString(); } catch { return u; } });
+  return json({ ok: true, url, ad, brut: aplatir(it).join("\n").slice(0, 6000), photos, liens: grands, vendeur });
 });

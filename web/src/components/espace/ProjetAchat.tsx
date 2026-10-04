@@ -98,7 +98,15 @@ export function ProjetAchat({ lignes }: { lignes: LigneAnalyse[] }) {
               return (
                 <li key={r.id} className="min-w-0">
                   <Link href={`/app/rapports/${r.id}`} className="carte flex items-center gap-3 p-3 transition hover:border-o/40 sm:gap-4 sm:p-4">
-                    <span className="num grid size-8 shrink-0 place-items-center rounded-full bg-glass text-sm text-ink-3">{i + 1}</span>
+                    {r.photos?.[0] ? (
+                      <span className="relative h-12 w-16 shrink-0 overflow-hidden rounded-lg">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- photo de l'annonce */}
+                        <img src={r.photos[0]} alt="" referrerPolicy="no-referrer" loading="lazy" className="size-full object-cover" />
+                        <span className="num absolute left-0.5 top-0.5 rounded-full bg-black/70 px-1.5 text-[10px] text-white">{i + 1}</span>
+                      </span>
+                    ) : (
+                      <span className="num grid size-8 shrink-0 place-items-center rounded-full bg-glass text-sm text-ink-3">{i + 1}</span>
+                    )}
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-medium">{titreVehicule(r.titre)}</span>
                       <span className="flex flex-wrap gap-x-2 text-xs text-ink-3">

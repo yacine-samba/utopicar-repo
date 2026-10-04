@@ -22,7 +22,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
         <RechercheMarche cat={catalogue()} alertes={c.illimite} />
       </div>
     );
-  let q = (await supabaseServeur()).from("rapports").select("id, titre, created_at, prix, verdict, marge, note, marque").eq("mode", "benef");
+  let q = (await supabaseServeur()).from("rapports").select("id, titre, created_at, prix, verdict, marge, note, marque, photos, lien").eq("mode", "benef");
   const texte = (f.q ?? "").replace(/[%_,()]/g, " ").trim().slice(0, 60);
   if (texte) q = q.ilike("titre", `%${texte}%`);
   if (f.marque) q = q.ilike("marque", f.marque.replace(/[%_,()]/g, "").slice(0, 40));

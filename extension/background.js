@@ -24,3 +24,13 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
     return true;
   }
 });
+
+// Ouvre Utopicar dans un nouvel onglet (après un envoi depuis une annonce ou une page de résultats).
+const UTOPICAR = /^https:\/\/(www\.)?utopicar\.fr\/app\/(analyser|cote)(\?ext=1)?$/;
+chrome.runtime.onMessage.addListener((msg, sender, reply) => {
+  if (msg && msg.type === 'utp-ouvrir'){
+    if (typeof msg.url !== 'string' || !UTOPICAR.test(msg.url) || !SITES.test((sender && sender.tab && sender.tab.url) || '')){ reply({ ok: false }); return false; }
+    chrome.tabs.create({ url: msg.url, index: sender.tab.index + 1, openerTabId: sender.tab.id }, () => reply({ ok: true }));
+    return true;
+  }
+});

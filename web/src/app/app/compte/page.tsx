@@ -9,6 +9,7 @@ import {
   BoutonPortail,
   BoutonSupprimer,
   ChoixUsage,
+  FormEmail,
   FormMotDePasse,
   FormProfil,
 } from "@/components/compte/ActionsCompte";
@@ -37,12 +38,13 @@ export default async function Compte({
   searchParams: Promise<{
     paiement?: string;
     motdepasse?: string;
+    email?: string;
     session_id?: string;
   }>;
 }) {
   const compte = await compteCourant();
   if (!compte) redirect("/connexion?next=/app/compte");
-  const { paiement, motdepasse, session_id } = await searchParams;
+  const { paiement, motdepasse, session_id, email } = await searchParams;
   // Retour de Stripe : l'abonnement est enregistré tout de suite, puis on recharge pour l'afficher.
   if (paiement === "ok" && session_id) {
     await confirmerRetour(session_id, compte.id);
@@ -74,6 +76,16 @@ export default async function Compte({
             actualisez la page
           </Link>{" "}
           dans quelques secondes.
+        </p>
+      )}
+      {email === "ok" && (
+        <p role="status" className="rounded-2xl border border-ok/40 bg-ok/10 p-4 text-ok">
+          Votre nouvelle adresse e-mail est confirmée : utilisez-la pour vous connecter.
+        </p>
+      )}
+      {(email === "expire" || email === "pris") && (
+        <p role="status" className="rounded-2xl border border-warn/40 bg-warn/10 p-4 text-warn">
+          {email === "pris" ? "Cette adresse est déjà utilisée par un autre compte." : "Ce lien a expiré ou n'est pas valable : redemandez le changement d'adresse ci-dessous."}
         </p>
       )}
       {motdepasse && (
@@ -237,11 +249,7 @@ export default async function Compte({
         <h2 id="c-profil" className="mb-4 font-display text-xl font-semibold">
           Profil
         </h2>
-        <FormProfil
-          id={compte.id}
-          prenom={compte.prenom}
-          ville={compte.ville}
-        />
+        <FormProfil prenom={compte.prenom} nom={compte.nom} ville={compte.ville} />
       </section>
 
       <section
@@ -252,7 +260,10 @@ export default async function Compte({
         <h2 id="c-secu" className="mb-4 font-display text-xl font-semibold">
           Sécurité
         </h2>
-        <FormMotDePasse />
+        <div className="grid gap-8">
+          <FormEmail email={compte.email} />
+          <FormMotDePasse />
+        </div>
         <div className="mt-8 border-t border-line pt-5">
           <BoutonSupprimer />
         </div>

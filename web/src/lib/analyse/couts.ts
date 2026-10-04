@@ -22,6 +22,10 @@ export type Analyse = {
   lien?: string;
   /** Photos envoyées avec l'analyse (navigateur seulement, pour les montrer à côté du résultat). */
   vignettes?: string[];
+  /** Photos de la voiture gardées avec le rapport : liens Leboncoin, ou photos envoyées et stockées. */
+  photosUrls?: string[];
+  /** Vendeur : prénom, type, téléphone s'il est écrit dans l'annonce. */
+  vendeur?: import("./vendeur").Vendeur | null;
   /** Renseignés par le serveur après l'analyse. */
   rapportId?: string | null;
   detail?: Detail;

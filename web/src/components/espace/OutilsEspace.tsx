@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { EntreeNav } from "@/lib/espace";
 import { DEFAUTS_PRO, eur, type ParamsPro } from "@/lib/analyse/couts";
@@ -11,7 +12,10 @@ import { useReglages } from "../ui";
 export function SeuilMarge() {
   const [reg] = useReglages<ParamsPro>("utp-pro", DEFAUTS_PRO);
   return (
-    <Link href="/app/analyser#reglages" className="flex items-center justify-between rounded-xl border border-line px-3 py-2 text-sm text-ink-2 hover:text-ink">
+    <Link
+      href="/app/analyser#reglages"
+      className="flex items-center justify-between rounded-xl border border-line px-3 py-2 text-sm text-ink-2 hover:text-ink"
+    >
       Seuil de marge <b className="num text-ink">{eur(reg.margeMin)}</b>
     </Link>
   );
@@ -25,7 +29,10 @@ export function CommandeK({ entrees }: { entrees: EntreeNav[] }) {
   const [sel, setSel] = useState(0);
   const champ = useRef<HTMLInputElement>(null);
   const items = useMemo(() => {
-    const tous = [...entrees.map((e) => ({ l: e.label, href: e.href })), { l: "Retour au site", href: "/" }];
+    const tous = [
+      ...entrees.map((e) => ({ l: e.label, href: e.href })),
+      { l: "Retour au site", href: "/" },
+    ];
     const t = q.trim().toLowerCase();
     return t ? tous.filter((x) => x.l.toLowerCase().includes(t)) : tous;
   }, [entrees, q]);
@@ -50,40 +57,68 @@ export function CommandeK({ entrees }: { entrees: EntreeNav[] }) {
   };
   return (
     <>
-      <button type="button" onClick={() => setOuvert(true)} className="hidden items-center justify-between rounded-xl border border-line px-3 py-2 text-sm text-ink-3 hover:text-ink lg:flex">
-        Aller à… <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl K</kbd>
+      <button
+        type="button"
+        onClick={() => setOuvert(true)}
+        className="hidden items-center justify-between rounded-xl border border-line px-3 py-2 text-sm text-ink-3 hover:text-ink lg:flex"
+      >
+        Aller à…{" "}
+        <kbd className="rounded border border-line-2 px-1.5 text-xs">
+          Ctrl K
+        </kbd>
       </button>
-      {ouvert && (
-        <div className="fixed inset-0 z-50 grid place-items-start bg-black/60 px-4 pt-[15vh]" onClick={() => setOuvert(false)}>
-          <div role="dialog" aria-modal="true" aria-label="Aller à une page" className="carte mx-auto w-full max-w-md p-3" onClick={(ev) => ev.stopPropagation()}>
-            <input
-              ref={champ}
-              value={q}
-              onChange={(ev) => {
-                setQ(ev.target.value);
-                setSel(0);
-              }}
-              onKeyDown={(ev) => {
-                if (ev.key === "ArrowDown") setSel((s) => Math.min(items.length - 1, s + 1));
-                if (ev.key === "ArrowUp") setSel((s) => Math.max(0, s - 1));
-                if (ev.key === "Enter" && items[sel]) aller(items[sel].href);
-              }}
-              placeholder="Rechercher une page…"
-              aria-label="Rechercher une page"
-              className={inputCls}
-            />
-            <ul className="mt-2 grid max-h-80 gap-0.5 overflow-y-auto">
-              {items.map((x, i) => (
-                <li key={x.href}>
-                  <button type="button" onClick={() => aller(x.href)} onMouseEnter={() => setSel(i)} className={cx("w-full rounded-lg px-3 py-2 text-left text-sm", i === sel ? "bg-o/15 text-ink" : "text-ink-2")}>
-                    {x.l}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
+      {ouvert &&
+        // rendu à la racine de la page : dans le menu (position sticky), la fenêtre passait sous le contenu
+        createPortal(
+          <div
+            className="fixed inset-0 z-[70] grid place-items-start bg-black/70 px-4 pt-[15vh] backdrop-blur-sm"
+            onClick={() => setOuvert(false)}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Aller à une page"
+              className="mx-auto w-full max-w-md rounded-2xl border border-line-2 bg-bg1 p-3 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)]"
+              onClick={(ev) => ev.stopPropagation()}
+            >
+              <input
+                ref={champ}
+                value={q}
+                onChange={(ev) => {
+                  setQ(ev.target.value);
+                  setSel(0);
+                }}
+                onKeyDown={(ev) => {
+                  if (ev.key === "ArrowDown")
+                    setSel((s) => Math.min(items.length - 1, s + 1));
+                  if (ev.key === "ArrowUp") setSel((s) => Math.max(0, s - 1));
+                  if (ev.key === "Enter" && items[sel]) aller(items[sel].href);
+                }}
+                placeholder="Rechercher une page…"
+                aria-label="Rechercher une page"
+                className={inputCls}
+              />
+              <ul className="mt-2 grid max-h-80 gap-0.5 overflow-y-auto">
+                {items.map((x, i) => (
+                  <li key={x.href}>
+                    <button
+                      type="button"
+                      onClick={() => aller(x.href)}
+                      onMouseEnter={() => setSel(i)}
+                      className={cx(
+                        "w-full rounded-lg px-3 py-2 text-left text-sm",
+                        i === sel ? "bg-o/15 text-ink" : "text-ink-2",
+                      )}
+                    >
+                      {x.l}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

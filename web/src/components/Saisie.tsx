@@ -4,8 +4,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
 import { Patience, type Apercu } from "./analyse/Patience";
-import { lienLeboncoin, photosDepuisHtml, texteDepuisExtension, texteDepuisImport } from "@/lib/analyse/import";
+import { lienLeboncoin, origineDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
+import { useExtension } from "@/lib/extension";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { Champ, cx, inputCls } from "./ui";
 
@@ -106,6 +107,8 @@ export function Saisie({
   const [lecture, setLecture] = useState(false);
   const [apercu, setApercu] = useState<Apercu | null>(null);
   const [nbEnvoyees, setNbEnvoyees] = useState(0);
+  // annonce venue de Leboncoin ou de l'extension : photos d'origine, lien et vendeur, gardés avec le rapport
+  const [origine, setOrigine] = useState<Origine | null>(null);
   const fichier = useRef<HTMLInputElement>(null);
 
   // Annonce collée avant l'inscription : on la retrouve au retour.
@@ -133,6 +136,19 @@ export function Saisie({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- une seule fois, à l'ouverture
   }, [mode]);
+
+  // Annonce envoyée par l'extension Utopicar (bouton « Analyser avec Utopicar » sur Leboncoin) : texte, photos, analyse lancée.
+  useExtension("annonce", async (e) => {
+    if (e.type !== "annonce") return;
+    const t = texteDepuisExtension(e.brut);
+    if (!t) return;
+    const og = origineDepuisExtension(e.brut);
+    setTexte(t);
+    setOrigine(og);
+    const ph = maxPhotos > 0 ? (await Promise.all(e.images.slice(0, maxPhotos).map(depuisDataUrl))).filter((x): x is PhotoLocale => !!x) : [];
+    setPhotos(ph);
+    lancer(t, ph, ville, og);
+  });
 
   useEffect(() => {
     if (!charge && !lecture) return;
@@ -212,11 +228,13 @@ export function Saisie({
       }
       const t = texteDepuisImport(j);
       setTexte(t);
+      const og: Origine = { liens: Array.isArray(j.liens) ? j.liens : [], lien: j.url, vendeur: j.vendeur ?? null };
+      setOrigine(og);
       const ph = maxPhotos > 0 ? (await Promise.all((j.photos as string[]).slice(0, maxPhotos).map(depuisDataUrl))).filter((x): x is PhotoLocale => !!x) : [];
       setPhotos(ph);
       if (maxPhotos > 0 && !ph.length) setAvisPhotos("Les photos de l'annonce n'ont pas pu être récupérées : l'analyse part sans elles. Ajoutez-les à la main pour que l'IA examine l'état.");
       setLecture(false);
-      await lancer(t, ph, villeChoisie);
+      await lancer(t, ph, villeChoisie, og);
     } catch {
       setErreur({ t: "Connexion impossible. Vérifiez votre réseau et réessayez." });
     } finally {
@@ -224,7 +242,7 @@ export function Saisie({
     }
   }
 
-  async function lancer(t = texte, ph = photos, v = ville) {
+  async function lancer(t = texte, ph = photos, v = ville, og = origine) {
     setErreur(null);
     if (quotaEpuise()) return;
     if (t.trim().length < 30) {
@@ -244,7 +262,13 @@ export function Saisie({
       const r = await fetch("/api/analyse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode, texte: t, ville: v, photos: ph.map((p) => ({ media_type: "image/jpeg", data: p.data })) }),
+        body: JSON.stringify({
+          mode,
+          texte: t,
+          ville: v,
+          photos: ph.map((p) => ({ media_type: "image/jpeg", data: p.data })),
+          ...(og ? { photosLiens: og.liens.filter((u) => /^https:\/\//.test(u)).slice(0, 12), lienAnnonce: og.lien || undefined, vendeur: og.vendeur } : {}),
+        }),
       });
       const j = await r.json().catch(() => null);
       if (r.status === 401) return versInscription({ texte: t, ville: v });
@@ -284,6 +308,7 @@ export function Saisie({
         if (converti) {
           e.preventDefault();
           setTexte(converti);
+          setOrigine(origineDepuisExtension(brut));
           const urls = photosDepuisHtml(e.clipboardData.getData("text/html")).slice(0, maxPhotos);
           if (urls.length) {
             // photos distantes : lisibles seulement si le site les autorise ; sinon on le dit au lieu d'échouer en silence

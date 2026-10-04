@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Rotateur } from "@/components/accueil/Rotateur";
 import { Demo } from "@/components/accueil/Demo";
@@ -53,6 +54,21 @@ export default async function Accueil() {
               Résultat en langage clair
             </li>
           </ul>
+          <figure className="arrivee relative mx-auto mt-10 max-w-xl" style={{ "--i": 5 } as React.CSSProperties}>
+            <Image
+              src="/images/audi-a3.webp"
+              alt="Une Audi A3 Sportback grise, éclairée en orange, comme celles que l'on trouve sur Leboncoin"
+              width={1040}
+              height={520}
+              priority
+              sizes="(max-width: 640px) 92vw, 576px"
+              className="h-auto w-full [mask-image:linear-gradient(to_bottom,#000_70%,transparent)]"
+            />
+            <figcaption className="absolute bottom-3 left-1/2 flex -translate-x-1/2 flex-wrap justify-center gap-2 text-xs sm:text-sm">
+              <span className="rounded-full border border-line-2 bg-bg0/85 px-3 py-1 backdrop-blur-md">Audi A3 Sportback · 2017 · 98 000 km</span>
+              <span className="rounded-full border border-ok/40 bg-bg0/85 px-3 py-1 text-ok backdrop-blur-md">Prix juste · cote 16 590 €</span>
+            </figcaption>
+          </figure>
         </div>
       </section>
 

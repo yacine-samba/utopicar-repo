@@ -7,12 +7,12 @@ import { Copier, Panneau, Pastille, cx, inputCls, type Ton } from "../ui";
 import { AnalysePhotos } from "./AnalysePhotos";
 
 const VERDICTS: Record<Niveau, { l: string; ton: Ton; phrase: string }> = {
-  bon: { l: "Bonne affaire", ton: "ok", phrase: "Le prix est sous le marché." },
-  correct: { l: "Prix correct", ton: "ok", phrase: "Le prix est dans la moyenne du marché." },
-  cher: { l: "Trop cher", ton: "warn", phrase: "Le prix est au-dessus du marché." },
-  prudence: { l: "Prudence", ton: "warn", phrase: "Elle peut convenir, mais de gros frais sont possibles. Faites-la vérifier avant d'acheter." },
-  eviter: { l: "À éviter", ton: "bad", phrase: "Un problème grave est signalé : mieux vaut passer votre chemin." },
-  inconnu: { l: "Prix non évalué", ton: "neutre", phrase: "Nous n'avons pas pu comparer le prix au marché." },
+  bon: { l: "Bon prix", ton: "ok", phrase: "Elle coûte moins cher que les voitures comparables." },
+  correct: { l: "Prix juste", ton: "ok", phrase: "Elle est au prix des voitures comparables : vous ne payez pas trop cher." },
+  cher: { l: "Trop cher", ton: "warn", phrase: "Elle coûte plus cher que les voitures comparables." },
+  prudence: { l: "À faire vérifier avant d'acheter", ton: "warn", phrase: "Elle peut être un bon achat, mais l'annonce laisse craindre des frais importants. Faites-la contrôler par un garage avant de payer." },
+  eviter: { l: "Nous vous la déconseillons", ton: "bad", phrase: "L'annonce signale un problème grave : réparer coûterait trop cher par rapport au prix." },
+  inconnu: { l: "Prix à confirmer", ton: "neutre", phrase: "Pas assez d'annonces comparables pour juger le prix : comparez avec deux ou trois annonces du même modèle." },
 };
 const FOND: Record<Ton, string> = { ok: "from-ok/20 border-ok/40", warn: "from-warn/20 border-warn/40", bad: "from-bad/20 border-bad/40", o: "from-o/20 border-o/40", neutre: "from-glass border-line-2" };
 const TEXTE: Record<Ton, string> = { ok: "text-ok", warn: "text-warn", bad: "text-bad", o: "text-o2", neutre: "text-ink" };
@@ -52,14 +52,17 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
   // Verdict particulier : seulement le prix face au marché (très bonne, bonne ou moyenne affaire). Les risques sont des alertes à part.
   const realiste = a.ia?.marche.realiste ?? null;
   const part = realiste && c.ecart != null ? c.ecart / realiste : null;
+  // Verdict en langage courant : ce que vaut le prix, puis ce qu'on vous conseille de faire.
   const affaire =
     part == null
-      ? VERDICTS.inconnu
+      ? { ...VERDICTS.inconnu, conseil: "Demandez au vendeur le contrôle technique et les factures avant de vous déplacer." }
       : part > 0.08
-        ? { l: "Très bonne affaire", ton: "ok" as Ton, phrase: `Nettement en dessous du prix du marché : environ ${eur(c.ecart!)} de moins, petites réparations comprises.` }
+        ? { l: "Très bon prix", ton: "ok" as Ton, phrase: `Elle coûte environ ${eur(c.ecart!)} de moins que les voitures comparables, petites réparations comprises.`, conseil: "Si l'état se confirme pendant la visite, c'est une belle occasion : contactez le vendeur sans tarder." }
         : part >= -0.03
-          ? { l: "Bonne affaire", ton: "ok" as Ton, phrase: part > 0.02 ? `Un peu en dessous du prix du marché : environ ${eur(c.ecart!)} de moins.` : "Au prix du marché." }
-          : { l: "Affaire moyenne", ton: "warn" as Ton, phrase: `${part < -0.1 ? "Nettement" : "Un peu"} au-dessus du prix du marché : environ ${eur(-c.ecart!)} de plus.` };
+          ? { l: part > 0.02 ? "Bon prix" : "Prix juste", ton: "ok" as Ton, phrase: part > 0.02 ? `Elle coûte environ ${eur(c.ecart!)} de moins que les voitures comparables.` : "Elle est au prix des voitures comparables : vous ne payez pas trop cher.", conseil: "Vous pouvez y aller : vérifiez simplement les points ci-dessous pendant la visite." }
+          : part >= -0.1
+            ? { l: "Un peu cher", ton: "warn" as Ton, phrase: `Elle coûte environ ${eur(-c.ecart!)} de plus que les voitures comparables.`, conseil: "Négociez : la plupart des vendeurs acceptent de baisser un peu leur prix." }
+            : { l: "Trop cher", ton: "warn" as Ton, phrase: `Elle coûte environ ${eur(-c.ecart!)} de plus que les voitures comparables.`, conseil: "Proposez nettement moins, ou comparez avec d'autres annonces du même modèle avant de vous déplacer." };
   const v = affaire;
   const risque = c.niveau === "eviter" ? VERDICTS.eviter : c.niveau === "prudence" ? VERDICTS.prudence : null;
   const ia = a.ia;
@@ -92,10 +95,11 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
           {v.l}
         </h1>
         <p className="mt-3 max-w-xl text-lg text-ink">{phrasePrix}</p>
+        {!risque && <p className="mt-2 max-w-xl text-ink-2"><b className="text-ink">Notre conseil :</b> {v.conseil}</p>}
         {realiste != null && <p className="mt-1 text-ink-2">Prix du marché pour cette voiture : environ {eur(realiste)}.</p>}
         {risque && (
           <p className={cx("mt-4 rounded-2xl border px-4 py-3", risque.ton === "bad" ? "border-bad/40 bg-bad/10 text-bad" : "border-warn/40 bg-warn/10 text-warn")}>
-            <b>{risque.l} :</b> {risque.phrase}
+            <b>{risque.l}.</b> {risque.phrase}
           </p>
         )}
         {plus && c.proposer != null && c.prix != null && c.proposer < c.prix && c.niveau !== "eviter" && (

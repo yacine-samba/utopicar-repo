@@ -14,6 +14,7 @@ export type Compte = {
   illimite: boolean;
   email: string;
   prenom: string;
+  nom: string;
   famille: Famille | null;
   ville: string;
   offre: Offre;
@@ -40,7 +41,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
   } = await sb.auth.getUser();
   if (!user) return null;
   const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }] = await Promise.all([
-    sb.from("profils").select("prenom, famille, ville, formule_offerte, offerte_jusqu_au, illimite").eq("id", user.id).maybeSingle(),
+    sb.from("profils").select("prenom, nom, famille, ville, formule_offerte, offerte_jusqu_au, illimite").eq("id", user.id).maybeSingle(),
     sb.from("abonnements").select("offre, statut, periode_fin, annule_fin_periode").eq("user_id", user.id).maybeSingle(),
     sb.from("achats").select("produit").eq("user_id", user.id),
     sb.rpc("mes_credits"),
@@ -64,6 +65,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     illimite,
     email: user.email ?? "",
     prenom: profil?.prenom || "",
+    nom: profil?.nom || "",
     famille: (profil?.famille as Famille) ?? null,
     ville: profil?.ville ?? "",
     offre: o,
