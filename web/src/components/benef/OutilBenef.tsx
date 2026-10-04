@@ -1,24 +1,31 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DEFAUTS_PRO, type Analyse, type ParamsPro } from "@/lib/analyse/couts";
 import { Saisie } from "../Saisie";
 import { Champ, inputCls, useReglages } from "../ui";
 import { Reglages, ResultatBenef } from "./ResultatBenef";
 import { RapportComplet } from "./RapportComplet";
 import { AjouterParc } from "./AjouterParc";
+import { EnTeteRapport } from "../analyse/EnTeteRapport";
 
 export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restantes = null }: { maxPhotos: number; parc: boolean; villeCompte: string; lienInitial?: string; restantes?: number | null }) {
   const [reg, setReg] = useReglages<ParamsPro>("utp-pro", { ...DEFAUTS_PRO, ville: villeCompte || DEFAUTS_PRO.ville });
+  const router = useRouter();
   const [a, setA] = useState<Analyse | null>(null);
   const [prix, setPrix] = useState("");
 
   if (a) {
     const v = a.ia?.vehicule;
     const titre = [v?.marque, v?.modele, v?.version].filter(Boolean).join(" ") || a.faits.titre || "Annonce";
+    const entete = (a.photosUrls?.length || a.lien) ? (
+      <EnTeteRapport titre={titre} prix={a.faits.prix ?? v?.prix ?? null} photos={a.photosUrls ?? []} lien={a.lien ?? null} vendeur={a.vendeur ?? null} maxPhotos={12} date="" retour={{ onClick: () => (setA(null), scrollTo({ top: 0 })), l: "Nouvelle analyse" }} />
+    ) : null;
     if (a.rapport)
       return (
         <div className="grid gap-4">
+          {entete}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-ink-3">{a.rapportId ? "Rapport enregistré dans vos rapports." : ""}</p>
             <button
@@ -36,6 +43,8 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restante
         </div>
       );
     return (
+      <div className="grid gap-4">
+      {entete}
       <ResultatBenef
         a={a}
         reg={reg}
@@ -55,6 +64,7 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restante
           ) : null
         }
       />
+      </div>
     );
   }
   return (
@@ -82,6 +92,8 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restante
           }
           onResultat={(r, ville) => {
             setReg({ ville });
+            // rapport enregistré (sans prix envisagé à tester) : la page complète s'ouvre, photos d'abord
+            if (r.rapportId && !prix.trim()) return router.push(`/app/rapports/${r.rapportId}`);
             setA(r);
             scrollTo({ top: 0 });
           }}

@@ -1,7 +1,11 @@
-// UTOPICAR Scanner — bouton sur les pages d'annonce, copie texte + photos pour le scanner.
+// Utopicar — sur une annonce : « Analyser avec Utopicar » (texte, photos, numéro s'il est affiché) ;
+// sur une page de résultats Leboncoin : « Relever la page » (toutes les annonces, cote de chacune dans Utopicar).
+// Les données sont gardées par l'extension puis transmises à la page Utopicar qui s'ouvre (voir site.js).
 (function(){
   'use strict';
-  const SCANNER_URL = 'https://utopicar.fr/app/analyser';
+  const SITE = 'https://www.utopicar.fr';
+  const SCANNER_URL = SITE + '/app/analyser?ext=1';
+  const COTE_URL = SITE + '/app/cote?ext=1';
   const MAX_PHOTOS = 8;
   const isAdPage = () => {
     const h = location.hostname, p = location.pathname;
@@ -11,6 +15,36 @@
     if (h.includes('leparking')) return /\/(voiture-occasion|annonce|detail)/.test(p);
     return false;
   };
+
+  // Page de résultats Leboncoin (recherche, catégorie voitures) : on peut la relever.
+  const isListPage = () => location.hostname.includes('leboncoin') && !isAdPage() && /\/(recherche|c\/voitures|voitures)/.test(location.pathname + location.search);
+
+  // Relevé de toute la page de résultats (même format que le favori « Relever la page » de l'outil Garage).
+  function releve(){
+    const d = document, pat = /\/ad\/|annonce|\/offres?\/|\/detail|\/vo\/|\/voiture-occasion/i, out = [], seen = {};
+    const cl = h => { try { const u = new URL(h, location.href); return u.origin + u.pathname; } catch(e){ return h; } };
+    const ok = a => { const h = a.getAttribute('href') || ''; return pat.test(h) && !/recherche|search|liste|deposer|annonces\?|\/c\/|\/ck\//i.test(h); };
+    [...d.querySelectorAll('a[href]')].filter(ok).forEach(a => {
+      const h = cl(a.href); if (seen[h]) return; let el = a, best = null;
+      while (el && el !== d.body){
+        const n = new Set([...el.querySelectorAll('a[href]')].filter(ok).map(x => cl(x.href))).size;
+        if (n > 1) break;
+        if (/€/.test(el.innerText || '')) best = el;
+        el = el.parentElement;
+      }
+      if (!best) return; seen[h] = 1;
+      const te = best.querySelector('[data-qa-id="aditem_title"],[data-test-id*="title"],h2,h3');
+      const tt = [...best.querySelectorAll('a[title],a[aria-label]')].map(x => (x.getAttribute('title') || x.getAttribute('aria-label') || '').trim()).filter(v => v.length > 3)[0] || (te ? te.innerText.trim() : '');
+      out.push({ u: h, t: tt.slice(0, 140), x: (best.innerText || '').replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n').slice(0, 1200) });
+    });
+    return out;
+  }
+
+  // Garde l'envoi pour la page Utopicar qui va s'ouvrir (10 minutes au plus), puis l'ouvre.
+  function envoyer(p, url){
+    // l'onglet est ouvert par le service worker : après la lecture des photos, window.open serait bloqué
+    return new Promise(res => chrome.storage.local.set({ 'utp-envoi': Object.assign({ t: Date.now() }, p) }, () => chrome.runtime.sendMessage({ type: 'utp-ouvrir', url }, () => res())));
+  }
 
   function findAd(json){
     let best = null, bl = 0, seen = 0;
@@ -29,6 +63,9 @@
     const o = { v: 2, src: location.hostname, url: location.href.split('?')[0].split('#')[0], title: ((d.querySelector('h1') || {}).innerText || d.title || '').trim() };
     const meta = n => { const e = d.querySelector('meta[property="' + n + '"],meta[name="' + n + '"]'); return e ? e.content : ''; };
     o.ogTitle = meta('og:title'); o.ogDesc = meta('og:description'); o.ogImage = meta('og:image');
+    // numéro du vendeur : seulement s'il est affiché sur la page (après « Voir le numéro »)
+    const tel = d.querySelector('a[href^="tel:"]');
+    if (tel) o.telephone = (tel.getAttribute('href') || '').replace(/^tel:/, '').trim().slice(0, 20);
     o.ld = [...d.querySelectorAll('script[type="application/ld+json"]')].map(s => { try { return JSON.parse(s.textContent); } catch(e){ return null; } }).filter(Boolean);
     const nd = d.getElementById('__NEXT_DATA__');
     if (nd){ try { const ad = findAd(JSON.parse(nd.textContent)); if (ad) o.ad = ad; } catch(e){} }
@@ -91,25 +128,38 @@
       for (const u of urls){ const raw = await fetchImage(u); const sm = raw && await shrink(raw); if (sm) imgs.push(sm); btn.textContent = 'Photos ' + imgs.length + '/' + urls.length; }
       o.photosIncluded = imgs.length;
       const text = 'UTPIMPORT' + JSON.stringify(o);
-      const html = '<div data-utp="1">' + imgs.map((s, i) => '<img alt="photo ' + (i + 1) + '" src="' + s + '">').join('') + '</div>';
-      await navigator.clipboard.write([new ClipboardItem({
-        'text/plain': new Blob([text], { type: 'text/plain' }),
-        'text/html': new Blob([html], { type: 'text/html' })
-      })]);
-      toast(['✓ Annonce copiée avec ' + imgs.length + ' photo(s).', 'Dans Utopicar, cliquez dans le champ « L\'annonce » et faites Ctrl+V.'], true, SCANNER_URL);
+      // copie de secours dans le presse-papiers (Ctrl+V dans Utopicar), puis ouverture directe d'Utopicar
+      try {
+        const html = '<div data-utp="1">' + imgs.map((s, i) => '<img alt="photo ' + (i + 1) + '" src="' + s + '">').join('') + '</div>';
+        await navigator.clipboard.write([new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }), 'text/html': new Blob([html], { type: 'text/html' }) })]);
+      } catch(e){ /* presse-papiers refusé : l'envoi direct suffit */ }
+      await envoyer({ type: 'annonce', brut: text, images: imgs }, SCANNER_URL);
+      toast(['✓ Annonce envoyée à Utopicar avec ' + imgs.length + ' photo(s).', 'L\'analyse démarre dans l\'onglet Utopicar.'], true, SCANNER_URL);
     } catch(e){
       toast(['Copie impossible : ' + (e && e.message || e) + '.', 'Cliquez d\'abord dans la page puis réessayez.'], false);
     } finally { btn.disabled = false; btn.textContent = label; }
   }
 
+  async function runReleve(btn){
+    const items = releve();
+    if (!items.length){ toast(['Aucune annonce trouvée sur cette page.', 'Ouvrez une page de résultats de recherche Leboncoin.'], false); return; }
+    const text = 'UTPRELEVE' + JSON.stringify({ v: 1, src: location.hostname, url: location.href, title: document.title, items: items.slice(0, 120) });
+    try { await navigator.clipboard.writeText(text); } catch(e){ /* l'envoi direct suffit */ }
+    await envoyer({ type: 'releve', brut: text }, COTE_URL);
+    toast(['✓ ' + items.length + ' annonces relevées.', 'La cote de chacune s\'affiche dans l\'onglet Utopicar.'], true, COTE_URL);
+  }
+
   function mount(){
     const existing = document.getElementById('utp-btn');
-    if (!isAdPage()){ if (existing) existing.remove(); return; }
-    if (existing) return;
+    const liste = isListPage();
+    if (!isAdPage() && !liste){ if (existing) existing.remove(); return; }
+    if (existing && existing.dataset.mode === (liste ? 'liste' : 'annonce')) return;
+    if (existing) existing.remove();
     const b = document.createElement('button');
-    b.id = 'utp-btn'; b.type = 'button'; b.textContent = 'Scanner avec UTOPICAR';
+    b.id = 'utp-btn'; b.type = 'button'; b.dataset.mode = liste ? 'liste' : 'annonce';
+    b.textContent = liste ? 'Relever la page avec Utopicar' : 'Analyser avec Utopicar';
     b.style.cssText = 'position:fixed;right:20px;bottom:24px;z-index:2147483647;background:#ff5a1f;color:#160904;border:0;border-radius:10px;padding:13px 18px;font:800 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)';
-    b.addEventListener('click', () => run(b));
+    b.addEventListener('click', () => (b.dataset.mode === 'liste' ? runReleve(b) : run(b)));
     document.body.appendChild(b);
   }
   mount();

@@ -70,3 +70,25 @@ export function texteDepuisImport(d: { url: string; ad: unknown; brut?: string }
 export function photosDepuisHtml(html: string): string[] {
   return Array.from(html.matchAll(/<img[^>]+src="(data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+)"/g)).map((m) => m[1]);
 }
+
+/** Ce qui accompagne l'annonce importée : photos d'origine, lien, vendeur (gardés avec le rapport). */
+export type Origine = { liens: string[]; lien: string | null; vendeur: { nom?: string | null; type?: string | null; aTel?: boolean; telephone?: string | null } | null };
+
+/** Copie de l'extension : liens des photos, lien de l'annonce, prénom du vendeur et numéro s'il a été affiché sur la page. */
+export function origineDepuisExtension(brut: string): Origine | null {
+  if (!brut.startsWith(PREFIXE_EXTENSION)) return null;
+  try {
+    const o = obj(JSON.parse(brut.slice(PREFIXE_EXTENSION.length)));
+    const ad = obj(o.ad);
+    const owner = obj(ad.owner);
+    const liens = (Array.isArray(o.photoUrls) ? o.photoUrls : []).filter((u): u is string => typeof u === "string" && /^https:\/\//.test(u)).slice(0, 12);
+    const typeV = owner.type === "pro" ? "pro" : owner.type === "private" ? "particulier" : null;
+    return {
+      liens,
+      lien: typeof o.url === "string" && /^https?:\/\//.test(o.url) ? o.url : null,
+      vendeur: { nom: typeof owner.name === "string" ? owner.name : null, type: typeV, aTel: Boolean(ad.has_phone ?? o.telephone), telephone: typeof o.telephone === "string" ? o.telephone : null },
+    };
+  } catch {
+    return null;
+  }
+}

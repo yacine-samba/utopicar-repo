@@ -3,107 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
-import { joursStock, margeReelle, STATUTS_PARC, type Vehicule } from "@/lib/parc";
-import { cx, inputCls } from "../ui";
+import { DOCS_VENTE, joursStock, margePrevue, margeReelle, STATUTS_PARC, STRUCTURES, type Vehicule } from "@/lib/parc";
+import { cx } from "../ui";
 import { ExportCsv } from "./ExportCsv";
+import { FicheParc } from "./FicheParc";
+import { Carrousel } from "../analyse/Photos";
 
 const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")}\u00a0€`);
 const ent = (s: string) => (s.trim() === "" ? null : Math.max(0, Math.round(Number(s.replace(/[\s €]/g, "").replace(",", "."))) || 0));
-
-function Fiche({ v, onFini }: { v: Partial<Vehicule>; onFini: () => void }) {
-  const router = useRouter();
-  const [f, setF] = useState({
-    titre: v.titre ?? "",
-    immat: v.immat ?? "",
-    statut: v.statut ?? "repere",
-    prix_achat: v.prix_achat?.toString() ?? "",
-    frais: v.frais?.toString() ?? "0",
-    prix_vente: v.prix_vente?.toString() ?? "",
-    date_achat: v.date_achat ?? "",
-    date_vente: v.date_vente ?? "",
-    notes: v.notes ?? "",
-  });
-  const [err, setErr] = useState("");
-  const maj = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
-  return (
-    <form
-      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        if (!f.titre.trim()) return setErr("Indiquez le véhicule.");
-        const ligne = {
-          titre: f.titre.trim().slice(0, 140),
-          immat: f.immat.trim().slice(0, 20) || null,
-          statut: f.statut,
-          prix_achat: ent(f.prix_achat),
-          frais: ent(f.frais) ?? 0,
-          prix_vente: ent(f.prix_vente),
-          date_achat: f.date_achat || null,
-          date_vente: f.date_vente || null,
-          notes: f.notes.slice(0, 2000) || null,
-          updated_at: new Date().toISOString(),
-        };
-        const sb = supabaseNavigateur();
-        const { error } = v.id ? await sb.from("parc").update(ligne).eq("id", v.id) : await sb.from("parc").insert(ligne);
-        if (error) return setErr("Enregistrement impossible. Réessayez.");
-        onFini();
-        router.refresh();
-      }}
-    >
-      <label className="grid gap-1.5 text-sm sm:col-span-2">
-        <span className="text-ink-2">Véhicule</span>
-        <input value={f.titre} onChange={maj("titre")} required placeholder="ex. Clio IV 1.5 dCi 90" className={inputCls} />
-      </label>
-      <label className="grid gap-1.5 text-sm">
-        <span className="text-ink-2">Immatriculation</span>
-        <input value={f.immat} onChange={maj("immat")} className={inputCls} />
-      </label>
-      <label className="grid gap-1.5 text-sm">
-        <span className="text-ink-2">Statut</span>
-        <select value={f.statut} onChange={maj("statut")} className={inputCls}>
-          {Object.entries(STATUTS_PARC).map(([k, l]) => (
-            <option key={k} value={k}>
-              {l}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="grid gap-1.5 text-sm">
-        <span className="text-ink-2">Prix d&apos;achat (€)</span>
-        <input value={f.prix_achat} onChange={maj("prix_achat")} inputMode="numeric" className={inputCls} />
-      </label>
-      <label className="grid gap-1.5 text-sm">
-        <span className="text-ink-2">Frais cumulés (€)</span>
-        <input value={f.frais} onChange={maj("frais")} inputMode="numeric" className={inputCls} />
-      </label>
-      <label className="grid gap-1.5 text-sm">
-        <span className="text-ink-2">Prix de vente (€)</span>
-        <input value={f.prix_vente} onChange={maj("prix_vente")} inputMode="numeric" className={inputCls} />
-      </label>
-      <label className="grid gap-1.5 text-sm">
-        <span className="text-ink-2">Date d&apos;achat</span>
-        <input type="date" value={f.date_achat} onChange={maj("date_achat")} className={inputCls} />
-      </label>
-      <label className="grid gap-1.5 text-sm">
-        <span className="text-ink-2">Date de vente</span>
-        <input type="date" value={f.date_vente} onChange={maj("date_vente")} className={inputCls} />
-      </label>
-      <label className="grid gap-1.5 text-sm sm:col-span-2 lg:col-span-3">
-        <span className="text-ink-2">Notes</span>
-        <textarea value={f.notes} onChange={maj("notes")} rows={2} className={inputCls} />
-      </label>
-      <div className="flex flex-wrap items-end gap-2">
-        <button type="submit" className="btn btn-o btn-sm">
-          Enregistrer
-        </button>
-        <button type="button" onClick={onFini} className="btn btn-sm">
-          Annuler
-        </button>
-      </div>
-      {err && <p role="alert" className="text-sm text-warn sm:col-span-4">{err}</p>}
-    </form>
-  );
-}
 
 export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
   const router = useRouter();
@@ -123,8 +30,8 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
         <div className="flex flex-wrap gap-2">
           <ExportCsv
             nom="parc-utopicar"
-            entetes={["Véhicule", "Immatriculation", "Statut", "Prix d'achat", "Frais", "Prix de vente", "Marge réelle", "Date d'achat", "Date de vente", "Jours en stock"]}
-            lignes={vehicules.map((v) => [v.titre, v.immat, STATUTS_PARC[v.statut], v.prix_achat, v.frais, v.prix_vente, margeReelle(v), v.date_achat, v.date_vente, joursStock(v)])}
+            entetes={["Véhicule", "Version", "Immatriculation", "Année", "Kilométrage", "Énergie", "Boîte", "VIN", "Statut", "Structure", "Prix d'achat", "Commission", "Frais", "Prix conseillé", "Prix de vente", "Marge réelle", "Date d'achat", "Date de vente", "Jours en stock", "Lien"]}
+            lignes={vehicules.map((v) => [v.titre, v.finition, v.immat, v.annee, v.km, v.energie, v.boite, v.vin, STATUTS_PARC[v.statut], STRUCTURES[v.structure ?? "achat"], v.prix_achat, v.commission, v.frais, v.prix_conseille, v.prix_vente, margeReelle(v), v.date_achat, v.date_vente, joursStock(v), v.lien].map((x) => x ?? null))}
           />
           <button type="button" onClick={() => setEdition("nouveau")} className="btn btn-o btn-sm">
             Ajouter un véhicule
@@ -134,7 +41,7 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
       {edition === "nouveau" && (
         <div className="carte p-5">
           <h2 className="mb-4 font-display text-lg font-semibold">Nouveau véhicule</h2>
-          <Fiche v={{}} onFini={() => setEdition(null)} />
+          <FicheParc v={{}} onFini={() => setEdition(null)} />
         </div>
       )}
       {liste.length === 0 ? (
@@ -143,59 +50,90 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
         <ul className="grid gap-3">
           {liste.map((v) => {
             const m = margeReelle(v);
+            const mp = margePrevue(v);
             const j = joursStock(v);
+            const nDocs = DOCS_VENTE.filter(([k]) => v.docs?.[k]).length;
             return (
-              <li key={v.id} className="carte p-5">
+              <li key={v.id} className={cx("carte overflow-hidden", edition === v.id && "p-5")}>
                 {edition === v.id ? (
-                  <Fiche v={v} onFini={() => setEdition(null)} />
+                  <FicheParc v={v} onFini={() => setEdition(null)} />
                 ) : (
-                  <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="font-display text-lg font-semibold">{v.titre}</p>
-                      <p className="text-sm text-ink-3">
-                        {STATUTS_PARC[v.statut]}
-                        {v.immat ? ` · ${v.immat}` : ""}
-                        {j != null ? ` · ${j} jour${j > 1 ? "s" : ""} ${v.statut === "vendu" ? "en stock" : "depuis l'achat"}` : ""}
-                        {v.rapport_id && (
-                          <>
-                            {" · "}
-                            <Link href={`/app/rapports/${v.rapport_id}`} className="underline underline-offset-4 hover:text-ink">
-                              rapport
-                            </Link>
-                          </>
+                  <div className="grid sm:grid-cols-[240px_minmax(0,1fr)]">
+                    <Carrousel photos={v.photos ?? []} alt={v.titre} className="sm:aspect-auto sm:h-full sm:min-h-44" />
+                    <div className="grid gap-3 p-4 sm:p-5">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="font-display text-lg font-semibold">
+                            {v.titre}
+                            {v.finition && <span className="ml-2 font-body text-sm font-normal text-ink-3">{v.finition}</span>}
+                          </p>
+                          <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-ink-3">
+                            <span className="rounded-full border border-o/40 bg-o/10 px-2 py-px text-xs font-medium text-o2">{STATUTS_PARC[v.statut]}</span>
+                            {v.immat && <span className="rounded border border-line-2 bg-white/90 px-1.5 font-mono text-xs font-semibold tracking-wider text-[#1d1d1f]">{v.immat}</span>}
+                            {v.structure && v.structure !== "achat" && <span>{STRUCTURES[v.structure]}</span>}
+                            {j != null && <span>{j} jour{j > 1 ? "s" : ""} {v.statut === "vendu" ? "en stock" : "depuis l'achat"}</span>}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button type="button" onClick={() => setEdition(v.id)} className="btn btn-sm">
+                            Modifier
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={`Supprimer ${v.titre}`}
+                            className="btn btn-sm"
+                            onClick={async () => {
+                              if (!confirm(`Supprimer « ${v.titre} » du parc ?`)) return;
+                              await supabaseNavigateur().from("parc").delete().eq("id", v.id);
+                              router.refresh();
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                      {(v.annee || v.km != null || v.energie || v.boite) && (
+                        <p className="text-sm text-ink-2">{[v.annee, v.km != null ? `${v.km.toLocaleString("fr-FR")} km` : null, v.energie, v.boite, v.couleur, v.localisation].filter(Boolean).join(" · ")}</p>
+                      )}
+                      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-4">
+                        <div>
+                          <dt className="text-ink-3">Achat</dt>
+                          <dd className="num">{eur(v.prix_achat)}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-ink-3">Frais</dt>
+                          <dd className="num">{eur(v.frais || 0)}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-ink-3">{v.statut === "vendu" ? "Vendue" : "Prix conseillé"}</dt>
+                          <dd className="num">{eur(v.statut === "vendu" ? v.prix_vente : (v.prix_conseille ?? null))}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-ink-3">{m != null ? "Marge réelle" : "Marge prévue"}</dt>
+                          <dd className={cx("num font-semibold", (m ?? mp) == null ? "" : (m ?? mp)! >= 0 ? "text-ok" : "text-bad")}>{eur(m ?? mp)}</dd>
+                        </div>
+                      </dl>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-3">
+                        <span>
+                          Papiers : <b className={cx("num", nDocs === DOCS_VENTE.length ? "text-ok" : "text-ink-2")}>{nDocs}/{DOCS_VENTE.length}</b>
+                        </span>
+                        {v.vendeur_tel && (
+                          <a href={`tel:${v.vendeur_tel.replace(/\s/g, "")}`} className="text-o2 underline-offset-4 hover:underline">
+                            {v.vendeur_nom ? `${v.vendeur_nom} · ` : ""}
+                            {v.vendeur_tel}
+                          </a>
                         )}
-                      </p>
-                    </div>
-                    <dl className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <dt className="text-ink-3">Achat + frais</dt>
-                        <dd className="num">{v.prix_achat != null ? eur(v.prix_achat + (v.frais || 0)) : "—"}</dd>
+                        {v.rapport_id && (
+                          <Link href={`/app/rapports/${v.rapport_id}`} className="underline-offset-4 hover:text-ink hover:underline">
+                            Rapport d&apos;analyse
+                          </Link>
+                        )}
+                        {v.lien && (
+                          <a href={v.lien} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:text-ink hover:underline">
+                            Annonce d&apos;origine ↗
+                          </a>
+                        )}
                       </div>
-                      <div>
-                        <dt className="text-ink-3">Vente</dt>
-                        <dd className="num">{eur(v.prix_vente)}</dd>
-                      </div>
-                      <div>
-                        <dt className="text-ink-3">Marge réelle</dt>
-                        <dd className={cx("num font-semibold", m == null ? "" : m >= 0 ? "text-ok" : "text-bad")}>{eur(m)}</dd>
-                      </div>
-                    </dl>
-                    <div className="flex gap-2">
-                      <button type="button" onClick={() => setEdition(v.id)} className="btn btn-sm">
-                        Modifier
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={`Supprimer ${v.titre}`}
-                        className="btn btn-sm"
-                        onClick={async () => {
-                          if (!confirm(`Supprimer « ${v.titre} » du parc ?`)) return;
-                          await supabaseNavigateur().from("parc").delete().eq("id", v.id);
-                          router.refresh();
-                        }}
-                      >
-                        ✕
-                      </button>
                     </div>
                   </div>
                 )}

@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useExtension } from "@/lib/extension";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque, CoteAnnonce, PointCote } from "@/lib/vehicules/types";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
 import { NuageCote } from "./NuageCote";
 
-type AnnonceCotee = { id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string; boite: string; pro: boolean; lieu: string; url: string | null; badge: string; cote: CoteAnnonce | null };
+type AnnonceCotee = { id: string; ch?: number | null; titre: string; prix: number; annee: number | null; km: number | null; energie: string; boite: string; pro: boolean; lieu: string; url: string | null; badge: string; cote: CoteAnnonce | null };
 type Groupe = { cle: string; base: string; nom: string; gen: string | null; genLabel: string; energie: string; nCote: number; annonces: AnnonceCotee[]; points: PointCote[] };
 type Releve = { src: string; total: number; enregistrees: number; groupes: Groupe[]; inconnues: { id: string; titre: string; prix: number; url: string }[]; nInconnues: number; ms: number };
 type Place = { nom: string; gen: string; estimation: CoteAnnonce | null; points: PointCote[]; courbe: { km: number; P: number | null }[] };
@@ -61,6 +62,13 @@ function CollerReleve({ actif }: { actif: boolean }) {
     }
   }
 
+  // Relevé envoyé par l'extension (bouton « Relever la page » sur Leboncoin) : calculé dès l'ouverture.
+  useExtension("releve", (e) => {
+    if (!actif || !e.brut.startsWith("UTPRELEVE")) return;
+    setBrut(e.brut);
+    calculer(e.brut);
+  });
+
   // Ctrl+V n'importe où sur la page : un relevé de l'extension est reconnu et calculé tout de suite.
   useEffect(() => {
     if (!actif) return;
@@ -87,7 +95,10 @@ function CollerReleve({ actif }: { actif: boolean }) {
         <div className="grid gap-1">
           <h2 className="font-display text-lg font-semibold">Relevé Leboncoin</h2>
           <p className="text-sm text-ink-2">
-            Sur une page de résultats Leboncoin, cliquez sur l&apos;extension « Relever la page », puis revenez ici et faites <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl</kbd> + <kbd className="rounded border border-line-2 px-1.5 text-xs">V</kbd> : chaque annonce est reconnue (marque, modèle, génération) et placée sur sa cote.
+            Sur une page de résultats Leboncoin, cliquez sur « Relever la page avec Utopicar » (extension) : cette page s&apos;ouvre toute seule et chaque annonce est reconnue (marque, modèle, génération) et placée sur sa cote. Sans l&apos;extension à jour, collez le relevé ici avec <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl</kbd> + <kbd className="rounded border border-line-2 px-1.5 text-xs">V</kbd>.
+          </p>
+          <p className="text-sm text-ink-3">
+            <a href="/utopicar-extension.zip" download className="text-o2 underline underline-offset-4">Télécharger l&apos;extension Utopicar (1.2)</a> · Chrome : chrome://extensions, « Mode développeur », puis glissez le dossier décompressé.
           </p>
         </div>
         <label htmlFor="releve" className="sr-only">Relevé collé</label>
@@ -201,7 +212,7 @@ function LigneCotee({ a }: { a: AnnonceCotee }) {
           {a.url ? <a href={a.url} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">{a.titre || "Annonce"}</a> : a.titre}
         </p>
         <p className="text-xs text-ink-3">
-          {[a.annee, a.km != null ? `${a.km.toLocaleString("fr-FR")} km` : null, a.energie, a.boite, a.lieu, a.pro ? "pro" : "particulier"].filter(Boolean).join(" · ")}
+          {[a.annee, a.km != null ? `${a.km.toLocaleString("fr-FR")} km` : null, a.ch ? `${a.ch} ch` : null, a.energie, a.boite, a.lieu, a.pro ? "pro" : "particulier"].filter(Boolean).join(" · ")}
           {a.badge && <span className="ml-2 rounded-full border border-line-2 px-2 py-px">Leboncoin : {a.badge}</span>}
         </p>
       </div>

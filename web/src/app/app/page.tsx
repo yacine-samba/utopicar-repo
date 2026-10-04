@@ -49,7 +49,7 @@ async function TableauParticulier({ c }: { c: Compte }) {
   const o = c.offre;
   const { data } = await (await supabaseServeur())
     .from("rapports")
-    .select("id, titre, verdict, prix, note, created_at")
+    .select("id, titre, verdict, prix, note, created_at, photos, lien")
     .eq("mode", "particulier")
     .order("created_at", { ascending: false })
     .limit(20);
@@ -101,8 +101,8 @@ async function TableauComplet({ c }: { c: Compte }) {
   const semaine = new Date(ilYa(7)).toISOString();
   const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, alertesRes] = await Promise.all([
     sb.from("rapports").select("id, marge, verdict").eq("mode", "benef").gte("created_at", debut).limit(2000),
-    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
-    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note").eq("mode", "benef").gte("created_at", semaine).like("verdict", "GO%").order("marge", { ascending: false, nullsFirst: false }).limit(6),
+    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
+    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").gte("created_at", semaine).like("verdict", "GO%").order("marge", { ascending: false, nullsFirst: false }).limit(6),
     sb.from("parc").select("*").limit(1000),
     c.illimite ? sb.rpc("mes_alertes") : Promise.resolve({ data: null }),
   ]);
@@ -298,7 +298,7 @@ async function TableauComplet({ c }: { c: Compte }) {
           <h2 id="tb-derniers" className="font-display text-lg font-semibold">Derniers rapports</h2>
           <Link href="/app/rapports" className="text-sm text-o2 underline-offset-4 hover:underline">Tous les rapports</Link>
         </div>
-        <ListeRapports rapports={derniers ?? []} comparateur={false} vide="Aucun rapport pour le moment : collez le lien d'une annonce ci-dessus." />
+        <ListeRapports rapports={derniers ?? []} comparateur={false} choixVue={false} vide="Aucun rapport pour le moment : collez le lien d'une annonce ci-dessus." />
       </section>
     </div>
   );
@@ -323,7 +323,7 @@ async function TableauBenef({ c }: { c: Compte }) {
   const debut = debutPeriode(c.offre);
   const [{ data: mois }, { data: derniers }] = await Promise.all([
     sb.from("rapports").select("id, titre, marge, verdict, prix").eq("mode", "benef").gte("created_at", debut).limit(1000),
-    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
+    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
   ]);
   const go = (mois ?? []).filter((r) => r.verdict?.startsWith("GO"));
   const marges = go.map((r) => r.marge).filter((x): x is number => x != null);
@@ -389,7 +389,7 @@ async function TableauBenef({ c }: { c: Compte }) {
             Tous les rapports
           </Link>
         </div>
-        <ListeRapports rapports={derniers ?? []} comparateur={false} vide="Aucun rapport pour le moment : collez le lien d'une annonce ci-dessus." />
+        <ListeRapports rapports={derniers ?? []} comparateur={false} choixVue={false} vide="Aucun rapport pour le moment : collez le lien d'une annonce ci-dessus." />
       </section>
     </div>
   );

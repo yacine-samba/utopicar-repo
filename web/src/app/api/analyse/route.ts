@@ -13,6 +13,7 @@ import { compteCourant } from "@/lib/compte";
 import { OFFRES, type Offre } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
 import { titreVehicule } from "@/lib/titre";
+import { vendeurDe } from "@/lib/analyse/vendeur";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 
 export const maxDuration = 300;
@@ -25,7 +26,29 @@ const Corps = z.object({
     .array(z.object({ media_type: z.enum(["image/jpeg", "image/png", "image/webp"]), data: z.string().max(1_500_000) }))
     .max(6, "6 photos maximum.")
     .default([]),
+  // photos d'origine de l'annonce (Leboncoin, extension) et vendeur : gardés avec le rapport
+  photosLiens: z.array(z.string().max(1000).regex(/^https:\/\//)).max(12).default([]),
+  lienAnnonce: z.string().trim().max(500).regex(/^https?:\/\//).optional(),
+  vendeur: z.object({ nom: z.string().max(80).nullish(), type: z.string().max(20).nullish(), aTel: z.boolean().nullish(), telephone: z.string().max(40).nullish() }).nullish(),
 });
+
+/** Photos envoyées (pas de lien d'origine) : stockées dans le dossier de la personne, pour les cartes et le rapport. */
+async function stockerPhotos(uid: string, photos: { media_type: string; data: string }[]) {
+  const sb = await supabaseServeur();
+  const dossier = `${uid}/${crypto.randomUUID()}`;
+  const urls = await Promise.all(
+    photos.slice(0, 6).map(async (p, i) => {
+      const ext = p.media_type === "image/png" ? "png" : p.media_type === "image/webp" ? "webp" : "jpg";
+      const { error } = await sb.storage.from("photos").upload(`${dossier}/${i + 1}.${ext}`, Buffer.from(p.data, "base64"), { contentType: p.media_type });
+      if (error) {
+        console.error("photo stockée", error.message);
+        return null;
+      }
+      return sb.storage.from("photos").getPublicUrl(`${dossier}/${i + 1}.${ext}`).data.publicUrl;
+    }),
+  );
+  return urls.filter((u): u is string => !!u);
+}
 
 // Limite par adresse IP (par instance), en plus des quotas de chaque formule.
 const FENETRE = 10 * 60 * 1000;
@@ -102,7 +125,9 @@ export async function POST(req: Request) {
   }
 
   out.offre = o.id;
-  out.lien = texte.match(/https?:\/\/\S+/)?.[0];
+  out.lien = r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0];
+  out.vendeur = vendeurDe(r.data.vendeur, texte);
+  if (compte) out.photosUrls = r.data.photosLiens.length ? r.data.photosLiens : photos.length ? await stockerPhotos(compte.id, photos) : [];
   let rapportId: string | null = null;
   // Une analyse n'est décomptée et enregistrée que si elle a abouti.
   if (compte && out.ia) {
@@ -132,6 +157,10 @@ export async function POST(req: Request) {
     });
     if (error) console.error("enregistrer_analyse", error);
     rapportId = (data as string | null) ?? null;
+    if (rapportId) {
+      const { error: e2 } = await (await supabaseServeur()).rpc("rapport_completer", { p_id: rapportId, p_photos: out.photosUrls ?? [], p_lien: out.lien ?? null, p_vendeur: out.vendeur ?? null });
+      if (e2) console.error("rapport_completer", e2);
+    }
   }
 
   return Response.json({ ...out, rapportId, detail, offre: o.id, restantes: compte ? Math.max(0, compte.restantes - (out.ia ? 1 : 0)) : null, demo });

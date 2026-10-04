@@ -121,7 +121,7 @@ export async function POST(req: Request) {
       const cote = gen !== "?" ? mm.cotes.de(gen, en) : null;
       const annonces = ls.map((l) => {
         const e = gen !== "?" ? resume(mm.cotes.estimer(l)) : null;
-        const out = { id: l.id, titre: l.titre, prix: l.prix, annee: l.annee, km: l.km, energie: l.energie, boite: l.boite, pro: l.pro, lieu: l.lieu, url: lienAnnonce(l), badge: l.badge, cote: e ? { ...e, comps: undefined } : null };
+        const out = { id: l.id, titre: l.titre, prix: l.prix, annee: l.annee, km: l.km, energie: l.energie, boite: l.boite, ch: l.ch, pro: l.pro, lieu: l.lieu, url: lienAnnonce(l), badge: l.badge, cote: e ? { ...e, comps: undefined } : null };
         cotees.set(l.id, out);
         return out;
       });

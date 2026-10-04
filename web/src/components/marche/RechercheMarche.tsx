@@ -6,7 +6,7 @@ import type { CatMarque, CoteAnnonce } from "@/lib/vehicules/types";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
 
 type Annonce = {
-  id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; pro: boolean; lieu: string | null;
+  id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; ch: number | null; pro: boolean; lieu: string | null;
   source: string; vu: string | null; url: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
 };
 type Resultat = { modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[]; incertaines: number }; total: number; trouvees: number; sousLaCote: number; annonces: Annonce[]; ms: number };
@@ -211,7 +211,7 @@ function LigneAnnonce({ a }: { a: Annonce }) {
       <div className="min-w-0">
         <p className="truncate font-medium">{a.titre || "Annonce"}</p>
         <p className="mt-0.5 text-sm text-ink-3">
-          {[a.annee, a.km != null ? `${a.km.toLocaleString("fr-FR")} km` : null, a.energie, a.boite, a.genLabel].filter(Boolean).join(" · ")}
+          {[a.annee, a.km != null ? `${a.km.toLocaleString("fr-FR")} km` : null, a.ch ? `${a.ch} ch` : null, a.energie, a.boite, a.genLabel].filter(Boolean).join(" · ")}
         </p>
         <p className="text-xs text-ink-3">
           {[a.lieu, a.pro ? "professionnel" : "particulier", a.vu ? `vue le ${new Date(a.vu).toLocaleDateString("fr-FR")}` : null].filter(Boolean).join(" · ")}

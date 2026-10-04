@@ -74,6 +74,8 @@ export async function POST(req: Request) {
     const suspect = !!(e?.pct != null && e.pct > 0.45);
     return {
       id: l.id, titre: l.titre, prix: l.prix, annee: l.annee, km: l.km, energie: l.energie, boite: l.boite, pro: !!l.pro, lieu: l.lieu, source: l.source,
+      // puissance réelle : relevée par Leboncoin, sinon lue dans le titre ou le texte (« 150 ch », « 110 cv »)
+      ch: l.ch ?? (Number(tx.match(/\b(\d{2,3})\s?(?:ch|cv din|chevaux)\b/)?.[1]) || null),
       vu: l.vu_le, url: lienAnnonce(l), gen: l.gen, genLabel: l.genLabel, piege: PIEGES.test(tx) || suspect, suspect,
       cote: e && e.P ? { P: e.P, lo: e.lo, hi: e.hi, ecart: e.ecart, pct: e.pct, conf: e.conf, moinsCherQue: e.moinsCherQue, n: e.nClean, why: e.why, segments: e.segments } : null,
     };
