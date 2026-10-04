@@ -1,10 +1,11 @@
 import "server-only";
 import type Stripe from "stripe";
-import { OFFRES, type OffreId } from "@/lib/offres";
+import { OFFRES, pack, type OffreId } from "@/lib/offres";
 import { supabaseService } from "@/lib/supabase/service";
 import { stripe } from "@/lib/stripe";
 
-const parCle = (cle: string | null | undefined) => (Object.values(OFFRES).find((o) => o.lookup && o.lookup === cle)?.id ?? null) as OffreId | null;
+const parCle = (cle: string | null | undefined) =>
+  (Object.values(OFFRES).find((o) => cle && (o.lookup === cle || o.anciennesCles?.includes(cle)))?.id ?? null) as OffreId | null;
 
 /** Enregistre l'état d'un abonnement Stripe dans `abonnements` (appelé par le webhook et au retour du paiement). */
 export async function synchroniser(sub: Stripe.Subscription) {
@@ -39,6 +40,16 @@ export async function enregistrerGuide(s: Stripe.Checkout.Session) {
   if (error) throw error;
 }
 
+/** Pack de crédits payé : crédits ajoutés une seule fois par session Stripe (credits_ajouter). Renvoie le nouveau solde. */
+export async function enregistrerCredits(s: Stripe.Checkout.Session) {
+  if (s.mode !== "payment" || s.metadata?.produit !== "credits" || s.payment_status !== "paid" || !s.metadata.user_id) return null;
+  const p = pack(s.metadata.pack);
+  if (!p) throw new Error(`Pack inconnu pour ${s.id}`);
+  const { data, error } = await supabaseService().rpc("credits_ajouter", { p_uid: s.metadata.user_id, p_n: p.credits, p_pack: p.id, p_session: s.id });
+  if (error) throw error;
+  return data as number;
+}
+
 /** Retour de Stripe Checkout (?session_id=…) : on enregistre tout de suite, sans attendre le webhook.
     La session doit appartenir à la personne connectée. Sans effet si elle est déjà enregistrée. */
 export async function confirmerRetour(sessionId: string | undefined, userId: string) {
@@ -52,6 +63,7 @@ export async function confirmerRetour(sessionId: string | undefined, userId: str
     }
     if (s.mode === "payment") {
       await enregistrerGuide(s);
+      await enregistrerCredits(s);
       return s.payment_status === "paid";
     }
   } catch (e) {

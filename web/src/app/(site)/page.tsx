@@ -240,7 +240,7 @@ export default async function Accueil() {
               Vous faites de l&apos;achat-revente ? Les formules Benef sont <Link href="/tarifs#benef" className="text-o2 underline underline-offset-4">sur la page Tarifs</Link>.
             </p>
           </div>
-          <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} />
+          <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} credits />
         </div>
       </section>
 
@@ -255,7 +255,7 @@ export default async function Accueil() {
           </div>
           <Faq
             questions={[
-              { cat: "Prix", q: "L'analyse est-elle vraiment gratuite ?", r: <p>Oui, la première analyse est offerte, sans carte bancaire : il suffit de créer un compte. Pour analyser plusieurs annonces, la formule Essentiel coûte 4,99 € par mois, sans engagement.</p> },
+              { cat: "Prix", q: "L'analyse est-elle vraiment gratuite ?", r: <p>Oui, la première analyse est offerte, sans carte bancaire : il suffit de créer un compte. Pour analyser plusieurs annonces, la formule Essentiel coûte 4,99 € par mois, sans engagement. Sans abonnement, vous pouvez aussi acheter des crédits à l&apos;unité, dès 2,99 € l&apos;analyse.</p> },
               { cat: "Annonces", q: "Ça marche sur quelles voitures ?", r: <p>Sur les annonces de voitures particulières de Leboncoin, La Centrale ou AutoScout24 : il suffit de copier le texte de la page. La cote est la plus précise sur les modèles courants. Sur un modèle rare, l&apos;outil vous prévient que l&apos;estimation est moins sûre.</p> },
               { cat: "Fiabilité", q: "Est-ce que ça remplace un garagiste ?", r: <p>Non. L&apos;outil vous évite les mauvais déplacements et vous donne un prix de départ. Il sépare ce qui est écrit dans l&apos;annonce de ce qui reste à vérifier sur place, et vous dit quoi regarder. Pour une voiture chère ou un doute mécanique, il vous conseille de la faire inspecter.</p> },
               { cat: "Abonnement", q: "Comment résilier ?", r: <p>En deux clics depuis votre compte, à tout moment. Vous gardez l&apos;accès jusqu&apos;à la fin du mois déjà payé.</p> },

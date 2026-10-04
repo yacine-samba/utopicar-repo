@@ -2,12 +2,14 @@ import Link from "next/link";
 import { OFFRES, prixTxt, type OffreId } from "@/lib/offres";
 import { BoutonAbonner } from "./BoutonAbonner";
 import { cx } from "@/lib/cx";
+import { CarteCredits } from "./CarteCredits";
 
-/** Grille de formules. `actuelle` marque la formule du compte connecté. */
-export function CartesOffres({ ids, actuelle }: { ids: OffreId[]; actuelle?: OffreId | null }) {
+/** Grille de formules. `actuelle` marque la formule du compte connecté ; `credits` ajoute la carte des crédits à l'unité. */
+export function CartesOffres({ ids, actuelle, credits = false }: { ids: OffreId[]; actuelle?: OffreId | null; credits?: boolean }) {
+  const visibles = ids.filter((id) => !OFFRES[id].cachee);
   return (
     <ul className="grid gap-5 md:grid-cols-3">
-      {ids.map((id) => {
+      {visibles.map((id) => {
         const o = OFFRES[id];
         const cetteOffre = actuelle === id;
         return (
@@ -56,6 +58,7 @@ export function CartesOffres({ ids, actuelle }: { ids: OffreId[]; actuelle?: Off
           </li>
         );
       })}
+      {credits && <CarteCredits />}
     </ul>
   );
 }

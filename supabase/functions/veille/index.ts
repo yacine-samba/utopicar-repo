@@ -342,13 +342,22 @@ Deno.serve(async (req) => {
   for (const c of cq || []) { if (body.cote && body.cote !== c.cle) continue; try { out.started.push(await startCote(c, R)); } catch (e) { out.started.push({ cote: c.cle, err: String((e as Error).message || e) }); } }
   if (body.cote) return json(out);
   const freq = Number(R.frequence_minutes || 15);
-  const { data: fresh } = await sb.from('veilles').select('*').order('created_at');
+  const { data: fresh } = await sb.from('veilles').select('*').is('supprimee_le', null).order('created_at');
+  // alertes du site : seulement tant que la formule y donne droit (Benef Pro : 3 alertes, toutes les 3 h au plus souvent)
+  const droits = new Map<string, { max: number; freq_min: number; vues: number }>();
   for (const v of fresh || []) {
+    if (!v.user_id || droits.has(v.user_id)) continue;
+    const { data: d } = await sb.rpc('alertes_droits', { p_uid: v.user_id });
+    droits.set(v.user_id, { max: Number(d?.max ?? 0), freq_min: Number(d?.freq_min ?? 1440), vues: 0 });
+  }
+  for (const v of fresh || []) {
+    const dr = v.user_id ? droits.get(v.user_id) : null;
+    if (dr && v.actif && ++dr.vues > dr.max) continue; // formule terminée ou au-delà du nombre d'alertes permis
     if (v.run_id) continue;
     if (body.veille_id && body.veille_id !== v.id) continue;
     if (!v.actif && !(force && body.veille_id === v.id)) continue; // recherche ponctuelle : lancée à la demande seulement
     const last = v.derniere_execution ? new Date(v.derniere_execution).getTime() : 0;
-    const every = Number(v.intervalle_min) || freq; // intervalle propre à la recherche (ex. 120 = toutes les 2 h)
+    const every = Math.max(Number(v.intervalle_min) || freq, dr ? dr.freq_min : 0); // intervalle propre à la recherche (ex. 120 = toutes les 2 h)
     if (!force && Date.now() - last < (every - 1) * 60000) continue;
     try { out.started.push(await start(v, R)); } catch (e) { out.started.push({ veille: v.id, err: String((e as Error).message || e) }); }
   }

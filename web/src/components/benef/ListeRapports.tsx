@@ -1,4 +1,5 @@
 "use client";
+import { titreVehicule } from "@/lib/titre";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -55,13 +56,13 @@ export function ListeRapports({ rapports, comparateur, vide = "Aucun rapport pou
                     />
                   </td>
                 )}
-                <th scope="row" className="px-4 py-3 font-normal">
+                <th scope="row" className="min-w-44 px-4 py-3 font-normal">
                   <Link href={`/app/rapports/${r.id}`} className="font-medium hover:text-o2">
-                    {r.titre}
+                    {titreVehicule(r.titre)}
                   </Link>
                 </th>
-                <td className="px-4 py-3 text-ink-3">{new Date(r.created_at).toLocaleDateString("fr-FR")}</td>
-                <td className="num px-4 py-3 text-right">{eur(r.prix)}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-ink-3">{new Date(r.created_at).toLocaleDateString("fr-FR")}</td>
+                <td className="num whitespace-nowrap px-4 py-3 text-right">{eur(r.prix)}</td>
                 <td className={cx("px-4 py-3 font-medium", ton(r.verdict))}>{r.verdict ?? "—"}</td>
                 <td className={cx("num px-4 py-3 text-right", r.marge == null ? "" : r.marge >= 0 ? "text-ok" : "text-bad")}>{eur(r.marge)}</td>
                 <td className="num px-4 py-3 text-right">{r.note ?? "—"}</td>

@@ -12,6 +12,7 @@ import { coutParticulier, dealPro, DEFAUTS_PART, DEFAUTS_PRO, type Analyse } fro
 import { compteCourant } from "@/lib/compte";
 import { OFFRES, type Offre } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
+import { titreVehicule } from "@/lib/titre";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 
 export const maxDuration = 300;
@@ -59,8 +60,8 @@ export async function POST(req: Request) {
   if (compte && compte.restantes <= 0)
     return erreur(
       o.prix === 0
-        ? "Votre analyse gratuite a déjà servi. Avec Essentiel, vous analysez 10 annonces par mois."
-        : `Vous avez utilisé vos ${o.analyses} analyses du mois. Elles reviennent le 1er du mois, ou passez à la formule supérieure.`,
+        ? "Votre analyse gratuite a déjà servi. Continuez avec des crédits à l'unité, sans abonnement, ou avec Essentiel : 10 analyses par mois."
+        : `Vous avez utilisé vos ${o.analyses} analyses du mois. Elles reviennent le 1er du mois. En attendant, continuez avec des crédits à l'unité.`,
       402,
       { offres: o.famille },
     );
@@ -106,7 +107,7 @@ export async function POST(req: Request) {
   // Une analyse n'est décomptée et enregistrée que si elle a abouti.
   if (compte && out.ia) {
     const v = out.ia.vehicule;
-    const titre = [v.marque, v.modele, v.version].filter(Boolean).join(" ").slice(0, 140) || faits.titre || "Annonce";
+    const titre = titreVehicule([v.marque, v.modele, v.version].filter(Boolean).join(" ")).slice(0, 140) || faits.titre || "Annonce";
     const resume =
       mode === "benef"
         ? (() => {

@@ -2,7 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { comptesActifs } from "./supabase/config";
 import { supabaseServeur } from "./supabase/serveur";
-import { ILLIMITE, offre, STATUTS_ACTIFS, type Famille, type Offre } from "./offres";
+import { ILLIMITE, NIVEAU_CREDIT, OFFRES, offre, STATUTS_ACTIFS, type Famille, type Offre } from "./offres";
 
 export type Abonnement = { offre: string; statut: string; periode_fin: string | null; annule_fin_periode: boolean };
 
@@ -20,6 +20,11 @@ export type Compte = {
   abonnement: Abonnement | null;
   guide: boolean;
   utilisees: number;
+  /** Analyses encore comprises dans la formule (mois en cours, ou au total pour la formule gratuite). */
+  restantesFormule: number;
+  /** Crédits achetés à l'unité, utilisés quand la formule est épuisée. */
+  credits: number;
+  /** Total disponible : formule puis crédits. */
   restantes: number;
 };
 
@@ -34,18 +39,25 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     data: { user },
   } = await sb.auth.getUser();
   if (!user) return null;
-  const [{ data: profil }, { data: abo }, { data: achats }] = await Promise.all([
+  const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }] = await Promise.all([
     sb.from("profils").select("prenom, famille, ville, formule_offerte, offerte_jusqu_au, illimite").eq("id", user.id).maybeSingle(),
     sb.from("abonnements").select("offre, statut, periode_fin, annule_fin_periode").eq("user_id", user.id).maybeSingle(),
     sb.from("achats").select("produit").eq("user_id", user.id),
+    sb.rpc("mes_credits"),
+    sb.from("credits").select("id", { count: "exact", head: true }).eq("user_id", user.id).gt("delta", 0),
   ]);
   const actif = abo && STATUTS_ACTIFS.includes(abo.statut);
   const aujourdhui = new Date().toISOString().slice(0, 10);
   const offerte = profil?.formule_offerte && (!profil.offerte_jusqu_au || profil.offerte_jusqu_au >= aujourdhui) ? (profil.formule_offerte as string) : null;
   const illimite = !!profil?.illimite;
-  const o = illimite ? ILLIMITE : offre(offerte ?? (actif ? abo.offre : "gratuit"));
+  let o = illimite ? ILLIMITE : offre(offerte ?? (actif ? abo.offre : "gratuit"));
   const { count } = await sb.from("usages").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", debutPeriode(o));
   const utilisees = count ?? 0;
+  const restantesFormule = Math.max(0, o.analyses - utilisees);
+  const solde = typeof credits === "number" ? credits : 0;
+  // Formule Découverte avec des crédits achetés : historique comme Essentiel, et les analyses payées par crédit ont son niveau.
+  if (!illimite && o.prix === 0 && (achatsCredits ?? 0) > 0) o = { ...o, historique: OFFRES.essentiel.historique };
+  if (!illimite && o.prix === 0 && restantesFormule <= 0 && solde > 0) o = { ...o, detail: NIVEAU_CREDIT.detail, photos: Math.max(o.photos, NIVEAU_CREDIT.photos) };
   return {
     id: user.id,
     offerte: offerte && !illimite ? { jusquAu: profil?.offerte_jusqu_au ?? null } : null,
@@ -58,6 +70,8 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     abonnement: abo ?? null,
     guide: o.guide || (achats ?? []).some((a) => a.produit === "guide"),
     utilisees,
-    restantes: Math.max(0, o.analyses - utilisees),
+    restantesFormule,
+    credits: solde,
+    restantes: restantesFormule + solde,
   };
 });

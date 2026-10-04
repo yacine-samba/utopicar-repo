@@ -28,6 +28,10 @@ export type Offre = {
   points: string[];
   bientot?: string[];
   miseEnAvant?: boolean;
+  /** Formule retirée de la vente : plus affichée nulle part, mais encore reconnue pour un éventuel abonné. */
+  cachee?: boolean;
+  /** Anciennes clés de prix Stripe (changement de tarif), pour reconnaître les abonnements déjà pris. */
+  anciennesCles?: string[];
 };
 
 export const OFFRES: Record<OffreId, Offre> = {
@@ -50,7 +54,7 @@ export const OFFRES: Record<OffreId, Offre> = {
     id: "serenite", famille: "particulier", nom: "Sérénité", prix: 9.99,
     accroche: "Pour acheter l'esprit tranquille", pour: "Vous voulez être accompagné jusqu'à la signature.",
     analyses: 30, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "aucun",
-    parc: false, recherche: false, comparateur: false, guide: true, lookup: "utp_serenite_mois",
+    parc: false, recherche: false, comparateur: false, guide: true, lookup: "utp_serenite_mois", cachee: true,
     points: ["30 analyses par mois", "Tout Essentiel, plus :", "Comment négocier, avec vos arguments chiffrés", "Ce qu'il faut contrôler sur place, point par point", "Faut-il y aller seul ou accompagné", "Analyse de 6 photos par annonce", "Le guide « Acheter sans se faire avoir » inclus"],
   },
   starter: {
@@ -69,26 +73,40 @@ export const OFFRES: Record<OffreId, Offre> = {
     miseEnAvant: true,
   },
   pro: {
-    id: "pro", famille: "benef", nom: "Pro", prix: 59,
+    id: "pro", famille: "benef", nom: "Pro", prix: 79,
     accroche: "Pour les professionnels en activité", pour: "Vous gérez un stock et suivez vos chiffres.",
     analyses: 400, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "complet",
-    parc: true, recherche: true, comparateur: true, guide: true, lookup: "utp_pro_mois",
-    points: ["400 analyses par mois", "Tout Croissance, plus :", "Tableau de bord complet : marges, stock, rotation", "Gestion du parc : achats, frais, ventes, marge réelle", "Recherche avancée dans tous vos rapports", "Rapports détaillés et export CSV"],
-    bientot: ["Recherches suivies sur Leboncoin"],
+    parc: true, recherche: true, comparateur: true, guide: true, lookup: "utp_pro_79", anciennesCles: ["utp_pro_mois"],
+    points: ["400 analyses par mois", "Tout Croissance, plus :", "Recherche dans les annonces Leboncoin : marque, modèle, génération, sous la cote", "Alertes e-mail sur vos recherches Leboncoin (3 recherches suivies)", "Cote du marché avec graphique", "Tableau de bord complet : marges, stock, rotation", "Gestion du parc : achats, frais, ventes, marge réelle", "Rapports détaillés et export CSV"],
   },
 };
 
 /** Comptes illimités (profils.illimite) : tout Benef Pro, sans limite d'analyses. */
-export const ILLIMITE: Offre = { ...OFFRES.pro, nom: "Illimité", prix: 0, analyses: Infinity, lookup: null, bientot: undefined };
+export const ILLIMITE: Offre = { ...OFFRES.pro, nom: "Illimité", prix: 0, analyses: Infinity, lookup: null, anciennesCles: undefined };
 
 export const GUIDE = { lookup: "utp_guide", prix: 9, nom: "Les guides Utopicar" };
 
-export const PARTICULIERS: OffreId[] = ["gratuit", "essentiel", "serenite"];
+export const PARTICULIERS: OffreId[] = ["gratuit", "essentiel"];
 export const BENEF: OffreId[] = ["starter", "croissance", "pro"];
 
 export const offre = (id: string | null | undefined): Offre => OFFRES[(id as OffreId) in OFFRES ? (id as OffreId) : "gratuit"];
 export const estPayante = (id: string | null | undefined) => offre(id).prix > 0;
 export const prixTxt = (p: number) => (p === 0 ? "0\u00a0€" : `${p.toLocaleString("fr-FR", { minimumFractionDigits: p % 1 ? 2 : 0 })}\u00a0€`);
+
+/** Crédits d'analyse à l'unité, payés une fois, sans abonnement. Ils servent quand le quota de la formule est épuisé
+    et restent valables 12 mois après le dernier achat. Sur la formule Découverte, une analyse payée par crédit
+    a le niveau Essentiel (analyse détaillée, 3 photos). Toujours plus cher à l'unité qu'Essentiel, pour que l'abonnement reste le meilleur choix. */
+export type PackId = "credits_1" | "credits_5" | "credits_15";
+export type Pack = { id: PackId; nom: string; credits: number; prix: number; lookup: string; badge?: string };
+export const PACKS: Pack[] = [
+  { id: "credits_1", nom: "1 analyse", credits: 1, prix: 2.99, lookup: "utp_credits_1" },
+  { id: "credits_5", nom: "Pack 5 analyses", credits: 5, prix: 9.99, lookup: "utp_credits_5", badge: "Conseillé" },
+  { id: "credits_15", nom: "Pack 15 analyses", credits: 15, prix: 19.99, lookup: "utp_credits_15", badge: "Meilleur prix" },
+];
+export const pack = (id: string | null | undefined) => PACKS.find((p) => p.id === id) ?? null;
+/** Ce qu'une analyse payée par crédit apporte au-dessus de la formule Découverte. */
+export const NIVEAU_CREDIT = { detail: "detail" as Detail, photos: 3 };
+export const prixUnite = (p: Pack) => p.prix / p.credits;
 
 /** Statuts Stripe qui donnent accès. */
 export const STATUTS_ACTIFS = ["active", "trialing", "past_due"];

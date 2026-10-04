@@ -81,10 +81,12 @@ async function appel(corps: unknown) {
   return j as { alertes: Alerte[]; id?: string };
 }
 
-export function Alertes({ cat, initiales, prerempli, email }: { cat: CatMarque[]; initiales: Alerte[]; prerempli: Formulaire | null; email: string }) {
+/** `max` : alertes autorisées par la formule ; `freqMin` : intervalle minimal entre deux passages (minutes). */
+export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 60 }: { cat: CatMarque[]; initiales: Alerte[]; prerempli: Formulaire | null; email: string; max?: number; freqMin?: number }) {
   const [liste, setListe] = useState(initiales);
+  const plein = liste.length >= max;
   const [edition, setEdition] = useState<{ id?: string; f: Formulaire; nom: string; notifier: boolean; email: string; intervalle: number; actif: boolean } | null>(
-    prerempli ? { f: prerempli, nom: "", notifier: true, email, intervalle: 60, actif: true } : null,
+    prerempli && initiales.length < max ? { f: prerempli, nom: "", notifier: true, email, intervalle: freqMin, actif: true } : null,
   );
   const [etat, setEtat] = useState("");
   const [occupe, setOccupe] = useState(false);
@@ -108,7 +110,7 @@ export function Alertes({ cat, initiales, prerempli, email }: { cat: CatMarque[]
   }
 
   function nouvelle() {
-    setEdition({ f: VIDE, nom: "", notifier: true, email, intervalle: 60, actif: true });
+    setEdition({ f: VIDE, nom: "", notifier: true, email, intervalle: freqMin, actif: true });
     setEtat("");
   }
   function modifier(a: Alerte) {
@@ -136,7 +138,8 @@ export function Alertes({ cat, initiales, prerempli, email }: { cat: CatMarque[]
   return (
     <div className="grid gap-6">
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" onClick={nouvelle} className="btn btn-o btn-sm">Nouvelle alerte</button>
+        <button type="button" onClick={nouvelle} disabled={plein} className="btn btn-o btn-sm">Nouvelle alerte</button>
+        <span className="num text-sm text-ink-3">{liste.length} / {max} alerte{max > 1 ? "s" : ""}{plein ? " : supprimez-en une pour en créer une autre" : ""}</span>
         <p className="text-sm text-ink-3" role="status" aria-live="polite">{etat}</p>
       </div>
 
@@ -192,7 +195,7 @@ export function Alertes({ cat, initiales, prerempli, email }: { cat: CatMarque[]
             <label className="grid gap-1.5 text-sm">
               <span className="text-ink-2">Fréquence</span>
               <select value={edition.intervalle} onChange={(e) => setEdition((x) => (x ? { ...x, intervalle: Number(e.target.value) } : x))} className={inputCls}>
-                {FREQUENCES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                {FREQUENCES.filter(([v]) => v >= freqMin).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
               </select>
             </label>
             <label className="grid gap-1.5 text-sm">

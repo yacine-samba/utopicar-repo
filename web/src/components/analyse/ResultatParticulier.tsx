@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { coutParticulier, DEFAUTS_PART, eur, type Analyse, type Niveau } from "@/lib/analyse/couts";
-import { OFFRES } from "@/lib/offres";
+import { OFFRES, PACKS, prixTxt } from "@/lib/offres";
 import { Copier, Panneau, Pastille, cx, inputCls, type Ton } from "../ui";
 import { AnalysePhotos } from "./AnalysePhotos";
 
@@ -22,16 +22,21 @@ const ACCOMP: Record<string, { ton: Ton; icone: string }> = {
   "faites inspecter la voiture": { ton: "bad", icone: "🔧" },
 };
 
-function Verrou({ titre, texte, offre }: { titre: string; texte: string; offre: "essentiel" | "serenite" }) {
+function Verrou({ titre, texte, offre }: { titre: string; texte: string; offre: "essentiel" }) {
   const o = OFFRES[offre];
   return (
     <section className="carte border-dashed p-6" aria-label={titre}>
       <p className="text-sm font-medium text-o2">Avec {o.nom}</p>
       <h2 className="mt-1 font-display text-lg font-semibold">{titre}</h2>
       <p className="mt-1 text-ink-2">{texte}</p>
-      <Link href="/tarifs#particuliers" className="btn btn-sm mt-4">
-        Découvrir {o.nom}, {o.prix.toLocaleString("fr-FR")}&nbsp;€ par mois
-      </Link>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Link href="/tarifs#particuliers" className="btn btn-sm">
+          Découvrir {o.nom}, {prixTxt(o.prix)} par mois
+        </Link>
+        <Link href="/app/credits" className="btn btn-sm">
+          Ou un crédit, dès {prixTxt(PACKS[0].prix)}
+        </Link>
+      </div>
     </section>
   );
 }
@@ -243,7 +248,6 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
       )}
 
       {detail === "simple" && <Verrou offre="essentiel" titre="Le prix à proposer et les questions à poser" texte="Analysez plusieurs annonces, voyez le prix du marché en détail, la fiabilité du moteur et les questions à poser au vendeur." />}
-      {detail !== "complet" && <Verrou offre="serenite" titre="Comment négocier, quoi contrôler sur place, faut-il y aller seul" texte="Un accompagnement complet jusqu'à l'achat : vos arguments chiffrés, la liste des contrôles à faire pendant la visite, et notre avis sur l'aide dont vous aurez besoin." />}
 
       <details className="group carte p-5 sm:p-6">
         <summary className="cursor-pointer list-none font-display text-lg font-semibold">

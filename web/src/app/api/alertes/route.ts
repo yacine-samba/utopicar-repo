@@ -2,8 +2,8 @@ import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 
-/* Alertes e-mail (recherches suivies sur Leboncoin) : réservées au mode illimité pour l'instant.
-   Les droits sont vérifiés une seconde fois dans les fonctions de la base (est_illimite). */
+/* Alertes e-mail (recherches suivies sur Leboncoin) : Benef Pro (3 alertes, toutes les 3 h au plus) et mode illimité.
+   Les droits et les limites sont vérifiés dans les fonctions de la base (alertes_droits). */
 const Corps = z.discriminatedUnion("action", [
   z.object({ action: z.literal("liste") }),
   z.object({
@@ -26,7 +26,7 @@ const Corps = z.discriminatedUnion("action", [
 export async function POST(req: Request) {
   const c = await compteCourant();
   if (!c) return Response.json({ erreur: "Connectez-vous." }, { status: 401 });
-  if (!c.illimite) return Response.json({ erreur: "Les alertes e-mail sont réservées au mode illimité pour l'instant." }, { status: 403 });
+  if (!c.illimite && c.offre.id !== "pro") return Response.json({ erreur: "Les alertes e-mail sont comprises dans Benef Pro." }, { status: 403 });
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return Response.json({ erreur: "Demande invalide." }, { status: 400 });
   const sb = await supabaseServeur();

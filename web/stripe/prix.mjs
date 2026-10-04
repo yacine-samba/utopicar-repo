@@ -12,10 +12,12 @@ const stripe = new Stripe(cle);
 
 const PRODUITS = [
   { lookup: "utp_essentiel_mois", nom: "Utopicar Essentiel", desc: "Particuliers : 10 analyses par mois, plus de détails.", cents: 499, mensuel: true },
-  { lookup: "utp_serenite_mois", nom: "Utopicar Sérénité", desc: "Particuliers : 30 analyses par mois, négociation, contrôle sur place, guide inclus.", cents: 999, mensuel: true },
   { lookup: "utp_starter_mois", nom: "Benef Starter", desc: "Achat-revente : 30 analyses par mois, historique, tableau de bord.", cents: 1499, mensuel: true },
   { lookup: "utp_croissance_mois", nom: "Benef Croissance", desc: "Achat-revente : 100 analyses par mois, historique complet, comparateur.", cents: 2900, mensuel: true },
-  { lookup: "utp_pro_mois", nom: "Benef Pro", desc: "Achat-revente : tableau de bord complet, parc, recherche avancée, rapports détaillés.", cents: 5900, mensuel: true },
+  { lookup: "utp_pro_79", nom: "Benef Pro", desc: "Achat-revente : 400 analyses par mois, recherche et alertes Leboncoin, cote, parc, tableau de bord complet.", cents: 7900, mensuel: true },
+  { lookup: "utp_credits_1", nom: "Utopicar 1 analyse", desc: "1 crédit d'analyse détaillée, valable 12 mois.", cents: 299, mensuel: false },
+  { lookup: "utp_credits_5", nom: "Utopicar Pack 5 analyses", desc: "5 crédits d'analyse détaillée, valables 12 mois.", cents: 999, mensuel: false },
+  { lookup: "utp_credits_15", nom: "Utopicar Pack 15 analyses", desc: "15 crédits d'analyse détaillée, valables 12 mois.", cents: 1999, mensuel: false },
   { lookup: "utp_guide", nom: "Les guides Utopicar", desc: "Accès à vie aux guides : première revente, tri, reprise, achat d'une occasion.", cents: 900, mensuel: false },
 ];
 
@@ -38,4 +40,4 @@ for (const p of PRODUITS) {
 }
 console.log("\nÀ faire dans le tableau de bord Stripe :");
 console.log("- Portail client : autoriser le changement de formule entre les prix ci-dessus et la résiliation.");
-console.log("- Webhook vers https://utopicar.fr/api/stripe/webhook : checkout.session.completed, customer.subscription.created/updated/deleted.");
+console.log("- Webhook vers https://utopicar.fr/api/stripe/webhook : checkout.session.completed, checkout.session.async_payment_succeeded, customer.subscription.created/updated/deleted.");
