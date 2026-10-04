@@ -12,6 +12,15 @@ import { AnalyseRapide } from "@/components/espace/AnalyseRapide";
 import { ProjetAchat } from "@/components/espace/ProjetAchat";
 import { GraphMarges, type BarreMarge } from "@/components/benef/GraphMarges";
 import { Ico } from "@/components/espace/Icones";
+import { RechercheRapide } from "@/components/espace/RechercheRapide";
+import { catalogue } from "@/lib/vehicules/catalogue";
+import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
+
+/** Les 3 dernières recherches du marché (formules avec la recherche). */
+async function dernieresRecherches() {
+  const { data } = await (await supabaseServeur()).from("recherches").select(COLONNES_RECHERCHE).order("derniere_le", { ascending: false }).limit(3);
+  return (data ?? []) as Recherche[];
+}
 
 const eur = (v: number | null) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 
@@ -99,12 +108,13 @@ async function TableauComplet({ c }: { c: Compte }) {
   const sb = await supabaseServeur();
   const debut = debutPeriode(c.offre);
   const semaine = new Date(ilYa(7)).toISOString();
-  const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, alertesRes] = await Promise.all([
+  const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, alertesRes, recherches] = await Promise.all([
     sb.from("rapports").select("id, marge, verdict").eq("mode", "benef").gte("created_at", debut).limit(2000),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").gte("created_at", semaine).like("verdict", "GO%").order("marge", { ascending: false, nullsFirst: false }).limit(6),
     sb.from("parc").select("*").limit(1000),
-    c.illimite ? sb.rpc("mes_alertes") : Promise.resolve({ data: null }),
+    c.illimite || c.offre.id === "pro" ? sb.rpc("mes_alertes") : Promise.resolve({ data: null }),
+    c.offre.recherche ? dernieresRecherches() : Promise.resolve(null),
   ]);
   const parc = (parcBrut ?? []) as Vehicule[];
   const st = statsParc(parc);
@@ -152,6 +162,7 @@ async function TableauComplet({ c }: { c: Compte }) {
     <div className="grid gap-8">
       <Bonjour c={c} texte={`${nomFormule(c)} · stock, marges, meilleures affaires et alertes, comme dans l'outil Garage.`} />
       <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
+      {recherches && <RechercheRapide cat={catalogue()} recentes={recherches} />}
 
       <section aria-labelledby="tb-kpi">
         <h2 id="tb-kpi" className="sr-only">Chiffres clés</h2>
@@ -330,12 +341,14 @@ async function TableauBenef({ c }: { c: Compte }) {
   const meilleure = [...(mois ?? [])].filter((r) => r.marge != null).sort((a, b) => (b.marge ?? 0) - (a.marge ?? 0))[0];
   const complet = c.offre.tableauDeBord === "complet";
   const parc = complet ? statsParc(((await sb.from("parc").select("*").limit(1000)).data ?? []) as Vehicule[]) : null;
+  const recherches = c.offre.recherche ? await dernieresRecherches() : null;
   const n = (mois ?? []).length;
 
   return (
     <div className="grid gap-8">
       <Bonjour c={c} texte={`${nomFormule(c)} · vos chiffres du mois, depuis le 1er.`} />
       <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
+      {recherches && <RechercheRapide cat={catalogue()} recentes={recherches} />}
 
       <section aria-labelledby="tb-analyses">
         <h2 id="tb-analyses" className="mb-3 font-display text-lg font-semibold">

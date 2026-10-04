@@ -6,22 +6,26 @@ import { ExportCsv } from "@/components/benef/ExportCsv";
 import { cx, inputCls } from "@/lib/cx";
 import { catalogue } from "@/lib/vehicules/catalogue";
 import { RechercheMarche } from "@/components/marche/RechercheMarche";
+import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
 
 const VERDICTS = ["GO", "GO SI NÉGOCIÉ", "GO EN MANDAT UNIQUEMENT", "À SURVEILLER", "NO GO"];
-type Filtres = { vue?: string; q?: string; marque?: string; verdict?: string; marge?: string; prix?: string; depuis?: string };
+type Filtres = { vue?: string; q?: string; marque?: string; modele?: string; gen?: string; r?: string; verdict?: string; marge?: string; prix?: string; depuis?: string };
 const entier = (s?: string) => (s && /^\d{1,7}$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
 
 export default async function Page({ searchParams }: { searchParams: Promise<Filtres> }) {
   const c = await compteBenef("/app/recherche");
   if (!c.offre.recherche) return <VerrouBenef offre="pro" titre="Recherche" texte="Cherchez dans toutes les annonces du marché par marque, modèle et génération, chacune placée sur sa cote, et retrouvez n'importe quel rapport par verdict, marge ou prix." />;
   const f = await searchParams;
-  if (f.vue !== "rapports")
+  if (f.vue !== "rapports") {
+    const { data: recherches } = await (await supabaseServeur()).from("recherches").select(COLONNES_RECHERCHE).order("created_at", { ascending: true }).limit(40);
+    const prerempli = f.marque && f.modele ? { marque: f.marque.slice(0, 40), modele: f.modele.slice(0, 60), gen: (f.gen ?? "").slice(0, 20) } : null;
     return (
       <div className="grid gap-6">
         <EnTete vue="marche" />
-        <RechercheMarche cat={catalogue()} alertes={c.illimite} />
+        <RechercheMarche cat={catalogue()} alertes={c.illimite || c.offre.id === "pro"} initiales={(recherches ?? []) as Recherche[]} ouvrir={f.r ?? null} prerempli={prerempli} />
       </div>
     );
+  }
   let q = (await supabaseServeur()).from("rapports").select("id, titre, created_at, prix, verdict, marge, note, marque, photos, lien").eq("mode", "benef");
   const texte = (f.q ?? "").replace(/[%_,()]/g, " ").trim().slice(0, 60);
   if (texte) q = q.ilike("titre", `%${texte}%`);

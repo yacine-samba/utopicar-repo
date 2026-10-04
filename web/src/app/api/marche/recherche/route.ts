@@ -1,6 +1,8 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
 import { lienAnnonce, marcheModele, normBo, normEn } from "@/lib/vehicules/marche";
+import { supabaseServeur } from "@/lib/supabase/serveur";
+import { cleRecherche, COLONNES_RECHERCHE, MAX_ONGLETS, MAX_RECHERCHES, type Meilleure } from "@/lib/recherches";
 
 /* Recherche dans la base du marché, au niveau de l'outil Garage : marque, modèle, génération,
    chaque annonce placée sur la cote de sa génération (régression sur les annonces comparables). Benef Pro et illimité. */
@@ -21,6 +23,8 @@ const Corps = z.object({
   sousCote: z.number().min(0).max(60).optional(),
   fiables: z.boolean().optional(),
   tri: z.enum(["ecart", "prix", "km", "annee", "recent"]).optional(),
+  // filtres tels que saisis (texte des champs), gardés avec la recherche enregistrée pour la rouvrir à l'identique
+  saisie: z.record(z.string(), z.union([z.string().max(120), z.boolean()])).optional(),
 });
 
 const sansAccent = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -91,12 +95,45 @@ export async function POST(req: Request) {
   );
 
   const avecCote = annonces.filter((a) => a.cote);
+  const sousLaCote = avecCote.filter((a) => !a.suspect && (a.cote!.pct ?? 0) >= 0.05).length;
+  const recherche = await enregistrer(f, m, filtrees, sousLaCote).catch((e) => {
+    console.error("recherche enregistrée", (e as Error).message);
+    return null;
+  });
   return Response.json({
+    recherche,
     modele: { nom: `${m.marque} ${m.nom}`, gens: m.gens.map((g) => ({ ...g, n: parGen.get(g.id) ?? 0 })), incertaines: parGen.get("?") ?? 0 },
     total: lignes.length,
     trouvees: filtrees.length,
-    sousLaCote: avecCote.filter((a) => !a.suspect && (a.cote!.pct ?? 0) >= 0.05).length,
+    sousLaCote,
     annonces: filtrees.slice(0, 300),
     ms: Date.now() - t0,
   });
+}
+
+type Trouvee = { titre: string; prix: number; url: string | null; piege: boolean; cote: { ecart: number | null; pct: number | null } | null };
+
+/** Garde la recherche (une par véhicule), ouverte en onglet ; au plus 8 onglets et 30 recherches par personne. */
+async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: string; gens: { id: string; label: string }[] }, trouvees: Trouvee[], sousLaCote: number) {
+  const sb = await supabaseServeur();
+  const choix = { marque: f.marque, modele: f.modele, gen: f.gen ?? "" };
+  const g = f.gen ? m.gens.find((x) => x.id === f.gen) : null;
+  // meilleure affaire crédible : ni piège, ni prix trop beau pour être vrai (plus de 40 % sous la cote)
+  const top = trouvees.filter((a) => !a.piege && a.cote?.pct != null && a.cote.pct <= 0.4 && a.cote.ecart != null).sort((a, b) => b.cote!.pct! - a.cote!.pct!)[0];
+  const meilleure: Meilleure | null = top ? { titre: top.titre.slice(0, 140), prix: top.prix, ecart: Math.round(top.cote!.ecart!), pct: Math.round(top.cote!.pct! * 100), url: top.url } : null;
+  const { data, error } = await sb
+    .from("recherches")
+    .upsert(
+      { cle: cleRecherche(choix), nom: `${m.marque} ${g?.label ?? m.nom}`.slice(0, 160), criteres: { choix, f: f.saisie ?? {} }, active: true, trouvees: trouvees.length, sous_cote: sousLaCote, meilleure, derniere_le: new Date().toISOString() },
+      { onConflict: "user_id,cle" },
+    )
+    .select(COLONNES_RECHERCHE)
+    .single();
+  if (error) throw error;
+  // ménage : les onglets les plus anciens se ferment, les recherches les plus anciennes partent
+  const { data: toutes } = await sb.from("recherches").select("id, active").order("derniere_le", { ascending: false });
+  const ouverts = (toutes ?? []).filter((x) => x.active);
+  if (ouverts.length > MAX_ONGLETS) await sb.from("recherches").update({ active: false }).in("id", ouverts.slice(MAX_ONGLETS).map((x) => x.id));
+  if ((toutes ?? []).length > MAX_RECHERCHES) await sb.from("recherches").delete().in("id", (toutes ?? []).filter((x) => !x.active).slice(MAX_RECHERCHES - MAX_ONGLETS).map((x) => x.id));
+  return data;
 }
