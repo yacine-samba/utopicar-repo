@@ -18,6 +18,7 @@ type AnnonceAlerte = { id: string; url: string | null; titre: string; prix: numb
 export type Alerte = {
   id: string; nom: string; actif: boolean; notifier: boolean; email: string | null; intervalle_min: number; filtres: Record<string, unknown> & { utp?: { site?: Formulaire; sous_cote?: number } };
   derniere_execution: string | null; derniere_erreur: string | null; derniers_nouveaux: number | null; en_cours: boolean; created_at: string; passages: number; mails: number; annonces: AnnonceAlerte[];
+  collecte_faite?: boolean; dernier_lu?: number | null; dernier_initial?: boolean;
 };
 
 const FREQUENCES = [[60, "Toutes les heures"], [120, "Toutes les 2 heures"], [180, "Toutes les 3 heures"], [240, "Toutes les 4 heures"], [360, "Toutes les 6 heures"], [480, "Toutes les 8 heures"], [720, "Toutes les 12 heures"], [1440, "Une fois par jour"]] as const;
@@ -132,15 +133,22 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
       const finis: string[] = [];
       for (const id of ids) {
         const a = j.alertes.find((x) => x.id === id);
-        if (!limite.current.has(id)) limite.current.set(id, Date.now() + 6 * 60000);
-        const trop = Date.now() > limite.current.get(id)!;
         if (!a) { finis.push(id); continue; }
+        // collecte complète plus longue : 15 min avant d'abandonner le suivi, 6 min sinon
+        if (!limite.current.has(id)) limite.current.set(id, Date.now() + (a.collecte_faite ? 6 : 15) * 60000);
+        const trop = Date.now() > limite.current.get(id)!;
         const relance = /Nouvel essai/.test(a.derniere_erreur ?? "");
         const fini = !a.en_cours && !relance && a.derniere_execution !== suivis[id].prev && a.derniere_execution != null;
         if (!fini && !trop) continue;
         finis.push(id);
         if (a.derniere_erreur || trop)
           notifier({ titre: `Alerte « ${a.nom} » : recherche interrompue`, texte: trop ? "Leboncoin met du temps à répondre : le prochain passage prendra le relais." : a.derniere_erreur ?? "", ton: "warn" });
+        else if (a.dernier_initial)
+          notifier({
+            titre: `Alerte « ${a.nom} » : collecte complète terminée`,
+            texte: `${a.dernier_lu ?? a.derniers_nouveaux ?? 0} annonces correspondent à vos critères. Les prochains passages ne liront que les nouvelles.`,
+            action: a.annonces.length ? { l: "Voir les annonces", onClick: () => { setOuverte(a.id); document.getElementById(`al-${a.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); } } : undefined,
+          });
         else
           notifier({
             titre: `Alerte « ${a.nom} » : recherche terminée`,
@@ -181,7 +189,9 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
     const nom = edition.nom.trim() || [b?.n, g?.l ?? m?.n].filter(Boolean).join(" ");
     const ok = await faire(
       { action: "enregistrer", alerte: { id: edition.id, nom, actif: edition.actif, notifier: edition.notifier, email: edition.email.trim() || undefined, intervalle_min: edition.intervalle, filtres: versFiltres(f, cat) } },
-      edition.id ? "Alerte modifiée." : "Alerte créée : le premier passage a lieu dans le quart d'heure (sans e-mail, pour ne pas tout vous envoyer d'un coup).",
+      edition.id
+        ? "Alerte modifiée : le prochain passage relit toutes les annonces qui correspondent aux nouveaux critères, puis seulement les nouvelles."
+        : "Alerte créée : le premier passage (dans le quart d'heure) lit toutes les annonces qui correspondent, sans e-mail ; ensuite, seulement les nouvelles.",
     );
     if (ok) setEdition(null);
   }
@@ -291,7 +301,12 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
                 <p>Dernier passage : {a.en_cours ? "en cours…" : quand(a.derniere_execution)}{a.derniers_nouveaux ? ` · ${a.derniers_nouveaux} nouvelle${a.derniers_nouveaux > 1 ? "s" : ""}` : ""}</p>
                 <p>{a.passages} passage{a.passages > 1 ? "s" : ""} · {a.mails} e-mail{a.mails > 1 ? "s" : ""} envoyé{a.mails > 1 ? "s" : ""}</p>
               </div>
-              {a.id in suivis ? <PassageEnCours depart={suivis[a.id].t0} /> : a.derniere_erreur && <p className="rounded-xl border border-warn/40 bg-warn/10 px-3 py-2 text-sm text-warn">{a.derniere_erreur}</p>}
+              <p className="text-xs text-ink-3">
+                {a.collecte_faite
+                  ? "Collecte complète faite : chaque passage ne lit que les annonces parues depuis le précédent."
+                  : "Collecte complète au prochain passage : toutes les annonces qui correspondent (jusqu'à 300), sans e-mail."}
+              </p>
+              {a.id in suivis ? <PassageEnCours depart={suivis[a.id].t0} complete={!a.collecte_faite} /> : a.derniere_erreur && <p className="rounded-xl border border-warn/40 bg-warn/10 px-3 py-2 text-sm text-warn">{a.derniere_erreur}</p>}
               <div className="flex flex-wrap gap-2">
                 <button type="button" disabled={occupe || a.en_cours || a.id in suivis} onClick={() => lancer(a)} className="btn btn-sm">{a.id in suivis ? "Recherche en cours…" : "Chercher maintenant"}</button>
                 <button type="button" onClick={() => modifier(a)} className="btn btn-sm">Modifier</button>
@@ -362,16 +377,18 @@ function Interrupteur({ on, label, onClick, disabled }: { on: boolean; label: st
 }
 
 /** Passage en cours sur Leboncoin (une à deux minutes) : minuteur, étapes et barre qui avance. */
-function PassageEnCours({ depart }: { depart?: number }) {
+function PassageEnCours({ depart, complete }: { depart?: number; complete?: boolean }) {
   const [sec, setSec] = useState(0);
   useEffect(() => {
     const t0 = depart ?? Date.now();
     const i = setInterval(() => setSec(Math.max(0, Math.round((Date.now() - t0) / 1000))), 1000);
     return () => clearInterval(i);
   }, [depart]);
-  const etapes: [string, number][] = [["Lecture des nouvelles annonces sur Leboncoin", 0], ["Tri : critères, pièges, doublons", 35], ["Cote de chaque annonce et e-mail", 60]];
+  const etapes: [string, number][] = complete
+    ? [["Collecte complète : toutes les annonces qui correspondent", 0], ["Tri : critères, pièges, doublons", 90], ["Enregistrement des annonces", 150]]
+    : [["Lecture des nouvelles annonces sur Leboncoin", 0], ["Tri : critères, pièges, doublons", 35], ["Cote de chaque annonce et e-mail", 60]];
   const actuelle = etapes.reduce((k, [, t], i) => (sec >= t ? i : k), 0);
-  const pct = Math.min(94, Math.round((1 - Math.exp(-sec / 45)) * 100));
+  const pct = Math.min(94, Math.round((1 - Math.exp(-sec / (complete ? 120 : 45))) * 100));
   return (
     <div className="grid gap-2.5 rounded-xl border border-o/30 bg-o/5 p-3" role="status" aria-live="polite">
       <div className="flex items-center justify-between gap-3 text-sm">
@@ -384,7 +401,7 @@ function PassageEnCours({ depart }: { depart?: number }) {
       <div className="h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
         <div className="h-full rounded-full bg-gradient-to-r from-o to-o2 transition-[width] duration-1000" style={{ width: `${pct}%` }} />
       </div>
-      <p className="text-xs text-ink-3">Une à deux minutes. Une notification s&apos;affiche en haut de l&apos;écran à la fin, inutile de recharger la page.</p>
+      <p className="text-xs text-ink-3">{complete ? "Deux à cinq minutes pour cette première collecte" : "Une à deux minutes"}. Une notification s&apos;affiche en haut de l&apos;écran à la fin, inutile de recharger la page.</p>
     </div>
   );
 }
