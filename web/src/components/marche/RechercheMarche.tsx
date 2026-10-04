@@ -3,6 +3,10 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { FILTRES_VIDES, quandRecherche, resumeFiltres, type FiltresRecherche, type Recherche } from "@/lib/recherches";
+import { cleFavori } from "@/lib/favoris";
+import { BoutonFavori } from "../espace/BoutonFavori";
+import { useNotification } from "../espace/Notification";
+import { Ico } from "../espace/Icones";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque, CoteAnnonce } from "@/lib/vehicules/types";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
@@ -21,7 +25,9 @@ const SANS: Choix = { marque: "", modele: "", gen: "" };
 
 /** Recherche dans la base du marché. Chaque recherche est enregistrée (une par véhicule) et reste ouverte en onglet :
     on peut chercher une autre voiture sans perdre la précédente, et la retrouver depuis le tableau de bord. */
-export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: { cat: CatMarque[]; alertes: boolean; initiales: Recherche[]; ouvrir?: string | null; prerempli?: Choix | null }) {
+export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, favoris = [] }: { cat: CatMarque[]; alertes: boolean; initiales: Recherche[]; ouvrir?: string | null; prerempli?: Choix | null; favoris?: string[] }) {
+  const { notifier, element: notification } = useNotification();
+  const [favs] = useState(() => new Set(favoris));
   const [liste, setListe] = useState<Recherche[]>(initiales);
   const [courant, setCourant] = useState<string | null>(null); // id de l'onglet affiché, null = nouvelle recherche
   const [choix, setChoix] = useState<Choix>(SANS);
@@ -29,6 +35,8 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
   const [res, setRes] = useState<Resultat | null>(null);
   const [etat, setEtat] = useState("");
   const [charge, setCharge] = useState(false);
+  // téléphone : les filtres se replient pendant et après la recherche, pour voir le chargement puis les résultats
+  const [filtresOuverts, setFiltresOuverts] = useState(true);
   const cache = useRef(new Map<string, Resultat>());
   const onglets = liste.filter((r) => r.active);
   const anciennes = liste.filter((r) => !r.active).slice(0, 6);
@@ -39,7 +47,11 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
   async function lancer(c: Choix, fx: Filtres) {
     if (!c.marque || !c.modele) return setEtat("Choisissez une marque et un modèle.");
     setCharge(true);
-    setEtat("Recherche et calcul de la cote de chaque annonce…");
+    setEtat("");
+    setFiltresOuverts(false);
+    requestAnimationFrame(() => {
+      if (innerWidth < 640) document.getElementById("rm-attente")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     try {
       const r = await fetch("/api/marche/recherche", {
         method: "POST",
@@ -51,9 +63,18 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
         }),
       });
       const j = (await r.json().catch(() => null)) as (Resultat & { erreur?: string }) | null;
-      if (!r.ok || !j) return setEtat(j?.erreur ?? "La recherche n'a pas abouti. Réessayez.");
+      if (!r.ok || !j) {
+        setEtat(j?.erreur ?? "La recherche n'a pas abouti. Réessayez.");
+        notifier({ titre: "La recherche n'a pas abouti", texte: j?.erreur ?? "Réessayez dans un instant.", ton: "warn" });
+        return;
+      }
       setRes(j);
       setEtat("");
+      notifier({
+        titre: `Recherche terminée : ${j.recherche?.nom ?? j.modele.nom}`,
+        texte: `${j.trouvees} annonce${j.trouvees > 1 ? "s" : ""}${j.sousLaCote ? `, dont ${j.sousLaCote} sous la cote` : ""}.`,
+        action: { l: "Voir les résultats", onClick: () => document.getElementById("rm-res")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
+      });
       const rec = j.recherche;
       if (rec) {
         cache.current.set(rec.id, j);
@@ -91,6 +112,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
   }
 
   function nouvelle() {
+    setFiltresOuverts(true);
     setCourant(null);
     setChoix(SANS);
     setF(VIDE);
@@ -155,7 +177,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
                   {r.sous_cote ? ` · ${r.sous_cote} sous la cote` : ""}
                 </span>
               </button>
-              <button type="button" onClick={() => fermer(r)} aria-label={`Fermer la recherche ${r.nom}`} className="mr-1.5 grid size-7 place-items-center rounded-full text-ink-3 hover:bg-glass hover:text-ink">
+              <button type="button" onClick={() => fermer(r)} aria-label={`Fermer la recherche ${r.nom} (elle reste dans l'historique)`} title="Fermer (reste dans l'historique)" className="mr-1.5 grid size-7 place-items-center rounded-full text-ink-3 hover:bg-glass hover:text-ink">
                 ✕
               </button>
             </div>
@@ -163,6 +185,9 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
           <button type="button" onClick={nouvelle} aria-current={courant === null ? "true" : undefined} className={cx("shrink-0 rounded-2xl border border-dashed px-4 py-2 text-sm", courant === null ? "border-o/60 text-ink" : "border-line-2 text-ink-2 hover:text-ink")}>
             + Nouvelle recherche
           </button>
+          <Link href="/app/recherche?vue=historique" className="flex shrink-0 items-center gap-2 rounded-2xl border border-line-2 px-4 py-2 text-sm text-ink-2 hover:border-o/30 hover:text-ink">
+            <Ico nom="historique" className="size-4" /> Historique
+          </Link>
         </div>
         {anciennes.length > 0 && (
           <p className="flex flex-wrap items-center gap-2 text-xs text-ink-3">
@@ -176,7 +201,18 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
         )}
       </nav>
 
-      <form onSubmit={chercher} className="carte grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3">
+      {!filtresOuverts && (
+        <button type="button" onClick={() => setFiltresOuverts(true)} aria-expanded={false} aria-controls="rm-filtres" className="carte flex items-center justify-between gap-3 p-4 text-left sm:hidden">
+          <span className="min-w-0">
+            <span className="block text-xs text-ink-3">Critères</span>
+            <span className="block truncate text-sm font-medium">
+              {[cat.find((b) => b.k === choix.marque)?.n, cat.find((b) => b.k === choix.marque)?.m.find((m) => m.k === choix.modele)?.n, resumeFiltres(f)].filter(Boolean).join(" · ") || "Choisir une voiture"}
+            </span>
+          </span>
+          <span className="shrink-0 text-sm font-semibold text-o2">Modifier</span>
+        </button>
+      )}
+      <form id="rm-filtres" onSubmit={chercher} className={cx("carte grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3", !filtresOuverts && "max-sm:hidden")}>
         <ChoixVehicule cat={cat} v={choix} onChange={setChoix} idPrefixe="rm" />
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Énergie</span>
@@ -270,8 +306,11 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
         </div>
       </form>
 
-      {res && (
-        <section aria-labelledby="rm-res" className="grid gap-4">
+      {charge && <PatienceRecherche id="rm-attente" nom={choix.modele ? (cat.find((b) => b.k === choix.marque)?.m.find((m) => m.k === choix.modele)?.n ?? "") : ""} />}
+      {notification}
+
+      {res && !charge && (
+        <section aria-labelledby="rm-res" className="grid scroll-mt-24 gap-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="rm-res" className="font-display text-xl font-semibold">
               {res.trouvees} annonce{res.trouvees > 1 ? "s" : ""} · {res.recherche?.nom ?? res.modele.nom}
@@ -292,7 +331,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
           </div>
           {res.annonces.length ? (
             <ul className="grid gap-3">
-              {res.annonces.map((a) => <LigneAnnonce key={a.id} a={a} />)}
+              {res.annonces.map((a) => <LigneAnnonce key={a.id} a={a} fav={favs.has(cleFavori(a.url, `marche:${a.id}`))} onFav={(on) => (on ? favs.add(cleFavori(a.url, `marche:${a.id}`)) : favs.delete(cleFavori(a.url, `marche:${a.id}`)))} />)}
             </ul>
           ) : (
             <p className="carte p-6 text-ink-2">Aucune annonce ne correspond. Élargissez les années, le prix ou le kilométrage.</p>
@@ -307,7 +346,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli }: 
   );
 }
 
-function LigneAnnonce({ a }: { a: Annonce }) {
+function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on: boolean) => void }) {
   const c = a.cote;
   const bon = c?.pct != null && c.pct >= 0.05, cher = c?.pct != null && c.pct <= -0.05;
   return (
@@ -340,12 +379,76 @@ function LigneAnnonce({ a }: { a: Annonce }) {
         ) : (
           <p className="text-xs text-ink-3">{a.gen ? "pas assez de comparables" : "génération incertaine"}</p>
         )}
-        {a.url && (
-          <a href={a.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm mt-2">
-            Ouvrir
-          </a>
-        )}
+        <div className="mt-2 flex items-center gap-2 sm:justify-end">
+          <BoutonFavori
+            compact
+            initial={fav}
+            onChange={onFav}
+            f={{ cle: cleFavori(a.url, `marche:${a.id}`), titre: a.titre || "Annonce", prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: null, source: "recherche", cote: c ? { P: c.P ?? null, ecart: c.ecart ?? null, pct: c.pct ?? null } : null }}
+          />
+          {a.url && (
+            <a href={a.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">
+              Ouvrir
+            </a>
+          )}
+        </div>
       </div>
     </li>
+  );
+}
+
+const ETAPES_RECHERCHE: [string, number][] = [
+  ["Lecture des annonces du modèle dans la base du marché", 0],
+  ["Classement par génération, énergie et boîte", 0.8],
+  ["Calcul de la cote de chaque annonce (âge, kilométrage, version)", 1.8],
+  ["Repérage des bonnes affaires et des pièges", 3.5],
+];
+
+/** Attente de la recherche : étapes qui avancent, barre de progression et emplacements des résultats. */
+function PatienceRecherche({ nom, id }: { nom: string; id: string }) {
+  const [sec, setSec] = useState(0);
+  useEffect(() => {
+    const t0 = performance.now(); // l'attente commence à l'affichage du loader
+    const i = setInterval(() => setSec((performance.now() - t0) / 1000), 200);
+    return () => clearInterval(i);
+  }, []);
+  const actuelle = ETAPES_RECHERCHE.reduce((k, [, t], i) => (sec >= t ? i : k), 0);
+  const pct = Math.min(94, Math.round((1 - Math.exp(-sec / 2.5)) * 100));
+  return (
+    <section id={id} className="carte grid scroll-mt-20 gap-4 p-5 sm:p-6" role="status" aria-live="polite" aria-label="Recherche en cours">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="font-display text-lg font-semibold">Recherche en cours{nom ? ` : ${nom}` : ""}…</p>
+        <span className="num text-sm text-ink-3">{Math.floor(sec)} s</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-line" aria-hidden="true">
+        <div className="h-full rounded-full bg-gradient-to-r from-o to-o2 transition-[width] duration-300" style={{ width: `${pct}%` }} />
+      </div>
+      <ol className="grid gap-1.5 text-sm">
+        {ETAPES_RECHERCHE.map(([l], i) => (
+          <li key={l} className={cx("flex items-center gap-2.5", i < actuelle ? "text-ink-3" : i === actuelle ? "text-ink" : "text-ink-3/60")}>
+            {i < actuelle ? (
+              <span className="grid size-5 place-items-center rounded-full bg-ok/20 text-[11px] text-ok" aria-hidden="true">✓</span>
+            ) : i === actuelle ? (
+              <span className="size-5 animate-spin rounded-full border-2 border-o/30 border-t-o" aria-hidden="true" />
+            ) : (
+              <span className="size-5 rounded-full border border-line-2" aria-hidden="true" />
+            )}
+            {l}
+          </li>
+        ))}
+      </ol>
+      <p className="text-xs text-ink-3">Quelques secondes. Une notification s&apos;affiche en haut de l&apos;écran quand c&apos;est prêt : vous pouvez ouvrir un autre onglet en attendant.</p>
+      <ul className="grid gap-2" aria-hidden="true">
+        {[0, 1, 2].map((k) => (
+          <li key={k} className="grid animate-pulse grid-cols-[1fr_auto] gap-3 rounded-2xl border border-line p-4">
+            <span className="grid gap-2">
+              <span className="h-3.5 w-3/5 rounded bg-line" />
+              <span className="h-3 w-2/5 rounded bg-line/70" />
+            </span>
+            <span className="h-5 w-20 rounded bg-line" />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

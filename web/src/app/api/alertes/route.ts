@@ -21,6 +21,7 @@ const Corps = z.discriminatedUnion("action", [
   z.object({ action: z.literal("basculer"), id: z.string().uuid(), actif: z.boolean().nullable(), notifier: z.boolean().nullable() }),
   z.object({ action: z.literal("retirer"), id: z.string().uuid() }),
   z.object({ action: z.literal("lancer"), id: z.string().uuid() }),
+  z.object({ action: z.literal("restaurer"), id: z.string().uuid() }),
 ]);
 
 export async function POST(req: Request) {
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
     : d.action === "enregistrer" ? await sb.rpc("alerte_enregistrer", { p: d.alerte })
     : d.action === "basculer" ? await sb.rpc("alerte_basculer", { p_id: d.id, p_actif: d.actif, p_notifier: d.notifier })
     : d.action === "retirer" ? await sb.rpc("alerte_retirer", { p_id: d.id })
+    : d.action === "restaurer" ? await sb.rpc("alerte_restaurer", { p_id: d.id })
     : await sb.rpc("alerte_lancer", { p_id: d.id });
   if (res.error) return Response.json({ erreur: res.error.message }, { status: 400 });
   if (d.action === "liste") return Response.json({ alertes: res.data });

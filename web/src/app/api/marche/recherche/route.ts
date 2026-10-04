@@ -2,7 +2,7 @@ import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
 import { lienAnnonce, marcheModele, normBo, normEn } from "@/lib/vehicules/marche";
 import { supabaseServeur } from "@/lib/supabase/serveur";
-import { cleRecherche, COLONNES_RECHERCHE, MAX_ONGLETS, MAX_RECHERCHES, type Meilleure } from "@/lib/recherches";
+import { cleRecherche, COLONNES_RECHERCHE, MAX_ONGLETS, type Meilleure } from "@/lib/recherches";
 
 /* Recherche dans la base du marché, au niveau de l'outil Garage : marque, modèle, génération,
    chaque annonce placée sur la cote de sa génération (régression sur les annonces comparables). Benef Pro et illimité. */
@@ -113,7 +113,7 @@ export async function POST(req: Request) {
 
 type Trouvee = { titre: string; prix: number; url: string | null; piege: boolean; cote: { ecart: number | null; pct: number | null } | null };
 
-/** Garde la recherche (une par véhicule), ouverte en onglet ; au plus 8 onglets et 30 recherches par personne. */
+/** Garde la recherche (une par véhicule), ouverte en onglet ; au plus 8 onglets ouverts, l'historique reste entier. */
 async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: string; gens: { id: string; label: string }[] }, trouvees: Trouvee[], sousLaCote: number) {
   const sb = await supabaseServeur();
   const choix = { marque: f.marque, modele: f.modele, gen: f.gen ?? "" };
@@ -130,10 +130,9 @@ async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: s
     .select(COLONNES_RECHERCHE)
     .single();
   if (error) throw error;
-  // ménage : les onglets les plus anciens se ferment, les recherches les plus anciennes partent
-  const { data: toutes } = await sb.from("recherches").select("id, active").order("derniere_le", { ascending: false });
-  const ouverts = (toutes ?? []).filter((x) => x.active);
+  // les onglets les plus anciens se ferment ; les recherches restent toutes dans l'historique
+  const { data: ouverts0 } = await sb.from("recherches").select("id").eq("active", true).order("derniere_le", { ascending: false });
+  const ouverts = ouverts0 ?? [];
   if (ouverts.length > MAX_ONGLETS) await sb.from("recherches").update({ active: false }).in("id", ouverts.slice(MAX_ONGLETS).map((x) => x.id));
-  if ((toutes ?? []).length > MAX_RECHERCHES) await sb.from("recherches").delete().in("id", (toutes ?? []).filter((x) => !x.active).slice(MAX_RECHERCHES - MAX_ONGLETS).map((x) => x.id));
   return data;
 }

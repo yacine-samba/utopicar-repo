@@ -12,9 +12,20 @@ import { AnalyseRapide } from "@/components/espace/AnalyseRapide";
 import { ProjetAchat } from "@/components/espace/ProjetAchat";
 import { GraphMarges, type BarreMarge } from "@/components/benef/GraphMarges";
 import { Ico } from "@/components/espace/Icones";
-import { RechercheRapide } from "@/components/espace/RechercheRapide";
+import { BoutonRechercher, RechercheRapide } from "@/components/espace/RechercheRapide";
+import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { catalogue } from "@/lib/vehicules/catalogue";
 import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
+
+/** Téléphone : deux boutons qui ouvrent une fenêtre, au lieu des grands blocs « collez le lien » et « rechercher ». */
+function ActionsMobile({ recherche }: { recherche: boolean }) {
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:hidden">
+      <BoutonAnalyser libelle={recherche ? "Analyser" : "Analyser une annonce"} className={recherche ? "justify-center px-3" : "col-span-2 justify-center"} />
+      {recherche && <BoutonRechercher cat={catalogue()} />}
+    </div>
+  );
+}
 
 /** Les 3 dernières recherches du marché (formules avec la recherche). */
 async function dernieresRecherches() {
@@ -65,7 +76,10 @@ async function TableauParticulier({ c }: { c: Compte }) {
   return (
     <div className="grid gap-8">
       <Bonjour c={c} texte="Votre projet d'achat, étape par étape, sans mauvaise surprise." />
-      <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle va vraiment vous coûter et ce qu'il faut vérifier." />
+      <ActionsMobile recherche={false} />
+      <div className="hidden sm:block">
+        <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle va vraiment vous coûter et ce qu'il faut vérifier." />
+      </div>
       <ProjetAchat lignes={data ?? []} />
       <div className="grid gap-4 sm:grid-cols-3">
         <Tuile
@@ -161,7 +175,10 @@ async function TableauComplet({ c }: { c: Compte }) {
   return (
     <div className="grid gap-8">
       <Bonjour c={c} texte={`${nomFormule(c)} · stock, marges, meilleures affaires et alertes, comme dans l'outil Garage.`} />
-      <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
+      <ActionsMobile recherche={!!recherches} />
+      <div className="hidden sm:block">
+        <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
+      </div>
       {recherches && <RechercheRapide cat={catalogue()} recentes={recherches} />}
 
       <section aria-labelledby="tb-kpi">
@@ -347,7 +364,10 @@ async function TableauBenef({ c }: { c: Compte }) {
   return (
     <div className="grid gap-8">
       <Bonjour c={c} texte={`${nomFormule(c)} · vos chiffres du mois, depuis le 1er.`} />
-      <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
+      <ActionsMobile recherche={!!recherches} />
+      <div className="hidden sm:block">
+        <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
+      </div>
       {recherches && <RechercheRapide cat={catalogue()} recentes={recherches} />}
 
       <section aria-labelledby="tb-analyses">

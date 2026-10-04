@@ -1,5 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { cleFavori } from "@/lib/favoris";
+import { BoutonFavori } from "../espace/BoutonFavori";
+import { useNotification } from "../espace/Notification";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque } from "@/lib/vehicules/types";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
@@ -82,8 +85,13 @@ async function appel(corps: unknown) {
 }
 
 /** `max` : alertes autorisées par la formule ; `freqMin` : intervalle minimal entre deux passages (minutes). */
-export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 60 }: { cat: CatMarque[]; initiales: Alerte[]; prerempli: Formulaire | null; email: string; max?: number; freqMin?: number }) {
+export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 60, favoris = [] }: { cat: CatMarque[]; initiales: Alerte[]; prerempli: Formulaire | null; email: string; max?: number; freqMin?: number; favoris?: string[] }) {
   const [liste, setListe] = useState(initiales);
+  const [favs] = useState(() => new Set(favoris));
+  const { notifier, element: notification } = useNotification();
+  // passages suivis jusqu'à leur fin : id de l'alerte → dernier passage connu au moment du lancement
+  const [suivis, setSuivis] = useState<Record<string, { prev: string | null; t0?: number }>>(() => Object.fromEntries(initiales.filter((a) => a.en_cours).map((a) => [a.id, { prev: null }])));
+  const limite = useRef(new Map<string, number>()); // fin de suivi au bout de 6 min (lu seulement dans le minuteur)
   const plein = liste.length >= max;
   const [edition, setEdition] = useState<{ id?: string; f: Formulaire; nom: string; notifier: boolean; email: string; intervalle: number; actif: boolean } | null>(
     prerempli && initiales.length < max ? { f: prerempli, nom: "", notifier: true, email, intervalle: freqMin, actif: true } : null,
@@ -107,6 +115,51 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
     } finally {
       setOccupe(false);
     }
+  }
+
+  // Suit les passages lancés : la liste est relue toutes les 5 s jusqu'à la fin, puis une notification l'annonce.
+  useEffect(() => {
+    const ids = Object.keys(suivis);
+    if (!ids.length) return;
+    const t = setInterval(async () => {
+      let j: { alertes: Alerte[] };
+      try {
+        j = await appel({ action: "liste" });
+      } catch {
+        return;
+      }
+      setListe(j.alertes);
+      const finis: string[] = [];
+      for (const id of ids) {
+        const a = j.alertes.find((x) => x.id === id);
+        if (!limite.current.has(id)) limite.current.set(id, Date.now() + 6 * 60000);
+        const trop = Date.now() > limite.current.get(id)!;
+        if (!a) { finis.push(id); continue; }
+        const relance = /Nouvel essai/.test(a.derniere_erreur ?? "");
+        const fini = !a.en_cours && !relance && a.derniere_execution !== suivis[id].prev && a.derniere_execution != null;
+        if (!fini && !trop) continue;
+        finis.push(id);
+        if (a.derniere_erreur || trop)
+          notifier({ titre: `Alerte « ${a.nom} » : recherche interrompue`, texte: trop ? "Leboncoin met du temps à répondre : le prochain passage prendra le relais." : a.derniere_erreur ?? "", ton: "warn" });
+        else
+          notifier({
+            titre: `Alerte « ${a.nom} » : recherche terminée`,
+            texte: a.derniers_nouveaux ? `${a.derniers_nouveaux} nouvelle${a.derniers_nouveaux > 1 ? "s" : ""} annonce${a.derniers_nouveaux > 1 ? "s" : ""} trouvée${a.derniers_nouveaux > 1 ? "s" : ""}.` : "Aucune nouvelle annonce depuis le dernier passage.",
+            action: a.annonces.length ? { l: "Voir les annonces", onClick: () => { setOuverte(a.id); document.getElementById(`al-${a.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); } } : undefined,
+          });
+      }
+      if (finis.length) {
+        finis.forEach((k) => limite.current.delete(k));
+        setSuivis((s) => Object.fromEntries(Object.entries(s).filter(([k]) => !finis.includes(k))));
+      }
+    }, 5000);
+    return () => clearInterval(t);
+  }, [suivis, notifier]);
+
+  async function lancer(a: Alerte) {
+    const ok = await faire({ action: "lancer", id: a.id });
+    if (!ok) return;
+    setSuivis((s) => ({ ...s, [a.id]: { prev: a.derniere_execution, t0: Date.now() } }));
   }
 
   function nouvelle() {
@@ -137,6 +190,7 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
 
   return (
     <div className="grid gap-6">
+      {notification}
       <div className="flex flex-wrap items-center gap-3">
         <button type="button" onClick={nouvelle} disabled={plein} className="btn btn-o btn-sm">Nouvelle alerte</button>
         <span className="num text-sm text-ink-3">{liste.length} / {max} alerte{max > 1 ? "s" : ""}{plein ? " : supprimez-en une pour en créer une autre" : ""}</span>
@@ -221,7 +275,7 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
       {liste.length ? (
         <ul className="grid gap-4">
           {liste.map((a) => (
-            <li key={a.id} className={cx("carte grid gap-4 p-5", !a.actif && "opacity-80")}>
+            <li key={a.id} id={`al-${a.id}`} className={cx("carte grid scroll-mt-24 gap-4 p-5", !a.actif && "opacity-80")}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-display text-lg font-semibold">{a.nom}</p>
@@ -237,9 +291,9 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
                 <p>Dernier passage : {a.en_cours ? "en cours…" : quand(a.derniere_execution)}{a.derniers_nouveaux ? ` · ${a.derniers_nouveaux} nouvelle${a.derniers_nouveaux > 1 ? "s" : ""}` : ""}</p>
                 <p>{a.passages} passage{a.passages > 1 ? "s" : ""} · {a.mails} e-mail{a.mails > 1 ? "s" : ""} envoyé{a.mails > 1 ? "s" : ""}</p>
               </div>
-              {a.derniere_erreur && <p className="rounded-xl border border-warn/40 bg-warn/10 px-3 py-2 text-sm text-warn">{a.derniere_erreur}</p>}
+              {a.id in suivis ? <PassageEnCours depart={suivis[a.id].t0} /> : a.derniere_erreur && <p className="rounded-xl border border-warn/40 bg-warn/10 px-3 py-2 text-sm text-warn">{a.derniere_erreur}</p>}
               <div className="flex flex-wrap gap-2">
-                <button type="button" disabled={occupe || a.en_cours} onClick={() => faire({ action: "lancer", id: a.id }, "Recherche lancée : les annonces arrivent d'ici une à deux minutes. Rechargez la page pour les voir.")} className="btn btn-sm">Chercher maintenant</button>
+                <button type="button" disabled={occupe || a.en_cours || a.id in suivis} onClick={() => lancer(a)} className="btn btn-sm">{a.id in suivis ? "Recherche en cours…" : "Chercher maintenant"}</button>
                 <button type="button" onClick={() => modifier(a)} className="btn btn-sm">Modifier</button>
                 <button type="button" aria-expanded={ouverte === a.id} onClick={() => setOuverte(ouverte === a.id ? null : a.id)} className="btn btn-sm">
                   Annonces trouvées ({a.annonces.length})
@@ -261,11 +315,18 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
                         ) : (
                           <span className="size-16 shrink-0 rounded-lg bg-glass" aria-hidden="true" />
                         )}
-                        <span className="min-w-0 text-sm">
+                        <span className="min-w-0 flex-1 text-sm">
                           {x.url ? <a href={x.url} target="_blank" rel="noopener noreferrer" className="block truncate font-medium underline-offset-4 hover:underline">{x.titre}</a> : <span className="block truncate font-medium">{x.titre}</span>}
                           <b className="num">{eur(x.prix)}</b>
                           <span className="block truncate text-xs text-ink-3">{[x.annee, x.km != null ? `${x.km.toLocaleString("fr-FR")} km` : null, x.ville, quand(x.vu)].filter(Boolean).join(" · ")}</span>
                         </span>
+                        <BoutonFavori
+                          compact
+                          className="shrink-0 self-start"
+                          initial={favs.has(cleFavori(x.url, `lbc:${x.id}`))}
+                          onChange={(on) => (on ? favs.add(cleFavori(x.url, `lbc:${x.id}`)) : favs.delete(cleFavori(x.url, `lbc:${x.id}`)))}
+                          f={{ cle: cleFavori(x.url, `lbc:${x.id}`), titre: x.titre, prix: x.prix, annee: x.annee, km: x.km, energie: x.energie, boite: x.boite, lieu: [x.ville, x.cp].filter(Boolean).join(" ") || null, url: x.url, photo: x.vignette, source: "alerte", cote: null }}
+                        />
                       </li>
                     ))}
                   </ul>
@@ -297,5 +358,33 @@ function Interrupteur({ on, label, onClick, disabled }: { on: boolean; label: st
       </span>
       {label}
     </button>
+  );
+}
+
+/** Passage en cours sur Leboncoin (une à deux minutes) : minuteur, étapes et barre qui avance. */
+function PassageEnCours({ depart }: { depart?: number }) {
+  const [sec, setSec] = useState(0);
+  useEffect(() => {
+    const t0 = depart ?? Date.now();
+    const i = setInterval(() => setSec(Math.max(0, Math.round((Date.now() - t0) / 1000))), 1000);
+    return () => clearInterval(i);
+  }, [depart]);
+  const etapes: [string, number][] = [["Lecture des nouvelles annonces sur Leboncoin", 0], ["Tri : critères, pièges, doublons", 35], ["Cote de chaque annonce et e-mail", 60]];
+  const actuelle = etapes.reduce((k, [, t], i) => (sec >= t ? i : k), 0);
+  const pct = Math.min(94, Math.round((1 - Math.exp(-sec / 45)) * 100));
+  return (
+    <div className="grid gap-2.5 rounded-xl border border-o/30 bg-o/5 p-3" role="status" aria-live="polite">
+      <div className="flex items-center justify-between gap-3 text-sm">
+        <span className="flex items-center gap-2 font-medium">
+          <span className="size-4 animate-spin rounded-full border-2 border-o/30 border-t-o" aria-hidden="true" />
+          {etapes[actuelle][0]}…
+        </span>
+        <span className="num text-ink-3">{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, "0")}</span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
+        <div className="h-full rounded-full bg-gradient-to-r from-o to-o2 transition-[width] duration-1000" style={{ width: `${pct}%` }} />
+      </div>
+      <p className="text-xs text-ink-3">Une à deux minutes. Une notification s&apos;affiche en haut de l&apos;écran à la fin, inutile de recharger la page.</p>
+    </div>
   );
 }
