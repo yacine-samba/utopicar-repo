@@ -25,7 +25,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
     );
   const sp = await searchParams;
   const sb = await supabaseServeur();
-  const [{ data, error }, { data: droits }] = await Promise.all([sb.rpc("mes_alertes"), sb.rpc("mes_droits_alertes")]);
+  const [{ data, error }, { data: droits }, { data: favs }] = await Promise.all([sb.rpc("mes_alertes"), sb.rpc("mes_droits_alertes"), sb.from("favoris").select("cle").limit(2000)]);
   const d = (droits ?? {}) as { max?: number; freq_min?: number };
   const prerempli = sp.marque && sp.modele ? (Object.fromEntries(CHAMPS.map((k) => [k, (sp[k] ?? "").slice(0, 80)])) as Formulaire) : null;
   if (prerempli) prerempli.vendeur = "particulier";
@@ -40,7 +40,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
       {error ? (
         <p className="carte p-5 text-bad">Alertes indisponibles : {error.message}</p>
       ) : (
-        <Alertes cat={catalogue()} initiales={(data ?? []) as Alerte[]} prerempli={prerempli} email={c.email} max={d.max ?? 3} freqMin={d.freq_min ?? 180} />
+        <Alertes cat={catalogue()} initiales={(data ?? []) as Alerte[]} prerempli={prerempli} email={c.email} max={d.max ?? 3} freqMin={d.freq_min ?? 180} favoris={(favs ?? []).map((x) => x.cle as string)} />
       )}
     </div>
   );

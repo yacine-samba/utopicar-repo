@@ -12,7 +12,6 @@ export type Recherche = {
 export const FILTRES_VIDES: FiltresRecherche = { energie: "", boite: "", anneeMin: "", anneeMax: "", prixMin: "", prixMax: "", kmMax: "", vendeur: "", mots: "", exclure: "", sousCote: "", fiables: true, tri: "ecart" };
 export const COLONNES_RECHERCHE = "id, nom, active, criteres, trouvees, sous_cote, meilleure, derniere_le";
 export const MAX_ONGLETS = 8;
-export const MAX_RECHERCHES = 30;
 
 /** Une recherche par véhicule : changer les filtres met à jour la même recherche, changer de voiture en ouvre une autre. */
 export const cleRecherche = (c: Choix) => `${c.marque}|${c.modele}|${c.gen || "*"}`.slice(0, 120);

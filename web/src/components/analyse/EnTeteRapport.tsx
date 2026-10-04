@@ -3,11 +3,13 @@ import Link from "next/link";
 import type { Vendeur } from "@/lib/analyse/vendeur";
 import { titreVehicule } from "@/lib/titre";
 import { BentoPhotos } from "./Photos";
+import type { NouveauFavori } from "@/lib/favoris";
+import { BoutonFavori } from "../espace/BoutonFavori";
 
 const eur = (v: number | null) => (v == null ? null : `${Math.round(v).toLocaleString("fr-FR")} €`);
 
 /** Haut de rapport : barre fixe avec le lien de l'annonce d'origine, photos en mosaïque, vendeur. */
-export function EnTeteRapport({ titre, prix, photos, lien, vendeur, maxPhotos, date, retour }: { titre: string; prix: number | null; photos: string[]; lien: string | null; vendeur: Vendeur | null; maxPhotos: number; date: string; retour: { href: string; l: string } | { onClick: () => void; l: string } }) {
+export function EnTeteRapport({ titre, prix, photos, lien, vendeur, maxPhotos, date, retour, favori }: { titre: string; prix: number | null; photos: string[]; lien: string | null; vendeur: Vendeur | null; maxPhotos: number; date: string; retour: { href: string; l: string } | { onClick: () => void; l: string }; favori?: { f: NouveauFavori; initial: boolean } }) {
   const t = titreVehicule(titre);
   return (
     <div className="grid gap-4">
@@ -26,14 +28,17 @@ export function EnTeteRapport({ titre, prix, photos, lien, vendeur, maxPhotos, d
           <span className="min-w-0 truncate font-medium">{t}</span>
           {prix != null && <b className="num ml-1 shrink-0 whitespace-nowrap text-o2">{eur(prix)}</b>}
         </p>
-        {lien ? (
-          <a href={lien} target="_blank" rel="noopener noreferrer" aria-label="Ouvrir l'annonce d'origine" className="btn btn-sm shrink-0 whitespace-nowrap max-sm:px-3">
-            <span className="max-sm:hidden">Annonce d&apos;origine</span>
-            <span className="sm:hidden">Annonce</span> <span aria-hidden="true">↗</span>
-          </a>
-        ) : (
-          <span className="shrink-0 text-xs text-ink-3">{date}</span>
-        )}
+        <div className="flex shrink-0 items-center gap-2">
+          {favori && <BoutonFavori f={favori.f} initial={favori.initial} compact />}
+          {lien ? (
+            <a href={lien} target="_blank" rel="noopener noreferrer" aria-label="Ouvrir l'annonce d'origine" className="btn btn-sm shrink-0 whitespace-nowrap max-sm:px-3">
+              <span className="max-sm:hidden">Annonce d&apos;origine</span>
+              <span className="sm:hidden">Annonce</span> <span aria-hidden="true">↗</span>
+            </a>
+          ) : (
+            <span className="shrink-0 text-xs text-ink-3">{date}</span>
+          )}
+        </div>
       </div>
 
       <BentoPhotos

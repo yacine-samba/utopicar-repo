@@ -7,6 +7,7 @@ import { cx, inputCls } from "@/lib/cx";
 import { catalogue } from "@/lib/vehicules/catalogue";
 import { RechercheMarche } from "@/components/marche/RechercheMarche";
 import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
+import { HistoriqueRecherches, type AlerteSupprimee } from "@/components/marche/HistoriqueRecherches";
 
 const VERDICTS = ["GO", "GO SI NÉGOCIÉ", "GO EN MANDAT UNIQUEMENT", "À SURVEILLER", "NO GO"];
 type Filtres = { vue?: string; q?: string; marque?: string; modele?: string; gen?: string; r?: string; verdict?: string; marge?: string; prix?: string; depuis?: string };
@@ -16,13 +17,31 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   const c = await compteBenef("/app/recherche");
   if (!c.offre.recherche) return <VerrouBenef offre="pro" titre="Recherche" texte="Cherchez dans toutes les annonces du marché par marque, modèle et génération, chacune placée sur sa cote, et retrouvez n'importe quel rapport par verdict, marge ou prix." />;
   const f = await searchParams;
+  const alertes = c.illimite || c.offre.id === "pro";
+  if (f.vue === "historique") {
+    const sb = await supabaseServeur();
+    const [{ data: recherches }, sup] = await Promise.all([
+      sb.from("recherches").select(COLONNES_RECHERCHE).order("derniere_le", { ascending: false }).limit(300),
+      alertes ? sb.rpc("mes_alertes_supprimees") : Promise.resolve({ data: [] }),
+    ]);
+    return (
+      <div className="grid gap-6">
+        <EnTete vue="historique" />
+        <HistoriqueRecherches recherches={(recherches ?? []) as Recherche[]} supprimees={((sup.data ?? []) as AlerteSupprimee[])} alertes={alertes} />
+      </div>
+    );
+  }
   if (f.vue !== "rapports") {
-    const { data: recherches } = await (await supabaseServeur()).from("recherches").select(COLONNES_RECHERCHE).order("created_at", { ascending: true }).limit(40);
+    const sb = await supabaseServeur();
+    const [{ data: recherches }, { data: favs }] = await Promise.all([
+      sb.from("recherches").select(COLONNES_RECHERCHE).order("created_at", { ascending: true }).limit(300),
+      sb.from("favoris").select("cle").limit(2000),
+    ]);
     const prerempli = f.marque && f.modele ? { marque: f.marque.slice(0, 40), modele: f.modele.slice(0, 60), gen: (f.gen ?? "").slice(0, 20) } : null;
     return (
       <div className="grid gap-6">
         <EnTete vue="marche" />
-        <RechercheMarche cat={catalogue()} alertes={c.illimite || c.offre.id === "pro"} initiales={(recherches ?? []) as Recherche[]} ouvrir={f.r ?? null} prerempli={prerempli} />
+        <RechercheMarche cat={catalogue()} alertes={alertes} initiales={(recherches ?? []) as Recherche[]} ouvrir={f.r ?? null} prerempli={prerempli} favoris={(favs ?? []).map((x) => x.cle as string)} />
       </div>
     );
   }
@@ -97,16 +116,18 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   );
 }
 
-function EnTete({ vue }: { vue: "marche" | "rapports" }) {
-  const onglet = (actif: boolean) => cx("rounded-full px-4 py-2 text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
+function EnTete({ vue }: { vue: "marche" | "historique" | "rapports" }) {
+  const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
+  const sous = { marche: "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération.", historique: "Toutes vos recherches, même fermées, et les alertes supprimées.", rapports: "Vos rapports enregistrés, par verdict, marge, prix ou période." }[vue];
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div>
         <h1 className="font-display text-3xl font-semibold">Recherche</h1>
-        <p className="mt-1 text-ink-2">{vue === "marche" ? "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération." : "Vos rapports enregistrés, par verdict, marge, prix ou période."}</p>
+        <p className="mt-1 text-ink-2">{sous}</p>
       </div>
-      <nav aria-label="Type de recherche" className="flex gap-1 rounded-full border border-line p-1">
+      <nav aria-label="Type de recherche" className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-line p-1">
         <a href="/app/recherche" aria-current={vue === "marche" ? "page" : undefined} className={onglet(vue === "marche")}>Annonces du marché</a>
+        <a href="/app/recherche?vue=historique" aria-current={vue === "historique" ? "page" : undefined} className={onglet(vue === "historique")}>Historique</a>
         <a href="/app/recherche?vue=rapports" aria-current={vue === "rapports" ? "page" : undefined} className={onglet(vue === "rapports")}>Mes rapports</a>
       </nav>
     </div>

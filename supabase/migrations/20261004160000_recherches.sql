@@ -22,4 +22,4 @@ create policy "recherches : ajout des siennes" on public.recherches for insert t
 create policy "recherches : modification des siennes" on public.recherches for update to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
 create policy "recherches : suppression des siennes" on public.recherches for delete to authenticated using (user_id = (select auth.uid()));
 grant select, insert, update, delete on public.recherches to authenticated;
--- Au plus 8 onglets ouverts et 30 recherches par personne : le ménage est fait par la route /api/marche/recherche.
+-- Au plus 8 onglets ouverts (la route /api/marche/recherche ferme les plus anciens) ; l'historique n'est jamais vidé automatiquement.
