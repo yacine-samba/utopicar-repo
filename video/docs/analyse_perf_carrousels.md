@@ -21,7 +21,7 @@ Deux autres freins touchaient tous les anciens carrousels : du vocabulaire de pr
 1. **Image 1** : la cible ou la situation dans les premiers mots, un seul mot en serif orange, et aucune capture.
 2. **Une promesse de fin** : un nombre (« 5 moteurs à fuir »), une question (« Combien tu proposes ? ») ou une
    histoire à finir (« J'ai lancé mon achat-revente avec 400 € »).
-3. **Image 3** : une relance vers l'image 4 (« Image 4 : la phrase qui doit te faire réfléchir »).
+3. **Image 3** : le titre de l'image 4 suffit à donner envie de glisser. Pas de pastille « Image 4 : … » (retirée oct. 2026, elle alourdissait l'image).
 4. **Images 2 à 4** : la valeur d'abord. L'outil apparaît au plus une fois, comme ta solution.
 5. **Image 5** : un mot à commenter (ACHETEUR, DÉBUTANT ou PRO) et le guide du site qui va avec.
 6. **Vocabulaire** : des verdicts en clair (« À éviter », « À négocier », « Rentable »), toujours avec leur montant en euros.

@@ -196,9 +196,9 @@ if (LAST) {
   if (SL.body2) el('div', 'body', box, md(SL.body2));
   if (SL.compFirst && box.querySelector('.title')) { const first = box.lastElementChild; box.insertBefore(first, box.querySelector('.kicker') || box.querySelector('.title')); }
   if (N === 0) el('div', 'swipe', S, '<span>Glisse →</span>');
-  if (SL.relance) el('div', 'relance', S, `<span>${md(SL.relance)}</span>`);
+  // pas de pastille « Image 4 : … » (retirée à la demande de l'utilisateur)
 }
-const TOP = N > 0 && !LAST ? 330 : 236, BOT = (N === 0 || SL.relance) ? 1306 : 1470;
+const TOP = N > 0 && !LAST ? 330 : 236, BOT = N === 0 ? 1306 : 1470;
 box.style.top = TOP + 'px'; box.style.height = (BOT - TOP) + 'px';
 await document.fonts.ready;
 for (const f of ["600 100px 'Clash Display'", "500 40px 'Satoshi'", "700 40px 'Satoshi'", "italic 400 100px 'Instrument Serif'"]) await document.fonts.load(f);

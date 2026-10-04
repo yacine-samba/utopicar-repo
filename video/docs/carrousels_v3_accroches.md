@@ -16,7 +16,7 @@ Chaque titre passe les 4 verrous :
 - **Miroir** : on parle en « tu », d'un problème qu'il a déjà.
 - **Écart** : le titre dit autre chose que ce qu'il pense.
 
-La boucle reste ouverte jusqu'à l'image 4. L'image 3 la relance (« Image 4 : le vrai total »), et l'image 4 la referme.
+La boucle reste ouverte jusqu'à l'image 4, qui la referme. Pas de pastille « Image 4 : … » sur l'image 3 : retirée à ta demande, elle alourdissait l'image.
 
 ## Les 9 types d'accroche
 
