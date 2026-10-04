@@ -277,7 +277,7 @@ car('pas-de-sportive', 'EI',
     "Tu répares toi-même ?", [
   S(kicker="Tu es doué en mécanique ?", title="C'est ton\n*piège*."),
   S(title="Le raisonnement", body="« Je peux réparer moi-même, donc je peux acheter abîmé. » **Le temps passé n'est pas compté.**"),
-  S(title="Le calcul\noublié", comp=[TICKET(["Pièces", "300 €"], ["Ton temps : 3 week-ends", "?"], tot="300 € + 3 week-ends", totLab="Vrai coût")], relance="Image 4 : la bonne façon."),
+  S(title="Le calcul\noublié", comp=[TICKET(["Pièces", "300 €"], ["Ton temps : 3 week-ends", "?"], tot="300 € + ton temps", totLab="Vrai coût")], relance="Image 4 : la bonne façon."),
   S(title="La bonne\nfaçon", body="Répare **ce qui est rapide et chiffré**. Le reste, laisse-le aux autres."),
 ], "Ton temps\n*compte*."),
 
