@@ -154,11 +154,19 @@ export default async function Compte({
               />
             </div>
             <p className="mt-2 text-sm text-ink-3">
-              {compte.restantes
-                ? `Il vous reste ${compte.restantes} analyse${compte.restantes > 1 ? "s" : ""}.`
+              {compte.restantesFormule
+                ? `Il vous reste ${compte.restantesFormule} analyse${compte.restantesFormule > 1 ? "s" : ""} dans votre formule.`
                 : o.parMois
                   ? "Vos analyses reviennent le 1er du mois."
                   : "Votre analyse offerte a servi."}
+            </p>
+            <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+              <span>
+                Crédits à l&apos;unité : <b className="num">{compte.credits}</b>
+              </span>
+              <Link href="/app/credits" className="text-o2 underline underline-offset-4">
+                {compte.credits ? "Voir mes crédits" : "Acheter des crédits"}
+              </Link>
             </p>
           </div>
         )}
@@ -207,6 +215,7 @@ export default async function Compte({
           <CartesOffres
             ids={famille === "benef" ? BENEF : PARTICULIERS}
             actuelle={o.id}
+            credits={famille !== "benef"}
           />
           <p className="text-sm text-ink-3">
             {famille === "benef"

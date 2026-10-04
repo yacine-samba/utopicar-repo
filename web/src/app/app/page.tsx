@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { titreVehicule } from "@/lib/titre";
 import { compteBenef } from "@/lib/benef";
 import { debutPeriode, type Compte } from "@/lib/compte";
 import { familleEspace, nomFormule } from "@/lib/espace";
@@ -60,13 +61,19 @@ async function TableauParticulier({ c }: { c: Compte }) {
       <div className="grid gap-4 sm:grid-cols-3">
         <Tuile
           l={o.parMois ? "Analyses restantes ce mois" : "Analyse offerte"}
-          v={c.illimite ? "Illimité" : `${c.restantes} / ${o.analyses}`}
-          sous={c.restantes ? (o.parMois ? "Elles reviennent le 1er du mois." : "Sans carte bancaire.") : o.parMois ? "Elles reviennent le 1er du mois." : "Votre analyse offerte a servi."}
+          v={c.illimite ? "Illimité" : `${c.restantesFormule} / ${o.analyses}`}
+          sous={
+            c.credits
+              ? `Plus ${c.credits} crédit${c.credits > 1 ? "s" : ""} à l'unité.`
+              : c.restantes
+                ? o.parMois ? "Elles reviennent le 1er du mois." : "Sans carte bancaire."
+                : o.parMois ? "Elles reviennent le 1er du mois." : "Votre analyse offerte a servi."
+          }
           alerte={c.restantes === 0}
-          lien={o.id === "serenite" ? undefined : { href: "/app/compte#formule", l: o.prix ? "Plus d'analyses" : "Voir les formules" }}
+          lien={{ href: "/app/credits", l: c.restantes ? "Mes crédits" : "Acheter des crédits" }}
         />
         <Tuile l="Votre formule" v={nomFormule(c)} sous={o.prix ? `${prixTxt(o.prix)} par mois` : "Gratuite"} lien={{ href: "/app/compte#formule", l: "Gérer" }} />
-        <Tuile l="Les guides" v={c.guide ? "Accès complet" : "2 chapitres offerts"} sous={c.guide ? "Les quatre guides, imprimables." : `Accès complet : ${prixTxt(GUIDE.prix)}, ou inclus dans Sérénité.`} lien={{ href: "/app/guides", l: "Lire" }} />
+        <Tuile l="Les guides" v={c.guide ? "Accès complet" : "2 chapitres offerts"} sous={c.guide ? "Les quatre guides, imprimables." : `Accès complet à vie : ${prixTxt(GUIDE.prix)}.`} lien={{ href: "/app/guides", l: "Lire" }} />
       </div>
       {o.id === "gratuit" && (
         <section className="carte flex flex-wrap items-center justify-between gap-4 border-o/30 p-6">
@@ -160,9 +167,9 @@ async function TableauComplet({ c }: { c: Compte }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section aria-labelledby="tb-best" className="grid content-start gap-3">
-          <div className="flex items-baseline justify-between gap-2">
+          <div className="flex items-baseline justify-between gap-3">
             <h2 id="tb-best" className="font-display text-lg font-semibold">Meilleures affaires de la semaine</h2>
-            <Link href="/app/tri" className="text-sm text-o2 underline-offset-4 hover:underline">Tri rapide</Link>
+            <Link href="/app/tri" className="shrink-0 whitespace-nowrap text-sm text-o2 underline-offset-4 hover:underline">Tri rapide</Link>
           </div>
           {semaineGo?.length ? (
             <ul className="grid gap-2">
@@ -170,7 +177,7 @@ async function TableauComplet({ c }: { c: Compte }) {
                 <li key={r.id}>
                   <Link href={`/app/rapports/${r.id}`} className="carte flex items-center justify-between gap-3 p-3 transition hover:border-o/40">
                     <span className="min-w-0">
-                      <span className="block truncate font-medium">{r.titre}</span>
+                      <span className="block truncate font-medium">{titreVehicule(r.titre)}</span>
                       <span className="text-xs text-ink-3">{r.verdict} · prix {eur(r.prix)}{r.note != null ? ` · ${r.note}/100` : ""}</span>
                     </span>
                     <b className={`num shrink-0 ${(r.marge ?? 0) >= 0 ? "text-ok" : "text-bad"}`}>{r.marge != null ? `${r.marge >= 0 ? "+" : ""}${eur(r.marge)}` : "—"}</b>
@@ -248,7 +255,12 @@ async function TableauComplet({ c }: { c: Compte }) {
             <Link href="/app/alertes" className="text-sm text-o2 underline-offset-4 hover:underline">Gérer les alertes</Link>
           </div>
           <p className="text-sm text-ink-2">
-            {al.filter((a) => a.actif).length} alerte{al.filter((a) => a.actif).length > 1 ? "s" : ""} active{al.filter((a) => a.actif).length > 1 ? "s" : ""} sur {al.length} · {al.flatMap((a) => a.annonces).filter((x) => x.vu && Date.parse(x.vu) >= jour).length} nouvelle(s) annonce(s) ces 24 heures
+            {(() => {
+              const actives = al.filter((a) => a.actif).length;
+              const nouvelles = al.flatMap((a) => a.annonces).filter((x) => x.vu && Date.parse(x.vu) >= jour).length;
+              if (!al.length) return "Aucune alerte pour le moment : créez-en une pour recevoir les nouvelles annonces sous la cote.";
+              return `${actives} alerte${actives > 1 ? "s" : ""} active${actives > 1 ? "s" : ""} · ${nouvelles ? `${nouvelles} nouvelle${nouvelles > 1 ? "s" : ""} annonce${nouvelles > 1 ? "s" : ""}` : "aucune nouvelle annonce"} ces dernières 24 heures`;
+            })()}
           </p>
           {recentes.length > 0 && (
             <ul className="grid gap-2 sm:grid-cols-2">

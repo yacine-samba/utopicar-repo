@@ -57,7 +57,7 @@ async function depuisDataUrl(u: string, i: number) {
   return reduire(new File([b], `photo-${i + 1}.jpg`, { type: b.type || "image/jpeg" }));
 }
 
-const QUOTA_EPUISE = "Vous n'avez plus d'analyse disponible pour le moment. Elles reviennent le 1er du mois, ou passez à la formule supérieure pour continuer tout de suite.";
+const QUOTA_EPUISE = "Vous n'avez plus d'analyse disponible. Continuez tout de suite avec des crédits à l'unité, sans abonnement, ou passez à une formule.";
 
 const ERREURS_IMPORT: Record<string, string> = {
   lien: "Ce lien n'est pas celui d'une annonce Leboncoin. Pour La Centrale ou AutoScout24, copiez la page et collez-la ci-dessous.",
@@ -410,7 +410,7 @@ export function Saisie({
         </div>
       ) : (
         <p className="text-sm text-ink-3">
-          L&apos;analyse des photos est comprise dans les formules <Link href="/tarifs" className="text-o2 underline underline-offset-4">Essentiel et Sérénité</Link>.
+          L&apos;analyse des photos est comprise dans la formule <Link href="/tarifs" className="text-o2 underline underline-offset-4">Essentiel</Link> et dans les analyses payées par crédit.
         </p>
       )}
 
@@ -430,9 +430,14 @@ export function Saisie({
         <div role="alert" className="rounded-2xl border border-warn/40 bg-warn/10 p-4 text-sm">
           <p className="text-warn">{erreur.t}</p>
           {erreur.offres && (
-            <Link href={`/tarifs#${erreur.offres === "benef" ? "benef" : "particuliers"}`} className="btn btn-o btn-sm mt-3">
-              Voir les formules
-            </Link>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link href="/app/credits" className="btn btn-o btn-sm">
+                Acheter des crédits
+              </Link>
+              <Link href={`/tarifs#${erreur.offres === "benef" ? "benef" : "particuliers"}`} className="btn btn-sm">
+                Voir les formules
+              </Link>
+            </div>
           )}
         </div>
       )}

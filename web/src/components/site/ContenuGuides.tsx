@@ -22,7 +22,7 @@ export function ContenuGuides({ compte, choix, paiement, base }: { compte: Compt
           La méthode complète, <span className="it">chiffres réels</span>
         </h1>
         <p className="mt-4 text-lg text-ink-2">
-          {complet ? "Vous avez accès à tous les guides. Bonne lecture." : `Les deux premiers chapitres sont offerts. Accès à vie aux quatre guides pour ${GUIDE.prix}\u00a0€, ou inclus dans Sérénité et toutes les formules Benef.`}
+          {complet ? "Vous avez accès à tous les guides. Bonne lecture." : `Les deux premiers chapitres sont offerts. Accès à vie aux quatre guides pour ${GUIDE.prix}\u00a0€, ou inclus dans toutes les formules Benef.`}
         </p>
         {paiement === "ok" && !complet && (
           <p role="status" className="mx-auto mt-5 w-fit rounded-2xl border border-ok/40 bg-ok/10 px-4 py-2 text-ok">

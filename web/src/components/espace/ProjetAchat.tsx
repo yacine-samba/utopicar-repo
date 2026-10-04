@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { cx, inputCls } from "@/lib/cx";
 import { useReglages } from "@/components/ui";
+import { titreVehicule } from "@/lib/titre";
 import { NIVEAUX, type LigneAnalyse } from "./ListeAnalyses";
 
 /* Tableau de bord particulier : le projet d'achat, pas des chiffres.
@@ -83,7 +84,7 @@ export function ProjetAchat({ lignes }: { lignes: LigneAnalyse[] }) {
           <Link href={`/app/rapports/${piste.id}`} className="carte group grid gap-2 border-ok/30 p-5 transition hover:border-ok/60 sm:grid-cols-[1fr_auto] sm:items-center">
             <span>
               <span className="text-xs font-medium uppercase tracking-[0.12em] text-ok">Votre meilleure piste{budget ? " dans le budget" : ""}</span>
-              <span className="mt-1 block font-display text-xl font-semibold group-hover:text-o2">{piste.titre}</span>
+              <span className="mt-1 block font-display text-xl font-semibold group-hover:text-o2">{titreVehicule(piste.titre)}</span>
               <span className="text-sm text-ink-3">{NIVEAUX[piste.verdict ?? "inconnu"]?.l}{piste.note != null ? ` · état ${piste.note} sur 100` : ""}</span>
             </span>
             <span className="num font-display text-2xl font-semibold">{piste.prix != null ? `${piste.prix.toLocaleString("fr-FR")} €` : "—"}</span>
@@ -95,11 +96,11 @@ export function ProjetAchat({ lignes }: { lignes: LigneAnalyse[] }) {
               const n = NIVEAUX[r.verdict ?? ""] ?? NIVEAUX.inconnu;
               const depasse = budget && r.prix != null && r.prix > budget ? r.prix - budget : 0;
               return (
-                <li key={r.id}>
+                <li key={r.id} className="min-w-0">
                   <Link href={`/app/rapports/${r.id}`} className="carte flex items-center gap-3 p-3 transition hover:border-o/40 sm:gap-4 sm:p-4">
                     <span className="num grid size-8 shrink-0 place-items-center rounded-full bg-glass text-sm text-ink-3">{i + 1}</span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate font-medium">{r.titre}</span>
+                      <span className="block truncate font-medium">{titreVehicule(r.titre)}</span>
                       <span className="flex flex-wrap gap-x-2 text-xs text-ink-3">
                         <span className={cx("rounded-full border px-2 py-px font-medium", n.ton)}>{n.l}</span>
                         {depasse ? <span className="text-warn">{depasse.toLocaleString("fr-FR")} € au-dessus du budget</span> : budget && r.prix != null ? <span className="text-ok">dans le budget</span> : null}

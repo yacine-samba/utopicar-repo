@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Instrument_Serif } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Apparitions } from "@/components/site/Apparitions";
+import { Typographie } from "@/components/site/Typographie";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </a>
         {children}
         <Apparitions />
+        <Typographie />
         <SpeedInsights />
       </body>
     </html>

@@ -1,11 +1,12 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
-import { GUIDE, OFFRES, STATUTS_ACTIFS, type OffreId } from "@/lib/offres";
+import { GUIDE, OFFRES, pack, PACKS, STATUTS_ACTIFS, type OffreId } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
 import { supabaseService } from "@/lib/supabase/service";
 import { paiementsActifs, prixParCle, stripe, urlSite } from "@/lib/stripe";
 
-const Corps = z.object({ produit: z.enum(["essentiel", "serenite", "starter", "croissance", "pro", "guide"]) });
+// Sérénité n'est plus proposée : elle ne peut plus être souscrite.
+const Corps = z.object({ produit: z.enum(["essentiel", "starter", "croissance", "pro", "guide", ...PACKS.map((p) => p.id)] as [string, ...string[]]) });
 
 /** Identifiant client Stripe de la personne, créé au premier paiement. */
 async function clientStripe(id: string, email: string, prenom: string) {
@@ -39,6 +40,25 @@ export async function POST(req: Request) {
       success_url: `${site}/app/guides?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${site}/app/guides?paiement=annule`,
       custom_text: { submit: { message: "Accès immédiat aux guides après le paiement : vous demandez l'exécution immédiate et renoncez au délai de rétractation pour ce contenu numérique." } },
+    });
+    return Response.json({ url: s.url });
+  }
+
+  // Crédits à l'unité : paiement unique, crédités par le webhook (ou au retour sur le site).
+  const p = pack(r.data.produit);
+  if (p) {
+    const prix = await prixParCle(p.lookup, { nom: `Utopicar ${p.nom}`, euros: p.prix, mensuel: false });
+    const s = await stripe().checkout.sessions.create({
+      mode: "payment",
+      customer,
+      client_reference_id: compte.id,
+      line_items: [{ price: prix.id, quantity: 1 }],
+      metadata: { user_id: compte.id, produit: "credits", pack: p.id, credits: String(p.credits) },
+      allow_promotion_codes: true,
+      locale: "fr",
+      success_url: `${site}/app/credits?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${site}/app/credits?paiement=annule`,
+      custom_text: { submit: { message: "Crédits ajoutés tout de suite, valables 12 mois. Vous demandez l'exécution immédiate et renoncez au délai de rétractation pour les analyses utilisées." } },
     });
     return Response.json({ url: s.url });
   }

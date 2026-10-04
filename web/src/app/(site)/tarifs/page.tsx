@@ -36,8 +36,8 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
 
       <section id="particuliers" aria-labelledby="t-part" className="scroll-mt-24 pt-14">
         <h2 id="t-part" className="font-display text-2xl font-semibold">Vous achetez une voiture pour vous</h2>
-        <p className="mb-8 mt-1 text-ink-3">Simple et pédagogique : ce que vaut l&apos;annonce, ce qu&apos;elle va vous coûter, ce qu&apos;il faut vérifier.</p>
-        <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} />
+        <p className="mb-8 mt-1 text-ink-3">Simple et pédagogique : ce que vaut l&apos;annonce, ce qu&apos;elle va vous coûter, ce qu&apos;il faut vérifier. Un abonnement ou des crédits, au choix.</p>
+        <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} credits />
       </section>
 
       <section id="benef" aria-labelledby="t-benef" className="scroll-mt-24 pt-20">
@@ -55,7 +55,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           <div>
             <h2 id="t-guide" className="font-display text-2xl font-semibold">{GUIDE.nom}</h2>
             <p className="mt-2 text-ink-2">
-              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Accès à vie pour {GUIDE.prix}&nbsp;€, ou inclus dans Sérénité et toutes les formules Benef.
+              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Accès à vie pour {GUIDE.prix}&nbsp;€, ou inclus dans toutes les formules Benef.
             </p>
           </div>
           <div className="grid gap-2 md:w-60">
@@ -79,7 +79,8 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           questions={[
             { q: "Puis-je résilier quand je veux ?", r: <p>Oui, depuis votre compte, en deux clics. L&apos;accès reste ouvert jusqu&apos;à la fin du mois déjà payé, puis rien n&apos;est plus prélevé.</p> },
             { q: "Comment changer de formule ?", r: <p>Depuis votre compte, « Gérer mon abonnement ». Le changement est immédiat et le prix est ajusté au prorata.</p> },
-            { q: "Que se passe-t-il quand j'ai utilisé mes analyses du mois ?", r: <p>Elles reviennent le 1er du mois suivant. Vous pouvez aussi passer à la formule supérieure à tout moment.</p> },
+            { q: "Que se passe-t-il quand j'ai utilisé mes analyses du mois ?", r: <p>Elles reviennent le 1er du mois suivant. En attendant, vous pouvez continuer avec des crédits à l&apos;unité, ou passer à la formule supérieure à tout moment.</p> },
+            { q: "Comment marchent les crédits ?", r: <p>Un crédit vaut une analyse détaillée avec 3 photos. Vous les payez une fois, sans abonnement, et ils restent valables 12 mois après votre dernier achat. Ils ne servent que lorsque les analyses de votre formule sont épuisées.</p> },
             { q: "Le paiement est-il sécurisé ?", r: <p>Le paiement est géré par Stripe. Utopicar ne voit ni ne conserve jamais vos coordonnées bancaires.</p> },
             { q: "Ai-je droit à un remboursement ?", r: <p>Les analyses étant fournies immédiatement, le délai de rétractation ne s&apos;applique pas une fois le service utilisé, comme l&apos;indiquent les <Link href="/legal#vente" className="text-o2 underline underline-offset-4">conditions de vente</Link>. En cas de problème, écrivez-nous : nous trouvons toujours une solution.</p> },
           ]}

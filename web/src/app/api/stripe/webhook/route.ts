@@ -1,6 +1,6 @@
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
-import { enregistrerGuide, synchroniser } from "@/lib/stripe-synchro";
+import { enregistrerCredits, enregistrerGuide, synchroniser } from "@/lib/stripe-synchro";
 
 export async function POST(req: Request) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -17,12 +17,18 @@ export async function POST(req: Request) {
       case "checkout.session.completed": {
         const s = ev.data.object;
         await enregistrerGuide(s);
+        await enregistrerCredits(s);
         if (s.mode === "subscription" && s.subscription) {
           const id = typeof s.subscription === "string" ? s.subscription : s.subscription.id;
           await synchroniser(await stripe().subscriptions.retrieve(id));
         }
         break;
       }
+      // Paiement par moyen différé (virement…) : crédité quand il aboutit.
+      case "checkout.session.async_payment_succeeded":
+        await enregistrerGuide(ev.data.object);
+        await enregistrerCredits(ev.data.object);
+        break;
       case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted":

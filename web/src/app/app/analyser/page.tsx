@@ -51,7 +51,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
           </p>
           <p className="text-sm text-ink-3">
             {c.restantes > 0 ? `${texteRestantes(c)}.` : "Plus d'analyse disponible pour le moment."}{" "}
-            {o.prix === 0 && <Link href="/app/compte#formule" className="text-o2 underline underline-offset-4">Voir les formules</Link>}
+            {c.restantes === 0 ? (
+              <Link href="/app/credits" className="text-o2 underline underline-offset-4">Acheter des crédits</Link>
+            ) : (
+              o.prix === 0 && <Link href="/app/compte#formule" className="text-o2 underline underline-offset-4">Voir les formules</Link>
+            )}
           </p>
         </div>
       }

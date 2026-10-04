@@ -44,11 +44,11 @@ type Reco = { titre: string; texte: string; offre: OffreId | null; conseils: str
 function recommander(r: Record<string, string>): Reco {
   if (r.but === "achat") {
     const novice = r.connaissance === "peu" || r.budget === "20" || r.budget === "plus";
-    const o: OffreId = r.ou === "compare" ? (novice ? "serenite" : "essentiel") : novice ? "serenite" : "gratuit";
+    const o: OffreId = r.ou === "compare" || novice ? "essentiel" : "gratuit";
     const conseils = [
       r.ou === "debut" ? "Collez la première annonce qui vous plaît : vous verrez tout de suite ce qu'il faut regarder." : "Collez l'annonce : verdict, coût réel et points à vérifier en quelques secondes.",
       r.connaissance === "peu" ? "Pas besoin de connaître la mécanique : tout est expliqué simplement, sans jargon." : "Vous verrez aussi la fiabilité du moteur et le prix du marché.",
-      novice ? "Sérénité vous dit quoi contrôler sur place, comment négocier et s'il vaut mieux venir accompagné." : "Votre première analyse est offerte, sans carte bancaire.",
+      novice ? "Essentiel vous donne le prix à proposer et les questions à poser au vendeur, photos comprises." : "Votre première analyse est offerte, sans carte bancaire. Ensuite, des crédits à l'unité ou Essentiel.",
     ];
     return {
       titre: o === "gratuit" ? "Commencez par l'analyse offerte" : `La formule ${OFFRES[o].nom} vous correspond`,

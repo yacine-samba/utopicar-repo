@@ -30,7 +30,7 @@ export function Reglages({ reg, setReg }: { reg: ParamsPro; setReg: (p: Partial<
   return (
     <details className="rounded-3xl border border-line bg-panel p-5 sm:p-6">
       <summary className="cursor-pointer font-display text-lg font-semibold">
-        Réglages du calcul <span className="ml-2 font-body text-sm font-normal text-ink-3">seuil de marge, carte grise, trajet, frais fixes</span>
+        Réglages du calcul <span className="mt-0.5 block font-body text-sm font-normal text-ink-3 sm:ml-2 sm:mt-0 sm:inline">seuil de marge, carte grise, trajet, frais fixes</span>
       </summary>
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {f("margeMin", "Marge nette minimum (€)", "En dessous, le deal est refusé.")}
