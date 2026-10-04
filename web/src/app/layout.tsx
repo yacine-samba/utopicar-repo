@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Instrument_Serif } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import { Apparitions } from "@/components/site/Apparitions";
 import { Typographie } from "@/components/site/Typographie";
 import "./globals.css";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Apparitions />
         <Typographie />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
