@@ -3,7 +3,7 @@
    Illimité et Pro voient tout ; les formules plus basses voient une version réduite (sections sous cadenas). */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Analyse, ParamsPro } from "@/lib/analyse/couts";
 import { eur } from "@/lib/analyse/couts";
 import { calculDeal, postesDepart, type Poste } from "@/lib/analyse/deal";
@@ -16,6 +16,7 @@ import { cx, inputCls } from "@/lib/cx";
 import { Copier } from "../ui";
 import { AjouterParc } from "./AjouterParc";
 import { AnalysePhotos } from "@/components/analyse/AnalysePhotos";
+import { BoutonSections, SommaireRapport, useSectionActive, type EntreeSommaire } from "./SommaireRapport";
 
 const e = (v: number | null | undefined) => (v == null || !isFinite(v) ? "—" : eur(v));
 const km = (v: number | null | undefined) => (v == null ? null : `${Math.round(v).toLocaleString("fr-FR")} km`);
@@ -178,6 +179,38 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
   ];
   const scores: [string, keyof NonNullable<Rapport["scores"]>][] = [["Facilité de revente", "revente"], ["Marge potentielle", "marge"], ["Risque mécanique (10 = faible)", "risqueMecanique"], ["Risque administratif (10 = faible)", "risqueAdministratif"], ["Compatibilité 0 €", "compat0"], ["Adapté à un débutant", "debutant"]];
 
+  // chiffre clé de chaque section, affiché dans le sommaire
+  const nbAlertes = (r.alertes ?? []).length + a.faits.defauts.filter((d) => d.cat === "piege").length;
+  const nbDefauts = a.faits.defauts.length + (r.etatPhotos?.defauts ?? []).filter((d) => d?.libelle).length;
+  const nbRisques = Object.values(r.risquesCaches ?? {}).reduce((s, x) => s + (Array.isArray(x) ? x.length : 0), 0);
+  const fiab = r.fiabilite?.note;
+  const resumes: Record<Section, Pick<EntreeSommaire, "resume" | "ton">> = {
+    annonce: { resume: (r.annonceDecortiquee ?? []).length ? `${(r.annonceDecortiquee ?? []).length} points lus` : "Points lus" },
+    alertes: { resume: nbAlertes ? `${nbAlertes} alerte${nbAlertes > 1 ? "s" : ""}` : "Aucune alerte", ton: nbAlertes ? "warn" : "ok" },
+    etat: { resume: r.etatPhotos?.score != null ? `Note ${r.etatPhotos.score} / 100` : nbDefauts ? `${nbDefauts} défaut${nbDefauts > 1 ? "s" : ""}` : "Aucun défaut" },
+    nego: { resume: D.offre != null && D.plafond != null && D.plafond > 0 ? `Offre ${e(D.offre)}` : "Messages prêts" },
+    prix: { resume: m.realiste ? `Cote ${e(m.realiste)}` : "Cote du marché" },
+    km: { resume: (r.kmReleves ?? []).length > 1 ? `${(r.kmReleves ?? []).length} relevés` : "Un seul relevé", ton: (r.kmReleves ?? []).length > 1 ? null : "warn" },
+    controles: { resume: `${compte("ok")} OK sur 13`, ton: compte("probleme") ? "bad" : compte("attention") ? "warn" : "ok" },
+    papiers: { resume: r.histovec?.fourni ? "HistoVec lu" : "À demander", ton: r.histovec?.fourni ? "ok" : "warn" },
+    moteur: { resume: fiab != null ? `Fiable ${fiab} / 10` : "Points faibles", ton: a.fiab.k === "eviter" ? "bad" : fiab != null ? (fiab >= 7 ? "ok" : fiab >= 5 ? "warn" : "bad") : null },
+    photos: { resume: (a.vignettes ?? []).length ? `${(a.vignettes ?? []).length} photos lues` : a.ia?.photos.fournies ? "Photos lues" : "Aucune photo" },
+    travaux: { resume: remise ? e(remise) : "Aucun poste" },
+    deal: { resume: r.structure?.choix ? r.structure.choix[0].toUpperCase() + r.structure.choix.slice(1) : "Structure conseillée" },
+    risques: { resume: nbRisques ? `${nbRisques} point${nbRisques > 1 ? "s" : ""}` : "Aucun relevé" },
+    decision: { resume: r.decision?.action ? r.decision.action[0].toUpperCase() + r.decision.action.slice(1) : D.verdict, ton: r.decision?.action === "abandonne" ? "bad" : r.decision?.action === "attends" ? "warn" : r.decision?.action ? "ok" : null },
+  };
+  const sommaire: EntreeSommaire[] = SECTIONS.map(([k, l]) => ({ id: k, label: l, ...resumes[k], verrou: ok.has(k) ? null : `Benef ${OFFRES[ouvertePar(k)].nom}` }));
+  const actif = useSectionActive(SECTIONS.map(([k]) => k));
+  // le bouton « Sections » n'apparaît qu'une fois la grille du sommaire passée
+  const grille = useRef<HTMLElement>(null);
+  const [apresGrille, setApresGrille] = useState(false);
+  useEffect(() => {
+    const f = () => setApresGrille((grille.current?.getBoundingClientRect().bottom ?? 1) < 0);
+    addEventListener("scroll", f, { passive: true });
+    return () => removeEventListener("scroll", f);
+  }, []);
+
   async function supprimer() {
     if (!id) return;
     if (supp === 0) return setSupp(1);
@@ -189,7 +222,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+    <div className="grid gap-6 pb-20 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:pb-0">
       <div className="grid min-w-0 gap-5">
         {/* En-tête */}
         <header className="carte grid gap-4 p-5 sm:p-6">
@@ -229,14 +262,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </header>
 
-        <nav aria-label="Sections du rapport" className="sticky top-16 z-30 -mx-1 flex gap-1 overflow-x-auto rounded-2xl border border-line bg-bg0/90 p-1 backdrop-blur lg:top-2">
-          {SECTIONS.map(([k, l]) => (
-            <a key={k} href={`#r-${k}`} className={cx("shrink-0 rounded-full px-3 py-1.5 text-sm hover:bg-glass", ok.has(k) ? "text-ink-2 hover:text-ink" : "text-ink-3")}>
-              {l}
-              {!ok.has(k) && <span aria-label=" (formule supérieure)"> 🔒</span>}
-            </a>
-          ))}
-        </nav>
+        <SommaireRapport entrees={sommaire} actif={actif} ancre={grille} />
 
         <Bloc id="annonce" titre="Ce que dit l'annonce">
           {!(r.annonceDecortiquee ?? []).length && <p className="text-sm text-ink-3">Détail sujet par sujet (prouvé, annoncé, non mentionné) disponible quand l&apos;analyse IA répond. Les points lus par l&apos;outil sont dans Alertes et État.</p>}
@@ -578,7 +604,10 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
       </div>
 
       {/* Calcul final */}
-      <aside className="carte grid gap-4 p-5 lg:sticky lg:top-6" aria-label="Calcul du deal">
+      <BoutonSections entrees={sommaire} actif={actif} visible={apresGrille} flottant className="lg:hidden" />
+      <aside className="grid gap-3 lg:sticky lg:top-6">
+      <BoutonSections entrees={sommaire} actif={actif} visible className="hidden w-full lg:flex" />
+      <div className="carte grid gap-4 p-5" aria-label="Calcul du deal" role="region">
         <div>
           <p className="font-display font-semibold">{titre}</p>
           {version && <p className="text-sm text-ink-3">{version}</p>}
@@ -617,6 +646,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
             </a>
           )}
         </div>
+      </div>
       </aside>
     </div>
   );
