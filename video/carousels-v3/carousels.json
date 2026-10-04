@@ -1,0 +1,4019 @@
+{
+ "carousels": [
+  {
+   "id": "A001",
+   "slug": "prix-affiche-pas-le-prix",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Tu achètes une occasion ?",
+     "title": "Le prix affiché\nn'est *pas*\nce que tu paies."
+    },
+    {
+     "title": "Une voiture\nà 6 000 €",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Prix de l'annonce",
+         "6 000 €"
+        ],
+        [
+         "Carte grise",
+         "300 €"
+        ],
+        [
+         "Trajet aller-retour",
+         "60 €"
+        ]
+       ],
+       "tot": "6 360 €",
+       "totLab": "Déjà",
+       "tone": "",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Et l'annonce\ndisait…",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Bon état général, ==pneus à prévoir==, ==distribution à faire==, vidange récente.",
+       "lab": "L'annonce"
+      }
+     ],
+     "relance": "Image 4 : le vrai total."
+    },
+    {
+     "title": "Le vrai total",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Déjà",
+         "6 360 €"
+        ],
+        [
+         "2 pneus",
+         "220 €"
+        ],
+        [
+         "Distribution",
+         "600 €"
+        ],
+        [
+         "Vidange + filtres",
+         "120 €"
+        ]
+       ],
+       "tot": "7 300 €",
+       "totLab": "Ce qu'elle coûte",
+       "tone": "r",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Le *vrai* prix,\navant de signer."
+    }
+   ]
+  },
+  {
+   "id": "A002",
+   "slug": "5-phrases-qui-coutent",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Lu dans une annonce :",
+     "title": "« Embrayage\nun peu dur ».\nTraduction : *800 €*."
+    },
+    {
+     "title": "Les 4 autres",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "« Pneus à prévoir »",
+         "140 à 260 € les deux"
+        ],
+        [
+         "« Petit voyant, rien de grave »",
+         "panne pas diagnostiquée : prix inconnu"
+        ],
+        [
+         "« Clim à recharger »",
+         "70 à 450 €"
+        ]
+       ],
+       "start": 2
+      }
+     ]
+    },
+    {
+     "title": "La 5e",
+     "body": "« **Distribution à prévoir** » : 400 à 750 €. Et si elle casse avant, c'est le moteur.",
+     "relance": "Image 4 : ce que tu fais de tout ça."
+    },
+    {
+     "title": "Ce que\ntu en fais",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "À négocier",
+       "tone": "warn",
+       "sub": "Chaque phrase chiffrée sort du prix. Ou tu laisses.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Lis l'annonce\n*en euros*."
+    }
+   ]
+  },
+  {
+   "id": "A003",
+   "slug": "acompte-pour-bloquer",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "« Envoyez 200 € et je la garde. »",
+     "title": "Cet acompte,\ntu ne le\n*reverras* pas."
+    },
+    {
+     "title": "Le scénario",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Beaucoup de demandes. Envoyez 200 € et je vous la garde jusqu'à samedi."
+        ],
+        [
+         "m",
+         "Je peux venir la voir avant ?"
+        ],
+        [
+         "v",
+         "Pas possible, je suis en déplacement."
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Les 3 signaux",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Il ne peut pas te montrer la voiture",
+        "Il te presse : « beaucoup de demandes »",
+        "Il veut de l'argent avant les papiers"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : la seule règle."
+    },
+    {
+     "title": "La règle",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "À fuir",
+       "tone": "bad",
+       "sub": "**Zéro euro** avant d'avoir vu la voiture et les papiers.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Achète\n*l'esprit* tranquille."
+    }
+   ]
+  },
+  {
+   "id": "A004",
+   "slug": "rib-prix-ridicule",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Ça m'est arrivé.",
+     "title": "Un prix\nridicule. Un *RIB*.\nPas de visite."
+    },
+    {
+     "title": "Le prix",
+     "comp": [
+      {
+       "k": "cote",
+       "cote": 6950,
+       "prix": 3900,
+       "min": 3000,
+       "max": 9000,
+       "coteTxt": "6 950 €",
+       "prixTxt": "3 900 €",
+       "minTxt": "3 000 €",
+       "maxTxt": "9 000 €",
+       "lab": "Le prix face au marché"
+      }
+     ],
+     "body": "Presque **3 000 €** sous la cote."
+    },
+    {
+     "title": "Les signes",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Prix très sous le marché",
+        "Vendeur « à l'étranger », livraison proposée",
+        "Paiement avant la visite"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : comment payer sans risque."
+    },
+    {
+     "title": "Payer\nsans risque",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Virement instantané, ensemble",
+         "Oui",
+         "ok"
+        ],
+        [
+         "Chèque de banque vérifié",
+         "Oui",
+         "ok"
+        ],
+        [
+         "Acompte avant la visite",
+         "Non",
+         "bad"
+        ],
+        [
+         "Mandat cash, coupon, crypto",
+         "Non",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Repère l'arnaque\n*avant* de payer."
+    }
+   ]
+  },
+  {
+   "id": "A005",
+   "slug": "2000-moins-cher",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Cette Golf est 2 000 € moins chère.",
+     "title": "Un prix bas\na toujours\nune *raison*."
+    },
+    {
+     "title": "Les 3 raisons",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Une arnaque",
+         "la voiture n'existe pas"
+        ],
+        [
+         "Un défaut grave",
+         "joint de culasse, boîte, moteur"
+        ],
+        [
+         "Un vendeur pressé",
+         "rare, mais ça arrive"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Ce que dit\nl'annonce",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Golf 1.6 TDI, ==bruit au démarrage==, ==voyant moteur allumé==, vendue en l'état.",
+       "lab": "L'annonce"
+      }
+     ],
+     "relance": "Image 4 : le verdict."
+    },
+    {
+     "title": "Le verdict",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Faire inspecter",
+       "tone": "bad",
+       "sub": "Un bruit et un voyant non diagnostiqués : un garagiste avant de payer.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Trouve la\n*raison* d'abord."
+    }
+   ]
+  },
+  {
+   "id": "A006",
+   "slug": "5-moteurs-a-fuir",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Enregistre avant d'acheter.",
+     "title": "5 moteurs\nque les vendeurs\nne *nomment* pas."
+    },
+    {
+     "title": "1. Le 1.2 PureTech",
+     "body": "Peugeot, Citroën, DS, Opel. Sa courroie **baigne dans l'huile**. Et il consomme de l'huile.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "1.2 PureTech",
+         "bad"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "2, 3 et 4",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "1.6 THP / VTi",
+         "chaîne de distribution"
+        ],
+        [
+         "1.0 EcoBoost",
+         "refroidissement, surchauffe"
+        ],
+        [
+         "1.2 TCe 115 / 120",
+         "huile, casse moteur"
+        ]
+       ],
+       "start": 2
+      }
+     ],
+     "relance": "Image 4 : le piège des boîtes."
+    },
+    {
+     "title": "5. Les boîtes\nrobotisées",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "EDC",
+         "bad"
+        ],
+        [
+         "DSG",
+         "bad"
+        ],
+        [
+         "Powershift",
+         "bad"
+        ],
+        [
+         "ETG",
+         "bad"
+        ],
+        [
+         "Quickshift",
+         "bad"
+        ],
+        [
+         "AL4",
+         "bad"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Vérifie le moteur\n*avant* le prix."
+    }
+   ]
+  },
+  {
+   "id": "A007",
+   "slug": "citadines-qui-durent",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Petit budget ?",
+     "title": "Ces citadines\ndépassent les\n*190 000 km*."
+    },
+    {
+     "title": "Les japonaises",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Toyota Yaris",
+         "1.0 / 1.33 VVT-i",
+         "ok"
+        ],
+        [
+         "Honda Jazz",
+         "1.2 / 1.4 i-VTEC",
+         "ok"
+        ],
+        [
+         "Suzuki Swift",
+         "1.2 / 1.3",
+         "ok"
+        ],
+        [
+         "Mazda 2",
+         "1.3 / 1.5",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Le trio\njumeau",
+     "body": "**Aygo, C1, 107** : le même moteur Toyota 1.0. Petit prix, très demandé en ville.",
+     "relance": "Image 4 : ce qu'il faut vérifier quand même."
+    },
+    {
+     "title": "Quand même",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "La rouille des passages de roue",
+        "L'embrayage",
+        "Le carnet d'entretien"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Le bon modèle,\n*le bon* moteur."
+    }
+   ]
+  },
+  {
+   "id": "A008",
+   "slug": "capot-chaud",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "En arrivant chez le vendeur,",
+     "title": "Le capot\nest chaud ?\n*Méfie-toi*."
+    },
+    {
+     "title": "Ce que\nça cache",
+     "body": "Il l'a fait tourner avant ton arrivée. **Un démarrage difficile, peut-être.** Demande à revenir moteur froid."
+    },
+    {
+     "title": "Moteur froid,\nregarde ça",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Pas de claquement au démarrage",
+        "Pas de fumée bleue : huile",
+        "Pas de fumée blanche épaisse qui reste"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : le test des voyants."
+    },
+    {
+     "title": "Les voyants",
+     "body": "Au contact, **tous** s'allument puis s'éteignent. Un voyant qui ne s'allume jamais a peut-être été débranché."
+    },
+    {
+     "title": "15 minutes\nqui t'*évitent* le pire."
+    }
+   ]
+  },
+  {
+   "id": "A009",
+   "slug": "6-papiers-sinon-repars",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Le jour de l'achat :",
+     "title": "6 papiers.\nSinon,\ntu *repars*."
+    },
+    {
+     "title": "Les trois\npremiers",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Carte grise barrée",
+         "« Vendu le … à … h » + signature"
+        ],
+        [
+         "Certificat de cession",
+         "cerfa 15776, 2 exemplaires"
+        ],
+        [
+         "Code de cession",
+         "déclaré par le vendeur sur le site de l'ANTS"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Les trois\nautres",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Non-gage de moins de 15 jours",
+         "pas de gage, pas d'opposition"
+        ],
+        [
+         "Contrôle technique",
+         "moins de 6 mois si plus de 4 ans"
+        ],
+        [
+         "Nom de la carte grise",
+         "= pièce d'identité du vendeur"
+        ]
+       ],
+       "start": 4
+      }
+     ],
+     "relance": "Image 4 : le piège du numéro de série."
+    },
+    {
+     "title": "Le numéro\nde série",
+     "body": "Le VIN de la carte grise = celui gravé sur la voiture : **pare-brise et montant de porte**."
+    },
+    {
+     "title": "Les papiers\n*d'abord*."
+    }
+   ]
+  },
+  {
+   "id": "A010",
+   "slug": "ct-a-faire",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "« Contrôle technique à faire. »",
+     "title": "Tu crois que\nc'est un *détail*."
+    },
+    {
+     "title": "La règle",
+     "body": "Voiture de plus de 4 ans : le vendeur te remet un contrôle technique de **moins de 6 mois**.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "CT de moins de 6 mois",
+         "OK",
+         "ok"
+        ],
+        [
+         "CT « à faire »",
+         "À demander",
+         "warn"
+        ],
+        [
+         "CT avec contre-visite",
+         "À chiffrer",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Pourquoi il\nne l'a pas fait",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Il sait que la voiture ne passera pas",
+        "Il veut te laisser les réparations",
+        "Il n'a pas eu le temps (rare)"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : ta réponse."
+    },
+    {
+     "title": "Ta réponse",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Je viens dès que le contrôle technique est fait. Vous me l'envoyez ?"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Pas de CT,\npas de *visite*."
+    }
+   ]
+  },
+  {
+   "id": "A011",
+   "slug": "3-questions-avant-de-bouger",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Avant de faire 100 km,",
+     "title": "3 questions\nau vendeur.\nPas une de *plus*."
+    },
+    {
+     "title": "1. Le CT",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Le CT date de quand ?"
+        ],
+        [
+         "v",
+         "Mars dernier."
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ],
+     "body": "Moins de 6 mois, sinon il doit le refaire."
+    },
+    {
+     "title": "2. Les défauts",
+     "body": "« Qu'est-ce qui ne va pas ? » Une voiture sans aucun défaut, ça n'existe pas.",
+     "relance": "Image 4 : la question qui trie."
+    },
+    {
+     "title": "3. Le carnet",
+     "body": "« Vous avez les factures ? » Pas de factures : la distribution est peut-être à faire.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Carnet + factures",
+         "OK",
+         "ok"
+        ],
+        [
+         "« Je les cherche »",
+         "Méfiance",
+         "warn"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Les bonnes questions,\n*avant* le trajet."
+    }
+   ]
+  },
+  {
+   "id": "A012",
+   "slug": "histovec-refuse",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Il refuse de t'envoyer le HistoVec ?",
+     "title": "Il te *cache*\nquelque chose."
+    },
+    {
+     "title": "Ce qu'il\nmontre",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Le nombre de propriétaires",
+        "Les sinistres déclarés",
+        "Les kilométrages relevés au CT",
+        "Gage ou opposition"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Comment\nl'avoir",
+     "body": "Le vendeur le génère sur le site officiel avec sa carte grise, puis **te l'envoie**. Gratuit, 2 minutes.",
+     "relance": "Image 4 : s'il refuse."
+    },
+    {
+     "title": "S'il refuse",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Passe ton tour",
+       "tone": "bad",
+       "sub": "Un vendeur honnête l'envoie en 2 minutes.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "L'historique,\n*avant* la visite."
+    }
+   ]
+  },
+  {
+   "id": "A013",
+   "slug": "offre-avant-essai",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Erreur des acheteurs pressés :",
+     "title": "faire une offre\n*avant* l'essai."
+    },
+    {
+     "title": "L'ordre",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Tu lis les papiers",
+        "Tu fais l'essai",
+        "Tu chiffres ce que tu as vu",
+        "Tu proposes"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Ce que\ntu chiffres",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Plaquettes + disques avant",
+         "150 – 300 €"
+        ],
+        [
+         "2 pneus",
+         "140 – 260 €"
+        ],
+        [
+         "Batterie",
+         "100 – 200 €"
+        ]
+       ],
+       "tot": "390 – 760 €",
+       "totLab": "À déduire",
+       "tone": "",
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : comment le dire."
+    },
+    {
+     "title": "Comment\nle dire",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Elle me plaît. Il y a les pneus et les freins à faire, environ 500 €. Je vous propose 6 500 € ?"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Négocie avec\ndes *chiffres*."
+    }
+   ]
+  },
+  {
+   "id": "A014",
+   "slug": "moins-7-pour-cent",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Tu ne sais pas combien proposer ?",
+     "title": "Pars à\n*− 7 %*.\nVoilà pourquoi."
+    },
+    {
+     "title": "Le calcul",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Prix du marché",
+         "7 000 €"
+        ],
+        [
+         "− 7 %",
+         "− 490 €"
+        ]
+       ],
+       "tot": "6 510 €",
+       "totLab": "Offre de départ",
+       "tone": "",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Le prix\ndu marché",
+     "body": "La moitié des annonces comparables : même modèle, **± 2 ans**, même énergie, kilométrage proche.",
+     "relance": "Image 4 : et s'il dit non ?"
+    },
+    {
+     "title": "S'il dit non",
+     "body": "Tu montres les défauts chiffrés et les annonces comparables. **Tu ne montes que pour une raison.**"
+    },
+    {
+     "title": "Ton offre,\n*chiffrée*."
+    }
+   ]
+  },
+  {
+   "id": "A015",
+   "slug": "seul-a-deux-pro",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Visite d'une occasion :",
+     "title": "Seul, à deux\nou avec un *pro* ?"
+    },
+    {
+     "title": "Seul",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Vas-y seul",
+       "tone": "ok",
+       "sub": "Rien de grave dans l'annonce, CT propre, carnet suivi.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "À deux",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Viens à deux",
+       "tone": "warn",
+       "sub": "Plusieurs petits points à vérifier sur place.",
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : quand payer un garagiste."
+    },
+    {
+     "title": "Avec un pro",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Fais inspecter",
+       "tone": "bad",
+       "sub": "Bruit, voyant, fumée ou moteur à éviter : 100 € d'inspection contre 3 000 € de moteur.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "La bonne visite,\n*la bonne* décision."
+    }
+   ]
+  },
+  {
+   "id": "A016",
+   "slug": "compteur-qui-descend",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Le kilométrage de l'annonce",
+     "title": "peut *baisser*.\nPas le vrai."
+    },
+    {
+     "title": "Les relevés",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "CT 2020",
+         "121 000 km",
+         "ok"
+        ],
+        [
+         "CT 2022",
+         "152 000 km",
+         "ok"
+        ],
+        [
+         "Annonce 2026",
+         "[r]98 000 km[/r]",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Où les lire",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Le rapport HistoVec",
+        "Les anciens PV de contrôle technique",
+        "Les factures d'entretien"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : la phrase qui doit t'alerter."
+    },
+    {
+     "title": "Dans l'annonce",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Golf 1.6 TDI, ==kilométrage non garanti==, prix à débattre.",
+       "lab": "L'annonce"
+      }
+     ],
+     "body": "Le vendeur ne sait pas. **Ou il sait.**"
+    },
+    {
+     "title": "Les kilomètres\n*ne mentent* pas."
+    }
+   ]
+  },
+  {
+   "id": "A017",
+   "slug": "portiere-autre-couleur",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Regarde la voiture de biais.",
+     "title": "Une portière\nd'une autre\n*couleur* ?"
+    },
+    {
+     "title": "Ce que\nça veut dire",
+     "body": "La pièce a été **repeinte** ou changée. Souvent après un choc."
+    },
+    {
+     "title": "Les 3 indices",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Écarts entre éléments irréguliers",
+        "Teinte différente au soleil",
+        "Trace de peinture sur les joints"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : ta question au vendeur."
+    },
+    {
+     "title": "Ta question",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "La voiture a eu un accident ou une réparation de carrosserie ?"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ],
+     "body": "Puis tu compares avec le **HistoVec**."
+    },
+    {
+     "title": "La carrosserie\n*raconte* tout."
+    }
+   ]
+  },
+  {
+   "id": "A018",
+   "slug": "pneus-parlent",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Avant le moteur,",
+     "title": "lis les *pneus*.\nIls disent ce que\nle vendeur tait."
+    },
+    {
+     "title": "La date",
+     "body": "4 chiffres sur le flanc : semaine et année. **Plus de 6 ans** : à changer.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "2319 = semaine 23 de 2019"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "La marque",
+     "body": "Même marque **par essieu**. Deux marques à l'avant : quelqu'un a économisé.",
+     "relance": "Image 4 : ce que l'usure révèle."
+    },
+    {
+     "title": "L'usure",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Régulière",
+         "OK",
+         "ok"
+        ],
+        [
+         "Plus à l'intérieur",
+         "Parallélisme",
+         "warn"
+        ],
+        [
+         "Par plaques",
+         "Amortisseurs",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Les pneus\n*parlent*."
+    }
+   ]
+  },
+  {
+   "id": "A019",
+   "slug": "payer-sans-risque",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Le jour de la vente,",
+     "title": "le chèque\nde banque n'est\npas si *sûr*."
+    },
+    {
+     "title": "Le plus sûr",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Virement instantané",
+       "tone": "ok",
+       "sub": "Fait ensemble. L'argent arrive avant les clés.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Le chèque\nde banque",
+     "body": "Appelle la banque émettrice avec **un numéro trouvé toi-même**. Jamais celui écrit sur le chèque.",
+     "relance": "Image 4 : ce que tu refuses."
+    },
+    {
+     "title": "Tu refuses",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Acompte avant la visite",
+         "Non",
+         "bad"
+        ],
+        [
+         "Mandat cash, coupon",
+         "Non",
+         "bad"
+        ],
+        [
+         "Crypto",
+         "Non",
+         "bad"
+        ],
+        [
+         "Livraison sans visite",
+         "Non",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Paye l'esprit\n*tranquille*."
+    }
+   ]
+  },
+  {
+   "id": "A020",
+   "slug": "photo-compteur-manquante",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Regarde ce qui manque.",
+     "title": "Pas de photo\ndu compteur ?\n*Demande*."
+    },
+    {
+     "title": "Les 4 vues\nà exiger",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Le compteur, moteur allumé",
+        "L'intérieur, sièges et volant",
+        "Les 4 pneus",
+        "Le côté droit"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Pourquoi",
+     "body": "Un volant usé avec 80 000 km au compteur, ça ne colle pas. **Les photos se croisent avec les chiffres.**",
+     "relance": "Image 4 : le message à envoyer."
+    },
+    {
+     "title": "Le message",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, vous pouvez m'envoyer une photo du compteur et des pneus ? Merci !"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Les photos,\n*avant* le trajet."
+    }
+   ]
+  },
+  {
+   "id": "A021",
+   "slug": "premiere-voiture-piege",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Ta première voiture ?",
+     "title": "Le piège des\njeunes *conducteurs*."
+    },
+    {
+     "title": "Les 3 modèles",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Renault Clio III / IV",
+         "1.2 16V 75 ch",
+         "ok"
+        ],
+        [
+         "Dacia Sandero",
+         "1.2 16V, 1.5 dCi",
+         "ok"
+        ],
+        [
+         "Peugeot 207",
+         "1.4 essence 75 ch",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Pourquoi elles",
+     "body": "Pièces partout, garagistes qui les connaissent, **revente facile** le jour où tu changes.",
+     "relance": "Image 4 : le piège."
+    },
+    {
+     "title": "Le piège",
+     "body": "La **208 essence** de 2012 à 2016 : un PureTech. En diesel, elle est bien.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "208 PureTech",
+         "bad"
+        ],
+        [
+         "208 1.6 HDi",
+         "ok"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Ta première,\n*sans* galère."
+    }
+   ]
+  },
+  {
+   "id": "A022",
+   "slug": "diesel-en-ville",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Tu roules surtout en ville ?",
+     "title": "Ton diesel\nva t'envoyer\nune *facture*."
+    },
+    {
+     "title": "Le problème",
+     "body": "Sur les petits trajets, le moteur ne chauffe pas assez. **La vanne EGR et le FAP s'encrassent.**"
+    },
+    {
+     "title": "La facture",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Vanne EGR",
+         "250 – 600 €"
+        ],
+        [
+         "FAP",
+         "jusqu'à 900 €"
+        ]
+       ],
+       "tot": "jusqu'à 1 500 €",
+       "totLab": "Au pire",
+       "tone": "r",
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : quoi prendre à la place."
+    },
+    {
+     "title": "À la place",
+     "body": "Moins de 10 000 km par an en ville : un **essence fiable**.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Yaris VVT-i",
+         "ok"
+        ],
+        [
+         "Jazz i-VTEC",
+         "ok"
+        ],
+        [
+         "Clio 1.2 16V",
+         "ok"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Le bon moteur\npour *ta* route."
+    }
+   ]
+  },
+  {
+   "id": "A023",
+   "slug": "vendeur-presse",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "« Beaucoup de demandes. »",
+     "title": "Plus il te\npresse, plus tu\n*ralentis*."
+    },
+    {
+     "title": "Les phrases",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "« Trois personnes viennent ce soir »",
+        "« Je pars à l'étranger demain »",
+        "« Venez maintenant ou je la vends »"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Pourquoi",
+     "body": "Pressé, tu ne lis pas les papiers. **Tu ne fais pas l'essai.** Tu ne négocies pas.",
+     "relance": "Image 4 : ta réponse."
+    },
+    {
+     "title": "Ta réponse",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Pas de souci. Si elle est encore là samedi, je viens avec le CT et les factures en main."
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Ton rythme,\n*pas* le sien."
+    }
+   ]
+  },
+  {
+   "id": "A024",
+   "slug": "10-points-15-minutes",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Enregistre-la.",
+     "title": "10 points.\n15 minutes.\nZéro *regret*."
+    },
+    {
+     "title": "Moteur et boîte",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Démarrage moteur froid",
+        "Aucun voyant après démarrage",
+        "Embrayage : pas de patinage en 3e",
+        "Vitesses sans craquement",
+        "Pas de fuite sous la voiture"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Le reste",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Freinage droit, sans vibration",
+        "La direction ne tire pas",
+        "Pneus de moins de 6 ans",
+        "Écarts de carrosserie réguliers",
+        "Clim, vitres, fermeture : OK"
+       ],
+       "start": 6
+      }
+     ],
+     "relance": "Image 4 : si un point bloque."
+    },
+    {
+     "title": "Un point\nbloque ?",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Chiffre-le",
+       "tone": "warn",
+       "sub": "Tu le déduis du prix. Ou tu pars.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "La checklist,\n*dans* ta poche."
+    }
+   ]
+  },
+  {
+   "id": "A025",
+   "slug": "boite-auto-pas-chere",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Une automatique pas chère ?",
+     "title": "Tu paies\nla boîte\n*plus tard*."
+    },
+    {
+     "title": "Les boîtes\nfragiles",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "EDC",
+         "bad"
+        ],
+        [
+         "DSG7",
+         "bad"
+        ],
+        [
+         "Powershift",
+         "bad"
+        ],
+        [
+         "Easytronic",
+         "bad"
+        ],
+        [
+         "MMT",
+         "bad"
+        ],
+        [
+         "AL4",
+         "bad"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "À l'essai",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "À-coups au démarrage",
+        "Hésitation entre deux rapports",
+        "Voyant boîte au tableau de bord"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : ce qu'il faut demander."
+    },
+    {
+     "title": "Demande",
+     "body": "Les **factures de la boîte** : vidange, embrayage, mécatronique. Sans elles, tu achètes un risque."
+    },
+    {
+     "title": "Une auto,\n*oui*. Pas celle-là."
+    }
+   ]
+  },
+  {
+   "id": "A026",
+   "slug": "prix-ferme-450",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Le vendeur dit « prix ferme ».",
+     "title": "Elle était\n*450 €*\ntrop chère."
+    },
+    {
+     "title": "Le marché",
+     "comp": [
+      {
+       "k": "cote",
+       "cote": 6950,
+       "prix": 7400,
+       "min": 5000,
+       "max": 9000,
+       "coteTxt": "6 950 €",
+       "prixTxt": "7 400 €",
+       "minTxt": "5 000 €",
+       "maxTxt": "9 000 €",
+       "lab": "Le prix face au marché"
+      }
+     ]
+    },
+    {
+     "title": "La cote",
+     "body": "Calculée sur les annonces **comparables** en ligne : même modèle, ± 2 ans, même énergie, kilométrage proche.",
+     "relance": "Image 4 : ce que tu lui dis."
+    },
+    {
+     "title": "Ce que\ntu lui dis",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "J'ai vu 12 annonces du même modèle autour de 6 950 €. Vous pouvez faire un effort ?"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Le bon prix,\nc'est le *marché*."
+    }
+   ]
+  },
+  {
+   "id": "A027",
+   "slug": "message-qui-obtient-reponse",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Les vendeurs ne te répondent pas ?",
+     "title": "Change *une*\nphrase."
+    },
+    {
+     "title": "Avant",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, je suis intéressé, est-ce qu'on pourrait discuter du prix et de l'entretien quand vous aurez un moment…"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Après",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, votre Clio est toujours dispo ? Vous pourriez m'envoyer le CT et les factures ?"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ],
+     "relance": "Image 4 : ce que sa réponse t'apprend."
+    },
+    {
+     "title": "Sa réponse",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Il envoie tout",
+         "Bon signe",
+         "ok"
+        ],
+        [
+         "« On verra sur place »",
+         "Méfiance",
+         "warn"
+        ],
+        [
+         "Pas de réponse",
+         "Suivante",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Un message,\n*trois* réponses."
+    }
+   ]
+  },
+  {
+   "id": "A028",
+   "slug": "negocie-ou-pars",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Tous les défauts ne se valent pas.",
+     "title": "Négocie.\nOu *pars*."
+    },
+    {
+     "title": "Ça se négocie",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Pneus",
+         "ok"
+        ],
+        [
+         "Freins",
+         "ok"
+        ],
+        [
+         "Batterie",
+         "ok"
+        ],
+        [
+         "Vidange",
+         "ok"
+        ],
+        [
+         "Rayures",
+         "ok"
+        ],
+        [
+         "Optiques",
+         "ok"
+        ]
+       ]
+      }
+     ],
+     "body": "Tu les chiffres, tu les retires du prix."
+    },
+    {
+     "title": "Tu pars",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Joint de culasse",
+         "bad"
+        ],
+        [
+         "Moteur à refaire",
+         "bad"
+        ],
+        [
+         "Boîte qui craque",
+         "bad"
+        ],
+        [
+         "Fumée blanche",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "relance": "Image 4 : le cas des papiers."
+    },
+    {
+     "title": "Et aussi",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Kilométrage non garanti",
+         "bad"
+        ],
+        [
+         "Carte grise pas à son nom",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "body": "Un problème de papiers, c'est **non**."
+    },
+    {
+     "title": "Sache quand\n*partir*."
+    }
+   ]
+  },
+  {
+   "id": "A029",
+   "slug": "couleur-de-la-fumee",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Au démarrage,",
+     "title": "la fumée\nannonce la\n*facture*."
+    },
+    {
+     "title": "Bleue",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Huile",
+       "tone": "bad",
+       "sub": "Le moteur brûle de l'huile.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Blanche\net épaisse",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Danger",
+       "tone": "bad",
+       "sub": "Si elle reste : liquide de refroidissement, peut-être le joint de culasse.",
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : la noire."
+    },
+    {
+     "title": "Noire",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "À vérifier",
+       "tone": "warn",
+       "sub": "Diesel : injecteurs ou EGR. 150 à 1 000 €.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "L'échappement\nne *ment* pas."
+    }
+   ]
+  },
+  {
+   "id": "A030",
+   "slug": "embrayage-30-secondes",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Pendant l'essai,",
+     "title": "30 secondes\npour éviter\n*800 €*."
+    },
+    {
+     "title": "Test 1",
+     "body": "Il accroche **tout en haut** de la course ? Il est usé."
+    },
+    {
+     "title": "Test 2",
+     "body": "En 3e, à bas régime, accélère fort. Le moteur monte, la voiture n'avance pas ? **Il patine.**",
+     "relance": "Image 4 : combien ça coûte."
+    },
+    {
+     "title": "Le prix",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Embrayage",
+         "450 – 800 €"
+        ],
+        [
+         "Volant moteur (si besoin)",
+         "400 – 800 €"
+        ]
+       ],
+       "tot": "jusqu'à 1 600 €",
+       "totLab": "Au pire",
+       "tone": "r",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "30 secondes,\n*800 €* d'écart."
+    }
+   ]
+  },
+  {
+   "id": "A031",
+   "slug": "potes-envoient-annonce",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Mes potes m'envoient l'annonce",
+     "title": "avant de\nsigner. *Tous*."
+    },
+    {
+     "title": "Ce que\nje regarde",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Le moteur : fiable ou à fuir",
+        "Le prix face au marché",
+        "Les mots qui coûtent cher",
+        "Les papiers"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Le problème",
+     "body": "Je ne peux pas répondre à tout le monde à 23 h. **Alors j'ai mis ma méthode dans un outil.**",
+     "relance": "Image 4 : ce qu'ils reçoivent."
+    },
+    {
+     "title": "Ce qu'ils\nreçoivent",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Prix correct",
+       "tone": "warn",
+       "sub": "Pneus à prévoir : **négocie 200 €**. CT et carnet à demander.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Ton avis d'expert,\n*sans* l'expert."
+    }
+   ]
+  },
+  {
+   "id": "A032",
+   "slug": "ce-que-les-vendeurs-taisent",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Tu crois que l'annonce dit tout ?",
+     "title": "3 choses\nqu'elle *tait*."
+    },
+    {
+     "title": "1. La distribution",
+     "body": "« Entretien à jour », sans facture. **400 à 750 €** si elle est à faire."
+    },
+    {
+     "title": "2. Le voyant",
+     "body": "Effacé avant ta visite. Il revient deux jours après.",
+     "relance": "Image 4 : la plus chère."
+    },
+    {
+     "title": "3. Le moteur",
+     "body": "Ils écrivent « 1.2 essence ». Ils n'écrivent pas **PureTech**.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "1.2 PureTech",
+         "bad"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Lis ce qui\n*n'est pas* écrit."
+    }
+   ]
+  },
+  {
+   "id": "A033",
+   "slug": "annonce-parfaite",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Deux annonces, même prix.",
+     "title": "Une seule\nte *rassure*."
+    },
+    {
+     "title": "L'annonce\nfloue",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Bon état, ==entretien à jour==, ==CT à faire==, prix à débattre.",
+       "lab": "L'annonce"
+      }
+     ]
+    },
+    {
+     "title": "L'annonce\nparfaite",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Première main, ++carnet complet++, ++factures++, ++distribution faite à 118 000 km++, CT vierge de janvier.",
+       "lab": "L'annonce"
+      }
+     ],
+     "relance": "Image 4 : ce que tu vérifies quand même."
+    },
+    {
+     "title": "Quand même",
+     "body": "Les factures **au nom du vendeur**, et le kilométrage cohérent avec le HistoVec."
+    },
+    {
+     "title": "Les preuves,\npas les *promesses*."
+    }
+   ]
+  },
+  {
+   "id": "A034",
+   "slug": "vendeur-refuse-essai",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "« Pas d'essai, l'assurance… »",
+     "title": "Pas d'essai,\npas d'*achat*."
+    },
+    {
+     "title": "Ce que\nl'essai montre",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "L'embrayage et la boîte",
+        "Les freins et la direction",
+        "Les bruits à chaud"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "La parade",
+     "body": "Propose qu'il conduise, toi à côté. **Tu écoutes, tu regardes les voyants.**",
+     "relance": "Image 4 : s'il refuse encore."
+    },
+    {
+     "title": "S'il refuse\nencore",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Tu pars",
+       "tone": "bad",
+       "sub": "Un vendeur qui cache la route cache un défaut.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Roule\n*avant* de payer."
+    }
+   ]
+  },
+  {
+   "id": "A035",
+   "slug": "cote-ou-argus",
+   "word": "ACHETEUR",
+   "guide": "Acheter ton occasion sans te faire avoir",
+   "slides": [
+    {
+     "kicker": "Tu te fies à la cote ?",
+     "title": "Le vrai prix\nest dans les\n*annonces*."
+    },
+    {
+     "title": "Les comparables",
+     "body": "Même modèle, **± 2 ans**, même énergie, kilométrage proche. La moitié se situe dans une fourchette."
+    },
+    {
+     "title": "La fourchette",
+     "comp": [
+      {
+       "k": "cote",
+       "cote": 7850,
+       "prix": 7850,
+       "min": 6500,
+       "max": 9500,
+       "coteTxt": "7 850 €",
+       "prixTxt": "7 850 €",
+       "minTxt": "6 500 €",
+       "maxTxt": "9 500 €",
+       "lab": "La moitié des annonces entre ces deux prix"
+      }
+     ],
+     "relance": "Image 4 : le détail qu'on oublie."
+    },
+    {
+     "title": "Le détail",
+     "body": "Les voitures se vendent **environ 5 % sous** le prix affiché. Ton offre part de là."
+    },
+    {
+     "title": "Le prix\ndu *marché*."
+    }
+   ]
+  },
+  {
+   "id": "D001",
+   "slug": "400-euros-pas-5000",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Achat-revente de voitures :",
+     "title": "Il te faut\n5 000 € pour\ndémarrer ? *Non.*"
+    },
+    {
+     "title": "J'ai démarré\navec *400 €*.",
+     "body": "Il y a 6 mois. Ma première voiture : une **Clio 2 à problèmes**."
+    },
+    {
+     "title": "Revendue\nen moins\nd'une *semaine*.",
+     "comp": [
+      {
+       "k": "big",
+       "v": "950 €",
+       "cap": "encaissés en moins de 7 jours."
+      }
+     ],
+     "relance": "Image 4 : pourquoi ça a marché avec si peu."
+    },
+    {
+     "title": "Ce qui compte",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Un modèle que tout le monde cherche",
+         "une Clio, pas une sportive"
+        ],
+        [
+         "Un défaut connu, chiffré avant",
+         "pas de surprise après"
+        ],
+        [
+         "Un prix sous la barre des 1 000 €",
+         "beaucoup d'acheteurs possibles"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Ton budget n'est pas\nle *problème*."
+    }
+   ]
+  },
+  {
+   "id": "D002",
+   "slug": "3-etapes-rien-dautre",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu ne sais pas comment te lancer ?",
+     "title": "3 étapes.\n*Rien* d'autre."
+    },
+    {
+     "title": "Les 3 étapes",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Trouve une annonce qui te plaît",
+         "sur Leboncoin ou ailleurs"
+        ],
+        [
+         "Passe-la dans utopicar",
+         "elle te laisse une bonne marge ?"
+        ],
+        [
+         "Tu l'achètes, tu la revends",
+         "et tu recommences"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "La voiture :\n*3* critères",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Contrôle technique OK",
+         "Oui",
+         "ok"
+        ],
+        [
+         "Pas de grosse carrosserie à faire",
+         "Oui",
+         "ok"
+        ],
+        [
+         "Mécanique très saine",
+         "Oui",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : tout ce que tu peux ignorer."
+    },
+    {
+     "title": "Le reste ?\n*Oublie*.",
+     "body": "Couleur, options, jantes : elles ne changent pas ta marge. **Le CT, la carrosserie et la mécanique, si.**"
+    },
+    {
+     "title": "Lance-toi\n*cette* semaine."
+    }
+   ]
+  },
+  {
+   "id": "D003",
+   "slug": "3-regles-premiere-perte",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu débutes ton achat-revente ?",
+     "title": "3 règles\npour ne pas\nperdre ta *1re*."
+    },
+    {
+     "title": "1. Ton prix max\n*avant* l'appel",
+     "body": "Revente rapide − frais − ta marge minimum = **le prix que tu ne dépasses pas**."
+    },
+    {
+     "title": "2. Compte\n*tous* les frais",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Trajet"
+        ],
+        [
+         "Contrôle technique"
+        ],
+        [
+         "Pneus"
+        ],
+        [
+         "Vidange"
+        ],
+        [
+         "Nettoyage"
+        ]
+       ]
+      }
+     ],
+     "body": "Les petits frais mangent la marge.",
+     "relance": "Image 4 : celle que presque tous oublient."
+    },
+    {
+     "title": "3. Achète ce qui\nse *revend*",
+     "body": "Pas ce qui te plaît. Une voiture qui dort bloque ton argent. **Clio, 208 diesel, C3, Sandero : ça part.**"
+    },
+    {
+     "title": "Tes 3 règles,\n*appliquées*."
+    }
+   ]
+  },
+  {
+   "id": "D004",
+   "slug": "revente-moins-achat-faux",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Revente − achat = ta marge ?",
+     "title": "C'est ce calcul\nqui fait *perdre*."
+    },
+    {
+     "title": "Ce que\ntu crois",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente",
+         "4 400 €"
+        ],
+        [
+         "Achat",
+         "− 3 200 €"
+        ]
+       ],
+       "tot": "+ 1 200 €",
+       "totLab": "Ta marge ?",
+       "tone": "g",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Ce qui\npasse avant",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Trajet aller-retour",
+         "− 80 €"
+        ],
+        [
+         "2 pneus",
+         "− 200 €"
+        ],
+        [
+         "Vidange + filtres",
+         "− 120 €"
+        ],
+        [
+         "Contrôle technique",
+         "− 80 €"
+        ],
+        [
+         "Nettoyage + photos",
+         "− 40 €"
+        ]
+       ],
+       "tot": "− 520 €",
+       "totLab": "Frais",
+       "tone": "r",
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : ce qu'il te reste."
+    },
+    {
+     "title": "Il te reste",
+     "comp": [
+      {
+       "k": "big",
+       "v": "680 €",
+       "cap": "pas 1 200 €."
+      }
+     ]
+    },
+    {
+     "title": "Ta *vraie* marge,\navant d'acheter."
+    }
+   ]
+  },
+  {
+   "id": "D005",
+   "slug": "750-ou-rien",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Ma règle d'achat :",
+     "title": "Sous *750 €*,\nje laisse\npasser."
+    },
+    {
+     "title": "Pourquoi\nsi haut",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Un imprévu en mange 300 €",
+        "La négo de l'acheteur en mange 200 €",
+        "Il doit rester de quoi payer ton temps"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Avec 300 €\nde marge",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Marge prévue",
+         "300 €"
+        ],
+        [
+         "Batterie à changer",
+         "− 150 €"
+        ],
+        [
+         "Négo de l'acheteur",
+         "− 200 €"
+        ]
+       ],
+       "tot": "− 50 €",
+       "totLab": "Il te reste",
+       "tone": "r",
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : comment fixer la tienne."
+    },
+    {
+     "title": "Fixe la tienne",
+     "body": "Choisis ta marge **avant** de chercher. Elle décide de ton prix max, et ton prix max décide de chaque appel."
+    },
+    {
+     "title": "Ta marge\nd'abord. *Le reste* suit."
+    }
+   ]
+  },
+  {
+   "id": "D006",
+   "slug": "voitures-qui-partent",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Pour ta première revente,",
+     "title": "5 voitures\nqui partent\nen *quelques* jours."
+    },
+    {
+     "title": "Les 5",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Renault Clio III / IV",
+         "1.2 16V, 1.5 dCi",
+         "ok"
+        ],
+        [
+         "Peugeot 208",
+         "diesel seulement",
+         "ok"
+        ],
+        [
+         "Citroën C3 II",
+         "1.4 HDi, 1.6 HDi",
+         "ok"
+        ],
+        [
+         "Dacia Sandero",
+         "1.2 16V, 1.5 dCi",
+         "ok"
+        ],
+        [
+         "Toyota Yaris",
+         "1.0 / 1.33 VVT-i",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Pourquoi elles",
+     "body": "Jeunes conducteurs, deuxième voiture, petits budgets : **tout le monde en cherche une**.",
+     "relance": "Image 4 : le piège sur la 208."
+    },
+    {
+     "title": "Le piège",
+     "body": "La **208 essence** de 2012 à 2016, c'est un PureTech. Les acheteurs le savent. Prends-la en diesel.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "208 PureTech",
+         "bad"
+        ],
+        [
+         "208 1.6 HDi",
+         "ok"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Achète ce qui\n*part*."
+    }
+   ]
+  },
+  {
+   "id": "D007",
+   "slug": "clio-2-6-jours",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Ma première revente :",
+     "title": "Une Clio 2\n*à problèmes*.\nVendue en 6 jours."
+    },
+    {
+     "title": "1. Le modèle",
+     "body": "Une Clio. **Tout le monde en cherche une** : jeunes conducteurs, deuxième voiture, petits budgets."
+    },
+    {
+     "title": "2. Le prix",
+     "body": "**950 €** : sous la barre des 1 000 €, la liste des acheteurs possibles est longue.",
+     "relance": "Image 4 : la leçon que j'applique depuis."
+    },
+    {
+     "title": "3. La leçon",
+     "body": "Une voiture qui part vite vaut mieux qu'une grosse marge qui dort. **Depuis, je choisis des voitures rapides à vendre.**"
+    },
+    {
+     "title": "Vends *vite*,\nrecommence."
+    }
+   ]
+  },
+  {
+   "id": "D008",
+   "slug": "papiers-revente-bloque",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu achètes pour revendre ?",
+     "title": "Un papier\nmanquant, c'est\nta *revente* bloquée."
+    },
+    {
+     "title": "Les 2 premiers",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Le HistoVec",
+         "propriétaires, sinistres, kilométrages"
+        ],
+        [
+         "Le contrôle technique",
+         "moins de 6 mois"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Les 2 autres",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Le carnet et les factures",
+         "la preuve de l'entretien"
+        ],
+        [
+         "La carte grise",
+         "au nom du vendeur"
+        ]
+       ],
+       "start": 3
+      }
+     ],
+     "relance": "Image 4 : ce que ton acheteur fera."
+    },
+    {
+     "title": "Ton acheteur",
+     "body": "Il te posera **les mêmes questions** que toi au vendeur. Sans papiers, il négocie fort. Ou il part."
+    },
+    {
+     "title": "Le dossier\n*complet*, à chaque achat."
+    }
+   ]
+  },
+  {
+   "id": "D009",
+   "slug": "declarer-activite",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu revends des voitures ?",
+     "title": "« 2 voitures\npar an » : ce chiffre\nn'*existe* pas."
+    },
+    {
+     "title": "Ce qui compte",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Tu achètes pour revendre",
+        "Tu le fais de façon habituelle",
+        "Tu cherches un bénéfice"
+       ],
+       "start": null
+      }
+     ],
+     "body": "Les trois réunis : c'est une **activité commerciale**."
+    },
+    {
+     "title": "Le risque",
+     "body": "Une activité non déclarée peut être requalifiée. **Garde tes factures dès la première voiture.**",
+     "relance": "Image 4 : par où commencer."
+    },
+    {
+     "title": "Par où\ncommencer",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Renseigne-toi auprès de l'URSSAF",
+        "Regarde le statut de micro-entrepreneur",
+        "Note chaque achat et chaque vente"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Démarre *carré*."
+    }
+   ]
+  },
+  {
+   "id": "D010",
+   "slug": "coup-de-coeur",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Erreur des débutants motivés :",
+     "title": "acheter la voiture\nqu'ils *aiment*."
+    },
+    {
+     "title": "Ce qui\nse passe",
+     "comp": [
+      {
+       "k": "tl",
+       "items": [
+        [
+         "Jour 1",
+         "Tu achètes la voiture qui te plaît."
+        ],
+        [
+         "Jour 20",
+         "Personne n'a appelé.",
+         "x"
+        ],
+        [
+         "Jour 45",
+         "Tu baisses le prix. Ta marge part.",
+         "x"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "La bonne\nquestion",
+     "body": "Pas « elle me plaît ? ». **« Combien de gens la cherchent ? »**",
+     "relance": "Image 4 : comment le savoir en 2 minutes."
+    },
+    {
+     "title": "En 2 minutes",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Compte les annonces du même modèle",
+        "Regarde depuis quand elles sont en ligne",
+        "Peu d'annonces, vite parties : bon signe"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Achète avec\nta *tête*."
+    }
+   ]
+  },
+  {
+   "id": "D011",
+   "slug": "journees-sur-annonces",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Achat-revente :",
+     "title": "Tu passes\ntes *journées*\nsur les annonces ?"
+    },
+    {
+     "title": "Avant",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Rafraîchir la page encore et encore",
+        "Les bonnes parties avant mon appel",
+        "Des vendeurs qui ne répondent pas"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Après",
+     "body": "Je ne cherche plus. **Une alerte arrive** quand une annonce correspond à ma recherche.",
+     "relance": "Image 4 : à quoi elle ressemble."
+    },
+    {
+     "title": "L'alerte",
+     "comp": [
+      {
+       "k": "notif",
+       "t1": "Clio IV 1.5 dCi · 2014",
+       "t2": "[g]Sous la cote[/g] · marge estimée 980 €",
+       "time": "il y a 3 min",
+       "h": "utopicar · alerte"
+      }
+     ],
+     "body": "Toutes les 15 minutes ou toutes les heures."
+    },
+    {
+     "title": "Arrête de *chercher*."
+    }
+   ]
+  },
+  {
+   "id": "D012",
+   "slug": "message-trop-long",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Les vendeurs ne te répondent pas ?",
+     "title": "Ton message\nest trop *long*."
+    },
+    {
+     "title": "Avant",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, je suis intéressé par votre véhicule, est-ce qu'il serait possible d'avoir plus d'informations sur l'entretien, le prix est-il négociable…"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Après",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, elle est toujours dispo ? Vous pouvez m'envoyer le CT et les factures ?"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ],
+     "relance": "Image 4 : s'il ne répond toujours pas."
+    },
+    {
+     "title": "Pas de réponse\nen 2 h ?",
+     "body": "Tu appelles. Toujours rien ? **Annonce suivante.** Une autre arrive dans 15 minutes."
+    },
+    {
+     "title": "Court.\n*Premier*."
+    }
+   ]
+  },
+  {
+   "id": "D013",
+   "slug": "voiture-qui-dort",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Ta voiture ne se vend pas ?",
+     "title": "Elle te coûte\nplus que\nson *prix*."
+    },
+    {
+     "title": "Ce que tu vois",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "L'assurance",
+        "La place sur le parking",
+        "Le prix que tu vas baisser"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Ce que tu\nne vois pas",
+     "body": "Pendant qu'elle dort, **tu ne peux pas acheter la suivante**. Une marge de 800 € ratée par mois.",
+     "relance": "Image 4 : la règle des 30 jours."
+    },
+    {
+     "title": "La règle",
+     "comp": [
+      {
+       "k": "tl",
+       "items": [
+        [
+         "Jour 1",
+         "Prix dans le bas du marché."
+        ],
+        [
+         "Jour 15",
+         "Pas d'appel ? Refais photos et texte."
+        ],
+        [
+         "Jour 30",
+         "Baisse le prix. Récupère ton argent.",
+         "v"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Une voiture\nqui *tourne*."
+    }
+   ]
+  },
+  {
+   "id": "D014",
+   "slug": "clio-iv-de-a-a-z",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Exemple chiffré, de A à Z.",
+     "title": "Une Clio IV\nà 3 900 €.\nIl *reste* combien ?"
+    },
+    {
+     "title": "L'achat",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Prix négocié",
+         "3 900 €"
+        ],
+        [
+         "Trajet",
+         "60 €"
+        ],
+        [
+         "Pneus + vidange",
+         "320 €"
+        ],
+        [
+         "CT",
+         "80 €"
+        ]
+       ],
+       "tot": "4 360 €",
+       "totLab": "Ce qu'elle te coûte",
+       "tone": "",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "La revente",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Prix affiché",
+         "5 400 €"
+        ],
+        [
+         "Négociation de l'acheteur",
+         "− 200 €"
+        ]
+       ],
+       "tot": "5 200 €",
+       "totLab": "Ce que tu encaisses",
+       "tone": "",
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : la marge."
+    },
+    {
+     "title": "La marge",
+     "comp": [
+      {
+       "k": "big",
+       "v": "840 €",
+       "cap": "au-dessus de la barre des 750 €."
+      }
+     ]
+    },
+    {
+     "title": "Chiffre tout,\n*avant*."
+    }
+   ]
+  },
+  {
+   "id": "D015",
+   "slug": "annonce-dans-cet-ordre",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu revends ta voiture ?",
+     "title": "Ton annonce\nne *répond* pas\naux bonnes questions."
+    },
+    {
+     "title": "Le titre",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "++Renault Clio IV 1.5 dCi 90 · 2014 · 128 000 km++",
+       "lab": "Titre"
+      }
+     ],
+     "body": "Modèle, moteur, année, kilométrage. **Rien d'autre.**"
+    },
+    {
+     "title": "Le texte",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Entretien : factures et distribution",
+        "Contrôle technique : date et résultat",
+        "Les défauts, écrits",
+        "Pourquoi tu vends"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : la phrase qui rassure."
+    },
+    {
+     "title": "La phrase\nqui rassure",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "++CT de moins de 6 mois, factures et HistoVec envoyés sur demande.++",
+       "lab": "Fin d'annonce"
+      }
+     ]
+    },
+    {
+     "title": "Une annonce\nqui *vend*."
+    }
+   ]
+  },
+  {
+   "id": "D016",
+   "slug": "photos-qui-vendent",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tes photos font fuir ?",
+     "title": "La photo\nqui manque fait\n*fuir* l'acheteur."
+    },
+    {
+     "title": "L'extérieur",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "3/4 avant",
+        "3/4 arrière",
+        "Profil",
+        "Jantes et pneus"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "L'intérieur",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Compteur, moteur allumé",
+        "Sièges avant",
+        "Banquette arrière",
+        "Coffre"
+       ],
+       "start": 5
+      }
+     ],
+     "relance": "Image 4 : la lumière."
+    },
+    {
+     "title": "La lumière",
+     "body": "Ciel couvert ou fin de journée. **Pas de soleil de midi.** Un parking vide en fond."
+    },
+    {
+     "title": "Des photos\nqui *vendent*."
+    }
+   ]
+  },
+  {
+   "id": "D017",
+   "slug": "moteurs-invendables",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Pour revendre vite,",
+     "title": "ce moteur\nte coûte des\n*semaines*."
+    },
+    {
+     "title": "Les acheteurs\nles connaissent",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "1.2 PureTech",
+         "bad"
+        ],
+        [
+         "1.6 THP",
+         "bad"
+        ],
+        [
+         "1.0 EcoBoost",
+         "bad"
+        ],
+        [
+         "1.2 TCe 115",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "body": "Ils tapent le moteur sur Google avant d'appeler."
+    },
+    {
+     "title": "Et les boîtes",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "EDC",
+         "bad"
+        ],
+        [
+         "DSG7",
+         "bad"
+        ],
+        [
+         "Powershift",
+         "bad"
+        ],
+        [
+         "Quickshift",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "relance": "Image 4 : ceux qui rassurent."
+    },
+    {
+     "title": "Ceux qui\nrassurent",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "1.5 dCi",
+         "ok"
+        ],
+        [
+         "1.6 HDi",
+         "ok"
+        ],
+        [
+         "1.2 16V",
+         "ok"
+        ],
+        [
+         "1.33 VVT-i",
+         "ok"
+        ],
+        [
+         "1.6 TDI",
+         "ok"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Le bon moteur\nse *revend*."
+    }
+   ]
+  },
+  {
+   "id": "D018",
+   "slug": "formule-prix-max",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Avant chaque achat,",
+     "title": "Une formule.\nSans elle, tu\n*paies* trop."
+    },
+    {
+     "title": "La formule",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Revente rapide",
+        "− tous les frais",
+        "− ta marge minimum",
+        "= ton prix max"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "La revente\n*rapide*",
+     "body": "Pas le prix moyen : le prix **bas** du marché. Celui qui vend en une semaine.",
+     "relance": "Image 4 : un exemple."
+    },
+    {
+     "title": "Exemple",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente rapide",
+         "4 800 €"
+        ],
+        [
+         "Frais",
+         "− 420 €"
+        ],
+        [
+         "Marge minimum",
+         "− 750 €"
+        ]
+       ],
+       "tot": "3 630 €",
+       "totLab": "Prix max",
+       "tone": "",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Ta formule,\n*à chaque* achat."
+    }
+   ]
+  },
+  {
+   "id": "D019",
+   "slug": "frais-decouverts-apres",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Ta marge fond après l'achat ?",
+     "title": "Ces 3 frais\narrivent *après*."
+    },
+    {
+     "title": "Le trajet",
+     "body": "200 km aller-retour pour aller la chercher. Essence et péage : **60 à 80 €**."
+    },
+    {
+     "title": "Les pneus",
+     "body": "« Pneus corrects », disait l'annonce. Sur place : à changer. **140 à 260 € les deux.**",
+     "relance": "Image 4 : le plus cher."
+    },
+    {
+     "title": "La distribution",
+     "body": "Pas de facture. L'acheteur suivant la demande. **400 à 750 €**, ou une grosse négo."
+    },
+    {
+     "title": "Les frais,\n*avant* l'achat."
+    }
+   ]
+  },
+  {
+   "id": "D020",
+   "slug": "avant-maintenant-marge",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Ta marge, tu la découvres",
+     "title": "*après* l'achat ?"
+    },
+    {
+     "title": "La marge",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Avant",
+        [
+         "Estimée après l'achat",
+         "Des frais imprévus",
+         "Parfois rien au bout"
+        ]
+       ],
+       "b": [
+        "Maintenant",
+        [
+         "Calculée avant",
+         "Tous les travaux listés",
+         "750 € minimum"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "La recherche",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Avant",
+        [
+         "Des journées sur les annonces",
+         "Les bonnes déjà parties"
+        ]
+       ],
+       "b": [
+        "Maintenant",
+        [
+         "Une alerte toutes les 15 min",
+         "Je vois avant les autres"
+        ]
+       ]
+      }
+     ],
+     "relance": "Image 4 : les outils."
+    },
+    {
+     "title": "Les outils",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Avant",
+        [
+         "Excel",
+         "Notion",
+         "Drive",
+         "Calculettes"
+        ]
+       ],
+       "b": [
+        "Maintenant",
+        [
+         "Un seul outil, codé pour moi"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Passe à\n*maintenant*."
+    }
+   ]
+  },
+  {
+   "id": "D021",
+   "slug": "plan-7-etapes",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Ta première voiture ?",
+     "title": "7 étapes.\nTout le monde\nsaute la *3e*."
+    },
+    {
+     "title": "Avant l'achat",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Choisis un modèle qui part vite",
+        "Fixe ta marge minimum",
+        "Calcule ton prix max",
+        "Demande CT, factures, HistoVec"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Après l'achat",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Fais les petits travaux",
+        "Photos + annonce honnête",
+        "Prix dans le bas du marché"
+       ],
+       "start": 5
+      }
+     ],
+     "relance": "Image 4 : pourquoi la 3e."
+    },
+    {
+     "title": "La 3e",
+     "body": "Sans prix max, tu négocies à l'émotion. **Et tu paies trop.**"
+    },
+    {
+     "title": "Ton plan,\n*étape* par étape."
+    }
+   ]
+  },
+  {
+   "id": "D022",
+   "slug": "5-erreurs-debutant",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Achat-revente de voitures :",
+     "title": "5 erreurs\nqui coûtent\nune *marge*."
+    },
+    {
+     "title": "1 et 2",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Calculer la marge après l'achat",
+         "trop tard pour négocier"
+        ],
+        [
+         "Oublier les petits frais",
+         "trajet, pneus, vidange"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "3 et 4",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Acheter au coup de cœur",
+         "personne n'en veut"
+        ],
+        [
+         "Afficher trop cher",
+         "elle dort, ton argent aussi"
+        ]
+       ],
+       "start": 3
+      }
+     ],
+     "relance": "Image 4 : la plus chère."
+    },
+    {
+     "title": "5. La plus\nchère",
+     "body": "**Tout gérer dans 4 outils.** Excel, Notion, Drive, calculette. Tu perds le fil, tu perds de l'argent."
+    },
+    {
+     "title": "Évite-les\n*toutes*."
+    }
+   ]
+  },
+  {
+   "id": "D023",
+   "slug": "combien-par-voiture",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "On me demande tout le temps :",
+     "title": "Tu gagnes\n*combien*\npar voiture ?"
+    },
+    {
+     "title": "Ma barre",
+     "comp": [
+      {
+       "k": "big",
+       "v": "750 €",
+       "cap": "minimum. Je vise 1 000 €."
+      }
+     ]
+    },
+    {
+     "title": "Pourquoi\npas moins",
+     "body": "En dessous, **un seul imprévu** et je travaille gratuitement.",
+     "relance": "Image 4 : pourquoi pas plus."
+    },
+    {
+     "title": "Pourquoi\npas plus",
+     "body": "Je vise des voitures qui partent vite. **800 € en une semaine valent mieux que 1 500 € en trois mois.**"
+    },
+    {
+     "title": "Ta marge,\n*ta* règle."
+    }
+   ]
+  },
+  {
+   "id": "D024",
+   "slug": "quatre-outils-zero-vision",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Ton achat-revente tient dans",
+     "title": "4 outils ?\nTu as *zéro*\nvision."
+    },
+    {
+     "title": "Le chaos",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Excel",
+         "les calculs",
+         "warn"
+        ],
+        [
+         "Notion",
+         "les annonces",
+         "warn"
+        ],
+        [
+         "Drive",
+         "les papiers",
+         "warn"
+        ],
+        [
+         "Calculettes",
+         "le reste",
+         "warn"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Le résultat",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Quelle voiture rapporte quoi ? Aucune idée",
+        "Une facture perdue, une négo perdue",
+        "Ta marge du mois ? Inconnue"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : ce que j'ai fait."
+    },
+    {
+     "title": "Ce que\nj'ai fait",
+     "body": "Tout au même endroit : l'annonce, le calcul, les frais, les papiers. **Je l'ai codé pour moi.**"
+    },
+    {
+     "title": "Un seul outil,\n*tout* dedans."
+    }
+   ]
+  },
+  {
+   "id": "D025",
+   "slug": "3-questions-avant-trajet",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Avant de faire 200 km,",
+     "title": "pose ces\n*3* questions."
+    },
+    {
+     "title": "1. Le CT",
+     "body": "« Il a moins de 6 mois ? » Sinon tu le paies, et tu découvres peut-être des réparations."
+    },
+    {
+     "title": "2. Les défauts",
+     "body": "« Qu'est-ce qui ne va pas ? » Chaque défaut, tu le chiffres. **Il sort de ta marge.**",
+     "relance": "Image 4 : la question pour la revente."
+    },
+    {
+     "title": "3. Le carnet",
+     "body": "« Vous avez les factures ? » Ton acheteur te les demandera. **Sans elles, tu revends moins cher.**"
+    },
+    {
+     "title": "Les bonnes questions,\n*la bonne* marge."
+    }
+   ]
+  },
+  {
+   "id": "D026",
+   "slug": "visite-5-points",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu vas voir une voiture à revendre ?",
+     "title": "10 minutes.\n*5* points.\nPas un de plus."
+    },
+    {
+     "title": "Le moteur",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Démarrage moteur froid",
+        "Aucun voyant après démarrage",
+        "Pas de fumée bleue ou blanche"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "La boîte",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Embrayage qui ne patine pas",
+        "Vitesses qui passent sans craquer"
+       ],
+       "start": 4
+      }
+     ],
+     "relance": "Image 4 : si un point coince."
+    },
+    {
+     "title": "Un point coince ?",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Chiffre ou pars",
+       "tone": "warn",
+       "sub": "Il sort de ta marge. **Sous 750 €, tu laisses.**",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Vite vu,\n*bien* vu."
+    }
+   ]
+  },
+  {
+   "id": "D027",
+   "slug": "faux-cheque-de-banque",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Le jour où tu revends,",
+     "title": "ce chèque\nte coûte\nta *voiture*."
+    },
+    {
+     "title": "L'arnaque",
+     "body": "L'acheteur paie par chèque de banque, un samedi. **Le chèque est faux.** Ta voiture est partie."
+    },
+    {
+     "title": "Vérifier",
+     "body": "Appelle la banque émettrice avec **un numéro que tu as trouvé toi-même**. Jamais celui du chèque.",
+     "relance": "Image 4 : le plus simple."
+    },
+    {
+     "title": "Le plus\nsimple",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Virement instantané",
+       "tone": "ok",
+       "sub": "Fait ensemble. L'argent arrive, puis tu donnes les clés.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Revends\n*sans* risque."
+    }
+   ]
+  },
+  {
+   "id": "D028",
+   "slug": "15-minutes-affaires",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu rates les bonnes affaires ?",
+     "title": "Elles restent\nen ligne\n*15 minutes*."
+    },
+    {
+     "title": "Ce que j'ai vu",
+     "comp": [
+      {
+       "k": "tl",
+       "items": [
+        [
+         "9 h 00",
+         "Une Mégane 3 à 1 500 €."
+        ],
+        [
+         "9 h 15",
+         "Déjà partie.",
+         "x"
+        ]
+       ]
+      }
+     ],
+     "body": "Pareil pour une Clio 4 à 4 000 €."
+    },
+    {
+     "title": "Pourquoi",
+     "body": "Les marchands ont des alertes. **Ils appellent pendant que tu scrolles.**",
+     "relance": "Image 4 : comment je fais."
+    },
+    {
+     "title": "Comment\nje fais",
+     "comp": [
+      {
+       "k": "notif",
+       "t1": "Mégane III 1.5 dCi · 2012",
+       "t2": "[g]Sous la cote[/g] · dans ta recherche",
+       "time": "il y a 1 min",
+       "h": "utopicar · alerte"
+      }
+     ],
+     "body": "Une alerte par mail, toutes les 15 minutes."
+    },
+    {
+     "title": "Sois le\n*premier*."
+    }
+   ]
+  },
+  {
+   "id": "D029",
+   "slug": "afficher-en-bas",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu affiches cher pour négocier ?",
+     "title": "C'est pour ça\nqu'elle ne\n*part* pas."
+    },
+    {
+     "title": "Le marché",
+     "comp": [
+      {
+       "k": "cote",
+       "cote": 5200,
+       "prix": 4700,
+       "min": 3800,
+       "max": 6600,
+       "coteTxt": "5 200 €",
+       "prixTxt": "4 700 €",
+       "minTxt": "3 800 €",
+       "maxTxt": "6 600 €",
+       "lab": "Ton prix face aux autres annonces"
+      }
+     ]
+    },
+    {
+     "title": "En bas\ndu marché",
+     "body": "Les acheteurs trient par prix. **En bas de la fourchette, tu sors en premier.**",
+     "relance": "Image 4 : et ta marge ?"
+    },
+    {
+     "title": "Ta marge",
+     "body": "Elle se fait **à l'achat**. Tu as acheté sous ton prix max : tu peux afficher bas."
+    },
+    {
+     "title": "La marge se fait\n*à l'achat*."
+    }
+   ]
+  },
+  {
+   "id": "D030",
+   "slug": "2000-euros-recalcul",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "« 2 000 € par voiture. »",
+     "title": "Je refais\nle calcul.\nIl en reste *500*."
+    },
+    {
+     "title": "Ce qu'ils\nmontrent",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente",
+         "7 000 €"
+        ],
+        [
+         "Achat",
+         "− 5 000 €"
+        ]
+       ],
+       "tot": "+ 2 000 €",
+       "totLab": "Annoncé",
+       "tone": "g",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Ce qu'ils\ntaisent",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Distribution",
+         "− 600 €"
+        ],
+        [
+         "Pneus + freins",
+         "− 450 €"
+        ],
+        [
+         "Trajet + CT",
+         "− 150 €"
+        ],
+        [
+         "Négo de l'acheteur",
+         "− 300 €"
+        ]
+       ],
+       "tot": "− 1 500 €",
+       "totLab": "Frais",
+       "tone": "r",
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : la vraie marge."
+    },
+    {
+     "title": "La vraie\nmarge",
+     "comp": [
+      {
+       "k": "big",
+       "v": "500 €",
+       "cap": "pas 2 000 €."
+      }
+     ]
+    },
+    {
+     "title": "Les *vrais* chiffres."
+    }
+   ]
+  },
+  {
+   "id": "D031",
+   "slug": "6-mois-ce-que-je-referais",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "6 mois d'achat-revente,",
+     "title": "parti de\n*400 €*.\nMon bilan."
+    },
+    {
+     "title": "Je referais",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Commencer petit, avec 400 €",
+        "Une Clio, pas une sportive",
+        "Choisir des voitures rapides à vendre"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Je ne referais\npas",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Calculer la marge après l'achat",
+        "Chercher les annonces à la main",
+        "Tout gérer dans 4 outils"
+       ],
+       "start": null
+      }
+     ],
+     "relance": "Image 4 : le conseil que je me donnerais."
+    },
+    {
+     "title": "Mon conseil",
+     "body": "**Calcule tout avant d'acheter.** Le prix max, les frais, la marge. Le reste s'apprend."
+    },
+    {
+     "title": "Tes 6 premiers mois,\n*mieux* que les miens."
+    }
+   ]
+  },
+  {
+   "id": "D032",
+   "slug": "8-cases-premier-achat",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Ton premier achat ?",
+     "title": "8 cases.\nUne case vide\nte *coûte*."
+    },
+    {
+     "title": "Avant d'appeler",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Modèle qui part vite",
+         "✓",
+         "ok"
+        ],
+        [
+         "Moteur fiable",
+         "✓",
+         "ok"
+        ],
+        [
+         "Prix max calculé",
+         "✓",
+         "ok"
+        ],
+        [
+         "Frais estimés",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Avant de payer",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "CT de moins de 6 mois",
+         "✓",
+         "ok"
+        ],
+        [
+         "Factures + carnet",
+         "✓",
+         "ok"
+        ],
+        [
+         "HistoVec",
+         "✓",
+         "ok"
+        ],
+        [
+         "Essai fait",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ],
+     "relance": "Image 4 : s'il manque une case."
+    },
+    {
+     "title": "Une case vide ?",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "Tu attends",
+       "tone": "warn",
+       "sub": "Ou tu baisses ton offre du coût de la case.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Coche tout,\n*puis* achète."
+    }
+   ]
+  },
+  {
+   "id": "D033",
+   "slug": "argent-bloque",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu as acheté ta première ?",
+     "title": "Ton argent\nest *bloqué*\ndedans."
+    },
+    {
+     "title": "Le calcul",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Voiture lente",
+        [
+         "1 500 € de marge",
+         "en 3 mois",
+         "= 1 voiture"
+        ]
+       ],
+       "b": [
+        "Voiture rapide",
+        [
+         "800 € de marge",
+         "par mois",
+         "= 2 400 € en 3 mois"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "La leçon",
+     "body": "Avec un petit budget, **le nombre de tours compte plus** que la marge par voiture.",
+     "relance": "Image 4 : comment faire tourner."
+    },
+    {
+     "title": "Faire tourner",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        "Modèles très demandés",
+        "Prix dans le bas du marché",
+        "Revente dans les 30 jours"
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Fais *tourner*\nton argent."
+    }
+   ]
+  },
+  {
+   "id": "D034",
+   "slug": "critere-ct-carrosserie-meca",
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "slides": [
+    {
+     "kicker": "Tu choisis ta première voiture ?",
+     "title": "3 critères.\nUn seul raté\net c'est *perdu*."
+    },
+    {
+     "title": "1. Le CT",
+     "body": "Sans contre-visite. **Moins de 6 mois.** Sinon tu achètes des réparations inconnues."
+    },
+    {
+     "title": "2. La\ncarrosserie",
+     "body": "Une rayure, ça se chiffre. **Un élément à refaire, ça mange tout.**",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Rayures",
+         "ok"
+        ],
+        [
+         "Aile à refaire",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "relance": "Image 4 : le critère qui ne pardonne pas."
+    },
+    {
+     "title": "3. La mécanique",
+     "body": "**Très saine.** Moteur, boîte, embrayage. Un doute ? Tu passes."
+    },
+    {
+     "title": "Les *3*,\nà chaque fois."
+    }
+   ]
+  }
+ ]
+}
