@@ -3,7 +3,7 @@ import { compteCourant } from "@/lib/compte";
 import { GUIDE, OFFRES, pack, PACKS, STATUTS_ACTIFS, type OffreId } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
 import { supabaseService } from "@/lib/supabase/service";
-import { paiementsActifs, prixParCle, stripe, urlSite } from "@/lib/stripe";
+import { lienPortail, paiementsActifs, prixParCle, stripe, urlSite } from "@/lib/stripe";
 
 // Sérénité n'est plus proposée : elle ne peut plus être souscrite.
 const Corps = z.object({ produit: z.enum(["essentiel", "starter", "croissance", "pro", "guide", ...PACKS.map((p) => p.id)] as [string, ...string[]]) });
@@ -14,7 +14,9 @@ async function clientStripe(id: string, email: string, prenom: string) {
   const { data } = await svc.from("profils").select("stripe_customer_id").eq("id", id).maybeSingle();
   if (data?.stripe_customer_id) return data.stripe_customer_id as string;
   const c = await stripe().customers.create({ email, name: prenom || undefined, metadata: { user_id: id } });
-  await svc.from("profils").update({ stripe_customer_id: c.id }).eq("id", id);
+  // upsert : un compte sans fiche profil (ancien compte) recevrait sinon un nouveau client Stripe à chaque paiement
+  const { error } = await svc.from("profils").upsert({ id, stripe_customer_id: c.id }, { onConflict: "id" });
+  if (error) console.error("profil stripe", error);
   return c.id;
 }
 
@@ -65,8 +67,7 @@ export async function POST(req: Request) {
 
   // Déjà abonné : le changement de formule passe par le portail Stripe, pour ne jamais payer deux abonnements.
   if (compte.abonnement && STATUTS_ACTIFS.includes(compte.abonnement.statut)) {
-    const p = await stripe().billingPortal.sessions.create({ customer, return_url: `${site}/app/compte` });
-    return Response.json({ url: p.url });
+    return Response.json({ url: await lienPortail(customer, site) });
   }
 
   const id = r.data.produit as OffreId;

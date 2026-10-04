@@ -32,6 +32,41 @@ export async function prixParCle(cle: string, def: { nom: string; euros: number;
   }
 }
 
+/** Configuration du portail client Stripe (factures, carte, résiliation, changement de formule).
+    Un compte Stripe en mode réel n'en a pas par défaut : elle est créée ici au premier besoin, puis réutilisée. */
+async function configurationPortail(site: string) {
+  const liste = await stripe().billingPortal.configurations.list({ active: true, limit: 100 });
+  const deja = liste.data.find((c) => c.metadata?.utopicar === "v1");
+  if (deja) return deja.id;
+  const { OFFRES, BENEF } = await import("./offres");
+  const ids = (["essentiel", ...BENEF] as const).map((id) => OFFRES[id]);
+  const prix = await Promise.all(ids.map((o) => prixParCle(o.lookup!, { nom: `Utopicar ${o.famille === "benef" ? "Benef " : ""}${o.nom}`, euros: o.prix, mensuel: true })));
+  const c = await stripe().billingPortal.configurations.create({
+    metadata: { utopicar: "v1" },
+    default_return_url: `${site}/app/compte`,
+    business_profile: { headline: "Utopicar : votre abonnement", privacy_policy_url: `${site}/legal#confidentialite`, terms_of_service_url: `${site}/legal#vente` },
+    features: {
+      invoice_history: { enabled: true },
+      payment_method_update: { enabled: true },
+      customer_update: { enabled: true, allowed_updates: ["email", "address"] },
+      subscription_cancel: { enabled: true, mode: "at_period_end", cancellation_reason: { enabled: true, options: ["too_expensive", "unused", "missing_features", "other"] } },
+      subscription_update: {
+        enabled: true,
+        default_allowed_updates: ["price"],
+        proration_behavior: "create_prorations",
+        products: prix.map((x) => ({ product: typeof x.product === "string" ? x.product : x.product.id, prices: [x.id] })),
+      },
+    },
+  });
+  return c.id;
+}
+
+/** Lien vers le portail client Stripe de la personne. */
+export async function lienPortail(customer: string, site: string) {
+  const configuration = await configurationPortail(site);
+  return (await stripe().billingPortal.sessions.create({ customer, configuration, return_url: `${site}/app/compte` })).url;
+}
+
 /** Adresse publique du site, pour les retours de paiement et les liens des emails. */
 export function urlSite(req: Request) {
   return (process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin).replace(/\/$/, "");
