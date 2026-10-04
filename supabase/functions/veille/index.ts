@@ -8,6 +8,10 @@ const sb = createClient(SB_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { au
 const FN = SB_URL + '/functions/v1/veille';
 let APIFY = 'https://api.apify.com/v2'; // remplaçable par le réglage apify_base (tests)
 const MAX_PHOTOS = 6;
+// Premier passage d'une alerte (nouvelle ou critères modifiés) : toutes les annonces qui correspondent, jusqu'à cette limite.
+// Ensuite, seulement celles parues depuis le passage précédent (lecture adaptative, voir collect).
+const COLLECTE_MAX = 300;
+const VIGNETTES_INITIALES = 40; // collecte complète : vignettes des plus récentes seulement, pas de photos en grand
 // Modèles fiables 3 000 – 7 000 € (même liste que dans l'outil). [marque exigée ou null, modèle]
 const FIAB: [string, RegExp | null, RegExp][] = [
   ['yaris', /toyota/, /\byaris\b(?! ?cross)/], ['aygo', null, /\baygo\b/], ['aygo', /citroen/, /\bc1\b/], ['aygo', /peugeot/, /\b10[78]\b/],
@@ -76,7 +80,7 @@ async function pool<T>(items: T[], n: number, f: (x: T, i: number) => Promise<vo
   let i = 0; await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => { while (i < items.length) { const k = i++; try { await f(items[k], k); } catch (_) { /* photo ignorée */ } } }));
 }
 
-async function ingest(v: any, items: any[], since: number | null = null) {
+async function ingest(v: any, items: any[], since: number | null = null, initiale = false) {
   const onlyF = !!(v.filtres && v.filtres.utp && v.filtres.utp.fiables);
   const all = items.map(norm).filter(r => r.id).map(r => ({ ...r, fiab: fiab(r) }));
   const U = (v.filtres && v.filtres.utp) || {};
@@ -111,10 +115,13 @@ async function ingest(v: any, items: any[], since: number | null = null) {
     const { error } = await sb.from('annonces').upsert(fresh.map(({ photos, ...x }) => ({ ...x, photos })), { onConflict: 'id', ignoreDuplicates: true });
     if (error) throw new Error('insertion : ' + error.message);
     // photos : vignette légère + jusqu'à 6 photos moyennes, stockées en base64 (l'outil ne peut pas charger d'image distante)
+    // collecte complète (des centaines d'annonces) : vignettes des plus récentes seulement, sans photos en grand
+    const avecPhotos = initiale ? [] : fresh;
+    const avecVignette = initiale ? [...fresh].sort((a, b) => String(b.publie_le || '').localeCompare(String(a.publie_le || ''))).slice(0, VIGNETTES_INITIALES) : fresh;
     const jobs: { id: string; idx: number; u: string }[] = [];
-    for (const r of fresh) { (r.photos || []).slice(0, MAX_PHOTOS).forEach((u: string, idx: number) => jobs.push({ id: r.id, idx, u })); }
+    for (const r of avecPhotos) { (r.photos || []).slice(0, MAX_PHOTOS).forEach((u: string, idx: number) => jobs.push({ id: r.id, idx, u })); }
     const thumbs: Record<string, string> = {};
-    await pool(fresh.filter(r => (r.photos || []).length), 6, async (r: any) => { thumbs[r.id] = await dataUrl(withRule(r.photos[0], 'ad-small'), 120000); });
+    await pool(avecVignette.filter(r => (r.photos || []).length), 6, async (r: any) => { thumbs[r.id] = await dataUrl(withRule(r.photos[0], 'ad-small'), 120000); });
     const photos: any[] = [];
     await pool(jobs, 8, async (j) => { photos.push({ annonce_id: j.id, idx: j.idx, data: await dataUrl(withRule(j.u, 'ad-image'), 700000) }); });
     for (const [id, t] of Object.entries(thumbs)) await sb.from('annonces').update({ vignette: t }).eq('id', id);
@@ -191,9 +198,11 @@ async function collect(v: any, R: Record<string, string>) {
   const r = await fetch(`${APIFY}/actor-runs/${v.run_id}?token=${encodeURIComponent(R.apify_token || '')}`);
   const t = await r.text(); if (!r.ok) throw new Error(apifyErr(r.status, t));
   const run = JSON.parse(t).data;
+  const { data: cur } = await sb.from('veille_passages').select('demandees, initiale').eq('id', v.run_passage).maybeSingle();
+  const initiale = !!cur?.initiale;
   if (['READY', 'RUNNING'].includes(run.status)) {
     const age = Date.now() - new Date(v.run_debut || run.startedAt).getTime();
-    if (age < 12 * 60000) return { veille: v.id, run: v.run_id, statut: 'en cours' };
+    if (age < (initiale ? 25 : 12) * 60000) return { veille: v.id, run: v.run_id, statut: 'en cours' };
     await fetch(`${APIFY}/actor-runs/${v.run_id}/abort?token=${encodeURIComponent(R.apify_token)}`, { method: 'POST' });
     run.status = 'TIMED-OUT';
   }
@@ -203,20 +212,25 @@ async function collect(v: any, R: Record<string, string>) {
   const cout = runCost(run); let res: any = { recues: 0, nouvelles: 0, fresh: [] }; let err: string | null = null; let mail: string | null = null;
   if (run.status === 'SUCCEEDED') {
     try {
-      const d = await fetch(`${APIFY}/datasets/${run.defaultDatasetId}/items?token=${encodeURIComponent(R.apify_token)}&clean=true&format=json&limit=200`);
+      const d = await fetch(`${APIFY}/datasets/${run.defaultDatasetId}/items?token=${encodeURIComponent(R.apify_token)}&clean=true&format=json&limit=${Math.max(200, (Number(cur?.demandees) || 0) + 20)}`);
       const items = await d.json();
       // Fenêtre = la fréquence choisie (toutes les heures : la dernière heure ; 15 min : les 15 dernières minutes),
       // élargie seulement si le passage précédent est plus ancien (pause de nuit, passage raté) pour ne rien perdre.
       const { data: prev } = await sb.from('veille_passages').select('debut').eq('veille_id', v.id).eq('statut', 'ok').neq('id', v.run_passage).order('debut', { ascending: false }).limit(1);
       const every = (Number(v.intervalle_min) || Number(R.frequence_minutes) || 60) * 60000;
       const t0 = Date.parse(v.run_debut || run.startedAt) || Date.now();
-      const since = prev && prev.length ? t0 - Math.max(every, t0 - Date.parse(prev[0].debut)) - 5 * 60000 : null; // 1er passage : tout
-      res = await ingest(v, Array.isArray(items) ? items : [], since);
+      // collecte complète (1er passage ou critères modifiés) : tout est gardé, sans fenêtre de temps
+      const since = !initiale && prev && prev.length ? t0 - Math.max(every, t0 - Date.parse(prev[0].debut)) - 5 * 60000 : null;
+      res = await ingest(v, Array.isArray(items) ? items : [], since, initiale);
       try {
-        const { data: cur } = await sb.from('veille_passages').select('demandees').eq('id', v.run_passage).single();
         const nb = Number(v.nb_par_passage) || 20; const asked = Number(cur?.demandees) || nb;
         const pubs = (Array.isArray(items) ? items : []).map(norm).map((r: any) => r.publie_le ? Date.parse(r.publie_le) : NaN).filter((x: number) => !isNaN(x));
-        if (since != null && pubs.length) {
+        if (initiale) {
+          // après la collecte complète : on lit à peu près ce qui paraît pendant un intervalle, avec de la marge
+          const parIntervalle = pubs.filter((t: number) => t >= t0 - every).length;
+          // collecte vide (lecture bloquée) : elle reste à faire, le passage suivant la refait en entier
+          if (res.recues) res.prochain = pubs.length ? Math.max(5, Math.min(60, Math.ceil(parIntervalle * 1.5) + 3)) : nb;
+        } else if (since != null && pubs.length) {
           const recentes = pubs.filter((t: number) => t >= since).length;
           const trou = pubs.length >= asked && Math.min(...pubs) >= since; // tout le lot est dans la fenêtre : il y en a peut-être plus
           res.recentes = recentes;
@@ -227,8 +241,9 @@ async function collect(v: any, R: Record<string, string>) {
     } catch (e) { err = String((e as Error).message || e); }
   } else err = `Run Apify ${run.status}` + (run.statusMessage ? ` : ${String(run.statusMessage).slice(0, 160)}` : '');
   // pas d'e-mail au tout premier passage d'une recherche (vous êtes devant l'écran, et tout serait « nouveau »)
-  const { count: deja } = !err && res.nouvelles > 0 ? await sb.from('veille_passages').select('id', { count: 'exact', head: true }).eq('veille_id', v.id).eq('statut', 'ok') : { count: 0 } as any;
-  if (!err && res.nouvelles > 0 && (deja || 0) > 0 && v.notifier !== false && R.resend_key && (v.email || R.email_notif)) {
+  // ni à la collecte complète (tout serait « nouveau ») : seulement pour les annonces parues depuis
+  const { count: deja } = !err && !initiale && res.nouvelles > 0 ? await sb.from('veille_passages').select('id', { count: 'exact', head: true }).eq('veille_id', v.id).eq('statut', 'ok') : { count: 0 } as any;
+  if (!err && !initiale && res.nouvelles > 0 && (deja || 0) > 0 && v.notifier !== false && R.resend_key && (v.email || R.email_notif)) {
     try {
       const list = await avecCote(v, res.fresh || []);
       if (list.length) { const m = mailNouvelles(v, list); mail = await sendMail(R, m.subject, m.html, v.email); } else mail = 'aucune sous la cote';
@@ -244,24 +259,26 @@ async function collect(v: any, R: Record<string, string>) {
   await sb.from('veille_passages').update({ fin: new Date().toISOString(), statut: err ? 'erreur' : 'ok', trouvees: res.recues, recues: res.recues, nouvelles: res.nouvelles, cout_usd: cout, erreur: err, mail, recentes: res.recentes ?? null }).eq('id', v.run_passage);
   await sb.from('veilles').update({ derniere_erreur: err, derniers_nouveaux: res.nouvelles, ...(res.prochain ? { prochain_nb: res.prochain } : {}) }).eq('id', v.id);
   if (relance) { try { await start(v, R); } catch (_) { /* le prochain passage prendra le relais */ } }
-  return { veille: v.id, statut: run.status, recues: res.recues, nouvelles: res.nouvelles, cout, err, mail, relance };
+  return { veille: v.id, statut: run.status, recues: res.recues, nouvelles: res.nouvelles, cout, err, mail, relance, initiale };
 }
 
 async function start(v: any, R: Record<string, string>) {
   const { utp: _utp, ...f } = v.filtres || {};
-  // lecture adaptative : seulement ce qui a pu paraître depuis le dernier passage (voir collect), au lieu de tout relire
-  const demandees = Math.max(5, Math.min(60, Number(v.prochain_nb) || Number(v.nb_par_passage) || 20));
+  // 1er passage (ou critères modifiés : prochain_nb remis à vide) : toutes les annonces qui correspondent ;
+  // ensuite, lecture adaptative : seulement ce qui a pu paraître depuis le dernier passage (voir collect)
+  const initiale = v.prochain_nb == null;
+  const demandees = initiale ? Math.max(20, Math.min(1000, Number(R.collecte_initiale_max) || COLLECTE_MAX)) : Math.max(5, Math.min(60, Number(v.prochain_nb) || Number(v.nb_par_passage) || 20));
   const input = { category: '2', sort: 'newest', max_results: demandees, owner_type: 'private', proxyConfiguration: { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'], apifyProxyCountry: 'FR' }, ...f };
   if (input.mileage_max != null && input.mileage_min == null) (input as any).mileage_min = 0; // l'acteur ignore parfois un max seul
   const hook = [{ eventTypes: ['ACTOR.RUN.SUCCEEDED', 'ACTOR.RUN.FAILED', 'ACTOR.RUN.TIMED_OUT', 'ACTOR.RUN.ABORTED'], requestUrl: `${FN}?k=${encodeURIComponent(R.cle_interne)}&veille=${v.id}` }];
-  const url = `${APIFY}/acts/${encodeURIComponent(R.apify_actor || 'scrapifier~leboncoin-universal-scraper-vehicles')}/runs?token=${encodeURIComponent(R.apify_token)}&timeout=300&memory=1024&webhooks=${encodeURIComponent(btoa(JSON.stringify(hook)))}`;
+  const url = `${APIFY}/acts/${encodeURIComponent(R.apify_actor || 'scrapifier~leboncoin-universal-scraper-vehicles')}/runs?token=${encodeURIComponent(R.apify_token)}&timeout=${initiale ? 900 : 300}&memory=1024&webhooks=${encodeURIComponent(btoa(JSON.stringify(hook)))}`;
   const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
   const t = await r.text();
   if (!r.ok) { const err = apifyErr(r.status, t); await sb.from('veilles').update({ derniere_erreur: err, derniere_execution: new Date().toISOString() }).eq('id', v.id); await sb.from('veille_passages').insert({ veille_id: v.id, fin: new Date().toISOString(), statut: 'erreur', erreur: err }); return { veille: v.id, err }; }
   const run = JSON.parse(t).data;
-  const { data: p } = await sb.from('veille_passages').insert({ veille_id: v.id, run_id: run.id, statut: 'en cours', demandees }).select('id').single();
+  const { data: p } = await sb.from('veille_passages').insert({ veille_id: v.id, run_id: run.id, statut: 'en cours', demandees, initiale }).select('id').single();
   await sb.from('veilles').update({ run_id: run.id, run_debut: new Date().toISOString(), run_passage: p?.id, derniere_execution: new Date().toISOString(), derniere_erreur: null }).eq('id', v.id);
-  return { veille: v.id, run: run.id, input };
+  return { veille: v.id, run: run.id, input, initiale };
 }
 
 
