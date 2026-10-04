@@ -2,17 +2,17 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { cx } from "../ui";
 
-type Ligne = { l: string; s: string; v: number; sens?: "up" | "dn" | "cle"; avant?: string; apres?: string };
+type Ligne = { l: string; s: string; v: number | null; sens?: "up" | "dn" | "cle"; avant?: string; sinon?: string };
 type Exemple = {
   onglet: string;
   titre: string;
   prix: number;
   infos: string;
   lieu: string;
-  photos: string;
-  couleur: string;
-  citation: { t: string; m?: boolean }[];
-  score: number;
+  nbPhotos: number;
+  photos: string[];
+  citation: { t: string; m?: "bad" | "ok" }[];
+  fiab: { note: number; moteur: string };
   ton: "ok" | "warn" | "bad";
   verdict: string;
   phrase: string;
@@ -20,42 +20,50 @@ type Exemple = {
   message: string;
 };
 
+/* Trois vraies annonces Leboncoin relevées le 3 octobre 2026 (une recherche par modèle) et passées dans l'outil :
+   cote, défauts, fiabilité, prix à proposer et message sont ceux qu'il a rendus. Photos de l'annonce, sans plaque lisible. */
 const EXEMPLES: Record<string, Exemple> = {
   clio: {
-    onglet: "Clio IV", titre: "Renault Clio IV 1.5 dCi 90 Intens", prix: 7400, infos: "2015 · 142 000 km · Diesel · Manuelle", lieu: "Particulier · Melun (77)", photos: "12 photos", couleur: "#3a342e",
-    citation: [{ t: "« Très bon état, CT ok, " }, { t: "petit bruit à l'embrayage", m: true }, { t: ", " }, { t: "pneus à prévoir", m: true }, { t: ". Prix ferme, affaire à saisir. »" }],
-    score: 48, ton: "bad", verdict: "Fausse bonne affaire", phrase: "18 % au-dessus de la cote une fois les travaux comptés.",
+    onglet: "Clio IV", titre: "Renault Clio IV 0.9 TCe 90", prix: 6700, infos: "2013 · 57 840 km · Essence · Manuelle", lieu: "Particulier · Barcelonnette (04)", nbPhotos: 3,
+    photos: ["/images/demo/clio-1.webp", "/images/demo/clio-2.webp", "/images/demo/clio-3.webp"],
+    citation: [{ t: "« Seulement 57 840 km, 2 pneus avant neufs. " }, { t: "Distribution à contrôler", m: "bad" }, { t: ". À signaler : " }, { t: "un choc sur le passage de roue avant gauche", m: "bad" }, { t: ". Vendu en l'état. »" }],
+    fiab: { note: 8, moteur: "0.9 TCe 90" },
+    ton: "ok", verdict: "Bon prix", phrase: "Moins chère que les Clio comparables, choc compris. Moteur de la liste fiable.",
     lignes: [
-      { l: "Cote du marché", s: "Même version, même âge, même kilométrage", v: 6950 },
-      { l: "Défauts repérés dans le texte", s: "Embrayage (500 à 900 €) · pneus (150 à 350 €)", v: 800, sens: "up", avant: "+\u00a0" },
-      { l: "Prix réel (prix + travaux)", s: "Au-dessus de la cote", v: 8200, sens: "up" },
-      { l: "Prix à proposer", s: "Pour garder le prix réel sous la cote", v: 6100, sens: "cle" },
+      { l: "Cote du marché", s: "174 Clio IV comparables en vente", v: 7550 },
+      { l: "Défauts repérés dans le texte", s: "Choc de carrosserie (150 à 700 €)", v: 425, sens: "up", avant: "+\u00a0" },
+      { l: "Prix réel (prix + réparations)", s: "Sous la cote", v: 7125, sens: "dn" },
+      { l: "Prix à proposer", s: "Ouverture conseillée, sans vexer le vendeur", v: 6250, sens: "cle" },
     ],
-    message: "Bonjour, votre Clio est-elle toujours disponible ? Vous parlez d'un bruit à l'embrayage : a-t-il été diagnostiqué ?",
+    message: "Bonjour, votre Renault Clio m'intéresse. Est-elle toujours disponible, et pourriez-vous m'envoyer le contrôle technique et les factures d'entretien ?",
   },
   p208: {
-    onglet: "208", titre: "Peugeot 208 1.6 BlueHDi 100 Active", prix: 7900, infos: "2016 · 118 000 km · Diesel · Manuelle", lieu: "Particulier · Évry (91)", photos: "18 photos", couleur: "#2f3a44",
-    citation: [{ t: "« Entretien Peugeot, " }, { t: "courroie faite à 110 000 km", m: true }, { t: ", factures, CT vierge. Vente cause achat familiale. »" }],
-    score: 82, ton: "ok", verdict: "Bonne affaire", phrase: "Sous la cote, entretien prouvé : à appeler vite.",
+    onglet: "208", titre: "Peugeot 208 1.2 PureTech 110 Allure", prix: 7190, infos: "2016 · 116 789 km · Essence · Manuelle", lieu: "Professionnel · Vitrolles (13)", nbPhotos: 12,
+    photos: ["/images/demo/208-1.webp", "/images/demo/208-2.webp", "/images/demo/208-3.webp", "/images/demo/208-4.webp"],
+    citation: [{ t: "« Peugeot 208 " }, { t: "1.2 PureTech", m: "bad" }, { t: " Allure 5P 110 ch. Mise en circulation 2016. 116 789 km. » Aucun mot sur l'entretien ni sur la courroie." }],
+    fiab: { note: 4, moteur: "1.2 PureTech 110" },
+    ton: "bad", verdict: "Déconseillée", phrase: "Moteur à éviter (courroie dans l'huile, consommation d'huile) et prix au-dessus du marché.",
     lignes: [
-      { l: "Cote du marché", s: "Même version, même âge, même kilométrage", v: 8450 },
-      { l: "Défauts repérés dans le texte", s: "Aucun défaut coûteux signalé", v: 0, sens: "dn" },
-      { l: "Écart avec la cote", s: "Prix sous le marché", v: -550, sens: "dn" },
-      { l: "Prix à proposer", s: "Ouverture polie, marge de négociation", v: 7500, sens: "cle" },
+      { l: "Cote du marché", s: "21 annonces comparables", v: 5950 },
+      { l: "Travaux à prévoir", s: "Pneus, freins, révision, contrôle de la courroie", v: 1650, sens: "up", avant: "+\u00a0" },
+      { l: "Prix réel (prix + travaux)", s: "Bien au-dessus de la cote", v: 8840, sens: "up" },
+      { l: "Prix à proposer", s: "Moteur réputé fragile : mieux vaut passer", v: null, sens: "cle", sinon: "Passez" },
     ],
-    message: "Bonjour, votre 208 est-elle toujours disponible ? Je peux passer la voir cette semaine : les factures d'entretien sont-elles disponibles ?",
+    message: "Bonjour, avez-vous le carnet d'entretien complet ? La courroie de distribution et la consommation d'huile ont-elles été vérifiées ?",
   },
   yaris: {
-    onglet: "Yaris", titre: "Toyota Yaris III 1.33 VVT-i Dynamic", prix: 8900, infos: "2014 · 96 000 km · Essence · Manuelle", lieu: "Professionnel · Meaux (77)", photos: "9 photos", couleur: "#44322b",
-    citation: [{ t: "« Première main, " }, { t: "carnet partiel", m: true }, { t: ", " }, { t: "plaquettes à changer", m: true }, { t: ". Garantie 3 mois. »" }],
-    score: 61, ton: "warn", verdict: "À négocier", phrase: "Moteur fiable, mais prix au-dessus de la cote.",
+    onglet: "Yaris", titre: "Toyota Yaris III 100 VVT-i Dynamic", prix: 10999, infos: "2014 · 97 959 km · Essence · Manuelle", lieu: "Professionnel · Paris (75)", nbPhotos: 12,
+    photos: ["/images/demo/yaris-1.webp", "/images/demo/yaris-2.webp", "/images/demo/yaris-3.webp", "/images/demo/yaris-4.webp"],
+    citation: [{ t: "« Toyota Yaris 100 VVT-i Dynamic 5p, " }, { t: "garantie Label Toyota Occasions 12 mois", m: "ok" }, { t: ". Caméra de recul, régulateur, écran tactile. »" }],
+    fiab: { note: 8, moteur: "1.33 VVT-i" },
+    ton: "warn", verdict: "Trop cher", phrase: "Moteur fiable et garantie 12 mois, mais près de 3 000 € au-dessus des Yaris comparables.",
     lignes: [
-      { l: "Cote du marché", s: "Même version, même âge, même kilométrage", v: 8300 },
-      { l: "Défauts repérés dans le texte", s: "Plaquettes (150 à 400 €) · carnet incomplet", v: 275, sens: "up", avant: "+\u00a0" },
-      { l: "Prix réel (prix + travaux)", s: "Au-dessus de la cote", v: 9175, sens: "up" },
-      { l: "Prix à proposer", s: "Demander les factures manquantes", v: 8000, sens: "cle" },
+      { l: "Cote du marché", s: "Estimation Leboncoin : 7 930 à 8 770 €", v: 8350 },
+      { l: "Défauts vus sur les photos", s: "Pneus avant usés (250 à 350 €)", v: 300, sens: "up", avant: "+\u00a0" },
+      { l: "Prix réel (prix + réparations)", s: "Au-dessus de la cote", v: 11299, sens: "up" },
+      { l: "Prix à proposer", s: "À négocier fermement, ou comparer d'autres Yaris", v: 8050, sens: "cle" },
     ],
-    message: "Bonjour, la Yaris est-elle toujours disponible ? Pouvez-vous m'envoyer les factures d'entretien manquantes ?",
+    message: "Bonjour, je suis intéressé par cette Yaris Dynamic. Avez-vous le CT et l'HistoVec à jour ? Je souhaite valider l'historique d'entretien avant de me déplacer.",
   },
 };
 const CLES = Object.keys(EXEMPLES);
@@ -100,10 +108,10 @@ function Valeur({ ligne, actif, delai }: { ligne: Ligne; actif: boolean; delai: 
     const t = setTimeout(() => setGo(true), reduit() ? 0 : delai);
     return () => clearTimeout(t);
   }, [actif, delai]);
-  const v = useCompte(Math.abs(ligne.v), go);
+  const v = useCompte(Math.abs(ligne.v ?? 0), go);
   return (
     <span className={cx("num font-display text-lg font-semibold", ligne.sens === "up" && "text-bad", ligne.sens === "dn" && "text-ok", ligne.sens === "cle" && "text-o2")}>
-      {(ligne.avant ?? "") + (ligne.v < 0 ? "−\u00a0" : "") + Math.round(v).toLocaleString("fr-FR") + "\u00a0€"}
+      {ligne.v == null ? ligne.sinon : (ligne.avant ?? "") + (ligne.v < 0 ? "−\u00a0" : "") + Math.round(v).toLocaleString("fr-FR") + "\u00a0€"}
     </span>
   );
 }
@@ -112,6 +120,7 @@ export function Demo() {
   const [cle, setCle] = useState("clio");
   const [etape, setEtape] = useState(4); // 0-3 : analyse en cours ; 4 : résultat
   const [copie, setCopie] = useState(false);
+  const [photo, setPhoto] = useState(0);
   const boite = useRef<HTMLDivElement>(null);
   const onglets = useRef<(HTMLButtonElement | null)[]>([]);
   const minuteurs = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -121,6 +130,7 @@ export function Demo() {
     minuteurs.current.forEach(clearTimeout);
     minuteurs.current = [];
     setCle(k);
+    setPhoto(0);
     setCopie(false);
     if (reduit()) return setEtape(4);
     setEtape(0);
@@ -156,7 +166,8 @@ export function Demo() {
   }
 
   const fini = etape >= 4;
-  const score = useCompte(ex.score, fini, 1300);
+  const score = useCompte(ex.fiab.note, fini, 1300);
+  const p = Math.min(photo, ex.photos.length - 1);
   const r = 38;
   const tour = 2 * Math.PI * r;
 
@@ -190,23 +201,27 @@ export function Demo() {
             <span>Annonce Leboncoin</span>
             <span>{ex.lieu}</span>
           </div>
-          <div className="relative overflow-hidden rounded-2xl bg-[#1d1814] p-4">
-            <span className="absolute right-3 top-3 rounded-full bg-black/50 px-2 py-0.5 text-xs text-ink-2">{ex.photos}</span>
-            <svg viewBox="0 0 320 130" className="w-full" aria-hidden="true">
-              <path d="M18 96c0-10 6-16 16-18l38-8 36-30c8-6 16-9 26-9h72c12 0 22 5 30 13l24 26 32 6c12 2 20 10 20 22v10c0 4-3 7-7 7H25c-4 0-7-3-7-7V96z" fill={ex.couleur} />
-              <path d="M118 44c6-5 12-7 20-7h36v33h-86l30-26zm66-7h32c9 0 17 4 23 10l20 23h-75V37z" fill="#221e1b" />
-              <circle cx="82" cy="108" r="19" fill="#0e0c0b" />
-              <circle cx="82" cy="108" r="8" fill="#55504a" />
-              <circle cx="252" cy="108" r="19" fill="#0e0c0b" />
-              <circle cx="252" cy="108" r="8" fill="#55504a" />
-            </svg>
+          <div className="relative overflow-hidden rounded-2xl bg-[#1d1814]">
+            {/* eslint-disable-next-line @next/next/no-img-element -- photos de l'annonce, déjà au bon format */}
+            <img key={ex.photos[p]} src={ex.photos[p]} alt={`${ex.titre}, photo ${p + 1} de l'annonce`} width={800} height={600} className="aspect-[4/3] w-full object-cover" />
+            <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs text-ink">{ex.nbPhotos} photos</span>
             {!fini && <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 animate-pulse bg-gradient-to-b from-o/25 to-transparent" aria-hidden="true" />}
           </div>
+          <ul className="mt-2 grid grid-cols-4 gap-2" aria-label="Photos de l'annonce">
+            {ex.photos.map((src, i) => (
+              <li key={src}>
+                <button type="button" onClick={() => setPhoto(i)} aria-label={`Voir la photo ${i + 1}`} aria-pressed={i === p} className={cx("block w-full overflow-hidden rounded-lg border-2 transition", i === p ? "border-o" : "border-transparent opacity-70 hover:opacity-100")}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- vignette */}
+                  <img src={src} alt="" width={200} height={150} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+                </button>
+              </li>
+            ))}
+          </ul>
           <h3 className="mt-4 font-display text-lg font-semibold">{ex.titre}</h3>
           <p className="num font-display text-2xl font-semibold text-o2">{euros(ex.prix)}</p>
           <p className="text-sm text-ink-3">{ex.infos}</p>
           <blockquote className="mt-3 border-l-2 border-line-2 pl-3 text-sm text-ink-2">
-            {ex.citation.map((c, i) => (c.m ? <mark key={i} className="rounded bg-bad/20 px-1 text-ink">{c.t}</mark> : <span key={i}>{c.t}</span>))}
+            {ex.citation.map((c, i) => (c.m ? <mark key={i} className={cx("rounded px-1 text-ink", c.m === "ok" ? "bg-ok/20" : "bg-bad/20")}>{c.t}</mark> : <span key={i}>{c.t}</span>))}
           </blockquote>
         </article>
 
@@ -220,7 +235,7 @@ export function Demo() {
         <article className="carte p-5" aria-live="polite" aria-busy={!fini}>
           <div className="mb-4 flex justify-between text-xs text-ink-3">
             <span>Fiche Utopicar</span>
-            <span>{fini ? "Calculée en 9 s" : "Analyse en cours…"}</span>
+            <span>{fini ? "Analyse terminée" : "Analyse en cours…"}</span>
           </div>
           {!fini ? (
             <ol className="grid gap-3">
@@ -239,13 +254,17 @@ export function Demo() {
                 <div className="relative size-[86px] shrink-0">
                   <svg viewBox="0 0 86 86" className="size-full -rotate-90" aria-hidden="true">
                     <circle cx="43" cy="43" r={r} fill="none" stroke="rgb(244 241 236 / .1)" strokeWidth="7" />
-                    <circle cx="43" cy="43" r={r} fill="none" stroke={ANNEAU[ex.ton]} strokeWidth="7" strokeLinecap="round" strokeDasharray={tour} strokeDashoffset={tour * (1 - score / 100)} />
+                    <circle cx="43" cy="43" r={r} fill="none" stroke={ANNEAU[ex.ton]} strokeWidth="7" strokeLinecap="round" strokeDasharray={tour} strokeDashoffset={tour * (1 - score / 10)} />
                   </svg>
-                  <b className="num absolute inset-0 grid place-items-center font-display text-2xl">{Math.round(score)}</b>
+                  <span className="absolute inset-0 grid place-content-center text-center leading-none">
+                    <b className="num font-display text-2xl">{Math.round(score)}<small className="text-sm text-ink-3">/10</small></b>
+                    <small className="mt-1 text-[10px] text-ink-3">fiabilité</small>
+                  </span>
                 </div>
                 <div>
                   <span className={cx("inline-block rounded-full border px-3 py-1 text-sm font-semibold", TON[ex.ton])}>{ex.verdict}</span>
                   <p className="mt-1.5 text-sm text-ink-2">{ex.phrase}</p>
+                  <p className="mt-1 text-xs text-ink-3">Moteur {ex.fiab.moteur} : {ex.fiab.note} / 10</p>
                 </div>
               </div>
               <ul className="divide-y divide-line">
@@ -278,7 +297,7 @@ export function Demo() {
           )}
         </article>
       </div>
-      <p className="mt-5 text-center text-xs text-ink-3">Exemples construits à partir d&apos;annonces réelles. Chiffres arrondis.</p>
+      <p className="mt-5 text-center text-xs text-ink-3">Trois vraies annonces Leboncoin relevées le 3 octobre 2026 et analysées par l&apos;outil. Chiffres arrondis.</p>
     </div>
   );
 }

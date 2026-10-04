@@ -1,7 +1,7 @@
 /* Moteurs et boîtes à éviter, modèles fiables : liste fixe, jamais par l'IA.
    Port de EVITER_GLOBAL / FIABLES / fiabRate de l'outil UTOPICAR Garage. */
 
-const BOITE_FRAGILE: [RegExp, string] = [/\bedc\b|\bdsg\b|powershift|easytronic|quickshift|\bmmt\b|2-?tronic|\bbmp ?6?\b|\betg ?[56]?\b|\begs\b|i-?shift|\bal4\b|\bdp0\b/, "Boîte robotisée ou automatique réputée fragile"];
+const BOITE_FRAGILE: [RegExp, string] = [/\bedc\b|\bdsg\b|powershift|easytronic|quickshift|\bmmt\b|2-?tronic|\bbmp ?6\b|bo[iî]te manuelle pilot[eé]e|\betg ?[56]?\b|\begs\b|i-?shift|\bal4\b|\bdp0\b/, "Boîte robotisée ou automatique réputée fragile"];
 
 const EVITER_GLOBAL: [RegExp, string][] = [
   [/pure ?tech|\b1[.,]2 ?vti\b|\b1[.,]0 ?vti\b|\b(68|72|82) ?ch\b.*\b(208|c3|2008|c-?elysee|301)\b/, "1.0 / 1.2 PureTech ou VTi 3 cylindres : courroie dans l'huile, consommation d'huile"],
