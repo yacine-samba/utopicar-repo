@@ -1,6 +1,6 @@
 import "server-only";
 import { supabaseServeur } from "@/lib/supabase/serveur";
-import { coteGeneration, estimerDans, generationDe, modeleDe, normEn, normBo, points, type Cote, type Estimation } from "./moteur";
+import { coteGeneration, estimerDans, generationDe, modeleDe, normEn, normBo, points, reconnaitre, type Cote, type Estimation } from "./moteur";
 
 /* Base du marché (annonces relevées, cotes Garage, recherches suivies) et moteur de cote de l'outil Garage, côté serveur. */
 
@@ -53,7 +53,12 @@ export class Cotes {
 export async function marcheModele(base: string, y0?: number | null, y1?: number | null) {
   const m = modeleDe(base);
   if (!m) return null;
-  const lignes = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null)).map((l) => {
+  // annonce rangée dans le mauvais modèle par le vendeur (« BMW Série 1 116i » parmi les Série 3) : le titre fait foi
+  const autreModele = (l: Ligne) => {
+    const r = reconnaitre({ titre: l.titre });
+    return !!r.modele && r.base !== m.base;
+  };
+  const lignes = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null)).filter((l) => !autreModele(l)).map((l) => {
     const g = generationDe(m.base, versMoteur(l));
     return { ...l, gen: g?.id ?? null, genLabel: g?.label ?? "", variant: g?.variant ?? null, varianteEcrite: !!g?.varianteEcrite, body: g?.body ?? null };
   });
