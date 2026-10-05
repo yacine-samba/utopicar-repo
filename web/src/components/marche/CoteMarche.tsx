@@ -9,7 +9,8 @@ import { NuageCote } from "./NuageCote";
 type AnnonceCotee = { id: string; ch?: number | null; titre: string; prix: number; annee: number | null; km: number | null; energie: string; boite: string; pro: boolean; lieu: string; url: string | null; badge: string; cote: CoteAnnonce | null };
 type Groupe = { cle: string; base: string; nom: string; gen: string | null; genLabel: string; energie: string; nCote: number; annonces: AnnonceCotee[]; points: PointCote[] };
 type Releve = { src: string; total: number; enregistrees: number; groupes: Groupe[]; inconnues: { id: string; titre: string; prix: number; url: string }[]; nInconnues: number; ms: number };
-type Place = { nom: string; gen: string; estimation: CoteAnnonce | null; points: PointCote[]; courbe: { km: number; P: number | null }[] };
+type Profil = { energie: string; moteur: string | null; ch: number | null; chDeduit: boolean; carrosserie: string | null };
+type Place = { nom: string; gen: string; profil: Profil; estimation: CoteAnnonce | null; points: PointCote[]; courbe: { km: number; P: number | null }[] };
 
 const eur = (v: number | null | undefined) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 const n = (s: string) => (s.trim() && /^\d+$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
@@ -237,7 +238,11 @@ function LigneCotee({ a }: { a: AnnonceCotee }) {
 
 function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
   const [choix, setChoix] = useState<Choix>({ marque: "", modele: "", gen: "" });
-  const [v, setV] = useState({ energie: "", boite: "", annee: "", km: "", prix: "", version: "", ch: "" });
+  const [v, setV] = useState({ energie: "", boite: "", annee: "", km: "", prix: "", version: "", ch: "", carrosserie: "", portes: "" });
+  // versions de la génération choisie (E90 berline, E91 Touring, E92 coupé, E93 cabriolet)
+  const gens = cat.find((m) => m.k === choix.marque)?.m.find((x) => x.k === choix.modele)?.g ?? [];
+  const parAnnee = gens.filter((g) => n(v.annee) != null && g.y0 <= n(v.annee)! && n(v.annee)! <= g.y1);
+  const versions = (choix.gen ? gens.find((g) => g.id === choix.gen) : parAnnee.length === 1 ? parAnnee[0] : undefined)?.v ?? [];
   const [etat, setEtat] = useState("");
   const [charge, setCharge] = useState(false);
   const [res, setRes] = useState<Place | null>(null);
@@ -253,7 +258,7 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
       const r = await fetch("/api/marche/cote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voiture: { base: `${choix.marque} ${choix.modele}`, gen: choix.gen || undefined, energie: v.energie, boite: v.boite, annee: n(v.annee), km: n(v.km), prix: n(v.prix), version: v.version, ch: n(v.ch) } }),
+        body: JSON.stringify({ voiture: { base: `${choix.marque} ${choix.modele}`, gen: choix.gen || undefined, energie: v.energie, boite: v.boite, annee: n(v.annee), km: n(v.km), prix: n(v.prix), version: v.version, ch: n(v.ch), portes: n(v.portes) ?? undefined, carrosserie: versions.some((x) => x.id === v.carrosserie) ? v.carrosserie : undefined } }),
       });
       const j = await r.json().catch(() => null);
       if (!r.ok) return setEtat(j?.erreur ?? "Le calcul n'a pas abouti.");
@@ -288,9 +293,30 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
           </select>
         </label>
         <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Version, finition, options</span>
-          <input value={v.version} onChange={maj("version")} placeholder="ex. 1.4 100 ch Cosmo, GPS, clim auto" className={inputCls} />
+          <span className="text-ink-2">Moteur, finition, options</span>
+          <input value={v.version} onChange={maj("version")} placeholder="ex. 335i Luxe, 1.5 dCi 90 Zen, GPS" className={inputCls} />
         </label>
+        {versions.length > 1 ? (
+          <label className="grid gap-1.5 text-sm">
+            <span className="text-ink-2">Carrosserie</span>
+            <select value={v.carrosserie} onChange={maj("carrosserie")} className={inputCls}>
+              <option value="">Lue dans la version, sinon {versions[0].l}</option>
+              {versions.map((x) => (
+                <option key={x.id} value={x.id}>{x.l}</option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <label className="grid gap-1.5 text-sm">
+            <span className="text-ink-2">Portes</span>
+            <select value={v.portes} onChange={maj("portes")} className={inputCls}>
+              <option value="">Non précisé</option>
+              {[2, 3, 4, 5].map((p) => (
+                <option key={p} value={p}>{p} portes</option>
+              ))}
+            </select>
+          </label>
+        )}
         <div className="grid grid-cols-2 gap-3">
           <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Année</span>
@@ -321,7 +347,13 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
 
       {res && (
         <section aria-labelledby="pv-res" className="grid gap-5">
-          <h2 id="pv-res" className="font-display text-xl font-semibold">{res.nom}</h2>
+          <div className="grid gap-1">
+            <h2 id="pv-res" className="font-display text-xl font-semibold">{res.nom}</h2>
+            <p className="text-sm text-ink-2">
+              Coté comme :{" "}
+              {[res.profil.moteur ?? "motorisation non reconnue", res.profil.ch ? `${res.profil.ch} ch${res.profil.chDeduit ? " (puissance de ce moteur)" : ""}` : "puissance inconnue", e?.carrosserie, res.profil.energie, e?.finition ? `finition ${e.finition}` : null].filter(Boolean).join(" · ")}
+            </p>
+          </div>
           {e ? (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <Chiffre l="Cote" v={eur(e.P)} s={`fourchette ${eur(e.lo)} – ${eur(e.hi)}`} />
@@ -332,7 +364,7 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
           ) : (
             <p className="text-ink-2">Pas d&apos;estimation possible pour cette voiture.</p>
           )}
-          {e && (e.ajust?.length || e.why) ? (
+          {e ? (
             <div className="carte grid gap-1 p-4 text-sm text-ink-2">
               {e.ajust?.map((a) => (
                 <p key={a.l}>
@@ -340,7 +372,11 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
                 </p>
               ))}
               {e.why && <p className="text-warn">Confiance {e.conf} : {e.why}</p>}
-              <p className="text-xs text-ink-3">Cote calculée sur {e.n} annonces de la même génération et de la même énergie.</p>
+              <p className="text-xs text-ink-3">
+                {e.base
+                  ? `Cote calculée sur ${e.n} annonces du même moteur (${res.profil.moteur}) et de la même génération : année, kilométrage, carrosserie, finition, boîte et équipements font le reste.`
+                  : `Cote calculée sur ${e.n} annonces de la même génération et de la même énergie, la puissance de chacune prise en compte (pas assez d'annonces de ce moteur pour une cote à part).`}
+              </p>
             </div>
           ) : null}
           <div className="carte p-4 sm:p-5">
@@ -354,7 +390,7 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
                   <li key={i} className="carte flex items-center justify-between gap-3 p-3 text-sm">
                     <span className="min-w-0">
                       <span className="block truncate">{x.id && /^\d{6,}$/.test(x.id) ? <a href={`https://www.leboncoin.fr/ad/voitures/${x.id}`} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">{x.lib || "Annonce"}</a> : x.lib || "Annonce"}</span>
-                      <span className="text-xs text-ink-3">{x.annee} · {x.km.toLocaleString("fr-FR")} km · {x.pro ? "pro" : "particulier"}</span>
+                      <span className="text-xs text-ink-3">{[x.annee, `${x.km.toLocaleString("fr-FR")} km`, x.ch ? `${x.ch} ch` : null, x.carr, x.fin, x.pro ? "pro" : "particulier"].filter(Boolean).join(" · ")}</span>
                     </span>
                     <b className="num shrink-0">{eur(x.prix)}</b>
                   </li>

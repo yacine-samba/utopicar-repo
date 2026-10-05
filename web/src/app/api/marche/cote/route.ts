@@ -20,6 +20,9 @@ const Voiture = z.object({
   boite: z.string().max(20).optional(),
   version: z.string().max(200).optional(),
   ch: z.number().int().min(30).max(800).nullish(),
+  portes: z.number().int().min(2).max(5).nullish(),
+  /** version du catalogue choisie (« e92 » : coupé) ; sinon lue dans la version */
+  carrosserie: z.string().regex(/^[a-z0-9]{1,12}$/).optional(),
 });
 const Corps = z.object({ releve: z.string().min(10).max(6_000_000).optional(), enregistrer: z.boolean().optional(), voiture: Voiture.optional() });
 
@@ -44,7 +47,7 @@ function lireReleve(txt: string): { items: Carte[]; src: string } | null {
 }
 
 const resume = (e: Estimation | null) =>
-  e && e.P ? { P: e.P, lo: e.lo, hi: e.hi, ecart: e.ecart, pct: e.pct, conf: e.conf, why: e.why, moinsCherQue: e.moinsCherQue, dans1an: e.dans1an, parKm: e.parKm, parAn: e.parAn, ajust: e.ajust, segments: e.segments, n: e.nClean, comps: e.comps } : null;
+  e && e.P ? { P: e.P, lo: e.lo, hi: e.hi, ecart: e.ecart, pct: e.pct, conf: e.conf, why: e.why, moinsCherQue: e.moinsCherQue, dans1an: e.dans1an, parKm: e.parKm, parAn: e.parAn, ajust: e.ajust, segments: e.segments, n: e.nClean, comps: e.comps, base: e.base, carrosserie: e.carrosserie, finition: e.finition, ch: e.ch } : null;
 
 export async function POST(req: Request) {
   const c = await compteCourant();
@@ -58,18 +61,23 @@ export async function POST(req: Request) {
     const v = r.data.voiture;
     const mm = await marcheModele(v.base).catch(() => null);
     if (!mm) return Response.json({ erreur: "Modèle inconnu ou base indisponible." }, { status: 400 });
-    const a = { titre: `${mm.m.marque} ${mm.m.nom} ${v.version ?? ""}`.trim(), texte: v.version ?? "", annee: v.annee, km: v.km, energie: v.energie ?? "", boite: v.boite ?? "", ch: v.ch ?? null };
-    const gen = v.gen || generationDe(mm.m.base, a)?.id;
+    const a = { titre: `${mm.m.marque} ${mm.m.nom} ${v.version ?? ""}`.trim(), texte: v.version ?? "", annee: v.annee, km: v.km, energie: v.energie ?? "", boite: v.boite ?? "", ch: v.ch ?? null, portes: v.portes ?? null };
+    const g = generationDe(mm.m.base, a);
+    const gen = v.gen || g?.id;
     if (!gen) return Response.json({ erreur: "Génération incertaine pour cette année : choisissez-la." }, { status: 400 });
-    const en = normEn(v.energie);
-    const cote = mm.cotes.de(gen, en);
-    if (!cote) return Response.json({ erreur: "Pas assez d'annonces de cette génération (il en faut 20) pour une cote fiable." }, { status: 404 });
-    const ligne = { ...a, id: "voiture", source: "", prix: v.prix ?? 0, gen, genLabel: "" } as unknown as Ligne & { gen: string };
-    const e = mm.cotes.estimer(ligne, v.prix ?? null);
+    // carrosserie : choisie dans la liste, sinon lue dans la version (« E92 », « coupé », « Touring »)
+    const versions = mm.m.gens.find((x) => x.id === gen)?.v ?? [];
+    const choisie = v.carrosserie ? versions.find((x) => x.id === v.carrosserie) : undefined;
+    const variant = choisie?.id ?? (g?.id === gen ? g.variant : null);
+    const ligne = { ...a, id: "voiture", source: "", prix: v.prix ?? 0, gen, genLabel: "", variant, varianteEcrite: !!choisie || (g?.id === gen && !!g?.varianteEcrite) } as unknown as Ligne & { gen: string; variant: string | null; varianteEcrite: boolean };
+    const p = mm.cotes.profil(ligne, mm.m);
+    const e = mm.cotes.estimer(ligne, v.prix ?? null, p);
+    if (!e) return Response.json({ erreur: "Pas assez d'annonces de cette génération (il en faut 20) pour une cote fiable." }, { status: 404 });
     const courbe = [0, 25000, 50000, 75000, 100000, 125000, 150000, 175000, 200000, 250000]
-      .map((km) => ({ km, P: mm.cotes.estimer({ ...ligne, km }, null)?.P ?? null }))
-      .filter((p) => p.P);
-    return Response.json({ nom: cote.nom, gen, estimation: resume(e), points: echantillon(mm.cotes.points(gen, en), MAX_POINTS), courbe });
+      .map((km) => ({ km, P: mm.cotes.estimer({ ...ligne, km }, null, p)?.P ?? null }))
+      .filter((x) => x.P);
+    const pts = mm.cotes.points(gen, p.energie, e.base ? p.moteur : null);
+    return Response.json({ nom: e.nom, gen, profil: p, estimation: resume(e), points: echantillon(pts, MAX_POINTS), courbe });
   }
 
   // ---- Relevé collé
