@@ -301,7 +301,7 @@ async function TableauComplet({ c }: { c: Compte }) {
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {([
             ["/app/recherche", "recherche", "Recherche", "Le marché par génération, sous la cote"],
-            ["/app/cote", "cote", "Cote", "Coller un relevé, placer une voiture"],
+            ["/app/cote", "cote", "Cote", c.illimite ? "Coller un relevé, placer une voiture" : "Placer une voiture sur sa cote"],
             ["/app/tri", "tri", "Tri rapide", "10 annonces classées sans IA"],
             ["/app/comparer", "comparer", "Comparateur", "2 à 3 rapports côte à côte"],
           ] as const).map(([href, ico, l, d]) => (

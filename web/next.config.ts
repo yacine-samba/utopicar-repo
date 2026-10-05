@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   turbopack: { root: __dirname },
+  // extension (compte illimité) : servie par /api/extension, jamais dans public/
+  outputFileTracingIncludes: { "/api/extension": ["./prive/utopicar-extension.zip"] },
   async headers() {
     return [
       {

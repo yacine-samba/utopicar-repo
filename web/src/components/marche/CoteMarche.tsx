@@ -15,8 +15,10 @@ type Place = { nom: string; gen: string; profil: Profil; estimation: CoteAnnonce
 const eur = (v: number | null | undefined) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 const n = (s: string) => (s.trim() && /^\d+$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
 
-export function CoteMarche({ cat }: { cat: CatMarque[] }) {
-  const [onglet, setOnglet] = useState<"releve" | "voiture">("releve");
+export function CoteMarche({ cat, extension }: { cat: CatMarque[]; extension: boolean }) {
+  const [onglet, setOnglet] = useState<"releve" | "voiture">(extension ? "releve" : "voiture");
+  // relevé de toute une recherche : vient de l'extension, réservée au compte illimité
+  if (!extension) return <PlacerVoiture cat={cat} />;
   return (
     <div className="grid gap-6">
       <div role="tablist" aria-label="Mode de calcul" className="flex w-fit gap-1 rounded-full border border-line p-1">
