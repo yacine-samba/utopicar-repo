@@ -1,46 +1,25 @@
 {
   "manifest_version": 3,
-  "name": "Utopicar",
-  "version": "1.2.0",
-  "description": "Analyse une annonce auto (texte, photos) ou relève toute une page de résultats Leboncoin, et l'ouvre directement dans Utopicar.",
-  "permissions": [
-    "clipboardWrite",
-    "storage"
-  ],
+  "name": "UTOPICAR",
+  "version": "4.3.0",
+  "description": "Envoie une annonce complète (texte, critères, toutes les photos) ou lit en entier les annonces cochées d'une page de résultats, vers UTOPICAR Garage.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "UTOPICAR",
+    "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  },
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" },
+  "background": { "service_worker": "background.js" },
+  "permissions": ["activeTab", "scripting", "clipboardWrite", "storage", "unlimitedStorage", "notifications", "offscreen"],
   "host_permissions": [
     "https://*.leboncoin.fr/*",
     "https://*.lacentrale.fr/*",
     "https://*.autoscout24.fr/*",
     "https://*.autoscout24.net/*",
-    "https://*.leparking.fr/*",
-    "https://*/*"
+    "https://*.paruvendu.fr/*",
+    "https://claude.ai/*"
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://www.leboncoin.fr/*",
-        "https://www.lacentrale.fr/*",
-        "https://www.autoscout24.fr/*",
-        "https://www.leparking.fr/*"
-      ],
-      "js": [
-        "content.js"
-      ],
-      "run_at": "document_idle"
-    },
-    {
-      "matches": [
-        "https://www.utopicar.fr/*",
-        "https://utopicar.fr/*",
-        "http://localhost:3100/*"
-      ],
-      "js": [
-        "site.js"
-      ],
-      "run_at": "document_start"
-    }
-  ]
+  "commands": {
+    "_execute_action": { "suggested_key": { "default": "Alt+Shift+U" }, "description": "Ouvrir UTOPICAR" }
+  }
 }

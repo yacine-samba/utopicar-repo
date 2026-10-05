@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>UTOPICAR</title>
+<style>
+  :root{--side:#15307F;--jaune:#F5C518;--ink:#15181C;--muted:#5E6670;--line:#D5D8D2;--paper:#FCFCFA;--gain:#0A7A43;--perte:#BF2A21;--sunk:#F2F3EF}
+  *{box-sizing:border-box}
+  body{margin:0;width:370px;font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--paper)}
+  header{background:var(--side);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+  .mark{width:28px;height:28px;border-radius:6px;background:var(--jaune);display:grid;place-items:center;font-weight:800;color:#171300}
+  header b{font-weight:800;letter-spacing:.03em}
+  header span{display:block;font-size:12px;color:#C7D0EC}
+  main{padding:14px;display:grid;gap:10px}
+  button{font:inherit;border-radius:8px;padding:11px 12px;cursor:pointer;text-align:left;border:1px solid var(--line);background:#fff;color:var(--ink);display:grid;gap:2px}
+  button b{font-weight:700}
+  button small{color:var(--muted);font-size:12px}
+  button.main{background:var(--jaune);border-color:#D9AD0C}
+  button.main small{color:#3D3300}
+  button.lite{padding:7px 10px;font-size:13px;text-align:center}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  button:focus-visible{outline:2px solid var(--side);outline-offset:2px}
+  #status{font-size:13px;min-height:20px}
+  #status.ok{color:var(--gain)} #status.bad{color:var(--perte)}
+  .bar{height:6px;border-radius:99px;background:var(--sunk);overflow:hidden;display:none}
+  .bar i{display:block;height:100%;background:var(--side);width:0;transition:width .3s}
+  .picker{display:none;border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
+  .picker .ph{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;background:var(--sunk);font-size:12.5px;color:var(--muted)}
+  .picker .ph a{color:var(--side);cursor:pointer;text-decoration:underline}
+  .plist{max-height:300px;overflow-y:auto}
+  .pit{display:grid;grid-template-columns:20px 1fr auto;gap:8px;padding:8px 10px;border-top:1px solid var(--line);align-items:start;cursor:pointer;font-size:13px}
+  .pit:hover{background:#F7F8F4}
+  .pit input{margin:3px 0 0}
+  .pit b{display:block;font-weight:650;font-size:13px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .pit span{color:var(--muted);font-size:12px}
+  .pit .pr{font-weight:750;white-space:nowrap}
+  .row{display:flex;gap:8px}
+  .row button{flex:1}
+  footer{padding:0 14px 12px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="mark">U</div><div><b>UTOPICAR</b><span>Envoyer vers le garage · v4</span></div></header>
+<main>
+  <button id="ad"><b>Envoyer cette annonce</b><small>Description, tous les critères et jusqu'à 20 photos</small></button>
+  <div class="picker" id="picker">
+    <div class="ph"><span id="pcount">Cochez jusqu'à 10 annonces</span><span><a id="pall">10 premières</a> · <a id="pnone">aucune</a></span></div>
+    <div class="plist" id="plist"></div>
+  </div>
+  <button id="batch" style="display:none" class="main"><b id="batchT">Lire en entier (0)</b><small>Chaque annonce est ouverte en fond, lue en entier avec ses photos, au rythme d'une personne (5 à 10 s par annonce)</small></button>
+  <button id="list"><b>Relever toute la recherche</b><small>Toutes les pages de résultats (jusqu&apos;à 3 500 annonces, le maximum de Leboncoin), pour comparer les prix</small></button>
+  <div class="bar" id="bar"><i></i></div>
+  <div id="status" role="status"></div>
+  <div class="row"><button id="stop" class="lite" style="display:none">Arrêter</button><button id="again" class="lite" style="display:none">Copier le dernier envoi</button><button id="go" class="lite" style="background:var(--side);color:#fff;border-color:var(--side)">Ouvrir UTOPICAR</button></div>
+</main>
+<footer>Après l'envoi : sur UTOPICAR, faites Ctrl+V (Cmd+V sur Mac). Une lecture en cours continue même si vous fermez cette fenêtre. Raccourci : Alt+Maj+U.</footer>
+<script src="extract.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

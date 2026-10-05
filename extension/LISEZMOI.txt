@@ -1,0 +1,47 @@
+UTOPICAR, extension Chrome (version 4.2)
+
+Installation ou mise à jour (2 minutes)
+1. Décompressez ce dossier quelque part où il restera (ex. Documents/utopicar-extension).
+   Si vous aviez une version précédente : remplacez tous les fichiers de l'ancien dossier par ceux-ci.
+2. Dans Chrome, ouvrez chrome://extensions
+3. Activez « Mode développeur » en haut à droite.
+4. Nouvelle installation : « Charger l'extension non empaquetée », puis choisissez le dossier.
+   Mise à jour : bouton « Actualiser » (flèche ronde) sur la carte UTOPICAR.
+5. Chrome demande d'autoriser les notifications : acceptez, c'est ce qui vous prévient quand la lecture est finie.
+6. Épinglez l'icône jaune (menu puzzle, punaise).
+
+Sur une annonce
+- Icône UTOPICAR, puis « Envoyer cette annonce » : description complète, tous les critères
+  (1re mise en circulation, puissance fiscale, estimation de prix Leboncoin…) et jusqu'à 20 photos.
+- Sur UTOPICAR, onglet Analyser : Ctrl+V (Cmd+V sur Mac). Tout arrive, photos comprises.
+
+Sur une page de résultats (lecture en rafale)
+- Icône UTOPICAR : la liste des annonces de la page s'affiche. Cochez jusqu'à 10 annonces.
+- « Lire en entier » : chaque annonce est ouverte dans un onglet de fond, lue en entier avec
+  8 photos, puis refermée. Une pause de 4 à 9 secondes sépare deux annonces, comme une personne
+  qui les ouvre une à une. Vous pouvez fermer la fenêtre de l'extension et continuer à naviguer.
+- À la fin, une notification arrive et le lot est copié. Sur UTOPICAR, faites Ctrl+V :
+  les annonces arrivent dans le Tri rapide, avec leurs photos.
+- Si Leboncoin affiche une vérification (« êtes-vous un robot »), l'extension s'arrête : validez-la
+  vous-même dans un onglet, puis relancez. Elle ne la contourne jamais.
+- « Copier le dernier envoi » recopie le dernier lot si le presse-papiers a été écrasé entre-temps.
+
+Toujours disponible
+- « Relever toute la recherche » : prix, année, km, énergie, boîte, puissance et ville de TOUTES
+  les annonces de la recherche, page après page, jusqu'à 3 500 annonces (100 pages : c'est le maximum que Leboncoin affiche
+  pour une recherche ; au-delà, découpez la recherche par tranches de prix ou d'années).
+  Une pause de 2 à 4 secondes sépare deux pages : comptez environ 1 minute pour 300 annonces,
+  5 minutes pour 3 500.
+  Le relevé tourne en arrière-plan : vous pouvez fermer la fenêtre de l'extension, mais laissez
+  l'onglet de résultats ouvert. Le badge de l'icône montre la progression (ex. 3/12), une notification
+  arrive à la fin et tout est copié : faites Ctrl+V sur UTOPICAR. Bouton « Arrêter » pour stopper :
+  ce qui a déjà été lu est gardé. Si Leboncoin affiche une vérification, le relevé s'arrête et garde
+  ce qui a été lu.
+- Raccourci clavier : Alt+Maj+U ouvre l'extension.
+
+Bon usage
+- Les règles de Leboncoin interdisent la collecte automatique en masse. L'extension lit seulement ce
+  que vous choisissez (10 annonces au maximum par lecture), à un rythme humain, depuis votre propre
+  navigateur. Gardez ce rythme : pas de lectures enchaînées toute la journée.
+
+Sites pris en charge pour les photos : Leboncoin, La Centrale, AutoScout24, ParuVendu.
