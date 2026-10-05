@@ -92,3 +92,39 @@ export function origineDepuisExtension(brut: string): Origine | null {
     return null;
   }
 }
+
+export const PREFIXE_LOT = "UTPLOT";
+
+/** Lot de l'extension (« Lire en entier », 10 annonces au plus, chacune au format UTPIMPORT avec ses photos) :
+    textes pour le Tri rapide et première photo de chaque annonce. null si ce n'est pas un lot. */
+export function lotDepuisExtension(brut: string): { textes: string[]; photos: (string | null)[] } | null {
+  if (!brut.startsWith(PREFIXE_LOT)) return null;
+  let o: Objet;
+  try {
+    o = obj(JSON.parse(brut.slice(PREFIXE_LOT.length)));
+  } catch {
+    return null;
+  }
+  const items = (Array.isArray(o.items) ? o.items : []).map(obj).slice(0, 10);
+  const textes: string[] = [], photos: (string | null)[] = [];
+  for (const it of items) {
+    const { photosData, ...reste } = it;
+    const t = texteDepuisExtension(PREFIXE_EXTENSION + JSON.stringify(reste));
+    if (!t || t.length < 30) continue;
+    textes.push(t.slice(0, 19000));
+    const p = Array.isArray(photosData) ? photosData.find((x) => typeof x === "string" && /^data:image\/(jpeg|png|webp);base64,/.test(x)) : null;
+    photos.push(typeof p === "string" ? p : null);
+  }
+  return { textes, photos };
+}
+
+/** Photos jointes par l'extension V4 dans sa copie (photosData : JPEG en data URL, 20 au plus). */
+export function photosDepuisExtension(brut: string): string[] {
+  if (!brut.startsWith(PREFIXE_EXTENSION)) return [];
+  try {
+    const o = obj(JSON.parse(brut.slice(PREFIXE_EXTENSION.length)));
+    return (Array.isArray(o.photosData) ? o.photosData : []).filter((x): x is string => typeof x === "string" && /^data:image\/(jpeg|png|webp);base64,/.test(x)).slice(0, 20);
+  } catch {
+    return [];
+  }
+}

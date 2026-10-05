@@ -1,0 +1,51 @@
+Utopicar, extension Chrome et Edge (version 4.4)
+
+Installation ou mise à jour (2 minutes)
+1. Décompressez ce dossier quelque part où il restera (ex. Documents/utopicar-extension).
+   Si vous aviez une version précédente : remplacez tous les fichiers de l'ancien dossier par ceux-ci.
+2. Dans Chrome, ouvrez chrome://extensions
+3. Activez « Mode développeur » en haut à droite.
+4. Nouvelle installation : « Charger l'extension non empaquetée », puis choisissez le dossier.
+   Mise à jour : bouton « Actualiser » (flèche ronde) sur la carte Utopicar.
+5. Chrome demande d'autoriser les notifications : acceptez, c'est ce qui vous prévient quand la lecture est finie.
+6. Épinglez l'icône Utopicar (menu puzzle, punaise).
+7. Connectez-vous une fois sur https://www.utopicar.fr : les envois s'y ouvrent directement.
+
+Sur une annonce
+- Icône Utopicar, puis « Envoyer cette annonce » : description complète, tous les critères
+  (1re mise en circulation, puissance fiscale, estimation de prix Leboncoin…) et jusqu'à 20 photos.
+- La page Analyser d'Utopicar s'ouvre et l'analyse démarre toute seule, photos comprises.
+  En secours, l'annonce est aussi copiée : Ctrl+V (Cmd+V sur Mac) dans la page Analyser.
+
+Sur une page de résultats (lecture en rafale)
+- Icône Utopicar : la liste des annonces de la page s'affiche. Cochez jusqu'à 10 annonces.
+- « Lire en entier » : chaque annonce est ouverte dans un onglet de fond, lue en entier avec
+  8 photos, puis refermée. Une pause de 4 à 9 secondes sépare deux annonces, comme une personne
+  qui les ouvre une à une. Vous pouvez fermer la fenêtre de l'extension et continuer à naviguer.
+- À la fin, le Tri rapide d'Utopicar s'ouvre en arrière-plan avec les annonces classées (cote, marge,
+  prix plafond, verdict) et leur photo ; une notification vous y emmène. Le lot est aussi copié (Ctrl+V en secours).
+- Si Leboncoin affiche une vérification (« êtes-vous un robot »), l'extension s'arrête : validez-la
+  vous-même dans un onglet, puis relancez. Elle ne la contourne jamais.
+- « Rouvrir le dernier envoi » le propose de nouveau à sa page Utopicar ; « Copier le dernier envoi »
+  le recopie si le presse-papiers a été écrasé entre-temps.
+
+Toujours disponible
+- « Relever toute la recherche » : prix, année, km, énergie, boîte, puissance et ville de TOUTES
+  les annonces de la recherche, page après page, jusqu'à 3 500 annonces (100 pages : c'est le maximum que Leboncoin affiche
+  pour une recherche ; au-delà, découpez la recherche par tranches de prix ou d'années).
+  Une pause de 2 à 4 secondes sépare deux pages : comptez environ 1 minute pour 300 annonces,
+  5 minutes pour 3 500.
+  Le relevé tourne en arrière-plan : vous pouvez fermer la fenêtre de l'extension, mais laissez
+  l'onglet de résultats ouvert. Le badge de l'icône montre la progression (ex. 3/12), une notification
+  arrive à la fin : la page Cote d'Utopicar s'ouvre avec chaque annonce placée sur sa cote, et les
+  annonces rejoignent la base du marché (formule Benef Pro). Tout est aussi copié (Ctrl+V en secours). Bouton « Arrêter » pour stopper :
+  ce qui a déjà été lu est gardé. Si Leboncoin affiche une vérification, le relevé s'arrête et garde
+  ce qui a été lu.
+- Raccourci clavier : Alt+Maj+U ouvre l'extension.
+
+Bon usage
+- Les règles de Leboncoin interdisent la collecte automatique en masse. L'extension lit seulement ce
+  que vous choisissez (10 annonces au maximum par lecture), à un rythme humain, depuis votre propre
+  navigateur. Gardez ce rythme : pas de lectures enchaînées toute la journée.
+
+Sites pris en charge pour les photos : Leboncoin, La Centrale, AutoScout24, ParuVendu.

@@ -4,7 +4,7 @@ Mis à jour le 5 octobre 2026. Les cases cochées sont faites et en production.
 
 ## De votre côté (rapide, et rien ne peut se faire sans vous)
 
-- [ ] **Extension V4** : déposer le dossier dans `extension-v4/` (GitHub › Add files › Upload files) ou envoyer le zip. Elle sera reproduite à l'identique (relevé de toutes les pages, ~100 pages, 3 000+ annonces) puis améliorée.
+- [x] **Extension V4** : V4.3 reprise à l'identique (relevé de toute la recherche jusqu'à 3 500 annonces, lecture en entier de 10 annonces, envoi d'une annonce avec 20 photos), devenue 4.4 : les envois s'ouvrent directement sur utopicar.fr (analyse, Tri rapide, Cote). **À faire de votre côté : remplacer l'ancienne extension par la 4.4** (page Extension Leboncoin).
 - [ ] **Supabase › Authentication › Settings** : activer « Leaked password protection » (refuse les mots de passe déjà piratés).
 - [ ] **Stripe › Webhooks** : l'adresse doit être `https://www.utopicar.fr/api/stripe/webhook`. `utopicar.fr` redirige vers `www`, et Stripe ne suit pas les redirections.
 - [ ] **Alertes** : l'adresse malek.admin@utopic.fr rejette les e-mails (bounce). Mettre une adresse valide sur les alertes.

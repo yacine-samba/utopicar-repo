@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
 import { Patience, type Apercu } from "./analyse/Patience";
-import { lienLeboncoin, origineDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
+import { lienLeboncoin, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { useExtension } from "@/lib/extension";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
@@ -309,6 +309,13 @@ export function Saisie({
           e.preventDefault();
           setTexte(converti);
           setOrigine(origineDepuisExtension(brut));
+          // extension V4 : les photos sont dans la copie elle-même
+          const jointes = photosDepuisExtension(brut);
+          if (jointes.length && maxPhotos > 0) {
+            const ph = (await Promise.all(jointes.slice(0, maxPhotos).map(depuisDataUrl))).filter((x): x is PhotoLocale => !!x);
+            setPhotos(ph);
+            return;
+          }
           const urls = photosDepuisHtml(e.clipboardData.getData("text/html")).slice(0, maxPhotos);
           if (urls.length) {
             // photos distantes : lisibles seulement si le site les autorise ; sinon on le dit au lieu d'échouer en silence

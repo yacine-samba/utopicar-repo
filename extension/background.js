@@ -1,36 +1,261 @@
-// Récupère une photo de l'annonce (le service worker a accès aux domaines d'images).
-function toBase64(buf){
-  let s = ''; const b = new Uint8Array(buf); const step = 0x8000;
-  for (let i = 0; i < b.length; i += step) s += String.fromCharCode.apply(null, b.subarray(i, i + step));
-  return btoa(s);
+'use strict';
+/* Utopicar v4 : travail de fond. Lecture d'une annonce (texte + toutes les photos) et lecture en rafale
+   des annonces cochées, au rythme d'une personne. Le résultat s'ouvre directement sur utopicar.fr
+   (analyse, Tri rapide ou Cote) ; il est aussi copié, pour Ctrl+V en secours. */
+importScripts('extract.js');
+
+const SITE = 'https://www.utopicar.fr';
+// où chaque envoi s'ouvre : l'annonce dans l'analyse, le lot dans le Tri rapide, le relevé dans la Cote
+const PAGES = {annonce: '/app/analyser', lot: '/app/tri', releve: '/app/cote'};
+const MAX_BATCH = 10;              // même limite que le Tri rapide
+const PHOTOS_SINGLE = 20;          // annonce seule : jusqu'à 20 photos
+const PHOTOS_BATCH = 8;            // rafale : 8 photos par annonce
+const PAUSE_MIN = 4000, PAUSE_MAX = 9000;   // pause entre deux annonces (rythme humain)
+const RELEVE_MAX = 3500;          // relevé : maximum de Leboncoin, 100 pages de 35 annonces
+const RELEVE_PAUSE = [2000, 4000]; // pause entre deux pages de résultats
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rand = (a, b) => a + Math.round(Math.random() * (b - a));
+let running = false, stopAsked = false;
+
+async function setState(s){
+  await chrome.storage.session.set({job: s});
+  const t = s.running ? `${s.done}/${s.total}` : s.status === 'ok' ? 'OK' : s.status === 'bad' ? '!' : '';
+  chrome.action.setBadgeText({text: t});
+  chrome.action.setBadgeBackgroundColor({color: s.status === 'bad' ? '#BF2A21' : s.running ? '#FF5A1F' : '#0A7A43'});
 }
-// Seules les pages d'annonces des sites suivis peuvent demander une image, et seule une image est rendue.
-const SITES = /^https:\/\/([a-z0-9-]+\.)*(leboncoin\.fr|lacentrale\.fr|autoscout24\.fr|leparking\.fr)\//;
-const MAX_OCTETS = 8 * 1024 * 1024;
-chrome.runtime.onMessage.addListener((msg, sender, reply) => {
-  if (msg && msg.type === 'utp-fetch-image'){
-    const page = (sender && sender.tab && sender.tab.url) || '';
-    if (!SITES.test(page) || typeof msg.url !== 'string' || !/^https:\/\//.test(msg.url)){ reply({ ok: false, error: 'refusé' }); return false; }
-    fetch(msg.url, { credentials: 'omit' })
-      .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const type = (r.headers.get('content-type') || '').split(';')[0];
-        if (!/^image\/(jpeg|png|webp|avif|gif)$/.test(type)) throw new Error('pas une image');
-        if (+(r.headers.get('content-length') || 0) > MAX_OCTETS) throw new Error('image trop lourde');
-        return Promise.all([r.arrayBuffer(), type]);
-      })
-      .then(([buf, type]) => reply({ ok: true, dataUrl: 'data:' + type.split(';')[0] + ';base64,' + toBase64(buf) }))
-      .catch(e => reply({ ok: false, error: String(e) }));
+function notify(message){
+  try { chrome.notifications.create('utp-' + Date.now(), {type:'basic', iconUrl:'icons/128.png', title:'Utopicar', message, priority:1}); } catch(e){}
+}
+chrome.notifications?.onClicked?.addListener(() => montrer());
+
+/* ---- ouverture sur utopicar.fr ---- */
+async function montrer(){
+  const { ouvert } = await chrome.storage.session.get('ouvert');
+  if (ouvert){ try { const t = await chrome.tabs.get(ouvert); await chrome.tabs.update(t.id, {active:true}); await chrome.windows.update(t.windowId, {focused:true}); return; } catch(e){} }
+  await openApp();
+}
+async function openApp(){
+  const tabs = await chrome.tabs.query({url: ['https://www.utopicar.fr/*', 'https://utopicar.fr/*']});
+  if (tabs[0]){ await chrome.tabs.update(tabs[0].id, {active:true}); await chrome.windows.update(tabs[0].windowId, {focused:true}); }
+  else await chrome.tabs.create({url: SITE + '/app'});
+}
+/** Ouvre la page qui reçoit l'envoi : rechargée si elle est déjà ouverte, sinon dans un nouvel onglet.
+    La page annonce qu'elle est prête, site.js lui passe l'envoi gardé ici (jamais par un serveur tiers). */
+async function ouvrirSur(cible, actif){
+  const url = SITE + PAGES[cible] + '?ext=1';
+  const tabs = await chrome.tabs.query({url: ['https://www.utopicar.fr/*', 'https://utopicar.fr/*']});
+  const deja = tabs.find(t => { try { return new URL(t.url).pathname === PAGES[cible]; } catch(e){ return false; } });
+  let tab;
+  if (deja){ tab = await chrome.tabs.update(deja.id, {url, active: actif}); }
+  else { tab = await chrome.tabs.create({url, active: actif}); }
+  if (actif && tab) await chrome.windows.update(tab.windowId, {focused:true});
+  if (tab) await chrome.storage.session.set({ouvert: tab.id});
+}
+
+/* ---- photos : téléchargées par l'extension (l'outil ne peut pas charger d'image distante), réduites en JPEG ---- */
+async function toDataUrl(url, maxSide, q){
+  const r = await fetch(url, {credentials:'omit'});
+  if (!r.ok) throw new Error('photo ' + r.status);
+  const bmp = await createImageBitmap(await r.blob());
+  const sc = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
+  const c = new OffscreenCanvas(Math.max(1, Math.round(bmp.width*sc)), Math.max(1, Math.round(bmp.height*sc)));
+  const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(bmp, 0, 0, c.width, c.height);
+  const blob = await c.convertToBlob({type:'image/jpeg', quality:q});
+  const buf = new Uint8Array(await blob.arrayBuffer());
+  let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+  return 'data:image/jpeg;base64,' + btoa(bin);
+}
+async function grabPhotos(o, max, side, q, onStep){
+  const urls = (o.photos || []).slice(0, max); const out = [];
+  for (let i = 0; i < urls.length; i++){
+    if (onStep) await onStep(i, urls.length);
+    try { out.push(await toDataUrl(urls[i], side, q)); } catch(e){}
+    await sleep(rand(120, 350));
+  }
+  delete o.photos; o.photosData = out; o.nbPhotosAnnonce = (o.ad && o.ad.images && (o.ad.images.nb_images || (o.ad.images.urls || []).length)) || urls.length;
+  return o;
+}
+
+/* ---- copie dans le presse-papiers depuis l'arrière-plan (document hors écran) ---- */
+async function copyText(text){
+  try {
+    const has = chrome.offscreen.hasDocument ? await chrome.offscreen.hasDocument() : false;
+    if (!has) await chrome.offscreen.createDocument({url:'offscreen.html', reasons:['CLIPBOARD'], justification:'Copier l\'annonce vers Utopicar'});
+    const r = await chrome.runtime.sendMessage({type:'utp-offcopy', text});
+    // (document hors écran : seulement pour la copie de secours)
+    return !!(r && r.ok);
+  } catch(e){ return false; }
+}
+/* Envoi : gardé pour la page Utopicar (30 minutes, le temps de se connecter si besoin), copié en secours, puis ouvert. */
+async function deliver(payload, meta, cible, envoi, actif){
+  await chrome.storage.local.set({last: payload, lastMeta: meta, 'utp-envoi': {type: cible, brut: envoi.brut, images: envoi.images || [], t: Date.now()}});
+  const copied = await copyText(payload);
+  try { await ouvrirSur(cible, actif); } catch(e){}
+  return copied;
+}
+
+/* ---- ouverture d'une annonce dans un onglet de fond, lecture, fermeture ---- */
+function waitComplete(tabId, ms){
+  return new Promise(res => {
+    let done = false; const fin = ok => { if (done) return; done = true; chrome.tabs.onUpdated.removeListener(l); clearTimeout(t); res(ok); };
+    const l = (id, info) => { if (id === tabId && info.status === 'complete') fin(true); };
+    chrome.tabs.onUpdated.addListener(l);
+    const t = setTimeout(() => fin(false), ms);
+    chrome.tabs.get(tabId).then(tb => { if (tb && tb.status === 'complete') fin(true); }).catch(() => fin(false));
+  });
+}
+async function readInTab(url, windowId){
+  const tab = await chrome.tabs.create({url, active:false, windowId});
+  try {
+    await waitComplete(tab.id, 30000);
+    let o = null;
+    for (let k = 0; k < 6; k++){          // la page finit de se construire : on relit jusqu'à trouver l'annonce
+      await sleep(k ? 1200 : rand(1500, 2500));
+      const [res] = await chrome.scripting.executeScript({target:{tabId: tab.id}, func: extractAd});
+      o = res && res.result;
+      if (o && (o.blocked || o.ad || (o.photos || []).length)) break;
+    }
+    return o;
+  } finally { try { await chrome.tabs.remove(tab.id); } catch(e){} }
+}
+
+/* ---- annonce seule (onglet actif) ---- */
+async function runSingle(tabId){
+  if (running) return {ok:false, err:'Une lecture est déjà en cours.'};
+  running = true;
+  try {
+    await setState({running:true, kind:'single', done:0, total:1, msg:'Lecture de l\'annonce…'});
+    const [res] = await chrome.scripting.executeScript({target:{tabId}, func: extractAd});
+    const o = res && res.result;
+    if (!o) throw new Error('Rien à lire sur cette page.');
+    if (o.blocked) throw new Error('Leboncoin affiche une vérification : validez-la vous-même dans l\'onglet, puis recommencez.');
+    await grabPhotos(o, PHOTOS_SINGLE, 1280, 0.82, (i, n) => setState({running:true, kind:'single', done:0, total:1, msg:`Photos : ${i + 1} sur ${n}…`}));
+    const payload = 'UTPIMPORT' + JSON.stringify(o);
+    const { photosData, ...sansPhotos } = o; // la page reçoit les photos à part, déjà prêtes
+    const copied = await deliver(payload, {kind:'single', n:1, photos:photosData.length, titre:o.title, at:Date.now()}, 'annonce', {brut: 'UTPIMPORT' + JSON.stringify(sansPhotos), images: photosData}, true);
+    const msg = `Annonce et ${photosData.length} photo${photosData.length > 1 ? 's' : ''} envoyées : l'analyse s'ouvre sur Utopicar.${copied ? ' (Copiées aussi : Ctrl+V en secours.)' : ''}`;
+    await setState({running:false, status:'ok', kind:'single', done:1, total:1, msg, copied});
+    notify(msg);
+    return {ok:true, msg, copied};
+  } catch(e){
+    const msg = e.message || String(e);
+    await setState({running:false, status:'bad', done:0, total:1, msg});
+    return {ok:false, err:msg};
+  } finally { running = false; }
+}
+
+/* ---- rafale : annonces cochées sur une page de résultats ---- */
+async function runBatch(urls, windowId, src){
+  if (running) return;
+  running = true; stopAsked = false;
+  const list = [...new Set(urls)].slice(0, MAX_BATCH); const items = []; const fails = [];
+  let blocked = false;
+  try {
+    for (let i = 0; i < list.length; i++){
+      if (stopAsked) break;
+      await setState({running:true, kind:'batch', done:i, total:list.length, msg:`Annonce ${i + 1} sur ${list.length} : ouverture…`});
+      let o = null;
+      try { o = await readInTab(list[i], windowId); } catch(e){ console.error('lecture', list[i], e && e.message); o = null; }
+      if (o && o.blocked){ blocked = true; break; }
+      if (!o || (!o.ad && !(o.text || '').trim())){ fails.push(list[i]); }
+      else {
+        await grabPhotos(o, PHOTOS_BATCH, 1024, 0.78, (k, n) => setState({running:true, kind:'batch', done:i, total:list.length, msg:`Annonce ${i + 1} sur ${list.length} : photo ${k + 1} sur ${n}…`}));
+        items.push(o);
+      }
+      if (i < list.length - 1 && !stopAsked){
+        const p = rand(PAUSE_MIN, PAUSE_MAX);
+        await setState({running:true, kind:'batch', done:i + 1, total:list.length, msg:`Pause de ${Math.round(p/1000)} s avant l'annonce suivante…`});
+        await sleep(p);
+      }
+    }
+    if (!items.length){
+      const msg = blocked ? 'Leboncoin affiche une vérification. Ouvrez une annonce, validez-la vous-même, puis relancez.' : stopAsked ? 'Lecture arrêtée.' : 'Aucune annonce n\'a pu être lue.';
+      await setState({running:false, status:'bad', done:0, total:list.length, msg}); notify(msg); return;
+    }
+    const payload = 'UTPLOT' + JSON.stringify({v:1, src, at:Date.now(), items});
+    const nPh = items.reduce((s, o) => s + (o.photosData || []).length, 0);
+    const copied = await deliver(payload, {kind:'batch', n:items.length, photos:nPh, at:Date.now()}, 'lot', {brut: payload}, false);
+    const extra = [blocked ? 'arrêt sur une vérification Leboncoin' : '', stopAsked ? 'arrêtée à votre demande' : '', fails.length ? `${fails.length} illisible(s)` : ''].filter(Boolean).join(', ');
+    const msg = `${items.length} annonce${items.length > 1 ? 's' : ''} lue${items.length > 1 ? 's' : ''} en entier (${nPh} photos)${extra ? ', ' + extra : ''}. Triées dans le Tri rapide d'Utopicar : cliquez cette notification.${copied ? ' (Copiées aussi : Ctrl+V en secours.)' : ''}`;
+    await setState({running:false, status: blocked ? 'bad' : 'ok', kind:'batch', done:items.length, total:list.length, msg, copied});
+    notify(msg);
+  } catch(e){
+    await setState({running:false, status:'bad', done:items.length, total:list.length, msg:'Erreur : ' + (e.message || e)});
+  } finally { running = false; stopAsked = false; }
+}
+
+/* ---- relevé de toute une recherche : toutes les pages de résultats, lues depuis l'onglet de l'utilisateur ---- */
+async function runReleve(tabId, url){
+  if (running) return;
+  running = true; stopAsked = false;
+  const items = []; const seen = new Set(); let total = null, pages = 1, blocked = false, err = '', title = '';
+  const isLbc = /leboncoin\./.test(url || '');
+  try {
+    if (!isLbc){
+      await setState({running:true, kind:'releve', done:0, total:1, msg:'Lecture de la page…'});
+      const [res] = await chrome.scripting.executeScript({target:{tabId}, func: extractList, args:[1]});
+      const o = res && res.result; if (!o || !o.items.length) throw new Error('Aucune annonce trouvée sur cette page.');
+      const brut = 'UTPRELEVE' + JSON.stringify(o);
+      const copied = await deliver(brut, {kind:'releve', n:o.items.length, at:Date.now()}, 'releve', {brut}, true);
+      const msg = `${o.items.length} annonces envoyées : la Cote s'ouvre sur Utopicar.${copied ? ' (Copiées aussi : Ctrl+V en secours.)' : ''}`;
+      await setState({running:false, status:'ok', kind:'releve', done:1, total:1, msg, copied}); notify(msg); return;
+    }
+    for (let p = 1; p <= pages; p++){
+      if (stopAsked) break;
+      await setState({running:true, kind:'releve', done:p - 1, total:pages, msg:`Page ${p}${pages > 1 ? ' sur ' + pages : ''} · ${items.length} annonces relevées…`});
+      const [res] = await chrome.scripting.executeScript({target:{tabId}, func: lbcPage, args:[p]});
+      const r = res && res.result;
+      if (!r || r.err){ err = r && r.err || 'lecture impossible'; if (p === 1) break; else break; }
+      if (r.blocked){ blocked = true; break; }
+      if (p === 1){ total = r.total; title = r.title || ''; const per = Math.max(1, r.items.length); pages = Math.min(r.max_pages || 100, Math.ceil(Math.min(total || per, RELEVE_MAX) / per)); }
+      let add = 0; for (const it of r.items){ if (!seen.has(it.u)){ seen.add(it.u); items.push(it); add++; } }
+      if (!add || items.length >= RELEVE_MAX) break;
+      if (p < pages && !stopAsked) await sleep(rand(RELEVE_PAUSE[0], RELEVE_PAUSE[1]));
+    }
+    if (!items.length){
+      const msg = blocked ? 'Leboncoin affiche une vérification : validez-la vous-même dans l\'onglet, puis relancez.' : 'Aucune annonce lue' + (err ? ' (' + err + ')' : '') + '. Rechargez la page de résultats et relancez.';
+      await setState({running:false, status:'bad', kind:'releve', done:0, total:pages, msg}); notify(msg); return;
+    }
+    const o = {v:2, src:'www.leboncoin.fr', url, title, total, items: items.slice(0, RELEVE_MAX)};
+    const brut = 'UTPRELEVE' + JSON.stringify(o);
+    const copied = await deliver(brut, {kind:'releve', n:o.items.length, at:Date.now()}, 'releve', {brut}, false);
+    const extra = [blocked ? 'arrêt sur une vérification Leboncoin' : '', stopAsked ? 'arrêté à votre demande' : '', total > items.length && pages >= 100 ? 'Leboncoin n\'affiche pas plus de 100 pages : découpez la recherche (prix, années) pour le reste' : ''].filter(Boolean).join(', ');
+    const msg = `${o.items.length} annonces relevées${total ? ' sur ' + total : ''}${extra ? ' (' + extra + ')' : ''}. Placées sur leur cote dans Utopicar : cliquez cette notification.${copied ? ' (Copiées aussi : Ctrl+V en secours.)' : ''}`;
+    await setState({running:false, status: blocked ? 'bad' : 'ok', kind:'releve', done:pages, total:pages, msg, copied});
+    notify(msg);
+  } catch(e){
+    await setState({running:false, status:'bad', kind:'releve', done:0, total:pages, msg:'Erreur : ' + (e.message || e)});
+  } finally { running = false; stopAsked = false; }
+}
+
+chrome.runtime.onMessage.addListener((msg, sender, send) => {
+  if (!msg || typeof msg !== 'object') return;
+  if (msg.type === 'utp-single'){ runSingle(msg.tabId).then(send); return true; }
+  if (msg.type === 'utp-batch'){
+    if (running){ send({ok:false, err:'Une lecture est déjà en cours.'}); return; }
+    runBatch(msg.urls || [], msg.windowId, msg.src || ''); send({ok:true}); return;
+  }
+  if (msg.type === 'utp-releve'){
+    if (running){ send({ok:false, err:'Une lecture est déjà en cours.'}); return; }
+    runReleve(msg.tabId, msg.url || ''); send({ok:true}); return;
+  }
+  if (msg.type === 'utp-stop'){ stopAsked = true; send({ok:true}); return; }
+  if (msg.type === 'utp-copylast'){
+    chrome.storage.local.get('last').then(async r => { if (!r.last){ send({ok:false, err:'Rien à recopier.'}); return; } send({ok: await copyText(r.last)}); });
     return true;
   }
-});
-
-// Ouvre Utopicar dans un nouvel onglet (après un envoi depuis une annonce ou une page de résultats).
-const UTOPICAR = /^https:\/\/(www\.)?utopicar\.fr\/app\/(analyser|cote)(\?ext=1)?$/;
-chrome.runtime.onMessage.addListener((msg, sender, reply) => {
-  if (msg && msg.type === 'utp-ouvrir'){
-    if (typeof msg.url !== 'string' || !UTOPICAR.test(msg.url) || !SITES.test((sender && sender.tab && sender.tab.url) || '')){ reply({ ok: false }); return false; }
-    chrome.tabs.create({ url: msg.url, index: sender.tab.index + 1, openerTabId: sender.tab.id }, () => reply({ ok: true }));
+  if (msg.type === 'utp-open'){ openApp().then(() => send({ok:true})); return true; }
+  if (msg.type === 'utp-renvoyer'){ // « Rouvrir dans Utopicar » : le dernier envoi, de nouveau proposé à sa page
+    chrome.storage.local.get(['last', 'lastMeta']).then(async r => {
+      if (!r.last){ send({ok:false, err:'Rien à renvoyer.'}); return; }
+      const k = (r.lastMeta && r.lastMeta.kind) || '';
+      const cible = k === 'single' ? 'annonce' : k === 'batch' ? 'lot' : 'releve';
+      let envoi = {brut: r.last};
+      if (cible === 'annonce'){ try { const o = JSON.parse(r.last.slice(9)); const { photosData, ...sp } = o; envoi = {brut: 'UTPIMPORT' + JSON.stringify(sp), images: photosData || []}; } catch(e){} }
+      await chrome.storage.local.set({'utp-envoi': {type: cible, brut: envoi.brut, images: envoi.images || [], t: Date.now()}});
+      await ouvrirSur(cible, true); send({ok:true});
+    });
     return true;
   }
 });
