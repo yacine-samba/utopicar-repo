@@ -10,7 +10,6 @@ import { FicheParc } from "./FicheParc";
 import { Carrousel } from "../analyse/Photos";
 
 const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")}\u00a0€`);
-const ent = (s: string) => (s.trim() === "" ? null : Math.max(0, Math.round(Number(s.replace(/[\s €]/g, "").replace(",", "."))) || 0));
 
 export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
   const router = useRouter();

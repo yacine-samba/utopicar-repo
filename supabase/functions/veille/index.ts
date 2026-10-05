@@ -289,8 +289,13 @@ function coteRow(c: any, it: any) {
   const A = Array.isArray(it.attributes) ? it.attributes : [];
   const att = (re: RegExp) => { const a = A.find((x: any) => re.test(String(x?.key || ''))); return a ? String(a.value_label ?? a.value ?? '') : ''; };
   const ch = num(att(/^horse_?power_?din$/i)); const pl = num(att(/^seats$/i));
+  // critères Leboncoin : version exacte (moteur, puissance, finition), 1re mise en circulation (sépare deux générations), estimation Leboncoin
+  const mec = att(/^issuance_date$/i).match(/^(\d{2})\/(\d{4})$/); const po = num(att(/^doors$/i));
+  const pmin = num(att(/^car_price_min$/i)), pmax = num(att(/^car_price_max$/i));
   return { cle: c.cle, id: r.id, prix: r.prix, annee: r.annee, km: r.km, energie: r.energie, boite: r.boite, titre: cut(r.titre, 120), dep: r.departement, vendeur: r.vendeur_type, etat: att(/vehicle_damage|vehicle_condition|condition/i) || null, cv: r.cv, publie_le: r.publie_le,
-    texte: cut(r.titre + ' | ' + r.description.replace(/\s+/g, ' '), 700), ch: ch && ch < 700 ? ch : null, places: pl && pl < 10 ? pl : null, carrosserie: att(/^vehicle_type$/i) || null };
+    texte: cut(r.titre + ' | ' + r.description.replace(/\s+/g, ' '), 700), ch: ch && ch < 700 ? ch : null, places: pl && pl < 10 ? pl : null, carrosserie: att(/^vehicle_type$/i) || null,
+    version: cut(att(/^u_car_version$/i), 160) || null, finition: cut(att(/^u_car_finition$/i), 80) || null, mec: mec ? `${mec[2]}-${mec[1]}` : null, portes: po && po < 8 ? po : null,
+    lbc_min: pmin && pmin > 100 ? pmin : null, lbc_max: pmax && pmax > 100 ? pmax : null, lbc_pos: cut(att(/^car_price_positioning$/i), 40) || null };
 }
 async function startCote(c: any, R: Record<string, string>) {
   const f = c.filtres || {};

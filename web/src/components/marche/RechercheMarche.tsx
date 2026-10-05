@@ -16,11 +16,16 @@ type Annonce = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; ch: number | null; pro: boolean; lieu: string | null;
   source: string; vu: string | null; url: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
   moteur: string | null; version: string | null;
+  /** motorisation déduite de la puissance (pas écrite) ; génération d'après l'année seulement (doute) ; version et estimation Leboncoin */
+  moteurDeduit?: boolean; genPar?: "texte" | "puissance" | "annee" | null; doute?: boolean;
+  lbcVersion?: string | null; mec?: string | null; lbc?: { min: number; max: number; pos: string | null } | null;
 };
 type Collecte = { cle: string; nom: string; statut: "demandee" | "en cours" | "ok" | "erreur" | "quota"; n?: number | null; erreur?: string | null };
 type Resultat = {
   recherche: Recherche | null; modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[]; incertaines: number };
-  versions: { id: string; label: string; n: number }[]; moteurs: { l: string; n: number }[]; base: number; collecte: Collecte | null;
+  versions: { id: string; label: string; n: number }[]; moteurs: { l: string; n: number; deduits?: number; ch?: number | null }[]; base: number; collecte: Collecte | null;
+  /** annonces placées dans la génération d'après leur année seulement */
+  incertaines?: number;
   total: number; trouvees: number; sousLaCote: number; annonces: Annonce[]; ms: number;
   /** lancement gardé : date des résultats affichés */
   journal: { id: string; le: string } | null; criteres?: { choix: Choix; f: Partial<Filtres> };
@@ -115,6 +120,13 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
     } finally {
       setCharge(false);
     }
+  }
+
+  /** Pastille (version, motorisation) : filtre aussitôt, sans repasser par le formulaire. */
+  function affiner(x: Partial<Filtres>) {
+    const fx = { ...f, ...x };
+    setF(fx);
+    void lancer(choix, fx);
   }
 
   const chercher = (e?: React.FormEvent) => {
@@ -261,7 +273,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
   }, [suivie?.cle]);
 
   const alerteHref = choix.marque && choix.modele
-    ? `/app/alertes?${new URLSearchParams({ marque: choix.marque, modele: choix.modele, gen: choix.gen, energie: f.energie, boite: f.boite, anneeMin: f.anneeMin, anneeMax: f.anneeMax, prixMin: f.prixMin, prixMax: f.prixMax, kmMax: f.kmMax, mots: f.mots, exclure: f.exclure, sousCote: f.sousCote }).toString()}`
+    ? `/app/alertes?${new URLSearchParams({ marque: choix.marque, modele: choix.modele, gen: choix.gen, energie: f.energie, boite: f.boite, anneeMin: f.anneeMin, anneeMax: f.anneeMax, prixMin: f.prixMin, prixMax: f.prixMax, kmMax: f.kmMax, mots: f.mots, exclure: f.exclure, sousCote: f.sousCote, version: f.version, moteur: f.moteur, chMin: f.chMin, chMax: f.chMax }).toString()}`
     : "/app/alertes";
 
   return (
@@ -515,7 +527,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-ink-3">Versions :</span>
                   {res.versions.filter((v) => v.n).map((v) => (
-                    <button key={v.id} type="button" onClick={() => setF((x) => ({ ...x, version: x.version === v.id ? "" : v.id }))}
+                    <button key={v.id} type="button" onClick={() => affiner({ version: f.version === v.id ? "" : v.id })} aria-pressed={f.version === v.id}
                       className={cx("rounded-full border px-3 py-1", f.version === v.id ? "border-o/60 bg-o/12 text-ink" : "border-line-2 text-ink-2")}>
                       {v.label} <span className="num text-ink-3">{v.n}</span>
                     </button>
@@ -525,16 +537,24 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
               {res.moteurs.length > 0 && (
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-ink-3">Motorisations :</span>
-                  {res.moteurs.slice(0, 14).map((m) => (
-                    <button key={m.l} type="button" onClick={() => setF((x) => ({ ...x, moteur: x.moteur === m.l ? "" : m.l }))}
+                  {res.moteurs.filter((m) => m.n >= 3 || f.moteur === m.l).slice(0, 12).map((m) => (
+                    <button key={m.l} type="button" onClick={() => affiner({ moteur: f.moteur === m.l ? "" : m.l })} aria-pressed={f.moteur === m.l}
+                      title={m.deduits ? `${m.n - m.deduits} écrites dans l'annonce, ${m.deduits} reconnues à leur puissance` : undefined}
                       className={cx("rounded-full border px-3 py-1", f.moteur === m.l ? "border-o/60 bg-o/12 text-ink" : "border-line-2 text-ink-2")}>
-                      {m.l} <span className="num text-ink-3">{m.n}</span>
+                      {m.l}{m.ch ? <span className="text-ink-3"> · {m.ch} ch</span> : null} <span className="num text-ink-3">{m.n}</span>
                     </button>
                   ))}
                 </div>
               )}
-              <p className="text-ink-3">Touchez une pastille puis « Rechercher » pour filtrer.</p>
+              <p className="text-ink-3">
+                Touchez une pastille pour filtrer. Motorisation : écrite dans l&apos;annonce ou dans la version Leboncoin, sinon reconnue à sa puissance et son énergie.
+              </p>
             </div>
+          )}
+          {!!res.incertaines && (
+            <p className="rounded-2xl border border-warn/30 bg-warn/5 px-4 py-2.5 text-sm text-ink-2">
+              {res.incertaines} annonce{res.incertaines > 1 ? "s" : ""} de cette période ne disent pas leur génération (années de transition) : elles sont gardées d&apos;après leur année, comme sur Leboncoin, marquées « à vérifier », et ne comptent pas comme bonnes affaires.
+            </p>
           )}
           {res.annonces.length ? (
             <ul className="grid gap-3">
@@ -563,8 +583,16 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
       <div className="min-w-0">
         <p className="truncate font-medium">{a.titre || "Annonce"}</p>
         <p className="mt-0.5 text-sm text-ink-3">
-          {[a.annee, a.km != null ? `${a.km.toLocaleString("fr-FR")} km` : null, a.moteur, a.ch ? `${a.ch} ch` : null, a.energie, a.boite, a.version ?? a.genLabel].filter(Boolean).join(" · ")}
+          {[a.annee, a.km != null ? `${a.km.toLocaleString("fr-FR")} km` : null].filter(Boolean).join(" · ")}
+          {a.moteur && <span title={a.moteurDeduit ? "Reconnue à sa puissance et son énergie (pas écrite dans l'annonce)" : undefined}> · {a.moteurDeduit ? "≈ " : ""}{a.moteur}</span>}
+          {[a.ch ? `${a.ch} ch` : null, a.energie, a.boite].filter(Boolean).map((x) => ` · ${x}`).join("")}
+          {(a.version ?? a.genLabel) && (
+            <span title={a.doute ? "Génération d'après l'année seulement : vérifiez-la (carte grise, photos)" : a.genPar === "puissance" ? "Génération reconnue à sa puissance (année de transition)" : undefined} className={a.doute ? "text-warn" : undefined}>
+              {" · "}{a.version ?? a.genLabel}{a.doute ? " (à vérifier)" : ""}
+            </span>
+          )}
         </p>
+        {a.lbcVersion && <p className="truncate text-xs text-ink-3" title="Version indiquée sur Leboncoin">Version Leboncoin : {a.lbcVersion}</p>}
         <p className="text-xs text-ink-3">
           {[a.lieu, a.pro ? "professionnel" : "particulier", a.vu ? `vue le ${new Date(a.vu).toLocaleDateString("fr-FR")}` : null].filter(Boolean).join(" · ")}
           {a.piege && <span className="ml-2 text-bad">{a.suspect ? "prix suspect (pièces, location, acompte ?)" : "piège possible"}</span>}
@@ -573,6 +601,7 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
       <div className="flex items-baseline gap-4 sm:block sm:text-right">
         <p className="num font-display text-xl font-semibold">{eur(a.prix)}</p>
         <p className="text-xs text-ink-3">{c ? `cote ${eur(c.P)}` : "pas de cote"}</p>
+        {a.lbc && <p className="text-xs text-ink-3" title="Estimation affichée par Leboncoin sur l'annonce">Leboncoin : {eur(a.lbc.min)} – {eur(a.lbc.max)}{a.lbc.pos ? ` · ${a.lbc.pos}` : ""}</p>}
       </div>
       <div className="flex items-center justify-between gap-3 sm:block sm:min-w-36 sm:text-right">
         {c && c.ecart != null ? (

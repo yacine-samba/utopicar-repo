@@ -14,7 +14,6 @@ import { GraphMarges, type BarreMarge } from "@/components/benef/GraphMarges";
 import { Ico } from "@/components/espace/Icones";
 import { BoutonRechercher, RechercheRapide } from "@/components/espace/RechercheRapide";
 import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
-import { catalogue } from "@/lib/vehicules/catalogue";
 import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
 
 /** Téléphone : deux boutons qui ouvrent une fenêtre, au lieu des grands blocs « collez le lien » et « rechercher ». */
@@ -22,7 +21,7 @@ function ActionsMobile({ recherche }: { recherche: boolean }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:hidden">
       <BoutonAnalyser libelle={recherche ? "Analyser" : "Analyser une annonce"} className={recherche ? "justify-center px-3" : "col-span-2 justify-center"} />
-      {recherche && <BoutonRechercher cat={catalogue()} />}
+      {recherche && <BoutonRechercher />}
     </div>
   );
 }
@@ -58,12 +57,6 @@ function Bonjour({ c, texte }: { c: Compte; texte: string }) {
     </div>
   );
 }
-
-const ETAPES = [
-  ["Collez le lien", "Copiez le lien de l'annonce Leboncoin et collez-le ci-dessus. Pour un autre site, collez le texte."],
-  ["Lisez le verdict", "Bonne affaire ou pas, coût réel d'achat (carte grise, trajet, réparations) et points faibles du modèle."],
-  ["Négociez et vérifiez", "Le prix à proposer, les questions à poser au vendeur et ce qu'il faut contrôler sur place."],
-];
 
 async function TableauParticulier({ c }: { c: Compte }) {
   const o = c.offre;
@@ -179,7 +172,7 @@ async function TableauComplet({ c }: { c: Compte }) {
       <div className="hidden sm:block">
         <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
       </div>
-      {recherches && <RechercheRapide cat={catalogue()} recentes={recherches} />}
+      {recherches && <RechercheRapide recentes={recherches} />}
 
       <section aria-labelledby="tb-kpi">
         <h2 id="tb-kpi" className="sr-only">Chiffres clés</h2>
@@ -368,7 +361,7 @@ async function TableauBenef({ c }: { c: Compte }) {
       <div className="hidden sm:block">
         <AnalyseRapide titre="Une annonce à chiffrer ?" texte="Collez le lien Leboncoin : marge nette après frais, prix d'offre et plafond d'achat, enregistrés dans vos rapports." />
       </div>
-      {recherches && <RechercheRapide cat={catalogue()} recentes={recherches} />}
+      {recherches && <RechercheRapide recentes={recherches} />}
 
       <section aria-labelledby="tb-analyses">
         <h2 id="tb-analyses" className="mb-3 font-display text-lg font-semibold">

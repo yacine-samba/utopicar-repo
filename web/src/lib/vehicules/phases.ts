@@ -112,18 +112,31 @@ const RX_TECH_CH = new RegExp(`\\b${TECH_RX}\\s?(\\d{2,3})\\b`);
 const normTech = (t: string) => TECH[t.replace(/-/g, "")] ?? t.toUpperCase();
 const MERCO = /\b(a|b|c|e|s|v|cla|cls|gla|glb|glc|gle|glk|ml|clk|slk|sl)\s?(\d{3})\s?(d|cdi|bluetec|cgi|kompressor|h)?\b/;
 
-/** Motorisation d'une annonce (« 320d », « C 220 d », « 1.5 dCi », « 1.2 PureTech »…), ou null. */
-export function motorisationDe(marque: string, a: { titre: string; texte?: string | null }): string | null {
-  for (const brut of [a.titre, (a.texte ?? "").slice(0, 900)]) {
+/** Motorisation d'une annonce (« 320d », « C 220 d », « 1.5 dCi », « 1.2 PureTech »…), ou null.
+    Lue d'abord dans la version Leboncoin (u_car_version), puis le titre, puis la description.
+    BMW : les écritures d'un même moteur sont regroupées (320ia, 320ci → 320i ; 325ix → 325xi ; « 325 » en essence → 325i). */
+export function motorisationDe(marque: string, a: { titre: string; texte?: string | null; version?: string | null; energie?: string | null }, modele = ""): string | null {
+  const en = plat(a.energie ?? "");
+  const suffixe = /diesel/.test(en) ? "d" : /hybride|electrique/.test(en) ? "e" : /essence|gpl|ethanol/.test(en) ? "i" : "";
+  const serie = modele.match(/^serie(\d)/)?.[1] ?? "";
+  for (const brut of [a.version ?? "", a.titre, (a.texte ?? "").slice(0, 900)]) {
     const tx = plat(brut ?? "");
     if (!tx) continue;
     if (marque === "bmw") {
       const x = tx.match(/\b([sx])\s?drive\s?(\d{2})\s?([die])\b/);
       if (x) return `${x[1]}Drive${x[2]}${x[3]}`;
-      const m = tx.match(/\b(m?[1-8](?:1[0-8]|2[0-5]|3[0-5]|40|45|50))\s?(xd|xi|sd|d|i|e|is)\b/);
-      if (m) return `${m[1].replace(/^m/, "M")}${m[2]}`;
+      const m = tx.match(/\b(m?[1-8](?:1[0-8]|2[0-5]|28|3[05]|40|45|50))\s?(xd|xi|ix|sd|si|ia|ci|cd|is|d|i|e|x)\b/);
+      if (m) {
+        const suf = m[2] === "ix" || (m[2] === "x" && suffixe !== "d") ? "xi" : m[2] === "x" ? "xd" : /^(ia|ci|is)$/.test(m[2]) ? "i" : /^(cd|sd)$/.test(m[2]) ? "d" : m[2];
+        return `${m[1].replace(/^m/, "M")}${suf}`;
+      }
       const mx = tx.match(/\bm([2-8])\b(?! ?sport)/);
       if (mx) return `M${mx[1]}`;
+      // « BMW 325 », « Série 3 320 » : le moteur sans sa lettre, complétée par l'énergie
+      if (serie && suffixe) {
+        const nu = tx.match(new RegExp(`\\b(${serie}(?:1[68]|2[0358]|3[05]|40))\\b(?![.,]?\\s?(?:\\d|ch|cv|km|kms|€|eur|000))`));
+        if (nu) return `${nu[1]}${suffixe}`;
+      }
     }
     if (marque === "mercedes") {
       const m = tx.match(MERCO);
@@ -139,6 +152,43 @@ export function motorisationDe(marque: string, a: { titre: string; texte?: strin
     if (t) return `${normTech(t[1])} ${t[2]}`;
   }
   return null;
+}
+
+/** Clé de comparaison d'une motorisation (« 320 d » = « 320d »). */
+export const cleMoteur = (s: string) => plat(s).replace(/[\s-]+/g, "");
+
+/** La motorisation demandée correspond-elle ? « 325 » prend 325i et 325xi, « 325i » seulement 325i ; « 1.6 TDI » prend 105 et 110 ch. */
+export function memeMoteur(demande: string, moteur: string | null | undefined): boolean {
+  if (!moteur) return false;
+  const q = cleMoteur(demande), m = cleMoteur(moteur);
+  return m === q || (q.length >= 3 && m.startsWith(q));
+}
+
+/* ---------- Moteur déduit de la puissance (critère Leboncoin) ----------
+   Beaucoup d'annonces n'écrivent pas « 325i » : leur puissance DIN Leboncoin (218 ch) et leur énergie suffisent.
+   La table moteur → puissance est apprise des annonces de la même génération qui écrivent les deux. */
+export type ProfilMoteurs = Map<string, Map<string, number>>;
+
+export function profilMoteurs(lignes: { moteur: string | null; ch: number | null; energie: string }[]): ProfilMoteurs {
+  const p: ProfilMoteurs = new Map();
+  for (const l of lignes) {
+    if (!l.moteur || !l.ch) continue;
+    const k = `${l.energie}|${l.ch}`;
+    const m = p.get(k) ?? new Map<string, number>();
+    m.set(l.moteur, (m.get(l.moteur) ?? 0) + 1);
+    p.set(k, m);
+  }
+  return p;
+}
+
+/** Motorisation la plus probable pour une énergie et une puissance (à 1 ch près), si elle domine nettement. */
+export function moteurDeduit(p: ProfilMoteurs, energie: string, ch: number | null): string | null {
+  if (!ch) return null;
+  const tot = new Map<string, number>();
+  for (const d of [-1, 0, 1]) p.get(`${energie}|${ch + d}`)?.forEach((n, l) => tot.set(l, (tot.get(l) ?? 0) + n));
+  let best = "", nb = 0, somme = 0;
+  tot.forEach((n, l) => { somme += n; if (n > nb) { best = l; nb = n; } });
+  return somme >= 3 && nb / somme >= 0.6 ? best : null;
 }
 
 /** Suggestions avant la première recherche (BMW, Mercedes : appellations du modèle). */

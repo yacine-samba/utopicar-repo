@@ -1,10 +1,10 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
-import { lienAnnonce, marcheModele, normBo, normEn } from "@/lib/vehicules/marche";
+import { lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "@/lib/vehicules/marche";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { cleFavori } from "@/lib/favoris";
 import { cleRecherche, COLONNES_RECHERCHE, MAX_ONGLETS, type Meilleure } from "@/lib/recherches";
-import { dansPhase, motorisationDe } from "@/lib/vehicules/phases";
+import { dansPhase, memeMoteur } from "@/lib/vehicules/phases";
 import { demanderCollecte, SEUIL_COLLECTE, type EtatCollecte } from "@/lib/vehicules/collecte";
 
 /* Recherche dans la base du marché, au niveau de l'outil Garage : marque, modèle, génération,
@@ -67,28 +67,39 @@ export async function POST(req: Request) {
   const genObj = genC ? m.gens.find((g) => g.id === genC) : null;
   const versions = genObj?.v && genObj.v.length > 1 ? genObj.v : [];
   const version = f.version && versions.some((v) => v.id === f.version) ? f.version : "";
-  const marqueCle = m.base.split(" ")[0];
-  // motorisation et puissance de chaque annonce (relevées par Leboncoin, sinon lues dans le titre et le texte)
-  const enrichies = lignes.map((l) => {
-    const tx = sansAccent(`${l.titre} ${l.texte ?? ""}`);
-    const ch = l.ch ?? (Number(tx.match(/\b(\d{2,3})\s?(?:ch|cv din|chevaux)\b/)?.[1]) || null);
-    return { ...l, tx, ch: ch && ch > 40 && ch < 800 ? ch : null, moteur: motorisationDe(marqueCle, l) };
-  });
+  const vObj = version ? versions.find((v) => v.id === version) ?? null : null;
+  // Leboncoin ne connaît pas les générations : une génération, ce sont ses dates (celles de la version choisie s'il y en a une).
+  // Une annonce y entre si sa génération est lue (texte, 1re mise en circulation, puissance) ou, à défaut, si son année y tombe,
+  // sauf si elle écrit une autre génération.
+  const [gy0, gy1] = genObj ? [vObj?.y0 ?? genObj.y0, vObj?.y1 ?? genObj.y1] : [0, 9999];
+  const parAnnee = (l: LigneMarche) => !l.gen && l.annee != null && l.annee >= gy0 && l.annee <= gy1 && (!l.cands.length || l.cands.includes(genC));
+  const dansGen = (l: LigneMarche) => !genC || l.gen === genC || parAnnee(l);
+  const moteurDe = (l: LigneMarche) => l.moteur ?? l.moteurDeduit;
   // base de la génération (et de sa version, de son énergie) : sert aux facettes et à décider d'une collecte Leboncoin
-  const deLaGen = enrichies.filter((l) => (!genC || l.gen === genC) && (!f.energie || normEn(l.energie) === f.energie));
+  const deLaGen = lignes.filter((l) => dansGen(l) && (!f.energie || normEn(l.energie) === f.energie));
   const parVersion = new Map<string, number>();
   deLaGen.forEach((l) => l.variant && parVersion.set(l.variant, (parVersion.get(l.variant) ?? 0) + 1));
-  const okVersion = (l: (typeof enrichies)[number]) => !version || l.variant === version;
-  const moteurs = new Map<string, number>();
-  deLaGen.filter(okVersion).forEach((l) => l.moteur && moteurs.set(l.moteur, (moteurs.get(l.moteur) ?? 0) + 1));
-  const okCarr = (l: (typeof enrichies)[number]) =>
+  // version : lue dans l'annonce ; sans génération lue, d'après la carrosserie (break, coupé…) ou la version par défaut
+  const okVersion = (l: LigneMarche) => !vObj || l.variant === version || (!l.variant && (l.body ? l.body === vObj.body : vObj === versions[0]));
+  // motorisations : écrites ou déduites de la puissance, avec leur puissance la plus courante
+  const moteurs = new Map<string, { n: number; deduits: number; ch: Map<number, number> }>();
+  deLaGen.filter(okVersion).forEach((l) => {
+    const mo = moteurDe(l);
+    if (!mo) return;
+    const x = moteurs.get(mo) ?? { n: 0, deduits: 0, ch: new Map<number, number>() };
+    x.n++;
+    if (!l.moteur) x.deduits++;
+    if (l.ch) x.ch.set(l.ch, (x.ch.get(l.ch) ?? 0) + 1);
+    moteurs.set(mo, x);
+  });
+  const okCarr = (l: LigneMarche) =>
     !f.carrosserie || (f.carrosserie === "berline" ? !l.body || l.body === "hayon" || l.body === "berline" : l.body === f.carrosserie);
 
-  const gardees = enrichies.filter((l) => {
-    if (f.gen && l.gen !== f.gen) return false;
+  const gardees = lignes.filter((l) => {
+    if (f.gen && !dansGen(l)) return false;
     if (!okVersion(l) || !okCarr(l)) return false;
     if (f.phase && genC && !dansPhase(m.base, genC, f.phase, l)) return false;
-    if (f.moteur && l.moteur !== f.moteur) return false;
+    if (f.moteur && !memeMoteur(f.moteur, moteurDe(l))) return false;
     // puissance demandée : les annonces sans puissance connue sont écartées (on ne devine pas)
     if (f.chMin && (l.ch == null || l.ch < f.chMin)) return false;
     if (f.chMax && (l.ch == null || l.ch > f.chMax)) return false;
@@ -109,15 +120,19 @@ export async function POST(req: Request) {
   });
 
   const annonces = gardees.map((l) => {
-    const e = cotes.estimer(l);
+    // génération d'après l'année seulement : placée sur la cote de la génération choisie, avec un doute affiché
+    const doute = !!f.gen && !l.gen;
+    const e = cotes.estimer(doute ? { ...l, gen: genC } : l);
     const tx = l.tx;
     // plus de 45 % sous la cote : presque toujours pièces, location, acompte ou prix d'appel
     const suspect = !!(e?.pct != null && e.pct > 0.45);
     return {
       id: l.id, titre: l.titre, prix: l.prix, annee: l.annee, km: l.km, energie: l.energie, boite: l.boite, pro: !!l.pro, lieu: l.lieu, source: l.source,
-      ch: l.ch, moteur: l.moteur, version: l.varianteEcrite ? versions.find((v) => v.id === l.variant)?.label ?? null : null,
-      vu: l.vu_le, url: lienAnnonce(l), gen: l.gen, genLabel: l.genLabel, piege: PIEGES.test(tx) || suspect, suspect,
-      cote: e && e.P ? { P: e.P, lo: e.lo, hi: e.hi, ecart: e.ecart, pct: e.pct, conf: e.conf, moinsCherQue: e.moinsCherQue, n: e.nClean, why: e.why, segments: e.segments } : null,
+      ch: l.ch, moteur: moteurDe(l), moteurDeduit: !l.moteur && !!l.moteurDeduit, version: l.varianteEcrite ? versions.find((v) => v.id === l.variant)?.label ?? null : null,
+      lbcVersion: l.version ?? null, mec: l.mec ?? null, lbc: l.lbc_min && l.lbc_max ? { min: l.lbc_min, max: l.lbc_max, pos: l.lbc_pos ?? null } : null,
+      vu: l.vu_le, url: lienAnnonce(l), gen: l.gen ?? (doute ? genC : null), genLabel: l.genLabel || (doute ? genObj?.label ?? "" : ""),
+      genPar: doute ? ("annee" as const) : l.genPar, doute, piege: PIEGES.test(tx) || suspect, suspect,
+      cote: e && e.P ? { P: e.P, lo: e.lo, hi: e.hi, ecart: e.ecart, pct: e.pct, conf: doute ? ("faible" as const) : e.conf, moinsCherQue: e.moinsCherQue, n: e.nClean, why: e.why, segments: e.segments } : null,
     };
   });
   const filtrees = annonces.filter((a) => (!f.fiables || !a.suspect) && (!f.sousCote || (a.cote?.pct != null && a.cote.pct * 100 >= f.sousCote)));
@@ -131,12 +146,14 @@ export async function POST(req: Request) {
   );
 
   const avecCote = annonces.filter((a) => a.cote);
-  const sousLaCote = avecCote.filter((a) => !a.suspect && (a.cote!.pct ?? 0) >= 0.05).length;
+  // les annonces dont la génération n'est qu'une supposition (année de transition) ne comptent pas comme bonnes affaires
+  const sousLaCote = avecCote.filter((a) => !a.suspect && !a.doute && (a.cote!.pct ?? 0) >= 0.05).length;
   // résultats gardés avec la recherche : la rouvrir les affiche sans refaire de requête
   const resultat = {
     modele: { nom: `${m.marque} ${m.nom}`, gens: m.gens.map(({ id, label, y0, y1 }) => ({ id, label, y0, y1, n: parGen.get(id) ?? 0 })), incertaines: parGen.get("?") ?? 0 },
     versions: versions.map((v) => ({ id: v.id, label: v.label, n: parVersion.get(v.id) ?? 0 })),
-    moteurs: [...moteurs].sort((a, b) => b[1] - a[1]).slice(0, 40).map(([l, n]) => ({ l, n })),
+    moteurs: [...moteurs].sort((a, b) => b[1].n - a[1].n).slice(0, 40).map(([l, x]) => ({ l, n: x.n, deduits: x.deduits, ch: [...x.ch].sort((p, q) => q[1] - p[1])[0]?.[0] ?? null })),
+    incertaines: deLaGen.filter((l) => !!f.gen && !l.gen).length,
     base: deLaGen.length,
     total: lignes.length,
     trouvees: filtrees.length,
@@ -185,7 +202,7 @@ const stable = (v: unknown): string =>
 
 type Trouvee = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; ch: number | null; energie: string | null; boite: string | null; moteur: string | null; version: string | null;
-  lieu: string | null; url: string | null; pro: boolean; gen: string | null; genLabel: string; piege: boolean; cote: { P: number; ecart: number | null; pct: number | null } | null;
+  lieu: string | null; url: string | null; pro: boolean; gen: string | null; genLabel: string; piege: boolean; doute: boolean; cote: { P: number; ecart: number | null; pct: number | null } | null;
 };
 
 /** Garde la recherche (une par véhicule), son lancement avec ses résultats (journal) et les annonces trouvées. */
@@ -198,7 +215,7 @@ async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: s
   const nom = `${m.marque} ${g?.label ?? m.nom}${v ? ` ${v.label.replace(/^[A-Z]\d{2,3}\s/, "")}` : ""}`.slice(0, 160);
   const maintenant = new Date().toISOString();
   // meilleure affaire crédible : ni piège, ni prix trop beau pour être vrai (plus de 40 % sous la cote)
-  const top = trouvees.filter((a) => !a.piege && a.cote?.pct != null && a.cote.pct <= 0.4 && a.cote.ecart != null).sort((a, b) => b.cote!.pct! - a.cote!.pct!)[0];
+  const top = trouvees.filter((a) => !a.piege && !a.doute && a.cote?.pct != null && a.cote.pct <= 0.4 && a.cote.ecart != null).sort((a, b) => b.cote!.pct! - a.cote!.pct!)[0];
   const meilleure: Meilleure | null = top ? { titre: top.titre.slice(0, 140), prix: top.prix, ecart: Math.round(top.cote!.ecart!), pct: Math.round(top.cote!.pct! * 100), url: top.url } : null;
   const { data, error } = await sb
     .from("recherches")
