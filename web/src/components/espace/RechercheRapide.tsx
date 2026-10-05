@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useEffect, useId, useState } from "react";
 import { cx } from "@/lib/cx";
-import type { CatMarque } from "@/lib/vehicules/types";
+import { useCatalogue } from "@/lib/vehicules/useCatalogue";
 import { quandRecherche, resumeFiltres, type Recherche } from "@/lib/recherches";
 import { ChoixVehicule, type Choix } from "../marche/ChoixVehicule";
 import { Ico } from "./Icones";
@@ -12,8 +12,9 @@ import { Ico } from "./Icones";
 const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;
 
 /** Tableau de bord : chercher une voiture dans le marché en deux clics, et reprendre ses 3 dernières recherches. */
-export function RechercheRapide({ cat, recentes }: { cat: CatMarque[]; recentes: Recherche[] }) {
+export function RechercheRapide({ recentes }: { recentes: Recherche[] }) {
   const router = useRouter();
+  const cat = useCatalogue() ?? [];
   const [choix, setChoix] = useState<Choix>({ marque: "", modele: "", gen: "" });
   const [err, setErr] = useState("");
   const pret = !!(choix.marque && choix.modele);
@@ -84,10 +85,11 @@ export function RechercheRapide({ cat, recentes }: { cat: CatMarque[]; recentes:
 }
 
 /** Téléphone : bouton « Rechercher » qui ouvre une fenêtre (marque, modèle, génération) au lieu du formulaire dans la page. */
-export function BoutonRechercher({ cat, className }: { cat: CatMarque[]; className?: string }) {
+export function BoutonRechercher({ className }: { className?: string }) {
   const router = useRouter();
   const id = useId();
   const [ouvert, setOuvert] = useState(false);
+  const cat = useCatalogue(ouvert) ?? []; // chargé à l'ouverture de la fenêtre
   const [choix, setChoix] = useState<Choix>({ marque: "", modele: "", gen: "" });
   const [err, setErr] = useState("");
   useEffect(() => {

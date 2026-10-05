@@ -7,7 +7,7 @@ import { Alertes, type Alerte, type Formulaire } from "@/components/marche/Alert
 
 export const metadata: Metadata = { title: "Alertes" };
 
-const CHAMPS: (keyof Formulaire)[] = ["marque", "modele", "gen", "energie", "boite", "anneeMin", "anneeMax", "prixMin", "prixMax", "kmMax", "mots", "exclure", "sousCote"];
+const CHAMPS: (keyof Formulaire)[] = ["marque", "modele", "gen", "energie", "boite", "anneeMin", "anneeMax", "prixMin", "prixMax", "kmMax", "mots", "exclure", "sousCote", "version", "moteur", "chMin", "chMax"];
 
 export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const c = await compteBenef("/app/alertes");

@@ -1,7 +1,7 @@
 import type { Compte } from "./compte";
 import type { Famille } from "./offres";
 
-export type Icone = "accueil" | "analyser" | "rapports" | "parc" | "rentabilite" | "comparer" | "recherche" | "guide" | "compte" | "tri" | "cote" | "alertes" | "credits" | "favoris";
+export type Icone = "accueil" | "analyser" | "rapports" | "parc" | "rentabilite" | "comparer" | "recherche" | "guide" | "compte" | "tri" | "cote" | "alertes" | "credits" | "favoris" | "extension";
 export type EntreeNav = { href: string; label: string; court: string; icone: Icone; verrou?: string; mobile?: boolean };
 
 /** Espace affiché : la famille de la formule payée (ou offerte), sinon l'usage choisi à l'inscription. */
@@ -17,6 +17,7 @@ export function navEspace(c: Compte): EntreeNav[] {
       { href: "/app/rapports", label: "Mes analyses", court: "Analyses", icone: "rapports", mobile: true },
       { href: "/app/favoris", label: "Favoris", court: "Favoris", icone: "favoris" },
       { href: "/app/guides", label: "Guides", court: "Guides", icone: "guide", mobile: true },
+      { href: "/app/extension", label: "Extension Leboncoin", court: "Extension", icone: "extension" },
       { href: "/app/credits", label: "Crédits", court: "Crédits", icone: "credits" },
       { href: "/app/compte", label: "Compte et formule", court: "Compte", icone: "compte", mobile: true },
     ];
@@ -30,6 +31,7 @@ export function navEspace(c: Compte): EntreeNav[] {
     { href: "/app/recherche", label: "Recherche", court: "Recherche", icone: "recherche", verrou: o.recherche ? undefined : "Pro" },
     { href: "/app/favoris", label: "Favoris", court: "Favoris", icone: "favoris" },
     { href: "/app/cote", label: "Cote", court: "Cote", icone: "cote", verrou: o.recherche ? undefined : "Pro" },
+    { href: "/app/extension", label: "Extension Leboncoin", court: "Extension", icone: "extension" },
     { href: "/app/alertes", label: "Alertes e-mail", court: "Alertes", icone: "alertes", verrou: o.id === "pro" ? undefined : "Pro" },
     { href: "/app/comparer", label: "Comparateur", court: "Comparer", icone: "comparer", verrou: o.comparateur ? undefined : "Croissance" },
     { href: "/app/rentabilite", label: "Rentabilité", court: "Rentabilité", icone: "rentabilite" },

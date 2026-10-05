@@ -97,8 +97,9 @@ function CollerReleve({ actif }: { actif: boolean }) {
           <p className="text-sm text-ink-2">
             Sur une page de résultats Leboncoin, cliquez sur « Relever la page avec Utopicar » (extension) : cette page s&apos;ouvre toute seule et chaque annonce est reconnue (marque, modèle, génération) et placée sur sa cote. Sans l&apos;extension à jour, collez le relevé ici avec <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl</kbd> + <kbd className="rounded border border-line-2 px-1.5 text-xs">V</kbd>.
           </p>
-          <p className="text-sm text-ink-3">
-            <a href="/utopicar-extension.zip" download className="text-o2 underline underline-offset-4">Télécharger l&apos;extension Utopicar (1.2)</a> · Chrome : chrome://extensions, « Mode développeur », puis glissez le dossier décompressé.
+          <p className="mt-1 flex flex-wrap items-center gap-3 text-sm text-ink-3">
+            <a href="/app/extension" className="btn btn-sm min-h-9 px-4">Installer l&apos;extension Utopicar</a>
+            Chrome, Edge : 1 minute.
           </p>
         </div>
         <label htmlFor="releve" className="sr-only">Relevé collé</label>

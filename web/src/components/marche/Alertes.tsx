@@ -13,8 +13,12 @@ import { ChoixVehicule, type Choix } from "./ChoixVehicule";
 export type Formulaire = {
   marque: string; modele: string; gen: string; energie: string; boite: string; anneeMin: string; anneeMax: string; prixMin: string; prixMax: string;
   kmMax: string; vendeur: string; mots: string; exclure: string; sousCote: string;
+  /** version (carrosserie, code châssis), motorisation et ses puissances Leboncoin (« 218 » ou « 129,143 »), puissance DIN */
+  version?: string; moteur?: string; moteurCh?: string; chMin?: string; chMax?: string;
 };
-type AnnonceAlerte = { id: string; url: string | null; titre: string; prix: number | null; annee: number | null; km: number | null; energie: string | null; boite: string | null; ville: string | null; cp: string | null; vendeur_type: string | null; vignette: string | null; vu: string | null };
+type AnnonceAlerte = { id: string; url: string | null; titre: string; prix: number | null; annee: number | null; km: number | null; energie: string | null; boite: string | null; ville: string | null; cp: string | null; vendeur_type: string | null; vignette: boolean | string | null; vu: string | null };
+/** Vignette servie à part (la liste des alertes ne transporte plus les images). */
+const vignette = (x: AnnonceAlerte) => (x.vignette ? `/api/alertes/vignette?id=${encodeURIComponent(x.id)}` : null);
 export type Alerte = {
   id: string; nom: string; actif: boolean; notifier: boolean; email: string | null; intervalle_min: number; filtres: Record<string, unknown> & { utp?: { site?: Formulaire; sous_cote?: number } };
   derniere_execution: string | null; derniere_erreur: string | null; derniers_nouveaux: number | null; en_cours: boolean; created_at: string; passages: number; mails: number; annonces: AnnonceAlerte[];
@@ -22,9 +26,11 @@ export type Alerte = {
 };
 
 const FREQUENCES = [[60, "Toutes les heures"], [120, "Toutes les 2 heures"], [180, "Toutes les 3 heures"], [240, "Toutes les 4 heures"], [360, "Toutes les 6 heures"], [480, "Toutes les 8 heures"], [720, "Toutes les 12 heures"], [1440, "Une fois par jour"]] as const;
-const FUEL: Record<string, string> = { essence: "1", diesel: "2", gpl: "3", electrique: "4", hybride: "6" };
+const FUEL: Record<string, string[]> = { essence: ["1"], diesel: ["2"], electrique: ["4"], hybride: ["6", "8"] };
+// carrosseries que Leboncoin sait filtrer (critère « Type de véhicule »)
+const TYPE_LBC: Record<string, string> = { break: "break", coupe: "coupe", cabriolet: "cabriolet", monospace: "monospace" };
 const PIEGES = "pour pieces|epave|non roulant|ne demarre pas|moteur hs|moteur casse|boite hs|export";
-const VIDE: Formulaire = { marque: "", modele: "", gen: "", energie: "", boite: "", anneeMin: "", anneeMax: "", prixMin: "", prixMax: "", kmMax: "", vendeur: "particulier", mots: "", exclure: "", sousCote: "" };
+const VIDE: Formulaire = { marque: "", modele: "", gen: "", energie: "", boite: "", anneeMin: "", anneeMax: "", prixMin: "", prixMax: "", kmMax: "", vendeur: "particulier", mots: "", exclure: "", sousCote: "", version: "", moteur: "", moteurCh: "", chMin: "", chMax: "" };
 const n = (s: string) => (s.trim() && /^\d+$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : undefined);
 const eur = (v: number | null | undefined) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 const flat = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -32,24 +38,36 @@ const echap = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const freqTxt = (m: number) => FREQUENCES.find(([v]) => v === m)?.[1] ?? `Toutes les ${Math.round(m / 60)} h`;
 const quand = (d: string | null) => (d ? new Date(d).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "jamais");
 
-/** Filtres au format de l'acteur Leboncoin (comme les recherches de l'outil Garage). */
+/** Filtres au format de l'acteur Leboncoin : uniquement des critères Leboncoin (marque, modèle, années de la génération,
+    énergie, boîte, type de véhicule, puissance DIN), pas de mots-clés qui feraient rater les annonces qui ne les écrivent pas. */
 function versFiltres(f: Formulaire, cat: CatMarque[]) {
   const b = cat.find((x) => x.k === f.marque);
   const m = b?.m.find((x) => x.k === f.modele);
   const g = m?.g.find((x) => x.id === f.gen);
+  const v = g?.v?.find((x) => x.id === f.version);
   const out: Record<string, unknown> = {};
+  const avance: Record<string, unknown> = {}; // critères Leboncoin sans champ dédié dans l'acteur
   if (b?.lbc) out.vehicle_brand = b.lbc;
   if (m?.lbc) out.vehicle_model = m.lbc;
   const mots = [m && !m.lbc ? m.n : "", f.mots].filter(Boolean).join(" ").trim();
   if (mots) out.text = mots;
-  const y0 = n(f.anneeMin) ?? g?.y0, y1 = n(f.anneeMax) ?? g?.y1;
+  // la génération (ou la version) = ses dates, Leboncoin ne connaît pas les générations
+  const y0 = n(f.anneeMin) ?? v?.y0 ?? g?.y0, y1 = n(f.anneeMax) ?? v?.y1 ?? g?.y1;
   if (y0) out.year_min = y0;
   if (y1) out.year_max = y1;
   if (n(f.prixMin) != null) out.price_min = n(f.prixMin);
   if (n(f.prixMax) != null) out.price_max = n(f.prixMax);
   if (n(f.kmMax) != null) out.mileage_max = n(f.kmMax);
-  if (FUEL[f.energie]) out.fuel = [FUEL[f.energie]];
+  if (FUEL[f.energie]) out.fuel = FUEL[f.energie];
+  if (f.energie === "gpl") avance.fuel = ["3"];
   if (f.boite) out.gearbox = [f.boite === "auto" ? "2" : "1"];
+  if (v && TYPE_LBC[v.b]) out.vehicle_type = [TYPE_LBC[v.b]];
+  // motorisation → puissance DIN Leboncoin (325i = 218 ch) ; une puissance saisie l'emporte
+  const pw = (f.moteurCh ?? "").split(",").map(Number).filter((x) => x > 0);
+  const chMin = n(f.chMin ?? "") ?? (pw.length ? Math.min(...pw) - 3 : undefined);
+  const chMax = n(f.chMax ?? "") ?? (pw.length ? Math.max(...pw) + 3 : undefined);
+  if (chMin != null || chMax != null) avance.horse_power_din = { ...(chMin != null ? { min: chMin } : {}), ...(chMax != null ? { max: chMax } : {}) };
+  if (Object.keys(avance).length) out.filters = avance;
   out.owner_type = f.vendeur === "pro" ? "pro" : f.vendeur === "tous" ? "all" : "private";
   const exclus = flat(f.exclure).split(/[,;]+/).map((x) => x.trim()).filter((x) => x.length >= 2).map(echap);
   out.utp = {
@@ -68,8 +86,10 @@ function resumeCriteres(a: Alerte, cat: CatMarque[]) {
   const b = cat.find((x) => x.k === f.marque);
   const m = b?.m.find((x) => x.k === f.modele);
   const g = m?.g.find((x) => x.id === f.gen);
+  const v = g?.v?.find((x) => x.id === f.version);
   return [
-    [b?.n, g?.l ?? m?.n].filter(Boolean).join(" "),
+    [b?.n, g?.l ?? m?.n, v?.l].filter(Boolean).join(" "),
+    f.moteur, f.chMin || f.chMax ? `${f.chMin || "…"} – ${f.chMax || "…"} ch` : "",
     f.energie, f.boite === "auto" ? "automatique" : f.boite,
     f.anneeMin || f.anneeMax ? `${f.anneeMin || "…"} – ${f.anneeMax || "…"}` : "",
     f.prixMax ? `≤ ${eur(Number(f.prixMax))}` : "", f.kmMax ? `≤ ${Number(f.kmMax).toLocaleString("fr-FR")} km` : "",
@@ -210,7 +230,13 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
       {edition && (
         <form id="al-form" onSubmit={enregistrer} className="carte grid scroll-mt-24 gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3">
           <h2 className="font-display text-lg font-semibold sm:col-span-2 lg:col-span-3">{edition.id ? "Modifier l'alerte" : "Nouvelle alerte"}</h2>
-          <ChoixVehicule cat={cat} v={{ marque: edition.f.marque, modele: edition.f.modele, gen: edition.f.gen }} onChange={(c: Choix) => setEdition((x) => (x ? { ...x, f: { ...x.f, ...c } } : x))} idPrefixe="al" />
+          <ChoixVehicule
+            cat={cat}
+            v={{ marque: edition.f.marque, modele: edition.f.modele, gen: edition.f.gen }}
+            onChange={(c: Choix) => setEdition((x) => (x ? { ...x, f: { ...x.f, ...c, ...(c.gen !== x.f.gen || c.modele !== x.f.modele ? { version: "", moteur: "", moteurCh: "" } : {}) } } : x))}
+            idPrefixe="al"
+          />
+          <ChampsPrecis cat={cat} f={edition.f} onChange={(x) => setEdition((e) => (e ? { ...e, f: { ...e.f, ...x } } : e))} />
           <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Énergie</span>
             <select value={edition.f.energie} onChange={majF("energie")} className={inputCls}>
@@ -325,8 +351,8 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
                     {a.annonces.map((x) => (
                       <li key={x.id} className="flex gap-3 rounded-xl border border-line p-2">
                         {x.vignette ? (
-                          // eslint-disable-next-line @next/next/no-img-element -- vignette en base64, pas d'optimisation possible
-                          <img src={x.vignette} alt="" className="size-16 shrink-0 rounded-lg object-cover" loading="lazy" />
+                          // eslint-disable-next-line @next/next/no-img-element -- petite vignette servie par la route des alertes
+                          <img src={vignette(x)!} alt="" width={64} height={64} className="size-16 shrink-0 rounded-lg object-cover" loading="lazy" decoding="async" />
                         ) : (
                           <span className="size-16 shrink-0 rounded-lg bg-glass" aria-hidden="true" />
                         )}
@@ -340,7 +366,7 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
                           className="shrink-0 self-start"
                           initial={favs.has(cleFavori(x.url, `lbc:${x.id}`))}
                           onChange={(on) => (on ? favs.add(cleFavori(x.url, `lbc:${x.id}`)) : favs.delete(cleFavori(x.url, `lbc:${x.id}`)))}
-                          f={{ cle: cleFavori(x.url, `lbc:${x.id}`), titre: x.titre, prix: x.prix, annee: x.annee, km: x.km, energie: x.energie, boite: x.boite, lieu: [x.ville, x.cp].filter(Boolean).join(" ") || null, url: x.url, photo: x.vignette, source: "alerte", cote: null }}
+                          f={{ cle: cleFavori(x.url, `lbc:${x.id}`), titre: x.titre, prix: x.prix, annee: x.annee, km: x.km, energie: x.energie, boite: x.boite, lieu: [x.ville, x.cp].filter(Boolean).join(" ") || null, url: x.url, photo: vignette(x), source: "alerte", cote: null }}
                         />
                       </li>
                     ))}
@@ -403,5 +429,75 @@ function PassageEnCours({ depart, complete }: { depart?: number; complete?: bool
       </div>
       <p className="text-xs text-ink-3">{complete ? "Deux à cinq minutes pour cette première collecte" : "Une à deux minutes"}. Une notification s&apos;affiche en haut de l&apos;écran à la fin, inutile de recharger la page.</p>
     </div>
+  );
+}
+
+/** Version (carrosserie), motorisation et puissance : envoyées à Leboncoin comme critères (type de véhicule, puissance DIN),
+    jamais comme mots-clés. Une motorisation devient sa puissance (325i E90 = 218 ch), apprise des annonces de la génération. */
+function ChampsPrecis({ cat, f, onChange }: { cat: CatMarque[]; f: Formulaire; onChange: (x: Partial<Formulaire>) => void }) {
+  const g = cat.find((b) => b.k === f.marque)?.m.find((m) => m.k === f.modele)?.g.find((x) => x.id === f.gen);
+  const [moteurs, setMoteurs] = useState<{ l: string; n: number; ch: number[] }[]>([]);
+  const [charge, setCharge] = useState(false);
+  useEffect(() => {
+    if (!f.marque || !f.modele) return;
+    let fini = false;
+    const t = setTimeout(async () => {
+      setCharge(true);
+      const r = await fetch(`/api/marche/moteurs?${new URLSearchParams({ marque: f.marque, modele: f.modele, gen: f.gen, energie: f.energie })}`).catch(() => null);
+      const j = r?.ok ? ((await r.json().catch(() => null)) as { moteurs?: { l: string; n: number; ch: number[] }[] } | null) : null;
+      if (fini) return;
+      setMoteurs(j?.moteurs ?? []);
+      setCharge(false);
+      // motorisation reprise d'une recherche : ses puissances Leboncoin sont complétées ici
+      const repris = f.moteur && !f.moteurCh ? (j?.moteurs ?? []).find((m) => m.l === f.moteur) : null;
+      if (repris?.ch.length) onChange({ moteurCh: repris.ch.join(",") });
+    }, 0);
+    return () => {
+      fini = true;
+      clearTimeout(t);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- relu quand le véhicule ou l'énergie change, pas à chaque saisie
+  }, [f.marque, f.modele, f.gen, f.energie]);
+  const pw = (f.moteurCh ?? "").split(",").map(Number).filter((x) => x > 0);
+  const liste = f.moteur && !moteurs.some((m) => m.l === f.moteur) ? [{ l: f.moteur, n: 0, ch: pw }, ...moteurs] : moteurs;
+  return (
+    <>
+      {g?.v && (
+        <label className="grid content-start gap-1.5 text-sm">
+          <span className="text-ink-2">Version, carrosserie</span>
+          <select value={f.version ?? ""} onChange={(e) => onChange({ version: e.target.value })} className={inputCls}>
+            <option value="">Toutes les versions</option>
+            {g.v.map((v) => <option key={v.id} value={v.id}>{v.l} ({v.y0} – {v.y1})</option>)}
+          </select>
+        </label>
+      )}
+      <label className="grid content-start gap-1.5 text-sm">
+        <span className="text-ink-2">Motorisation</span>
+        <select
+          value={f.moteur ?? ""}
+          disabled={!f.modele}
+          onChange={(e) => {
+            const m = liste.find((x) => x.l === e.target.value);
+            onChange({ moteur: m?.l ?? "", moteurCh: m ? m.ch.join(",") : "" });
+          }}
+          className={inputCls}
+        >
+          <option value="">{!f.modele ? "Modèle d'abord" : charge ? "Chargement…" : liste.length ? "Toutes" : "Pas encore assez d'annonces"}</option>
+          {liste.map((m) => (
+            <option key={m.l} value={m.l} disabled={!m.ch.length}>
+              {m.l}{m.ch.length ? ` · ${m.ch.join(" / ")} ch` : " · puissance inconnue"}{m.n ? ` (${m.n} annonces)` : ""}
+            </option>
+          ))}
+        </select>
+        {pw.length > 0 && !f.chMin && !f.chMax && <span className="text-xs text-ink-3">Leboncoin cherchera les annonces de {Math.min(...pw) - 3} à {Math.max(...pw) + 3} ch, même sans le nom du moteur.</span>}
+      </label>
+      <fieldset className="grid content-start gap-1.5 text-sm">
+        <legend className="mb-1.5 text-ink-2">Puissance DIN (ch)</legend>
+        <div className="grid grid-cols-2 gap-3">
+          <input inputMode="numeric" value={f.chMin ?? ""} onChange={(e) => onChange({ chMin: e.target.value })} placeholder="min." aria-label="Puissance minimum (ch)" className={inputCls} />
+          <input inputMode="numeric" value={f.chMax ?? ""} onChange={(e) => onChange({ chMax: e.target.value })} placeholder="max." aria-label="Puissance maximum (ch)" className={inputCls} />
+        </div>
+      </fieldset>
+    </>
   );
 }

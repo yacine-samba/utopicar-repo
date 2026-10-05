@@ -710,7 +710,7 @@ function coteSpec(t){
   if (variant && V_BODY_LBC[variant.body]) f.vehicle_type = V_BODY_LBC[variant.body];
   if (brand.ok) f.vehicle_brand = brand.lbc;
   if (brand.ok && model.lbc) f.vehicle_model = brand.lbc + '_' + model.lbc; else f.text = flatA(model.name);
-  const fuel = FUEL_CODE[en]; if (fuel) f.fuel = [fuel];
+  const fuel = FUEL_CODE[en]; if (fuel) f.fuel = en === 'hybride' ? ['6', '8'] : [fuel]; // hybride : simple et rechargeable
   // (pas de réglage « utp » ici : la fonction de cote transmet tous ses filtres à Apify, tels quels)
   const base = brand.key + ' ' + model.key; const gid = gen.id + (variant ? '.' + variant.id : '');
   const cle = [base, gid, en || 'toutes'].join('|');
@@ -917,9 +917,11 @@ function pickDe(base, genId){
 /** Génération d'une annonce dont le modèle est connu (même règle que la cote : incertaine = hors calcul). */
 export function generationDe(base, a){
   const model = VM_BY[base]; if (!model) return null;
-  const x = vehResolve({marque: model.brand.name, modele: model.name, titre: a.titre || '', texte: a.texte || '', annee: num(a.annee), carr: a.carr || ''});
+  // a.mec : 1re mise en circulation « AAAA-MM » (critère Leboncoin) ; elle sépare deux générations vendues la même année
+  const x = vehResolve({marque: model.brand.name, modele: model.name, titre: a.titre || '', texte: a.texte || '', annee: num(a.annee), mec: a.mec || '', carr: a.carr || ''});
   if (x.model !== model) return null;
-  return {id: x.gen && x.statut !== 'incertaine' ? x.gen.id : null, label: x.gen ? x.gen.label : '', statut: x.statut || '', variant: x.variant && x.variant.id || null, varianteEcrite: !!(x.variant && x.varHow !== 'defaut'), body: x.body || null};
+  return {id: x.gen && x.statut !== 'incertaine' ? x.gen.id : null, label: x.gen ? x.gen.label : '', statut: x.statut || '', variant: x.variant && x.variant.id || null, varianteEcrite: !!(x.variant && x.varHow !== 'defaut'), body: x.body || null,
+    cands: x.statut === 'incertaine' ? (x.cands || []).map(g => g.id) : []};
 }
 /** Ce qu'il faut demander à Leboncoin (via Apify) pour compléter la base d'une génération, d'une version et d'une énergie : même demande que l'outil Garage. */
 export function specCollecte(base, genId, variantId, energie){
