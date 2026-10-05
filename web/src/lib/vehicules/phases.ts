@@ -126,7 +126,8 @@ export function motorisationDe(marque: string, a: { titre: string; texte?: strin
       const x = tx.match(/\b([sx])\s?drive\s?(\d{2})\s?([die])\b/);
       if (x) return `${x[1]}Drive${x[2]}${x[3]}`;
       const m = tx.match(/\b(m?[1-8](?:1[0-8]|2[0-5]|28|3[05]|40|45|50))\s?(xd|xi|ix|sd|si|ia|ci|cd|is|d|i|e|x)\b/);
-      if (m) {
+      // le premier chiffre du moteur est la série (320d : Série 3) ; un « 630i » dans une Série 3 est une autre voiture
+      if (m && (!serie || m[1].replace(/^m/, "")[0] === serie)) {
         const suf = m[2] === "ix" || (m[2] === "x" && suffixe !== "d") ? "xi" : m[2] === "x" ? "xd" : /^(ia|ci|is)$/.test(m[2]) ? "i" : /^(cd|sd)$/.test(m[2]) ? "d" : m[2];
         return `${m[1].replace(/^m/, "M")}${suf}`;
       }
