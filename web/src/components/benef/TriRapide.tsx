@@ -14,7 +14,7 @@ const ORDRE: Record<string, number> = { GO: 0, "GO SI NÉGOCIÉ": 1, "GO EN MAND
 const TON: Record<string, string> = { GO: "text-ok", "GO SI NÉGOCIÉ": "text-o2", "GO EN MANDAT UNIQUEMENT": "text-o2", "À SURVEILLER": "text-warn", "NO GO": "text-bad" };
 const e = (v: number | null) => (v == null ? "—" : eur(v));
 
-export function TriRapide() {
+export function TriRapide({ extension = false }: { extension?: boolean }) {
   const [reg] = useReglages<ParamsPro>("utp-pro", DEFAUTS_PRO);
   const [brut, setBrut] = useState("");
   const [etat, setEtat] = useState("");
@@ -81,7 +81,7 @@ export function TriRapide() {
     <div className="grid gap-5">
       <div className="carte grid gap-3 p-5">
         <label htmlFor="tri" className="text-sm text-ink-2">
-          Liens Leboncoin (un par ligne), textes d&apos;annonces séparés par une ligne <code>---</code>, ou le lot de l&apos;extension (« Lire en entier », arrivé ici tout seul ou collé avec Ctrl+V)
+          Liens Leboncoin (un par ligne), textes d&apos;annonces séparés par une ligne <code>---</code>{extension ? <>, ou le lot de l&apos;extension (« Lire en entier », arrivé ici tout seul ou collé avec Ctrl+V)</> : null}
         </label>
         <textarea
           id="tri"

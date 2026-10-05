@@ -15,7 +15,7 @@ export default async function Page() {
         <h1 className="font-display text-3xl font-semibold">Tri rapide</h1>
         <p className="mt-2 text-ink-2">Jusqu&apos;à 10 annonces classées en quelques secondes : cote sur annonces comparables, défauts, marge estimée et prix plafond. Sans IA, ça ne consomme aucune analyse. Ouvrez ensuite l&apos;analyse complète des meilleures.</p>
       </div>
-      <TriRapide />
+      <TriRapide extension={c.illimite} />
     </div>
   );
 }

@@ -82,6 +82,7 @@ export async function POST(req: Request) {
 
   // ---- Relevé collé
   if (!r.data.releve) return Response.json({ erreur: "Collez un relevé." }, { status: 400 });
+  if (!c.illimite) return Response.json({ erreur: "Le relevé Leboncoin n'est pas inclus dans votre formule." }, { status: 403 });
   const rel = lireReleve(r.data.releve);
   if (!rel) return Response.json({ erreur: "Relevé illisible : relancez « Relever la page » sur la page de résultats Leboncoin, puis Ctrl+V ici." }, { status: 400 });
   if (!rel.items.length) return Response.json({ erreur: "Aucune annonce avec un prix dans ce relevé." }, { status: 400 });

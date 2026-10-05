@@ -12,6 +12,8 @@ const VERSION = "4.4";
 export default async function Page() {
   const c = await compteCourant();
   if (!c) redirect("/connexion?next=/app/extension");
+  // réservée au compte illimité : invisible et inaccessible pour toutes les formules
+  if (!c.illimite) redirect("/app");
   const pro = c.offre.recherche || c.illimite;
   const benef = c.offre.famille === "benef" || c.illimite;
   const actions: { t: string; d: React.ReactNode; badge?: string }[] = [
@@ -33,7 +35,7 @@ export default async function Page() {
           <p className="font-display text-lg font-semibold">Version {VERSION} · Chrome, Edge, Brave, Opera</p>
           <p className="mt-1 text-sm text-ink-3">Tout passe par votre navigateur : aucune donnée ne transite par un serveur tiers. La lecture va au rythme d&apos;une personne et s&apos;arrête si Leboncoin demande une vérification ; elle ne la contourne jamais.</p>
         </div>
-        <a href="/utopicar-extension.zip" download className="btn btn-o gap-2">
+        <a href="/api/extension" download="utopicar-extension.zip" className="btn btn-o gap-2">
           <Ico nom="extension" className="size-5" /> Télécharger l&apos;extension
         </a>
       </section>
