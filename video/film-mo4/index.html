@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>utopicar — MO4 (motion fluide 15 s)</title>
+<style>
+/* Charte du site : web/src/app/globals.css (couleurs, .carte, .kicker, .btn-o, .it), polices du site */
+@font-face{font-family:'Clash Display';font-weight:500;src:url(../assets/fonts-site/ClashDisplay-500.woff2) format('woff2')}
+@font-face{font-family:'Clash Display';font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:'Clash Display';font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:400;src:url(../assets/fonts-site/Satoshi-400.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+:root{--bg0:#0b0a09;--bg1:#17100b;--ink:#f4f1ec;--ink2:rgba(244,241,236,.8);--ink3:rgba(244,241,236,.62);--line:rgba(244,241,236,.1);--line2:rgba(244,241,236,.2);
+  --glass:rgba(244,241,236,.05);--panel:rgba(22,16,12,.72);--o:#ff5a1f;--o2:#ff8a4c;--o3:#ffb38a;--ok:#3ecb7f;--warn:#ffc53d;--bad:#ff7a7a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
+#stage{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;color:var(--ink);font-family:'Satoshi',sans-serif;-webkit-font-smoothing:antialiased;
+  background:radial-gradient(ellipse 70% 40% at 50% -10%,rgba(255,90,31,.16),transparent 70%),linear-gradient(160deg,var(--bg0),var(--bg1) 60%,var(--bg0))}
+.abs{position:absolute;left:0;top:0}
+.num{font-variant-numeric:tabular-nums}
+#glow{position:absolute;left:0;top:0;width:1600px;height:1600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,90,31,.22) 0%,rgba(255,90,31,.08) 32%,rgba(255,90,31,0) 62%)}
+#cam{position:absolute;left:0;top:0;width:1080px;height:1920px;perspective:1800px;perspective-origin:540px 960px}
+#world{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0;transform-style:flat}
+/* .carte du site, ×2,2 pour la vidéo */
+.shell{position:absolute;left:0;top:0;border:2px solid var(--line);border-radius:26px;background:rgba(22,16,12,.86)}
+/* carte annonce (Demo.tsx, colonne de gauche) */
+#annBody{position:absolute;left:140px;top:450px;width:800px;padding:34px}
+.hdr{display:flex;justify-content:space-between;font-size:23px;font-weight:500;color:var(--ink3);height:31px;line-height:31px}
+.slot{height:510px;margin-top:16px}
+#annBody h3{margin-top:22px;font-family:'Clash Display';font-weight:600;font-size:42px;line-height:50px;letter-spacing:-.01em}
+#annBody .prix{font-family:'Clash Display';font-weight:600;font-size:76px;line-height:84px;color:var(--o2);letter-spacing:-.01em}
+#annBody .infos{font-size:27px;line-height:36px;color:var(--ink3)}
+#annBody blockquote{margin-top:16px;border-left:3px solid var(--line2);padding-left:18px;font-size:28px;line-height:40px;color:var(--ink2)}
+#annPhoto{position:absolute;left:0;top:0;overflow:hidden;border-radius:20px;background:#1d1814}
+#annPhoto img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover}
+#annPhoto .badge{position:absolute;right:16px;top:16px;padding:5px 15px;border-radius:999px;background:rgba(0,0,0,.6);font-size:23px;font-weight:500;color:var(--ink)}
+/* formulaire /analyse : « Lien de l'annonce Leboncoin » */
+#lbl{position:absolute;left:174px;top:820px;font-size:31px;font-weight:500;color:var(--ink2);white-space:nowrap}
+#field{position:absolute;left:174px;top:874px;width:732px;height:92px;border-radius:16px;border:2px solid var(--line2);background:rgba(0,0,0,.28);overflow:hidden}
+#url{position:absolute;left:26px;top:0;height:88px;line-height:88px;font-size:29px;color:var(--ink);white-space:nowrap}
+#sel{position:absolute;left:22px;top:22px;height:44px;border-radius:6px;background:var(--o)}
+/* bouton puis fiche : le même objet */
+#fiche{position:absolute;left:0;top:0;overflow:hidden}
+#btnLbl{position:absolute;left:0;top:0;width:100%;height:100px;line-height:100px;text-align:center;font-family:'Clash Display';font-weight:600;font-size:35px;white-space:nowrap}
+.fhdr{position:absolute;left:0;top:0;width:732px;display:flex;justify-content:space-between;font-size:23px;font-weight:500;color:var(--ink3);height:31px;line-height:31px}
+.step{position:absolute;left:0;top:0;display:flex;align-items:center;gap:22px;font-size:31px;font-weight:500;white-space:nowrap}
+.step .c{position:relative;flex:none;width:46px;height:46px;border-radius:50%;border:2.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
+.burst{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;border:3px solid var(--ok)}
+/* résultat (Demo.tsx, colonne de droite) */
+#res{position:absolute;left:0;top:0;width:732px}
+#ring{position:absolute;left:0;top:0;width:210px;height:210px}
+#ringTxt{position:absolute;left:0;top:0;width:210px;height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+#ringTxt b{font-family:'Clash Display';font-weight:600;font-size:66px}
+#ringTxt b small{font-size:32px;color:var(--ink3);font-weight:600}
+#ringTxt i{font-style:normal;font-size:22px;color:var(--ink3);margin-top:8px}
+#rcol{position:absolute;left:238px;top:6px;width:494px}
+.pill{display:inline-block;padding:8px 24px;border-radius:999px;border:2px solid rgba(62,203,127,.4);background:rgba(62,203,127,.1);color:var(--ok);font-weight:700;font-size:33px;line-height:42px}
+#phrase{margin-top:14px;font-size:28px;line-height:38px;color:var(--ink2)}
+#moteur{margin-top:8px;font-size:23px;color:var(--ink3)}
+.row{position:absolute;left:0;top:0;width:732px;height:112px;display:flex;align-items:center;justify-content:space-between;border-top:2px solid var(--line)}
+.row .l{font-size:31px;font-weight:500;line-height:38px}
+.row .l small{display:block;font-size:23px;font-weight:400;color:var(--ink3);line-height:30px}
+.row .v{font-family:'Clash Display';font-weight:600;font-size:46px;white-space:nowrap}
+.row.cle{border-top-color:transparent;border-radius:22px;background:rgba(255,90,31,.1);padding:0 26px}
+#mention{position:absolute;left:140px;top:0;width:800px;text-align:center;font-size:24px;line-height:32px;color:var(--ink3);text-wrap:balance}
+/* sortie du prix à proposer, en espace écran */
+.scr{position:absolute;left:0;top:0;white-space:nowrap}
+#popV{font-family:'Clash Display';font-weight:600;font-size:150px;line-height:1;color:var(--o2);letter-spacing:-.01em}
+#popL{font-size:42px;font-weight:500;color:var(--ink2)}
+#popA{font-size:34px;font-weight:500;color:var(--ink3)}
+/* textes du haut : Clash Display, mot mis en avant en Instrument Serif italique dégradé (.it du site) */
+.cap{position:absolute;left:140px;top:0;width:800px;text-align:center;font-family:'Clash Display';font-weight:600;font-size:76px;line-height:82px;letter-spacing:-.02em}
+.cap .w{display:inline-block;white-space:pre}
+.it{font-family:'Instrument Serif';font-style:italic;font-weight:400;letter-spacing:0;font-size:1.22em;line-height:.8;
+  background:linear-gradient(100deg,var(--o2),var(--o3) 60%,var(--o2));-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.06em}
+/* doigt */
+#finger,.finger{position:absolute;left:0;top:0;width:70px;height:70px;border-radius:50%;background:rgba(244,241,236,.3);border:3px solid rgba(244,241,236,.8);
+  box-shadow:0 12px 34px rgba(0,0,0,.45)}
+.ripple{position:absolute;left:0;top:0;width:100px;height:100px;margin:-50px 0 0 -50px;border-radius:50%;border:4px solid var(--o2)}
+#hold{position:absolute;left:0;top:0;width:120px;height:120px;overflow:visible}
+/* point orange (le point du .kicker) */
+#dot{position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:var(--o);box-shadow:0 0 22px 6px rgba(255,90,31,.85),0 0 70px 18px rgba(255,90,31,.35)}
+#shock{position:absolute;left:0;top:0;border-radius:50%;border:3px solid var(--o2)}
+/* fin : page d'accueil, dernière section */
+#sym{position:absolute;left:0;top:0;overflow:visible}
+.kicker{display:inline-flex;align-items:center;gap:16px;padding:12px 26px;border:2px solid var(--line2);border-radius:999px;background:var(--glass);font-size:29px;color:var(--ink2);white-space:nowrap}
+.kicker::before{content:"";width:13px;height:13px;border-radius:50%;background:var(--o);box-shadow:0 0 20px var(--o)}
+.btn-o{display:inline-flex;align-items:center;gap:20px;padding:0 54px;height:108px;border-radius:999px;background:var(--o);color:#160904;font-family:'Clash Display';font-weight:600;font-size:38px;white-space:nowrap;
+  box-shadow:0 26px 75px -26px rgba(255,90,31,.85)}
+#urlEnd{font-family:'Clash Display';font-weight:600;font-size:46px;color:var(--ink);letter-spacing:-.01em}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../lib/motion.js"></script>
+<script src="../lib/kit.js"></script>
+<script type="module" src="film.js"></script>
+</body>
+</html>

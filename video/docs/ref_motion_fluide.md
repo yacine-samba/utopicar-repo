@@ -123,6 +123,7 @@ Mesures faites avec `scripts/ref-motion.py` (flux optique Farneback, image par i
 | **nous** MO1b | 9:16 | 62,6 s | 40 % | 57 % | 1,02 / 3,33 s | 3,5 / 19,0 | 0,16 | 0,23 / 0,43 | 13 / 13 / 5 % | 0,95 | 0,0 |
 | **nous** pub 30 s (A) | 9:16 | 28,0 s | 40 % | 56 % | 0,83 / 2,13 s | 6,6 / 28,0 | 0,23 | 0,17 / 0,27 | 23 / 23 / 13 % | 0,88 | 2,9 |
 | **nous** ads 1 | 9:16 | 12,2 s | 22 % | 74 % | 1,07 / 3,53 s | 4,6 / 28,0 | 0,26 | 0,18 / 0,28 | 11 / 11 / 7 % | 0,95 | 0,8 |
+| **MO4** (ce film) | 9:16 | 15,0 s | 59 % | 32 % | 0,56 / 1,02 s | 3,5 / 13,2 | 0,07 | 0,11 / 0,25 | 25 / 18 / 2 % | 0,52 | 0,0 |
 
 Comment lire le tableau :
 - **Vitesse** : déplacement moyen de l'image, en % du petit côté par seconde.

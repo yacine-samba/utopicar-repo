@@ -1,0 +1,125 @@
+{
+ "version": 1,
+ "style": "MO4 : motion fluide 15 s sans voix, grammaire des 9 références (docs/ref_motion_fluide.md), vraie interface du site",
+ "fps": 60,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 15.0,
+ "poster": 1.48,
+ "ev": {
+  "burst": 0.0,
+  "hook": [
+   0.5,
+   0.75,
+   1.0,
+   1.25
+  ],
+  "hookOut": 1.9,
+  "finger": 1.5,
+  "press": 1.82,
+  "morph": 2.0,
+  "paste": 2.25,
+  "colle": 2.08,
+  "colleOut": 3.38,
+  "enable": 2.82,
+  "tap": 3.25,
+  "expand": 3.45,
+  "verifie": 3.5,
+  "verifieOut": 5.88,
+  "steps": [
+   4.0,
+   4.5,
+   5.0,
+   5.5
+  ],
+  "result": 5.95,
+  "propose": 6.06,
+  "proposeOut": 9.35,
+  "ring": 6.05,
+  "pill": 6.5,
+  "phrase": 6.65,
+  "moteur": 6.8,
+  "rows": [
+   7.0,
+   7.25,
+   7.5,
+   7.75
+  ],
+  "mention": 7.9,
+  "push": 9.45,
+  "pop": 10.0,
+  "affiche": 10.25,
+  "collapse": 10.95,
+  "trail": 11.12,
+  "fill": 11.98,
+  "slogan": [
+   12.35,
+   12.5,
+   12.7,
+   12.85
+  ],
+  "kicker": 13.0,
+  "button": 13.1,
+  "url": 13.2,
+  "tapEnd": 13.6,
+  "out": 14.5,
+  "focus": 9.05,
+  "symMove": 12.02
+ },
+ "shutter": [
+  [
+   -0.2,
+   0.55,
+   1.0
+  ],
+  [
+   1.5,
+   1.9,
+   0.6
+  ],
+  [
+   1.98,
+   2.6,
+   0.8
+  ],
+  [
+   2.92,
+   3.3,
+   0.6
+  ],
+  [
+   3.4,
+   3.9,
+   0.9
+  ],
+  [
+   5.9,
+   6.5,
+   0.8
+  ],
+  [
+   9.4,
+   10.45,
+   0.8
+  ],
+  [
+   10.85,
+   12.15,
+   0.8
+  ],
+  [
+   13.2,
+   13.65,
+   0.6
+  ],
+  [
+   14.4,
+   15.2,
+   1.0
+  ]
+ ],
+ "shutterBase": 0.5
+}
