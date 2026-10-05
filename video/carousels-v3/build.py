@@ -20,6 +20,26 @@ GROUPS = [('A', 'ACHETEUR', "Acheter ton occasion sans te faire avoir", load('da
           ('P', 'PRO', "Trier 40 annonces en 10 minutes", load('data_p1', 'data_p2'), "Pros de l'achat-revente")]
 ONLY = set(sys.argv[1:]) or {'A', 'D', 'P'}
 
+# Vraies voitures détourées : assets/cars/<clé>.png + assets/cars/credits.json (scripts/fetch-cars.py, photos Pexels).
+# Le modèle cité dans l'accroche, puis dans le carrousel, décide de la photo ; sinon une citadine courante, en rotation.
+CARS_DIR = os.path.join(HERE, '..', 'assets', 'cars')
+CREDITS = json.load(open(os.path.join(CARS_DIR, 'credits.json'))) if os.path.exists(os.path.join(CARS_DIR, 'credits.json')) else {}
+MODELS = [('golf7', r'golf'), ('clio2', r'clio ?(2|ii)\b'), ('clio3', r'clio ?(3|iii)\b'), ('clio4', r'clio'),
+          ('p208', r'\b208\b'), ('p207', r'\b20[67]\b'), ('c3', r'\bc3\b'), ('megane3', r'm[ée]gane'),
+          ('yaris', r'yaris'), ('jazz', r'jazz'), ('swift', r'swift'), ('mazda2', r'mazda'), ('aygo', r'aygo|\bc1\b|\b10[78]\b'),
+          ('sandero', r'sandero|logan'), ('fiesta', r'fiesta'), ('i20', r'\bi20\b|\brio\b'), ('polo', r'\bpolo\b'),
+          ('twingo', r'twingo'), ('fabia', r'fabia'), ('auris', r'auris')]
+ROTATION = ['clio4', 'p208', 'c3', 'sandero', 'yaris', 'golf7', 'polo', 'clio3', 'p207', 'fiesta']
+import re
+def pick_car(c, i):
+    txt = json.dumps(c['slides'], ensure_ascii=False).lower()
+    first = c['slides'][0]; head = ' '.join(str(first.get(k, '')) for k in ('kicker', 'title')).lower()
+    for src in (head, txt):
+        for key, rx in MODELS:
+            if key in CREDITS and re.search(rx, src): return key
+    keys = [k for k in ROTATION if k in CREDITS]
+    return keys[i % len(keys)] if keys else None
+
 # 3 jeux de hashtags par cible, en rotation A / B / C (protocole : docs/hashtags_test.md)
 TAGS = {
     'A': [['#voitureoccasion', '#acheterunevoiture', '#conseilauto', '#leboncoin'],
@@ -46,7 +66,9 @@ for g, word, guide, group, name in GROUPS:
     md.append(f"\n## {g} · {name} ({len(group)})\n")
     for i, c in enumerate(group):
         cid = f"{g}{i + 1:03d}"; tset = 'ABC'[i % 3]; tags = TAGS[g][i % 3]; stats[c['hook']] += 1
-        cars.append(dict(id=cid, slug=c['slug'], word=word, guide=guide, slides=c['slides']))
+        key = pick_car(c, len(cars))
+        car_ = dict(src=f"../assets/cars/{key}.png", credit=CREDITS[key].get('credit', ''), key=key) if key else None
+        cars.append(dict(id=cid, slug=c['slug'], word=word, guide=guide, slides=c['slides'], car=car_))
         h = c['slides'][0]; hook = plain(' '.join(x for x in [h.get('kicker'), h.get('title')] if x))
         md.append(f"### {cid} · {c['slug']}\n\n**Image 1 :** {hook}  \n**Type d'accroche :** {HOOKS[c['hook']]}\n\n"
                   f"```\n{c['caption']}\n{c['question']}\nCommente {word} et je t'envoie le guide.\n\n{' '.join(tags)}\n```\n"
