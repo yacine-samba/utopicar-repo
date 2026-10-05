@@ -1,25 +1,63 @@
 {
   "manifest_version": 3,
-  "name": "UTOPICAR",
-  "version": "4.3.0",
-  "description": "Envoie une annonce complète (texte, critères, toutes les photos) ou lit en entier les annonces cochées d'une page de résultats, vers UTOPICAR Garage.",
+  "name": "Utopicar",
+  "version": "4.4.0",
+  "description": "Envoie une annonce complète (texte, critères, photos), lit en entier les annonces cochées ou relève toute une recherche Leboncoin, et l'ouvre directement sur utopicar.fr.",
   "action": {
     "default_popup": "popup.html",
-    "default_title": "UTOPICAR",
-    "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+    "default_title": "Utopicar",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
   },
-  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" },
-  "background": { "service_worker": "background.js" },
-  "permissions": ["activeTab", "scripting", "clipboardWrite", "storage", "unlimitedStorage", "notifications", "offscreen"],
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "clipboardWrite",
+    "storage",
+    "unlimitedStorage",
+    "notifications",
+    "offscreen"
+  ],
   "host_permissions": [
     "https://*.leboncoin.fr/*",
     "https://*.lacentrale.fr/*",
     "https://*.autoscout24.fr/*",
     "https://*.autoscout24.net/*",
     "https://*.paruvendu.fr/*",
-    "https://claude.ai/*"
+    "https://www.utopicar.fr/*",
+    "https://utopicar.fr/*"
   ],
   "commands": {
-    "_execute_action": { "suggested_key": { "default": "Alt+Shift+U" }, "description": "Ouvrir UTOPICAR" }
-  }
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+U"
+      },
+      "description": "Ouvrir Utopicar"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.utopicar.fr/*",
+        "https://utopicar.fr/*"
+      ],
+      "js": [
+        "site.js"
+      ],
+      "run_at": "document_start"
+    }
+  ]
 }

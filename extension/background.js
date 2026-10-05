@@ -1,10 +1,12 @@
 'use strict';
-/* UTOPICAR v4 : travail de fond. Lecture d'une annonce (texte + toutes les photos) et lecture en rafale
-   des annonces cochées, au rythme d'une personne, puis copie automatique pour Ctrl+V dans l'outil. */
+/* Utopicar v4 : travail de fond. Lecture d'une annonce (texte + toutes les photos) et lecture en rafale
+   des annonces cochées, au rythme d'une personne. Le résultat s'ouvre directement sur utopicar.fr
+   (analyse, Tri rapide ou Cote) ; il est aussi copié, pour Ctrl+V en secours. */
 importScripts('extract.js');
 
-const APP_URL = 'https://claude.ai/artifact/8bHqs6YhWoWT2zje3mSF3q';
-const APP_ID = '8bHqs6YhWoWT2zje3mSF3q';
+const SITE = 'https://www.utopicar.fr';
+// où chaque envoi s'ouvre : l'annonce dans l'analyse, le lot dans le Tri rapide, le relevé dans la Cote
+const PAGES = {annonce: '/app/analyser', lot: '/app/tri', releve: '/app/cote'};
 const MAX_BATCH = 10;              // même limite que le Tri rapide
 const PHOTOS_SINGLE = 20;          // annonce seule : jusqu'à 20 photos
 const PHOTOS_BATCH = 8;            // rafale : 8 photos par annonce
@@ -20,18 +22,35 @@ async function setState(s){
   await chrome.storage.session.set({job: s});
   const t = s.running ? `${s.done}/${s.total}` : s.status === 'ok' ? 'OK' : s.status === 'bad' ? '!' : '';
   chrome.action.setBadgeText({text: t});
-  chrome.action.setBadgeBackgroundColor({color: s.status === 'bad' ? '#BF2A21' : s.running ? '#15307F' : '#0A7A43'});
+  chrome.action.setBadgeBackgroundColor({color: s.status === 'bad' ? '#BF2A21' : s.running ? '#FF5A1F' : '#0A7A43'});
 }
 function notify(message){
-  try { chrome.notifications.create('utp-' + Date.now(), {type:'basic', iconUrl:'icons/128.png', title:'UTOPICAR', message, priority:1}); } catch(e){}
+  try { chrome.notifications.create('utp-' + Date.now(), {type:'basic', iconUrl:'icons/128.png', title:'Utopicar', message, priority:1}); } catch(e){}
 }
-chrome.notifications?.onClicked?.addListener(() => openApp());
+chrome.notifications?.onClicked?.addListener(() => montrer());
 
+/* ---- ouverture sur utopicar.fr ---- */
+async function montrer(){
+  const { ouvert } = await chrome.storage.session.get('ouvert');
+  if (ouvert){ try { const t = await chrome.tabs.get(ouvert); await chrome.tabs.update(t.id, {active:true}); await chrome.windows.update(t.windowId, {focused:true}); return; } catch(e){} }
+  await openApp();
+}
 async function openApp(){
-  const tabs = await chrome.tabs.query({url: 'https://claude.ai/*'});
-  const t = tabs.find(x => (x.url || '').includes(APP_ID));
-  if (t){ await chrome.tabs.update(t.id, {active:true}); await chrome.windows.update(t.windowId, {focused:true}); }
-  else await chrome.tabs.create({url: APP_URL});
+  const tabs = await chrome.tabs.query({url: ['https://www.utopicar.fr/*', 'https://utopicar.fr/*']});
+  if (tabs[0]){ await chrome.tabs.update(tabs[0].id, {active:true}); await chrome.windows.update(tabs[0].windowId, {focused:true}); }
+  else await chrome.tabs.create({url: SITE + '/app'});
+}
+/** Ouvre la page qui reçoit l'envoi : rechargée si elle est déjà ouverte, sinon dans un nouvel onglet.
+    La page annonce qu'elle est prête, site.js lui passe l'envoi gardé ici (jamais par un serveur tiers). */
+async function ouvrirSur(cible, actif){
+  const url = SITE + PAGES[cible] + '?ext=1';
+  const tabs = await chrome.tabs.query({url: ['https://www.utopicar.fr/*', 'https://utopicar.fr/*']});
+  const deja = tabs.find(t => { try { return new URL(t.url).pathname === PAGES[cible]; } catch(e){ return false; } });
+  let tab;
+  if (deja){ tab = await chrome.tabs.update(deja.id, {url, active: actif}); }
+  else { tab = await chrome.tabs.create({url, active: actif}); }
+  if (actif && tab) await chrome.windows.update(tab.windowId, {focused:true});
+  if (tab) await chrome.storage.session.set({ouvert: tab.id});
 }
 
 /* ---- photos : téléchargées par l'extension (l'outil ne peut pas charger d'image distante), réduites en JPEG ---- */
@@ -62,14 +81,18 @@ async function grabPhotos(o, max, side, q, onStep){
 async function copyText(text){
   try {
     const has = chrome.offscreen.hasDocument ? await chrome.offscreen.hasDocument() : false;
-    if (!has) await chrome.offscreen.createDocument({url:'offscreen.html', reasons:['CLIPBOARD'], justification:'Copier l\'annonce vers UTOPICAR'});
+    if (!has) await chrome.offscreen.createDocument({url:'offscreen.html', reasons:['CLIPBOARD'], justification:'Copier l\'annonce vers Utopicar'});
     const r = await chrome.runtime.sendMessage({type:'utp-offcopy', text});
+    // (document hors écran : seulement pour la copie de secours)
     return !!(r && r.ok);
   } catch(e){ return false; }
 }
-async function deliver(payload, meta){
-  await chrome.storage.local.set({last: payload, lastMeta: meta});
-  return await copyText(payload);
+/* Envoi : gardé pour la page Utopicar (30 minutes, le temps de se connecter si besoin), copié en secours, puis ouvert. */
+async function deliver(payload, meta, cible, envoi, actif){
+  await chrome.storage.local.set({last: payload, lastMeta: meta, 'utp-envoi': {type: cible, brut: envoi.brut, images: envoi.images || [], t: Date.now()}});
+  const copied = await copyText(payload);
+  try { await ouvrirSur(cible, actif); } catch(e){}
+  return copied;
 }
 
 /* ---- ouverture d'une annonce dans un onglet de fond, lecture, fermeture ---- */
@@ -109,8 +132,9 @@ async function runSingle(tabId){
     if (o.blocked) throw new Error('Leboncoin affiche une vérification : validez-la vous-même dans l\'onglet, puis recommencez.');
     await grabPhotos(o, PHOTOS_SINGLE, 1280, 0.82, (i, n) => setState({running:true, kind:'single', done:0, total:1, msg:`Photos : ${i + 1} sur ${n}…`}));
     const payload = 'UTPIMPORT' + JSON.stringify(o);
-    const copied = await deliver(payload, {kind:'single', n:1, photos:o.photosData.length, titre:o.title, at:Date.now()});
-    const msg = `Annonce et ${o.photosData.length} photo${o.photosData.length > 1 ? 's' : ''} ${copied ? 'copiées' : 'prêtes'}. Sur UTOPICAR, faites Ctrl+V.`;
+    const { photosData, ...sansPhotos } = o; // la page reçoit les photos à part, déjà prêtes
+    const copied = await deliver(payload, {kind:'single', n:1, photos:photosData.length, titre:o.title, at:Date.now()}, 'annonce', {brut: 'UTPIMPORT' + JSON.stringify(sansPhotos), images: photosData}, true);
+    const msg = `Annonce et ${photosData.length} photo${photosData.length > 1 ? 's' : ''} envoyées : l'analyse s'ouvre sur Utopicar.${copied ? ' (Copiées aussi : Ctrl+V en secours.)' : ''}`;
     await setState({running:false, status:'ok', kind:'single', done:1, total:1, msg, copied});
     notify(msg);
     return {ok:true, msg, copied};
@@ -151,9 +175,9 @@ async function runBatch(urls, windowId, src){
     }
     const payload = 'UTPLOT' + JSON.stringify({v:1, src, at:Date.now(), items});
     const nPh = items.reduce((s, o) => s + (o.photosData || []).length, 0);
-    const copied = await deliver(payload, {kind:'batch', n:items.length, photos:nPh, at:Date.now()});
+    const copied = await deliver(payload, {kind:'batch', n:items.length, photos:nPh, at:Date.now()}, 'lot', {brut: payload}, false);
     const extra = [blocked ? 'arrêt sur une vérification Leboncoin' : '', stopAsked ? 'arrêtée à votre demande' : '', fails.length ? `${fails.length} illisible(s)` : ''].filter(Boolean).join(', ');
-    const msg = `${items.length} annonce${items.length > 1 ? 's' : ''} lue${items.length > 1 ? 's' : ''} en entier (${nPh} photos)${extra ? ', ' + extra : ''}. ${copied ? 'Copiées : sur UTOPICAR, faites Ctrl+V.' : 'Ouvrez l\'extension et cliquez « Copier le dernier envoi ».'}`;
+    const msg = `${items.length} annonce${items.length > 1 ? 's' : ''} lue${items.length > 1 ? 's' : ''} en entier (${nPh} photos)${extra ? ', ' + extra : ''}. Triées dans le Tri rapide d'Utopicar : cliquez cette notification.${copied ? ' (Copiées aussi : Ctrl+V en secours.)' : ''}`;
     await setState({running:false, status: blocked ? 'bad' : 'ok', kind:'batch', done:items.length, total:list.length, msg, copied});
     notify(msg);
   } catch(e){
@@ -172,8 +196,9 @@ async function runReleve(tabId, url){
       await setState({running:true, kind:'releve', done:0, total:1, msg:'Lecture de la page…'});
       const [res] = await chrome.scripting.executeScript({target:{tabId}, func: extractList, args:[1]});
       const o = res && res.result; if (!o || !o.items.length) throw new Error('Aucune annonce trouvée sur cette page.');
-      const copied = await deliver('UTPRELEVE' + JSON.stringify(o), {kind:'releve', n:o.items.length, at:Date.now()});
-      const msg = `${o.items.length} annonces ${copied ? 'copiées' : 'prêtes'}. Sur UTOPICAR, faites Ctrl+V.`;
+      const brut = 'UTPRELEVE' + JSON.stringify(o);
+      const copied = await deliver(brut, {kind:'releve', n:o.items.length, at:Date.now()}, 'releve', {brut}, true);
+      const msg = `${o.items.length} annonces envoyées : la Cote s'ouvre sur Utopicar.${copied ? ' (Copiées aussi : Ctrl+V en secours.)' : ''}`;
       await setState({running:false, status:'ok', kind:'releve', done:1, total:1, msg, copied}); notify(msg); return;
     }
     for (let p = 1; p <= pages; p++){
@@ -193,9 +218,10 @@ async function runReleve(tabId, url){
       await setState({running:false, status:'bad', kind:'releve', done:0, total:pages, msg}); notify(msg); return;
     }
     const o = {v:2, src:'www.leboncoin.fr', url, title, total, items: items.slice(0, RELEVE_MAX)};
-    const copied = await deliver('UTPRELEVE' + JSON.stringify(o), {kind:'releve', n:o.items.length, at:Date.now()});
+    const brut = 'UTPRELEVE' + JSON.stringify(o);
+    const copied = await deliver(brut, {kind:'releve', n:o.items.length, at:Date.now()}, 'releve', {brut}, false);
     const extra = [blocked ? 'arrêt sur une vérification Leboncoin' : '', stopAsked ? 'arrêté à votre demande' : '', total > items.length && pages >= 100 ? 'Leboncoin n\'affiche pas plus de 100 pages : découpez la recherche (prix, années) pour le reste' : ''].filter(Boolean).join(', ');
-    const msg = `${o.items.length} annonces relevées${total ? ' sur ' + total : ''}${extra ? ' (' + extra + ')' : ''}. ${copied ? 'Copiées : sur UTOPICAR, faites Ctrl+V.' : 'Ouvrez l\'extension et cliquez « Copier le dernier envoi ».'}`;
+    const msg = `${o.items.length} annonces relevées${total ? ' sur ' + total : ''}${extra ? ' (' + extra + ')' : ''}. Placées sur leur cote dans Utopicar : cliquez cette notification.${copied ? ' (Copiées aussi : Ctrl+V en secours.)' : ''}`;
     await setState({running:false, status: blocked ? 'bad' : 'ok', kind:'releve', done:pages, total:pages, msg, copied});
     notify(msg);
   } catch(e){
@@ -220,4 +246,16 @@ chrome.runtime.onMessage.addListener((msg, sender, send) => {
     return true;
   }
   if (msg.type === 'utp-open'){ openApp().then(() => send({ok:true})); return true; }
+  if (msg.type === 'utp-renvoyer'){ // « Rouvrir dans Utopicar » : le dernier envoi, de nouveau proposé à sa page
+    chrome.storage.local.get(['last', 'lastMeta']).then(async r => {
+      if (!r.last){ send({ok:false, err:'Rien à renvoyer.'}); return; }
+      const k = (r.lastMeta && r.lastMeta.kind) || '';
+      const cible = k === 'single' ? 'annonce' : k === 'batch' ? 'lot' : 'releve';
+      let envoi = {brut: r.last};
+      if (cible === 'annonce'){ try { const o = JSON.parse(r.last.slice(9)); const { photosData, ...sp } = o; envoi = {brut: 'UTPIMPORT' + JSON.stringify(sp), images: photosData || []}; } catch(e){} }
+      await chrome.storage.local.set({'utp-envoi': {type: cible, brut: envoi.brut, images: envoi.images || [], t: Date.now()}});
+      await ouvrirSur(cible, true); send({ok:true});
+    });
+    return true;
+  }
 });

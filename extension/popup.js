@@ -57,8 +57,9 @@ $('#list').addEventListener('click', async () => {
   else status('Relevé de toutes les pages lancé. Vous pouvez fermer cette fenêtre : une notification arrive à la fin.', 'ok');
 });
 $('#stop').addEventListener('click', () => chrome.runtime.sendMessage({type:'utp-stop'}).then(() => status('Arrêt après l\'annonce en cours…')));
-$('#again').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type:'utp-copylast'}); status(r && r.ok ? 'Recopié : sur UTOPICAR, faites Ctrl+V.' : (r && r.err) || 'Copie refusée.', r && r.ok ? 'ok' : 'bad'); });
+$('#again').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type:'utp-copylast'}); status(r && r.ok ? 'Recopié : sur Utopicar, faites Ctrl+V.' : (r && r.err) || 'Copie refusée.', r && r.ok ? 'ok' : 'bad'); });
 $('#go').addEventListener('click', async () => { await chrome.runtime.sendMessage({type:'utp-open'}); window.close(); });
+$('#reopen').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type:'utp-renvoyer'}); if (r && r.ok) window.close(); else status((r && r.err) || 'Rien à rouvrir.', 'bad'); });
 
 function showJob(j){
   if (!j) return;
@@ -66,14 +67,14 @@ function showJob(j){
   if (j.running){ bar.style.display = 'block'; bar.firstElementChild.style.width = Math.round(100 * (j.done || 0) / Math.max(1, j.total || 1)) + '%'; status(j.msg || 'Lecture en cours…'); $('#stop').style.display = j.kind === 'batch' || j.kind === 'releve' ? 'block' : 'none'; $('#batch').disabled = true; $('#ad').disabled = true; }
   else { bar.style.display = 'none'; $('#stop').style.display = 'none'; if (j.msg) status(j.msg, j.status === 'bad' ? 'bad' : 'ok'); $('#ad').disabled = false; updBatch(); }
 }
-chrome.storage.onChanged.addListener((ch, area) => { if (area === 'session' && ch.job) showJob(ch.job.newValue); if (area === 'local' && ch.lastMeta) $('#again').style.display = 'block'; });
+chrome.storage.onChanged.addListener((ch, area) => { if (area === 'session' && ch.job) showJob(ch.job.newValue); if (area === 'local' && ch.lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; } });
 
 (async () => {
   tab = await currentTab(); const u = tab && tab.url || '';
   const isAd = /\/ad\/|annonce-|\/offres\/[^/]+-[0-9a-f-]{8,}|\/detail/i.test(u);
   const { job } = await chrome.storage.session.get('job');
   const { lastMeta } = await chrome.storage.local.get('lastMeta');
-  if (lastMeta) $('#again').style.display = 'block';
+  if (lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; }
   if (isAd){ $('#ad').classList.add('main'); }
   else if (/^https?:/.test(u)){
     try { page = await runInTab(extractList, [1]); } catch(e){ page = null; }
