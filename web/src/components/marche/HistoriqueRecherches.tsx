@@ -31,6 +31,14 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
     else setListe((l) => l.filter((x) => x.id !== r.id));
   }
 
+  /** Active : ouverte en onglet et sur le tableau de bord. Désactivée : rangée ici, avec ses résultats gardés. */
+  async function basculer(r: Recherche) {
+    setEtat("");
+    const { error } = await supabaseNavigateur().from("recherches").update({ active: !r.active }).eq("id", r.id);
+    if (error) return setEtat("Modification impossible. Réessayez.");
+    setListe((l) => l.map((x) => (x.id === r.id ? { ...x, active: !r.active } : x)));
+  }
+
   async function reactiver(a: AlerteSupprimee) {
     setEtat("");
     const r = await fetch("/api/alertes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "restaurer", id: a.id }) });
@@ -48,7 +56,7 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 id="hi-r" className="font-display text-xl font-semibold">Par voiture</h2>
-            <p className="text-sm text-ink-3">Une ligne par voiture, avec ses derniers filtres. Fermer un onglet ne l&apos;efface pas.</p>
+            <p className="text-sm text-ink-3">Une ligne par voiture. Active : en onglet et sur le tableau de bord. Désactivée : rangée ici, résultats gardés.</p>
           </div>
           <label className="relative w-full sm:w-72">
             <span className="sr-only">Filtrer par voiture</span>
@@ -64,7 +72,7 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
                 <div className="grid min-w-0 gap-1">
                   <p className="flex flex-wrap items-center gap-2">
                     <b className="font-semibold">{r.nom}</b>
-                    <span className={cx("rounded-full border px-2 py-0.5 text-xs", r.active ? "border-ok/40 text-ok" : "border-line-2 text-ink-3")}>{r.active ? "Ouverte" : "Fermée"}</span>
+                    <span className={cx("rounded-full border px-2 py-0.5 text-xs", r.active ? "border-ok/40 text-ok" : "border-line-2 text-ink-3")}>{r.active ? "Active" : "Désactivée"}</span>
                     <span className="text-xs text-ink-3" suppressHydrationWarning>{quandRecherche(r.derniere_le)}</span>
                   </p>
                   <p className="truncate text-sm text-ink-3">{resumeFiltres(r.criteres.f) || "Tous les critères"}</p>
@@ -75,12 +83,13 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2 sm:justify-end">
-                  <Link href={`/app/recherche?r=${r.id}`} className="btn btn-o btn-sm">{r.active ? "Ouvrir" : "Relancer"}</Link>
+                  <Link href={`/app/recherche?r=${r.id}`} className="btn btn-o btn-sm">Ouvrir</Link>
+                  <button type="button" onClick={() => basculer(r)} aria-pressed={r.active} className="btn btn-sm">{r.active ? "Désactiver" : "Activer"}</button>
                   {alertes && <Link href={lienAlerte(r)} className="btn btn-sm">Suivre par e-mail</Link>}
                   {aConfirmer === r.id ? (
-                    <button type="button" onClick={() => retirer(r)} className="btn btn-sm border-bad/60 text-bad">Effacer pour de bon</button>
+                    <button type="button" onClick={() => retirer(r)} className="btn btn-sm border-bad/60 text-bad" title="Ses annonces restent dans « Annonces trouvées » et dans la cote">Supprimer (annonces gardées)</button>
                   ) : (
-                    <button type="button" onClick={() => setAConfirmer(r.id)} className="btn btn-sm text-ink-3" aria-label={`Effacer ${r.nom} de l'historique`}>Effacer</button>
+                    <button type="button" onClick={() => setAConfirmer(r.id)} className="btn btn-sm text-ink-3" aria-label={`Supprimer la recherche ${r.nom}`}>Supprimer</button>
                   )}
                 </div>
               </li>

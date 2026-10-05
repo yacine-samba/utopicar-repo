@@ -60,7 +60,7 @@ export function DernieresRecherches({ journal, noms }: { journal: Lancement[]; n
     <section aria-labelledby="hi-d" className="grid gap-4">
       <div>
         <h2 id="hi-d" className="font-display text-xl font-semibold">Dernières recherches</h2>
-        <p className="text-sm text-ink-3">Chaque recherche lancée, avec ses filtres exacts. Relancez-la telle quelle en un clic.</p>
+        <p className="text-sm text-ink-3">Chaque recherche lancée, avec ses filtres exacts et ses résultats gardés : l&apos;ouvrir ne refait aucune requête. Les annonces restent dans « Annonces trouvées » même si vous effacez la recherche.</p>
       </div>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <label className="grid gap-1.5 text-sm">
@@ -110,7 +110,7 @@ export function DernieresRecherches({ journal, noms }: { journal: Lancement[]; n
                 </p>
               </div>
               <div className="flex gap-2 sm:justify-end">
-                <Link href={`/app/recherche?j=${l.id}`} className="btn btn-o btn-sm">Relancer</Link>
+                <Link href={`/app/recherche?j=${l.id}`} className="btn btn-o btn-sm">Ouvrir</Link>
                 <button type="button" onClick={() => effacer(l)} className="btn btn-sm text-ink-3" aria-label={`Effacer la recherche ${l.nom} du ${quand(l.created_at)}`}>Effacer</button>
               </div>
             </li>

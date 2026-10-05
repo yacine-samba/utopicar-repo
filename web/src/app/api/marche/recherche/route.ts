@@ -2,6 +2,7 @@ import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
 import { lienAnnonce, marcheModele, normBo, normEn } from "@/lib/vehicules/marche";
 import { supabaseServeur } from "@/lib/supabase/serveur";
+import { cleFavori } from "@/lib/favoris";
 import { cleRecherche, COLONNES_RECHERCHE, MAX_ONGLETS, type Meilleure } from "@/lib/recherches";
 import { dansPhase, motorisationDe } from "@/lib/vehicules/phases";
 import { demanderCollecte, SEUIL_COLLECTE, type EtatCollecte } from "@/lib/vehicules/collecte";
@@ -131,7 +132,18 @@ export async function POST(req: Request) {
 
   const avecCote = annonces.filter((a) => a.cote);
   const sousLaCote = avecCote.filter((a) => !a.suspect && (a.cote!.pct ?? 0) >= 0.05).length;
-  const recherche = await enregistrer(f, m, filtrees, sousLaCote).catch((e) => {
+  // résultats gardés avec la recherche : la rouvrir les affiche sans refaire de requête
+  const resultat = {
+    modele: { nom: `${m.marque} ${m.nom}`, gens: m.gens.map(({ id, label, y0, y1 }) => ({ id, label, y0, y1, n: parGen.get(id) ?? 0 })), incertaines: parGen.get("?") ?? 0 },
+    versions: versions.map((v) => ({ id: v.id, label: v.label, n: parVersion.get(v.id) ?? 0 })),
+    moteurs: [...moteurs].sort((a, b) => b[1] - a[1]).slice(0, 40).map(([l, n]) => ({ l, n })),
+    base: deLaGen.length,
+    total: lignes.length,
+    trouvees: filtrees.length,
+    sousLaCote,
+    annonces: filtrees.slice(0, 300),
+  };
+  const sauve = await enregistrer(f, m, filtrees, sousLaCote, resultat).catch((e) => {
     console.error("recherche enregistrée", (e as Error).message);
     return null;
   });
@@ -144,50 +156,81 @@ export async function POST(req: Request) {
       return null;
     });
   }
-  return Response.json({
-    recherche,
-    modele: { nom: `${m.marque} ${m.nom}`, gens: m.gens.map(({ id, label, y0, y1 }) => ({ id, label, y0, y1, n: parGen.get(id) ?? 0 })), incertaines: parGen.get("?") ?? 0 },
-    versions: versions.map((v) => ({ id: v.id, label: v.label, n: parVersion.get(v.id) ?? 0 })),
-    moteurs: [...moteurs].sort((a, b) => b[1] - a[1]).slice(0, 40).map(([l, n]) => ({ l, n })),
-    base: deLaGen.length,
-    collecte,
-    total: lignes.length,
-    trouvees: filtrees.length,
-    sousLaCote,
-    annonces: filtrees.slice(0, 300),
-    ms: Date.now() - t0,
-  });
+  return Response.json({ ...resultat, recherche: sauve?.recherche ?? null, journal: sauve?.journal ?? null, collecte, ms: Date.now() - t0 });
 }
 
-type Trouvee = { titre: string; prix: number; url: string | null; piege: boolean; cote: { ecart: number | null; pct: number | null } | null };
+/** Résultats gardés d'une recherche : un lancement du journal (?j=) ou le dernier lancement d'une recherche (?r=). Aucune requête sur le marché. */
+export async function GET(req: Request) {
+  const c = await compteCourant();
+  if (!c) return Response.json({ erreur: "Connectez-vous." }, { status: 401 });
+  if (!c.offre.recherche) return Response.json({ erreur: "La recherche dans le marché est incluse dans Benef Pro." }, { status: 403 });
+  const u = new URL(req.url);
+  const j = u.searchParams.get("j"), r = u.searchParams.get("r");
+  const uuid = /^[0-9a-f-]{36}$/;
+  if (!(j && uuid.test(j)) && !(r && uuid.test(r))) return Response.json({ erreur: "Recherche inconnue." }, { status: 400 });
+  const sb = await supabaseServeur();
+  let q = sb.from("recherches_journal").select("id, recherche_id, criteres, resultat, maj").not("resultat", "is", null);
+  q = j ? q.eq("id", j) : q.eq("recherche_id", r!).order("maj", { ascending: false }).limit(1);
+  const { data: l } = await q.maybeSingle();
+  if (!l) return Response.json({ erreur: "Pas de résultats gardés pour cette recherche." }, { status: 404 });
+  const { data: recherche } = l.recherche_id ? await sb.from("recherches").select(COLONNES_RECHERCHE).eq("id", l.recherche_id).maybeSingle() : { data: null };
+  return Response.json({ ...(l.resultat as object), recherche, criteres: l.criteres, journal: { id: l.id, le: l.maj }, collecte: null, ms: 0 });
+}
 
-/** Garde la recherche (une par véhicule), ouverte en onglet ; au plus 8 onglets ouverts, l'historique reste entier. */
-async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: string; gens: { id: string; label: string; v: { id: string; label: string }[] }[] }, trouvees: Trouvee[], sousLaCote: number) {
+/** JSON sans dépendre de l'ordre des clés (jsonb les réordonne). */
+const stable = (v: unknown): string =>
+  v && typeof v === "object" && !Array.isArray(v)
+    ? `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${stable((v as Record<string, unknown>)[k])}`).join(",")}}`
+    : JSON.stringify(v ?? null);
+
+type Trouvee = {
+  id: string; titre: string; prix: number; annee: number | null; km: number | null; ch: number | null; energie: string | null; boite: string | null; moteur: string | null; version: string | null;
+  lieu: string | null; url: string | null; pro: boolean; gen: string | null; genLabel: string; piege: boolean; cote: { P: number; ecart: number | null; pct: number | null } | null;
+};
+
+/** Garde la recherche (une par véhicule), son lancement avec ses résultats (journal) et les annonces trouvées. */
+async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: string; gens: { id: string; label: string; v: { id: string; label: string }[] }[] }, trouvees: Trouvee[], sousLaCote: number, resultat: object) {
   const sb = await supabaseServeur();
   const choix = { marque: f.marque, modele: f.modele, gen: f.gen ?? "" };
+  const criteres = { choix, f: f.saisie ?? {} };
   const g = f.gen ? m.gens.find((x) => x.id === f.gen) : null;
   const v = f.version && g ? g.v.find((x) => x.id === f.version) : null;
   const nom = `${m.marque} ${g?.label ?? m.nom}${v ? ` ${v.label.replace(/^[A-Z]\d{2,3}\s/, "")}` : ""}`.slice(0, 160);
+  const maintenant = new Date().toISOString();
   // meilleure affaire crédible : ni piège, ni prix trop beau pour être vrai (plus de 40 % sous la cote)
   const top = trouvees.filter((a) => !a.piege && a.cote?.pct != null && a.cote.pct <= 0.4 && a.cote.ecart != null).sort((a, b) => b.cote!.pct! - a.cote!.pct!)[0];
   const meilleure: Meilleure | null = top ? { titre: top.titre.slice(0, 140), prix: top.prix, ecart: Math.round(top.cote!.ecart!), pct: Math.round(top.cote!.pct! * 100), url: top.url } : null;
   const { data, error } = await sb
     .from("recherches")
-    .upsert(
-      { cle: cleRecherche(choix), nom, criteres: { choix, f: f.saisie ?? {} }, active: true, trouvees: trouvees.length, sous_cote: sousLaCote, meilleure, derniere_le: new Date().toISOString() },
-      { onConflict: "user_id,cle" },
-    )
+    .upsert({ cle: cleRecherche(choix), nom, criteres, active: true, trouvees: trouvees.length, sous_cote: sousLaCote, meilleure, derniere_le: maintenant }, { onConflict: "user_id,cle" })
     .select(COLONNES_RECHERCHE)
     .single();
   if (error) throw error;
-  // journal : chaque lancement, avec ses filtres exacts, pour « Dernières recherches »
-  const { error: ej } = await sb.from("recherches_journal").insert({
-    recherche_id: data.id, nom, marque: f.marque, modele: f.modele, gen: f.gen || null, criteres: { choix, f: f.saisie ?? {} }, trouvees: trouvees.length, sous_cote: sousLaCote,
-  });
+
+  // journal : chaque lancement avec ses filtres exacts et ses résultats ; les mêmes filtres relancés dans l'heure mettent à jour la même ligne
+  const { data: dernier } = await sb.from("recherches_journal").select("id, criteres, created_at").eq("recherche_id", data.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
+  const meme = dernier && stable(dernier.criteres) === stable(criteres) && Date.now() - Date.parse(dernier.created_at) < 3600e3;
+  const ligne = { nom, trouvees: trouvees.length, sous_cote: sousLaCote, resultat, maj: maintenant };
+  const { data: j, error: ej } = meme
+    ? await sb.from("recherches_journal").update(ligne).eq("id", dernier.id).select("id, maj").single()
+    : await sb.from("recherches_journal").insert({ ...ligne, recherche_id: data.id, marque: f.marque, modele: f.modele, gen: f.gen || null, criteres }).select("id, maj").single();
   if (ej) console.error("journal des recherches", ej.message);
+
+  // annonces trouvées : gardées pour toujours, même si la recherche est supprimée
+  const vues = new Set<string>();
+  const lignes = trouvees.slice(0, 300).map((a) => ({
+    cle: cleFavori(a.url, `marche:${a.id}`).slice(0, 200), titre: (a.titre || "Annonce").slice(0, 300), prix: a.prix, annee: a.annee, km: a.km, ch: a.ch, energie: a.energie, boite: a.boite,
+    moteur: a.moteur, version: a.version, lieu: a.lieu?.slice(0, 120) ?? null, url: a.url?.slice(0, 500) ?? null, marque: f.marque, modele: f.modele, gen: a.gen, gen_label: a.genLabel || null, pro: a.pro,
+    cote: a.cote ? { P: a.cote.P, ecart: a.cote.ecart, pct: a.cote.pct } : null, recherche: nom, derniere_le: maintenant,
+  })).filter((x) => !vues.has(x.cle) && !!vues.add(x.cle));
+  if (lignes.length) {
+    const { error: et } = await sb.from("annonces_trouvees").upsert(lignes, { onConflict: "user_id,cle" });
+    if (et) console.error("annonces trouvées", et.message);
+  }
+
   // les onglets les plus anciens se ferment ; les recherches restent toutes dans l'historique
   const { data: ouverts0 } = await sb.from("recherches").select("id").eq("active", true).order("derniere_le", { ascending: false });
   const ouverts = ouverts0 ?? [];
   if (ouverts.length > MAX_ONGLETS) await sb.from("recherches").update({ active: false }).in("id", ouverts.slice(MAX_ONGLETS).map((x) => x.id));
-  return data;
+  return { recherche: data, journal: j ? { id: j.id as string, le: j.maj as string } : null };
 }

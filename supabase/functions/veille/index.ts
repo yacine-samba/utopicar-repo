@@ -329,9 +329,11 @@ async function collectCote(c: any, R: Record<string, string>) {
     }
     const seen = new Set<string>();
     const rows: any[] = items.map(it => coteRow(c, it)).filter((x: any) => x && !seen.has(x.id) && seen.add(x.id));
-    await sb.from('cote_annonces').delete().eq('cle', c.cle);
-    for (let k = 0; k < rows.length; k += 100) { const { error } = await sb.from('cote_annonces').insert(rows.slice(k, k + 100)); if (error) err = 'enregistrement : ' + error.message; }
-    n = rows.length;
+    // base cumulative : les annonces déjà relevées restent (une annonce vendue garde son prix pour la cote), les autres sont mises à jour
+    const vu = new Date().toISOString();
+    for (let k = 0; k < rows.length; k += 100) { const { error } = await sb.from('cote_annonces').upsert(rows.slice(k, k + 100).map((r: any) => ({ ...r, vu_le: vu })), { onConflict: 'cle,id' }); if (error) err = 'enregistrement : ' + error.message; }
+    const { count: total } = await sb.from('cote_annonces').select('id', { count: 'exact', head: true }).eq('cle', c.cle);
+    n = rows.length ? (total ?? rows.length) : 0;
     if (!n) err = 'Aucune annonce trouvée pour ce modèle : vérifiez la recherche.';
   } else err = `Run Apify ${run.status}` + (run.statusMessage ? ` : ${String(run.statusMessage).slice(0, 160)}` : '');
   await sb.from('cotes').update({ statut: err ? 'erreur' : 'ok', erreur: err, n: err && !n ? c.n : n, maj: n ? new Date().toISOString() : c.maj, cout_usd: cout }).eq('cle', c.cle);
