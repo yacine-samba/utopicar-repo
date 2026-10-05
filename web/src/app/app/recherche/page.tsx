@@ -9,6 +9,20 @@ import { RechercheMarche } from "@/components/marche/RechercheMarche";
 import { COLONNES_JOURNAL, COLONNES_RECHERCHE, type Lancement, type Recherche } from "@/lib/recherches";
 import { HistoriqueRecherches, type AlerteSupprimee } from "@/components/marche/HistoriqueRecherches";
 import { DernieresRecherches, type NomsCatalogue } from "@/components/marche/DernieresRecherches";
+import { AnnoncesTrouvees, type AnnonceTrouvee } from "@/components/marche/AnnoncesTrouvees";
+
+/** Noms lisibles (marque, modèle, génération) pour les filtres de l'historique. */
+function nomsCatalogue(): NomsCatalogue {
+  const noms: NomsCatalogue = { marques: {}, modeles: {}, gens: {} };
+  for (const b of catalogue()) {
+    noms.marques[b.k] = b.n;
+    for (const m of b.m) {
+      noms.modeles[`${b.k} ${m.k}`] = m.n;
+      for (const g of m.g) noms.gens[`${b.k} ${m.k} ${g.id}`] = g.l;
+    }
+  }
+  return noms;
+}
 
 const VERDICTS = ["GO", "GO SI NÉGOCIÉ", "GO EN MANDAT UNIQUEMENT", "À SURVEILLER", "NO GO"];
 type Filtres = { vue?: string; q?: string; marque?: string; modele?: string; gen?: string; r?: string; j?: string; verdict?: string; marge?: string; prix?: string; depuis?: string };
@@ -26,20 +40,25 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
       sb.from("recherches_journal").select(COLONNES_JOURNAL).order("created_at", { ascending: false }).limit(1000),
       alertes ? sb.rpc("mes_alertes_supprimees") : Promise.resolve({ data: [] }),
     ]);
-    // noms lisibles (marque, modèle, génération) pour les filtres du journal
-    const noms: NomsCatalogue = { marques: {}, modeles: {}, gens: {} };
-    for (const b of catalogue()) {
-      noms.marques[b.k] = b.n;
-      for (const m of b.m) {
-        noms.modeles[`${b.k} ${m.k}`] = m.n;
-        for (const g of m.g) noms.gens[`${b.k} ${m.k} ${g.id}`] = g.l;
-      }
-    }
+    const noms = nomsCatalogue();
     return (
       <div className="grid gap-10">
         <EnTete vue="historique" />
         <DernieresRecherches journal={(journal ?? []) as Lancement[]} noms={noms} />
         <HistoriqueRecherches recherches={(recherches ?? []) as Recherche[]} supprimees={((sup.data ?? []) as AlerteSupprimee[])} alertes={alertes} />
+      </div>
+    );
+  }
+  if (f.vue === "annonces") {
+    const sb = await supabaseServeur();
+    const [{ data: annonces }, { data: favs }] = await Promise.all([
+      sb.from("annonces_trouvees").select("cle, titre, prix, annee, km, ch, energie, boite, moteur, version, lieu, url, marque, modele, gen, gen_label, pro, cote, recherche, premiere_le, derniere_le").order("derniere_le", { ascending: false }).limit(5000),
+      sb.from("favoris").select("cle").limit(2000),
+    ]);
+    return (
+      <div className="grid gap-6">
+        <EnTete vue="annonces" />
+        <AnnoncesTrouvees annonces={(annonces ?? []) as AnnonceTrouvee[]} noms={nomsCatalogue()} favoris={(favs ?? []).map((x) => x.cle as string)} />
       </div>
     );
   }
@@ -54,7 +73,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
     return (
       <div className="grid gap-6">
         <EnTete vue="marche" />
-        <RechercheMarche cat={catalogue()} alertes={alertes} initiales={(recherches ?? []) as Recherche[]} ouvrir={f.r ?? null} prerempli={prerempli} rejouer={(lancement as Lancement | null)?.criteres ?? null} favoris={(favs ?? []).map((x) => x.cle as string)} />
+        <RechercheMarche cat={catalogue()} alertes={alertes} initiales={(recherches ?? []) as Recherche[]} ouvrir={f.r ?? null} prerempli={prerempli} journal={lancement ? { id: (lancement as Lancement).id, ...(lancement as Lancement).criteres } : null} favoris={(favs ?? []).map((x) => x.cle as string)} />
       </div>
     );
   }
@@ -129,9 +148,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   );
 }
 
-function EnTete({ vue }: { vue: "marche" | "historique" | "rapports" }) {
+function EnTete({ vue }: { vue: "marche" | "historique" | "annonces" | "rapports" }) {
   const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
-  const sous = { marche: "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération.", historique: "Toutes vos recherches, même fermées, et les alertes supprimées.", rapports: "Vos rapports enregistrés, par verdict, marge, prix ou période." }[vue];
+  const sous = { marche: "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération.", historique: "Toutes vos recherches avec leurs résultats gardés, et les alertes supprimées.", annonces: "Toutes les annonces trouvées par vos recherches, gardées pour toujours.", rapports: "Vos rapports enregistrés, par verdict, marge, prix ou période." }[vue];
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div>
@@ -141,6 +160,7 @@ function EnTete({ vue }: { vue: "marche" | "historique" | "rapports" }) {
       <nav aria-label="Type de recherche" className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-line p-1">
         <a href="/app/recherche" aria-current={vue === "marche" ? "page" : undefined} className={onglet(vue === "marche")}>Annonces du marché</a>
         <a href="/app/recherche?vue=historique" aria-current={vue === "historique" ? "page" : undefined} className={onglet(vue === "historique")}>Historique</a>
+        <a href="/app/recherche?vue=annonces" aria-current={vue === "annonces" ? "page" : undefined} className={onglet(vue === "annonces")}>Annonces trouvées</a>
         <a href="/app/recherche?vue=rapports" aria-current={vue === "rapports" ? "page" : undefined} className={onglet(vue === "rapports")}>Mes rapports</a>
       </nav>
     </div>

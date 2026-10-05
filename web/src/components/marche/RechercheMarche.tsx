@@ -22,6 +22,8 @@ type Resultat = {
   recherche: Recherche | null; modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[]; incertaines: number };
   versions: { id: string; label: string; n: number }[]; moteurs: { l: string; n: number }[]; base: number; collecte: Collecte | null;
   total: number; trouvees: number; sousLaCote: number; annonces: Annonce[]; ms: number;
+  /** lancement gardé : date des résultats affichés */
+  journal: { id: string; le: string } | null; criteres?: { choix: Choix; f: Partial<Filtres> };
 };
 type Filtres = FiltresRecherche;
 
@@ -33,10 +35,10 @@ const CARROSSERIES: [string, string][] = [["berline", "Berline / 5 portes"], ["b
 
 /** Recherche dans la base du marché. Chaque recherche est enregistrée (une par véhicule) et reste ouverte en onglet :
     on peut chercher une autre voiture sans perdre la précédente, et la retrouver depuis le tableau de bord. */
-export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, rejouer, favoris = [] }: {
+export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, journal, favoris = [] }: {
   cat: CatMarque[]; alertes: boolean; initiales: Recherche[]; ouvrir?: string | null; prerempli?: Choix | null;
-  /** recherche du journal à relancer telle quelle */
-  rejouer?: { choix: Choix; f: Partial<Filtres> } | null; favoris?: string[];
+  /** lancement du journal à rouvrir (résultats gardés ; relancé seulement s'il n'en a pas) */
+  journal?: { id: string; choix: Choix; f: Partial<Filtres> } | null; favoris?: string[];
 }) {
   const { notifier, element: notification } = useNotification();
   const [favs] = useState(() => new Set(favoris));
@@ -49,6 +51,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, re
   const [charge, setCharge] = useState(false);
   // téléphone : les filtres se replient pendant et après la recherche, pour voir le chargement puis les résultats
   const [filtresOuverts, setFiltresOuverts] = useState(true);
+  const [ouverture, setOuverture] = useState(false);
   const cache = useRef(new Map<string, Resultat>());
   // collecte Leboncoin en cours pour la recherche affichée (base trop maigre) : suivie, puis la recherche se relance seule
   const [collecte, setCollecte] = useState<(Collecte & { choix: Choix; f: Filtres; rid: string | null }) | null>(null);
@@ -119,7 +122,29 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, re
     void lancer(choix, f);
   };
 
-  /** Affiche un onglet : ses critères, et ses résultats (déjà chargés, sinon relancés). */
+  /** Résultats gardés (aucune requête sur le marché) : un lancement du journal ou le dernier d'une recherche. */
+  async function ouvrirGardes(q: string): Promise<Resultat | null> {
+    setOuverture(true);
+    try {
+      const r = await fetch(`/api/marche/recherche?${q}`);
+      if (!r.ok) return null;
+      const j = (await r.json().catch(() => null)) as Resultat | null;
+      if (!j) return null;
+      setRes(j);
+      setEtat("");
+      setCollecte(null);
+      if (j.recherche) {
+        cache.current.set(j.recherche.id, j);
+        setCourant(j.recherche.id);
+        history.replaceState(null, "", `/app/recherche?r=${j.recherche.id}`);
+      }
+      return j;
+    } finally {
+      setOuverture(false);
+    }
+  }
+
+  /** Affiche un onglet : ses critères et ses résultats gardés ; « relancer » seulement sur demande (Actualiser). */
   function afficher(r: Recherche, relancer = false) {
     const c = { ...SANS, ...r.criteres.choix };
     const fx = { ...VIDE, ...r.criteres.f };
@@ -131,9 +156,15 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, re
     if (deja && !relancer) {
       setRes(deja);
       setEtat("");
-    } else {
+    } else if (relancer) {
       setRes(null);
       void lancer(c, fx);
+    } else {
+      setRes(null);
+      // pas de résultats gardés (recherche d'avant cette version) : un seul lancement, gardé ensuite
+      void ouvrirGardes(`r=${r.id}`).then((j) => {
+        if (!j) void lancer(c, fx);
+      });
     }
   }
 
@@ -159,7 +190,8 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, re
 
   async function rouvrir(r: Recherche) {
     setListe((l) => l.map((x) => (x.id === r.id ? { ...x, active: true } : x)));
-    afficher({ ...r, active: true }, true);
+    afficher({ ...r, active: true });
+    await supabaseNavigateur().from("recherches").update({ active: true }).eq("id", r.id);
   }
 
   // à l'arrivée : la recherche demandée (tableau de bord), le véhicule choisi, sinon le dernier onglet ouvert
@@ -170,19 +202,21 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, re
       demarre.current = true;
       const cible = (ouvrir && initiales.find((r) => r.id === ouvrir)) || null;
       // la recherche relancée revient « active » du serveur et rouvre son onglet
-      if (rejouer?.choix?.marque && rejouer.choix.modele) {
-        const c = { ...SANS, ...rejouer.choix };
-        const fx = { ...VIDE, ...rejouer.f };
+      if (journal?.choix?.marque && journal.choix.modele) {
+        const c = { ...SANS, ...journal.choix };
+        const fx = { ...VIDE, ...journal.f };
         setChoix(c);
         setF(fx);
-        void lancer(c, fx);
-      } else if (cible) afficher(cible, true);
+        void ouvrirGardes(`j=${journal.id}`).then((j) => {
+        if (!j) void lancer(c, fx);
+      });
+      } else if (cible) afficher(cible);
       else if (prerempli?.marque && prerempli.modele) {
         setChoix(prerempli);
         void lancer(prerempli, VIDE);
       } else {
         const dernier = [...initiales].filter((r) => r.active).sort((x, y) => y.derniere_le.localeCompare(x.derniere_le))[0];
-        if (dernier) afficher(dernier, true);
+        if (dernier) afficher(dernier);
       }
     }, 0);
     return () => clearTimeout(t);
@@ -435,6 +469,11 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, re
         </div>
       </form>
 
+      {ouverture && !charge && (
+        <p role="status" className="carte flex items-center gap-3 p-4 text-sm text-ink-2">
+          <span className="size-4 animate-spin rounded-full border-2 border-o/30 border-t-o" aria-hidden="true" /> Ouverture des résultats gardés…
+        </p>
+      )}
       {charge && <PatienceRecherche id="rm-attente" nom={choix.modele ? (cat.find((b) => b.k === choix.marque)?.m.find((m) => m.k === choix.modele)?.n ?? "") : ""} />}
       {notification}
 
@@ -451,6 +490,16 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, re
               {res.total} annonces de ce modèle en base · {res.sousLaCote} à 5 % ou plus sous la cote
             </p>
           </div>
+          {res.journal && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line px-4 py-2.5 text-sm">
+              <span className="text-ink-2" suppressHydrationWarning>
+                Résultats gardés du <b className="text-ink">{new Date(res.journal.le).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</b> : rouvrir la recherche ne refait aucune requête.
+              </span>
+              <button type="button" onClick={() => void lancer(choix, f)} className="btn btn-sm min-h-9 px-4">
+                Actualiser
+              </button>
+            </div>
+          )}
           <div className="flex flex-wrap gap-2 text-xs">
             {res.modele.gens.filter((g) => g.n).map((g) => (
               <button key={g.id} type="button" onClick={() => { setChoix((c) => ({ ...c, gen: c.gen === g.id ? "" : g.id })); }}
