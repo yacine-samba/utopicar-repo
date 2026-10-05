@@ -55,7 +55,7 @@ export async function marcheModele(base: string, y0?: number | null, y1?: number
   if (!m) return null;
   const lignes = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null)).map((l) => {
     const g = generationDe(m.base, versMoteur(l));
-    return { ...l, gen: g?.id ?? null, genLabel: g?.label ?? "" };
+    return { ...l, gen: g?.id ?? null, genLabel: g?.label ?? "", variant: g?.variant ?? null, varianteEcrite: !!g?.varianteEcrite, body: g?.body ?? null };
   });
   return { m, lignes, cotes: new Cotes(m.base, lignes) };
 }

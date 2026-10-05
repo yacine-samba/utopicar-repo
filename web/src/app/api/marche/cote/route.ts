@@ -108,7 +108,7 @@ export async function POST(req: Request) {
     const collees = liste.map(({ it }) => {
       const l = { id: it.id, source: "releve", titre: it.titre, texte: null, prix: it.prix!, annee: it.annee, km: it.km, energie: it.energie, boite: it.boite, pro: it.pro, ch: it.ch ?? null, places: null, carr: null, etat: null, lieu: [it.ville, it.cp].filter(Boolean).join(" "), url: it.url || null, vu_le: null };
       const g = generationDe(base, { ...l, texte: "", carr: "", etat: "", energie: l.energie, boite: l.boite });
-      return { ...l, gen: g?.id ?? null, genLabel: g?.label ?? "", badge: it.badge };
+      return { ...l, gen: g?.id ?? null, genLabel: g?.label ?? "", variant: g?.variant ?? null, varianteEcrite: !!g?.varianteEcrite, body: g?.body ?? null, badge: it.badge };
     });
     collees.forEach((l) => !vus.has(l.id) && mm.lignes.push(l));
     const parGroupe = new Map<string, typeof collees>();

@@ -1,6 +1,7 @@
 /* Types du moteur de l'outil Garage (moteur.js, porté tel quel). */
 export type Gen = { id: string; label: string; y0: number; y1: number; open: boolean };
-export type ModeleCat = { key: string; name: string; lbc: string; regex: string; gens: Gen[] };
+export type Version = { id: string; label: string; y0: number; y1: number; body: string };
+export type ModeleCat = { key: string; name: string; lbc: string; regex: string; gens: (Gen & { v: Version[] })[] };
 export type MarqueCat = { key: string; name: string; lbc: string; models: ModeleCat[] };
 export type Comparable = { prix: number; annee: number; km: number; lib: string; id: string | null; pro: 0 | 1 };
 export type Estimation = {
@@ -19,10 +20,12 @@ export function reconnaitre(t: AnnonceMoteur): { marque: string; modele: string;
 export function preparerCote(t: AnnonceMoteur, annonces: AnnonceMoteur[]): Cote | null;
 export function estimer(c: Cote, t: AnnonceMoteur, prix?: number | null): Estimation | null;
 export function points(c: Cote): Point[];
-export function generationDe(base: string, a: AnnonceMoteur): { id: string | null; label: string; statut: string; variant: string | null } | null;
+export function generationDe(base: string, a: AnnonceMoteur): { id: string | null; label: string; statut: string; variant: string | null; varianteEcrite: boolean; body: string | null } | null;
+export type SpecCollecte = { cle: string; nom: string; base: string; gen: string; energie: string; y0: number; y1: number; filtres: Record<string, unknown> };
+export function specCollecte(base: string, genId: string, variantId: string | null, energie: string): SpecCollecte | null;
 export function coteGeneration(base: string, genId: string, energie: string, annonces: AnnonceMoteur[]): Cote | null;
 export function estimerDans(c: Cote, base: string, genId: string, a: AnnonceMoteur, prix?: number | null): Estimation | null;
-export function modeleDe(base: string): { base: string; marque: string; nom: string; regex: string; gens: Gen[] } | null;
+export function modeleDe(base: string): { base: string; marque: string; nom: string; regex: string; gens: (Gen & { v: Version[] })[] } | null;
 export function parseCard(it: { u?: string; t?: string; x?: string; f?: Record<string, unknown> }): Carte;
 export function normEn(s: unknown): string;
 export function normBo(s: unknown): string;

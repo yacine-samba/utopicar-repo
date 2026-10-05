@@ -81,11 +81,11 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
-      <aside className="sticky top-0 hidden h-dvh flex-col gap-6 overflow-y-auto border-r border-line bg-bg0/60 px-4 py-5 lg:flex">
+      <aside className="sticky top-0 hidden h-dvh flex-col gap-5 overflow-y-auto border-r border-line bg-bg0/60 px-4 py-5 lg:flex">
         <Link href="/app" className="px-1" aria-label="Mon espace, accueil">
           <Logo sous={benef ? "Benef" : undefined} />
         </Link>
-        <BoutonAnalyser />
+        <BoutonAnalyser className="min-h-9 gap-2 whitespace-nowrap px-3.5 py-1.5 text-[13px] shadow-[0_8px_22px_-14px_rgb(255_90_31/0.9)]" icone="size-4" />
         <div className="grid flex-1 content-start gap-3">
           <NavCote entrees={entrees} />
           <div className="grid gap-2">
