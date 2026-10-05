@@ -748,38 +748,74 @@ const SEGS = [
   ['finBasse', 'Finition d\'entrée', r => /\b(access|life|authentique|expression|essentia|attraction|ambiance|trendline|essentielle|society|pure)\b/.test(r.tx)],
 ];
 const EQUIP = /\b(gps|navigation|carplay|android auto|clim(?:atisation)? auto(?:matique)?|regulateur|radar de recul|camera|jantes? alu|toit (?:pano\w*|ouvrant)|cuir|sieges? chauffants|bose|keyless|carte mains libres|full options?)\b/g;
-function chOf(r){ if (num(r.ch) > 30 && num(r.ch) < 700) return num(r.ch); const m = r.tx.match(/\b(\d{2,3}) ?(?:ch|cv din|chevaux)\b/) || r.tx.match(/\b(?:dci|tce|hdi|e-?hdi|bluehdi|tdi|tsi|vti|puretech|vvt-?i|tdci|ecoboost|sce|crdi) ?(\d{2,3})\b/); const v = m ? +m[1] : null; return v && v > 40 && v < 400 ? v : null; }
+function chOf(r){ if (num(r.ch) > 30 && num(r.ch) < 800) return num(r.ch); const m = r.tx.match(/\b(\d{2,3}) ?(?:ch|cv din|chevaux)\b/) || r.tx.match(/\b(?:dci|tce|hdi|e-?hdi|bluehdi|tdi|tsi|vti|puretech|vvt-?i|tdci|ecoboost|sce|crdi) ?(\d{2,3})\b/); const v = m ? +m[1] : null; return v && v > 40 && v < 700 ? v : null; }
+/* Clé de motorisation (« 335 i » = « 335i ») et finition Leboncoin normalisée (« Sport Design » → « sport design »). */
+const cleMo = s => flatA(s).replace(/[\s-]+/g, '');
+const normFin = s => flatA(s).replace(/[^a-z0-9+]+/g, ' ').trim();
+/* Âge en années : au mois près avec la 1re mise en circulation (AAAA-MM), sinon le milieu de l'année. */
+const AN_NOW = () => { const d = new Date(); return d.getFullYear() + d.getMonth() / 12; };
+const ageDe = (r, Yf) => { const m = /^(\d{4})-(\d{2})/.exec(r.mec || ''); const a = m && +m[1] === r.annee ? +m[1] + (+m[2] - 0.5) / 12 : r.annee + 0.5; return Math.max(0, Yf - a); };
 function segRow(r){
   r.tx = flatA(r.tx || ''); r.seg = {}; SEGS.forEach(([k, , f]) => { r.seg[k] = f(r) ? 1 : 0; });
   if (r.seg.finHaute && r.seg.finBasse) r.seg.finHaute = r.seg.finBasse = 0;
   r.chv = chOf(r); r.eq = Math.min(4, (r.tx.match(EQUIP) || []).length);
+  r.mo = r.mo ? cleMo(r.mo) : ''; r.fin = r.fin ? normFin(r.fin) : '';
   return r;
 }
+/* Finition d'une annonce qui ne la donne pas : la plus longue des finitions connues de la cote écrite dans son titre ou sa version. */
+const finDans = (tx, connues) => { const t = ' ' + normFin(tx) + ' '; return connues.find(f => t.includes(' ' + f + ' ')) || ''; };
+/* Options d'une cote :
+   - toutesCarr : berlines, breaks, coupés et cabriolets ensemble, la carrosserie devient une variable de la régression
+     (au lieu d'écarter coupés et cabriolets) ;
+   - libelle : ce sur quoi la cote est calculée (« même moteur : 335i »). */
 function coteModel(c){
   if (c._model !== undefined) return c._model;
-  const Y = new Date().getFullYear();
-  let R = (c.rows || []).map(r => segRow({prix: num(r[0]), annee: num(r[1]), km: num(r[2]), bo: r[3], pro: r[4], etat: String(r[5] || ''), tx: String(r[7] || ''), raw: String(r[7] || ''), ch: r[8], places: num(r[9]), carr: String(r[10] || ''), id: r[11] || null, lib: String(r[7] || '').split(' | ')[0].slice(0, 90)}))
+  const Y = new Date().getFullYear(), Yf = AN_NOW();
+  let R = (c.rows || []).map(r => segRow({prix: num(r[0]), annee: num(r[1]), km: num(r[2]), bo: r[3], pro: r[4], etat: String(r[5] || ''), tx: String(r[7] || ''), raw: String(r[7] || ''), ch: r[8], places: num(r[9]), carr: String(r[10] || ''), id: r[11] || null, lib: String(r[7] || '').split(' | ')[0].slice(0, 90), mo: r[12] || '', portes: num(r[13]), fin: r[14] || '', mec: String(r[15] || '')}))
     .filter(r => r.prix >= 500 && r.prix <= 80000 && r.annee && r.km != null && r.km >= 1000 && r.km <= 450000 && !/majeur|major|important|gros|pieces|non roulant|accident/i.test(r.etat) && !/\b(pour pieces|moteur hs|boite hs|joint de culasse|non roulant|epave)\b/.test(r.tx));
   { const seen = new Set(); R = R.filter(r => { const k = r.prix + '|' + r.annee + '|' + Math.round(r.km / 500); if (seen.has(k)) return false; seen.add(k); return true; }); } // même voiture publiée dans plusieurs villes (garages)
   // Même génération seulement : une annonce d'une autre génération, ou dont la génération est incertaine (années de transition), sort du calcul.
-  let horsGen = 0; const mdl = VM_BY[c.base]; const [gid, vid] = String(c.gen || '').split('.'); const gC = mdl && gid ? mdl.gens.find(g => g.id === gid) : null;
+  let horsGen = 0, horsCarr = 0; const mdl = VM_BY[c.base]; const [gid, vid] = String(c.gen || '').split('.'); const gC = mdl && gid ? mdl.gens.find(g => g.id === gid) : null;
+  const carr0 = gC && gC.v ? gC.v[0].body : null; // carrosserie de référence de la génération (berline, hayon…)
   if (mdl && gC && (mdl.gens.length > 1 || vid || gC.v)){
     const autre = ['coupe', 'cabriolet', 'gt'];
     R = R.filter(r => { const [ti, ...de] = r.raw.split(' | '); const x = vehResolve({marque: mdl.brand.name, modele: mdl.name, titre: ti, texte: de.join(' '), annee: r.annee, carr: r.carr});
       let ok = x.model === mdl && x.gen && x.statut !== 'incertaine' && x.gen.id === gid;
-      if (ok && gC.v){ const xv = x.variant || gC.v[0]; ok = vid ? xv.id === vid : !(autre.includes(xv.body) && xv.body !== gC.v[0].body); } // cote de génération : coupés, cabriolets et GT à part
+      if (ok && gC.v){ let xv = x.variant || gC.v[0];
+        // carrosserie non écrite : les portes Leboncoin départagent (A3 5 portes = Sportback, 3 portes = A3 3 portes)
+        if (x.varHow === 'defaut' && r.portes){ const pb = r.portes <= 3 ? gC.v.find(v => v.body === '3p') : xv.body === '3p' ? gC.v.find(v => v.body === 'hayon') : null; if (pb) xv = pb; }
+        r.vb = xv.body; ok = vid ? xv.id === vid : c.toutesCarr || !(autre.includes(xv.body) && xv.body !== carr0); } // cote de génération seule : coupés, cabriolets et GT à part
       if (!ok) horsGen++; return ok; });
+  }
+  // sans version au catalogue : 2 ou 3 portes (Clio, Golf, 208 3 portes) contre 4 ou 5
+  if (!(gC && gC.v)) R.forEach(r => { r.vb = r.portes && r.portes <= 3 ? '3p' : null; });
+  // carrosseries mesurées à part (au moins 8 annonces de chaque côté), les plus rares écartées
+  let carrs = [];
+  if (c.toutesCarr){
+    const nb = {}; R.forEach(r => { if (r.vb && r.vb !== carr0) nb[r.vb] = (nb[r.vb] || 0) + 1; });
+    carrs = Object.keys(nb).filter(b => nb[b] >= 8 && nb[b] <= R.length - 8);
+    const avant = R.length; R = R.filter(r => !r.vb || r.vb === carr0 || carrs.includes(r.vb)); horsCarr = avant - R.length;
   }
   if (R.length < 20){ c._model = null; return null; }
   { const ns = R.filter(r => r.seg.sport).length; if (ns && ns < 8){ horsGen += ns; R = R.filter(r => !r.seg.sport); } } // quelques versions sportives isolées : écartées plutôt que de fausser la cote
+  // finitions Leboncoin (Luxe, Sport Design, M Sport…) : lues dans la case Leboncoin, sinon dans le titre et la version
+  const nf = {}; R.forEach(r => { if (r.fin) nf[r.fin] = (nf[r.fin] || 0) + 1; });
+  // finitions connues : celles de toute la génération quand la cote n'en est qu'une partie (« m sport » n'est pas « sport »)
+  const finConnues = [...new Set([...(c.finitions || []).map(normFin), ...Object.keys(nf).filter(f => nf[f] >= 4)])].filter(f => f.length >= 3).sort((a, b) => b.length - a.length);
+  R.forEach(r => { if (!r.fin) r.fin = finDans(r.lib, finConnues); });
+  const nf2 = {}; R.forEach(r => { if (r.fin) nf2[r.fin] = (nf2[r.fin] || 0) + 1; });
+  const fins = Object.keys(nf2).filter(f => nf2[f] >= 12 && nf2[f] <= R.length - 12).sort((a, b) => nf2[b] - nf2[a]).slice(0, 8);
   const auto = R.some(r => r.bo === 2) && R.some(r => r.bo === 1);
   const cnt = {}; SEGS.forEach(([k]) => { cnt[k] = R.filter(r => r.seg[k]).length; });
-  const segs = SEGS.filter(([k]) => cnt[k] >= 8 && cnt[k] <= R.length - 8).map(([k]) => k);
+  // finition haute ou d'entrée devinée au mot près : inutile quand la vraie finition est mesurée ; break : déjà une carrosserie
+  const segs = SEGS.filter(([k]) => cnt[k] >= 8 && cnt[k] <= R.length - 8 && !(fins.length && (k === 'finHaute' || k === 'finBasse')) && !(k === 'break' && carrs.includes('break'))).map(([k]) => k);
   const chs = R.map(r => r.chv).filter(Boolean); const chRef = chs.length ? median(chs) : null;
   const useCh = chs.length >= 30 && new Set(chs).size > 1;
   const useEq = R.filter(r => r.eq > 0).length >= 20;
-  const feat = r => [1, Y - r.annee, r.km / 10000, r.pro ? 1 : 0, ...(auto ? [r.bo === 2 ? 1 : 0] : []), ...segs.map(k => r.seg[k] ? 1 : 0), ...(useCh ? [((r.chv || chRef) - chRef) / 10] : []), ...(useEq ? [r.eq] : [])];
-  const names = ['const', 'age', 'km', 'pro', ...(auto ? ['auto'] : []), ...segs, ...(useCh ? ['ch'] : []), ...(useEq ? ['eq'] : [])];
+  R.forEach(r => { r.age = ageDe(r, Yf); });
+  // puissance en écart relatif (log) : 306 ch contre 122 ch pèse autant qu'une vraie différence de moteur
+  const feat = r => [1, r.age, r.km / 10000, r.pro ? 1 : 0, ...(auto ? [r.bo === 2 ? 1 : 0] : []), ...segs.map(k => r.seg[k] ? 1 : 0), ...carrs.map(b => r.vb === b ? 1 : 0), ...fins.map(f => r.fin === f ? 1 : 0), ...(useCh ? [Math.log((r.chv || chRef) / chRef)] : []), ...(useEq ? [r.eq] : [])];
+  const names = ['const', 'age', 'km', 'pro', ...(auto ? ['auto'] : []), ...segs, ...carrs.map(b => 'carr:' + b), ...fins.map(f => 'fin:' + f), ...(useCh ? ['ch'] : []), ...(useEq ? ['eq'] : [])];
   let beta = ols(R.map(feat), R.map(r => Math.log(r.prix)));
   const res = () => R.map(r => Math.log(r.prix) - feat(r).reduce((s, v, i) => s + v * beta[i], 0));
   let e = res(); let sig = 1.4826 * median(e.map(Math.abs));
@@ -787,7 +823,9 @@ function coteModel(c){
   const out = R.length - keep.length; R = keep;
   beta = ols(R.map(feat), R.map(r => Math.log(r.prix))); e = res();
   sig = Math.sqrt(e.reduce((s, v) => s + v * v, 0) / Math.max(1, e.length - beta.length));
-  c._model = {beta, sig, n: R.length, out, horsGen, auto, rows: R, feat, Y, names, segs, cnt, chRef, useCh, useEq};
+  // carrosserie supposée d'une voiture qui ne la précise pas : la plus courante dans les annonces (A3 : Sportback plutôt que 3 portes)
+  let carrMode = carr0; { const nb = {}; R.forEach(r => { const b = r.vb || carr0; if (b) nb[b] = (nb[b] || 0) + 1; }); const k = Object.keys(nb).sort((a, b) => nb[b] - nb[a])[0]; if (k && (k === carr0 || carrs.includes(k))) carrMode = k; }
+  c._model = {carrMode, beta, sig, n: R.length, out, horsGen, horsCarr, auto, rows: R, feat, Y, Yf, names, segs, cnt, chRef, useCh, useEq, carrs, carr0, fins, finConnues, nf: nf2};
   return c._model;
 }
 /* Estimation pour une voiture : prix de marché attendu entre particuliers, fourchette, position de son prix. */
@@ -800,32 +838,42 @@ function coteEstim(t, prixOverride){
   const yr = num(t.annee), km = num(t.km);
   if (!yr || km == null){ out.conf = 'faible'; out.why = 'année ou kilométrage inconnu'; out.nClean = M.n; return out; }
   const bo = normBo(t.boite) === 'auto' ? 2 : 1;
-  const T = segRow({annee: yr, km, pro: 0, bo, tx: [t.marque, t.titre, t.modele, t.texte].filter(Boolean).join(' | ').slice(0, 1500), ch: t.ch, places: num(t.places), carr: t.carr || ''});
+  const T = segRow({annee: yr, km, pro: 0, bo, tx: [t.marque, t.titre, t.modele, t.texte].filter(Boolean).join(' | ').slice(0, 1500), ch: t.ch, places: num(t.places), carr: t.carr || '', mo: t.moteur || '', fin: t.finition || '', mec: t.mec || ''});
+  // carrosserie : celle reconnue (E92 = coupé), sinon 2-3 portes pour un modèle sans version, sinon celle de référence
+  T.vb = M.carr0 ? t.carrosserie || M.carrMode : (num(t.portes) && num(t.portes) <= 3) || t.carrosserie === '3p' ? '3p' : null;
+  if (!T.fin) T.fin = finDans([t.titre, t.texte].filter(Boolean).join(' '), M.finConnues);
+  T.age = ageDe(T, M.Yf);
   const x = M.feat(T);
   const bi = k => M.names.indexOf(k);
   if (M.useEq && M.beta[bi('eq')] < 0) x[bi('eq')] = 0; // un équipement ne peut pas faire baisser la cote : bruit statistique ignoré
   out.ajust = [];
   M.segs.forEach(k => { if (T.seg[k]){ const b = M.beta[bi(k)]; out.ajust.push({l: SEGS.find(z => z[0] === k)[1], v: b}); } });
-  if (M.useCh && T.chv) { const b = M.beta[bi('ch')] * (T.chv - M.chRef) / 10; if (Math.abs(b) > 0.01) out.ajust.push({l: `${T.chv} ch (référence ${M.chRef} ch)`, v: b}); }
+  M.carrs.forEach(b => { if (T.vb === b) out.ajust.push({l: `Carrosserie ${V_BODY_NOM[b] || b} (référence : ${V_BODY_NOM[M.carr0] || 'les autres'})`, v: M.beta[bi('carr:' + b)]}); });
+  M.fins.forEach(f => { if (T.fin === f) out.ajust.push({l: `Finition ${f.replace(/\b\w/g, ch => ch.toUpperCase())}`, v: M.beta[bi('fin:' + f)]}); });
+  if (M.useCh && T.chv) { const b = M.beta[bi('ch')] * Math.log(T.chv / M.chRef); if (Math.abs(b) > 0.01) out.ajust.push({l: `${T.chv} ch (référence ${M.chRef} ch)`, v: b}); }
   if (M.useEq && T.eq) { const b = M.beta[bi('eq')] * T.eq; if (b > 0.01) out.ajust.push({l: `${T.eq} équipement(s) recherché(s)`, v: b}); }
   out.segT = SEGS.filter(([k]) => T.seg[k]).map(([k, l]) => ({k, l, n: M.cnt[k]}));
-  out.chT = T.chv;
+  out.chT = T.chv; out.carrT = T.vb || null; out.finT = T.fin || null;
   const lp = x.reduce((s, v, i) => s + v * M.beta[i], 0);
   const P = Math.exp(lp);
   const r50 = v => Math.round(v / 50) * 50;
   out.P = r50(P); out.lo = r50(P * Math.exp(-0.674 * M.sig)); out.hi = r50(P * Math.exp(0.674 * M.sig));
   out.nClean = M.n; out.out = M.out;
-  const nb = M.rows.filter(r => Math.abs(r.annee - yr) <= 1 && Math.abs(r.km - km) <= 30000);
+  // annonces vraiment comparables : même moteur (ou puissance à 5 % près) et même carrosserie, année ± 1, km ± 30 000
+  const memeMo = r => T.mo ? r.mo === T.mo || (!r.mo && T.chv && r.chv && Math.abs(r.chv / T.chv - 1) <= 0.05) : !T.chv || !r.chv || Math.abs(r.chv / T.chv - 1) <= 0.05;
+  const memeCarr = r => (r.vb || M.carr0) === (T.vb || M.carr0);
+  const nb = M.rows.filter(r => Math.abs(r.annee - yr) <= 1 && Math.abs(r.km - km) <= 30000 && memeMo(r) && memeCarr(r));
   const segSpec = ['societe', 'break', 'sport'].filter(k => T.seg[k]);
   out.nb = nb.length; out.medNb = nb.length >= 5 ? median(nb.map(r => r.prix)) : null;
   out.parKm = Math.round(P * (1 - Math.exp(M.beta[2])));
   out.parAn = Math.round(P * (1 - Math.exp(M.beta[1])));
-  out.conf = M.n >= 150 && nb.length >= 15 ? 'forte' : M.n >= 100 && nb.length >= 8 ? 'moyenne' : 'faible';
-  if (out.conf === 'faible') out.why = M.n < 100 ? `${M.n} annonces exploitables, il en faut 100` : `seulement ${nb.length} annonces proches (année ± 1, km ± 30 000)`;
+  out.conf = M.n >= 150 && nb.length >= 15 ? 'forte' : M.n >= 60 && nb.length >= 6 ? 'moyenne' : 'faible';
+  if (out.conf === 'faible') out.why = M.n < 60 ? `${M.n} annonces exploitables, il en faut 60` : `${nb.length ? `seulement ${nb.length}` : 'aucune'} annonce${nb.length > 1 ? 's' : ''} du même moteur et de la même carrosserie proche${nb.length > 1 ? 's' : ''} (année ± 1, km ± 30 000) : la cote prolonge les annonces les plus proches`;
   if (yr < cote.y0 || yr > cote.y1) { out.conf = 'faible'; out.why = 'année hors de la cote'; }
-  const manque = out.segT.filter(sg => ['societe', 'break', 'sport'].includes(sg.k) && (!M.segs.includes(sg.k) || sg.n < 15));
+  const manque = out.segT.filter(sg => ['societe', 'break', 'sport'].includes(sg.k) && (!M.segs.includes(sg.k) || sg.n < 15) && !(sg.k === 'break' && M.carrs.includes('break')));
   out.segInfo = segSpec.map(k => `${M.cnt[k]} ${({societe: 'versions société', break: 'breaks', sport: 'versions sportives'})[k]}`).join(', ');
   if (manque.length){ out.conf = 'faible'; out.why = `${manque.map(sg => sg.l.toLowerCase()).join(', ')} : seulement ${manque.map(sg => sg.n).join(', ')} annonce(s) comparable(s) dans la cote, prix non comparable à une version classique`; }
+  if (T.vb && M.carr0 && T.vb !== M.carr0 && !M.carrs.includes(T.vb)){ out.conf = 'faible'; out.why = `${V_BODY_NOM[T.vb] || T.vb} : trop peu d'annonces de cette carrosserie dans la cote, prix calculé comme une ${V_BODY_NOM[M.carr0] || M.carr0}`; }
   const lpBase = lp - out.ajust.reduce((s2, a) => s2 + a.v, 0);
   out.ajust.forEach(a => { a.eur = Math.round((Math.exp(lpBase + a.v) - Math.exp(lpBase)) / 10) * 10; });
   const prix = num(prixOverride ?? t.prix);
@@ -833,10 +881,11 @@ function coteEstim(t, prixOverride){
   out.age = cote.maj ? Math.round((Date.now() - Date.parse(cote.maj)) / 86400000) : null;
   // valeur dans 1 an : un an de plus et 15 000 km de plus, mêmes coefficients mesurés
   out.dans1an = r50(P * Math.exp(M.beta[1] + M.beta[2] * 1.5));
-  // annonces comparables : même type (société, break), puis année et kilométrage les plus proches
+  // annonces comparables : même moteur et même carrosserie d'abord, puis puissance, type (société, break), finition, année et kilométrage
   const segD = r => ['societe', 'break', 'sport'].reduce((s2, k) => s2 + (r.seg[k] !== T.seg[k] ? 4 : 0), 0) + (r.seg.finHaute !== T.seg.finHaute ? 0.5 : 0);
-  out.comps = M.rows.map(r => ({r, d: segD(r) + Math.abs(r.annee - yr) + Math.abs(r.km - km) / 20000})).sort((a, b) => a.d - b.d).slice(0, 8)
-    .map(({r}) => ({prix: r.prix, annee: r.annee, km: r.km, lib: r.lib || '', id: r.id, pro: r.pro ? 1 : 0}));
+  const dist = r => segD(r) + (memeMo(r) ? 0 : 8) + (T.chv && r.chv ? Math.min(6, Math.abs(Math.log(r.chv / T.chv)) * 15) : 0) + (memeCarr(r) ? 0 : 5) + (T.fin && r.fin && r.fin !== T.fin ? 0.7 : 0) + Math.abs(r.annee - yr) + Math.abs(r.km - km) / 20000;
+  out.comps = M.rows.map(r => ({r, d: dist(r)})).sort((a, b) => a.d - b.d).slice(0, 8)
+    .map(({r}) => ({prix: r.prix, annee: r.annee, km: r.km, lib: r.lib || '', id: r.id, pro: r.pro ? 1 : 0, ch: r.chv || null, carr: r.vb ? V_BODY_NOM[r.vb] || r.vb : null, fin: r.fin ? r.fin.replace(/\b\w/g, ch => ch.toUpperCase()) : null}));
   return out;
 }
 
@@ -864,7 +913,7 @@ function parseCard(it){
 
 /* ================= Interface pour utopicar.fr ================= */
 const cotes = {list: []};
-const versRow = a => [num(a.prix), num(a.annee), num(a.km), normBo(a.boite) === 'auto' ? 2 : 1, a.pro ? 1 : 0, a.etat || '', null, [a.titre, a.texte].filter(Boolean).join(' | ').slice(0, 900), num(a.ch), num(a.places), a.carr || '', a.id || null];
+const versRow = a => [num(a.prix), num(a.annee), num(a.km), normBo(a.boite) === 'auto' ? 2 : 1, a.pro ? 1 : 0, a.etat || '', null, [a.titre, a.texte].filter(Boolean).join(' | ').slice(0, 900), num(a.ch), num(a.places), a.carr || '', a.id || null, a.moteur || '', num(a.portes), a.finition || '', a.mec || ''];
 const simple = g => g ? {id: g.id, label: g.label, y0: g.y0, y1: g.y1, open: !!g.open} : null;
 
 /** Catalogue marque → modèle → génération (pour les listes de choix). */
@@ -896,14 +945,16 @@ export function estimer(c, t, prix){
     nom: c.nom, n: e.n, nClean: e.nClean ?? 0, conf: e.conf || 'faible', why: e.why || '', P: e.P ?? null, lo: e.lo ?? null, hi: e.hi ?? null,
     ecart: e.ecart ?? null, pct: e.pct ?? null, moinsCherQue: e.moinsCherQue ?? null, dans1an: e.dans1an ?? null, parKm: e.parKm ?? null, parAn: e.parAn ?? null,
     ajust: (e.ajust || []).map(a => ({l: a.l, eur: a.eur})), segments: (e.segT || []).map(s => s.l), ch: e.chT ?? null, comps: e.comps || [], medProches: e.medNb ?? null, nProches: e.nb ?? 0,
-    horsGen: M ? M.horsGen : 0, ecartees: M ? M.out : 0,
+    horsGen: M ? M.horsGen + (M.horsCarr || 0) : 0, ecartees: M ? M.out : 0,
+    carrosserie: e.carrT ? V_BODY_NOM[e.carrT] || e.carrT : null, finition: e.finT ? e.finT.replace(/\b\w/g, ch => ch.toUpperCase()) : null, base: c.libelle || '',
   };
 }
 
 /** Points du nuage pour le graphique : annonces gardées par la cote (même génération), avec leurs segments. */
 export function points(c){
   if (!c || !c._model) return [];
-  return c._model.rows.map(r => ({prix: r.prix, annee: r.annee, km: r.km, auto: r.bo === 2, pro: !!r.pro, id: r.id, lib: r.lib, segs: SEGS.filter(([k]) => r.seg[k]).map(([, l]) => l), ch: r.chv, eq: r.eq}));
+  const M = c._model;
+  return M.rows.map(r => ({prix: r.prix, annee: r.annee, km: r.km, auto: r.bo === 2, pro: !!r.pro, id: r.id, lib: r.lib, segs: [...SEGS.filter(([k]) => r.seg[k]).map(([, l]) => l), ...(r.vb && r.vb !== M.carr0 ? [V_BODY_NOM[r.vb] || r.vb] : [])], ch: r.chv, eq: r.eq}));
 }
 
 export const SEGMENTS = SEGS.map(([k, l]) => ({k, l}));
@@ -931,9 +982,11 @@ export function specCollecte(base, genId, variantId, energie){
   return s && !s.incertain ? {cle: s.cle, nom: s.nom, base: s.base, gen: s.gen, energie: s.energie, y0: s.y0, y1: s.y1, filtres: s.filtres} : null;
 }
 /** Cote d'une génération et d'une énergie à partir d'annonces (les autres générations sont écartées par le moteur). */
-export function coteGeneration(base, genId, energie, annonces){
+export function coteGeneration(base, genId, energie, annonces, opts){
   const pick = pickDe(base, genId); if (!pick) return null;
-  return preparerCote({pick, energie: energie || ''}, annonces);
+  const c = preparerCote({pick, energie: energie || ''}, annonces);
+  if (c && !c.incertain && opts){ c.toutesCarr = !!opts.toutesCarr; c.finitions = opts.finitions || []; if (opts.libelle){ c.libelle = opts.libelle; c.nom += ' · ' + opts.libelle; } }
+  return c;
 }
 /** Estimation d'une annonce dans une cote de génération. */
 export function estimerDans(c, base, genId, a, prix){

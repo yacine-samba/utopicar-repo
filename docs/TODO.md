@@ -20,7 +20,8 @@ Mis à jour le 5 octobre 2026. Les cases cochées sont faites et en production.
 - [ ] **Collecte ciblée par motorisation** : quand un moteur rare a moins de 30 annonces (335d, 330xd…), collecter Leboncoin avec sa plage de puissance au lieu de toute la génération.
 - [ ] **Rafraîchissement automatique** : recollecte cumulative, tous les 15 jours, des générations recherchées, dans la limite du budget Apify (0,26 $ dépensés sur 5 $ ce mois-ci).
 - [ ] **Années de transition par la finition** : « Ambiente » n'existe que sur l'A3 8V, « Ambition Luxe » que sur la 8P. Une table des finitions par génération réglerait la plupart des annonces « à vérifier ».
-- [ ] **Cote** : ajouter la date de 1re mise en circulation et la finition Leboncoin à la régression (aujourd'hui : âge, km, boîte, puissance, équipements).
+- [x] **Cote comparable** : cote du même moteur dès 25 annonces (335i sur des 335i), sinon toute la génération avec la puissance (en écart relatif) ; puissance déduite du moteur quand elle manque (335i → 306 ch) ; carrosserie (E92 coupé, Touring, portes) et finition Leboncoin dans la régression ; âge au mois près (1re mise en circulation) ; comparables du même moteur et de la même carrosserie.
+- [ ] **Cote par carrosserie rare** : quand une carrosserie a moins de 8 annonces dans la cote (cabriolet d'un moteur rare), collecter Leboncoin pour elle.
 - [ ] **Leboncoin vs Utopicar** : comparer leur estimation et la nôtre sur chaque annonce. L'écart est un argument de négociation.
 - [ ] **Liquidité** : la base étant cumulative, mesurer le délai de vente (annonces disparues) et les baisses de prix par modèle et motorisation.
 

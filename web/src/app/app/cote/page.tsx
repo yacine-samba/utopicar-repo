@@ -15,7 +15,7 @@ export default async function Page() {
       <div className="max-w-3xl">
         <h1 className="font-display text-3xl font-semibold">Cote</h1>
         <p className="mt-2 text-ink-2">
-          Le calcul de l&apos;outil Garage : une régression sur les annonces de la même génération et de la même énergie (âge, kilométrage, boîte, version, puissance, équipements), les annonces aberrantes écartées. Collez un relevé pour coter toute une page, ou placez une voiture précise sur le graphique.
+          Une voiture est cotée sur les annonces du même moteur (une 335i sur des 335i, pas sur des 316i) quand il y en a au moins 25, sinon sur toute sa génération avec la puissance de chacune. Âge au mois près, kilométrage, carrosserie (coupé, Touring, 3 ou 5 portes), finition Leboncoin, boîte et équipements font le reste ; les annonces aberrantes sont écartées. Collez un relevé pour coter toute une page, ou placez une voiture précise sur le graphique.
         </p>
       </div>
       <CoteMarche cat={catalogue()} />
