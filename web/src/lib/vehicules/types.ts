@@ -1,5 +1,6 @@
 /* Types partagés serveur / navigateur pour la recherche, la cote et les alertes. */
-export type CatGen = { id: string; l: string; y0: number; y1: number };
+/** Génération : versions (carrosserie, code châssis) et phases (restylages) quand on les distingue. */
+export type CatGen = { id: string; l: string; y0: number; y1: number; v?: { id: string; l: string; y0: number; y1: number; b: string }[]; ph?: { id: string; l: string; y0: number; y1: number }[] };
 export type CatModele = { k: string; n: string; lbc: string; rx: string; g: CatGen[] };
 export type CatMarque = { k: string; n: string; lbc: string; m: CatModele[] };
 

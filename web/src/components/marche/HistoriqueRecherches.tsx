@@ -47,8 +47,8 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
       <section aria-labelledby="hi-r" className="grid gap-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 id="hi-r" className="font-display text-xl font-semibold">Recherches faites</h2>
-            <p className="text-sm text-ink-3">Fermer un onglet ne l&apos;efface pas : toutes vos recherches restent ici.</p>
+            <h2 id="hi-r" className="font-display text-xl font-semibold">Par voiture</h2>
+            <p className="text-sm text-ink-3">Une ligne par voiture, avec ses derniers filtres. Fermer un onglet ne l&apos;efface pas.</p>
           </div>
           <label className="relative w-full sm:w-72">
             <span className="sr-only">Filtrer par voiture</span>

@@ -868,7 +868,7 @@ const versRow = a => [num(a.prix), num(a.annee), num(a.km), normBo(a.boite) === 
 const simple = g => g ? {id: g.id, label: g.label, y0: g.y0, y1: g.y1, open: !!g.open} : null;
 
 /** Catalogue marque → modèle → génération (pour les listes de choix). */
-export const CATALOGUE = VB_SORT_UT().map(b => ({key: b.key, name: b.name, lbc: b.ok ? b.lbc : '', models: b.models.slice().sort((x, y) => x.name.localeCompare(y.name, 'fr', {numeric: true})).map(m => ({key: m.key, name: m.name, lbc: b.ok && m.lbc ? b.lbc + '_' + m.lbc : '', regex: vModelRegex(m), gens: m.gens.map(simple)}))}));
+export const CATALOGUE = VB_SORT_UT().map(b => ({key: b.key, name: b.name, lbc: b.ok ? b.lbc : '', models: b.models.slice().sort((x, y) => x.name.localeCompare(y.name, 'fr', {numeric: true})).map(m => ({key: m.key, name: m.name, lbc: b.ok && m.lbc ? b.lbc + '_' + m.lbc : '', regex: vModelRegex(m), gens: m.gens.map(g => ({...simple(g), v: (g.v || []).map(v => ({id: v.id, label: v.label, y0: v.y0, y1: v.y1, body: v.body}))}))}))}));
 function VB_SORT_UT(){ return VB.slice().sort((a, b) => a.name.localeCompare(b.name, 'fr', {numeric: true, sensitivity: 'base'})); }
 
 /** Marque, modèle, génération d'une annonce (règles fixes). */
@@ -919,7 +919,14 @@ export function generationDe(base, a){
   const model = VM_BY[base]; if (!model) return null;
   const x = vehResolve({marque: model.brand.name, modele: model.name, titre: a.titre || '', texte: a.texte || '', annee: num(a.annee), carr: a.carr || ''});
   if (x.model !== model) return null;
-  return {id: x.gen && x.statut !== 'incertaine' ? x.gen.id : null, label: x.gen ? x.gen.label : '', statut: x.statut || '', variant: x.variant && x.variant.id || null};
+  return {id: x.gen && x.statut !== 'incertaine' ? x.gen.id : null, label: x.gen ? x.gen.label : '', statut: x.statut || '', variant: x.variant && x.variant.id || null, varianteEcrite: !!(x.variant && x.varHow !== 'defaut'), body: x.body || null};
+}
+/** Ce qu'il faut demander à Leboncoin (via Apify) pour compléter la base d'une génération, d'une version et d'une énergie : même demande que l'outil Garage. */
+export function specCollecte(base, genId, variantId, energie){
+  const pick = pickDe(base, genId); if (!pick) return null;
+  const v = variantId && pick.gen.v ? pick.gen.v.find(x => x.id === variantId) || null : null;
+  const s = coteSpec({pick: {...pick, variant: v && v !== pick.gen.v[0] ? v : null}, energie: energie || ''});
+  return s && !s.incertain ? {cle: s.cle, nom: s.nom, base: s.base, gen: s.gen, energie: s.energie, y0: s.y0, y1: s.y1, filtres: s.filtres} : null;
 }
 /** Cote d'une génération et d'une énergie à partir d'annonces (les autres générations sont écartées par le moteur). */
 export function coteGeneration(base, genId, energie, annonces){
@@ -934,5 +941,5 @@ export function estimerDans(c, base, genId, a, prix){
 /** Modèle du catalogue par sa clé (« renault clio ») : nom, motif, générations. */
 export function modeleDe(base){
   const m = VM_BY[base]; if (!m) return null;
-  return {base, marque: m.brand.name, nom: m.name, regex: vModelRegex(m), gens: m.gens.map(simple)};
+  return {base, marque: m.brand.name, nom: m.name, regex: vModelRegex(m), gens: m.gens.map(g => ({...simple(g), v: (g.v || []).map(v => ({id: v.id, label: v.label, y0: v.y0, y1: v.y1, body: v.body}))}))};
 }

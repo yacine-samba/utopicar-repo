@@ -9,7 +9,7 @@ import { Ico } from "./Icones";
 
 /** Bouton « Analyser une annonce » toujours visible dans le menu : une fenêtre s'ouvre, on colle le lien,
     l'analyse démarre sur la page complète (photos, puis rapport). */
-export function BoutonAnalyser({ className, libelle = "Analyser une annonce" }: { className?: string; libelle?: string }) {
+export function BoutonAnalyser({ className, libelle = "Analyser une annonce", icone = "size-5" }: { className?: string; libelle?: string; icone?: string }) {
   const router = useRouter();
   const id = useId();
   const [ouvert, setOuvert] = useState(false);
@@ -40,7 +40,7 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce" }: 
         onClick={() => setOuvert(true)}
         className={cx("btn btn-o w-full justify-start gap-3", className)}
       >
-        <Ico nom="analyser" className="size-5" />
+        <Ico nom="analyser" className={cx("shrink-0", icone)} />
         {libelle}
       </button>
       {ouvert &&
