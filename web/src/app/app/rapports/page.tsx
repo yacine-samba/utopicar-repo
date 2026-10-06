@@ -51,7 +51,7 @@ export default async function Page() {
           Analyser une annonce
         </Link>
       </div>
-      <ListeRapports rapports={data ?? []} comparateur={c.offre.comparateur} vide="Aucun rapport pour le moment : lancez votre première analyse." />
+      <ListeRapports rapports={data ?? []} comparateur={false} vide="Aucun rapport pour le moment : lancez votre première analyse." />
       {!Number.isFinite(c.offre.historique) ? null : (
         <p className="text-sm text-ink-3">
           L&apos;historique complet et le comparateur sont inclus dans <Link href="/app/compte#formule" className="text-o2 underline underline-offset-4">Croissance</Link>.

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { BoutonAbonner } from "@/components/site/BoutonAbonner";
 import { Faq } from "@/components/site/Faq";
+import { OngletsTarifs } from "@/components/site/OngletsTarifs";
 import { compteCourant } from "@/lib/compte";
 import { BENEF, GUIDE, PARTICULIERS } from "@/lib/offres";
 
@@ -25,30 +26,26 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           </p>
         )}
       </div>
-      <nav aria-label="Familles de formules" className="mx-auto mt-10 flex w-fit gap-1 rounded-full border border-line-2 bg-glass p-1 text-sm">
-        <a href="#particuliers" className="whitespace-nowrap rounded-full px-3 py-2 hover:bg-glass sm:px-4">
-          J&apos;achète pour moi
-        </a>
-        <a href="#benef" className="whitespace-nowrap rounded-full px-3 py-2 hover:bg-glass sm:px-4">
-          Benef (achat-revente)
-        </a>
-      </nav>
-
-      <section id="particuliers" aria-labelledby="t-part" className="scroll-mt-24 pt-14">
-        <h2 id="t-part" className="font-display text-2xl font-semibold">Vous achetez une voiture pour vous</h2>
-        <p className="mb-8 mt-1 text-ink-3">Simple et pédagogique : ce que vaut l&apos;annonce, ce qu&apos;elle va vous coûter, ce qu&apos;il faut vérifier. Un abonnement ou des crédits, au choix.</p>
-        <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} credits />
-      </section>
-
-      <section id="benef" aria-labelledby="t-benef" className="scroll-mt-24 pt-20">
-        <h2 id="t-benef" className="font-display text-2xl font-semibold">
-          Vous faites de l&apos;achat-revente <small className="ml-1 text-base font-medium text-o2">Benef</small>
-        </h2>
-        <p className="mb-8 mt-1 text-ink-3">
-          Rapports complets avec synthèse en un clic, marge et prix d&apos;offre. <Link href="/benef" className="text-o2 underline underline-offset-4">Découvrir Benef</Link>
-        </p>
-        <CartesOffres ids={BENEF} actuelle={compte?.offre.id} />
-      </section>
+      <OngletsTarifs
+        particuliers={
+          <section aria-labelledby="t-part">
+            <h2 id="t-part" className="text-center font-display text-2xl font-semibold">Vous achetez une voiture pour vous</h2>
+            <p className="mx-auto mb-8 mt-1 max-w-2xl text-center text-ink-3">Simple et pédagogique : ce que vaut l&apos;annonce, ce qu&apos;elle va vous coûter, ce qu&apos;il faut vérifier.</p>
+            <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} credits />
+          </section>
+        }
+        benef={
+          <section aria-labelledby="t-benef">
+            <h2 id="t-benef" className="text-center font-display text-2xl font-semibold">
+              Vous faites de l&apos;achat-revente <small className="ml-1 text-base font-medium text-o2">Benef</small>
+            </h2>
+            <p className="mx-auto mb-8 mt-1 max-w-2xl text-center text-ink-3">
+              Rapports pour professionnels, marge et prix d&apos;offre. <Link href="/benef" className="text-o2 underline underline-offset-4">Découvrir Benef</Link>
+            </p>
+            <CartesOffres ids={BENEF} actuelle={compte?.offre.id} />
+          </section>
+        }
+      />
 
       <section id="guides" aria-labelledby="t-guide" className="scroll-mt-24 pt-20">
         <div className="carte grid items-center gap-6 p-7 md:grid-cols-[1fr_auto]">

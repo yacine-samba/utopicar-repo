@@ -7,10 +7,12 @@ export type Meilleure = { titre: string; prix: number; ecart: number; pct: numbe
 export type Recherche = {
   id: string; nom: string; active: boolean; criteres: { choix: Choix; f: FiltresRecherche };
   trouvees: number | null; sous_cote: number | null; meilleure: Meilleure | null; derniere_le: string;
+  /** alerte e-mail liée (interrupteur de la recherche) */
+  alerte_id?: string | null;
 };
 
 export const FILTRES_VIDES: FiltresRecherche = { version: "", phase: "", carrosserie: "", moteur: "", chMin: "", chMax: "", energie: "", boite: "", anneeMin: "", anneeMax: "", prixMin: "", prixMax: "", kmMax: "", vendeur: "", mots: "", exclure: "", sousCote: "", fiables: true, tri: "ecart" };
-export const COLONNES_RECHERCHE = "id, nom, active, criteres, trouvees, sous_cote, meilleure, derniere_le";
+export const COLONNES_RECHERCHE = "id, nom, active, criteres, trouvees, sous_cote, meilleure, derniere_le, alerte_id";
 
 /** Une ligne du journal : chaque recherche lancée, avec ses filtres exacts. */
 export type Lancement = { id: string; recherche_id: string | null; nom: string; marque: string; modele: string; gen: string | null; criteres: { choix: Choix; f: Partial<FiltresRecherche> }; trouvees: number | null; sous_cote: number | null; created_at: string };

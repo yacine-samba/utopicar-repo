@@ -238,7 +238,9 @@ function LigneCotee({ a }: { a: AnnonceCotee }) {
   );
 }
 
-function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
+/** Placer une voiture sur la cote. `estimation` : module d'estimation des formules Benef (critères du véhicule → cote
+    calculée sur notre base), sans le nuage ni les annonces comparables, réservés à la cote globale (compte illimité). */
+export function PlacerVoiture({ cat, estimation = false }: { cat: CatMarque[]; estimation?: boolean }) {
   const [choix, setChoix] = useState<Choix>({ marque: "", modele: "", gen: "" });
   const [v, setV] = useState({ energie: "", boite: "", annee: "", km: "", prix: "", version: "", ch: "", carrosserie: "", portes: "" });
   // versions de la génération choisie (E90 berline, E91 Touring, E92 coupé, E93 cabriolet)
@@ -260,7 +262,7 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
       const r = await fetch("/api/marche/cote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voiture: { base: `${choix.marque} ${choix.modele}`, gen: choix.gen || undefined, energie: v.energie, boite: v.boite, annee: n(v.annee), km: n(v.km), prix: n(v.prix), version: v.version, ch: n(v.ch), portes: n(v.portes) ?? undefined, carrosserie: versions.some((x) => x.id === v.carrosserie) ? v.carrosserie : undefined } }),
+        body: JSON.stringify({ estimation, voiture: { base: `${choix.marque} ${choix.modele}`, gen: choix.gen || undefined, energie: v.energie, boite: v.boite, annee: n(v.annee), km: n(v.km), prix: n(v.prix), version: v.version, ch: n(v.ch), portes: n(v.portes) ?? undefined, carrosserie: versions.some((x) => x.id === v.carrosserie) ? v.carrosserie : undefined } }),
       });
       const j = await r.json().catch(() => null);
       if (!r.ok) return setEtat(j?.erreur ?? "Le calcul n'a pas abouti.");
@@ -341,7 +343,7 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-3">
           <button type="submit" disabled={charge} className="btn btn-o btn-sm">
-            {charge ? "Calcul…" : "Placer sur la cote"}
+            {charge ? "Calcul…" : estimation ? "Estimer la cote" : "Placer sur la cote"}
           </button>
           <p className="text-sm text-ink-3" role="status">{etat}</p>
         </div>
@@ -381,9 +383,9 @@ function PlacerVoiture({ cat }: { cat: CatMarque[] }) {
               </p>
             </div>
           ) : null}
-          <div className="carte p-4 sm:p-5">
+          {!estimation && <div className="carte p-4 sm:p-5">
             <NuageCote titre={`Votre voiture face aux annonces ${res.nom}`} points={res.points} courbe={res.courbe} reperes={[{ km: n(v.km), annee: n(v.annee), prix: n(v.prix) ?? e?.P ?? 0, label: n(v.prix) ? `Votre voiture · ${eur(n(v.prix))}` : `Votre voiture à la cote · ${eur(e?.P)}`, ton: "voiture" }]} />
-          </div>
+          </div>}
           {e?.comps?.length ? (
             <div className="grid gap-2">
               <h3 className="font-display font-semibold">Les annonces les plus proches</h3>

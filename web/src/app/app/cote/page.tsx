@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { compteBenef } from "@/lib/benef";
 import { catalogue } from "@/lib/vehicules/catalogue";
-import { VerrouBenef } from "@/components/benef/Verrou";
 import { CoteMarche } from "@/components/marche/CoteMarche";
 
 export const metadata: Metadata = { title: "Cote" };
 
 export default async function Page() {
   const c = await compteBenef("/app/cote");
-  if (!c.offre.recherche)
-    return <VerrouBenef offre="pro" titre="Cote du marché" texte="Placez n'importe quelle voiture face aux annonces comparables : même moteur, même carrosserie, sur un graphique prix, kilométrage et année." />;
+  // cote globale (graphique, comparables, relevés) : compte illimité ; les formules Benef ont l'estimation
+  if (!c.illimite) redirect("/app/estimation");
   return (
     <div className="grid gap-6">
       <div className="max-w-3xl">

@@ -139,7 +139,7 @@ function runCost(run: any) {
 
 // ---------- E-mail des nouvelles annonces (Resend) ----------
 const APP_URL = 'https://claude.ai/artifact/8bHqs6YhWoWT2zje3mSF3q';
-const SITE_URL = 'https://utopicar.fr/app/alertes'; // alertes créées depuis le site (comptes illimités)
+const SITE_URL = 'https://www.utopicar.fr/app/recherche'; // alertes du site : un interrupteur sur chaque recherche
 const escH = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as any)[c]);
 const fmt = (n: unknown) => n == null ? '' : Math.round(Number(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 // destinataire : l'adresse de l'alerte (site), sinon celle des réglages (outil) ; expéditeur : le domaine utopicar.fr vérifié
@@ -170,7 +170,7 @@ function mailNouvelles(v: any, list: any[]) {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${shown.map(card).join('')}</table>
     ${list.length > shown.length ? `<p style="color:#555">Et ${list.length - shown.length} autre(s) dans l'outil.</p>` : ''}
     <p style="margin:18px 0"><a href="${v.user_id ? SITE_URL : APP_URL}" style="background:${v.user_id ? '#ff5a1f' : '#15307f'};color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold">${v.user_id ? 'Voir mes alertes sur Utopicar' : 'Ouvrir UTOPICAR (cote, état, analyse)'}</a></p>
-    <p style="color:#999;font-size:12px">${v.user_id ? 'Envoyé par votre alerte Utopicar. Pour ne plus recevoir ces e-mails, désactivez l\'e-mail de cette alerte dans Mon espace › Alertes.' : 'Envoyé par votre recherche suivie UTOPICAR. Pour ne plus recevoir ces e-mails, décochez « E-mail » sur la recherche dans l\'onglet Recherches.'}</p></div>`;
+    <p style="color:#999;font-size:12px">${v.user_id ? 'Envoyé par votre alerte Utopicar. Pour ne plus recevoir ces e-mails, éteignez l\'interrupteur « Alerte e-mail » de la recherche dans Mon espace › Recherche.' : 'Envoyé par votre recherche suivie UTOPICAR. Pour ne plus recevoir ces e-mails, décochez « E-mail » sur la recherche dans l\'onglet Recherches.'}</p></div>`;
   const first = list[0];
   const subject = `${list.length} nouvelle${list.length > 1 ? 's' : ''} ${v.nom}${first && first.prix != null ? ` · dès ${fmt(Math.min(...list.map((x: any) => x.prix ?? 1e9)))} €` : ''}`;
   return { subject, html };
@@ -295,7 +295,9 @@ function coteRow(c: any, it: any) {
   return { cle: c.cle, id: r.id, prix: r.prix, annee: r.annee, km: r.km, energie: r.energie, boite: r.boite, titre: cut(r.titre, 120), dep: r.departement, vendeur: r.vendeur_type, etat: att(/vehicle_damage|vehicle_condition|condition/i) || null, cv: r.cv, publie_le: r.publie_le,
     texte: cut(r.titre + ' | ' + r.description.replace(/\s+/g, ' '), 700), ch: ch && ch < 700 ? ch : null, places: pl && pl < 10 ? pl : null, carrosserie: att(/^vehicle_type$/i) || null,
     version: cut(att(/^u_car_version$/i), 160) || null, finition: cut(att(/^u_car_finition$/i), 80) || null, mec: mec ? `${mec[2]}-${mec[1]}` : null, portes: po && po < 8 ? po : null,
-    lbc_min: pmin && pmin > 100 ? pmin : null, lbc_max: pmax && pmax > 100 ? pmax : null, lbc_pos: cut(att(/^car_price_positioning$/i), 40) || null };
+    lbc_min: pmin && pmin > 100 ? pmin : null, lbc_max: pmax && pmax > 100 ? pmax : null, lbc_pos: cut(att(/^car_price_positioning$/i), 40) || null,
+    // vignette de l'annonce (lien Leboncoin, rien n'est stocké) : affichée dans la recherche et son historique
+    photo: r.photos[0]?.startsWith('https://') ? withRule(r.photos[0], 'ad-small').slice(0, 600) : null };
 }
 async function startCote(c: any, R: Record<string, string>) {
   const f = c.filtres || {};

@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { compteCourant } from "@/lib/compte";
+import { supabaseServeur } from "@/lib/supabase/serveur";
+import { guidesPour, GUIDES } from "@/lib/guides";
+import { OptionMessages } from "@/components/compte/OptionMessages";
 import { familleEspace, nomFormule } from "@/lib/espace";
 import { BENEF, PARTICULIERS, prixTxt } from "@/lib/offres";
 import { confirmerRetour } from "@/lib/stripe-synchro";
 import {
   BoutonPortail,
   BoutonSupprimer,
+  ChoixAccessibilite,
   ChoixUsage,
   FormEmail,
   FormMotDePasse,
@@ -15,7 +19,7 @@ import {
 } from "@/components/compte/ActionsCompte";
 import { CartesOffres } from "@/components/site/CartesOffres";
 
-export const metadata: Metadata = { title: "Compte et formule" };
+export const metadata: Metadata = { title: "Profil et paramètres" };
 
 const dateFr = (d: string) =>
   new Date(d).toLocaleDateString("fr-FR", {
@@ -55,14 +59,23 @@ export default async function Compte({
   const famille = familleEspace(compte);
   const aboActif =
     !!abo && ["active", "trialing", "past_due"].includes(abo.statut);
+  const { data: profil } = await (await supabaseServeur()).from("profils").select("reglages").eq("id", compte.id).maybeSingle();
+  const mesGuides = guidesPour(o.id, famille).map((id) => GUIDES.find((g) => g.id === id)!);
 
   return (
     <div className="grid gap-6">
       <div>
         <h1 className="font-display text-3xl font-semibold">
-          Compte et formule
+          Profil et paramètres
         </h1>
-        <p className="mt-1 text-ink-3">{compte.email}</p>
+        <p className="mt-1 text-ink-3">
+          {[compte.prenom, compte.nom].filter(Boolean).join(" ") || "Mon compte"} · {compte.email} · {nomFormule(compte)}
+        </p>
+        <nav aria-label="Rubriques du profil" className="mt-4 flex flex-wrap gap-2 text-sm">
+          {[["#formule", "Formule"], ["#guides", "Voir mes guides"], ["#accessibilite", "Accessibilité"], ["#profil", "Profil"], ["#securite", "Mot de passe et e-mail"]].map(([h, l]) => (
+            <a key={h} href={h} className="rounded-full border border-line-2 px-3 py-1.5 text-ink-2 hover:border-o/40 hover:text-ink">{l}</a>
+          ))}
+        </nav>
       </div>
 
       {paiement === "ok" && (
@@ -196,7 +209,7 @@ export default async function Compte({
           aria-labelledby="c-usage"
         >
           <h2 id="c-usage" className="font-display text-xl font-semibold">
-            Votre usage
+            Utilisation d&apos;Utopicar
           </h2>
           <p className="mb-4 mt-1 text-sm text-ink-3">
             Votre espace, vos outils et vos guides s&apos;adaptent à ce choix.
@@ -245,7 +258,32 @@ export default async function Compte({
         </section>
       )}
 
-      <section className="carte p-6 sm:p-7" aria-labelledby="c-profil">
+      {famille === "benef" && o.id === "pro" && <OptionMessages actif={compte.messages} illimite={compte.illimite} />}
+
+      <section id="guides" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-guides">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 id="c-guides" className="font-display text-xl font-semibold">Mes guides</h2>
+          <Link href="/app/guides" className="btn btn-sm">Voir mes guides</Link>
+        </div>
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+          {mesGuides.map((g) => (
+            <li key={g.id}>
+              <Link href={`/app/guides?guide=${g.id}`} className="block rounded-2xl border border-line p-4 transition hover:border-o/40">
+                <span className="text-xs text-o2">{g.pour}</span>
+                <span className="mt-1 block font-medium">{g.titre}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-sm text-ink-3">{compte.guide ? "Accès complet, imprimable en PDF." : "Les deux premiers chapitres sont offerts."} Les autres guides sont dans la même page.</p>
+      </section>
+
+      <section id="accessibilite" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-acces">
+        <h2 id="c-acces" className="mb-4 font-display text-xl font-semibold">Accessibilité</h2>
+        <ChoixAccessibilite id={compte.id} reglages={(profil?.reglages as Record<string, unknown> | null) ?? {}} />
+      </section>
+
+      <section id="profil" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-profil">
         <h2 id="c-profil" className="mb-4 font-display text-xl font-semibold">
           Profil
         </h2>

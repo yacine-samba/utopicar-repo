@@ -1,12 +1,12 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
-import { GUIDE, OFFRES, pack, PACKS, STATUTS_ACTIFS, type OffreId } from "@/lib/offres";
+import { GUIDE, OFFRES, OPTION_MESSAGES, pack, PACKS, STATUTS_ACTIFS, type OffreId } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
 import { supabaseService } from "@/lib/supabase/service";
 import { lienPortail, paiementsActifs, prixParCle, stripe, urlSite } from "@/lib/stripe";
 
 // Sérénité n'est plus proposée : elle ne peut plus être souscrite.
-const Corps = z.object({ produit: z.enum(["essentiel", "starter", "croissance", "pro", "guide", ...PACKS.map((p) => p.id)] as [string, ...string[]]) });
+const Corps = z.object({ produit: z.enum(["essentiel", "starter", "croissance", "pro", "guide", "messages", ...PACKS.map((p) => p.id)] as [string, ...string[]]) });
 
 /** Identifiant client Stripe de la personne, créé au premier paiement. */
 async function clientStripe(id: string, email: string, prenom: string) {
@@ -42,6 +42,26 @@ export async function POST(req: Request) {
       success_url: `${site}/app/guides?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${site}/app/guides?paiement=annule`,
       custom_text: { submit: { message: "Accès immédiat aux guides après le paiement : vous demandez l'exécution immédiate et renoncez au délai de rétractation pour ce contenu numérique." } },
+    });
+    return Response.json({ url: s.url });
+  }
+
+  // Option Messages Leboncoin : un abonnement à part, réservé à Benef Pro.
+  if (r.data.produit === "messages") {
+    if (compte.messages) return Response.json({ url: `${site}/app/messages` });
+    if (compte.offre.id !== "pro" || compte.illimite) return Response.json({ erreur: "L'option Messages Leboncoin s'ajoute à Benef Pro." }, { status: 403 });
+    const prix = await prixParCle(OPTION_MESSAGES.lookup, { nom: `Utopicar option ${OPTION_MESSAGES.nom}`, euros: OPTION_MESSAGES.prix, mensuel: true });
+    const s = await stripe().checkout.sessions.create({
+      mode: "subscription",
+      customer,
+      client_reference_id: compte.id,
+      line_items: [{ price: prix.id, quantity: 1 }],
+      metadata: { user_id: compte.id, option: "messages" },
+      subscription_data: { metadata: { user_id: compte.id, option: "messages" } },
+      locale: "fr",
+      success_url: `${site}/app/messages?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${site}/app/compte?paiement=annule#option-messages`,
+      custom_text: { submit: { message: "Sans engagement : résiliable à tout moment depuis votre compte. L'option s'ajoute à Benef Pro." } },
     });
     return Response.json({ url: s.url });
   }

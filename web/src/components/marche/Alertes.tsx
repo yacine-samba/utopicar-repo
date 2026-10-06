@@ -40,7 +40,7 @@ const quand = (d: string | null) => (d ? new Date(d).toLocaleString("fr-FR", { d
 
 /** Filtres au format de l'acteur Leboncoin : uniquement des critères Leboncoin (marque, modèle, années de la génération,
     énergie, boîte, type de véhicule, puissance DIN), pas de mots-clés qui feraient rater les annonces qui ne les écrivent pas. */
-function versFiltres(f: Formulaire, cat: CatMarque[]) {
+export function versFiltres(f: Formulaire, cat: CatMarque[]) {
   const b = cat.find((x) => x.k === f.marque);
   const m = b?.m.find((x) => x.k === f.modele);
   const g = m?.g.find((x) => x.id === f.gen);

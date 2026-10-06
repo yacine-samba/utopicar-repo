@@ -24,7 +24,7 @@ const Voiture = z.object({
   /** version du catalogue choisie (« e92 » : coupé) ; sinon lue dans la version */
   carrosserie: z.string().regex(/^[a-z0-9]{1,12}$/).optional(),
 });
-const Corps = z.object({ releve: z.string().min(10).max(6_000_000).optional(), enregistrer: z.boolean().optional(), voiture: Voiture.optional() });
+const Corps = z.object({ releve: z.string().min(10).max(6_000_000).optional(), enregistrer: z.boolean().optional(), voiture: Voiture.optional(), estimation: z.boolean().optional() });
 
 const MAX_POINTS = 900;
 const echantillon = <T,>(l: T[], n: number) => (l.length <= n ? l : l.filter((_, i) => i % Math.ceil(l.length / n) === 0));
@@ -52,14 +52,18 @@ const resume = (e: Estimation | null) =>
 export async function POST(req: Request) {
   const c = await compteCourant();
   if (!c) return Response.json({ erreur: "Connectez-vous pour calculer une cote." }, { status: 401 });
-  if (!c.offre.recherche) return Response.json({ erreur: "La cote sur le marché est incluse dans Benef Pro." }, { status: 403 });
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return Response.json({ erreur: "Demande invalide." }, { status: 400 });
+  // Estimation (toutes les formules Benef) : la cote d'une voiture d'après ses critères, sans les annonces ni le nuage.
+  // La cote globale (graphique, comparables, relevés) est réservée au compte illimité.
+  const estimation = r.data.estimation === true;
+  if (estimation ? !(c.illimite || c.offre.famille === "benef") : !c.illimite)
+    return Response.json({ erreur: estimation ? "L'estimation de cote est incluse dans les formules Benef." : "La cote du marché est réservée au compte illimité." }, { status: 403 });
 
   // ---- Placer une voiture
   if (r.data.voiture) {
     const v = r.data.voiture;
-    const mm = await marcheModele(v.base).catch(() => null);
+    const mm = await marcheModele(v.base, null, null, estimation && !c.offre.recherche).catch(() => null);
     if (!mm) return Response.json({ erreur: "Modèle inconnu ou base indisponible." }, { status: 400 });
     const a = { titre: `${mm.m.marque} ${mm.m.nom} ${v.version ?? ""}`.trim(), texte: v.version ?? "", annee: v.annee, km: v.km, energie: v.energie ?? "", boite: v.boite ?? "", ch: v.ch ?? null, portes: v.portes ?? null };
     const g = generationDe(mm.m.base, a);
@@ -76,6 +80,7 @@ export async function POST(req: Request) {
     const courbe = [0, 25000, 50000, 75000, 100000, 125000, 150000, 175000, 200000, 250000]
       .map((km) => ({ km, P: mm.cotes.estimer({ ...ligne, km }, null, p)?.P ?? null }))
       .filter((x) => x.P);
+    if (estimation) return Response.json({ nom: e.nom, gen, profil: p, estimation: { ...resume(e), comps: undefined }, points: [], courbe });
     const pts = mm.cotes.points(gen, p.energie, e.base ? p.moteur : null);
     return Response.json({ nom: e.nom, gen, profil: p, estimation: resume(e), points: echantillon(pts, MAX_POINTS), courbe });
   }

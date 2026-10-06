@@ -14,3 +14,7 @@ verify_jwt = false
 
 [functions.annonce]
 verify_jwt = false
+
+# Appelée par pg_cron (en-tête x-veille-secret), vérifié dans le code.
+[functions.messages]
+verify_jwt = false

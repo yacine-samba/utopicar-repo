@@ -11,6 +11,13 @@ Mis à jour le 5 octobre 2026. Les cases cochées sont faites et en production.
 - [ ] **Vercel** : vérifier que `NEXT_PUBLIC_SITE_URL` vaut `https://www.utopicar.fr`, s'il est défini (aperçus de liens).
 - [ ] **Nettoyage** : comptes et clients Stripe de test ; dans l'éditeur SQL Supabase : `drop function public.importer_marche_temp(text, jsonb); drop function public.copier_email();`
 
+## Retours pros d'octobre (branche claude/retours-pro-octobre)
+
+- [ ] **Messages Leboncoin** : essai gratuit de l'acteur jusqu'au 7 octobre 20 h ; les envois s'arrêtent seuls à 19 h 45 (réglage `lbc_jusqu_au`). Pour continuer après : souscrire le pass (29 $) sur Apify, puis vider `lbc_jusqu_au` et mettre `lbc_max_usd` à 30.
+- [ ] **Option Messages à 45 €/mois** : le prix Stripe se crée seul au premier paiement (clé `utp_option_messages_45`). Vérifier sur Apify si le pass de 29 $ vaut pour tout le compte Apify ou pour chaque compte Leboncoin : dans le second cas, 45 € laisse environ 10 € de marge par client.
+- [ ] **Photos dans l'historique des recherches** : seulement pour les annonces collectées à partir du 6 octobre (les 7 600 annonces déjà en base n'ont pas de photo).
+- [ ] **La Centrale et AutoScout24 dans la base du marché** : l'import par lien marche ; les verser aussi dans la cote demanderait une collecte par modèle (environ 0,8 $ les 1 000 annonces La Centrale, 0,5 $ AutoScout24).
+
 ## Recherche et cote
 
 - [x] Génération = ses dates, comme sur Leboncoin ; années de transition départagées par la puissance, sinon « à vérifier ».

@@ -1,4 +1,5 @@
 "use client";
+import { BoutonAnalyserAnnonce } from "./BoutonAnalyserAnnonce";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
@@ -85,6 +86,7 @@ export function ListeFavoris({ initiaux, parc }: { initiaux: Favori[]; parc: boo
                 <div className="flex flex-wrap gap-2">
                   {lbc && <Link href={`/app/analyser?lien=${encodeURIComponent(lbc)}`} className="btn btn-o btn-sm">Analyser</Link>}
                   {f.rapport_id && <Link href={`/app/rapports/${f.rapport_id}`} className="btn btn-sm">Voir le rapport</Link>}
+                  {!f.rapport_id && <BoutonAnalyserAnnonce url={f.url} />}
                   {f.url && <a href={f.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Annonce ↗</a>}
                   {parc && (auParc.includes(f.id) ? (
                     <Link href="/app/parc" className="btn btn-sm text-ok">Dans le parc ✓</Link>

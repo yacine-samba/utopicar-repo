@@ -64,6 +64,52 @@ function Grille({ entrees, actif, onChoix, compacte }: { entrees: EntreeSommaire
   );
 }
 
+/** Barre des sections, collée en haut de l'écran pendant la lecture : des boutons numérotés, clairement cliquables,
+    et l'interrupteur « Détail profond » (vue pro par défaut : l'essentiel pour décider). */
+export function BarreSections({ entrees, actif, profond, onProfond }: { entrees: EntreeSommaire[]; actif: string; profond: boolean; onProfond: (v: boolean) => void }) {
+  const liste = useRef<HTMLOListElement>(null);
+  // la section lue reste visible dans la barre (défilement horizontal sur téléphone)
+  useEffect(() => {
+    liste.current?.querySelector<HTMLElement>('[aria-current="location"]')?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [actif]);
+  return (
+    <nav aria-label="Sections du rapport" className="sticky top-16 z-30 -mx-1 grid gap-2 rounded-2xl border border-line-2 bg-bg0/95 px-3 py-2.5 shadow-[0_12px_30px_-18px_rgb(0_0_0/0.9)] backdrop-blur-md lg:top-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+        <p className="text-sm font-semibold">
+          Aller à une section <span className="font-normal text-ink-3">· cliquez pour y aller</span>
+        </p>
+        <label className="flex cursor-pointer items-center gap-2 text-sm">
+          <span className={cx(!profond && "font-semibold text-ink", profond && "text-ink-3")}>Vue pro</span>
+          <span className="relative inline-flex">
+            <input type="checkbox" role="switch" checked={profond} onChange={(e) => onProfond(e.target.checked)} className="peer sr-only" aria-label="Détail profond" />
+            <span className="h-6 w-11 rounded-full bg-line-2 transition peer-checked:bg-o peer-focus-visible:ring-2 peer-focus-visible:ring-o/50" aria-hidden="true" />
+            <span className="absolute left-0.5 top-0.5 size-5 rounded-full bg-ink transition peer-checked:translate-x-5" aria-hidden="true" />
+          </span>
+          <span className={cx(profond && "font-semibold text-ink", !profond && "text-ink-3")}>Détail profond</span>
+        </label>
+      </div>
+      <ol ref={liste} className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5">
+        {entrees.map((x, i) => (
+          <li key={x.id} className="shrink-0">
+            <a
+              href={`#r-${x.id}`}
+              aria-current={actif === x.id ? "location" : undefined}
+              className={cx(
+                "flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-sm transition",
+                actif === x.id ? "border-o bg-o/15 text-ink" : "border-line-2 bg-glass text-ink-2 hover:border-o/50 hover:text-ink",
+              )}
+            >
+              <span className={cx("num grid size-6 place-items-center rounded-full text-xs font-semibold", actif === x.id ? "bg-o text-[#160904]" : "bg-bg1 text-ink-3")}>{i + 1}</span>
+              {x.verrou ? <span aria-hidden="true">🔒</span> : x.ton ? <span className={cx("size-1.5 rounded-full", TON[x.ton])} aria-hidden="true" /> : null}
+              <span className="whitespace-nowrap font-medium">{x.label}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
 /** Grille « Dans ce rapport », placée sous l'en-tête. */
 export function SommaireRapport({ entrees, actif, ancre }: { entrees: EntreeSommaire[]; actif: string; ancre: React.RefObject<HTMLElement | null> }) {
   return (

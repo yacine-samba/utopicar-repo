@@ -3,14 +3,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useEffect, useId, useRef, useState } from "react";
-import { lienLeboncoin } from "@/lib/analyse/import";
+import { lienImportable } from "@/lib/analyse/import";
+import { useAnalyseEnFond } from "./AnalysesEnFond";
 import { cx, inputCls } from "@/lib/cx";
 import { Ico } from "./Icones";
 
-/** Bouton « Analyser une annonce » toujours visible dans le menu : une fenêtre s'ouvre, on colle le lien,
-    l'analyse démarre sur la page complète (photos, puis rapport). */
+/** Bouton « Analyser une annonce » : une fenêtre s'ouvre, on colle le lien, la fenêtre se ferme et l'analyse tourne
+    en arrière-plan (notification à la fin, avec le rapport). Sans formule d'analyse, il mène à la page Analyser. */
 export function BoutonAnalyser({ className, libelle = "Analyser une annonce", icone = "size-5" }: { className?: string; libelle?: string; icone?: string }) {
   const router = useRouter();
+  const fond = useAnalyseEnFond();
   const id = useId();
   const [ouvert, setOuvert] = useState(false);
   const [v, setV] = useState("");
@@ -24,14 +26,12 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
     return () => removeEventListener("keydown", f);
   }, [ouvert]);
   const aller = (brut: string) => {
-    const l = lienLeboncoin(brut);
-    if (!l)
-      return setErr(
-        "Collez le lien d'une annonce Leboncoin (il commence par https://www.leboncoin.fr/).",
-      );
+    const l = lienImportable(brut);
+    if (!l) return setErr("Collez le lien d'une annonce Leboncoin, La Centrale ou AutoScout24.");
     setOuvert(false);
     setV("");
-    router.push(`/app/analyser?lien=${encodeURIComponent(l)}`);
+    if (fond?.actif) void fond.lancer(l);
+    else router.push(`/app/analyser?lien=${encodeURIComponent(l)}`);
   };
   return (
     <>
@@ -66,8 +66,9 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
                     Analyser une annonce
                   </h2>
                   <p className="mt-1 text-sm text-ink-3">
-                    Collez le lien Leboncoin : l&apos;annonce, ses photos et le
-                    rapport complet s&apos;ouvrent sur une page dédiée.
+                    Collez le lien Leboncoin, La Centrale ou AutoScout24.
+                    L&apos;analyse tourne en arrière-plan : continuez votre
+                    travail, une notification vous prévient quand le rapport est prêt.
                   </p>
                 </div>
                 <button
@@ -87,7 +88,7 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
                 }}
               >
                 <label htmlFor={`${id}-l`} className="sr-only">
-                  Lien de l&apos;annonce Leboncoin
+                  Lien de l&apos;annonce
                 </label>
                 <div className="relative">
                   <Ico
@@ -104,14 +105,14 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
                     }}
                     onPaste={(e) => {
                       const t = e.clipboardData.getData("text");
-                      if (lienLeboncoin(t)) {
+                      if (lienImportable(t)) {
                         e.preventDefault();
                         aller(t);
                       }
                     }}
                     inputMode="url"
                     autoComplete="off"
-                    placeholder="https://www.leboncoin.fr/ad/voitures/…"
+                    placeholder="https://www.leboncoin.fr/ad/voitures/… ou La Centrale, AutoScout24"
                     className={`${inputCls} pl-12 text-base`}
                   />
                 </div>
@@ -125,7 +126,7 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
                 </button>
               </form>
               <p className="mt-4 text-sm text-ink-3">
-                Autre site (La Centrale, AutoScout24) ?{" "}
+                Autre site ?{" "}
                 <Link
                   href="/app/analyser"
                   onClick={() => setOuvert(false)}

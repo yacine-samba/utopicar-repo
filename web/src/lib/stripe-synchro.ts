@@ -1,6 +1,6 @@
 import "server-only";
 import type Stripe from "stripe";
-import { OFFRES, pack, type OffreId } from "@/lib/offres";
+import { OFFRES, OPTION_MESSAGES, pack, type OffreId } from "@/lib/offres";
 import { supabaseService } from "@/lib/supabase/service";
 import { stripe } from "@/lib/stripe";
 
@@ -18,6 +18,19 @@ export async function synchroniser(sub: Stripe.Subscription) {
   }
   if (!userId) throw new Error(`Abonnement ${sub.id} sans utilisateur`);
   const item = sub.items.data[0];
+  // option Messages Leboncoin : abonnement à part, enregistré dans options_comptes
+  if (item?.price.lookup_key === OPTION_MESSAGES.lookup || sub.metadata?.option === "messages") {
+    const { error } = await svc.from("options_comptes").upsert({
+      user_id: userId,
+      option: "messages",
+      statut: sub.status,
+      stripe_subscription_id: sub.id,
+      periode_fin: item?.current_period_end ? new Date(item.current_period_end * 1000).toISOString() : null,
+      updated_at: new Date().toISOString(),
+    });
+    if (error) throw error;
+    return;
+  }
   // La clé du prix fait foi : elle suit les changements de formule faits dans le portail.
   const offre = parCle(item?.price.lookup_key) ?? (sub.metadata?.offre as OffreId | undefined);
   if (!offre || !(offre in OFFRES)) throw new Error(`Formule inconnue pour ${sub.id}`);

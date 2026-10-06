@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 
-/** Ajoute la voiture d'un rapport au parc (formule Pro). */
+/** Ajoute la voiture d'un rapport au parc (formule Pro), puis ouvre sa vue détaillée : fiche, documents et rapport complet. */
 export function AjouterParc({ rapportId, titre, prix }: { rapportId: string; titre: string; prix: number | null }) {
+  const router = useRouter();
   const [etat, setEtat] = useState<"" | "ok" | "err">("");
   if (etat === "ok")
     return (
@@ -26,7 +28,7 @@ export function AjouterParc({ rapportId, titre, prix }: { rapportId: string; tit
           const veh = res.ia?.vehicule ?? {};
           const num = (x: unknown) => (typeof x === "number" && Number.isFinite(x) ? Math.round(x) : null);
           const vend = (r?.vendeur ?? {}) as { nom?: string | null; telephone?: string | null };
-          const { error } = await sb.from("parc").insert({
+          const { data: ajoute, error } = await sb.from("parc").insert({
             rapport_id: rapportId,
             titre: [veh.marque, veh.modele].filter(Boolean).join(" ").slice(0, 140) || titre.slice(0, 140),
             finition: typeof veh.version === "string" ? veh.version.slice(0, 140) : null,
@@ -39,11 +41,13 @@ export function AjouterParc({ rapportId, titre, prix }: { rapportId: string; tit
             localisation: typeof (veh.localisation ?? faits.ville) === "string" ? String(veh.localisation ?? faits.ville).slice(0, 120) : null,
             prix_conseille: num(res.rapport?.marche?.reventeRapide ?? res.ia?.marche?.reventeRapide ?? res.ia?.marche?.realiste),
             lien: r?.lien ?? null,
-            photos: (r?.photos ?? []).slice(0, 12),
+            photos: (r?.photos ?? []).slice(0, 30),
             vendeur_nom: vend.nom ?? null,
             vendeur_tel: vend.telephone ?? null,
-          });
-          setEtat(error ? "err" : "ok");
+          }).select("id").single();
+          if (error || !ajoute) return setEtat("err");
+          setEtat("ok");
+          router.push(`/app/parc/${ajoute.id}`);
         }}
       >
         Ajouter au parc

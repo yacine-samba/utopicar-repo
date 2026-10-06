@@ -44,7 +44,6 @@ export function calculDeal(a: Analyse, r: Rapport, p: ParamsPro, prixSaisi: numb
     prixHT: !!dr.prixHT,
   };
   const nonChiffrables = (r.remiseEnEtat?.postes ?? []).filter((x) => x?.categorie === "non estimable sans inspection").length + a.faits.defauts.filter((d) => d.cat === "piege" || (d.cat === "lourd" && d.nc)).length;
-  const preuves = !!(r.histovec?.fourni || r.ctAnalyse?.fourni);
   const alertes = (r.alertes ?? []).length + a.faits.defauts.filter((d) => d.cat !== "levier").length;
   const dossier = num(r.utoscore) ?? 50;
   const margeNote = gain == null ? 40 : Math.round(clamp(50 + (50 * (gain - seuil)) / seuil, 0, 100));
@@ -57,7 +56,7 @@ export function calculDeal(a: Analyse, r: Rapport, p: ParamsPro, prixSaisi: numb
   if (f.prixHT) caps.push({ v: 55, why: "prix affiché hors taxes" });
   if (gain != null && gain < seuil) caps.push({ v: 59, why: `il vous resterait moins que votre seuil de ${eur(seuil)}` });
   if (nonChiffrables > 0) caps.push({ v: 69, why: "une réparation ou un défaut annoncé ne peut pas être chiffré" });
-  if (!preuves) caps.push({ v: 79, why: "ni HistoVec ni PV de contrôle technique" });
+  // documents absents (CT, HistoVec) : pas de plafond, un professionnel les obtient après le premier contact et les ajoute au dossier
   if (alertes > 0) caps.push({ v: 84, why: "au moins une alerte dans le dossier" });
   caps.sort((x, y) => x.v - y.v);
   const cap = caps.find((c) => note > c.v) ? caps[0] : null;
