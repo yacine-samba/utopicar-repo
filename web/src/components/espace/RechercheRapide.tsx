@@ -8,6 +8,7 @@ import { useCatalogue } from "@/lib/vehicules/useCatalogue";
 import { quandRecherche, resumeFiltres, type Recherche } from "@/lib/recherches";
 import { ChoixVehicule, type Choix } from "../marche/ChoixVehicule";
 import { Ico } from "./Icones";
+import { usePreferences } from "./Preferences";
 
 const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;
 
@@ -15,6 +16,7 @@ const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;
 export function RechercheRapide({ recentes }: { recentes: Recherche[] }) {
   const router = useRouter();
   const cat = useCatalogue() ?? [];
+  const { favoris } = usePreferences();
   const [choix, setChoix] = useState<Choix>({ marque: "", modele: "", gen: "" });
   const [err, setErr] = useState("");
   const pret = !!(choix.marque && choix.modele);
@@ -23,11 +25,11 @@ export function RechercheRapide({ recentes }: { recentes: Recherche[] }) {
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="tb-recherche" className="flex items-center gap-2 font-display text-lg font-semibold">
           <Ico nom="recherche" className="size-5 text-o2" />
-          Rechercher dans le marché
+          Recherche de marché
         </h2>
         <span className="flex gap-4 text-sm">
-          <Link href="/app/recherche?vue=historique" className="text-o2 underline-offset-4 hover:underline">Historique</Link>
-          <Link href="/app/favoris" className="text-o2 underline-offset-4 hover:underline">Favoris</Link>
+          <Link href="/app/recherche" className="text-o2 underline-offset-4 hover:underline">Mes recherches</Link>
+          {favoris && <Link href="/app/favoris" className="text-o2 underline-offset-4 hover:underline">Favoris</Link>}
         </span>
       </div>
       <form

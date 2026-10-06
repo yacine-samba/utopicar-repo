@@ -12,10 +12,11 @@ import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque, CoteAnnonce } from "@/lib/vehicules/types";
 import { motorisationsTypes } from "@/lib/vehicules/phases";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
+import { InterrupteurAlerte } from "./InterrupteurAlerte";
 
 type Annonce = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; ch: number | null; pro: boolean; lieu: string | null;
-  source: string; vu: string | null; url: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
+  source: string; vu: string | null; url: string | null; photo?: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
   moteur: string | null; version: string | null;
   /** motorisation déduite de la puissance (pas écrite) ; génération d'après l'année seulement (doute) ; version et estimation Leboncoin */
   moteurDeduit?: boolean; genPar?: "texte" | "puissance" | "annee" | null; doute?: boolean;
@@ -41,8 +42,10 @@ const CARROSSERIES: [string, string][] = [["berline", "Berline / 5 portes"], ["b
 
 /** Recherche dans la base du marché. Chaque recherche est enregistrée (une par véhicule) et reste ouverte en onglet :
     on peut chercher une autre voiture sans perdre la précédente, et la retrouver depuis le tableau de bord. */
-export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, journal, favoris = [] }: {
-  cat: CatMarque[]; alertes: boolean; initiales: Recherche[]; ouvrir?: string | null; prerempli?: Choix | null;
+export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ouvrir, prerempli, journal, favoris = [], nouvelleRecherche = false }: {
+  cat: CatMarque[]; alertes: boolean; etatsAlertes?: Record<string, boolean>; initiales: Recherche[]; ouvrir?: string | null; prerempli?: Choix | null;
+  /** « Chercher une annonce » : formulaire vide, sans rouvrir le dernier onglet */
+  nouvelleRecherche?: boolean;
   /** lancement du journal à rouvrir (résultats gardés ; relancé seulement s'il n'en a pas) */
   journal?: { id: string; choix: Choix; f: Partial<Filtres> } | null; favoris?: string[];
 }) {
@@ -58,6 +61,8 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
   // téléphone : les filtres se replient pendant et après la recherche, pour voir le chargement puis les résultats
   const [filtresOuverts, setFiltresOuverts] = useState(true);
   const [ouverture, setOuverture] = useState(false);
+  // formulaire allégé : voiture, prix, kilométrage, année ; le reste derrière « Plus de filtres »
+  const [plusFiltres, setPlusFiltres] = useState(false);
   const cache = useRef(new Map<string, Resultat>());
   // collecte Leboncoin en cours pour la recherche affichée (base trop maigre) : suivie, puis la recherche se relance seule
   const [collecte, setCollecte] = useState<(Collecte & { choix: Choix; f: Filtres; rid: string | null }) | null>(null);
@@ -229,7 +234,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
         void lancer(prerempli, VIDE);
       } else {
         const dernier = [...initiales].filter((r) => r.active).sort((x, y) => y.derniere_le.localeCompare(x.derniere_le))[0];
-        if (dernier) afficher(dernier);
+        if (dernier && !nouvelleRecherche) afficher(dernier);
       }
     }, 0);
     return () => clearTimeout(t);
@@ -273,9 +278,9 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
     // eslint-disable-next-line react-hooks/exhaustive-deps -- une boucle par collecte
   }, [suivie?.cle]);
 
-  const alerteHref = choix.marque && choix.modele
-    ? `/app/alertes?${new URLSearchParams({ marque: choix.marque, modele: choix.modele, gen: choix.gen, energie: f.energie, boite: f.boite, anneeMin: f.anneeMin, anneeMax: f.anneeMax, prixMin: f.prixMin, prixMax: f.prixMax, kmMax: f.kmMax, mots: f.mots, exclure: f.exclure, sousCote: f.sousCote, version: f.version, moteur: f.moteur, chMin: f.chMin, chMax: f.chMax }).toString()}`
-    : "/app/alertes";
+  const rechercheCourante = (courant && liste.find((x) => x.id === courant)) || res?.recherche || null;
+  const avance = !!(f.version || f.phase || f.carrosserie || f.moteur || f.chMin || f.chMax || f.energie || f.boite || f.vendeur || f.anneeMax || f.prixMin || f.mots || f.exclure || f.sousCote || f.tri !== "ecart" || !f.fiables);
+  const filtresCaches = !(plusFiltres || avance);
 
   return (
     <div className="grid gap-6">
@@ -338,6 +343,25 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
           }}
           idPrefixe="rm"
         />
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Prix max. (€)</span>
+          <input inputMode="numeric" value={f.prixMax} onChange={maj("prixMax")} placeholder="ex. 9 000" className={inputCls} />
+        </label>
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Kilométrage max.</span>
+          <input inputMode="numeric" value={f.kmMax} onChange={maj("kmMax")} placeholder="150000" className={inputCls} />
+        </label>
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Année min.</span>
+          <input inputMode="numeric" value={f.anneeMin} onChange={maj("anneeMin")} placeholder="2010" className={inputCls} />
+        </label>
+        {!avance && (
+          <button type="button" onClick={() => setPlusFiltres((v) => !v)} aria-expanded={plusFiltres} aria-controls="rm-plus" className="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-o2 underline-offset-4 hover:underline sm:col-span-2 lg:col-span-3">
+            {plusFiltres ? "Moins de filtres" : "Plus de filtres"} <span aria-hidden="true">{plusFiltres ? "▴" : "▾"}</span>
+            <span className="font-normal text-ink-3">version, motorisation, puissance, énergie, boîte, vendeur, sous la cote…</span>
+          </button>
+        )}
+        <div id="rm-plus" className={filtresCaches ? "hidden" : "contents"}>
         {genCat?.v ? (
           <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Version, carrosserie</span>
@@ -419,28 +443,14 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className="grid gap-1.5 text-sm">
-            <span className="text-ink-2">Année min.</span>
-            <input inputMode="numeric" value={f.anneeMin} onChange={maj("anneeMin")} placeholder="2010" className={inputCls} />
-          </label>
-          <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Année max.</span>
             <input inputMode="numeric" value={f.anneeMax} onChange={maj("anneeMax")} placeholder="2016" className={inputCls} />
           </label>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
           <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Prix min. (€)</span>
             <input inputMode="numeric" value={f.prixMin} onChange={maj("prixMin")} className={inputCls} />
           </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className="text-ink-2">Prix max. (€)</span>
-            <input inputMode="numeric" value={f.prixMax} onChange={maj("prixMax")} className={inputCls} />
-          </label>
         </div>
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Kilométrage max.</span>
-          <input inputMode="numeric" value={f.kmMax} onChange={maj("kmMax")} placeholder="150000" className={inputCls} />
-        </label>
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Moteur, finition, mots-clés</span>
           <input value={f.mots} onChange={maj("mots")} placeholder="ex. 1.2 tce, intens" className={inputCls} />
@@ -466,6 +476,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
         <label className="flex items-center gap-2 self-end pb-2.5 text-sm text-ink-2">
           <input type="checkbox" checked={f.fiables} onChange={maj("fiables")} className="size-4 accent-[#ff5a1f]" /> Masquer les pièges (pour pièces, moteur HS, prix suspects…)
         </label>
+        </div>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-3">
           <button type="submit" disabled={charge} className="btn btn-o btn-sm">
             {charge ? "Recherche…" : "Rechercher"}
@@ -473,11 +484,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
           <button type="button" className="btn btn-sm" onClick={nouvelle}>
             Nouvelle recherche
           </button>
-          {alertes && choix.modele && (
-            <Link href={alerteHref} className="btn btn-sm">
-              Créer une alerte e-mail avec ces critères
-            </Link>
-          )}
+          {alertes && rechercheCourante && <InterrupteurAlerte key={rechercheCourante.id} r={rechercheCourante} actif={!!(rechercheCourante.alerte_id && etatsAlertes[rechercheCourante.alerte_id])} cat={cat} />}
           <p className="text-sm text-ink-3" role="status">{etat}</p>
         </div>
       </form>
@@ -580,7 +587,13 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
   const c = a.cote;
   const bon = c?.pct != null && c.pct >= 0.05, cher = c?.pct != null && c.pct <= -0.05;
   return (
-    <li className="carte grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
+    <li className="carte grid gap-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center">
+      {a.photo ? (
+        // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
+        <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-20 w-28 rounded-xl border border-line object-cover max-sm:h-40 max-sm:w-full" />
+      ) : (
+        <span className="hidden h-20 w-28 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">sans photo</span>
+      )}
       <div className="min-w-0">
         <p className="truncate font-medium">{a.titre || "Annonce"}</p>
         <p className="mt-0.5 text-sm text-ink-3">

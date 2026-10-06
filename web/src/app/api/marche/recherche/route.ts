@@ -130,7 +130,7 @@ export async function POST(req: Request) {
       id: l.id, titre: l.titre, prix: l.prix, annee: l.annee, km: l.km, energie: l.energie, boite: l.boite, pro: !!l.pro, lieu: l.lieu, source: l.source,
       ch: l.ch, moteur: moteurDe(l), moteurDeduit: !l.moteur && !!l.moteurDeduit, version: l.varianteEcrite ? versions.find((v) => v.id === l.variant)?.label ?? null : null,
       lbcVersion: l.version ?? null, mec: l.mec ?? null, lbc: l.lbc_min && l.lbc_max ? { min: l.lbc_min, max: l.lbc_max, pos: l.lbc_pos ?? null } : null,
-      vu: l.vu_le, url: lienAnnonce(l), gen: l.gen ?? (doute ? genC : null), genLabel: l.genLabel || (doute ? genObj?.label ?? "" : ""),
+      vu: l.vu_le, url: lienAnnonce(l), photo: l.photo ?? null, gen: l.gen ?? (doute ? genC : null), genLabel: l.genLabel || (doute ? genObj?.label ?? "" : ""),
       genPar: doute ? ("annee" as const) : l.genPar, doute, piege: PIEGES.test(tx) || suspect, suspect,
       cote: e && e.P ? { P: e.P, lo: e.lo, hi: e.hi, ecart: e.ecart, pct: e.pct, conf: doute ? ("faible" as const) : e.conf, moinsCherQue: e.moinsCherQue, n: e.nClean, why: e.why, segments: e.segments } : null,
     };
@@ -202,7 +202,7 @@ const stable = (v: unknown): string =>
 
 type Trouvee = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; ch: number | null; energie: string | null; boite: string | null; moteur: string | null; version: string | null;
-  lieu: string | null; url: string | null; pro: boolean; gen: string | null; genLabel: string; piege: boolean; doute: boolean; cote: { P: number; ecart: number | null; pct: number | null } | null;
+  lieu: string | null; url: string | null; photo?: string | null; pro: boolean; gen: string | null; genLabel: string; piege: boolean; doute: boolean; cote: { P: number; ecart: number | null; pct: number | null } | null;
 };
 
 /** Garde la recherche (une par véhicule), son lancement avec ses résultats (journal) et les annonces trouvées. */
@@ -239,6 +239,7 @@ async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: s
     cle: cleFavori(a.url, `marche:${a.id}`).slice(0, 200), titre: (a.titre || "Annonce").slice(0, 300), prix: a.prix, annee: a.annee, km: a.km, ch: a.ch, energie: a.energie, boite: a.boite,
     moteur: a.moteur, version: a.version, lieu: a.lieu?.slice(0, 120) ?? null, url: a.url?.slice(0, 500) ?? null, marque: f.marque, modele: f.modele, gen: a.gen, gen_label: a.genLabel || null, pro: a.pro,
     cote: a.cote ? { P: a.cote.P, ecart: a.cote.ecart, pct: a.cote.pct } : null, recherche: nom, derniere_le: maintenant,
+    ...(a.photo?.startsWith("https://") ? { photo: a.photo.slice(0, 600) } : {}),
   })).filter((x) => !vues.has(x.cle) && !!vues.add(x.cle));
   if (lignes.length) {
     const { error: et } = await sb.from("annonces_trouvees").upsert(lignes, { onConflict: "user_id,cle" });

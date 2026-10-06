@@ -1,5 +1,6 @@
 import "server-only";
 import { supabaseServeur } from "@/lib/supabase/serveur";
+import { supabaseService } from "@/lib/supabase/service";
 import { coteGeneration, estimerDans, generationDe, modeleDe, normEn, normBo, points, reconnaitre, type Cote, type Estimation } from "./moteur";
 import { cleMoteur, motorisationDe, moteurDeduit, profilMoteurs, type ProfilMoteurs } from "./phases";
 
@@ -9,6 +10,8 @@ export type Ligne = {
   id: string; source: string; titre: string; texte: string | null; prix: number; annee: number | null; km: number | null;
   energie: string | null; boite: string | null; pro: boolean | null; ch: number | null; places: number | null; carr: string | null; etat: string | null;
   lieu: string | null; url: string | null; vu_le: string | null;
+  /** vignette de l'annonce (Leboncoin), quand la collecte l'a gardée */
+  photo?: string | null;
   /** critères Leboncoin : version exacte, finition, 1re mise en circulation (AAAA-MM), portes, estimation Leboncoin */
   version?: string | null; finition?: string | null; mec?: string | null; portes?: number | null; lbc_min?: number | null; lbc_max?: number | null; lbc_pos?: string | null;
 };
@@ -26,9 +29,10 @@ const versPg = (rx: string) => rx.replace(/\\b/g, "\\y");
 
 export const lienAnnonce = (l: { id: string; url: string | null }) => l.url || (/^\d{6,14}$/.test(l.id) ? `https://www.leboncoin.fr/ad/voitures/${l.id}` : null);
 
-/** Annonces d'un modèle sur une plage d'années (jusqu'à 5 000). */
-export async function annoncesModele(regex: string, y0: number | null, y1: number | null, limite = 5000): Promise<Ligne[]> {
-  const { data, error } = await (await supabaseServeur()).rpc("marche_candidats", { p_regex: versPg(regex), p_marque: null, p_annee_min: y0, p_annee_max: y1, p_limite: limite });
+/** Annonces d'un modèle sur une plage d'années (jusqu'à 5 000). `service` : lecture serveur pour l'estimation des formules
+    sans la recherche (seul le chiffre de la cote leur est renvoyé, jamais les annonces). */
+export async function annoncesModele(regex: string, y0: number | null, y1: number | null, limite = 5000, service = false): Promise<Ligne[]> {
+  const { data, error } = await (service ? supabaseService() : await supabaseServeur()).rpc("marche_candidats", { p_regex: versPg(regex), p_marque: null, p_annee_min: y0, p_annee_max: y1, p_limite: limite });
   if (error) throw new Error(error.message);
   return (data ?? []) as Ligne[];
 }
@@ -179,7 +183,7 @@ export class Cotes {
 }
 
 /** Charge un modèle du catalogue, ses annonces, leur génération et leur motorisation. */
-export async function marcheModele(base: string, y0?: number | null, y1?: number | null) {
+export async function marcheModele(base: string, y0?: number | null, y1?: number | null, service = false) {
   const m = modeleDe(base);
   if (!m) return null;
   const marque = base.split(" ")[0], modele = base.split(" ").slice(1).join(" ");
@@ -191,7 +195,7 @@ export async function marcheModele(base: string, y0?: number | null, y1?: number
     const r = reconnaitre({ titre: l.titre });
     return !!r.modele && r.base !== m.base;
   };
-  const lignes: LigneMarche[] = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null)).filter((l) => !autreModele(l)).map((l) => {
+  const lignes: LigneMarche[] = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null, 5000, service)).filter((l) => !autreModele(l)).map((l) => {
     const g = generationDe(m.base, versMoteur(l));
     const tx = sansAccent(`${l.titre} ${l.version ?? ""} ${l.texte ?? ""}`);
     // puissance : Leboncoin (DIN), sinon la version Leboncoin ou le texte (« 150 ch »)

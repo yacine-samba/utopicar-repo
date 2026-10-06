@@ -295,7 +295,9 @@ function coteRow(c: any, it: any) {
   return { cle: c.cle, id: r.id, prix: r.prix, annee: r.annee, km: r.km, energie: r.energie, boite: r.boite, titre: cut(r.titre, 120), dep: r.departement, vendeur: r.vendeur_type, etat: att(/vehicle_damage|vehicle_condition|condition/i) || null, cv: r.cv, publie_le: r.publie_le,
     texte: cut(r.titre + ' | ' + r.description.replace(/\s+/g, ' '), 700), ch: ch && ch < 700 ? ch : null, places: pl && pl < 10 ? pl : null, carrosserie: att(/^vehicle_type$/i) || null,
     version: cut(att(/^u_car_version$/i), 160) || null, finition: cut(att(/^u_car_finition$/i), 80) || null, mec: mec ? `${mec[2]}-${mec[1]}` : null, portes: po && po < 8 ? po : null,
-    lbc_min: pmin && pmin > 100 ? pmin : null, lbc_max: pmax && pmax > 100 ? pmax : null, lbc_pos: cut(att(/^car_price_positioning$/i), 40) || null };
+    lbc_min: pmin && pmin > 100 ? pmin : null, lbc_max: pmax && pmax > 100 ? pmax : null, lbc_pos: cut(att(/^car_price_positioning$/i), 40) || null,
+    // vignette de l'annonce (lien Leboncoin, rien n'est stocké) : affichée dans la recherche et son historique
+    photo: r.photos[0]?.startsWith('https://') ? withRule(r.photos[0], 'ad-small').slice(0, 600) : null };
 }
 async function startCote(c: any, R: Record<string, string>) {
   const f = c.filtres || {};

@@ -33,19 +33,35 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   if (!c.offre.recherche) return <VerrouBenef offre="pro" titre="Recherche" texte="Cherchez dans toutes les annonces du marché par marque, modèle et génération, chacune placée sur sa cote, et retrouvez n'importe quel rapport par verdict, marge ou prix." />;
   const f = await searchParams;
   const alertes = c.illimite || c.offre.id === "pro";
-  if (f.vue === "historique") {
+  // à l'arrivée : l'historique des recherches (avec leurs photos) ; « Chercher une annonce » ouvre la recherche
+  const chercher = f.vue === "chercher" || !!f.r || !!f.j || !!(f.marque && f.modele && f.vue !== "rapports");
+  if (!chercher && (!f.vue || f.vue === "historique")) {
     const sb = await supabaseServeur();
-    const [{ data: recherches }, { data: journal }, sup] = await Promise.all([
+    const [{ data: recherches }, { data: journal }, sup, { data: vues }, mes] = await Promise.all([
       sb.from("recherches").select(COLONNES_RECHERCHE).order("derniere_le", { ascending: false }).limit(300),
       sb.from("recherches_journal").select(COLONNES_JOURNAL).order("created_at", { ascending: false }).limit(1000),
       alertes ? sb.rpc("mes_alertes_supprimees") : Promise.resolve({ data: [] }),
+      sb.from("annonces_trouvees").select("recherche, photo").not("photo", "is", null).order("derniere_le", { ascending: false }).limit(600),
+      alertes ? sb.rpc("mes_alertes") : Promise.resolve({ data: [] }),
     ]);
+    const photos: Record<string, string[]> = {};
+    for (const x of (vues ?? []) as { recherche: string | null; photo: string }[]) {
+      if (!x.recherche) continue;
+      const l = (photos[x.recherche] ??= []);
+      if (l.length < 4 && !l.includes(x.photo)) l.push(x.photo);
+    }
+    const etats = Object.fromEntries(((mes.data ?? []) as { id: string; actif: boolean }[]).map((a) => [a.id, a.actif]));
     const noms = nomsCatalogue();
     return (
       <div className="grid gap-10">
         <EnTete vue="historique" />
-        <DernieresRecherches journal={(journal ?? []) as Lancement[]} noms={noms} />
-        <HistoriqueRecherches recherches={(recherches ?? []) as Recherche[]} supprimees={((sup.data ?? []) as AlerteSupprimee[])} alertes={alertes} />
+        <HistoriqueRecherches recherches={(recherches ?? []) as Recherche[]} supprimees={((sup.data ?? []) as AlerteSupprimee[])} alertes={alertes} photos={photos} etatsAlertes={etats} />
+        <details className="carte p-5">
+          <summary className="cursor-pointer font-display font-semibold">Chaque lancement, avec ses filtres exacts</summary>
+          <div className="mt-4">
+            <DernieresRecherches journal={(journal ?? []) as Lancement[]} noms={noms} />
+          </div>
+        </details>
       </div>
     );
   }
@@ -64,6 +80,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   }
   if (f.vue !== "rapports") {
     const sb = await supabaseServeur();
+    const { data: mesAlertes } = alertes ? await sb.rpc("mes_alertes") : { data: [] };
+    const etats = Object.fromEntries(((mesAlertes ?? []) as { id: string; actif: boolean }[]).map((a) => [a.id, a.actif]));
     const [{ data: recherches }, { data: favs }, { data: lancement }] = await Promise.all([
       sb.from("recherches").select(COLONNES_RECHERCHE).order("created_at", { ascending: true }).limit(300),
       sb.from("favoris").select("cle").limit(2000),
@@ -73,7 +91,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
     return (
       <div className="grid gap-6">
         <EnTete vue="marche" />
-        <RechercheMarche cat={catalogue()} alertes={alertes} initiales={(recherches ?? []) as Recherche[]} ouvrir={f.r ?? null} prerempli={prerempli} journal={lancement ? { id: (lancement as Lancement).id, ...(lancement as Lancement).criteres } : null} favoris={(favs ?? []).map((x) => x.cle as string)} />
+        <RechercheMarche cat={catalogue()} alertes={alertes} etatsAlertes={etats} nouvelleRecherche={f.vue === "chercher" && !f.r && !f.j} initiales={(recherches ?? []) as Recherche[]} ouvrir={f.r ?? null} prerempli={prerempli} journal={lancement ? { id: (lancement as Lancement).id, ...(lancement as Lancement).criteres } : null} favoris={(favs ?? []).map((x) => x.cle as string)} />
       </div>
     );
   }
@@ -150,19 +168,21 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
 
 function EnTete({ vue }: { vue: "marche" | "historique" | "annonces" | "rapports" }) {
   const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
-  const sous = { marche: "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération.", historique: "Toutes vos recherches avec leurs résultats gardés, et les alertes supprimées.", annonces: "Toutes les annonces trouvées par vos recherches, gardées pour toujours.", rapports: "Vos rapports enregistrés, par verdict, marge, prix ou période." }[vue];
+  const sous = { marche: "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération.", historique: "Vos recherches, leurs photos et leurs résultats gardés. Une alerte e-mail s'allume sur chaque recherche.", annonces: "Toutes les annonces trouvées par vos recherches, gardées pour toujours.", rapports: "Vos rapports enregistrés, par verdict, marge, prix ou période." }[vue];
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div>
         <h1 className="font-display text-3xl font-semibold">Recherche</h1>
         <p className="mt-1 text-ink-2">{sous}</p>
       </div>
+      <div className="flex max-w-full flex-wrap items-center gap-2">
+      <a href="/app/recherche?vue=chercher" className="btn btn-o btn-sm gap-2"><span aria-hidden="true">+</span> Chercher une annonce</a>
       <nav aria-label="Type de recherche" className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-line p-1">
-        <a href="/app/recherche" aria-current={vue === "marche" ? "page" : undefined} className={onglet(vue === "marche")}>Annonces du marché</a>
-        <a href="/app/recherche?vue=historique" aria-current={vue === "historique" ? "page" : undefined} className={onglet(vue === "historique")}>Historique</a>
+        <a href="/app/recherche" aria-current={vue === "historique" ? "page" : undefined} className={onglet(vue === "historique")}>Mes recherches</a>
         <a href="/app/recherche?vue=annonces" aria-current={vue === "annonces" ? "page" : undefined} className={onglet(vue === "annonces")}>Annonces trouvées</a>
         <a href="/app/recherche?vue=rapports" aria-current={vue === "rapports" ? "page" : undefined} className={onglet(vue === "rapports")}>Mes rapports</a>
       </nav>
+      </div>
     </div>
   );
 }
