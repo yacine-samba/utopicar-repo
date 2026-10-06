@@ -5,10 +5,10 @@ import { ResultatBenef } from "./ResultatBenef";
 import { AjouterParc } from "./AjouterParc";
 import { RapportComplet } from "./RapportComplet";
 
-export function RapportEnregistre({ a, id, titre, parc }: { a: Analyse; id: string; titre: string; parc: boolean }) {
+export function RapportEnregistre({ a, id, titre, parc, parcId = null }: { a: Analyse; id: string; titre: string; parc: boolean; parcId?: string | null }) {
   const [reg] = useReglages<ParamsPro>("utp-pro", { ...DEFAUTS_PRO, ville: a.ville || DEFAUTS_PRO.ville });
   // Rapport au format de l'outil Garage : affichage complet (réduit selon la formule).
-  if (a.rapport) return <RapportComplet a={a} r={a.rapport} reg={reg} offre={a.offre ?? "pro"} id={id} parc={parc} lien={a.lien} />;
+  if (a.rapport) return <RapportComplet a={a} r={a.rapport} reg={reg} offre={a.offre ?? "pro"} id={id} parc={parc && !parcId} lien={a.lien} parcId={parcId} />;
   return (
     <ResultatBenef
       a={a}

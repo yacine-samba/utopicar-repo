@@ -27,6 +27,10 @@ export type Compte = {
   credits: number;
   /** Total disponible : formule puis crédits. */
   restantes: number;
+  /** Favoris affichés (paramètres d'accessibilité, désactivés par défaut). */
+  favoris: boolean;
+  /** Option « Messages Leboncoin » (Benef Pro, en plus de la formule). */
+  messages: boolean;
 };
 
 /** Début de la période de quota : le mois civil en cours, ou depuis toujours pour la formule gratuite. */
@@ -40,12 +44,13 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     data: { user },
   } = await sb.auth.getUser();
   if (!user) return null;
-  const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }] = await Promise.all([
-    sb.from("profils").select("prenom, nom, famille, ville, formule_offerte, offerte_jusqu_au, illimite").eq("id", user.id).maybeSingle(),
+  const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }, { data: messages }] = await Promise.all([
+    sb.from("profils").select("prenom, nom, famille, ville, formule_offerte, offerte_jusqu_au, illimite, reglages").eq("id", user.id).maybeSingle(),
     sb.from("abonnements").select("offre, statut, periode_fin, annule_fin_periode").eq("user_id", user.id).maybeSingle(),
     sb.from("achats").select("produit").eq("user_id", user.id),
     sb.rpc("mes_credits"),
     sb.from("credits").select("id", { count: "exact", head: true }).eq("user_id", user.id).gt("delta", 0),
+    sb.rpc("option_active", { p_uid: user.id, p_option: "messages" }),
   ]);
   const actif = abo && STATUTS_ACTIFS.includes(abo.statut);
   const aujourdhui = new Date().toISOString().slice(0, 10);
@@ -75,5 +80,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     restantesFormule,
     credits: solde,
     restantes: restantesFormule + solde,
+    favoris: (profil?.reglages as { favoris?: boolean } | null)?.favoris === true,
+    messages: messages === true,
   };
 });

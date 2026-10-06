@@ -1,4 +1,4 @@
-import { OFFRES, PACKS, prixTxt, prixUnite } from "@/lib/offres";
+import { PACKS, prixTxt, prixUnite } from "@/lib/offres";
 import { BoutonAbonner } from "./BoutonAbonner";
 import { cx } from "@/lib/cx";
 
@@ -39,33 +39,18 @@ export function ListePacks({ compact = false }: { compact?: boolean }) {
   );
 }
 
-/** Carte « Crédits à l'unité », à côté des formules particulier. */
-export function CarteCredits() {
-  const e = OFFRES.essentiel;
+/** Option sans abonnement, en petit et centrée sous les formules : une ligne, les packs s'ouvrent au clic. */
+export function CreditsDiscrets() {
   return (
-    <li id="credits" className="carte relative flex scroll-mt-24 flex-col p-6 sm:p-7">
-      <span className="absolute -top-3 left-6 rounded-full border border-line-2 bg-bg1 px-3 py-1 text-xs font-semibold text-ink-2">Sans abonnement</span>
-      <h3 className="font-display text-xl font-semibold">Crédits à l&apos;unité</h3>
-      <p className="mt-1 text-sm text-ink-3">Pour analyser quand vous en avez besoin</p>
-      <p className="mt-5 flex items-baseline gap-1.5">
-        <span className="text-ink-3">dès</span>
-        <b className="num font-display text-4xl font-semibold">{prixTxt(PACKS[0].prix)}</b>
-      </p>
-      <p className="mt-1 text-sm text-ink-3">Payé une fois, valable 12 mois</p>
-      <ul className="mt-6 grid content-start gap-2.5 text-[15px]">
-        {["Analyse détaillée, comme Essentiel", "Analyse de 3 photos par annonce", "Utilisés seulement quand votre formule est épuisée"].map((t) => (
-          <li key={t} className="flex gap-2.5">
-            <span className="mt-0.5 text-ok" aria-hidden="true">✓</span>
-            <span className="text-ink-2">{t}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-6 flex-1 content-end">
+    <details id="credits" className="group mx-auto w-full max-w-md scroll-mt-24 text-center text-sm text-ink-3">
+      <summary className="cursor-pointer list-none rounded-full px-3 py-1.5 hover:text-ink [&::-webkit-details-marker]:hidden">
+        Sans abonnement : crédits à l&apos;unité, dès {prixTxt(PACKS[0].prix)} l&apos;analyse ·{" "}
+        <span className="text-o2 underline underline-offset-4">voir les packs</span>
+      </summary>
+      <div className="mt-3 grid gap-2 text-left">
         <ListePacks compact />
+        <p className="text-center text-xs">Analyse détaillée avec 3 photos, payée une fois, valable 12 mois.</p>
       </div>
-      <p className="mt-3 text-xs text-ink-3">
-        Plus de 3 voitures à comparer ? {e.nom} revient à {unite(e.prix / e.analyses)} l&apos;analyse.
-      </p>
-    </li>
+    </details>
   );
 }

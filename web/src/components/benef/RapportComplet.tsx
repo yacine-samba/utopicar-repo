@@ -8,15 +8,16 @@ import type { Analyse, ParamsPro } from "@/lib/analyse/couts";
 import { eur } from "@/lib/analyse/couts";
 import { calculDeal, postesDepart, type Poste } from "@/lib/analyse/deal";
 import { CHECKS, } from "@/lib/analyse/garage";
-import { ouvertePar, SECTIONS, sectionsDe, type Section } from "@/lib/analyse/sections";
+import { ouvertePar, SECTIONS, SECTIONS_PRO, sectionsDe, type Section } from "@/lib/analyse/sections";
 import type { Rapport } from "@/lib/analyse/rapport";
 import { OFFRES, type OffreId } from "@/lib/offres";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { cx, inputCls } from "@/lib/cx";
-import { Copier } from "../ui";
+import { Copier, useReglages } from "../ui";
+import { PiecesDossier } from "./PiecesDossier";
 import { AjouterParc } from "./AjouterParc";
 import { AnalysePhotos } from "@/components/analyse/AnalysePhotos";
-import { BoutonSections, SommaireRapport, useSectionActive, type EntreeSommaire } from "./SommaireRapport";
+import { BarreSections, BoutonSections, useSectionActive, type EntreeSommaire } from "./SommaireRapport";
 
 const e = (v: number | null | undefined) => (v == null || !isFinite(v) ? "—" : eur(v));
 const km = (v: number | null | undefined) => (v == null ? null : `${Math.round(v).toLocaleString("fr-FR")} km`);
@@ -51,7 +52,8 @@ function Script({ texte, label }: { texte?: string; label: string }) {
   );
 }
 
-function Bloc({ id, titre, note, children, verrou }: { id: Section; titre: string; note?: string; children: ReactNode; verrou?: OffreId | null }) {
+function Bloc({ id, titre, note, children, verrou, masque }: { id: Section; titre: string; note?: string; children: ReactNode; verrou?: OffreId | null; masque?: boolean }) {
+  if (masque) return null;
   return (
     <section id={`r-${id}`} className="carte scroll-mt-28 p-5 sm:p-6" aria-labelledby={`r-${id}-t`}>
       <div className="mb-4">
@@ -136,10 +138,13 @@ function GraphePrix({ points, bande }: { points: { l: string; v: number | null; 
   );
 }
 
-export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analyse; r: Rapport; reg: ParamsPro; offre: OffreId; id?: string | null; parc: boolean; lien?: string }) {
+export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null }: { a: Analyse; r: Rapport; reg: ParamsPro; offre: OffreId; id?: string | null; parc: boolean; lien?: string; parcId?: string | null }) {
   const router = useRouter();
   const ok = new Set(sectionsDe(offre));
   const verrou = (s: Section) => (ok.has(s) ? null : ouvertePar(s));
+  // vue pro par défaut (l'essentiel pour décider) ; « Détail profond » ouvre toutes les sections, choix gardé sur l'appareil
+  const [mode, setMode] = useReglages("utp-rapport", { profond: false });
+  const montre = (s: Section) => mode.profond || SECTIONS_PRO.includes(s);
   const v = r.vehicule ?? {};
   const m = r.marche ?? {};
   const [postes, setPostes] = useState<Poste[]>(() => postesDepart(a, r));
@@ -177,7 +182,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
     ...(r.etatPhotos?.defauts ?? []).filter((d) => d?.libelle).map((d) => ({ a: d.libelle!, m: d.coutMax ? `${e(d.coutMin)} à ${e(d.coutMax)}` : null, s: "photos" })),
     ...(ng.argumentaire ?? []).filter((x) => x?.argument).map((x) => ({ a: x.argument!, m: x.montant ? e(x.montant) : null, s: x.source || "IA" })),
   ];
-  const scores: [string, keyof NonNullable<Rapport["scores"]>][] = [["Facilité de revente", "revente"], ["Marge potentielle", "marge"], ["Risque mécanique (10 = faible)", "risqueMecanique"], ["Risque administratif (10 = faible)", "risqueAdministratif"], ["Compatibilité 0 €", "compat0"], ["Adapté à un débutant", "debutant"]];
+  const scores: [string, keyof NonNullable<Rapport["scores"]>][] = [["Facilité de revente", "revente"], ["Marge potentielle", "marge"], ["Risque mécanique (10 = faible)", "risqueMecanique"], ["Risque administratif (10 = faible)", "risqueAdministratif"]];
 
   // chiffre clé de chaque section, affiché dans le sommaire
   const nbAlertes = (r.alertes ?? []).length + a.faits.defauts.filter((d) => d.cat === "piege").length;
@@ -199,17 +204,10 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
     deal: { resume: r.structure?.choix ? r.structure.choix[0].toUpperCase() + r.structure.choix.slice(1) : "Structure conseillée" },
     risques: { resume: nbRisques ? `${nbRisques} point${nbRisques > 1 ? "s" : ""}` : "Aucun relevé" },
     decision: { resume: r.decision?.action ? r.decision.action[0].toUpperCase() + r.decision.action.slice(1) : D.verdict, ton: r.decision?.action === "abandonne" ? "bad" : r.decision?.action === "attends" ? "warn" : r.decision?.action ? "ok" : null },
+    documents: { resume: "CT, HistoVec, carte grise…" },
   };
-  const sommaire: EntreeSommaire[] = SECTIONS.map(([k, l]) => ({ id: k, label: l, ...resumes[k], verrou: ok.has(k) ? null : `Benef ${OFFRES[ouvertePar(k)].nom}` }));
-  const actif = useSectionActive(SECTIONS.map(([k]) => k));
-  // le bouton « Sections » n'apparaît qu'une fois la grille du sommaire passée
-  const grille = useRef<HTMLElement>(null);
-  const [apresGrille, setApresGrille] = useState(false);
-  useEffect(() => {
-    const f = () => setApresGrille((grille.current?.getBoundingClientRect().bottom ?? 1) < 0);
-    addEventListener("scroll", f, { passive: true });
-    return () => removeEventListener("scroll", f);
-  }, []);
+  const sommaire: EntreeSommaire[] = SECTIONS.filter(([k]) => montre(k)).map(([k, l]) => ({ id: k, label: l, ...resumes[k], verrou: ok.has(k) ? null : `Benef ${OFFRES[ouvertePar(k)].nom}` }));
+  const actif = useSectionActive(sommaire.map((x) => x.id));
 
   async function supprimer() {
     if (!id) return;
@@ -228,7 +226,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
         <header className="carte grid gap-4 p-5 sm:p-6">
           <div className="flex flex-wrap items-center gap-2">
             {v.immat && <span className="rounded-md border border-line-2 bg-white/90 px-2 py-0.5 font-mono text-sm font-bold text-[#0b0a09]">{v.immat}</span>}
-            {r.vraiZeroEuro != null && ok.has("deal") && <span className={cx("rounded-full border px-2.5 py-0.5 text-xs", r.vraiZeroEuro ? "border-ok/40 text-ok" : "border-warn/40 text-warn")}>{r.vraiZeroEuro ? "Vrai 0 € possible" : "Pas un vrai 0 €"}</span>}
+            {r.vraiZeroEuro != null && ok.has("deal") && mode.profond && <span className={cx("rounded-full border px-2.5 py-0.5 text-xs", r.vraiZeroEuro ? "border-ok/40 text-ok" : "border-warn/40 text-warn")}>{r.vraiZeroEuro ? "Vrai 0 € possible" : "Pas un vrai 0 €"}</span>}
             {r.conclusionAnnonce && <span className="rounded-full border border-line-2 px-2.5 py-0.5 text-xs text-ink-2">{r.conclusionAnnonce}</span>}
           </div>
           <div>
@@ -262,9 +260,9 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </header>
 
-        <SommaireRapport entrees={sommaire} actif={actif} ancre={grille} />
+        <BarreSections entrees={sommaire} actif={actif} profond={mode.profond} onProfond={(profond) => setMode({ profond })} />
 
-        <Bloc id="annonce" titre="Ce que dit l'annonce">
+        <Bloc id="annonce" masque={!montre("annonce")} titre="Ce que dit l'annonce">
           {!(r.annonceDecortiquee ?? []).length && <p className="text-sm text-ink-3">Détail sujet par sujet (prouvé, annoncé, non mentionné) disponible quand l&apos;analyse IA répond. Les points lus par l&apos;outil sont dans Alertes et État.</p>}
           <ul className="grid gap-2 sm:grid-cols-2">
             {(r.annonceDecortiquee ?? []).map((x, i) => (
@@ -279,7 +277,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </ul>
         </Bloc>
 
-        <Bloc id="alertes" titre="Ce qui doit vous alerter">
+        <Bloc id="alertes" masque={!montre("alertes")} titre="Ce qui doit vous alerter">
           <div className="grid gap-4">
             <Liste items={[...(r.alertes ?? []), ...a.faits.defauts.filter((d) => d.cat === "piege").map((d) => d.l)]} vide="Aucune alerte dans le dossier." />
             {D.caps.length > 0 && (
@@ -297,7 +295,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="etat" titre="État de la voiture" note="Chaque défaut vient de l'annonce ou des photos, avec son coût : ce sont vos arguments pour négocier.">
+        <Bloc id="etat" masque={!montre("etat")} titre="État de la voiture" note="Chaque défaut vient de l'annonce ou des photos, avec son coût : ce sont vos arguments pour négocier.">
           <div className="grid gap-3">
             {r.etatPhotos?.score != null && <p className="text-sm">État visible sur les photos : <b className="num">{r.etatPhotos.score} / 100</b></p>}
             <Tableau
@@ -314,7 +312,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="nego" titre="Plan de négociation" note="Montants calculés par l'outil, jamais par l'IA : ouverture = plafond − 6 %, arrondi.">
+        <Bloc id="nego" masque={!montre("nego")} titre="Plan de négociation" note="Montants calculés par l'outil, jamais par l'IA : ouverture = plafond − 6 %, arrondi.">
           <ol className="grid gap-5">
             <li className="grid gap-2">
               <h3 className="font-display font-semibold">1. Premier message</h3>
@@ -351,7 +349,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </ol>
         </Bloc>
 
-        <Bloc id="prix" titre="Prix et cote">
+        <Bloc id="prix" masque={!montre("prix")} titre="Prix et cote">
           <div className="grid gap-4">
             <GraphePrix
               bande={a.cote ? [a.cote.p25, a.cote.p75] : null}
@@ -381,7 +379,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="km" titre="Historique du kilométrage" verrou={verrou("km")}>
+        <Bloc id="km" masque={!montre("km")} titre="Historique du kilométrage" verrou={verrou("km")}>
           {(r.kmReleves ?? []).length ? (
             <Tableau tetes={["Date", "Kilométrage", "Source"]} lignes={(r.kmReleves ?? []).map((k) => [k.date || "—", km(k.km) ?? "—", k.source || "—"])} />
           ) : (
@@ -389,7 +387,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           )}
         </Bloc>
 
-        <Bloc id="controles" titre="Les 13 contrôles" note={`${compte("ok")} OK · ${compte("attention")} attention · ${compte("probleme")} problème · ${compte("inconnu")} non vérifiable`}>
+        <Bloc id="controles" masque={!montre("controles")} titre="Les 13 contrôles" note={`${compte("ok")} OK · ${compte("attention")} attention · ${compte("probleme")} problème · ${compte("inconnu")} non vérifiable`}>
           <ul className="grid gap-2 sm:grid-cols-2">
             {controles.map((c) => {
               const s = STATUT_CTRL[c.statut ?? "inconnu"] ?? STATUT_CTRL.inconnu;
@@ -408,7 +406,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </ul>
         </Bloc>
 
-        <Bloc id="papiers" titre="HistoVec, contrôle technique et entretien" verrou={verrou("papiers")}>
+        <Bloc id="papiers" masque={!montre("papiers")} titre="HistoVec, contrôle technique et entretien" verrou={verrou("papiers")}>
           <div className="grid gap-5">
             <div className="grid gap-2">
               <h3 className="font-display font-semibold">HistoVec {r.histovec?.fourni ? "(fourni)" : "(non fourni)"}</h3>
@@ -432,7 +430,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="moteur" titre="Le moteur et ses faiblesses connues" note="Réputation de ce moteur en général, pas un défaut constaté sur cette voiture." verrou={verrou("moteur")}>
+        <Bloc id="moteur" masque={!montre("moteur")} titre="Le moteur et ses faiblesses connues" note="Réputation de ce moteur en général, pas un défaut constaté sur cette voiture." verrou={verrou("moteur")}>
           <div className="grid gap-3">
             <p>
               <b>{r.fiabilite?.moteur || version || "Motorisation non identifiée"}</b>
@@ -449,7 +447,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="photos" titre="Ce que montrent les photos" verrou={verrou("photos")}>
+        <Bloc id="photos" masque={!montre("photos")} titre="Ce que montrent les photos" verrou={verrou("photos")}>
           <div className="mb-5">
             {a.ia?.photos.fournies || (a.vignettes ?? []).length ? (
               <AnalysePhotos photos={a.ia?.photos} vignettes={a.vignettes} regles={a.regles} />
@@ -481,7 +479,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="travaux" titre="Remise en état" note="Postes modifiables : le calcul se met à jour." verrou={verrou("travaux")}>
+        <Bloc id="travaux" masque={!montre("travaux")} titre="Remise en état" note="Postes modifiables : le calcul se met à jour." verrou={verrou("travaux")}>
           <div className="grid gap-3">
             {r.remiseEnEtat && (
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -530,7 +528,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="deal" titre="Structure du deal et négociation" verrou={verrou("deal")}>
+        <Bloc id="deal" masque={!montre("deal")} titre="Structure du deal et négociation" verrou={verrou("deal")}>
           <div className="grid gap-4">
             {r.structure?.choix && <span className="w-fit rounded-full bg-o px-3 py-1 text-sm font-bold text-[#160904]">{r.structure.choix}</span>}
             {r.structure?.pourquoi && <p className="whitespace-pre-line text-[15px] text-ink-2">{r.structure.pourquoi}</p>}
@@ -558,7 +556,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="risques" titre="Risques cachés" verrou={verrou("risques")}>
+        <Bloc id="risques" masque={!montre("risques")} titre="Risques cachés" verrou={verrou("risques")}>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[["Administratif", r.risquesCaches?.administratif], ["Mécanique", r.risquesCaches?.mecanique], ["Commercial", r.risquesCaches?.commercial], ["Négociation", r.risquesCaches?.negociation], ["Revente", r.risquesCaches?.revente]].map(([l, x]) => (
               <div key={l as string}>
@@ -569,7 +567,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
           </div>
         </Bloc>
 
-        <Bloc id="decision" titre="Décision">
+        <Bloc id="decision" masque={!montre("decision")} titre="Décision">
           <div className="grid gap-3">
             <span className={cx("w-fit rounded-full px-3 py-1 text-sm font-bold capitalize", r.decision?.action === "abandonne" ? "bg-bad text-[#1a0606]" : r.decision?.action === "attends" ? "bg-warn text-[#1a1300]" : "bg-ok text-[#06140c]")}>{r.decision?.action || "—"}</span>
             {r.decision?.pourquoi && <p className="text-[15px]">{r.decision.pourquoi}</p>}
@@ -591,7 +589,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
                 })}
               </ul>
             )}
-            {ok.has("deal") && r.zeroEuroCommentaire && <p className="text-sm text-ink-2"><b>Compatibilité 0 € :</b> {r.zeroEuroCommentaire}</p>}
+            {ok.has("deal") && mode.profond && r.zeroEuroCommentaire && <p className="text-sm text-ink-2"><b>Compatibilité 0 € :</b> {r.zeroEuroCommentaire}</p>}
             {id && (
               <div>
                 <button type="button" onClick={supprimer} className="btn btn-sm border-bad/50 text-bad">
@@ -601,10 +599,13 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
             )}
           </div>
         </Bloc>
+
+        <Bloc id="documents" masque={!montre("documents")} titre="Documents" note="Ajoutés après coup, ils ne changent pas la note : ils complètent le dossier.">
+          {id ? <PiecesDossier rapportId={id} parcId={parcId} titre="CT, HistoVec, carte grise, cession" /> : <p className="text-sm text-ink-3">Les documents s&apos;ajoutent sur un rapport enregistré.</p>}
+        </Bloc>
       </div>
 
       {/* Calcul final */}
-      <BoutonSections entrees={sommaire} actif={actif} visible={apresGrille} flottant className="lg:hidden" />
       <aside className="grid gap-3 lg:sticky lg:top-6">
       <BoutonSections entrees={sommaire} actif={actif} visible className="hidden w-full lg:flex" />
       <div className="carte grid gap-4 p-5" aria-label="Calcul du deal" role="region">
@@ -635,11 +636,6 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien }: { a: Analys
         <div className="grid gap-2">
           {parc && id && <AjouterParc rapportId={id} titre={titre} prix={D.prix} />}
           {msg1 && <Copier texte={msg1} label="Copier le 1er message" />}
-          {id && (
-            <Link href="/app/rapports" className="btn btn-sm">
-              Comparer avec d&apos;autres rapports
-            </Link>
-          )}
           {lien && (
             <a href={lien} target="_blank" rel="noopener noreferrer" className="btn btn-sm">
               Ouvrir l&apos;annonce

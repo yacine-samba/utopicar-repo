@@ -63,7 +63,7 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0">
                           <p className="font-display text-lg font-semibold">
-                            {v.titre}
+                            <Link href={`/app/parc/${v.id}`} className="underline-offset-4 hover:text-o2 hover:underline">{v.titre}</Link>
                             {v.finition && <span className="ml-2 font-body text-sm font-normal text-ink-3">{v.finition}</span>}
                           </p>
                           <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-ink-3">
@@ -122,11 +122,9 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
                             {v.vendeur_tel}
                           </a>
                         )}
-                        {v.rapport_id && (
-                          <Link href={`/app/rapports/${v.rapport_id}`} className="underline-offset-4 hover:text-ink hover:underline">
-                            Rapport d&apos;analyse
-                          </Link>
-                        )}
+                        <Link href={`/app/parc/${v.id}`} className="text-o2 underline-offset-4 hover:underline">
+                          {v.rapport_id ? "Fiche, documents et rapport" : "Fiche et documents"}
+                        </Link>
                         {v.lien && (
                           <a href={v.lien} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:text-ink hover:underline">
                             Annonce d&apos;origine ↗

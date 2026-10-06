@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { cx, inputCls } from "@/lib/cx";
 import { BoutonFavori } from "../espace/BoutonFavori";
+import { BoutonAnalyserAnnonce } from "../espace/BoutonAnalyserAnnonce";
 import type { NomsCatalogue } from "./DernieresRecherches";
 
 export type AnnonceTrouvee = {
@@ -137,6 +138,7 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
                       onChange={(on) => (on ? favs.add(a.cle) : favs.delete(a.cle))}
                       f={{ cle: a.cle, titre: a.titre, prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: null, source: "recherche", cote: c ?? null }}
                     />
+                    <BoutonAnalyserAnnonce url={a.url} />
                     {a.url && <a href={a.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Ouvrir</a>}
                     <button type="button" onClick={() => retirer(a)} className="grid size-9 place-items-center rounded-full border border-line-2 text-ink-3 hover:text-ink" aria-label={`Retirer ${a.titre} de la liste (elle reste dans la cote)`} title="Retirer de la liste (reste dans la cote)">
                       ✕

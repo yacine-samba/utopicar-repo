@@ -143,7 +143,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
         </p>
         <ExportCsv nom="rapports-utopicar" entetes={["Véhicule", "Date", "Prix", "Verdict", "Marge", "Note"]} lignes={res.map((r) => [r.titre, r.created_at.slice(0, 10), r.prix, r.verdict, r.marge, r.note])} />
       </div>
-      <ListeRapports rapports={res} comparateur={c.offre.comparateur} vide="Aucun rapport ne correspond à ces filtres." />
+      <ListeRapports rapports={res} comparateur={false} vide="Aucun rapport ne correspond à ces filtres." />
     </div>
   );
 }

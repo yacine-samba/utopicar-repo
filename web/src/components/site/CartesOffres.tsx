@@ -2,13 +2,14 @@ import Link from "next/link";
 import { OFFRES, prixTxt, type OffreId } from "@/lib/offres";
 import { BoutonAbonner } from "./BoutonAbonner";
 import { cx } from "@/lib/cx";
-import { CarteCredits } from "./CarteCredits";
+import { CreditsDiscrets } from "./CarteCredits";
 
-/** Grille de formules. `actuelle` marque la formule du compte connecté ; `credits` ajoute la carte des crédits à l'unité. */
+/** Grille de formules. `actuelle` marque la formule du compte connecté ; `credits` ajoute, en petit et centrée sous les cartes,
+    l'option sans abonnement (crédits à l'unité). */
 export function CartesOffres({ ids, actuelle, credits = false }: { ids: OffreId[]; actuelle?: OffreId | null; credits?: boolean }) {
   const visibles = ids.filter((id) => !OFFRES[id].cachee);
-  return (
-    <ul className="grid gap-5 md:grid-cols-3">
+  const grille = (
+    <ul className={cx("grid gap-5", visibles.length === 2 ? "mx-auto max-w-4xl md:grid-cols-2" : "md:grid-cols-3")}>
       {visibles.map((id) => {
         const o = OFFRES[id];
         const cetteOffre = actuelle === id;
@@ -58,7 +59,13 @@ export function CartesOffres({ ids, actuelle, credits = false }: { ids: OffreId[
           </li>
         );
       })}
-      {credits && <CarteCredits />}
     </ul>
+  );
+  if (!credits) return grille;
+  return (
+    <div className="grid gap-6">
+      {grille}
+      <CreditsDiscrets />
+    </div>
   );
 }

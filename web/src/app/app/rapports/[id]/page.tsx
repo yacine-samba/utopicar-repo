@@ -22,7 +22,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const a = data.resultat as Analyse;
   const photos: string[] = data.photos?.length ? data.photos : (a.photosUrls ?? []);
   // Découverte : les 3 premières photos, toutes ensuite
-  const maxPhotos = !c.illimite && c.offre.prix === 0 && c.credits === 0 ? 3 : 12;
+  const maxPhotos = !c.illimite && c.offre.prix === 0 && c.credits === 0 ? 3 : 30;
   const lien = data.lien ?? a.lien ?? null;
   const cle = cleFavori(lien, `rapport:${id}`);
   const { data: fav } = await (await supabaseServeur()).from("favoris").select("id").eq("cle", cle).maybeSingle();

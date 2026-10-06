@@ -5,6 +5,7 @@ import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { FILTRES_VIDES, quandRecherche, resumeFiltres, type FiltresRecherche, type Recherche } from "@/lib/recherches";
 import { cleFavori } from "@/lib/favoris";
 import { BoutonFavori } from "../espace/BoutonFavori";
+import { BoutonAnalyserAnnonce } from "../espace/BoutonAnalyserAnnonce";
 import { useNotification } from "../espace/Notification";
 import { Ico } from "../espace/Icones";
 import { cx, inputCls } from "@/lib/cx";
@@ -624,6 +625,7 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
             onChange={onFav}
             f={{ cle: cleFavori(a.url, `marche:${a.id}`), titre: a.titre || "Annonce", prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: null, source: "recherche", cote: c ? { P: c.P ?? null, ecart: c.ecart ?? null, pct: c.pct ?? null } : null }}
           />
+          <BoutonAnalyserAnnonce url={a.url} />
           {a.url && (
             <a href={a.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">
               Ouvrir

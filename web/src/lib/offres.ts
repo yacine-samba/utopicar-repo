@@ -86,6 +86,9 @@ export const ILLIMITE: Offre = { ...OFFRES.pro, nom: "Illimité", prix: 0, analy
 
 export const GUIDE = { lookup: "utp_guide", prix: 9, nom: "Les guides Utopicar" };
 
+/** Option de Benef Pro : premier message automatique aux vendeurs Leboncoin et boîte de réception (acteur Apify à 29 $ par mois). */
+export const OPTION_MESSAGES = { lookup: "utp_option_messages_45", prix: 45, nom: "Messages Leboncoin" };
+
 export const PARTICULIERS: OffreId[] = ["gratuit", "essentiel"];
 export const BENEF: OffreId[] = ["starter", "croissance", "pro"];
 

@@ -27,7 +27,7 @@ const Corps = z.object({
     .max(6, "6 photos maximum.")
     .default([]),
   // photos d'origine de l'annonce (Leboncoin, extension) et vendeur : gardés avec le rapport
-  photosLiens: z.array(z.string().max(1000).regex(/^https:\/\//)).max(12).default([]),
+  photosLiens: z.array(z.string().max(1000).regex(/^https:\/\//)).max(30).default([]),
   lienAnnonce: z.string().trim().max(500).regex(/^https?:\/\//).optional(),
   vendeur: z.object({ nom: z.string().max(80).nullish(), type: z.string().max(20).nullish(), aTel: z.boolean().nullish(), telephone: z.string().max(40).nullish() }).nullish(),
 });

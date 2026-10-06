@@ -170,6 +170,15 @@ export const GUIDES: { id: GuideId; titre: string; pour: string; resume: string;
   { id: "acheter-occasion", titre: "Acheter votre prochaine occasion sans vous faire avoir", pour: "Particuliers", resume: "Les vérifications à faire, dans l'ordre, jusqu'aux papiers.", html: guideParticulier },
 ];
 
+/** Guides mis en avant selon la formule (page « Mes guides » du profil) ; les autres restent accessibles en dessous.
+    Benef Starter : la première vente ; Croissance et Pro : la méthode de tri et l'estimation de reprise ; particuliers : l'achat. */
+export function guidesPour(formule: string, famille: "particulier" | "benef"): GuideId[] {
+  if (famille === "particulier") return ["acheter-occasion"];
+  if (formule === "starter") return ["premiere-revente"];
+  if (formule === "croissance") return ["trier-annonces", "estimer-reprise", "premiere-revente"];
+  return ["trier-annonces", "estimer-reprise"];
+}
+
 /** Contenu d'un guide : complet, ou limité aux deux premiers chapitres (extrait gratuit). */
 export function contenuGuide(id: GuideId, prenom: string, complet: boolean) {
   const g = GUIDES.find((x) => x.id === id) ?? GUIDES[0];

@@ -231,3 +231,34 @@ export function ChoixUsage({ id, famille }: { id: string; famille: "particulier"
     </fieldset>
   );
 }
+
+/** Accessibilité : options d'affichage de l'espace (enregistrées dans profils.reglages). Les favoris sont désactivés par défaut. */
+export function ChoixAccessibilite({ id, reglages }: { id: string; reglages: Record<string, unknown> }) {
+  const router = useRouter();
+  const [favoris, setFavoris] = useState(reglages.favoris === true);
+  const [etat, setEtat] = useState("");
+  const basculer = async () => {
+    const suivant = !favoris;
+    setFavoris(suivant);
+    setEtat("");
+    const { error } = await supabaseNavigateur().from("profils").update({ reglages: { ...reglages, favoris: suivant }, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) {
+      setFavoris(!suivant);
+      return setEtat("Enregistrement impossible, réessayez.");
+    }
+    setEtat(suivant ? "Favoris activés : l'étoile apparaît sur les annonces et les rapports." : "Favoris désactivés.");
+    router.refresh();
+  };
+  return (
+    <div className="grid gap-3">
+      <label className="flex cursor-pointer items-start justify-between gap-4 rounded-2xl border border-line p-4">
+        <span>
+          <span className="block font-medium">Favoris</span>
+          <span className="block text-sm text-ink-3">Une étoile sur les annonces, les recherches et les rapports, et une page Favoris dans le menu, pour mettre des voitures de côté.</span>
+        </span>
+        <input type="checkbox" role="switch" checked={favoris} onChange={basculer} className="mt-1 size-5 shrink-0 accent-[#ff5a1f]" />
+      </label>
+      <p role="status" className="text-sm text-ink-3">{etat}</p>
+    </div>
+  );
+}
