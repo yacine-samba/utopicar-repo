@@ -17,10 +17,15 @@ Deux mondes séparés : le **site public** (`src/app/(site)/`, en-tête « Benef
 | `/analyse` | Outil particulier pour les visiteurs (première analyse offerte, compte demandé pour voir le résultat). |
 | `/guide` | Les 4 guides : 2 chapitres offerts, la suite pour les acheteurs du guide et les abonnés Sérénité et Benef. Les anciens liens personnels reçus par email (lecture et désinscription, y compris `/benef/guide`) fonctionnent toujours. |
 | `/inscription`, `/connexion` | Comptes : email et mot de passe, lien de connexion, mot de passe oublié. Tout passe par la fonction Supabase `compte` (voir plus bas). |
-| `/app` | Espace connecté. Il s'adapte à l'usage : **particulier** (accueil avec le champ « collez le lien », mes analyses, guides, compte) ou **Benef** (tableau de bord, analyser, rapports, parc, rentabilité, comparer, recherche, guides, compte ; les modules hors formule affichent un cadenas). `/benefapp` y redirige. |
+| `/app` | Espace connecté. Il s'adapte à l'usage : **particulier** (accueil avec le champ « collez le lien », mes analyses, crédits) ou **Benef** (tableau de bord : parc et chiffres clés en haut, marge par voiture, recherche de marché, meilleures affaires et alertes du parc ; puis analyser, rapports, parc, recherche, messages Leboncoin, estimation de cote). Le profil (en bas du menu, formule à côté) mène aux paramètres et aux guides. Favoris : option à activer dans Profil › Accessibilité. Tri rapide, comparateur et alertes séparées sont retirés du menu (code gardé) ; la rentabilité est sur `/benef`. `/benefapp` y redirige. |
+| Analyse en arrière-plan | Le bouton « Analyser une annonce » (menu, tableau de bord, à côté de l'étoile des favoris) ouvre une fenêtre : on colle un lien Leboncoin, La Centrale ou AutoScout24, l'analyse tourne pendant qu'on navigue, une notification annonce le rapport (`AnalysesEnFond`). |
+| `/app/parc/[id]` | Vue détaillée d'une voiture du parc : photos, chiffres, documents (CT, HistoVec, carte grise, cession…) et rapport complet. « Ajouter au parc » y mène. |
+| `/app/recherche` | Arrivée sur l'historique des recherches (avec les photos des annonces) ; « Chercher une annonce » ouvre le formulaire allégé (« Plus de filtres » pour le reste). L'alerte e-mail est un interrupteur sur chaque recherche. |
+| `/app/estimation` | Estimation de cote (formules Benef) : critères du véhicule, cote calculée sur la base d'annonces. La cote globale (`/app/cote`, graphique et relevés) et l'extension sont réservées au compte illimité. |
+| `/app/messages` | Option « Messages Leboncoin » de Benef Pro (45 €/mois) : premier message automatique aux annonces d'une recherche, boîte de réception. Voir plus bas. |
 | `/app/analyser` | L'outil d'analyse (particulier ou Benef selon l'espace). `?lien=` lance l'import du lien Leboncoin dès l'ouverture. |
 | `/app/rapports`, `/app/rapports/[id]` | Analyses et rapports enregistrés (`/analyse/[id]` y redirige). |
-| `/app/compte` | Formule, quota, changement de formule, usage (particulier ou Benef), profil, mot de passe, suppression du compte. `/compte` y redirige. |
+| `/app/compte` | Profil et paramètres : formule, quota, option Messages, « Utilisation d'Utopicar » (particulier ou Benef), mes guides (selon la formule), accessibilité (favoris), profil, mot de passe, e-mail, suppression du compte. `/compte` y redirige. |
 | `/legal` | Mentions, confidentialité, conditions d'utilisation, conditions de vente, accessibilité, contact. |
 
 Onboarding : une fenêtre de 3 questions s'ouvre à la première visite de `/`, `/benef` et `/tarifs`, puis recommande un parcours et une formule. Les réponses pré-remplissent l'inscription. Bouton « M'orienter en 3 questions » pour la rouvrir.
@@ -34,7 +39,8 @@ Onboarding : une fenêtre de 3 questions s'ouvre à la première visite de `/`, 
 | Sérénité | 9,99 €/mois | 30/mois | négociation, contrôle sur place, y aller seul ou accompagné, 6 photos, guides inclus |
 | Benef Starter | 14,99 €/mois | 30/mois | marge, offre, plafond, 20 derniers rapports, tableau de bord, guides |
 | Benef Croissance | 29 €/mois | 100/mois | historique complet, comparateur, 6 photos |
-| Benef Pro | 59 €/mois | 400/mois | tableau de bord complet, parc, recherche avancée, export CSV |
+| Benef Pro | 79 €/mois | 400/mois | tableau de bord complet, parc, recherche avancée, export CSV |
+| Option Messages Leboncoin | 45 €/mois | | en plus de Benef Pro : premier message automatique, boîte de réception |
 | Guides | 9 € une fois | | les 4 guides à vie |
 
 Les droits sont appliqués côté serveur : quotas dans `/api/analyse`, parties payantes retirées avant l'envoi au navigateur (`src/lib/analyse/filtre.ts`), parc protégé par une règle RLS (formule Pro). Les rapports Benef s'affichent complets par défaut, avec un bouton « Synthèse » (texte déjà rédigé par l'analyse).
@@ -64,7 +70,9 @@ Supabase n'envoie plus aucun email. La fonction **`compte`** (`../supabase/funct
 
 Une analyse n'est décomptée que si elle aboutit. La copie de l'extension Chrome (texte et photos) est reconnue au collage.
 
-**Import par lien (Leboncoin)** : on colle le lien de l'annonce, la fonction Supabase `annonce` lance l'acteur Apify
+**Messages Leboncoin (option de Benef Pro)** : fonction Supabase `messages`, appelée toutes les minutes par pg_cron. Une campagne = une recherche + un message ; chaque annonce Leboncoin de la dernière actualisation de la recherche reçoit le message une seule fois (table `lbc_envois`, unique par compte et annonce ; la boîte de réception ramène aussi les annonces déjà contactées sur Leboncoin). Une requête Apify (`clearpath/leboncoin-acheteur`) toutes les 2 minutes au plus pour tout le site. Les annonces qui refusent le démarchage sont ignorées par défaut (interrupteur par campagne). Mot de passe Leboncoin chiffré en base (pgcrypto, clé dans Supabase Vault, fonction `lbc_enregistrer`), déchiffré seulement par la fonction d'envoi au moment de l'appel. Réglages (table `reglages`) : `lbc_actif` (oui/non), `lbc_jusqu_au` (arrêt automatique des envois, réglé sur la fin de l'essai gratuit), `lbc_max_usd` (plafond par requête Apify, 1 $ par défaut : le passer à 30 pour laisser l'acteur activer son pass mensuel de 29 $). Option ouverte à la main : table `options_comptes` (`offerte` cochée).
+
+**Import par lien (Leboncoin, La Centrale, AutoScout24)** : on colle le lien de l'annonce, la fonction Supabase `annonce` lance l'acteur Apify
 `silentflow~leboncoin-details-scraper-ppr` (jeton `apify_token` de la table `reglages`, jamais côté navigateur), renvoie
 l'annonce et jusqu'à 6 photos, puis l'analyse démarre toute seule. Environ une minute, environ 0,001 $ par annonce.
 Réservé aux personnes connectées, 30 imports par jour et par personne (table `imports_annonces`).

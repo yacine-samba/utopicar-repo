@@ -1,5 +1,6 @@
-// Import d'une annonce Leboncoin par son lien : l'acteur Apify « Leboncoin Ad Details Scraper » lit l'annonce,
-// la fonction renvoie l'annonce (format Leboncoin) et jusqu'à 6 photos, prêtes à analyser.
+// Import d'une annonce par son lien : Leboncoin (acteur « Leboncoin Ad Details Scraper »), La Centrale (memo23/lacentrale-scraper)
+// ou AutoScout24 (blackfalcondata/autoscout24-scraper). La fonction renvoie l'annonce au format Leboncoin (celui que lit l'outil),
+// jusqu'à 6 photos prêtes à analyser et les liens de 30 photos au plus pour le rapport.
 // Réservé aux personnes connectées (jeton de session vérifié ici), 30 imports par jour et par personne.
 // Le jeton Apify reste dans la table `reglages` : il n'apparaît jamais côté navigateur.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";

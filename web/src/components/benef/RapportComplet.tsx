@@ -3,7 +3,7 @@
    Illimité et Pro voient tout ; les formules plus basses voient une version réduite (sections sous cadenas). */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import type { Analyse, ParamsPro } from "@/lib/analyse/couts";
 import { eur } from "@/lib/analyse/couts";
 import { calculDeal, postesDepart, type Poste } from "@/lib/analyse/deal";
