@@ -1,1 +1,1 @@
-MO4 banque (musique kmVol, 120 → 120 BPM, drop du morceau sur 6.0 s) : -14.0 LUFS · true peak -3.8 dBTP · tension -18.3 LUFS → élan -11.7 LUFS · première seconde -17.6 LUFS
+MO4 banque Mixkit (musique user, 123 → 120 BPM, drop du morceau sur 6.0 s) : -14.0 LUFS · true peak -3.6 dBTP · tension -15.1 LUFS → élan -13.7 LUFS · première seconde -12.8 LUFS
