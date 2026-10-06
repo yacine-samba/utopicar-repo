@@ -82,7 +82,7 @@ put(sfx, S(2357), E['kicker'] + 0.02, 0.28); put(sfx, S(2356), E['button'] + 0.0
 put(sfx, S(2568), E['tapEnd'], 0.65); put(sfx, S(2580), E['tapEnd'] + 0.06, 0.3)
 
 # ---------- mix et master ----------
-mix = mus * 0.6 + sfx * 0.85
+mix = mus * (0 if os.environ.get('SANS_MUSIQUE') else 0.6) + sfx * 0.85   # SANS_MUSIQUE=1 : bruitages seuls
 mix = sosfilt(butter(4, 70, 'high', fs=SR, output='sos'), mix, axis=0)
 meter = pyln.Meter(SR); tp = lambda x: 20 * np.log10(np.abs(resample_poly(x, 4, 1, axis=0)).max() + 1e-12); L = int(0.005 * SR)
 for _ in range(12):
