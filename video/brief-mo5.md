@@ -87,10 +87,10 @@ centre de contrôle technique, chambre éclairée par un téléphone), et par-de
 générique, inventée, sans nom ni logo de banque.
 
 **Charte** (celle du site, sans logo) : fond #0b0a09 → #17100b · orange #ff5a1f, #ff8a4c, #ffb38a, seule couleur
-d'accent · Clash Display pour les chiffres géants et les mots clés · Instrument Serif italique en dégradé orange pour
-le mot porteur (« d'accord », « l'envers ») · chiffres tabulaires pour le compteur. Le halo reste sur les sources de
-lumière (phares, écran du téléphone sur les mains, lumière chaude du retournement), jamais sur un texte ni une
-notification (règles de `video/CLAUDE.md`).
+d'accent · Clash Display pour les chiffres géants et les mots clés · Fraunces italique (choisie le 6 octobre parmi 7 serifs, planche `renders/review/mo5-serifs.jpg`) en dégradé orange pour
+le mot porteur (« d'accord », « l'envers ») · chiffres tabulaires pour le compteur. Sur ta demande du 6 octobre, MO5 passe outre la règle « pas de glow sur l'interface » de `video/CLAUDE.md` :
+notifications et compteur en verre dépoli, lueurs orange derrière les chiffres, reflets, caméra en 3D avec
+profondeur de champ et flou de bougé. La voiture est ta Polo, détourée (`assets/photos-mo5/`).
 
 **Images et vidéos réelles** (des mains, jamais de visage, plaques floutées, logos de marques hors champ) :
 
