@@ -61,7 +61,7 @@ W = {0.07: (1492, .55), 1.63: (166, .3), 2.08: (1490, .55), 3.52: (3120, .5), 6.
      10.10: (3005, .45), 12.12: (166, .35), 13.30: (166, .25), 14.57: (1490, .5)}
 for pk, a_, b_ in MOVES: i, gn = W[pk]; whoosh(i, pk, a_, b_, gn)
 put(sfx, S(2909), 0.0, 0.7)                                                   # le point éclate
-for t in E['hook']: put(sfx, S(1109), t + 0.03, 0.22)                         # chaque mot
+for t in E['hook']: put(sfx, S(1109), t + 0.03, 0.14)                         # chaque mot
 put(sfx, S(2577), E['press'], 0.35)                                           # appui long
 put(sfx, S(1120), E['paste'], 0.6)                                            # le doigt touche le champ : collage
 put(sfx, S(2573), E['enable'] + 0.02, 0.4)                                    # le bouton s'allume
@@ -69,20 +69,43 @@ put(sfx, S(2568), E['tap'], 0.65)                                             # 
 for t in E['steps']: put(sfx, S(1107), t + 0.02, 0.45)                        # chaque coche
 rev = load('sfx-1486.mp3')[::-1]; rev = rev[-int(1.0 * SR):]                  # montée inversée vers le pivot
 put(sfx, rev, PIVOT - 0.12 - len(rev) / SR, 0.45)
-put(sfx, S(2901), PIVOT, 0.75)                                                # pivot : la fiche se révèle
+put(sfx, S(2901), PIVOT, 1.0)                                                # pivot : la fiche se révèle
 put(sfx, S(2357), E['pill'], 0.45); put(sfx, S(914), 6.98, 0.45)              # « Bon prix », 8/10
 for t in E['rows']: put(sfx, S(2356), t + 0.02, 0.38)                         # chaque ligne
-put(sfx, S(2919), E['pop'], 0.55)                                             # le prix sort de la carte
+put(sfx, S(2919), E['pop'], 0.85)                                             # le prix sort de la carte
 put(sfx, S(2357), E['affiche'] + 0.02, 0.3)
 put(sfx, fadeout(load('sfx-1486.mp3')[::-1][-int(0.45 * SR):]), E['collapse'] - 0.42, 0.4)
-put(sfx, S(2350), E['trail'], 0.5); put(sfx, S(869), E['trail'] + 0.35, 0.3)  # la traînée dessine
+put(sfx, S(2350), E['trail'], 0.45); put(sfx, S(869), E['trail'] + 0.35, 0.3)  # la traînée dessine
 put(sfx, S(2909), E['fill'], 0.45)                                            # le symbole se remplit
-for t in E['slogan']: put(sfx, S(1109), t + 0.03, 0.18)
+for t in E['slogan']: put(sfx, S(1109), t + 0.03, 0.12)
 put(sfx, S(2357), E['kicker'] + 0.02, 0.28); put(sfx, S(2356), E['button'] + 0.02, 0.3)
 put(sfx, S(2568), E['tapEnd'], 0.65); put(sfx, S(2580), E['tapEnd'] + 0.06, 0.3)
 
-# ---------- mix et master ----------
-mix = mus * (0 if os.environ.get('SANS_MUSIQUE') else float(os.environ.get('MUS_GAIN', 0.6))) + sfx * 0.85   # SANS_MUSIQUE=1 : bruitages seuls
+# ---------- mix : automation de la musique, ducking, dynamique ----------
+def autom(keys, n=N):            # courbe par points (temps, valeur), interpolée
+    t = np.arange(n) / SR; ts, vs = zip(*keys); return np.interp(t, ts, vs)
+def sweep_lp(x, cut):            # passe-bas dont la coupure suit la courbe cut (blocs de 512 échantillons)
+    out = np.zeros_like(x); zi = None; B_ = 512
+    for i in range(0, len(x), B_):
+        c = float(np.clip(cut[i], 120, 19000)); sos = butter(2, c, 'low', fs=SR, output='sos')
+        if zi is None: zi = np.zeros((sos.shape[0], 2, x.shape[1]))
+        out[i:i + B_], zi = sosfilt(sos, x[i:i + B_], axis=0, zi=zi)
+    return out
+P = PIVOT
+# tension : musique étouffée qui s'ouvre peu à peu ; vide avant le pivot ; pleine sur l'élan ;
+# creux avant le prix puis retour ; respiration pendant la traînée (les bruitages passent devant) ; retour sur le symbole
+cut = autom([(0, 900), (2.0, 1400), (3.5, 2400), (5.5, 6000), (5.85, 9000), (P, 19000), (9.3, 19000), (9.95, 2500),
+             (10.0, 19000), (10.9, 19000), (11.1, 700), (11.9, 1800), (11.98, 19000), (14.3, 19000), (15, 1500)])
+gain_db = autom([(0, -7), (1.9, -6), (2.1, -8), (3.4, -6), (5.6, -3), (5.86, -2), (5.88, -40), (5.99, -40), (P, 0), (9.3, -1),
+                 (9.95, -7), (10.0, 0), (10.85, -1), (11.05, -13), (11.9, -9), (11.98, 0), (14.4, -1), (15, -30)])
+m = sweep_lp(mus, cut) * (10 ** (gain_db / 20))[:, None]
+# ducking : la musique s'efface sous chaque bruitage (attaque 5 ms, relâchement 180 ms, jusqu'à −6 dB)
+env_ = uniform_filter1d(np.abs(sfx).max(1), int(0.01 * SR)); env_ = env_ / (env_.max() + 1e-9)
+g = np.zeros(N); a_, r_ = np.exp(-1 / (0.005 * SR)), np.exp(-1 / (0.18 * SR)); y_ = 0.0
+for i in range(N): x_ = env_[i]; k_ = a_ if x_ > y_ else r_; y_ = k_ * y_ + (1 - k_) * x_; g[i] = y_
+m *= (10 ** (-6 * np.clip(g * 1.6, 0, 1) / 20))[:, None]
+musg = 0 if os.environ.get('SANS_MUSIQUE') else float(os.environ.get('MUS_GAIN', 1.0))
+mix = m * musg + sfx * 0.8
 mix = sosfilt(butter(4, 70, 'high', fs=SR, output='sos'), mix, axis=0)
 meter = pyln.Meter(SR); tp = lambda x: 20 * np.log10(np.abs(resample_poly(x, 4, 1, axis=0)).max() + 1e-12); L = int(0.005 * SR)
 for _ in range(12):
