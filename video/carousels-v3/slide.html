@@ -127,6 +127,12 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0b0a09}
 .swipe span{font-weight:700;font-size:38px;color:var(--ink);border:2px solid var(--line2);background:var(--glass);border-radius:999px;padding:14px 34px}
 .relance{position:absolute;left:140px;top:1350px;width:800px;display:flex;justify-content:center}
 .relance span{font-weight:700;font-size:34px;line-height:1.25;color:var(--o3);border:2px solid rgba(255,90,31,.35);background:rgba(255,90,31,.08);border-radius:999px;padding:14px 32px;text-align:center;max-width:800px}
+/* vraie voiture détourée (photo Pexels, crédit en bas d'image) */
+.car{position:relative;width:800px;display:flex;justify-content:center;margin-top:6px}
+.car img{width:100%;height:auto;display:block;filter:drop-shadow(0 44px 38px rgba(0,0,0,.6))}
+.car::after{content:'';position:absolute;left:8%;right:8%;bottom:-26px;height:70px;z-index:-1;background:radial-gradient(ellipse at center,rgba(255,90,31,.32),transparent 70%)}
+.car.md{width:600px}
+.credit{position:absolute;left:140px;top:1446px;width:800px;text-align:center;font-weight:500;font-size:20px;color:var(--ink3);opacity:.75;white-space:nowrap}
 /* image 5 */
 .end .tile{width:150px;height:150px;border-radius:42px}
 .cta{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.01em;line-height:1.25;white-space:nowrap}
@@ -195,6 +201,13 @@ if (LAST) {
   for (const c of SL.comp || []) comp(c, box);
   if (SL.body2) el('div', 'body', box, md(SL.body2));
   if (SL.compFirst && box.querySelector('.title')) { const first = box.lastElementChild; box.insertBefore(first, box.querySelector('.kicker') || box.querySelector('.title')); }
+  // la voiture : en grand sous l'accroche, plus petite sur une image sans autre visuel
+  const CAR = C.car && (N === 0 || !(SL.comp || []).length) && SL.car !== false;
+  if (CAR) {
+    const w = el('div', N === 0 ? 'car' : 'car md', box, `<img src="${C.car.src}">`);
+    await w.querySelector('img').decode();
+    if (C.car.credit) el('div', 'credit', S, md(C.car.credit));
+  }
   if (N === 0) el('div', 'swipe', S, '<span>Glisse →</span>');
   // pas de pastille « Image 4 : … » (retirée à la demande de l'utilisateur)
 }

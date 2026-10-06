@@ -11,10 +11,13 @@ Tous les chiffres à l'écran sont calculés par l'outil lui-même.
 | v1 | historique git (`e9e81bb`) | écran complet de l'app, 9 titres, rythme rapide |
 | v2 | `renders/9x16.mp4` | minimaliste : un titre et un extrait du site par plan, musique calme |
 | **v3** | **`renders/9x16-launch.mp4`** | **lancement cinématographique monochrome d'après la référence 1** : 3D (Three.js), profondeur de champ, halo, grain, texte fin mot à mot, sound design original, 24 i/s ; le jaune UTOPICAR est la seule couleur du film |
-
 | v4 | `renders/9x16-saas.mp4` | film produit 30 s d'après la référence 2 : mosaïque, mot-symbole tracé puis extrudé, survols 3D |
 | **v5** | **`renders/9x16-explainer.mp4`** | **explicatif 60 s d'après la référence 3** : grille blanche, phrases tapées, chapitres « mot géant + interrupteur », curseur sur la vraie UI, chiffres géants, Sans / Avec, récap, pastille logo |
 | **v6** | **`renders/9x16-chat.mp4`** | **« conversation » 60 s d'après la référence 4** : recherche tapée, phrases adressées au spectateur, anneau, essaim, fenêtre inclinée, panneaux pastel par fonction, pause noire, kaléidoscope, bouton cliqué |
+| **MO4** | **`renders/9x16-mo4.mp4`** | **motion fluide 15 s sans voix, d'après 9 références mesurées** (`docs/ref_motion_fluide.md`) : vraie interface du site et vraie annonce Clio, chaîne sans coupe (annonce → champ → bouton → fiche → prix → point orange), caméra 3D continue, doigt, flou de bougé au rendu, boucle. Brief : `brief-mo4.md` |
+
+Refaire MO4 : `python3 scripts/audio-mo4.py && CUT=mo4 MB=8 node scripts/render.mjs --all` (≈ 25 min : le flou de bougé capture
+8 sous-images par image sur les gestes rapides). Mesurer la fluidité d'un rendu : `python3 scripts/ref-motion.py renders/9x16-mo4.mp4 --out renders/motion`.
 
 v5 et v6 utilisent le **logo fourni par l'utilisateur** (retracé en vecteur : `assets/brand/logo.svg`) et son orange
 `#FF5A1F` comme accent. Calques d'UI supplémentaires : `node scripts/capture2.mjs` → `assets/ui2/`.

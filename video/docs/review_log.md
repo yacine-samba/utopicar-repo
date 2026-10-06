@@ -401,3 +401,42 @@ aucun plan figé. Son mesuré, pas écouté.
   pendant 0,5 s (l'image vignette) → centré dès l'image 0, il vit en place (flou, échelle) ; mesuré x 177–926 sur
   toute l'ouverture. Plage 0–4,4 s incrustée. Le WARN restant à 0–0,5 s vient des lignes de vitesse (décor).
   C : aucun problème trouvé ; mêmes WARN transitoires que A.
+
+## MO4 (`film-mo4/`) : motion fluide de 15 s sans voix, d'après 9 références
+Brief : `brief-mo4.md`. Analyse des 9 références et mesures de fluidité : `docs/ref_motion_fluide.md`
+(`scripts/ref-frames.py` et nouveau `scripts/ref-motion.py`, flux optique). Vraie interface du site (Demo.tsx,
+formulaire /analyse, globals.css), vraie annonce Clio analysée par l'outil. Flou de bougé par sur-échantillonnage au
+rendu (`MB=8`, `window.shutter`, `window.samples`).
+- Round 1 (images clés, avant rendu) : carte annonce qui descendait sous la zone sûre du bas (photo ramenée à 510 px),
+  textes du haut qui se chevauchaient pendant les changements (sorties avancées), gros plan des étapes qui coupait
+  « Recherche des 38 défauts qui coûtent cher » à droite (zoom 1,30 → 1,18), fiche vide pendant 1 s avant les lignes
+  (la fiche grandit maintenant ligne par ligne).
+- Round 2 (premier MP4, `qa_video.py`, `review.py`, `ref-motion.py`) :
+  - `6 250 €` dans la zone des boutons TikTok pendant la plongée (zoom 1,28) → zoom limité à 1,08 et caméra décalée,
+    mise au point par contraste (les autres lignes s'assombrissent, la ligne « Prix à proposer » s'allume) ;
+  - 0,1 s presque vide à 3,6 s (fiche ouverte, contenu pas encore entré) → en-tête et étapes entrent plus tôt, le
+    formulaire s'efface plus lentement ;
+  - son trop grave pour un téléphone (57 % de l'énergie sous 150 Hz) → basse une octave plus haut, grosse caisse plus
+    courte, coupure à 80 Hz : 22 % sous 150 Hz ;
+  - fluidité mesurée encore loin des références verticales : 44 % d'images en mouvement (réf. 81–94 %), 46 % de
+    pauses (plus longue 1,95 s), flou de bougé 0,91 (réf. 0,22–0,49) → orbite de caméra permanente, y compris sur le
+    plan final et la sortie du prix ; obturateur à 180° sur tout le film (4 sous-images), 360° sur les gestes rapides
+    (8 sous-images) ; rendu en 3 morceaux parallèles.
+- Round 3 (deuxième MP4 : `qa_video.py` tout au vert ; puis brouillons 540p mesurés avec `ref-motion.py`) :
+  l'orbite de ±16 px ne se voyait pas à la mesure (48 % d'images en mouvement) car le fond est un aplat : seul le
+  contenu porte le mouvement. Travellings continus par scène, réglés sur brouillon :
+  - accroche : poussée lente et rotation déjà lancées pendant la question ;
+  - étapes : la caméra glisse le long de la liste au lieu de s'arrêter à chaque coche ;
+  - fiche : gros plan sur le verdict, puis recul pendant que les lignes arrivent ;
+  - prix posé : il continue de venir vers nous ;
+  - fin : le symbole se dessine en grand au centre puis remonte au-dessus du slogan ; poussée continue et orbite propre
+    à la fin. Marge de 5 % pour que l'orbite ne pousse aucun texte hors de la colonne 140 → 940.
+  Brouillon mesuré : 61 % d'images en mouvement (r1 : 44 %), plus longue pause 0,85 s (r1 : 1,95 s ; réf. 0,5–1,6 s),
+  à-coups 0,074 (réf. 0,09–0,10 ; nos anciens films 0,14–0,26).
+- Round 4 (rendu final, flou de bougé, 3 morceaux parallèles) : `qa_video.py` tout au vert (−14,3 LUFS, −4,0 dBTP,
+  zones sûres, aucune image vide, aucun plan figé, 23 % sous 150 Hz). Fluidité : 59 % d'images en mouvement,
+  plus longue pause 1,02 s, à-coups 0,07, flou de bougé 0,52 (r1 : 0,91). Couverture déplacée à 1,48 s : à 1,7 s le
+  doigt cachait la fin du titre de l'annonce.
+  Notes : hook 8, clarté 8, lisibilité 360 px 8, zones sûres 9, mouvement 8, variété 9, marque 9, son 8 (mesuré, pas
+  écouté), conformité 8. Reste en dessous des références : la part d'images en mouvement (59 % contre 81–94 %), car le
+  fond du site est un aplat.
