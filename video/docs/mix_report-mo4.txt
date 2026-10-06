@@ -1,1 +1,1 @@
-MO4 : 15.00 s · -14.3 LUFS intégrés · true peak -4.2 dBTP (WAV) · 2 premières secondes -17.5 LUFS
+MO4 banque Mixkit (musique 623, 125.0 → 120 BPM, départ 178.15 s) : -14.0 LUFS · true peak -3.6 dBTP
