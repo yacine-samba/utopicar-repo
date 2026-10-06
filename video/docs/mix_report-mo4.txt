@@ -1,1 +1,4 @@
-MO4 banque Mixkit (musique user, 123 → 120 BPM, drop du morceau sur 6.0 s) : -14.0 LUFS · true peak -3.7 dBTP · tension -15.8 LUFS → élan -13.1 LUFS · première seconde -14.0 LUFS
+MO4 sound design : -14.0 LUFS · true peak -3.6 dBTP
+musique : Controlled Drop, 123.05 → 120 BPM, extrait 100.50–117.11 s du morceau, drop à 107.3 s posé sur 6.0 s
+niveaux RMS : tension -18.0 dB · vide -34.6 · élan -14.5 · prix -16.7 · traînée -14.4 · fin -15.0
+26 bruitages placés, 2 écartés (collision avec un son prioritaire) : 1492@0.07, 2356@7.02
