@@ -19,7 +19,7 @@ CTA : aucun, ni dit ni écrit                Type / durée : motion design narra
 Référence : qonto (liste et montants qui sortent de l'écran) et tiktok-v2 (réel → graphique), à 60 i/s
 Voix : oui · FR · homme, 25-35 ans, le pote qui en a déjà revendu cinquante, pince-sans-rire · casting à l'étape 4
 Musique : groove tendu vers 110 BPM, chaque débit joue une note qui descend · source choisie à l'étape 2
-Ouvertures : A = « revente moins achat » / B = « 47 € pour 46 heures » (0-3,5 s, même corps)
+Ouvertures : A = « revente moins achat » / B = « 1 500 € prévus, 47 € à l'arrivée » (0-3,5 s, même corps)
 Format : 9:16, 1080×1920, 60 i/s           Données : un exemple chiffré, prix moyens sourcés, mention à l'écran
 Livrables : 2 MP4 (A et B) + couverture + sous-titres SRT + pistes voix, musique, bruitages
 Interdits : produit, logo, CTA, morale, promesse de gain, visages, plaques, logos de marques, de banques et de plateformes
@@ -47,7 +47,7 @@ et la négociation mangent la marge, et elle se décide le jour de l'achat, en p
 | | Levier | Voix | Texte à l'écran | Image |
 |---|---|---|---|---|
 | A | Croyance → vérité | « Tu l'achètes 3 500, tu la revends 5 000. Ton compte en banque n'est pas d'accord. » | 5 000 − 3 500 = 1 500 € ? | Le calcul en chiffres géants ; une notification « − 280 € » le percute. |
-| B | Coût caché, résultat d'abord | « Ta première voiture en achat-revente va te rapporter 47 €. Pour 46 heures de travail. » | 47 € pour 46 h | Le chiffre 47 au compteur à rouleaux, une horloge qui tourne derrière. |
+| B | Coût caché, résultat d'abord | « Ta première voiture en achat-revente : 1 500 € de marge prévue. 47 € à l'arrivée. » | 1 500 € prévus. 47 € encaissés. | Le compteur à rouleaux part de 1 500 et dégringole jusqu'à 47. |
 | C | Ciblage | « Tu débutes en achat-revente ? Revente moins achat, c'est le calcul qui plombe ta première voiture. » | Le calcul qui plombe ta 1re voiture | La formule écrite à la craie, une fissure la traverse. |
 | D | Phrase impossible à ignorer | « Ta marge, tu la gagnes le jour où tu achètes. Le jour de la revente, il est trop tard. » | Ta marge se joue à l'achat | Deux dates dans un calendrier, la première s'allume. |
 | E | Démonstration | « Moins 280. Moins 110. Moins 260. Ta première voiture, vue de ton appli bancaire. » | Ta 1re voiture, vue de ta banque | Pluie de notifications de débit, sans contexte, dès l'image 0. |
@@ -76,7 +76,7 @@ remplacer par des prix moyens sourcés ; une mention « Exemple · prix moyens c
 | 3,5-6,0 s · **jour 1, l'achat** | Des mains échangent des clés devant une citadine (vidéo). Le résultat devient un compteur à rouleaux : « Marge : 1 500 € ». | « Jour 1. Tu l'achètes. » Clés, rouleaux qui s'enclenchent. | Joie, l'élan du débutant |
 | 6,0-13,5 s · **la pluie de débits** | Les notifications tombent dans la profondeur et s'empilent, chacune avec sa vidéo dedans : carte grise, contrôle technique et contre-visite, pneus, vidange et plaquettes, nettoyage, essence des visites. À chaque débit, une étiquette en papier se colle sur la voiture. La marge roule : 1 500 → 520 €. | « Carte grise. Contrôle technique. Pneus. Et six allers-retours pour des visites. » Un débit par temps, chacun sur une note plus basse. | Peur qui monte, humour (une notification « Kebab, après la 4e visite ») |
 | 13,5-17,5 s · **l'attente** | Calendrier à palettes de J+1 à J+23, qui accélère. Le téléphone posé, écran allumé, aucun appel. Le ciel passe du jour à la nuit derrière (vidéo accélérée). Assurance : − 40 €. | « Et là, personne n'appelle. » Palettes, tic-tac, silence du téléphone. | Peur |
-| 17,5-20,5 s · **la revente** | Un message : « 4 600 € et je la prends aujourd'hui. » Tu acceptes. La marge tombe à 47 €, puis « 46 h passées » s'affiche à côté. | « Il négocie. Tu acceptes. Bénéfice : 47 €. Un euro de l'heure. » | Humour, la chute |
+| 17,5-20,5 s · **la revente** | Un message : « 4 600 € et je la prends aujourd'hui. » Tu acceptes. La marge tombe à 47 €. | « Il négocie. Tu acceptes. Bénéfice : 47 €. Même pas un plein. » | Humour, la chute |
 | 20,5-26,0 s · **le calcul à l'envers** | Rembobinage à fente jusqu'au jour 1 : les étiquettes se décollent, les notifications remontent. La formule s'écrit lettre par lettre : « Revente − frais − marge voulue = prix max ». Les chiffres s'y glissent : 5 000 − 1 450 − 800 = 2 750 €. L'annonce à 3 500 € se barre. La lumière passe du froid au chaud. | « Ceux qui gagnent font le calcul à l'envers. Ici, ton prix max, c'est 2 750. À 3 500, tu passes ton tour. » Rembobinage, puis quatre notes qui montent. | Questionnement, puis joie |
 | 26,0-28,0 s · **la boucle** | Retour au calcul géant de l'image 0. | « Alors la prochaine fois que tu te dis… », qui enchaîne à la relecture sur « Tu l'achètes 3 500, tu la revends 5 000. » | Boucle |
 
@@ -142,7 +142,7 @@ On ne demande rien à l'écran. Quatre ressorts poussent le spectateur à agir :
   en un passage.
 - **Enregistrer** : la liste des frais d'une première voiture et la formule du prix max, à ressortir avant
   d'appeler un vendeur.
-- **Envoyer** : « 47 € pour 46 heures » et la notification kebab se partagent au pote qui parle de se lancer.
+- **Envoyer** : « 47 €, même pas un plein » et la notification kebab se partagent au pote qui parle de se lancer.
 - **Commenter** : chacun voudra donner ses propres frais oubliés.
 
 ## Ce qu'on regarde après publication
