@@ -24,7 +24,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
 .lit{filter:drop-shadow(0 0 26px rgba(255,120,50,.35)) drop-shadow(0 0 2px rgba(255,200,170,.6))}
 .glass{position:absolute;border-radius:36px;background:linear-gradient(140deg,rgba(255,255,255,.20),rgba(255,255,255,.05) 45%,rgba(255,255,255,.08));-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);border:1.5px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -20px 40px rgba(0,0,0,.18),0 40px 80px rgba(0,0,0,.55);overflow:hidden}
 .glass::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.18) 42%,transparent 52%);pointer-events:none}
-.mention{position:absolute;left:540px;top:1448px;transform:translateX(-50%);font:500 22px Satoshi;color:rgba(246,239,231,.5);white-space:nowrap}
+.mention{position:absolute;left:540px;top:1446px;transform:translateX(-50%);font:500 22px Satoshi;color:rgba(246,239,231,.5);white-space:nowrap}
 /* palette du compte à rebours (procédé MO5) */
 .flap{position:absolute;left:540px;top:236px;width:196px;height:236px;margin-left:-98px;border-radius:26px;display:flex;align-items:center;justify-content:center;font:700 196px/1 Clash;color:var(--ink)}
 .flap i{position:absolute;left:0;right:0;top:50%;height:3px;background:rgba(0,0,0,.55)}
@@ -34,9 +34,9 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
 .model{position:absolute;left:540px;top:1128px;transform:translateX(-50%);text-align:center;white-space:nowrap}
 .model .m{font:700 84px/1 Clash;letter-spacing:-.01em}
 .model .e{margin-top:14px;font:700 30px Satoshi;letter-spacing:3px;color:rgba(246,239,231,.62)}
-.cost{position:absolute;left:540px;top:1272px;transform:translateX(-50%);display:flex;align-items:baseline;gap:20px;white-space:nowrap}
+.cost{position:absolute;left:540px;top:1308px;transform:translateX(-50%);display:flex;align-items:baseline;gap:20px;white-space:nowrap}
 .cost .j{font:500 36px Satoshi;color:rgba(246,239,231,.7)}
-.cost .n{font-size:128px;line-height:1}
+.cost .n{font-size:110px;line-height:1}
 /* étiquette de défaut : pastille de verre + fil de lumière vers le point */
 .pin{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(#fff,#ffb38a 40%,rgba(255,90,31,0) 70%);box-shadow:0 0 24px 8px rgba(255,110,40,.55)}
 .pill{position:absolute;padding:14px 28px 16px 26px;border-radius:999px;white-space:nowrap;display:flex;align-items:baseline;gap:14px}
@@ -45,6 +45,11 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
 .leads{position:absolute;inset:0;pointer-events:none;overflow:visible}
 .car path,.car circle,.car line{fill:none;stroke:var(--xr);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .car .dim{stroke:rgba(255,210,184,.38);stroke-width:1.8}
+.strip{position:absolute;left:110px;width:860px;border-radius:28px;overflow:hidden;background-size:cover;border:1.5px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 30px 60px rgba(0,0,0,.55)}
+.strip::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,7,10,.92) 0%,rgba(8,7,10,.55) 38%,rgba(8,7,10,0) 62%),linear-gradient(115deg,transparent 40%,rgba(255,255,255,.10) 50%,transparent 60%)}
+.strip .t{position:absolute;left:40px;top:50%;transform:translateY(-50%);z-index:1;white-space:nowrap}
+.strip .t .m{font:700 64px/1 Clash}.strip .t .e{margin-top:12px;font:700 24px Satoshi;letter-spacing:3px;color:rgba(246,239,231,.65)}
+.strip .num{position:absolute;left:34px;top:50%;transform:translateY(-50%);z-index:1;font:700 64px/1 Clash;color:rgba(246,239,231,.9)}
 .lbl{position:absolute;transform:translate(-50%,0);font:700 24px Satoshi;letter-spacing:4px;color:rgba(246,239,231,.7);white-space:nowrap}
 </style>
 <script type="importmap">{"imports":{"three":"../node_modules/three/build/three.module.js","three/addons/":"../node_modules/three/examples/jsm/"}}</script>
@@ -73,7 +78,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
   <div class="flap glass"><span>5</span><i></i></div>
   <svg class="leads"></svg>
   <div class="pill glass" data-to="a0" style="left:610px;top:900px"><span class="k">la chaîne</span><span class="v serif">s'allonge</span></div>
-  <div class="model"><div class="m ext">BMW 116i</div><div class="e">1.6 N13 · 2011 – 2015</div></div>
+  <div class="strip" data-ph="bmw" style="top:1110px;height:190px;background-size:cover"><div class="t"><div class="m ext">BMW 116i</div><div class="e">1.6 N13 · 2011 – 2015</div></div></div>
   <div class="cost"><span class="j">jusqu'à</span><span class="n ext lit">5 000 €</span></div>
   <div class="mention">Coûts : ordres de grandeur relevés · presse spécialisée et propriétaires</div>
 </section>
@@ -84,7 +89,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
   <div class="flap glass"><span>3</span><i></i></div>
   <svg class="leads"></svg>
   <div class="pill glass" data-to="a0" style="left:560px;top:1000px"><span class="k">il</span><span class="v serif">chauffe</span></div>
-  <div class="model"><div class="m ext">Ford 1.0 EcoBoost</div><div class="e">FIESTA · FOCUS · 2011 – 2018</div></div>
+  <div class="strip" data-ph="fiesta" style="top:1110px;height:190px;background-size:cover"><div class="t"><div class="m ext">Ford 1.0 EcoBoost</div><div class="e">FIESTA · FOCUS · 2011 – 2018</div></div></div>
   <div class="cost"><span class="j">jusqu'à</span><span class="n ext lit">7 000 €</span></div>
   <div class="mention">Coûts : ordres de grandeur relevés · presse spécialisée et propriétaires</div>
 </section>
@@ -96,7 +101,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
   <svg class="leads"></svg>
   <div class="pill glass" data-to="a0" style="left:150px;top:540px"><span class="k">la courroie</span><span class="v serif">s'effrite</span></div>
   <div class="pill glass" data-to="a1" style="left:610px;top:560px"><span class="k">crépine</span><span class="v serif">bouchée</span></div>
-  <div class="model"><div class="m ext">1.2 PureTech</div><div class="e">208 · 2008 · 308 · 2013 – 2022</div></div>
+  <div class="strip" data-ph="p208" style="top:1110px;height:190px;background-size:cover"><div class="t"><div class="m ext">1.2 PureTech</div><div class="e">208 · 2008 · 308 · 2013 – 2022</div></div></div>
   <div class="cost"><span class="j">courroie</span><span class="n ext lit">≈ 500 €</span></div>
   <div class="mention">Coûts : ordres de grandeur relevés · presse spécialisée et propriétaires</div>
 </section>
@@ -106,7 +111,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
   <div class="no" style="left:286px">N°</div>
   <div class="flap glass"><span>6</span><i></i></div>
   <svg id="chute" class="abs" style="left:0;top:0" width="1080" height="1920"></svg>
-  <div class="glass" style="left:190px;top:1010px;width:700px;height:400px;padding:38px 46px">
+  <div class="glass" style="left:190px;top:1030px;width:700px;height:400px;padding:38px 46px">
     <div style="font:700 24px Satoshi;letter-spacing:5px;color:rgba(246,239,231,.6)">FACTURE · 208 1.2 PURETECH</div>
     <div style="display:flex;justify-content:space-between;margin-top:30px;font:500 32px Satoshi;color:rgba(246,239,231,.85)"><span>Kit courroie + pompe à eau</span><span class="n" style="font-size:34px">322 €</span></div>
     <div style="display:flex;justify-content:space-between;margin-top:16px;font:500 32px Satoshi;color:rgba(246,239,231,.85)"><span>Main-d'œuvre</span><span class="n" style="font-size:34px">190 €</span></div>
@@ -180,27 +185,24 @@ document.querySelectorAll('.scene.on svg.ghost').forEach(svg => {
   const c = CARS[+svg.dataset.car], k = +svg.dataset.k, [bx, by] = svg.dataset.bay.split(',').map(Number), [ex, ey] = bay(c);
   svg.innerHTML = `<g class="car" transform="translate(${bx - ex * k} ${by - ey * k}) scale(${k})" style="filter:url(#lg)">${carSVG(c)}</g>`;
 });
+const PH = { bmw: ['car-bmw.jpg', '50% 52%'], golf: ['car-golf.jpg', '62% 60%'], fiesta: ['car-fiesta.jpg', '30% 62%'], captur: ['car-captur.jpg', '24% 52%'], p208: ['car-208.jpg', '50% 58%'] };
+const ph = k => `background-image:url(../assets/photos-mo8/${PH[k][0]});background-position:${PH[k][1]}`;
 if (S === '1') {
   const L = document.getElementById('lineup'); let h = '';
-  [0, 1, 2, 3, 4].forEach((ci, i) => {
-    const c = CARS[ci], y = i * 160, k = .86, [ex, ey] = bay(c), tx = 540 - 351 * k;
-    h += `<div class="glow" style="left:${tx + ex * k - 70}px;top:${y + ey * k - 50}px;width:110px;height:70px;background:rgba(255,90,31,${.45 + i * .05})"></div>`;
-    h += `<svg class="abs" style="left:0;top:${y}px;overflow:visible" width="1080" height="200"><g class="car" transform="translate(${tx} 0) scale(${k})" style="filter:url(#lg);opacity:${.5 + i * .06}">${carSVG(c)}</g>`
-      + `<circle cx="${tx + ex * k}" cy="${ey * k}" r="7" fill="#fff" style="filter:url(#lg2)"/></svg>`;
-    h += `<div class="n" style="position:absolute;left:96px;top:${y + 92}px;font-size:40px;color:rgba(246,239,231,.45)">${5 - i}</div>`;
+  ['bmw', 'golf', 'fiesta', 'captur', 'p208'].forEach((k, i) => {
+    const [sz, pos] = { bmw: [900, '50% 47%'], golf: [1100, '72% 54%'], fiesta: [1150, '0% 64%'], captur: [1400, '0% 44%'], p208: [1050, '50% 45%'] }[k];
+    h += `<div class="strip" style="top:${i * 166}px;height:150px;${ph(k)};background-size:${sz}px auto;background-position:${pos}"><div class="num">${5 - i}</div></div>`;
   });
   L.innerHTML = h;
 }
+document.querySelectorAll('.scene.on .strip[data-ph]').forEach(e => e.setAttribute('style', e.getAttribute('style') + ';' + ph(e.dataset.ph)));
 if (S === '5') {
-  const svg = document.getElementById('chute'); let h = '';
-  const c = CARS[4], k = 1.42, [ex, ey] = bay(c);
-  h += `<g class="car" transform="translate(${540 - 354 * k} 640) scale(${k})" style="filter:url(#lg)">${carSVG(c)}</g>`;
-  h += `<circle cx="${540 - 354 * k + ex * k}" cy="${640 + ey * k}" r="8" fill="#fff" style="filter:url(#lg2)"/>`;
-  // les quatre autres s'écartent (flou de bougé horizontal)
-  [[0, -560, 560, .5], [1, 700, 600, .5], [2, -620, 860, .32], [3, 760, 880, .32]].forEach(([ci, x, y, o]) => {
-    h += `<g class="car" transform="translate(${x} ${y}) scale(.9)" style="opacity:${o};filter:url(#mbx)">${carSVG(CARS[ci])}</g>`;
-  });
-  svg.innerHTML = `<defs><filter id="mbx" x="-20%" y="-10%" width="140%" height="120%"><feGaussianBlur stdDeviation="16 0"/></filter></defs>` + h;
+  const svg = document.getElementById('chute'); svg.remove();
+  const sc = document.querySelector('.scene[data-s="5"]'), box = document.createElement('div'); box.innerHTML =
+    [['bmw', -520, 560, .45], ['golf', 760, 600, .45], ['fiesta', -560, 800, .3], ['captur', 800, 820, .3]].map(([k, x, y, o]) =>
+      `<div class="strip" style="left:${x}px;top:${y}px;width:820px;height:300px;opacity:${o};filter:blur(10px);${ph(k)};background-size:cover"></div>`).join('')
+    + `<div class="strip" style="left:150px;top:520px;width:780px;height:470px;${ph('p208')};background-size:cover;background-position:50% 60%"></div>`;
+  sc.insertBefore(box, sc.firstChild);
 }
 
 // ---------- 3D : un seul éclairage, une seule surface ----------
