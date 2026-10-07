@@ -2,6 +2,7 @@ import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 import { supabaseService } from "./supabase/service";
 import { OFFRES, STATUTS_ACTIFS, type OffreId } from "./offres";
+import { GUIDES, type GuideId } from "./guides";
 
 /* Page Administration (/app/admin) : lecture de tous les comptes et des inscrits au guide, cadeaux, envoi des guides.
    Tout passe par la clé service, et seulement après vérification de profils.admin (route /api/admin et page). */
@@ -38,6 +39,8 @@ export type LeadAdmin = {
   ouvertures: number;
   dernierEnvoi: string | null;
   desinscrit: boolean;
+  /** Guide qu'il reçoit : choisi depuis l'administration, sinon celui de son profil. */
+  guide: GuideId;
   /** Un compte utopicar.fr existe avec la même adresse. */
   compte: boolean;
 };
@@ -65,7 +68,7 @@ export async function donneesAdmin() {
     sb.from("usages").select("user_id").gte("created_at", debutMois()),
     sb.from("rapports").select("user_id"),
     sb.from("options_comptes").select("user_id, statut, offerte").eq("option", "messages"),
-    sb.from("landing_leads").select("id, email, prenom, site, objectif, budget, source, created_at, email_envoye, email_confirme, ouvertures, dernier_envoi, desinscrit").order("created_at", { ascending: false }).limit(500),
+    sb.from("landing_leads").select("id, email, prenom, site, objectif, guide, budget, source, created_at, email_envoye, email_confirme, ouvertures, dernier_envoi, desinscrit").order("created_at", { ascending: false }).limit(500),
     sb.from("journal_admin").select("id, action, cible, details, created_at").order("created_at", { ascending: false }).limit(30),
   ]);
   if (profils.error) throw new Error(`profils : ${profils.error.message}`);
@@ -121,6 +124,7 @@ export async function donneesAdmin() {
     ouvertures: l.ouvertures ?? 0,
     dernierEnvoi: l.dernier_envoi,
     desinscrit: !!l.desinscrit,
+    guide: (l.guide as GuideId | null) ?? guideDuProfil(l.site ?? "utopicar", l.objectif),
     compte: emails.has(l.email.toLowerCase()),
   }));
 
@@ -169,7 +173,7 @@ function gabarit(marque: string, titre: string, texte: string, bouton: string, l
 
 const dateFr = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" });
 
-export type Cadeau = { type: "guides" } | { type: "formule"; offre: OffreId; jusquAu: string | null } | { type: "credits"; n: number };
+export type Cadeau = { type: "guides"; guide: GuideId } | { type: "formule"; offre: OffreId; jusquAu: string | null } | { type: "credits"; n: number };
 
 /** Prévient un compte de ce qui vient de lui être offert. */
 export async function emailCadeau(site: string, dest: { email: string; prenom: string }, c: Cadeau) {
@@ -177,11 +181,12 @@ export async function emailCadeau(site: string, dest: { email: string; prenom: s
   const p = dest.prenom ? `${dest.prenom}, ` : "";
   let sujet: string, titre: string, texte: string, bouton: string, lien: string;
   if (c.type === "guides") {
-    sujet = `${p}vos 4 guides Utopicar sont ouverts`;
-    titre = "Vos guides sont ouverts";
-    texte = "Utopicar vous offre l'accès complet aux 4 guides : votre première revente, trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Ils se lisent dans votre espace et s'impriment en PDF.";
-    bouton = "Lire mes guides";
-    lien = `${site}/app/guides`;
+    const g = GUIDES.find((x) => x.id === c.guide)!;
+    sujet = `${p}votre guide « ${g.titre} » est ouvert`;
+    titre = g.titre;
+    texte = `Utopicar vous offre le guide <b>« ${esc(g.titre)} »</b> : ${esc(g.resume.charAt(0).toLowerCase() + g.resume.slice(1))} Les 3 autres guides sont ouverts aussi. Ils se lisent dans votre espace et s'impriment en PDF.`;
+    bouton = "Lire mon guide";
+    lien = `${site}/app/guides?guide=${g.id}`;
   } else if (c.type === "formule") {
     const o = OFFRES[c.offre];
     const nom = o.famille === "benef" ? `Benef ${o.nom}` : o.nom;
@@ -209,6 +214,20 @@ const SITES: Record<string, { url: string; nom: string; tu: boolean }> = {
 const JOURS_VALIDITE = 30;
 const sha = (s: string) => createHash("sha256").update(s).digest("hex");
 
+/** Guide que donne le profil (repris de selection et contenu dans supabase/functions/inscription/guides.ts). */
+function guideDuProfil(site: string, objectif: string | null): GuideId {
+  if (site === "ebook" || objectif === "Me lancer dans l'achat-revente") return "premiere-revente";
+  if (objectif === "Estimer des reprises") return "estimer-reprise";
+  if (objectif === "Trouver ma prochaine voiture") return "acheter-occasion";
+  return "trier-annonces";
+}
+const OBJECTIF_DU_GUIDE: Record<GuideId, string> = {
+  "premiere-revente": "Me lancer dans l'achat-revente",
+  "trier-annonces": "Trier plus vite mes annonces",
+  "estimer-reprise": "Estimer des reprises",
+  "acheter-occasion": "Trouver ma prochaine voiture",
+};
+
 /** Repris de supabase/functions/inscription/guides.ts (titreGuide). */
 function titreGuide(site: string, objectif: string | null) {
   if (site === "ebook") return "Ta première revente, étape par étape";
@@ -218,8 +237,9 @@ function titreGuide(site: string, objectif: string | null) {
   return "Trier 40 annonces en 10 minutes";
 }
 
-/** Renvoie le guide à un inscrit : nouveau lien personnel (l'ancien cesse de marcher). Refusé s'il s'est désinscrit. */
-export async function envoyerGuideLead(id: string) {
+/** Envoie à un inscrit le guide choisi : nouveau lien personnel (l'ancien cesse de marcher). Refusé s'il s'est désinscrit.
+    Le choix est gardé dans landing_leads.guide : la fonction « inscription » sert ce guide à l'ouverture du lien et dans la relance. */
+export async function envoyerGuideLead(id: string, guide: GuideId) {
   const sb = supabaseService();
   const { data: l } = await sb.from("landing_leads").select("id, email, prenom, site, objectif, desinscrit, envoi_tentatives").eq("id", id).maybeSingle();
   if (!l) throw new Error("Inscrit introuvable.");
@@ -231,9 +251,10 @@ export async function envoyerGuideLead(id: string) {
   const jeton = randomBytes(32).toString("base64url");
   const lien = `${S.url}/guide?t=${jeton}`;
   const stop = `${S.url}/guide?stop=${l.id}.${sha(`stop|${l.id}|${cfg.cle_interne ?? ""}`).slice(0, 32)}`;
-  const titre = titreGuide(s, l.objectif);
+  // même règle que selection() dans la fonction : la première revente sur Bénef garde le guide Bénef
+  const titre = guide === "premiere-revente" && s === "ebook" ? titreGuide(s, l.objectif) : titreGuide("utopicar", OBJECTIF_DU_GUIDE[guide]);
   const prenom = l.prenom || t("Bonjour", "Salut");
-  const { error } = await sb.from("landing_leads").update({ token_hash: sha(jeton), token_expire: new Date(Date.now() + JOURS_VALIDITE * 86400_000).toISOString() }).eq("id", l.id);
+  const { error } = await sb.from("landing_leads").update({ guide, token_hash: sha(jeton), token_expire: new Date(Date.now() + JOURS_VALIDITE * 86400_000).toISOString() }).eq("id", l.id);
   if (error) throw new Error("Lien personnel impossible à créer.");
   const sujet = t(`${prenom}, votre guide « ${titre} » est prêt`, `${prenom}, ton guide « ${titre} » est prêt`);
   const texte = t(`Voici votre accès personnel au guide <b>« ${esc(titre)} »</b>.`, `Voici ton accès personnel au guide <b>« ${esc(titre)} »</b>.`);

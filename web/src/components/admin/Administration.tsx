@@ -2,21 +2,23 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { CompteAdmin, JournalAdmin, LeadAdmin } from "@/lib/admin";
+import type { GuideId } from "@/lib/guides";
 import { OFFRES, type OffreId } from "@/lib/offres";
 import { cx, inputCls, Pastille } from "../ui";
 
 const dateFr = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 const heureFr = (d: string) => new Date(d).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const nomOffre = (id: OffreId) => (OFFRES[id].famille === "benef" ? `Benef ${OFFRES[id].nom}` : OFFRES[id].nom);
+export type GuideChoix = { id: GuideId; titre: string; pour: string };
 const FORMULES: OffreId[] = ["essentiel", "serenite", "starter", "croissance", "pro"];
 const ACTIONS: Record<string, string> = {
   formule_offerte: "Formule offerte",
   formule_retiree: "Formule offerte retirée",
   credits_offerts: "Crédits offerts",
-  guides_offerts: "Guides offerts",
+  guides_offerts: "Guide envoyé à un compte",
   messages_offerts: "Option Messages offerte",
   messages_retires: "Option Messages retirée",
-  guide_lead: "Guide envoyé",
+  guide_lead: "Guide envoyé à un inscrit",
 };
 
 /** Appel à /api/admin : message à afficher, et rechargement des données si tout s'est bien passé. */
@@ -57,12 +59,28 @@ function Prevenir({ v, set }: { v: boolean; set: (v: boolean) => void }) {
   );
 }
 
-function FicheCompte({ c }: { c: CompteAdmin }) {
+function ChoixGuide({ guides, v, set, label = "Guide" }: { guides: GuideChoix[]; v: GuideId; set: (g: GuideId) => void; label?: string }) {
+  return (
+    <label className="grid gap-1.5 text-sm">
+      <span className="text-ink-2">{label}</span>
+      <select value={v} onChange={(e) => set(e.target.value as GuideId)} className={cx(inputCls, "max-w-full")}>
+        {guides.map((g) => (
+          <option key={g.id} value={g.id}>
+            {g.titre} ({g.pour})
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function FicheCompte({ c, guides }: { c: CompteAdmin; guides: GuideChoix[] }) {
   const { charge, etat, lancer } = useAction();
   const [formule, setFormule] = useState<OffreId | "">(c.offerte?.id ?? "starter");
   const [jusquAu, setJusquAu] = useState(c.offerte?.jusquAu ?? "");
   const [n, setN] = useState(5);
   const [prevenir, setPrevenir] = useState(true);
+  const [guide, setGuide] = useState<GuideId>(guides[0].id);
   return (
     <div className="grid gap-5 border-t border-line pt-4">
       {c.illimite && <p className="text-sm text-ink-3">Compte illimité : tout est déjà ouvert.</p>}
@@ -126,10 +144,24 @@ function FicheCompte({ c }: { c: CompteAdmin }) {
         </div>
       </form>
 
+      <form
+        className="grid gap-3"
+        onSubmit={(e) => {
+          e.preventDefault();
+          lancer({ action: "guides", user: c.id, guide, prevenir });
+        }}
+      >
+        <p className="text-sm font-medium">Envoyer un guide</p>
+        <div className="flex flex-wrap items-end gap-3">
+          <ChoixGuide guides={guides} v={guide} set={setGuide} />
+          <button type="submit" disabled={charge} className="btn btn-sm">
+            Envoyer ce guide
+          </button>
+        </div>
+        <p className="text-xs text-ink-3">{c.guide ? "Les guides sont déjà ouverts sur ce compte : " : "Ouvre les 4 guides sur ce compte, puis "}l&apos;e-mail mène au guide choisi (case « Prévenir par e-mail »).</p>
+      </form>
+
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" disabled={charge || c.guide} className="btn btn-sm" onClick={() => lancer({ action: "guides", user: c.id, prevenir })}>
-          {c.guide ? "Guides déjà ouverts" : "Offrir les 4 guides"}
-        </button>
         <button type="button" disabled={charge} className="btn btn-sm" onClick={() => lancer({ action: "messages", user: c.id, actif: !c.messages })}>
           {c.messages ? "Retirer l'option Messages" : "Offrir l'option Messages"}
         </button>
@@ -144,7 +176,7 @@ function FicheCompte({ c }: { c: CompteAdmin }) {
   );
 }
 
-function ListeComptes({ comptes, moi }: { comptes: CompteAdmin[]; moi: string }) {
+function ListeComptes({ comptes, moi, guides }: { comptes: CompteAdmin[]; moi: string; guides: GuideChoix[] }) {
   if (!comptes.length) return <p className="carte p-6 text-ink-3">Aucun compte ne correspond.</p>;
   return (
     <ul className="grid gap-2">
@@ -171,7 +203,7 @@ function ListeComptes({ comptes, moi }: { comptes: CompteAdmin[]; moi: string })
               </span>
             </summary>
             <div className="mt-4">
-              <FicheCompte c={c} />
+              <FicheCompte c={c} guides={guides} />
             </div>
           </details>
         </li>
@@ -180,8 +212,9 @@ function ListeComptes({ comptes, moi }: { comptes: CompteAdmin[]; moi: string })
   );
 }
 
-function LigneInscrit({ l }: { l: LeadAdmin }) {
+function LigneInscrit({ l, guides }: { l: LeadAdmin; guides: GuideChoix[] }) {
   const { charge, etat, lancer } = useAction();
+  const [guide, setGuide] = useState<GuideId>(l.guide);
   return (
     <li className="carte grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <div className="min-w-0">
@@ -204,11 +237,20 @@ function LigneInscrit({ l }: { l: LeadAdmin }) {
           {l.compte && <Pastille ton="o">A un compte</Pastille>}
         </p>
       </div>
-      <div className="grid justify-items-start gap-1 sm:justify-items-end">
+      <div className="grid justify-items-start gap-2 sm:justify-items-end">
         {!l.desinscrit && (
-          <button type="button" disabled={charge} className="btn btn-sm" onClick={() => lancer({ action: "guide_lead", lead: l.id })}>
-            {charge ? "Envoi…" : l.envoye ? "Renvoyer le guide" : "Envoyer le guide"}
-          </button>
+          <form
+            className="flex flex-wrap items-end gap-2 sm:justify-end"
+            onSubmit={(e) => {
+              e.preventDefault();
+              lancer({ action: "guide_lead", lead: l.id, guide });
+            }}
+          >
+            <ChoixGuide guides={guides} v={guide} set={setGuide} label="Guide à envoyer" />
+            <button type="submit" disabled={charge} className="btn btn-sm">
+              {charge ? "Envoi…" : "Envoyer"}
+            </button>
+          </form>
         )}
         {l.dernierEnvoi && <span className="text-xs text-ink-3">Dernier envoi : {heureFr(l.dernierEnvoi)}</span>}
         <Etat etat={etat} />
@@ -217,7 +259,7 @@ function LigneInscrit({ l }: { l: LeadAdmin }) {
   );
 }
 
-export function Administration({ comptes, inscrits, journal, moi }: { comptes: CompteAdmin[]; inscrits: LeadAdmin[]; journal: JournalAdmin[]; moi: string }) {
+export function Administration({ comptes, inscrits, journal, moi, guides }: { comptes: CompteAdmin[]; inscrits: LeadAdmin[]; journal: JournalAdmin[]; moi: string; guides: GuideChoix[] }) {
   const [onglet, setOnglet] = useState<"comptes" | "inscrits" | "journal">("comptes");
   const [q, setQ] = useState("");
   const cherche = (...champs: string[]) => !q.trim() || champs.some((c) => c.toLowerCase().includes(q.trim().toLowerCase()));
@@ -249,13 +291,13 @@ export function Administration({ comptes, inscrits, journal, moi }: { comptes: C
         )}
       </div>
 
-      {onglet === "comptes" && <ListeComptes comptes={comptes.filter((c) => cherche(c.email, c.prenom))} moi={moi} />}
+      {onglet === "comptes" && <ListeComptes comptes={comptes.filter((c) => cherche(c.email, c.prenom))} moi={moi} guides={guides} />}
 
       {onglet === "inscrits" &&
         (inscrits.length ? (
           <ul className="grid gap-2">
             {inscrits.filter((l) => cherche(l.email, l.prenom)).map((l) => (
-              <LigneInscrit key={l.id} l={l} />
+              <LigneInscrit key={l.id} l={l} guides={guides} />
             ))}
           </ul>
         ) : (
@@ -271,6 +313,7 @@ export function Administration({ comptes, inscrits, journal, moi }: { comptes: C
                   <b className="font-medium">{ACTIONS[j.action] ?? j.action}</b>
                   {j.cible && <span className="text-ink-3"> · {j.cible}</span>}
                   {typeof j.details.n === "number" && <span className="text-ink-3"> · {j.details.n} crédits</span>}
+                  {typeof j.details.guide === "string" && <span className="text-ink-3"> · {guides.find((g) => g.id === j.details.guide)?.titre ?? j.details.guide}</span>}
                   {typeof j.details.formule === "string" && j.details.formule in OFFRES && <span className="text-ink-3"> · {nomOffre(j.details.formule as OffreId)}</span>}
                 </span>
                 <span className="text-ink-3">{heureFr(j.le)}</span>

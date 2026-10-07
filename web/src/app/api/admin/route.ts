@@ -8,12 +8,13 @@ import { urlSite } from "@/lib/stripe";
 
 const FORMULES = ["gratuit", "essentiel", "serenite", "starter", "croissance", "pro"] as const;
 const id = z.uuid();
+const guide = z.enum(["premiere-revente", "trier-annonces", "estimer-reprise", "acheter-occasion"]);
 const Corps = z.discriminatedUnion("action", [
   z.object({ action: z.literal("formule"), user: id, formule: z.enum(FORMULES).nullable(), jusquAu: z.iso.date().nullable(), prevenir: z.boolean().default(false) }),
   z.object({ action: z.literal("credits"), user: id, n: z.int().min(1, "1 crédit au moins.").max(500, "500 crédits au plus."), prevenir: z.boolean().default(false) }),
-  z.object({ action: z.literal("guides"), user: id, prevenir: z.boolean().default(false) }),
+  z.object({ action: z.literal("guides"), user: id, guide, prevenir: z.boolean().default(true) }),
   z.object({ action: z.literal("messages"), user: id, actif: z.boolean() }),
-  z.object({ action: z.literal("guide_lead"), lead: id }),
+  z.object({ action: z.literal("guide_lead"), lead: id, guide }),
 ]);
 
 const erreur = (t: string, status = 400) => Response.json({ erreur: t }, { status });
@@ -30,8 +31,8 @@ export async function POST(req: Request) {
 
   if (d.action === "guide_lead") {
     try {
-      const email = await envoyerGuideLead(d.lead);
-      await noter(c.id, "guide_lead", email);
+      const email = await envoyerGuideLead(d.lead, d.guide);
+      await noter(c.id, "guide_lead", email, { guide: d.guide });
       return Response.json({ ok: true, message: `Guide envoyé à ${email}.` });
     } catch (e) {
       return erreur(e instanceof Error ? e.message : "Envoi impossible.", 502);
@@ -63,8 +64,8 @@ export async function POST(req: Request) {
       const { error } = await sb.from("achats").insert({ user_id: d.user, produit: "guide" });
       if (error) return erreur("Accès aux guides impossible à enregistrer.", 500);
     }
-    await noter(c.id, "guides_offerts", dest.email);
-    cadeau = { type: "guides" };
+    await noter(c.id, "guides_offerts", dest.email, { guide: d.guide });
+    cadeau = { type: "guides", guide: d.guide };
     message = count ? "Ce compte avait déjà les guides." : "Accès aux 4 guides ouvert.";
   } else {
     // Le statut reste celui de Stripe : seul le drapeau « offerte » change (une ligne sans abonnement Stripe est créée « offerte »).
