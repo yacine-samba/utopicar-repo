@@ -60,6 +60,8 @@
 | MO6 | Écart de boucle 2,9 sur 255 | Bruit de caméra en rampe, fond périodique, grain modulo : 0,21 |
 | MO6 | ElevenLabs : offre gratuite coupée (« activité inhabituelle », proxy de l'environnement) en pleine étape voix | Ne pas relancer ; le dire avec le message exact ; options : abonnement, voix de l'utilisateur, ou attendre |
 | MO6 | `pkill -f sheet-mo6.mjs` a tué sa propre commande | `pkill` dans un appel séparé |
+| MO6 | Moniteur `until ! pgrep -f "render.mjs --all"` jamais terminé : il se trouvait lui-même | Attendre un fichier de sortie (ou `pgrep -f '[r]ender.mjs'`), jamais un motif présent dans la commande d'attente |
+| MO6 | Rendu final de 30 s avec verre dépoli : ≈ 2 h en 4 parties (6 à 15 s par image) | Prévenir l'utilisateur de la durée ; planches et images fixes pour tout contrôle avant |
 
 ## Ce qui a marché (à reprendre)
 

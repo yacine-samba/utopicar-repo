@@ -957,6 +957,7 @@ Méthode complète : `sound-design.md`. Recettes de `video/scripts/audio-mo5.py`
 | Rendus parallèles qui s'écrasent | même dossier temporaire | un dossier par tranche (`_sheet<début>`) |
 | Une part de rendu valide supprimée par erreur après un redémarrage du conteneur | nettoyage trop large | vérifier ce que contient un dossier avant de le vider ; le dire si ça arrive |
 | Commande d'attente coupée à 2 h | limite des tâches de fond | moniteur avec condition, état revérifié à la main |
+| Moniteur qui n'en finit pas | `pgrep -f motif` trouve la commande d'attente elle-même | attendre un fichier, ou `pgrep -f '[r]ender.mjs'` |
 
 ---
 
@@ -1245,6 +1246,8 @@ langue 2 → square → desktop. Lancer les rendus longs en arrière-plan et ava
 | MO6 | Écart de boucle 2,9 sur 255 | Bruit de caméra en rampe, fond périodique, grain modulo : 0,21 |
 | MO6 | ElevenLabs : offre gratuite coupée (« activité inhabituelle », proxy de l'environnement) en pleine étape voix | Ne pas relancer ; le dire avec le message exact ; options : abonnement, voix de l'utilisateur, ou attendre |
 | MO6 | `pkill -f sheet-mo6.mjs` a tué sa propre commande | `pkill` dans un appel séparé |
+| MO6 | Moniteur `until ! pgrep -f "render.mjs --all"` jamais terminé : il se trouvait lui-même | Attendre un fichier de sortie (ou `pgrep -f '[r]ender.mjs'`), jamais un motif présent dans la commande d'attente |
+| MO6 | Rendu final de 30 s avec verre dépoli : ≈ 2 h en 4 parties (6 à 15 s par image) | Prévenir l'utilisateur de la durée ; planches et images fixes pour tout contrôle avant |
 
 ### Ce qui a marché (à reprendre)
 

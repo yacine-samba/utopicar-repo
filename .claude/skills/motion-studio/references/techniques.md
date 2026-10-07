@@ -266,3 +266,4 @@ Méthode complète : `sound-design.md`. Recettes de `video/scripts/audio-mo5.py`
 | Rendus parallèles qui s'écrasent | même dossier temporaire | un dossier par tranche (`_sheet<début>`) |
 | Une part de rendu valide supprimée par erreur après un redémarrage du conteneur | nettoyage trop large | vérifier ce que contient un dossier avant de le vider ; le dire si ça arrive |
 | Commande d'attente coupée à 2 h | limite des tâches de fond | moniteur avec condition, état revérifié à la main |
+| Moniteur qui n'en finit pas | `pgrep -f motif` trouve la commande d'attente elle-même | attendre un fichier, ou `pgrep -f '[r]ender.mjs'` |
