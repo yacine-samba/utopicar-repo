@@ -44,6 +44,8 @@ Onboarding : une fenêtre de 3 questions s'ouvre à la première visite de `/`, 
 | Option Messages Leboncoin | 45 €/mois | | en plus de Benef Pro : premier message automatique, boîte de réception |
 | Guides | 9 € une fois | | les 4 guides à vie |
 
+Guides ouverts en entier (`guidesOuverts`, `src/lib/guides`) : Sérénité, « Acheter une occasion » ; Starter, « Première revente » ; Croissance et Pro, les trois guides Benef (première revente, tri, reprise). L'achat à 9 € et le compte illimité ouvrent les quatre. Un guide offert depuis l'administration n'ouvre que lui (`achats.produit = guide:<id>`). Les autres : deux chapitres offerts.
+
 Les droits sont appliqués côté serveur : quotas dans `/api/analyse`, parties payantes retirées avant l'envoi au navigateur (`src/lib/analyse/filtre.ts`), parc protégé par une règle RLS (formule Pro). Les rapports Benef s'affichent complets par défaut, avec un bouton « Synthèse » (texte déjà rédigé par l'analyse).
 
 ## Changer la formule de quelqu'un (Supabase)

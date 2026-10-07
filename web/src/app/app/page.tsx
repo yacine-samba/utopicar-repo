@@ -101,7 +101,7 @@ async function TableauParticulier({ c }: { c: Compte }) {
           lien={{ href: "/app/credits", l: c.restantes ? "Mes crédits" : "Acheter des crédits" }}
         />
         <Tuile l="Votre formule" v={nomFormule(c)} sous={o.prix ? `${prixTxt(o.prix)} par mois` : "Gratuite"} lien={{ href: "/app/compte#formule", l: "Gérer" }} />
-        <Tuile l="Les guides" v={c.guide ? "Accès complet" : "2 chapitres offerts"} sous={c.guide ? "Les quatre guides, imprimables." : `Accès complet à vie : ${prixTxt(GUIDE.prix)}.`} lien={{ href: "/app/guides", l: "Lire" }} />
+        <Tuile l="Les guides" v={c.guide ? "Accès complet" : c.guides.length ? `${c.guides.length} guide${c.guides.length > 1 ? "s" : ""} ouvert${c.guides.length > 1 ? "s" : ""}` : "2 chapitres offerts"} sous={c.guide ? "Les quatre guides, imprimables." : `Les quatre à vie : ${prixTxt(GUIDE.prix)}.`} lien={{ href: "/app/guides", l: "Lire" }} />
       </div>
       {o.id === "gratuit" && (
         <section className="carte flex flex-wrap items-center justify-between gap-4 border-o/30 p-6">
