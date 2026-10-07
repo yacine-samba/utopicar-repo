@@ -5,16 +5,17 @@ motion-studio). MO5 montrait le piège ; MO6 donne envie d'y aller **et** une m�
 
 Une idée de pro, simple à retenir : les défauts qui font fuir les acheteurs (phares jaunis, rayure, intérieur sale)
 coûtent presque rien à réparer, et c'est là que se fait la marge. Les défauts qui coûtent cher (distribution,
-embrayage, joint de culasse) ne se voient pas, et chacun se vérifie en dix secondes. La vidéo finit sur une fiche
-récapitulative lisible, faite pour la capture d'écran et l'enregistrement.
+embrayage, joint de culasse) ne se voient pas, et chacun se vérifie en dix secondes. Comme MO5, la vidéo finit sur
+une chute qui relance la boucle, sans fiche ni récapitulatif : la valeur est dans le film, et le spectateur
+l'enregistre de lui-même parce qu'il veut la retrouver avant sa première visite.
 
 Écrit avec les skills motion-studio et « L'art du hook ». Textes passés à Stop Slop.
 
 ```
-Produit / URL : aucun, rien à vendre       Objectif : enregistrement (la fiche), revisionnage, partage
+Produit / URL : aucun, rien à vendre       Objectif : arrêt net, revisionnage, enregistrement et partage spontanés
 Plateforme : TikTok, puis Reels et Shorts  Public : débutants qui veulent se lancer dans l'achat-revente auto
 Promesse : tu sais quelle voiture acheter sans peur, et laquelle laisser, avant ta première visite.
-CTA : aucun, ni dit ni écrit (pas de « enregistre »)  Type / durée : motion design narratif, 28 à 30 s, en boucle
+CTA : aucun, rien de proposé, ni dit ni écrit  Type / durée : motion design narratif, 28 à 30 s, en boucle
 Voix : Simon (ElevenLabs), même voix que MO5
 Musique : Controlled Drop (ton morceau), calé à 120 BPM
 Ouvertures : A = « elle a fait fuir tout le monde » / B = « 60 € contre 600 € » (0-3,5 s, même corps)
@@ -22,7 +23,7 @@ Format : 9:16, 1080×1920, 60 i/s           Données : ordres de grandeur pour u
 Interdits : produit, logo de plateforme, CTA, morale, visages, plaques lisibles
 ```
 
-## La valeur à enregistrer
+## La valeur, dans le film (pas de fiche à l'écran)
 
 | Ce qui se voit · fonce | Coût | Ce qui se cache · vérifie | Coût | Le test en 10 s |
 |---|---|---|---|---|
@@ -58,7 +59,7 @@ avec deux chiffres) et ouvre « comment ? ». B pose toute la méthode en une ph
 - Miroir ✅ : il cherche sa première voiture et a peur des voitures abîmées.
 - Écart ✅ : il croit qu'elle fait fuir pour de bonnes raisons ; on lui montre qu'elle rapporte.
 
-**Relances dans le corps** : « Ce qui coûte vraiment, personne ne le voit. » à 12 s · la fiche à 25 s ·
+**Relances dans le corps** : « Ce qui coûte vraiment, personne ne le voit. » à 12 s · « Et la voiture parfaite ? » à 25 s ·
 « Cette voiture… » à la boucle.
 
 ## L'histoire
@@ -71,8 +72,8 @@ avec deux chiffres) et ouvre « comment ? ». B pose toute la méthode en une ph
 | 13-17 s · **la distribution** | La courroie s'allume en orange, 600 € s'écrit. Une facture en verre glisse : date, kilométrage cochés. | « La distribution : six cents euros. Demande la facture. » | Peur, puis contrôle |
 | 17-21 s · **l'embrayage** | L'embrayage s'allume, 800 €. Compte-tours et compteur de vitesse côte à côte : l'aiguille des tours monte, la vitesse ne bouge pas. | « L'embrayage : huit cents. En quatrième, plein gaz : le moteur monte, la voiture non ? Il patine. » | Peur, puis contrôle |
 | 21-25 s · **la culasse** | La culasse s'allume, 1 200 €. Gros plan sur un bouchon d'huile : une mousse blanche apparaît. | « Le joint de culasse : mille deux cents. De la mousse blanche sous le bouchon d'huile ? Méfiance. » | Peur, puis contrôle |
-| 25-29 s · **la fiche** | Les six éléments se rangent en une fiche de verre, deux colonnes : « Ce qui se voit · fonce » / « Ce qui se cache · vérifie », chaque ligne avec son prix et son test. Elle reste lisible 4 s. | « Ce qui se voit : fonce. Ce qui se cache : vérifie. » | Clarté |
-| 29-30 s · **la boucle** | La fiche se replie dans la carrosserie, la Polo redevient terne : image 0. | (enchaîne sur « Cette voiture a fait fuir tout le monde ») | Boucle |
+| 25-28,5 s · **la chute** | La caméra recule : à côté de ta Polo remise en état, la voiture brillante que tout le monde voulait. Sa radiographie s'allume, le bouchon d'huile luit en rouge. | « Et la voiture parfaite que tout le monde voulait ? Personne n'a regardé sous le bouchon. » | Humour noir, frisson |
+| 28,5-30 s · **la boucle** | Un trait de lumière balaie l'écran, la Polo redevient terne : image 0. | (enchaîne sur « Cette voiture a fait fuir tout le monde ») | Boucle |
 
 Le texte de la voix fait environ 90 mots : je le resserre à l'étape 4 pour tenir 30 s sans courir.
 
@@ -81,14 +82,15 @@ Le texte de la voix fait environ 90 mots : je le resserre à l'étape 4 pour ten
 - **DA** : fond #08070a, orange #ff5a1f / #ff8a4c / #ffb38a, Clash Display, Satoshi, Fraunces italique pour le mot
   porteur, verre dépoli, lueurs, grain, ta Polo détourée avec son contour lumineux.
 - **Mouvement** : caméra continue en travellings et orbite, lignes de lumière qui écrivent les prix et dessinent la
-  radiographie, défauts effacés par un trait de lumière, compteurs à rouleaux, fiche qui se construit ligne par ligne,
+  radiographie, défauts effacés par un trait de lumière, compteurs à rouleaux, la seconde voiture qui entre en profondeur,
   flou de bougé, boucle parfaite.
 - **Son** : voix devant, musique qui cède sa place, un son principal à la fois, −14 LUFS, contrôle téléphone.
 - **Nouveau procédé** : la radiographie, la voiture qui devient transparente pour montrer ce qui se cache.
 
-## Pourquoi on l'enregistre, on la revoit et on l'envoie
+## Pourquoi on l'enregistre, on la revoit et on l'envoie (sans qu'on le lui demande)
 
-- **Enregistrer** : la fiche finale sert le jour de la première visite. Elle tient en une capture d'écran.
+- **Enregistrer** : trois tests concrets et trois prix, qu'il voudra retrouver le jour de sa première visite. Rien
+  ne le lui suggère : la vidéo ne propose rien.
 - **Revoir** : trois tests en dix secondes, trop denses pour un seul passage ; la boucle relance.
 - **Envoyer** : « avant d'aller voir la voiture, regarde ça » à l'ami qui achète.
 - **Commenter** : chacun voudra ajouter son test (fumée bleue, boîte qui craque).
