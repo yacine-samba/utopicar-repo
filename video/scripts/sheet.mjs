@@ -1,4 +1,5 @@
-// Planches toutes les 0,1 s : CUT=mo6 node scripts/sheet-mo6.mjs 0 30 → renders/review/mo6-planche-0.1s-<a>-<b>.jpg (10 s par planche)
+// Planches toutes les 0,1 s : CUT=<projet> node scripts/sheet.mjs <début> <fin> → renders/review/<projet>-planche-0.1s-<début>-<fin>.jpg
+// Une planche = 10 s (100 images, 10 par ligne). Lancer plusieurs plages en parallèle : chacune a son dossier _sheet<début>.
 import { chromium } from 'playwright';
 import http from 'http'; import fs from 'fs'; import path from 'path'; import { execFileSync } from 'child_process';
 import { ROOT } from './ui.mjs';
