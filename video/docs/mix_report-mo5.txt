@@ -1,0 +1,7 @@
+MO5 · mix : -14.8 LUFS intégrés, true peak -3.5 dBTP
+bruitages placés : 49 · retirés pour collision : 16 1119@4.41, 1384@4.46, 1119@4.48, 1384@4.53, 1490@5.88, 1490@6.68, 2380@6.75, 1490@7.18, 1490@7.69, 1490@8.11, 1490@8.62, 1490@9.33, 2380@9.49, 1490@9.83, 1490@11.53, 1107@24.02
+RMS hook      -16.4 dBFS
+RMS pluie     -17.9 dBFS
+RMS attente   -19.4 dBFS
+RMS 47        -16.3 dBFS
+RMS formule   -16.2 dBFS

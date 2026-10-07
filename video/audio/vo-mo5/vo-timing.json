@@ -1,0 +1,110 @@
+{
+ "dur": 29.6,
+ "lines": [
+  {
+   "t": 0.08,
+   "end": 1.335,
+   "text": "Tu l'achètes 3 500,"
+  },
+  {
+   "t": 1.42,
+   "end": 2.211,
+   "text": "tu la revends 5 000."
+  },
+  {
+   "t": 2.55,
+   "end": 3.75,
+   "text": "Ton compte en banque n'est pas d'accord."
+  },
+  {
+   "t": 4.25,
+   "end": 4.841,
+   "text": "Jour 1,"
+  },
+  {
+   "t": 4.95,
+   "end": 5.541,
+   "text": "tu l'achètes."
+  },
+  {
+   "t": 6.05,
+   "end": 6.659,
+   "text": "Carte grise,"
+  },
+  {
+   "t": 6.8,
+   "end": 9.427,
+   "text": "contrôle technique, pneus, vidange, plaquettes."
+  },
+  {
+   "t": 9.6,
+   "end": 11.5,
+   "text": "Et six allers-retours pour des visites."
+  },
+  {
+   "t": 12.35,
+   "end": 12.641,
+   "text": "Et là,"
+  },
+  {
+   "t": 13.2,
+   "end": 14.127,
+   "text": "personne n'appelle."
+  },
+  {
+   "t": 16.0,
+   "end": 16.609,
+   "text": "Il négocie."
+  },
+  {
+   "t": 16.75,
+   "end": 17.323,
+   "text": "Tu acceptes."
+  },
+  {
+   "t": 17.55,
+   "end": 18.405,
+   "text": "Bénéfice,"
+  },
+  {
+   "t": 18.6,
+   "end": 19.364,
+   "text": "47 euros."
+  },
+  {
+   "t": 19.9,
+   "end": 20.645,
+   "text": "Même pas un plein."
+  },
+  {
+   "t": 21.0,
+   "end": 22.827,
+   "text": "Ceux qui gagnent font le calcul à l'envers."
+  },
+  {
+   "t": 23.0,
+   "end": 23.927,
+   "text": "Ton prix max,"
+  },
+  {
+   "t": 24.0,
+   "end": 25.4,
+   "text": "2 750."
+  },
+  {
+   "t": 25.6,
+   "end": 26.491,
+   "text": "À 3 500,"
+  },
+  {
+   "t": 26.55,
+   "end": 27.259,
+   "text": "tu passes ton tour."
+  },
+  {
+   "t": 27.9,
+   "end": 29.518,
+   "text": "La prochaine fois que tu te dis…"
+  }
+ ]
+}
