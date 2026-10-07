@@ -68,7 +68,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   if (f.vue === "annonces") {
     const sb = await supabaseServeur();
     const [{ data: annonces }, { data: favs }] = await Promise.all([
-      sb.from("annonces_trouvees").select("cle, titre, prix, annee, km, ch, energie, boite, moteur, version, lieu, url, marque, modele, gen, gen_label, pro, cote, recherche, premiere_le, derniere_le").order("derniere_le", { ascending: false }).limit(5000),
+      sb.from("annonces_trouvees").select("cle, titre, prix, annee, km, ch, energie, boite, moteur, version, lieu, url, marque, modele, gen, gen_label, pro, cote, recherche, premiere_le, derniere_le, photo").order("derniere_le", { ascending: false }).limit(5000),
       sb.from("favoris").select("cle").limit(2000),
     ]);
     return (

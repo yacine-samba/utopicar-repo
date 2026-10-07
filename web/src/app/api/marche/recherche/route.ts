@@ -2,6 +2,7 @@ import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
 import { lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "@/lib/vehicules/marche";
 import { supabaseServeur } from "@/lib/supabase/serveur";
+import { supabaseService } from "@/lib/supabase/service";
 import { cleFavori } from "@/lib/favoris";
 import { cleRecherche, COLONNES_RECHERCHE, MAX_ONGLETS, type Meilleure } from "@/lib/recherches";
 import { dansPhase, memeMoteur } from "@/lib/vehicules/phases";
@@ -191,6 +192,18 @@ export async function GET(req: Request) {
   const { data: l } = await q.maybeSingle();
   if (!l) return Response.json({ erreur: "Pas de résultats gardés pour cette recherche." }, { status: 404 });
   const { data: recherche } = l.recherche_id ? await sb.from("recherches").select(COLONNES_RECHERCHE).eq("id", l.recherche_id).maybeSingle() : { data: null };
+  // résultats gardés avant que la collecte ne garde les photos : vignettes reprises de la base du marché
+  const res = l.resultat as { annonces?: { id: string; photo?: string | null }[] };
+  const sansPhoto = (res.annonces ?? []).filter((a) => !a.photo && /^\d{6,14}$/.test(a.id)).map((a) => a.id);
+  if (sansPhoto.length) {
+    try {
+      const { data: ph } = await supabaseService().from("cote_annonces").select("id, photo").in("id", sansPhoto.slice(0, 300)).not("photo", "is", null);
+      const m = new Map((ph ?? []).map((x) => [x.id as string, x.photo as string]));
+      res.annonces = (res.annonces ?? []).map((a) => (a.photo || !m.has(a.id) ? a : { ...a, photo: m.get(a.id) }));
+    } catch (e) {
+      console.error("photos gardées", (e as Error).message);
+    }
+  }
   return Response.json({ ...(l.resultat as object), recherche, criteres: l.criteres, journal: { id: l.id, le: l.maj }, collecte: null, ms: 0 });
 }
 

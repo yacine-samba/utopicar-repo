@@ -279,7 +279,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   }, [suivie?.cle]);
 
   const rechercheCourante = (courant && liste.find((x) => x.id === courant)) || res?.recherche || null;
-  const avance = !!(f.version || f.phase || f.carrosserie || f.moteur || f.chMin || f.chMax || f.energie || f.boite || f.vendeur || f.anneeMax || f.prixMin || f.mots || f.exclure || f.sousCote || f.tri !== "ecart" || !f.fiables);
+  const avance = !!(f.version || f.phase || f.carrosserie || f.moteur || f.energie || f.boite || f.vendeur || f.anneeMax || f.prixMin || f.mots || f.exclure || f.sousCote || f.tri !== "ecart" || !f.fiables);
   const filtresCaches = !(plusFiltres || avance);
 
   return (
@@ -355,6 +355,13 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
           <span className="text-ink-2">Année min.</span>
           <input inputMode="numeric" value={f.anneeMin} onChange={maj("anneeMin")} placeholder="2010" className={inputCls} />
         </label>
+        <fieldset className="grid gap-1.5 text-sm">
+          <legend className="mb-1.5 text-ink-2">Puissance (ch, réelle)</legend>
+          <div className="grid grid-cols-2 gap-3">
+            <input inputMode="numeric" value={f.chMin} onChange={maj("chMin")} placeholder="min. ex. 110" aria-label="Puissance minimum en chevaux" className={inputCls} />
+            <input inputMode="numeric" value={f.chMax} onChange={maj("chMax")} placeholder="max." aria-label="Puissance maximum en chevaux" className={inputCls} />
+          </div>
+        </fieldset>
         {!avance && (
           <button type="button" onClick={() => setPlusFiltres((v) => !v)} aria-expanded={plusFiltres} aria-controls="rm-plus" className="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-o2 underline-offset-4 hover:underline sm:col-span-2 lg:col-span-3">
             {plusFiltres ? "Moins de filtres" : "Plus de filtres"} <span aria-hidden="true">{plusFiltres ? "▴" : "▾"}</span>
@@ -407,13 +414,6 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
             ))}
           </datalist>
         </label>
-        <fieldset className="grid gap-1.5 text-sm">
-          <legend className="mb-1.5 text-ink-2">Puissance (ch)</legend>
-          <div className="grid grid-cols-2 gap-3">
-            <input inputMode="numeric" value={f.chMin} onChange={maj("chMin")} placeholder="min. ex. 150" aria-label="Puissance minimum (ch)" className={inputCls} />
-            <input inputMode="numeric" value={f.chMax} onChange={maj("chMax")} placeholder="max." aria-label="Puissance maximum (ch)" className={inputCls} />
-          </div>
-        </fieldset>
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Énergie</span>
           <select value={f.energie} onChange={maj("energie")} className={inputCls}>
@@ -590,9 +590,9 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
     <li className="carte grid gap-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center">
       {a.photo ? (
         // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
-        <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-20 w-28 rounded-xl border border-line object-cover max-sm:h-40 max-sm:w-full" />
+        <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-28 w-40 rounded-xl border border-line object-cover max-sm:h-44 max-sm:w-full" />
       ) : (
-        <span className="hidden h-20 w-28 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">sans photo</span>
+        <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">photo bientôt</span>
       )}
       <div className="min-w-0">
         <p className="truncate font-medium">{a.titre || "Annonce"}</p>
@@ -636,7 +636,7 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
             compact
             initial={fav}
             onChange={onFav}
-            f={{ cle: cleFavori(a.url, `marche:${a.id}`), titre: a.titre || "Annonce", prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: null, source: "recherche", cote: c ? { P: c.P ?? null, ecart: c.ecart ?? null, pct: c.pct ?? null } : null }}
+            f={{ cle: cleFavori(a.url, `marche:${a.id}`), titre: a.titre || "Annonce", prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: a.photo ?? null, source: "recherche", cote: c ? { P: c.P ?? null, ecart: c.ecart ?? null, pct: c.pct ?? null } : null }}
           />
           <BoutonAnalyserAnnonce url={a.url} />
           {a.url && (
