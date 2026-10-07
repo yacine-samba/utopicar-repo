@@ -1,40 +1,48 @@
-"""MO8 : photos réelles des cinq voitures (Pexels, licence libre) → plaques et logos effacés, étalonnage de la charte.
-    python3 scripts/photos-mo8.py   → assets/photos-mo8/car-<nom>.jpg
-Sources (licence Pexels : usage libre, commercial compris) ; les originaux vont dans assets/photos-mo8/src/ (hors git) :
-  curl -o src/<id>.jpg "https://images.pexels.com/photos/<id>/pexels-photo-<id>.jpeg?auto=compress&cs=tinysrgb&w=1600"
- BMW 15655458 · Golf 18158530 · Fiesta 12310882 · Captur 691138 · 208 23156446
+"""MO8 : les cinq vraies voitures (Wikimedia Commons, versions exactes) → logos et plaques effacés, orientées vers la
+gauche, détourées (BiRefNet), étalonnées dans la charte (ombres chaudes, fond noir).
+    python3 scripts/photos-mo8.py   → assets/photos-mo8/car-<nom>.png (RGBA)
+Originaux dans assets/photos-mo8/src/wm-<nom>.jpg (hors git, vignettes 1920 px de Commons) ; auteurs et licences :
+assets/photos-mo8/CREDITS.tsv (CC0 / domaine public / CC BY 3.0 / CC BY-SA 3.0 de → crédit dans la légende du post).
 """
 import numpy as np, cv2
 from pathlib import Path
+from PIL import Image
+from rembg import new_session, remove
 D = Path(__file__).resolve().parent.parent / 'assets' / 'photos-mo8'
-# zones en coordonnées du recadrage : ('inp', x, y, w, h) = logo repeint ; ('plate', ...) = plaque floutée et assombrie
+# zones (pixels de l'original 1920 px) : ('logo', cx, cy, rx, ry) repeint ; ('plate', x0, y0, x1, y1) plaque vierge
 CARS = {
-    'bmw':    ('15655458', (150, 1000, 1450, 1900), [('inp', 618, 398, 66, 62)]),
-    'golf':   ('18158530', (0, 1150, 1600, 2350), [('inp', 1128, 628, 80, 84), ('inp', 966, 598, 42, 36), ('plate', 1030, 735, 300, 84)]),
-    'fiesta': ('12310882', (180, 360, 1520, 940), [('inp', 108, 330, 50, 38), ('plate', 108, 405, 86, 76)]),
-    'captur': ('691138',   (0, 650, 1600, 2133), [('plate', 0, 1110, 110, 200)]),
-    '208':    ('23156446', (250, 800, 1350, 1700), [('inp', 520, 418, 64, 64), ('plate', 438, 506, 230, 90)]),
+    'bmw':    (False, [('logo', 588, 645, 40, 40), ('plate', 405, 840, 676, 1046)]),
+    'golf':   (False, [('logo', 249, 718, 42, 44), ('plate', 108, 770, 346, 914)]),
+    'fiesta': (False, [('logo', 282, 672, 46, 28), ('plate', 142, 818, 406, 948)]),
+    'clio':   (True,  [('logo', 1662, 875, 46, 70), ('plate', 1596, 1060, 1742, 1150)]),
+    'p208':   (True,  [('logo', 1651, 819, 36, 46), ('plate', 1618, 960, 1784, 1104)]),
 }
-for k, (src, box, zones) in CARS.items():
-    im = cv2.imread(str(D / 'src' / f'{src}.jpg'))
-    x0, y0, x1, y1 = box; im = im[y0:y1, x0:x1].copy()
-    for z, x, y, w, h in zones:
-        if z == 'inp':
-            m = np.zeros(im.shape[:2], np.uint8); cv2.ellipse(m, (x + w // 2, y + h // 2), (w // 2 + 4, h // 2 + 4), 0, 0, 360, 255, -1)
-            im = cv2.inpaint(im, m, 9, cv2.INPAINT_TELEA)
-        else:
-            roi = im[y:y + h, x:x + w]; b = cv2.GaussianBlur(roi, (0, 0), 14) * .55
-            im[y:y + h, x:x + w] = b.astype(np.uint8)
-    # étalonnage : ombres chaudes, hautes lumières tenues, saturation −25 %, vignettage
+ses = new_session('birefnet-general-lite')
+for k, (flip, zones) in CARS.items():
+    im = cv2.imread(str(D / 'src' / f'wm-{k}.jpg'))
+    for z in zones:
+        if z[0] == 'logo':
+            _, cx, cy, rx, ry = z; m = np.zeros(im.shape[:2], np.uint8); cv2.ellipse(m, (cx, cy), (rx + 6, ry + 6), 0, 0, 360, 255, -1)
+            im = cv2.inpaint(im, m, 12, cv2.INPAINT_TELEA)
+        else:  # plaque vierge : couleur moyenne du bord, légère ombre interne
+            _, x0, y0, x1, y1 = z; roi = im[y0:y1, x0:x1].astype(np.float32)
+            base = np.median(np.concatenate([roi[:4].reshape(-1, 3), roi[-4:].reshape(-1, 3)]), 0) * .55
+            patch = np.ones_like(roi) * base; patch = cv2.GaussianBlur(patch, (0, 0), 3)
+            m = np.zeros(roi.shape[:2], np.float32); cv2.rectangle(m, (6, 6), (roi.shape[1] - 6, roi.shape[0] - 6), 1, -1); m = cv2.GaussianBlur(m, (0, 0), 3)[..., None]
+            im[y0:y1, x0:x1] = (roi * (1 - m) + patch * m).astype(np.uint8)
+    if flip: im = im[:, ::-1].copy()
+    rgb = Image.fromarray(cv2.cvtColor(im, cv2.COLOR_BGR2RGB))
+    mask = np.asarray(remove(rgb, session=ses, only_mask=True)).astype(np.float32) / 255
+    mask = cv2.GaussianBlur(mask, (0, 0), 1.2)
+    # étalonnage : contraste, saturation −20 %, ombres réchauffées, lumière qui tombe du haut-gauche
     f = im.astype(np.float32) / 255
-    hsv = cv2.cvtColor(f, cv2.COLOR_BGR2HSV); hsv[..., 1] *= .75; f = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-    lum = f.mean(2, keepdims=True)
-    f = f * .9; f = f / (1 + .25 * f)                                     # tient les hautes lumières
-    f = np.clip((f - .42) * 1.18 + .42, 0, 1)                            # contraste
-    warm = np.array([.80, .90, 1.06], np.float32)                        # BGR : réchauffe
-    f = f * (warm * (1 - lum) + 1 * lum)
-    H, W = f.shape[:2]; yy, xx = np.mgrid[0:H, 0:W]
-    v = 1 - .35 * np.clip(((xx - W / 2) / (W * .62)) ** 2 + ((yy - H * .48) / (H * .62)) ** 2, 0, 1)
-    f = f * v[..., None]
-    cv2.imwrite(str(D / f'car-{k}.jpg'), np.clip(f * 255, 0, 255).astype(np.uint8), [cv2.IMWRITE_JPEG_QUALITY, 92])
-    print(k, f.shape)
+    hsv = cv2.cvtColor(f, cv2.COLOR_BGR2HSV); hsv[..., 1] *= .8; f = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+    f = np.clip((f - .5) * 1.15 + .5, 0, 1) * .78
+    lum = f.mean(2, keepdims=True); f = f * (np.array([.84, .93, 1.05], np.float32) * (1 - lum) + lum)
+    H, W = f.shape[:2]; yy, xx = np.mgrid[0:H, 0:W] / max(H, W)
+    f *= (1.08 - .45 * np.clip(yy * .9 + (xx if not flip else 1 - xx) * .2 - .25, 0, 1))[..., None]
+    a = (mask * 255).astype(np.uint8)
+    ys, xs = np.where(a > 20); y0, y1, x0, x1 = ys.min(), ys.max(), xs.min(), xs.max()
+    out = np.dstack([np.clip(f[..., ::-1] * 255, 0, 255).astype(np.uint8), a])[max(0, y0 - 10):y1 + 10, max(0, x0 - 10):x1 + 10]
+    Image.fromarray(out, 'RGBA').save(D / f'car-{k}.png', optimize=True)
+    print(k, out.shape)
