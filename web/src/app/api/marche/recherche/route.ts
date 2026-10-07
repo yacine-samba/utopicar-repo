@@ -2,10 +2,12 @@ import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
 import { lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "@/lib/vehicules/marche";
 import { supabaseServeur } from "@/lib/supabase/serveur";
+import { supabaseService } from "@/lib/supabase/service";
 import { cleFavori } from "@/lib/favoris";
 import { cleRecherche, COLONNES_RECHERCHE, MAX_ONGLETS, type Meilleure } from "@/lib/recherches";
 import { dansPhase, memeMoteur } from "@/lib/vehicules/phases";
-import { demanderCollecte, SEUIL_COLLECTE, type EtatCollecte } from "@/lib/vehicules/collecte";
+import { demanderCollecte, dernierReleve, SEUIL_COLLECTE, type EtatCollecte } from "@/lib/vehicules/collecte";
+import { dansDepartements, departementsDe } from "@/lib/vehicules/leboncoin";
 
 /* Recherche dans la base du marché, au niveau de l'outil Garage : marque, modèle, génération,
    chaque annonce placée sur la cote de sa génération (régression sur les annonces comparables). Benef Pro et illimité. */
@@ -26,7 +28,10 @@ const Corps = z.object({
   anneeMax: z.number().int().min(1980).max(2035).nullish(),
   prixMin: z.number().int().min(0).max(500000).nullish(),
   prixMax: z.number().int().min(0).max(500000).nullish(),
+  kmMin: z.number().int().min(0).max(900000).nullish(),
   kmMax: z.number().int().min(0).max(900000).nullish(),
+  // départements, comme le filtre « Localisation » de Leboncoin (« 76, 27 »)
+  dep: z.string().max(80).optional(),
   vendeur: z.enum(["", "particulier", "pro"]).optional(),
   mots: z.string().max(120).optional(),
   exclure: z.string().max(120).optional(),
@@ -60,6 +65,7 @@ export async function POST(req: Request) {
 
   const mots = sansAccent(f.mots ?? "").split(/[\s,]+/).filter((x) => x.length >= 2);
   const exclus = sansAccent(f.exclure ?? "").split(/[\s,]+/).filter((x) => x.length >= 2);
+  const deps = departementsDe(f.dep);
   const parGen = new Map<string, number>();
   lignes.forEach((l) => parGen.set(l.gen ?? "?", (parGen.get(l.gen ?? "?") ?? 0) + 1));
 
@@ -109,7 +115,9 @@ export async function POST(req: Request) {
     if (f.anneeMax && (l.annee ?? 9999) > f.anneeMax) return false;
     if (f.prixMin && l.prix < f.prixMin) return false;
     if (f.prixMax && l.prix > f.prixMax) return false;
+    if (f.kmMin && (l.km ?? 0) < f.kmMin) return false;
     if (f.kmMax && (l.km ?? 0) > f.kmMax) return false;
+    if (!dansDepartements(l.lieu, deps)) return false;
     if (f.vendeur === "pro" && !l.pro) return false;
     if (f.vendeur === "particulier" && l.pro) return false;
     const tx = l.tx;
@@ -135,7 +143,10 @@ export async function POST(req: Request) {
       cote: e && e.P ? { P: e.P, lo: e.lo, hi: e.hi, ecart: e.ecart, pct: e.pct, conf: doute ? ("faible" as const) : e.conf, moinsCherQue: e.moinsCherQue, n: e.nClean, why: e.why, segments: e.segments } : null,
     };
   });
-  const filtrees = annonces.filter((a) => (!f.fiables || !a.suspect) && (!f.sousCote || (a.cote?.pct != null && a.cote.pct * 100 >= f.sousCote)));
+  // annonces retirées de Leboncoin (absentes du dernier relevé complet) : elles gardent leur prix pour la cote, mais ne sont plus proposées
+  const enLigne = new Set(gardees.filter((l) => l.en_ligne !== false).map((l) => l.id));
+  const retirees = annonces.length - enLigne.size;
+  const filtrees = annonces.filter((a) => enLigne.has(a.id) && (!f.fiables || !a.suspect) && (!f.sousCote || (a.cote?.pct != null && a.cote.pct * 100 >= f.sousCote)));
   const tri = f.tri ?? "ecart";
   filtrees.sort((a, b) =>
     tri === "prix" ? a.prix - b.prix
@@ -145,7 +156,7 @@ export async function POST(req: Request) {
     : (b.cote?.pct ?? -9) - (a.cote?.pct ?? -9),
   );
 
-  const avecCote = annonces.filter((a) => a.cote);
+  const avecCote = annonces.filter((a) => a.cote && enLigne.has(a.id));
   // les annonces dont la génération n'est qu'une supposition (année de transition) ne comptent pas comme bonnes affaires
   const sousLaCote = avecCote.filter((a) => !a.suspect && !a.doute && (a.cote!.pct ?? 0) >= 0.05).length;
   // résultats gardés avec la recherche : la rouvrir les affiche sans refaire de requête
@@ -157,6 +168,7 @@ export async function POST(req: Request) {
     base: deLaGen.length,
     total: lignes.length,
     trouvees: filtrees.length,
+    retirees,
     sousLaCote,
     annonces: filtrees.slice(0, 300),
   };
@@ -165,15 +177,20 @@ export async function POST(req: Request) {
     return null;
   });
 
-  // trop peu d'annonces de cette génération en base : collecte Leboncoin (comme l'outil Garage), suivie par la page
+  // collecte Leboncoin (comme l'outil Garage), suivie par la page : base trop maigre pour cette génération, ou relevé de plus de 3 jours
+  // (annonces vendues retirées, nouvelles ajoutées : la base reste alignée sur Leboncoin)
   let collecte: EtatCollecte | null = null;
-  if (genC && deLaGen.filter(okVersion).length < SEUIL_COLLECTE) {
-    collecte = await demanderCollecte(c.id, m.base, genC, version || null, f.energie ?? "").catch((e) => {
-      console.error("collecte", (e as Error).message);
-      return null;
-    });
+  let releve: string | null = null;
+  if (genC) {
+    [collecte, releve] = await Promise.all([
+      demanderCollecte(c.id, m.base, genC, version || null, f.energie ?? "", deLaGen.filter(okVersion).length < SEUIL_COLLECTE).catch((e) => {
+        console.error("collecte", (e as Error).message);
+        return null;
+      }),
+      dernierReleve(m.base, genC, version || null, f.energie ?? "").catch(() => null),
+    ]);
   }
-  return Response.json({ ...resultat, recherche: sauve?.recherche ?? null, journal: sauve?.journal ?? null, collecte, ms: Date.now() - t0 });
+  return Response.json({ ...resultat, releve, recherche: sauve?.recherche ?? null, journal: sauve?.journal ?? null, collecte, ms: Date.now() - t0 });
 }
 
 /** Résultats gardés d'une recherche : un lancement du journal (?j=) ou le dernier lancement d'une recherche (?r=). Aucune requête sur le marché. */
@@ -191,6 +208,18 @@ export async function GET(req: Request) {
   const { data: l } = await q.maybeSingle();
   if (!l) return Response.json({ erreur: "Pas de résultats gardés pour cette recherche." }, { status: 404 });
   const { data: recherche } = l.recherche_id ? await sb.from("recherches").select(COLONNES_RECHERCHE).eq("id", l.recherche_id).maybeSingle() : { data: null };
+  // résultats gardés avant que la collecte ne garde les photos : vignettes reprises de la base du marché
+  const res = l.resultat as { annonces?: { id: string; photo?: string | null }[] };
+  const sansPhoto = (res.annonces ?? []).filter((a) => !a.photo && /^\d{6,14}$/.test(a.id)).map((a) => a.id);
+  if (sansPhoto.length) {
+    try {
+      const { data: ph } = await supabaseService().from("cote_annonces").select("id, photo").in("id", sansPhoto.slice(0, 300)).not("photo", "is", null);
+      const m = new Map((ph ?? []).map((x) => [x.id as string, x.photo as string]));
+      res.annonces = (res.annonces ?? []).map((a) => (a.photo || !m.has(a.id) ? a : { ...a, photo: m.get(a.id) }));
+    } catch (e) {
+      console.error("photos gardées", (e as Error).message);
+    }
+  }
   return Response.json({ ...(l.resultat as object), recherche, criteres: l.criteres, journal: { id: l.id, le: l.maj }, collecte: null, ms: 0 });
 }
 

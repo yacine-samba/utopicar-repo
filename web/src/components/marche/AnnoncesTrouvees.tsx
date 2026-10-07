@@ -10,6 +10,7 @@ export type AnnonceTrouvee = {
   cle: string; titre: string; prix: number | null; annee: number | null; km: number | null; ch: number | null; energie: string | null; boite: string | null;
   moteur: string | null; version: string | null; lieu: string | null; url: string | null; marque: string; modele: string; gen: string | null; gen_label: string | null;
   pro: boolean | null; cote: { P: number | null; ecart: number | null; pct: number | null } | null; recherche: string | null; premiere_le: string; derniere_le: string;
+  photo?: string | null;
 };
 
 const TRIS = { recentes: "Vues en dernier", affaires: "Les plus sous la cote", prix: "Prix croissant", km: "Kilométrage croissant", anciennes: "Trouvées en premier" } as const;
@@ -111,7 +112,13 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
             const c = a.cote;
             const bon = c?.pct != null && c.pct >= 0.05, cher = c?.pct != null && c.pct <= -0.05;
             return (
-              <li key={a.cle} className="carte grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
+              <li key={a.cle} className="carte grid gap-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center">
+                {a.photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
+                  <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-28 w-40 rounded-xl border border-line object-cover max-sm:h-44 max-sm:w-full" />
+                ) : (
+                  <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">photo bientôt</span>
+                )}
                 <div className="min-w-0">
                   <p className="truncate font-medium">{a.titre}</p>
                   <p className="mt-0.5 text-sm text-ink-3">
@@ -136,7 +143,7 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
                       compact
                       initial={favs.has(a.cle)}
                       onChange={(on) => (on ? favs.add(a.cle) : favs.delete(a.cle))}
-                      f={{ cle: a.cle, titre: a.titre, prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: null, source: "recherche", cote: c ?? null }}
+                      f={{ cle: a.cle, titre: a.titre, prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: a.photo ?? null, source: "recherche", cote: c ?? null }}
                     />
                     <BoutonAnalyserAnnonce url={a.url} />
                     {a.url && <a href={a.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Ouvrir</a>}

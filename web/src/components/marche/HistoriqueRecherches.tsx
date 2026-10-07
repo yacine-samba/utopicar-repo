@@ -142,7 +142,7 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes, photos =
 function Vignettes({ urls, nom }: { urls: string[]; nom: string }) {
   if (!urls.length)
     return (
-      <span className="hidden size-16 place-items-center rounded-xl border border-dashed border-line-2 text-ink-3 sm:grid" aria-hidden="true">
+      <span className="hidden h-20 w-28 place-items-center rounded-xl border border-dashed border-line-2 text-ink-3 sm:grid" aria-hidden="true">
         <Ico nom="parc" className="size-6" />
       </span>
     );
@@ -150,7 +150,7 @@ function Vignettes({ urls, nom }: { urls: string[]; nom: string }) {
     <span className="flex gap-1.5" aria-label={`Photos des annonces trouvées : ${nom}`}>
       {urls.slice(0, 4).map((u, i) => (
         // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
-        <img key={u} src={u} alt="" loading="lazy" referrerPolicy="no-referrer" className={cx("h-16 w-20 rounded-xl border border-line object-cover", i > 1 && "max-sm:hidden")} />
+        <img key={u} src={u} alt="" loading="lazy" referrerPolicy="no-referrer" className={cx("h-20 w-28 rounded-xl border border-line object-cover", i > 1 && "max-sm:hidden")} />
       ))}
     </span>
   );

@@ -7,7 +7,7 @@ import { supabaseServeur } from "@/lib/supabase/serveur";
 import { supabaseService } from "@/lib/supabase/service";
 import { OPTION_MESSAGES, prixTxt } from "@/lib/offres";
 import { BoutonAbonner } from "@/components/site/BoutonAbonner";
-import { EspaceMessages, type Boite, type Campagne, type CompteLbc, type EnvoiLbc } from "@/components/messages/EspaceMessages";
+import { EspaceMessages, type Boite, type Campagne, type CompteLbc, type Defauts, type EnvoiLbc } from "@/components/messages/EspaceMessages";
 
 export const metadata: Metadata = { title: "Messages Leboncoin" };
 
@@ -50,30 +50,25 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
     );
 
   const sb = await supabaseServeur();
-  const [{ data: compte }, { data: campagnes }, { data: recherches }, { data: envois }, { data: boite }, etat] = await Promise.all([
+  const [{ data: compte }, { data: campagnes }, { data: profil }, { data: envois }, { data: boite }, etat] = await Promise.all([
     sb.rpc("lbc_mon_compte"),
     sb.from("lbc_campagnes").select("id, recherche_id, nom, message, actif, ignorer_refus, updated_at").order("created_at"),
-    sb.from("recherches").select("id, nom, trouvees, derniere_le").order("derniere_le", { ascending: false }).limit(100),
+    sb.from("profils").select("reglages").eq("id", c.id).maybeSingle(),
     sb.from("lbc_envois").select("id, campagne_id, annonce_id, url, titre, prix, statut, raison, created_at, traite_le").order("created_at", { ascending: false }).limit(300),
     sb.from("lbc_boites").select("conversations, non_lus, total, maj, demande, run_id, erreur").maybeSingle(),
     etatEnvoi(),
   ]);
+  const reglages = (profil?.reglages as Record<string, unknown> | null) ?? {};
   return (
-    <div className="grid gap-6">
-      <div className="max-w-3xl">
-        <h1 className="font-display text-3xl font-semibold">Messages Leboncoin</h1>
-        <p className="mt-2 text-ink-2">
-          Choisissez une de vos recherches et votre premier message : Utopicar l&apos;envoie aux vendeurs des annonces trouvées, une annonce toutes les une à deux minutes, puis s&apos;arrête là. La suite de la conversation se fait sur Leboncoin.
-        </p>
-      </div>
-      <EspaceMessages
-        compte={(compte as CompteLbc | null) ?? null}
-        campagnes={(campagnes ?? []) as Campagne[]}
-        recherches={(recherches ?? []) as { id: string; nom: string; trouvees: number | null }[]}
-        envois={(envois ?? []) as EnvoiLbc[]}
-        boite={(boite as Boite | null) ?? null}
-        etat={etat}
-      />
-    </div>
+    <EspaceMessages
+      compte={(compte as CompteLbc | null) ?? null}
+      campagnes={(campagnes ?? []) as Campagne[]}
+      envois={(envois ?? []) as EnvoiLbc[]}
+      boite={(boite as Boite | null) ?? null}
+      etat={etat}
+      defauts={(reglages.messages as Defauts | undefined) ?? {}}
+      uid={c.id}
+      reglages={reglages}
+    />
   );
 }
