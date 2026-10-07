@@ -49,6 +49,19 @@ Avant d'écrire un brief, vérifier :
 3. Rien de proposé : aucune fiche, aucun appel, aucune morale.
 4. Chute : la dernière phrase surprend et enchaîne sur la première.
 
+## Renouveler l'image (décision de l'utilisateur après MO6)
+
+- **Plus de Polo** : elle a porté MO5 et MO6, « on l'a assez vue ». Ne pas la réutiliser comme sujet.
+- **Éléments graphiques avec une animation complètement cohérente** : la technique (lumière, verre, caméra) est
+  validée ; ce qui manquait, c'est un **système graphique** dessiné pour le film (pictogrammes au même trait, cartes,
+  points, axes, crochets) et **une seule grammaire de mouvement** :
+  1. tout naît d'un trait, puis se remplit ;
+  2. un élément devient le suivant (morph), sans couper la chaîne ;
+  3. une seule famille de ressorts pour tout le film ;
+  4. tout tombe sur la grille musicale ;
+  5. la caméra suit le trait ;
+  6. une seule source de lumière : la plume qui trace.
+
 ## Chiffres et faits
 
 - Chaque montant a sa source (lien, date) dans la timeline. Les fourchettes deviennent un chiffre rond, annoncé
