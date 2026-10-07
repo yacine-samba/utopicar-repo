@@ -10,6 +10,8 @@ export type Ligne = {
   id: string; source: string; titre: string; texte: string | null; prix: number; annee: number | null; km: number | null;
   energie: string | null; boite: string | null; pro: boolean | null; ch: number | null; places: number | null; carr: string | null; etat: string | null;
   lieu: string | null; url: string | null; vu_le: string | null;
+  /** false : absente du dernier relevé Leboncoin complet (vendue ou retirée) ; gardée pour la cote, plus proposée */
+  en_ligne?: boolean | null;
   /** vignette de l'annonce (Leboncoin), quand la collecte l'a gardée */
   photo?: string | null;
   /** critères Leboncoin : version exacte, finition, 1re mise en circulation (AAAA-MM), portes, estimation Leboncoin */

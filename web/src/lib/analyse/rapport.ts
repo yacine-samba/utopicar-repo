@@ -1,4 +1,5 @@
 /* Rapport complet au format de l'outil Garage (réponse de l'IA), lu avec tolérance : un champ absent ne casse rien. */
+import { jsonrepair } from "jsonrepair";
 import type { Ia } from "./ia-schema";
 
 type Txt = string | undefined;
@@ -62,14 +63,19 @@ export function extraireJson(txt: string): string {
   return txt.slice(debut); // réponse coupée : on tente quand même
 }
 
-/** Lit la réponse JSON de l'IA (texte libre autour toléré, virgules en trop réparées). */
+/** Lit la réponse JSON de l'IA (texte libre autour toléré, virgules en trop réparées ; en dernier recours, JSON réparé :
+    valeur sans guillemets « non estimable », virgule oubliée, guillemet non échappé, réponse coupée). */
 export function lireRapport(txt: string): Rapport {
   const json = extraireJson(txt.replace(/```(?:json)?/g, ""));
   let r: unknown;
   try {
     r = JSON.parse(json);
   } catch {
-    r = JSON.parse(json.replace(/,\s*([}\]])/g, "$1").replace(/[\u0000-\u0019]+/g, " "));
+    try {
+      r = JSON.parse(json.replace(/,\s*([}\]])/g, "$1").replace(/[\u0000-\u0019]+/g, " "));
+    } catch {
+      r = JSON.parse(jsonrepair(json));
+    }
   }
   if (!r || typeof r !== "object" || !(r as Rapport).vehicule) throw new Error("Réponse de l'IA hors format");
   return r as Rapport;
