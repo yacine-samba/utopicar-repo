@@ -7,7 +7,7 @@ REPO = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
 out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(REPO, 'video', 'MASTER_PROMPT.md')
 skill = open(os.path.join(HERE, 'SKILL.md')).read()
 body = re.sub(r'^---.*?---\n', '', skill, flags=re.S).strip()
-order = ['intake', 'utopicar', 'script-voice', 'motion-craft', 'sound', 'qa-delivery', 'lessons']
+order = ['intake', 'utopicar', 'codes-attention', 'script-voice', 'motion-craft', 'fluidite', 'techniques', 'sound', 'sound-design', 'qa-delivery', 'lessons']
 parts = [
     '# MASTER PROMPT — Motion Studio (UTOPICAR)',
     '',

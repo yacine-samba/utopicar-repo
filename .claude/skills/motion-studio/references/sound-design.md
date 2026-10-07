@@ -84,3 +84,22 @@ Règles de placement :
 - Pixabay, ZapSplat, Sonniss, Freesound : bloqués par la politique réseau de l'environnement (403). Ne pas contourner :
   demander les fichiers à l'utilisateur.
 - Musique fournie par l'utilisateur ou générée avec Suno (prompt type : `video/docs/prompt-suno-mo4.md`).
+
+## 8. Voix off au milieu du sound design (MO5)
+
+Script de référence : `video/scripts/audio-mo5.py`.
+- **La voix d'abord** : chaque réplique ramenée au même niveau (± 6 dB max), présence 2–5 kHz légèrement remontée.
+- **La musique cède à la voix par bandes** : présence −10 dB et niveau global −8 dB pendant chaque réplique. Contrôle
+  mesuré : écart voix/musique par réplique, minimum ≥ 4 dB, médiane ≈ 10 dB.
+- **Gestes musicaux de montage** :
+  - arrêt de bande (le morceau ralentit et s'éteint en 0,22 s) sur la chute ;
+  - souffle inversé (0,9 s à l'envers) qui remonte jusqu'au premier temps de la reprise ;
+  - automation qui retire basse et aigus pendant un passage d'attente.
+- **Familles de notes** : chaque débit joue une note plus grave que le précédent, le gag une note plus haute.
+- **Sons fabriqués quand la banque n'a pas le bon** :
+  - moteur léger à régime variable (`varrate`, +3 demi-tons, passe-haut 150 Hz, panoramique droite → centre, pic à
+    l'arrivée) ;
+  - vibration de téléphone synthétisée ;
+  - tic-tac qui accélère.
+- **Master** : limiteur à anticipation (4 ms) avant la normalisation à −14 LUFS (sans lui, les transitoires laissaient
+  le mix à −18,9 LUFS) ; musique −9 dB sous 150 Hz et passe-haut 45 Hz pour le téléphone.

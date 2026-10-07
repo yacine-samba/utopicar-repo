@@ -2,13 +2,18 @@
 
 Un format à part des pubs produit : une vidéo de 30 s au plus, qui ne vend rien et sert seulement à arrêter le pouce,
 à se faire revoir, enregistrer et envoyer. Ces codes viennent de MO5 (`video/brief-mo5.md`,
-`video/film-mo5/film.js`, `video/scripts/audio-mo5.py`), validée par l'utilisateur en octobre 2026.
+`video/film-mo5/film.js`, `video/scripts/audio-mo5.py`), validée par l'utilisateur en octobre 2026, et de MO6
+(`video/brief-mo6.md`, `video/docs/timeline-mo6.md`, `video/film-mo6/film.js`). Les recettes techniques sont dans
+`techniques.md`.
 
 ## Processus en 5 étapes (chaque étape attend un « OK »)
 
 1. **Brief** : concept, hooks, histoire, émotions. `video/brief-<projet>.md`.
-2. **Timeline seconde par seconde** + 1 à 5 images tests rendues (`video/docs/timeline-<projet>.md`).
-3. **Maquettage complet toutes les 0,1 s** : planche (`renders/review/<projet>-planche-0.1s.jpg`).
+2. **Timeline seconde par seconde** + 1 à 5 images tests rendues (`video/docs/timeline-<projet>.md`,
+   `film-<projet>/tests.html`, une scène par `?s=`). Chiffres sourcés dans la même étape.
+3. **Maquettage complet toutes les 0,1 s** : le vrai film animé (`film-<projet>/film.js`, minutage provisoire dans
+   l'objet `K`), puis les planches `node video/scripts/sheet.mjs` (`renders/review/<projet>-planche-0.1s-*.jpg`) et
+   la boucle mesurée.
 4. **Voix off** : script, puis choix de la voix.
 5. **Animation finale** : film, son, QA, livraison.
 
@@ -22,6 +27,35 @@ Un format à part des pubs produit : une vidéo de 30 s au plus, qui ne vend rie
 - Émotions fortes et variées : humour, peur, joie, questionnement. Une émotion nommée par temps de l'histoire.
 - Valeur concrète que le spectateur garde (enregistrer) et un détail drôle ou choquant qu'il envoie (partager).
 - Tout hook passe par le skill `art-du-hook` (CLAUDE.md racine) : analyse, 3 à 5 variantes, 4 verrous, re-hooks.
+  À **chaque** changement de concept, on relance le skill : un hook n'est jamais recopié d'un brief abandonné.
+
+## Trouver le concept (ce que MO6 a appris)
+
+Trois briefs refusés avant le bon. Ce que l'utilisateur a dit, et ce qu'il fallait en tirer :
+
+| Refus | Ce qui manquait | Règle |
+|---|---|---|
+| « Même voiture », deux annonces | trop proche d'un conseil d'annonce, pas assez désirable | le sujet doit donner **envie de se lancer**, pas seulement corriger une erreur |
+| « Le regard », la première revente | de l'émotion, mais rien à garder | **apporter de la valeur** : un savoir concret, chiffré, réutilisable le jour J |
+| fiche récapitulative finale « à enregistrer » | une proposition déguisée | **ne rien proposer** : pas de fiche, pas de récap, pas de « enregistre ». Le spectateur enregistre de lui-même parce que le contenu est dense et utile |
+
+Le concept retenu (MO6) combine les trois : une **idée de pro qui renverse une croyance** (ce qui fait peur coûte
+peu, ce qui coûte ne se voit pas), des **prix et des tests concrets**, et une **chute** comme MO5 (« Personne n'a
+regardé sous le bouchon. ») qui relance la boucle.
+
+Avant d'écrire un brief, vérifier :
+1. Envie : le débutant sort-il avec l'envie d'y aller ?
+2. Valeur : y a-t-il au moins trois éléments concrets qu'il voudra retrouver ?
+3. Rien de proposé : aucune fiche, aucun appel, aucune morale.
+4. Chute : la dernière phrase surprend et enchaîne sur la première.
+
+## Chiffres et faits
+
+- Chaque montant a sa source (lien, date) dans la timeline. Les fourchettes deviennent un chiffre rond, annoncé
+  comme ordre de grandeur (« Exemple · ordres de grandeur, petite citadine »).
+- Un fait technique se vérifie avant d'être animé, avec ses limites : la Polo 1.2 de cette génération a une chaîne,
+  pas une courroie, donc la radiographie montre une voiture générique ; la mousse sous le bouchon peut venir de
+  petits trajets, donc la voix dit « méfiance », pas « culasse morte ».
 
 ## Direction artistique
 
