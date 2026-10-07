@@ -53,25 +53,31 @@ Vraies photos des versions exactes, Wikimedia Commons ; auteurs et licences dans
 
 Légende du post : « Photos : Thomas doerfer, M 93 / Wikimedia Commons ».
 
-## La voix (≈ 69 mots, prise à l'étape 4)
+## La voix (enregistrée le 7 octobre 2026)
 
-Simon (`mvhJVdVoTWVUtL4keT7W`), eleven_v3, ton « liste de pro », sec. Version resserrée du brief (82 → 69 mots) pour
-tenir 28,5 s avec la respiration. Orthographe pour la synthèse entre crochets.
+Simon (`mvhJVdVoTWVUtL4keT7W`), eleven_v3, 2 prises (1 054 crédits). **Prise B retenue par l'utilisateur** (43,4 s
+brute). Note : la transcription entend « deux cents vites » pour « deux cent huit » ; prise gardée telle quelle à la
+demande de l'utilisateur. Mise en place par `scripts/vo-mo8.py takeB.mp3 --retenue` :
+- répliques définies par leurs mots (faster-whisper small), posées à leur ancre, découpées aux pauses de plus de 0,3 s ;
+- accélération 1,20 (liste) et 1,25 (chute), pauses internes ramenées à 0,12 s, timbre conservé ;
+- la voix finit à 28,4 s ; débit ≈ 2,8 mots/s.
+
+Le film lit `audio/vo-mo8/vo-timing.json` (répliques, mots, repères) : la palette tombe sur le numéro, la voiture se range
+sur son nom, l'étiquette sort sur le défaut, le tampon tombe sur « Toi ». `scripts/audio-mo8.py` relit les mêmes repères.
 
 ```
- 0,1  Cinq voitures à ne jamais acheter en achat-revente.
- 2,0  Enfin… pas la voiture. Le moteur.
- 4,1  Cinq. BMW 116i [cent seize i] : la chaîne s'allonge.
- 8,1  Quatre. Golf 6, 1.4 TSI [un-quatre T-S-I] : chaîne et pistons.
-12,1  Trois. Le 1.0 EcoBoost [un litre EcoBoost] : il chauffe.
-16,1  Deux. Clio 4, 1.2 TCe [un-deux T-C-E] : il boit son huile.
-20,1  Et numéro un : le 1.2 PureTech [un-deux PureTech]. Sa courroie baigne dans l'huile.
-24,2  Le six ? La même 208, courroie changée : cinq cents euros.
-26,9  Tout le monde la fuit. Toi, tu l'achètes.
+ 0,10  Cinq voitures à ne jamais acheter en achat-revente.
+ 2,95  Enfin… pas la voiture. Le moteur.
+ 5,17  Cinq. BMW 116i : la chaîne s'allonge.
+ 8,70  Quatre. Golf 6, 1.4 TSI : chaîne et pistons.
+12,75  Trois. Le 1.0 EcoBoost : il chauffe.
+15,80  Deux. Clio 4, 1.2 TCe : il boit son huile.
+19,40  Et numéro un : le 1.2 PureTech. Sa courroie baigne dans l'huile.
+23,33  Le six ?
+23,97  La même 208, courroie changée : cinq cents euros.
+26,56  Tout le monde la fuit.
+27,45  Toi, tu l'achètes.
 ```
-
-Ouverture B (même corps) : « Cinq moteurs qui peuvent te coûter jusqu'à dix mille euros. Tu les croises sur toutes les
-annonces. »
 
 ## La grammaire d'un numéro (4 s, deux mesures)
 
@@ -119,19 +125,30 @@ chaque nouvelle pièce entre dans le champ par la droite, là où la précédent
 | 28,6 | La 208 recule et se range dans un bandeau ; les quatre autres reviennent en bandeaux au-dessus d'elle : on retrouve l'image 0. | 5 voitures à fuir | | souffle inversé |
 | 30,0 | Image 0. | | (enchaîne sur « Cinq voitures… ») | boucle |
 
-## Le son (prévu pour l'étape 5)
+## Le son
 
-- Musique : nouveau passage à 120 BPM. Le filtre s'ouvre du n° 5 au n° 1, avec un arrêt net sur « Le six ? » et un drop sur le tampon.
-- Un coup de palette et un impact grave par numéro, sur le premier temps.
-- Un son par défaut, un seul à la fois :
-  - claquement de chaîne ;
-  - craquement de piston ;
-  - vapeur et goutte ;
-  - jauge et goutte d'huile ;
-  - frottement de courroie et bulles.
+`scripts/audio-mo8.py` → `audio/mix-mo8.wav` (pistes dans `audio/stems-mo8/`, hors git), rapport `docs/mix_report-mo8.txt`.
+- Musique *Controlled Drop* à 120 BPM :
+  - mesure 13 sur le hook ;
+  - mesures 2 à 9 sur la liste, filtre qui s'ouvre à chaque numéro (1,0 → 7,5 kHz) et niveau qui monte ;
+  - arrêt de bande sur « Le six ? » ;
+  - nappe grave sous la facture ;
+  - souffle inversé, puis drop (mesure 55) sur « Toi, tu l'achètes ».
+- Bruitages Mixkit (`audio/bank/mo8`) :
 
-  Je les cherche dans la banque Mixkit (`scripts/mixkit.py`) à l'étape 5.
-- Voix devant, −14 LUFS, plafond −3,5 dBTP avant encodage, contrôle sur haut-parleur de téléphone.
+| Moment | Son |
+|---|---|
+| palette | clic mécanique 1131 |
+| entrée et rangement | souffles 1490 et 1492 |
+| impact de chaque numéro | 2909 |
+| compteur | tics 1054 |
+| n° 5 | verrou d'engrenage 2858 et 2857 |
+| n° 4 | verre contre métal 2183 et marteau 833 |
+| n° 3 | gaz qui s'échappe 849 et goutte 3179 |
+| n° 2 | raclement métallique 2799 et goutte 1317 |
+| n° 1 | mécanique 3117 et bulles 3000 |
+| facture | papier 1530 |
+| tampon | coup sec 2182 et basse 2299 |
 
 ## Images tests
 

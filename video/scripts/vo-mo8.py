@@ -34,6 +34,17 @@ LINES = [
     ('fuit', 69, 74, "Tout le monde la fuit.", 26.75, TC, IN),
     ('toi', 75, 78, "Toi, tu l'achètes.", 27.68, TC, IN),
 ]
+# prise B : « deux cent huit » est transcrit en deux mots (« 200 vites »), tout est décalé d'un mot après 64
+# repères du film (indices de mots) : le film lit leurs temps dans vo-timing.json
+MARKS = dict(cross=9, strike=12, moteur=13,
+             n5=15, n5m=16, n5d=18, n4=22, n4m=23, n4d=28, n3=31, n3m=32, n3d=35, n2=37, n2m=38, n2d=43, n1=47, n1un=49, n1m=50, n1d=54,
+             six=60, meme=62, cinqcents=67, fuit=69, toi=75, fin=78)
+if TAKE == 'takeB.mp3':
+    LINES = [L if L[0] not in ('meme', 'fuit') else L for L in LINES]
+    LINES = [(k, a, b, txt, anc, tp, inn) if k not in ('meme', 'fuit') else
+             ((k, 62, 69, txt, 23.95, tp, inn) if k == 'meme' else (k, 70, 74, txt, 26.25, tp, inn)) for (k, a, b, txt, anc, tp, inn) in LINES]
+    LINES = [L if L[0] != 'toi' else ('toi', 75, 78, L[3], 27.45, L[5], L[6]) for L in LINES]
+    MARKS.update(cinqcents=68, fuit=70)
 
 sped = {}
 with tempfile.TemporaryDirectory() as tmp:
@@ -58,7 +69,7 @@ def cut(a, b, tempo):
 
 
 out = np.zeros(int(DUR * SR) + 6 * SR)
-timing = {'dur': DUR, 'take': TAKE, 'lines': [], 'words': []}
+timing = {'dur': DUR, 'take': TAKE, 'lines': [], 'words': [], 'marks': {}}
 t = 0.0
 for key, k0, k1, text, anchor, tempo, inner in LINES:
     chunks, cur = [], [k0]
@@ -78,8 +89,13 @@ for key, k0, k1, text, anchor, tempo, inner in LINES:
             timing['words'].append({'line': key, 't': round(t + (W[k][0] - a_eff) / tempo, 3), 'end': round(t + (W[k][1] - a_eff) / tempo, 3), 'w': W[k][2]})
         t += len(seg) / SR
     timing['lines'].append({'key': key, 't': round(t_line, 3), 'end': round(t, 3), 'text': text})
+W_ALL = {}
+for i, w in enumerate(timing['words']): W_ALL[i] = w
+timing['marks'] = {k: {'t': W_ALL[i]['t'], 'end': W_ALL[i]['end'], 'w': W_ALL[i]['w']} for k, i in MARKS.items()}
 tag = Path(TAKE).stem
 sf.write(D / f'vo-placed-{tag}.wav', out[:int(DUR * SR)], SR)
 json.dump(timing, open(D / f'vo-timing-{tag}.json', 'w'), ensure_ascii=False, indent=1)
 for L in timing['lines']: print(f"{L['t']:6.2f}-{L['end']:6.2f} {L['key']:5} {L['text']}")
 print('fin de la voix', round(t, 2), 's')
+if len(sys.argv) > 2 and sys.argv[2] == '--retenue':
+    sf.write(D / 'vo-placed.wav', out[:int(DUR * SR)], SR); json.dump(timing, open(D / 'vo-timing.json', 'w'), ensure_ascii=False, indent=1); print('→ vo-placed.wav, vo-timing.json')

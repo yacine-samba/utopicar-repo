@@ -20,12 +20,16 @@ const P = {
   heavy: 'heavy', roll: { f: 0.9, z: 1 }, cam: { f: 0.7, z: 1 }, pop: { f: 2.0, z: 0.72 }, part: { f: 1.3, z: 0.86 }, out: { f: 1.4, z: 1 },
 };
 
-// ---------- minutage (seul endroit à recaler sur la voix) ----------
+// ---------- minutage : lu dans la voix retenue (audio/vo-mo8/vo-timing.json, scripts/vo-mo8.py) ----------
+const VT = await (await fetch('../audio/vo-mo8/vo-timing.json')).json();
+const Mk = (k) => VT.marks[k].t;
 const K = {
-  sweep: 0.5, cross: 2.0, moteur: 2.4, hookOut: 3.5,
-  N: [4.0, 8.0, 12.0, 16.0, 20.0],
-  six: 24.0, fact: 24.5, fuit: 26.8, affaire: 27.8, out: 28.6, loopIn: 28.75,
+  sweep: 0.5, cross: Mk('cross') + 0.05, moteur: Mk('moteur'), strike: Mk('strike'),
+  N: ['n5', 'n4', 'n3', 'n2', 'n1'].map(k => Mk(k) - 0.12),
+  six: Mk('six') - 0.08, fact: Mk('meme') + 0.05, cinqcents: Mk('cinqcents'), fuit: Mk('fuit') - 0.35, affaire: Mk('toi') + 0.12,
 };
+K.hookOut = K.N[0] - 0.55;
+K.out = Math.max(28.45, VT.lines[VT.lines.length - 1].end + 0.05); K.loopIn = K.out + 0.15;
 // un numéro : entrée de la voiture +0, balayage +0.6, rangement +1.0, défaut +1.5, coût +2.0, sortie +3.4
 const D = { sweep: 0.6, dock: 1.0, defect: 1.5, cost: 2.0, exit: 3.55 };
 
@@ -47,7 +51,13 @@ const NUM = [
   { d: 2, car: 'clio', m: 'Clio 4 · 1.2 TCe', e: 'CAPTUR · MÉGANE 3 · 2012 – 2016', k: 'il boit', v: 'son huile', j: "jusqu'à", cost: '10 000 €', part: 'dip' },
   { d: 1, car: 'p208', m: '1.2 PureTech', e: '208 · 2008 · 308 · 2013 – 2022', k: 'la courroie', v: "s'effrite", j: 'courroie', cost: '≈ 500 €', part: 'belt' },
 ];
-NUM.forEach((n, i) => { n.t0 = K.N[i]; n.t1 = i < 4 ? K.N[i + 1] : K.six; });
+NUM.forEach((n, i) => {
+  const key = ['n5', 'n4', 'n3', 'n2', 'n1'][i];
+  n.t0 = K.N[i]; n.t1 = i < 4 ? K.N[i + 1] : K.six;
+  const dock = Mk(key + 'm') - 0.1 - n.t0, defect = Mk(key + 'd') - n.t0;
+  const exit = n.t1 - n.t0 - 0.45;
+  n.o = { sweep: Math.max(0.15, dock - 0.45), dock: Math.max(0.55, dock), defect, cost: Math.min(defect + 0.4, exit - 1.25), exit };
+});
 
 // ---------- 3D ----------
 const G = createStage(document.getElementById('gl'));
@@ -167,13 +177,13 @@ const flapBox = el('div', 'flapbox', LUI);
 const fTop = el('div', 'half top', flapBox), fBot = el('div', 'half bot', flapBox), vFront = el('div', 'half top', flapBox), vBack = el('div', 'half bot', flapBox);
 const fs = [fTop, fBot, vFront, vBack].map(h => el('span', '', h));
 const noLbl = el('div', 'no', LUI); noLbl.textContent = 'N°';
-const FLIPS = [[NUM[0].t0, 5], [NUM[1].t0, 4], [NUM[2].t0, 3], [NUM[3].t0, 2], [NUM[4].t0 + 0.5, 1], [K.six, 6]];
+const FLIPS = [[NUM[0].t0, 5], [NUM[1].t0, 4], [NUM[2].t0, 3], [NUM[3].t0, 2], [Mk('n1un') - 0.08, 1], [K.six, 6]];
 function paintFlap(t) {
   let i = -1; for (let j = 0; j < FLIPS.length; j++) if (t >= FLIPS[j][0]) i = j;
   const cur = i < 0 ? 5 : FLIPS[i][1], prev = i <= 0 ? cur : FLIPS[i - 1][1];
   const p = i < 0 ? 1 : clamp((t - FLIPS[i][0]) / 0.34, 0, 1);
   // l'hésitation du n° 1 : le volet part, revient, puis tombe un demi-temps plus tard
-  let hes = 0; if (t > NUM[4].t0 && t < NUM[4].t0 + 0.5) hes = Math.sin(Math.PI * clamp((t - NUM[4].t0) / 0.45, 0, 1)) * 38;
+  let hes = 0; const hEnd = Mk('n1un') - 0.08; if (t > NUM[4].t0 && t < hEnd) hes = Math.sin(Math.PI * clamp((t - NUM[4].t0) / (hEnd - NUM[4].t0), 0, 1)) * 38;
   fs[0].textContent = cur; fs[1].textContent = p < 1 ? prev : cur; fs[2].textContent = prev; fs[3].textContent = cur;
   const a1 = p < 0.5 ? -180 * p : -90, a2 = p < 0.5 ? 90 : 90 - 180 * (p - 0.5);
   vFront.style.transform = `rotateX(${f3(hes ? -hes : a1)}deg)`; vFront.style.visibility = (p < 0.5 && p < 1) || hes ? 'visible' : 'hidden';
@@ -252,12 +262,13 @@ const ch208r = el('img', '', LCh, 'position:absolute;left:170px;top:0;width:740p
 const ch208 = el('img', '', LCh, 'position:absolute;left:170px;top:0;width:740px;transform-origin:370px 450px;filter:drop-shadow(0 30px 40px rgba(0,0,0,.8))'); ch208.src = url('p208');
 const ch208s = el('div', '', LCh, `position:absolute;left:170px;top:0;width:740px;height:${740 * 1118 / 1833}px;transform-origin:370px 450px;-webkit-mask-image:url(${url('p208')});-webkit-mask-size:100% 100%;mix-blend-mode:screen;opacity:.5`);
 const fact = el('div', 'glass', LCh, 'left:190px;top:1030px;width:700px;height:400px;padding:38px 46px');
-fact.innerHTML = `<div class="sheen"></div><div style="display:flex;justify-content:space-between;font:700 24px Satoshi;letter-spacing:5px;color:rgba(246,239,231,.6)"><span>FACTURE · 208 1.2 PURETECH</span><span style="letter-spacing:3px;color:rgba(246,239,231,.45)">EXEMPLE</span></div>
+fact.innerHTML = `<div class="sheen"></div><div style="display:flex;justify-content:space-between;font:700 22px Satoshi;letter-spacing:3px;color:rgba(246,239,231,.6)"><span>FACTURE · 208 1.2 PURETECH</span><span style="font-size:18px;letter-spacing:3px;color:rgba(246,239,231,.45);padding-top:3px">EXEMPLE</span></div>
 <div class="fr" style="display:flex;justify-content:space-between;margin-top:30px;font:500 32px Satoshi;color:rgba(246,239,231,.85)"><span>Kit courroie + pompe à eau</span><span class="n" style="font-size:34px">322 €</span></div>
 <div class="fr" style="display:flex;justify-content:space-between;margin-top:16px;font:500 32px Satoshi;color:rgba(246,239,231,.85)"><span>Main-d'œuvre</span><span class="n" style="font-size:34px">190 €</span></div>
 <div class="fl" style="height:2px;margin:26px 0 18px;background:linear-gradient(90deg,rgba(255,179,138,.7),rgba(255,179,138,.1));transform-origin:0 50%"></div>
 <div class="fr" style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:700 34px Satoshi">Courroie changée</span><span class="n ext lit" style="font-size:96px">512 €</span></div>`;
 const fRows = [...fact.querySelectorAll('.fr')], fLine = fact.querySelector('.fl');
+fRows[2].querySelector('.lit').style.display = 'inline-block';
 const stamp = el('div', 'abs', LTop, 'left:560px;top:930px;filter:url(#ink)');
 const stampIn = el('div', '', stamp, 'padding:8px 34px 18px;border:7px solid #ff5a1f;border-radius:22px;font:italic 500 120px/1 Fraunces;color:#ff5a1f;transform-origin:50% 50%');
 stampIn.textContent = 'affaire';
@@ -281,11 +292,11 @@ function paint(t) {
   // « 5 voitures à fuir » : présent à l'image 0, sort à 2,0 s, se réécrit pendant le retour (exact pour la boucle)
   if (t < 15) { writeWord(wA, tL, K.loopIn, 0.04, 22, true); writeWord(wB, tL, K.loopIn + 0.35, 0.05, 22, true); }
   else { writeWord(wA, t, K.loopIn, 0.04, 22, true); writeWord(wB, t, K.loopIn + 0.35, 0.05, 22, true); }
-  const aOut = t < 15 ? S(t, K.cross - 0.1, P.out) : 0;
+  const aOut = t < 15 ? sm(K.cross - 0.25, K.cross + 0.05, t) : 0;
   gA.setAttribute('transform', `translate(0,${f3(-60 * aOut)})`); setA(gA, (1 - aOut) * (t < 15 || t > K.out ? 1 : 0));
   gB.setAttribute('transform', `translate(0,${f3(-60 * aOut)})`); setA(gB, (1 - aOut) * (t < 15 || t > K.out ? 1 : 0));
-  writeWord(wC, t, K.cross + 0.05, 0.035, 22); writeWord(wD1, t, K.moteur, 0.05, 22); writeWord(wD2, t, K.moteur + 0.12, 0.05, 22);
-  strike.setAttribute('stroke-dashoffset', f3(900 * (1 - S(t, K.cross + 0.65, P.pen))));
+  writeWord(wC, t, K.cross + 0.1, 0.035, 22); writeWord(wD1, t, K.moteur - 0.1, 0.05, 22); writeWord(wD2, t, K.moteur + 0.05, 0.05, 22);
+  strike.setAttribute('stroke-dashoffset', f3(900 * (1 - S(t, K.strike, P.pen))));
   const cdOut = sm(K.hookOut, K.hookOut + 0.45, t);
   const cdOn = t > K.cross - 0.1 && t < 15 ? 1 : 0;
   gC.setAttribute('transform', `translate(0,${f3(-80 * cdOut)})`); setA(gC, cdOn * (1 - cdOut));
@@ -314,8 +325,8 @@ function paint(t) {
   // --- les numéros
   for (const h of Object.values(HOLD)) h.visible = false;
   NUM.forEach((n, i) => {
-    const t0 = n.t0, a = t - t0, car = bigCars[i], strip = strips[i], last = i === 4;
-    const tEx = t0 + D.exit + (last ? 0.1 : 0);
+    const t0 = n.t0, a = t - t0, car = bigCars[i], strip = strips[i], last = i === 4, D = n.o;
+    const tEx = t0 + D.exit;
     // grande voiture : entre par la droite, balayage, devient transparente, se range dans le bandeau
     const cin = S(t, t0 - 0.3, P.card), dock = S(t, t0 + D.dock, P.dock);
     const cx0 = (W - car.cw) / 2, cy0 = 1100 - car.ch;
@@ -362,20 +373,23 @@ function paint(t) {
     // coût
     const co = costs[i], cIn = S(t, t0 + D.cost - 0.1, P.rise), cOut = S(t, tEx, P.out);
     co.d.style.transform = `translateX(-50%) translate(${f3(-1250 * cOut)}px,${f3(30 * (1 - cIn))}px)`; set(co.d, sm(t0 + D.cost - 0.15, t0 + D.cost + 0.05, t) * (t < tEx + 1.2 ? 1 : 0));
-    setRoll(co.R, last ? eo(t0 + D.cost + 0.5, t0 + D.cost + 1.6, t) : eo(t0 + D.cost, t0 + D.cost + 1.25, t));
+    setRoll(co.R, eo(t0 + D.cost, t0 + D.cost + 1.0, t));
   });
-  set(mention, fade(t, NUM[0].t0 + D.cost, NUM[0].t0 + D.cost + 0.3, K.six - 0.4, K.six - 0.1));
+  set(mention, fade(t, NUM[0].t0 + NUM[0].o.cost, NUM[0].t0 + NUM[0].o.cost + 0.3, K.six - 0.4, K.six - 0.1));
 
   // --- les défauts
   { // n° 5 : la chaîne défile, le brin gauche se détend et bat, claque
+    const D = NUM[0].o;
     const a = t - NUM[0].t0, bow = .03 + .06 * sm(D.defect, D.defect + 0.6, a) + .018 * Math.sin(a * 2 * Math.PI * 3.2) * sm(D.defect, D.defect + 0.4, a) * (1 - sm(3.2, 3.8, a));
     if (hChain.visible) chainS.userData.update(.22 * a + .12 * Math.max(0, a - D.defect), bow);
   }
   { // n° 4 : la fissure court sur la tête du piston
+    const D = NUM[1].o;
     const a = t - NUM[1].t0; if (hPist.visible) pist.userData.setCrack(eo(D.defect, D.defect + 0.7, a));
     pist.rotation.y = .5 + .15 * Math.sin(a * .8);
   }
   { // n° 3 : l'aiguille monte dans le rouge, une goutte perle et tombe, la vapeur monte
+    const D = NUM[2].o;
     const a = t - NUM[2].t0, v = lerp(.5, .93, eo(D.defect - 0.3, D.defect + 1.0, a)) + noise(31, t * 7) * .006 * sm(D.defect + 0.8, D.defect + 1, a);
     gauge.userData.setNeedle(v, .3 + .7 * sm(D.defect, D.defect + 1, a));
     const [d1, d2] = hose.userData.drops, cp = hose.userData.clamp;
@@ -388,6 +402,7 @@ function paint(t) {
       w.style.transform = `translate(${f3(wa[0] + noise(40 + j, t * .8) * 30)}px,${f3(wa[1] - 40 - 260 * ph)}px) scale(${f3(.6 + ph)})`; set(w, o); });
   }
   { // n° 2 : la jauge sort du tube, son huile est sous le MIN, une goutte tombe
+    const D = NUM[3].o;
     const a = t - NUM[3].t0, out = eo(D.sweep + 0.4, D.defect + 0.4, a);
     dip.rotation.set(0, -.55, -.22); const dir = v3(1, 0, 0).applyEuler(dip.rotation);
     dip.position.set(-.75, .62, 0).addScaledVector(dir, -.9 * (1 - out));
@@ -398,6 +413,7 @@ function paint(t) {
     const pg = eo(D.defect + 1.2, D.defect + 2.0, a); oilPud.position.set(tip.x, .006, tip.z); oilPud.scale.set(1.3 * pg + .001, .8 * pg + .001, 1); oilPud.visible = pg > .01;
   }
   { // n° 1 : la courroie tourne dans l'huile, ses morceaux filent vers la crépine
+    const D = NUM[4].o;
     const a = t - NUM[4].t0; if (hBelt.visible) beltS.userData.update(.35 * a);
   }
 
@@ -432,6 +448,7 @@ function paint(t) {
   set(stamp, sm(K.affaire - 0.02, K.affaire + 0.06, t) * (t < 29.9 ? 1 : 0));
 
   const pulse = (t0, a, k = 7) => (t > t0 ? a * Math.exp(-(t - t0) * k) : 0);
+  { const p = S(t, K.cinqcents, P.pop); const big = fRows[2] && fRows[2].querySelector('.lit'); if (big) big.style.transform = `scale(${f3(1 + .12 * Math.sin(Math.PI * clamp((t - K.cinqcents) / 0.5, 0, 1)))})`; }
   set(flash, pulse(K.moteur + 0.2, .18) + NUM.reduce((s, n) => s + pulse(n.t0, .12, 9), 0) + pulse(K.affaire, .28, 6));
   const gn = Math.floor(t * 24) % 720; grain.style.transform = `translate(${(gn * 53) % 211}px,${(gn * 97) % 173}px)`;
 
@@ -440,7 +457,7 @@ function paint(t) {
 
 // flou de bougé : entrées de voiture, rangements, sorties
 const WIN = [[K.hookOut, K.hookOut + 0.7, 1], [K.loopIn, K.loopIn + 0.9, 0.8], [K.out, K.out + 0.6, 1], [K.fuit - 0.2, K.fuit + 0.9, 0.8]];
-NUM.forEach((n, i) => { WIN.push([n.t0, n.t0 + 0.5, 1], [n.t0 + D.dock, n.t0 + D.dock + 0.6, 0.8], [n.t0 + D.exit, n.t0 + D.exit + 0.6, 1]); });
+NUM.forEach((n, i) => { WIN.push([n.t0 - 0.3, n.t0 + 0.3, 1], [n.t0 + n.o.dock, n.t0 + n.o.dock + 0.6, 0.8], [n.t0 + n.o.exit, n.t0 + n.o.exit + 0.6, 1]); });
 const fast = (t) => { let s = 0; for (const [a, b, v] of WIN) s = Math.max(s, v * sm(a - 0.05, a + 0.05, t) * (1 - sm(b - 0.05, b + 0.05, t))); return s; };
 window.shutter = (t) => Math.max(0.1, fast(t));
 window.samples = (t) => (fast(t) > 0.3 ? 4 : 1);

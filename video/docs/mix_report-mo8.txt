@@ -1,0 +1,8 @@
+MO8 · mix : -14.8 LUFS intégrés, true peak -3.5 dBTP (WAV, avant AAC)
+bruitages placés : 80 · retirés pour collision : 14 1107@4.23, 1054@7.29, 1054@7.41, 3120@8.13, 1054@11.08, 1054@11.20, 833@11.21, 1054@11.32, 1054@14.48, 1054@14.60, 2589@15.80, 1490@18.94, 1131@19.22, 1054@21.52
+écart voix/musique par réplique : min 8.1 dB, médiane 16.9 dB
+RMS hook       -17.0 dBFS
+RMS liste      -17.6 dBFS
+RMS facture    -17.2 dBFS
+RMS drop       -19.2 dBFS
+énergie sous 150 Hz : 33 %
