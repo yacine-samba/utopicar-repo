@@ -1,107 +1,105 @@
-# Brief : MO6 « Le regard » (30 s max, voix off)
+# Brief : MO6 « Ce qui se voit, ce qui se cache » (30 s max, voix off)
 
 Deuxième vidéo, avec les codes de MO5 « 47 € » (`brief-mo5.md`, `references/codes-attention.md` du skill
-motion-studio). MO5 montrait le piège ; MO6 donne envie d'y aller.
+motion-studio). MO5 montrait le piège ; MO6 donne envie d'y aller **et** une méthode à garder.
 
-Après sa première revente, on ne regarde plus une rue de la même façon : chaque voiture garée devient un prix, une
-rayure devient « − 80 € », une annonce mal faite devient une occasion. La vidéo fait vivre ce regard au spectateur,
-puis la première revente qui le donne : l'achat, la préparation, le téléphone qui sonne, la première marge. Rien à
-vendre : il repart avec l'envie d'avoir ces yeux-là.
+Une idée de pro, simple à retenir : les défauts qui font fuir les acheteurs (phares jaunis, rayure, intérieur sale)
+coûtent presque rien à réparer, et c'est là que se fait la marge. Les défauts qui coûtent cher (distribution,
+embrayage, joint de culasse) ne se voient pas, et chacun se vérifie en dix secondes. La vidéo finit sur une fiche
+récapitulative lisible, faite pour la capture d'écran et l'enregistrement.
 
 Écrit avec les skills motion-studio et « L'art du hook ». Textes passés à Stop Slop.
 
 ```
-Produit / URL : aucun, rien à vendre       Objectif : arrêt net, revisionnage, enregistrement et partage spontanés
-Plateforme : TikTok, puis Reels et Shorts  Public : débutants qui hésitent à se lancer dans l'achat-revente auto
-Promesse : la première revente ne rapporte pas une fortune, elle change ta façon de voir chaque voiture.
-CTA : aucun, ni dit ni écrit                Type / durée : motion design narratif, 28 à 30 s, en boucle
-Voix : Simon (ElevenLabs), même voix que MO5, plus chaleureux
-Musique : Controlled Drop (ton morceau), passage lumineux, calé à 120 BPM
-Ouvertures : A = « une rue pareil » / C = « la Polo à 3 200 » (0-3,5 s, même corps)
-Format : 9:16, 1080×1920, 60 i/s           Données : exemple, chiffres de bon sens, mention à l'écran
-Interdits : produit, logo de plateforme, CTA, morale, promesse de richesse, visages, plaques lisibles
+Produit / URL : aucun, rien à vendre       Objectif : enregistrement (la fiche), revisionnage, partage
+Plateforme : TikTok, puis Reels et Shorts  Public : débutants qui veulent se lancer dans l'achat-revente auto
+Promesse : tu sais quelle voiture acheter sans peur, et laquelle laisser, avant ta première visite.
+CTA : aucun, ni dit ni écrit (pas de « enregistre »)  Type / durée : motion design narratif, 28 à 30 s, en boucle
+Voix : Simon (ElevenLabs), même voix que MO5
+Musique : Controlled Drop (ton morceau), calé à 120 BPM
+Ouvertures : A = « elle a fait fuir tout le monde » / B = « 60 € contre 600 € » (0-3,5 s, même corps)
+Format : 9:16, 1080×1920, 60 i/s           Données : ordres de grandeur pour une petite citadine, mention à l'écran
+Interdits : produit, logo de plateforme, CTA, morale, visages, plaques lisibles
 ```
 
-## Pourquoi ce sujet
+## La valeur à enregistrer
 
-- **Envie, pas peur** : MO5 jouait la peur et l'humour. MO6 joue l'émerveillement et la joie, sans mentir : la marge
-  reste modeste et les frais sont déduits, comme dans MO5.
-- **Un super-pouvoir crédible** : voir la valeur cachée d'une voiture s'apprend, et tout débutant veut l'avoir.
-- **Ton vécu** : ta photo de la Polo au coucher du soleil devient l'annonce qui se vend.
+| Ce qui se voit · fonce | Coût | Ce qui se cache · vérifie | Coût | Le test en 10 s |
+|---|---|---|---|---|
+| Phares jaunis | ≈ 20 € (kit de rénovation) | Distribution | ≈ 400 à 800 € | Demande la facture du dernier changement (date et kilométrage) |
+| Rayure superficielle | ≈ 30 à 80 € (polish, retouche) | Embrayage | ≈ 600 à 1 000 € | En 4e vers 50 km/h, pied au plancher : si le moteur monte sans que la voiture accélère, il patine |
+| Intérieur sale, odeur | ≈ 40 € (produits) | Joint de culasse | ≈ 1 000 € et plus | Mousse blanche sous le bouchon d'huile, fumée blanche épaisse à chaud : méfiance |
+
+Les coûts sont des ordres de grandeur pour une petite citadine, pièces et main-d'œuvre courantes : mention à l'écran.
+Je les vérifie et les source dans la timeline (étape 2), comme les frais de MO5. La mousse sous le bouchon peut aussi
+venir de petits trajets par temps froid : la vidéo dit « méfiance », pas « culasse morte ».
 
 ## Le hook (skill « L'art du hook »)
 
-**Analyse** : douleur visée, il hésite parce qu'il ne se sent pas capable, « je n'y connais rien en voitures » ·
-croyance, « il faut être mécano ou avoir beaucoup d'argent » · vérité, ce qui fait la marge, c'est l'œil : voir ce
-qu'une voiture vaut vraiment, et ça s'apprend dès la première.
+**Analyse** : douleur visée, il a peur d'acheter une épave et de tout perdre sur sa première voiture · croyance, « une
+voiture propre et sans rayure, c'est une voiture sûre ; une voiture abîmée, c'est un piège » · vérité, c'est l'inverse
+qui rapporte : l'abîmé visible coûte peu et fait baisser le prix, le danger cher est invisible et se teste en dix
+secondes.
 
 | | Levier | Voix | Texte à l'écran | Image |
 |---|---|---|---|---|
-| A | Phrase impossible à ignorer, image mentale | « Après ta première revente, tu ne regardes plus jamais une rue pareil. » | Une rue. 14 prix. | Travelling le long d'une rue ; au-dessus de chaque voiture, un trait de lumière écrit un prix. |
-| B | Écart affiché | « Les gens voient des voitures garées. Toi, tu vas voir des prix. » | Toi, tu vois des prix | La même rue, d'abord neutre, puis les étiquettes s'allument une à une. |
-| C | Démonstration, questionnement | « Cette Polo est à 3 200 €. Elle en vaut 4 300. Tu vois pourquoi ? » | 3 200 € → 4 300 € ? | La Polo seule, l'étiquette 3 200 €, un « ? » écrit à la lumière. |
-| D | Croyance → vérité | « Tu crois qu'il faut être mécano pour te lancer. Il faut surtout savoir regarder. » | Pas mécano. Juste l'œil. | Une clé à molette qui se dissout en un œil tracé à la lumière. |
-| E | Bénéfice, image mentale | « Le jour où ton téléphone sonne pour une voiture que tu vends, tout change. » | Il sonne. Pour toi. | Un téléphone en verre qui vibre, les messages s'empilent. |
+| A | Démonstration, bénéfice | « Cette voiture a fait fuir tout le monde. Cent vingt euros plus tard, elle vaut six cents euros de plus. » | 120 € → + 600 € | La Polo terne, phares jaunes, rayure, sièges tachés ; des étiquettes de verre s'allument sur chaque défaut. |
+| B | Phrase impossible à ignorer | « Une rayure : soixante euros. Une distribution : six cents. Une seule des deux se voit. » | 60 € · 600 € | Une rayure brille sur la carrosserie, puis la voiture devient transparente et la distribution s'allume dedans. |
+| C | Croyance → vérité | « Tu crois qu'une voiture rayée, c'est un piège. C'est souvent la meilleure affaire de la rue. » | Rayée = bonne affaire | Deux voitures côte à côte, la rayée gagne une étiquette verte. |
+| D | Coût caché | « La voiture la plus propre de l'annonce peut te coûter mille deux cents euros. Et ça ne se voit pas. » | Propre ≠ sûre | Une voiture brillante, puis la radiographie montre le moteur qui rougit. |
+| E | Erreur intelligente | « Les débutants fuient les voitures rayées. Les pros les cherchent. » | Les pros cherchent les rayures | Un filtre de recherche qui trie les photos les plus sales en premier. |
 
-**Recommandation** : A en ouverture principale, C en test. A promet une sensation (un nouveau regard) et ouvre la
-question « pareil comment ? », que le film montre au lieu de l'expliquer. C ouvre sur une énigme chiffrée qui fait
-commenter.
+**Recommandation** : A en ouverture principale, B en test. A donne envie dès la première seconde (un gain concret
+avec deux chiffres) et ouvre « comment ? ». B pose toute la méthode en une phrase, avec l'écart affiché.
 
 **Les 4 verrous de A** :
-- Temps ✅ : « première revente » dans la première phrase, la rue chiffrée dès l'image 0.
-- Sens ✅ : une phrase, mots de tous les jours.
-- Miroir ✅ : « ta » première revente, celle qu'il n'a pas encore faite.
-- Écart ✅ : il voit des voitures garées ; on lui promet d'y voir autre chose, sans dire quoi.
+- Temps ✅ : « cette voiture » à l'image 0, les défauts visibles avant la première parole.
+- Sens ✅ : deux phrases, deux chiffres.
+- Miroir ✅ : il cherche sa première voiture et a peur des voitures abîmées.
+- Écart ✅ : il croit qu'elle fait fuir pour de bonnes raisons ; on lui montre qu'elle rapporte.
 
-**Relances dans le corps** : « Celle-là, par exemple. » à 3,5 s · « Et là, ton téléphone sonne. » à 18 s ·
-« Tu ne regardes plus jamais une rue pareil. » à la boucle.
+**Relances dans le corps** : « Ce qui coûte vraiment, personne ne le voit. » à 12 s · la fiche à 25 s ·
+« Cette voiture… » à la boucle.
 
 ## L'histoire
 
 | Temps | Ce qu'on voit | Voix (provisoire) | Émotion |
 |---|---|---|---|
-| 0-3,5 s · **la rue** | Travelling lent le long d'une rue au coucher du soleil. Au-dessus de chaque voiture, un trait de lumière écrit un prix dans une étiquette de verre. | Hook A | Émerveillement |
-| 3,5-8 s · **le regard** | La caméra s'arrête sur la Polo, détourée, contour lumineux. Annonce : 3 200 €. Les détails s'allument : pneus récents, carnet suivi, rayure « − 80 € ». La cote s'écrit : 4 300 €. L'écart « + 1 100 » en Fraunces. | « Celle-là, par exemple. Annoncée 3 200. Pneus neufs, carnet suivi. Une rayure à quatre-vingts euros. » | Questionnement, puis déclic |
-| 8-12 s · **l'achat** | Des clés tombent dans une main (vidéo libre). « Achetée » se trace en lumière, la palette affiche J1. | « Tu l'achètes. » | Tension |
-| 12-17 s · **la préparation** | Lavage en accéléré, la rayure s'efface sous un trait de lumière, puis ta photo au coucher du soleil se pose dans une annonce en verre. | « Un lavage, une retouche, une vraie photo. » | Satisfaction |
-| 17-22 s · **le téléphone** | Le téléphone en verre vibre ; les messages tombent et s'empilent : « Toujours dispo ? », « Je peux passer ce soir ? ». La palette passe J1 → J6. « Vendue » s'écrit. | « Et là, ton téléphone sonne. Six jours plus tard : vendue. 4 300. » | Joie |
-| 22-26 s · **la marge** | Le compteur roule : 4 300 − 3 200 − frais 460 = **+ 640 €**. Le chiffre s'écrit en grand à la lumière. | « Six cent quarante euros, frais payés. Ta première. » | Fierté |
-| 26-30 s · **la boucle** | La caméra recule : la rue revient, et les étiquettes se rallument d'un coup sur toutes les voitures. Image 0. | « Et après ça… » (enchaîne sur « tu ne regardes plus jamais une rue pareil ») | Envie, boucle |
+| 0-4 s · **la voiture qui fait fuir** | Ta Polo, dégradée : phares jaunis, rayure sur l'aile, sièges tachés. Un trait de lumière la balaie ; trois étiquettes de verre s'allument sur les défauts. | Hook A | Surprise, envie |
+| 4-10 s · **ce qui se voit** | Pour chaque défaut, le prix s'écrit à la lumière (20 €, 60 €, 40 €), puis le défaut s'efface sous le trait : phare clair, aile lisse, sièges propres. Le total 120 € roule. La cote s'écrit au-dessus : + 600 €. | « Phares jaunis : vingt euros. Rayure : soixante. Intérieur : quarante. Ça fait fuir les acheteurs. Pas toi. » | Satisfaction |
+| 10-13 s · **la bascule** | La caméra tourne autour de la voiture, qui devient transparente : une radiographie tracée en lignes de lumière, moteur et transmission visibles. | « Ce qui coûte vraiment, personne ne le voit. » | Tension |
+| 13-17 s · **la distribution** | La courroie s'allume en orange, 600 € s'écrit. Une facture en verre glisse : date, kilométrage cochés. | « La distribution : six cents euros. Demande la facture. » | Peur, puis contrôle |
+| 17-21 s · **l'embrayage** | L'embrayage s'allume, 800 €. Compte-tours et compteur de vitesse côte à côte : l'aiguille des tours monte, la vitesse ne bouge pas. | « L'embrayage : huit cents. En quatrième, plein gaz : le moteur monte, la voiture non ? Il patine. » | Peur, puis contrôle |
+| 21-25 s · **la culasse** | La culasse s'allume, 1 200 €. Gros plan sur un bouchon d'huile : une mousse blanche apparaît. | « Le joint de culasse : mille deux cents. De la mousse blanche sous le bouchon d'huile ? Méfiance. » | Peur, puis contrôle |
+| 25-29 s · **la fiche** | Les six éléments se rangent en une fiche de verre, deux colonnes : « Ce qui se voit · fonce » / « Ce qui se cache · vérifie », chaque ligne avec son prix et son test. Elle reste lisible 4 s. | « Ce qui se voit : fonce. Ce qui se cache : vérifie. » | Clarté |
+| 29-30 s · **la boucle** | La fiche se replie dans la carrosserie, la Polo redevient terne : image 0. | (enchaîne sur « Cette voiture a fait fuir tout le monde ») | Boucle |
 
-Les chiffres (3 200, 4 300, 460 € de frais, 6 jours, + 640 €) forment un exemple de bon sens : mention « Exemple » à
-l'écran. Les frais reprennent la logique sourcée de MO5 (carte grise, lavage, retouche, annonce).
+Le texte de la voix fait environ 90 mots : je le resserre à l'étape 4 pour tenir 30 s sans courir.
 
 ## Les codes repris de MO5
 
 - **DA** : fond #08070a, orange #ff5a1f / #ff8a4c / #ffb38a, Clash Display, Satoshi, Fraunces italique pour le mot
   porteur, verre dépoli, lueurs, grain, ta Polo détourée avec son contour lumineux.
-- **Mouvement** : caméra continue en travellings, lignes de lumière qui écrivent les prix et les mots, éléments qui se
-  construisent (étiquettes, pile de messages, compteur à rouleaux, palettes), flou de bougé, boucle parfaite.
-- **Son** : voix devant, musique qui cède sa place, un son principal à la fois, −14 LUFS, contrôle téléphone. Ici la
-  musique monte vers la lumière au lieu de s'assombrir.
-- **Nouveau procédé** : le « regard », des étiquettes de verre qui s'allument sur les objets réels de l'image. Il
-  ouvre et ferme le film.
+- **Mouvement** : caméra continue en travellings et orbite, lignes de lumière qui écrivent les prix et dessinent la
+  radiographie, défauts effacés par un trait de lumière, compteurs à rouleaux, fiche qui se construit ligne par ligne,
+  flou de bougé, boucle parfaite.
+- **Son** : voix devant, musique qui cède sa place, un son principal à la fois, −14 LUFS, contrôle téléphone.
+- **Nouveau procédé** : la radiographie, la voiture qui devient transparente pour montrer ce qui se cache.
 
-## Pourquoi on la revoit, on l'enregistre et on l'envoie
+## Pourquoi on l'enregistre, on la revoit et on l'envoie
 
-- **Revoir** : la dernière phrase enchaîne sur la première, et la rue de l'image 0 se relit avec les yeux du film.
-- **Enregistrer** : la façon de lire une voiture (prix annoncé, détails, cote, écart) sert dès la première visite.
-- **Envoyer** : « regarde, c'est ce que je te disais » à l'ami qui hésite avec lui.
-- **Commenter** : la question de l'ouverture C, et chacun voudra donner le prix de sa première revente.
-
-## Autres pistes, si celle-ci ne te parle pas
-
-- **« La première sonnerie »** : tout le film tient sur le téléphone, du premier message à « vendue ». Plus intime,
-  moins visuel.
-- **« Boule de neige »** : la première voiture finance la deuxième, qui finance la troisième. Très motivant, mais le
-  risque de promesse de richesse est fort.
+- **Enregistrer** : la fiche finale sert le jour de la première visite. Elle tient en une capture d'écran.
+- **Revoir** : trois tests en dix secondes, trop denses pour un seul passage ; la boucle relance.
+- **Envoyer** : « avant d'aller voir la voiture, regarde ça » à l'ami qui achète.
+- **Commenter** : chacun voudra ajouter son test (fumée bleue, boîte qui craque).
 
 ## Production
 
 Mêmes 5 étapes que MO5 : brief (ce document) → timeline et images tests → maquettage toutes les 0,1 s → voix →
-animation et son. La rue vient de Mixkit (vidéo libre) ; la Polo et la photo d'annonce sont les tiennes.
+animation et son. Je dégrade ta photo de la Polo pour la version « qui fait fuir ». La radiographie est dessinée en
+code (lignes de lumière), sans modèle 3D payant.
 
 ## Ce qu'il me faut
 
 1. Ton « OK » sur ce brief, ou ce que tu changes.
-2. Si tu les as : les vrais chiffres de ta première revente (achat, revente, délai). Ils remplaceraient l'exemple.
+2. Si tu as tes propres tests de visite ou tes vrais coûts de remise en état, ils remplaceront les miens.
