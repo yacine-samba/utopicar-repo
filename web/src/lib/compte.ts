@@ -12,6 +12,8 @@ export type Compte = {
   offerte: { jusquAu: string | null } | null;
   /** Compte illimité (profils.illimite) : tout, sans limite d'analyses. */
   illimite: boolean;
+  /** Accès à la page Administration (profils.admin). */
+  admin: boolean;
   email: string;
   prenom: string;
   nom: string;
@@ -44,13 +46,15 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     data: { user },
   } = await sb.auth.getUser();
   if (!user) return null;
-  const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }, { data: messages }] = await Promise.all([
+  const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }, { data: messages }, { data: droitsAdmin }] = await Promise.all([
     sb.from("profils").select("prenom, nom, famille, ville, formule_offerte, offerte_jusqu_au, illimite, reglages").eq("id", user.id).maybeSingle(),
     sb.from("abonnements").select("offre, statut, periode_fin, annule_fin_periode").eq("user_id", user.id).maybeSingle(),
     sb.from("achats").select("produit").eq("user_id", user.id),
     sb.rpc("mes_credits"),
     sb.from("credits").select("id", { count: "exact", head: true }).eq("user_id", user.id).gt("delta", 0),
     sb.rpc("option_active", { p_uid: user.id, p_option: "messages" }),
+    // à part : tant que la colonne admin n'existe pas, cette lecture échoue seule sans bloquer le profil
+    sb.from("profils").select("admin").eq("id", user.id).maybeSingle(),
   ]);
   const actif = abo && STATUTS_ACTIFS.includes(abo.statut);
   const aujourdhui = new Date().toISOString().slice(0, 10);
@@ -68,6 +72,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     id: user.id,
     offerte: offerte && !illimite ? { jusquAu: profil?.offerte_jusqu_au ?? null } : null,
     illimite,
+    admin: !!droitsAdmin?.admin,
     email: user.email ?? "",
     prenom: profil?.prenom || "",
     nom: profil?.nom || "",

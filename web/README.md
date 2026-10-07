@@ -26,6 +26,7 @@ Deux mondes séparés : le **site public** (`src/app/(site)/`, en-tête « Benef
 | `/app/analyser` | L'outil d'analyse (particulier ou Benef selon l'espace). `?lien=` lance l'import du lien Leboncoin dès l'ouverture. |
 | `/app/rapports`, `/app/rapports/[id]` | Analyses et rapports enregistrés (`/analyse/[id]` y redirige). |
 | `/app/compte` | Profil et paramètres : formule, quota, option Messages, « Utilisation d'Utopicar » (particulier ou Benef), mes guides (selon la formule), accessibilité (favoris), profil, mot de passe, e-mail, suppression du compte. `/compte` y redirige. |
+| `/app/admin` | Administration (comptes `profils.admin` seulement) : nouveaux comptes, inscrits au guide, formules et crédits offerts, guides et option Messages offerts, renvoi du guide aux inscrits, journal. |
 | `/legal` | Mentions, confidentialité, conditions d'utilisation, conditions de vente, accessibilité, contact. |
 
 Onboarding : une fenêtre de 3 questions s'ouvre à la première visite de `/`, `/benef` et `/tarifs`, puis recommande un parcours et une formule. Les réponses pré-remplissent l'inscription. Bouton « M'orienter en 3 questions » pour la rouvrir.
@@ -53,6 +54,8 @@ Table Editor › table **`profils`** : chaque compte a une ligne avec son `email
 - `offerte_jusqu_au` : dernier jour inclus. Vide = sans date de fin.
 - `famille` : l'usage de l'espace (`particulier` ou `benef`) quand la personne n'a pas de formule payante.
 - `illimite` : coché = tout est ouvert (Benef Pro complet, espace particulier ou Benef au choix), sans limite d'analyses. Pour les administrateurs et les testeurs.
+
+Plus simple : la page **Administration** (`/app/admin`, menu de l'espace) fait tout cela sans passer par Supabase, avec un e-mail facultatif pour prévenir la personne. Elle est réservée aux comptes où `admin` est coché (colonne distincte d'`illimite` : un testeur illimité ne voit pas les comptes des autres). Chaque action est notée dans la table `journal_admin`.
 
 Le changement s'applique à la page suivante. Vue d'ensemble en lecture seule : vue **`comptes_admin`** (email, formule en vigueur, formule offerte, abonnement Stripe, analyses du mois, nombre de rapports). Elle n'est visible que depuis le tableau de bord Supabase.
 
