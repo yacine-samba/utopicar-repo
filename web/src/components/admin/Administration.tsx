@@ -158,7 +158,7 @@ function FicheCompte({ c, guides }: { c: CompteAdmin; guides: GuideChoix[] }) {
             Envoyer ce guide
           </button>
         </div>
-        <p className="text-xs text-ink-3">{c.guide ? "Les guides sont déjà ouverts sur ce compte : " : "Ouvre les 4 guides sur ce compte, puis "}l&apos;e-mail mène au guide choisi (case « Prévenir par e-mail »).</p>
+        <p className="text-xs text-ink-3">Ouvre seulement ce guide sur ce compte{c.guides.length ? ` (déjà ouverts : ${c.guides.map((x) => guides.find((g) => g.id === x)?.titre ?? x).join(", ")})` : ""}. L&apos;e-mail y mène directement (case « Prévenir par e-mail »).</p>
       </form>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -197,7 +197,7 @@ function ListeComptes({ comptes, moi, guides }: { comptes: CompteAdmin[]; moi: s
                   {c.offerte && !c.illimite ? " · offerte" : ""}
                 </Pastille>
                 {c.credits > 0 && <Pastille>{c.credits} crédit{c.credits > 1 ? "s" : ""}</Pastille>}
-                {c.guide && <Pastille>Guides</Pastille>}
+                {c.guides.length > 0 && <Pastille>{c.guides.length === 4 ? "4 guides" : `${c.guides.length} guide${c.guides.length > 1 ? "s" : ""}`}</Pastille>}
                 <span className="num text-ink-3">{c.analysesMois} analyse{c.analysesMois > 1 ? "s" : ""} ce mois</span>
                 <span className="text-ink-3">inscrit le {dateFr(c.inscritLe)}</span>
               </span>

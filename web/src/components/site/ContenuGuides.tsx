@@ -11,11 +11,11 @@ import "@/app/(site)/guide/guide.css";
 export function ContenuGuides({ compte, choix, paiement, base }: { compte: Compte | null; choix?: string; paiement?: string; base: "/guide" | "/app/guides" }) {
   const espace = base === "/app/guides";
   // dans l'espace : d'abord les guides de la formule, les autres plus bas, repliés
-  const miens = compte ? guidesPour(compte.offre.id, familleEspace(compte)) : GUIDES.map((g) => g.id);
+  const miens = compte ? (compte.guides.length ? compte.guides : guidesPour(compte.offre.id, familleEspace(compte))) : GUIDES.map((g) => g.id);
   const defaut: GuideId = miens[0];
   const id = (GUIDES.find((g) => g.id === choix)?.id ?? defaut) as GuideId;
   const autres = espace ? GUIDES.filter((g) => !miens.includes(g.id)) : [];
-  const complet = !!compte?.guide;
+  const complet = !!compte?.guides.includes(id);
   const g = contenuGuide(id, compte?.prenom ?? "", complet);
 
   return (
@@ -31,7 +31,11 @@ export function ContenuGuides({ compte, choix, paiement, base }: { compte: Compt
           {espace ? "Mes guides" : <>La méthode complète, <span className="it">chiffres réels</span></>}
         </h1>
         <p className="mt-4 text-lg text-ink-2">
-          {complet ? "Vous avez accès à tous les guides. Bonne lecture." : `Les deux premiers chapitres sont offerts. Accès à vie aux quatre guides pour ${GUIDE.prix}\u00a0€, ou inclus dans toutes les formules Benef.`}
+          {compte?.guide
+            ? "Vous avez accès à tous les guides. Bonne lecture."
+            : compte?.guides.length
+              ? `Vos guides s'ouvrent en entier. Pour les autres, les deux premiers chapitres sont offerts, et les quatre guides sont à ${GUIDE.prix}\u00a0€, accès à vie.`
+              : `Les deux premiers chapitres sont offerts. Accès à vie aux quatre guides pour ${GUIDE.prix}\u00a0€, ou à ceux de votre formule.`}
         </p>
         {paiement === "ok" && !complet && (
           <p role="status" className="mx-auto mt-5 w-fit rounded-2xl border border-ok/40 bg-ok/10 px-4 py-2 text-ok">

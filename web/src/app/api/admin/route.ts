@@ -59,14 +59,16 @@ export async function POST(req: Request) {
     cadeau = { type: "credits", n: d.n };
     message = `${d.n} crédit${d.n > 1 ? "s" : ""} ajouté${d.n > 1 ? "s" : ""}.`;
   } else if (d.action === "guides") {
-    const { count } = await sb.from("achats").select("id", { count: "exact", head: true }).eq("user_id", d.user).eq("produit", "guide");
+    // un cadeau n'ouvre que le guide choisi (achats « guide:<id> »)
+    const produit = `guide:${d.guide}`;
+    const { count } = await sb.from("achats").select("id", { count: "exact", head: true }).eq("user_id", d.user).eq("produit", produit);
     if (!count) {
-      const { error } = await sb.from("achats").insert({ user_id: d.user, produit: "guide" });
-      if (error) return erreur("Accès aux guides impossible à enregistrer.", 500);
+      const { error } = await sb.from("achats").insert({ user_id: d.user, produit });
+      if (error) return erreur("Accès au guide impossible à enregistrer.", 500);
     }
     await noter(c.id, "guides_offerts", dest.email, { guide: d.guide });
     cadeau = { type: "guides", guide: d.guide };
-    message = count ? "Ce compte avait déjà les guides." : "Accès aux 4 guides ouvert.";
+    message = count ? "Ce guide était déjà offert à ce compte." : "Guide ouvert sur ce compte.";
   } else {
     // Le statut reste celui de Stripe : seul le drapeau « offerte » change (une ligne sans abonnement Stripe est créée « offerte »).
     const { data: existe } = await sb.from("options_comptes").select("user_id").eq("user_id", d.user).eq("option", "messages").maybeSingle();

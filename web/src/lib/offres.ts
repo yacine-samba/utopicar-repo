@@ -69,7 +69,7 @@ export const OFFRES: Record<OffreId, Offre> = {
     accroche: "Pour passer à plusieurs voitures par mois", pour: "Vous achetez et revendez régulièrement.",
     analyses: 100, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "simple",
     parc: false, recherche: false, comparateur: true, guide: true, lookup: "utp_croissance_mois",
-    points: ["100 analyses par mois", "Tout Starter, plus :", "Historique complet des rapports", "Comparateur de 2 à 3 rapports côte à côte", "Analyse de 6 photos par annonce", "Tous les guides inclus"],
+    points: ["100 analyses par mois", "Tout Starter, plus :", "Historique complet des rapports", "Comparateur de 2 à 3 rapports côte à côte", "Analyse de 6 photos par annonce", "Les 3 guides Benef inclus : première revente, tri des annonces, estimation de reprise"],
     miseEnAvant: true,
   },
   pro: {

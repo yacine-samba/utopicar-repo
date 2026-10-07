@@ -2,7 +2,7 @@ import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 import { supabaseService } from "./supabase/service";
 import { OFFRES, STATUTS_ACTIFS, type OffreId } from "./offres";
-import { GUIDES, type GuideId } from "./guides";
+import { GUIDES, guidesOuverts, type GuideId } from "./guides";
 
 /* Page Administration (/app/admin) : lecture de tous les comptes et des inscrits au guide, cadeaux, envoi des guides.
    Tout passe par la clé service, et seulement après vérification de profils.admin (route /api/admin et page). */
@@ -21,7 +21,8 @@ export type CompteAdmin = {
   credits: number;
   analysesMois: number;
   rapports: number;
-  guide: boolean;
+  /** Guides ouverts en entier (formule, cadeaux, achat des quatre). */
+  guides: GuideId[];
   messages: boolean;
 };
 
@@ -63,7 +64,7 @@ export async function donneesAdmin() {
   const [profils, abos, achats, credits, usages, rapports, options, leads, journal] = await Promise.all([
     sb.from("profils").select("id, email, prenom, famille, formule_offerte, offerte_jusqu_au, illimite, created_at").order("created_at", { ascending: false }).limit(500),
     sb.from("abonnements").select("user_id, offre, statut, periode_fin"),
-    sb.from("achats").select("user_id").eq("produit", "guide"),
+    sb.from("achats").select("user_id, produit").like("produit", "guide%"),
     sb.from("credits").select("user_id, delta, created_at"),
     sb.from("usages").select("user_id").gte("created_at", debutMois()),
     sb.from("rapports").select("user_id"),
@@ -79,7 +80,7 @@ export async function donneesAdmin() {
     return m;
   };
   const abo = new Map((abos.data ?? []).map((a) => [a.user_id, a]));
-  const guides = new Set((achats.data ?? []).map((a) => a.user_id));
+  const ac = parUser(achats.data);
   const cr = parUser(credits.data);
   const us = parUser(usages.data);
   const rp = parUser(rapports.data);
@@ -104,7 +105,7 @@ export async function donneesAdmin() {
       credits: soldeCredits(cr.get(p.id) ?? []),
       analysesMois: us.get(p.id)?.length ?? 0,
       rapports: rp.get(p.id)?.length ?? 0,
-      guide: guides.has(p.id) || OFFRES[formule].guide || !!p.illimite,
+      guides: guidesOuverts(!!p.illimite, formule, (ac.get(p.id) ?? []).map((a) => a.produit)),
       messages: !!m && (m.offerte || STATUTS_ACTIFS.includes(m.statut)),
     };
   });
@@ -184,15 +185,16 @@ export async function emailCadeau(site: string, dest: { email: string; prenom: s
     const g = GUIDES.find((x) => x.id === c.guide)!;
     sujet = `${p}votre guide « ${g.titre} » est ouvert`;
     titre = g.titre;
-    texte = `Utopicar vous offre le guide <b>« ${esc(g.titre)} »</b> : ${esc(g.resume.charAt(0).toLowerCase() + g.resume.slice(1))} Les 3 autres guides sont ouverts aussi. Ils se lisent dans votre espace et s'impriment en PDF.`;
+    texte = `Utopicar vous offre le guide <b>« ${esc(g.titre)} »</b> : ${esc(g.resume.charAt(0).toLowerCase() + g.resume.slice(1))} Il se lit dans votre espace et s'imprime en PDF.`;
     bouton = "Lire mon guide";
     lien = `${site}/app/guides?guide=${g.id}`;
   } else if (c.type === "formule") {
     const o = OFFRES[c.offre];
     const nom = o.famille === "benef" ? `Benef ${o.nom}` : o.nom;
+    const g = guidesOuverts(false, c.offre, []).length;
     sujet = `${p}la formule ${nom} vous est offerte`;
     titre = `${nom}, offerte`;
-    texte = `Utopicar vous offre la formule <b>${esc(nom)}</b> ${c.jusquAu ? `jusqu'au ${dateFr(c.jusquAu)} inclus` : "sans date de fin"} : ${o.analyses} analyses par mois${o.guide ? ", guides inclus" : ""}. Rien à payer, aucune carte bancaire demandée.`;
+    texte = `Utopicar vous offre la formule <b>${esc(nom)}</b> ${c.jusquAu ? `jusqu'au ${dateFr(c.jusquAu)} inclus` : "sans date de fin"} : ${o.analyses} analyses par mois${g ? `, ${g} guide${g > 1 ? "s" : ""} inclus` : ""}. Rien à payer, aucune carte bancaire demandée.`;
     bouton = "Ouvrir mon espace";
     lien = `${site}/app`;
   } else {

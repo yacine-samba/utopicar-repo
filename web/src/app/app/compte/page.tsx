@@ -275,7 +275,7 @@ export default async function Compte({
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-sm text-ink-3">{compte.guide ? "Accès complet, imprimable en PDF." : "Les deux premiers chapitres sont offerts."} Les autres guides sont dans la même page.</p>
+        <p className="mt-3 text-sm text-ink-3">{compte.guide ? "Accès complet aux quatre guides, imprimables en PDF." : compte.guides.length ? `${compte.guides.length} guide${compte.guides.length > 1 ? "s" : ""} ouvert${compte.guides.length > 1 ? "s" : ""} en entier, imprimable${compte.guides.length > 1 ? "s" : ""} en PDF. Les autres : deux chapitres offerts.` : "Les deux premiers chapitres sont offerts."} Les autres guides sont dans la même page.</p>
       </section>
 
       <section id="accessibilite" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-acces">

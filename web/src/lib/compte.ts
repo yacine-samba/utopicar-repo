@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { comptesActifs } from "./supabase/config";
 import { supabaseServeur } from "./supabase/serveur";
+import { guidesOuverts, type GuideId } from "./guides";
 import { ILLIMITE, NIVEAU_CREDIT, OFFRES, offre, STATUTS_ACTIFS, type Famille, type Offre } from "./offres";
 
 export type Abonnement = { offre: string; statut: string; periode_fin: string | null; annule_fin_periode: boolean };
@@ -21,7 +22,10 @@ export type Compte = {
   ville: string;
   offre: Offre;
   abonnement: Abonnement | null;
+  /** Les quatre guides ouverts en entier. */
   guide: boolean;
+  /** Guides ouverts en entier : ceux de la formule, ceux offerts, ou tous (achat des guides, compte illimité). */
+  guides: GuideId[];
   utilisees: number;
   /** Analyses encore comprises dans la formule (mois en cours, ou au total pour la formule gratuite). */
   restantesFormule: number;
@@ -68,6 +72,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
   // Formule Découverte avec des crédits achetés : historique comme Essentiel, et les analyses payées par crédit ont son niveau.
   if (!illimite && o.prix === 0 && (achatsCredits ?? 0) > 0) o = { ...o, historique: OFFRES.essentiel.historique };
   if (!illimite && o.prix === 0 && restantesFormule <= 0 && solde > 0) o = { ...o, detail: NIVEAU_CREDIT.detail, photos: Math.max(o.photos, NIVEAU_CREDIT.photos) };
+  const guides = guidesOuverts(illimite, o.id, (achats ?? []).map((a) => a.produit));
   return {
     id: user.id,
     offerte: offerte && !illimite ? { jusquAu: profil?.offerte_jusqu_au ?? null } : null,
@@ -80,7 +85,8 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     ville: profil?.ville ?? "",
     offre: o,
     abonnement: abo ?? null,
-    guide: o.guide || (achats ?? []).some((a) => a.produit === "guide"),
+    guide: guides.length === 4,
+    guides,
     utilisees,
     restantesFormule,
     credits: solde,

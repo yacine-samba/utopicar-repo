@@ -52,7 +52,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           <div>
             <h2 id="t-guide" className="font-display text-2xl font-semibold">{GUIDE.nom}</h2>
             <p className="mt-2 text-ink-2">
-              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Accès à vie pour {GUIDE.prix}&nbsp;€, ou inclus dans toutes les formules Benef.
+              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Les quatre à vie pour {GUIDE.prix}&nbsp;€. Les formules Benef incluent aussi leurs guides : la première revente avec Starter, les trois guides Benef avec Croissance et Pro.
             </p>
           </div>
           <div className="grid gap-2 md:w-60">
