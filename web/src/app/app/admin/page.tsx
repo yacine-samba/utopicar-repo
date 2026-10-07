@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { compteCourant } from "@/lib/compte";
 import { donneesAdmin } from "@/lib/admin";
 import { OFFRES } from "@/lib/offres";
+import { GUIDES } from "@/lib/guides";
 import { Administration } from "@/components/admin/Administration";
 
 export const metadata: Metadata = { title: "Administration" };
@@ -48,7 +49,7 @@ export default async function Page() {
         <Kpi l="Inscrits au guide" v={inscrits.length} s={`${recents(inscrits, 1)} aujourd'hui · ${recents(inscrits, 7)} en 7 jours`} />
         <Kpi l="Guides ouverts" v={inscrits.length ? `${Math.round((ouverts / inscrits.length) * 100)} %` : "—"} s={`${ouverts} sur ${inscrits.length}`} />
       </div>
-      <Administration comptes={comptes} inscrits={inscrits} journal={journal} moi={c.id} />
+      <Administration comptes={comptes} inscrits={inscrits} journal={journal} moi={c.id} guides={GUIDES.map(({ id, titre, pour }) => ({ id, titre, pour }))} />
     </div>
   );
 }

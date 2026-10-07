@@ -170,6 +170,19 @@ ${ch("Chapitre 10", "Après l'achat", `${ul("eb-ok", ["<b>Assurez la voiture ava
 }
 
 // ------------------------------------------------------------------ sélection
+// Guide choisi à la main depuis la page Administration (landing_leads.guide) : il remplace celui du profil.
+const OBJECTIF_DU_GUIDE: Record<string, string> = {
+  "premiere-revente": "Me lancer dans l'achat-revente",
+  "trier-annonces": "Trier plus vite mes annonces",
+  "estimer-reprise": "Estimer des reprises",
+  "acheter-occasion": "Trouver ma prochaine voiture",
+};
+/** Site et objectif qui donnent le guide à servir. Première revente sur Bénef : le guide Bénef, avec son plan selon le budget. */
+export function selection(site: string, objectif: string | null, guide: string | null): [string, string | null] {
+  if (!guide || !OBJECTIF_DU_GUIDE[guide]) return [site, objectif];
+  if (guide === "premiere-revente" && site === "ebook") return [site, objectif];
+  return ["utopicar", OBJECTIF_DU_GUIDE[guide]];
+}
 export function titreGuide(site: string, objectif: string | null) {
   if (site === "ebook") return "Ta première revente, étape par étape";
   if (objectif === "Trier plus vite mes annonces") return "Trier 40 annonces en 10 minutes";
