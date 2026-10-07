@@ -38,6 +38,7 @@ for k, (flip, zones) in CARS.items():
     f = im.astype(np.float32) / 255
     hsv = cv2.cvtColor(f, cv2.COLOR_BGR2HSV); hsv[..., 1] *= .8; f = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
     f = np.clip((f - .5) * 1.15 + .5, 0, 1) * .78
+    if k == 'clio': f = np.clip(f * 1.6 + .03, 0, 1)                    # voiture noire : on la remonte pour qu'elle se détache du fond
     lum = f.mean(2, keepdims=True); f = f * (np.array([.84, .93, 1.05], np.float32) * (1 - lum) + lum)
     H, W = f.shape[:2]; yy, xx = np.mgrid[0:H, 0:W] / max(H, W)
     f *= (1.08 - .45 * np.clip(yy * .9 + (xx if not flip else 1 - xx) * .2 - .25, 0, 1))[..., None]

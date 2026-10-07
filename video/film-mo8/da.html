@@ -125,6 +125,28 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
   </div>
 </section>
 
+<!-- 7 · N° 4 (≈ 9 s) : le piston fissuré -->
+<section class="scene" data-s="7">
+  <div class="no" style="left:286px">N°</div>
+  <div class="flap glass"><span>4</span><i></i></div>
+  <svg class="leads"></svg>
+  <div class="pill glass" data-to="a0" style="left:600px;top:560px"><span class="k">piston</span><span class="v serif">fissuré</span></div>
+  <div class="strip" data-ph="golf" style="top:1110px;height:190px;background-size:cover"><div class="t"><div class="m ext">Golf 6 · 1.4 TSI</div><div class="e">122 · 160 CH · 2008 – 2012</div></div></div>
+  <div class="cost"><span class="j">jusqu'à</span><span class="n ext lit">7 000 €</span></div>
+  <div class="mention">Coûts : ordres de grandeur relevés · presse spécialisée et propriétaires</div>
+</section>
+
+<!-- 8 · N° 2 (≈ 17 s) : la jauge sous le MIN -->
+<section class="scene" data-s="8">
+  <div class="no" style="left:286px">N°</div>
+  <div class="flap glass"><span>2</span><i></i></div>
+  <svg class="leads"></svg>
+  <div class="pill glass" data-to="a0" style="left:520px;top:560px"><span class="k">il boit</span><span class="v serif">son huile</span></div>
+  <div class="strip" data-ph="clio" style="top:1110px;height:190px;background-size:cover"><div class="t"><div class="m ext">Clio 4 · 1.2 TCe</div><div class="e">CAPTUR · MÉGANE 3 · 2012 – 2016</div></div></div>
+  <div class="cost"><span class="j">jusqu'à</span><span class="n ext lit">10 000 €</span></div>
+  <div class="mention">Coûts : ordres de grandeur relevés · presse spécialisée et propriétaires</div>
+</section>
+
 <!-- 6 · PLANCHE DES PIÈCES : toutes sous la même lumière -->
 <section class="scene" data-s="6">
   <div class="abs" style="left:540px;top:250px;transform:translateX(-50%);text-align:center;white-space:nowrap">
@@ -391,7 +413,7 @@ function pistonSet() {
   // fissure lumineuse sur la tête
   const r = rng(11), pts = []; for (let i = 0; i <= 14; i++) { const a = -.5 + i * .07, y = .6 - i * .009 + (r() - .5) * .012; pts.push(new THREE.Vector3(Math.sin(a) * .394, y, Math.cos(a) * .394)); }
   const crack = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 80, .006, 6), M.hot); grp.add(crack);
-  shadowAll(grp); crack.castShadow = false; pts.forEach((p, i) => i % 3 || halo(grp, p, .14, .45)); return grp;
+  grp.userData.crack = pts[7].clone(); shadowAll(grp); crack.castShadow = false; pts.forEach((p, i) => i % 3 || halo(grp, p, .14, .45)); return grp;
 }
 
 // durite (nervurée), colliers, embouts alu, fuite de liquide
@@ -551,6 +573,20 @@ if (S === '4') {
   const bs = beltSet(true, true); bs.rotation.y = -.5; world.add(bs);
   frame(new THREE.Vector3(.18, .95, 0), 18.5, 13, 0, 815);
   bs.updateMatrixWorld(true); anchors.a0 = new THREE.Vector3(bs.userData.gap.x - .03, bs.userData.gap.y, .07).applyMatrix4(bs.matrixWorld); anchors.a1 = bs.userData.strainer.clone().applyMatrix4(bs.matrixWorld);
+}
+if (S === '7') {
+  const ps = pistonSet(); ps.position.set(0, 1.12, 0); ps.rotation.y = .5; world.add(ps);
+  frame(new THREE.Vector3(0, .85, 0), 16, 12, 0, 850);
+  ps.updateMatrixWorld(true); anchors.a0 = ps.userData.crack.clone().applyMatrix4(ps.matrixWorld);
+}
+if (S === '8') {
+  const ds = dipstickSet(); ds.scale.setScalar(.9); ds.position.set(-.75, .62, 0); ds.rotation.set(0, -.55, -.22); world.add(ds);
+  const drop = new THREE.Mesh(new THREE.SphereGeometry(.035, 32, 16), M.oil); drop.scale.set(1, 1.6, 1); world.add(drop);
+  const pud = new THREE.Mesh(new THREE.CircleGeometry(.26, 64), M.oil); pud.rotation.x = -Math.PI / 2; pud.scale.set(1.3, .8, 1); world.add(pud);
+  ds.updateMatrixWorld(true); const tip = new THREE.Vector3(1.9, 0, 0).applyMatrix4(ds.matrixWorld);
+  drop.position.set(tip.x, tip.y - .22, tip.z); pud.position.set(tip.x, .006, tip.z);
+  frame(new THREE.Vector3(0, .45, 0), 9, 14, 0, 800);
+  anchors.a0 = new THREE.Vector3(1.86, 0, 0).applyMatrix4(ds.matrixWorld);
 }
 if (S === '6') {
   const parts = [];
