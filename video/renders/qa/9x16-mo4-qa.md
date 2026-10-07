@@ -10,9 +10,9 @@ Format détecté : **vertical**, zones interdites {'top': 220, 'bottom': 440, 'l
 | OK | Zones sûres | aucun contenu net dans les marges {'top': 220, 'bottom': 440, 'left': 60, 'right': 140} |
 | OK | Images vides | aucune |
 | OK | Plans figés > 0,9 s | aucun |
-| OK | Loudness intégrée (MP4) | -14.3 LUFS (cible −14 ±1) |
-| OK | True peak (MP4 encodé) | -4.0 dBTP (≤ −1) — dans la cible |
-| OK | Son des 2 premières secondes | -18.4 LUFS momentané vs -14.2 sur le reste |
-| OK | Équilibre pour haut-parleur de téléphone | 23 % de l énergie sous 150 Hz, 19.8 % entre 1 et 5 kHz |
+| OK | Loudness intégrée (MP4) | -14.0 LUFS (cible −14 ±1) |
+| OK | True peak (MP4 encodé) | -3.7 dBTP (≤ −1) — dans la cible |
+| OK | Son des 2 premières secondes | -14.9 LUFS momentané vs -13.9 sur le reste |
+| OK | Équilibre pour haut-parleur de téléphone | 27 % de l énergie sous 150 Hz, 23.7 % entre 1 et 5 kHz |
 
 Planche zones sûres : `9x16-mo4-safe.png` (rouge = interdit aux textes, logos, CTA).
