@@ -31,24 +31,32 @@ l'écran : « Exemple · ordres de grandeur, petite citadine ».
 
 Si tu as tes propres chiffres (vraies factures, vrais écarts de prix), ils remplacent ce tableau.
 
-## La voix (provisoire, 84 mots)
+## La voix (enregistrée le 7 octobre 2026)
+
+Simon (`mvhJVdVoTWVUtL4keT7W`), eleven_v3, 2 prises (1 344 crédits). Prise A retenue : 44,9 s brute, prononciation
+vérifiée par une seconde transcription (faster-whisper medium). Mise en place par `scripts/vo-mo6.py` :
+- chaque réplique découpée sur le signal, accélérée de 12 % (atempo 1,12, timbre conservé) ;
+- « Eux fuient. Toi, tu achètes. » retirée (première coupe prévue) ;
+- répliques reposées avec des silences de 0,08 à 0,75 s ; la voix finit à 28,9 s, 1,1 s avant la boucle.
+
+Sorties : `audio/vo-mo6/vo-placed.wav`, `vo-timing.json` (répliques et mots, temps du film). Le film est recalé dessus
+(objet `K` de `film-mo6/film.js`).
 
 ```
-Cette voiture a fait fuir tout le monde.
-Cent euros plus tard, elle vaut six cents de plus.
-Phares jaunis : vingt euros. Rayure : trente. Intérieur : cinquante.
-Eux fuient. Toi, tu achètes.
-Ce qui coûte vraiment ne se voit pas.
-La distribution : six cents. Demande la facture.
-Embrayage : sept cents. En quatrième, plein gaz : les tours montent, pas la vitesse ? Il patine.
-Joint de culasse : mille deux cents. Mousse blanche sous le bouchon d'huile ? Méfiance.
-Et la voiture parfaite ? Personne n'a regardé sous le bouchon.
+ 0,10  Cette voiture a fait fuir tout le monde.
+ 2,50  Cent euros plus tard, elle vaut six cents de plus.
+ 5,14  Phares jaunis : vingt euros.
+ 6,84  Rayure : trente.
+ 8,19  Intérieur : cinquante.
+10,31  Ce qui coûte vraiment ne se voit pas.
+12,54  La distribution : six cents.  14,11  Demande la facture.
+15,32  Embrayage : sept cents.  16,62  En quatrième, plein gaz : les tours montent, pas la vitesse ?  20,62  Il patine.
+21,48  Joint de culasse : mille deux cents.  23,41  Mousse blanche sous le bouchon d'huile ?  25,15  Méfiance.
+26,07  Et la voiture parfaite ?  27,41  Personne n'a regardé sous le bouchon.
 ```
 
-Ouverture B (même corps) : « Une rayure : trente euros. Une distribution : six cents. Une seule des deux se voit. »
-
-84 mots en 30 s, c'est serré : à l'étape 4, je mesure la prise et je coupe ce qui fait courir la voix (d'abord « Eux
-fuient. Toi, tu achètes. »).
+Ouverture B (même corps, à générer si on la teste) : « Une rayure : trente euros. Une distribution : six cents. Une
+seule des deux se voit. »
 
 ## Les plans réels (Mixkit, licence gratuite)
 

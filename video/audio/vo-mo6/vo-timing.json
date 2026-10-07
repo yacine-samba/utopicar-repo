@@ -1,0 +1,549 @@
+{
+ "dur": 30.0,
+ "tempo": 1.12,
+ "take": "takeA.mp3",
+ "lines": [
+  {
+   "key": "s1",
+   "t": 0.1,
+   "end": 2.279,
+   "text": "Cette voiture a fait fuir tout le monde."
+  },
+  {
+   "key": "s2",
+   "t": 2.499,
+   "end": 4.82,
+   "text": "Cent euros plus tard, elle vaut six cents de plus."
+  },
+  {
+   "key": "ph",
+   "t": 5.14,
+   "end": 6.617,
+   "text": "Phares jaunis : vingt euros."
+  },
+  {
+   "key": "ra",
+   "t": 6.837,
+   "end": 7.987,
+   "text": "Rayure : trente."
+  },
+  {
+   "key": "in",
+   "t": 8.187,
+   "end": 9.556,
+   "text": "Intérieur : cinquante."
+  },
+  {
+   "key": "cqc",
+   "t": 10.306,
+   "end": 12.162,
+   "text": "Ce qui coûte vraiment ne se voit pas."
+  },
+  {
+   "key": "dist",
+   "t": 12.542,
+   "end": 13.973,
+   "text": "La distribution : six cents."
+  },
+  {
+   "key": "fact",
+   "t": 14.113,
+   "end": 14.976,
+   "text": "Demande la facture."
+  },
+  {
+   "key": "emb",
+   "t": 15.316,
+   "end": 16.519,
+   "text": "Embrayage : sept cents."
+  },
+  {
+   "key": "q4",
+   "t": 16.619,
+   "end": 18.761,
+   "text": "En quatrième, plein gaz :"
+  },
+  {
+   "key": "tours",
+   "t": 18.841,
+   "end": 20.381,
+   "text": "les tours montent, pas la vitesse ?"
+  },
+  {
+   "key": "pat",
+   "t": 20.621,
+   "end": 21.245,
+   "text": "Il patine."
+  },
+  {
+   "key": "cul",
+   "t": 21.585,
+   "end": 23.37,
+   "text": "Joint de culasse : mille deux cents."
+  },
+  {
+   "key": "mousse",
+   "t": 23.51,
+   "end": 24.858,
+   "text": "Mousse blanche sous le bouchon d'huile ?"
+  },
+  {
+   "key": "mef",
+   "t": 25.148,
+   "end": 25.666,
+   "text": "Méfiance."
+  },
+  {
+   "key": "parf",
+   "t": 26.066,
+   "end": 27.269,
+   "text": "Et la voiture parfaite ?"
+  },
+  {
+   "key": "perso",
+   "t": 27.409,
+   "end": 28.862,
+   "text": "Personne n'a regardé sous le bouchon."
+  }
+ ],
+ "words": [
+  {
+   "line": "s1",
+   "t": 0.1,
+   "end": 0.368,
+   "w": "Cette"
+  },
+  {
+   "line": "s1",
+   "t": 0.368,
+   "end": 0.707,
+   "w": "voiture"
+  },
+  {
+   "line": "s1",
+   "t": 0.707,
+   "end": 1.189,
+   "w": "a"
+  },
+  {
+   "line": "s1",
+   "t": 1.189,
+   "end": 1.279,
+   "w": "fait"
+  },
+  {
+   "line": "s1",
+   "t": 1.279,
+   "end": 1.654,
+   "w": "fuir"
+  },
+  {
+   "line": "s1",
+   "t": 1.654,
+   "end": 1.921,
+   "w": "tout"
+  },
+  {
+   "line": "s1",
+   "t": 1.921,
+   "end": 2.011,
+   "w": "le"
+  },
+  {
+   "line": "s1",
+   "t": 2.011,
+   "end": 2.189,
+   "w": "monde."
+  },
+  {
+   "line": "s2",
+   "t": 2.534,
+   "end": 2.856,
+   "w": "100€"
+  },
+  {
+   "line": "s2",
+   "t": 2.856,
+   "end": 3.034,
+   "w": "plus"
+  },
+  {
+   "line": "s2",
+   "t": 3.034,
+   "end": 3.266,
+   "w": "tard,"
+  },
+  {
+   "line": "s2",
+   "t": 3.695,
+   "end": 3.802,
+   "w": "elle"
+  },
+  {
+   "line": "s2",
+   "t": 3.802,
+   "end": 3.963,
+   "w": "vaut"
+  },
+  {
+   "line": "s2",
+   "t": 3.963,
+   "end": 4.32,
+   "w": "600"
+  },
+  {
+   "line": "s2",
+   "t": 4.32,
+   "end": 4.499,
+   "w": "de"
+  },
+  {
+   "line": "s2",
+   "t": 4.499,
+   "end": 4.731,
+   "w": "plus."
+  },
+  {
+   "line": "ph",
+   "t": 4.992,
+   "end": 5.67,
+   "w": "Farjoni,"
+  },
+  {
+   "line": "ph",
+   "t": 6.027,
+   "end": 6.527,
+   "w": "20€."
+  },
+  {
+   "line": "ra",
+   "t": 6.773,
+   "end": 7.219,
+   "w": "Réur,"
+  },
+  {
+   "line": "ra",
+   "t": 7.559,
+   "end": 7.898,
+   "w": "30."
+  },
+  {
+   "line": "in",
+   "t": 8.164,
+   "end": 8.628,
+   "w": "Intérieur,"
+  },
+  {
+   "line": "in",
+   "t": 9.11,
+   "end": 9.467,
+   "w": "50."
+  },
+  {
+   "line": "cqc",
+   "t": 10.447,
+   "end": 10.572,
+   "w": "qui"
+  },
+  {
+   "line": "cqc",
+   "t": 10.572,
+   "end": 10.787,
+   "w": "coûte"
+  },
+  {
+   "line": "cqc",
+   "t": 10.787,
+   "end": 11.054,
+   "w": "vraiment,"
+  },
+  {
+   "line": "cqc",
+   "t": 11.501,
+   "end": 11.572,
+   "w": "ne"
+  },
+  {
+   "line": "cqc",
+   "t": 11.572,
+   "end": 11.715,
+   "w": "se"
+  },
+  {
+   "line": "cqc",
+   "t": 11.715,
+   "end": 11.84,
+   "w": "voit"
+  },
+  {
+   "line": "cqc",
+   "t": 11.84,
+   "end": 12.072,
+   "w": "pas."
+  },
+  {
+   "line": "dist",
+   "t": 12.562,
+   "end": 12.687,
+   "w": "La"
+  },
+  {
+   "line": "dist",
+   "t": 12.687,
+   "end": 13.026,
+   "w": "distribution,"
+  },
+  {
+   "line": "dist",
+   "t": 13.508,
+   "end": 13.883,
+   "w": "600."
+  },
+  {
+   "line": "fact",
+   "t": 14.065,
+   "end": 14.369,
+   "w": "Demande"
+  },
+  {
+   "line": "fact",
+   "t": 14.369,
+   "end": 14.512,
+   "w": "la"
+  },
+  {
+   "line": "fact",
+   "t": 14.512,
+   "end": 14.887,
+   "w": "facture."
+  },
+  {
+   "line": "emb",
+   "t": 15.161,
+   "end": 15.84,
+   "w": "Embraillage,"
+  },
+  {
+   "line": "emb",
+   "t": 16.108,
+   "end": 16.429,
+   "w": "700."
+  },
+  {
+   "line": "q4",
+   "t": 16.654,
+   "end": 17.565,
+   "w": "En"
+  },
+  {
+   "line": "q4",
+   "t": 17.565,
+   "end": 18.047,
+   "w": "quatrième,"
+  },
+  {
+   "line": "q4",
+   "t": 18.297,
+   "end": 18.422,
+   "w": "plein"
+  },
+  {
+   "line": "q4",
+   "t": 18.422,
+   "end": 18.672,
+   "w": "gaz."
+  },
+  {
+   "line": "tours",
+   "t": 18.877,
+   "end": 18.966,
+   "w": "Les"
+  },
+  {
+   "line": "tours",
+   "t": 18.966,
+   "end": 19.127,
+   "w": "tours"
+  },
+  {
+   "line": "tours",
+   "t": 19.127,
+   "end": 19.502,
+   "w": "montent,"
+  },
+  {
+   "line": "tours",
+   "t": 19.716,
+   "end": 19.824,
+   "w": "pas"
+  },
+  {
+   "line": "tours",
+   "t": 19.824,
+   "end": 19.895,
+   "w": "la"
+  },
+  {
+   "line": "tours",
+   "t": 19.895,
+   "end": 20.091,
+   "w": "vitesse"
+  },
+  {
+   "line": "tours",
+   "t": 20.091,
+   "end": 20.966,
+   "w": "?"
+  },
+  {
+   "line": "pat",
+   "t": 20.442,
+   "end": 20.745,
+   "w": "Ils"
+  },
+  {
+   "line": "pat",
+   "t": 20.745,
+   "end": 21.156,
+   "w": "patinent."
+  },
+  {
+   "line": "cul",
+   "t": 21.548,
+   "end": 22.102,
+   "w": "Joins"
+  },
+  {
+   "line": "cul",
+   "t": 22.102,
+   "end": 22.173,
+   "w": "de"
+  },
+  {
+   "line": "cul",
+   "t": 22.173,
+   "end": 22.566,
+   "w": "culasse,"
+  },
+  {
+   "line": "cul",
+   "t": 22.887,
+   "end": 23.28,
+   "w": "1200."
+  },
+  {
+   "line": "mousse",
+   "t": 23.45,
+   "end": 23.736,
+   "w": "Mousse"
+  },
+  {
+   "line": "mousse",
+   "t": 23.736,
+   "end": 24.039,
+   "w": "blanche"
+  },
+  {
+   "line": "mousse",
+   "t": 24.039,
+   "end": 24.182,
+   "w": "sous"
+  },
+  {
+   "line": "mousse",
+   "t": 24.182,
+   "end": 24.271,
+   "w": "le"
+  },
+  {
+   "line": "mousse",
+   "t": 24.271,
+   "end": 24.504,
+   "w": "bouchon"
+  },
+  {
+   "line": "mousse",
+   "t": 24.504,
+   "end": 24.611,
+   "w": "d"
+  },
+  {
+   "line": "mousse",
+   "t": 24.611,
+   "end": 24.771,
+   "w": "'huile."
+  },
+  {
+   "line": "mef",
+   "t": 25.112,
+   "end": 25.577,
+   "w": "Méfiance."
+  },
+  {
+   "line": "parf",
+   "t": 26.102,
+   "end": 26.316,
+   "w": "Et"
+  },
+  {
+   "line": "parf",
+   "t": 26.316,
+   "end": 26.423,
+   "w": "la"
+  },
+  {
+   "line": "parf",
+   "t": 26.423,
+   "end": 26.673,
+   "w": "voiture"
+  },
+  {
+   "line": "parf",
+   "t": 26.673,
+   "end": 27.155,
+   "w": "parfaite"
+  },
+  {
+   "line": "perso",
+   "t": 27.369,
+   "end": 27.94,
+   "w": "Personne"
+  },
+  {
+   "line": "perso",
+   "t": 27.94,
+   "end": 27.976,
+   "w": "n"
+  },
+  {
+   "line": "perso",
+   "t": 27.976,
+   "end": 28.03,
+   "w": "'a"
+  },
+  {
+   "line": "perso",
+   "t": 28.03,
+   "end": 28.351,
+   "w": "regardé"
+  },
+  {
+   "line": "perso",
+   "t": 28.351,
+   "end": 28.458,
+   "w": "sous"
+  },
+  {
+   "line": "perso",
+   "t": 28.458,
+   "end": 28.547,
+   "w": "le"
+  },
+  {
+   "line": "perso",
+   "t": 28.547,
+   "end": 28.833,
+   "w": "bouchon."
+  }
+ ]
+}

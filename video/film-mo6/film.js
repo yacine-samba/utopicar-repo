@@ -17,16 +17,17 @@
     heavy: 'heavy', roll: { f: 1.7, z: 0.95 }, cam: { f: 0.85, z: 1 }, camS: { f: 0.6, z: 1 }, wipe: { f: 0.9, z: 1 }, pop: { f: 2.0, z: 0.72 },
   };
   // ---------- minutage (seul endroit à recaler sur la voix) ----------
+  // calé sur audio/vo-mo6/vo-timing.json (prise A, atempo 1,12) : chaque geste tombe sur le mot qui le nomme
   const K = {
-    scan: 0.15, tags: 1.0, w100: 2.05, arrow: 2.6, w600: 2.8, hookOut: 4.0,
-    ph: 4.0, phWipe: 4.55, ph20: 4.7, c20: 5.25,
-    ra: 5.5, raWipe: 5.95, ra30: 6.0, c50: 6.6,
-    inn: 6.95, in50: 7.05, c100: 7.65, dust: 7.75,
-    back: 8.15, gain: 8.45,
-    xr: 10.0, txtX: 10.15, txtX2: 10.75, xrOut: 12.0,
-    eng: 12.0, dist: 12.55, fact: 14.0, emb: 15.5, gauge: 16.8, revs: 17.3, patine: 19.6, gaugeOut: 20.4,
-    cul: 20.55, cap: 22.45, unscrew: 22.7, foam: 23.3, mef: 24.5,
-    chute: 25.5, perso: 26.7, perso2: 27.25, out: 28.6,
+    scan: 0.15, tags: 1.0, w100: 2.5, arrow: 3.3, w600: 3.85, hookOut: 4.75,
+    ph: 4.75, phWipe: 5.35, ph20: 5.95, c20: 6.5,
+    ra: 6.5, raWipe: 6.85, ra30: 7.45, c50: 7.95,
+    inn: 7.9, in50: 8.9, c100: 9.4, dust: 9.3,
+    back: 9.45, gain: 9.35,
+    xr: 10.25, txtX: 10.4, txtX2: 11.45, xrOut: 12.3,
+    eng: 12.25, dist: 12.7, fact: 14.0, emb: 15.15, gauge: 16.55, revs: 18.25, patine: 20.45, gaugeOut: 21.15,
+    cul: 21.45, cap: 23.2, unscrew: 23.45, foam: 24.05, mef: 25.1,
+    chute: 25.85, perso: 27.35, perso2: 28.3, out: 28.95,
   };
 
   await Promise.all([
@@ -68,7 +69,7 @@
     const c = {}; for (const k in KEYS) c[k] = track(t, KEYS[k]);
     const na = sm(0, 1.2, t); c.rx += noise(1, t * 0.45) * 0.5 * na; c.ry += noise(2, t * 0.4) * 0.7 * na; c.x += noise(3, t * 0.3) * 6 * na; c.y += noise(4, t * 0.3) * 6 * na;
     // retour exact à la pose de l'image 0
-    const w = sm(28.9, 29.95, t); for (const k in C0) c[k] = lerp(c[k], C0[k], w);
+    const w = sm(K.out - 0.05, 29.95, t); for (const k in C0) c[k] = lerp(c[k], C0[k], w);
     if (t >= 29.95) for (const k in C0) c[k] = C0[k];
     return c;
   }
@@ -334,11 +335,11 @@
     cone.style.opacity = f3(0.75 + 0.25 * Math.sin(2 * Math.PI * t / DUR));
 
     // --- voiture A : arrive par la gauche en fin de film, part à gauche à la chute
-    const aOut = S(t, K.chute, { f: 0.9, z: 1 }), aIn = eo(K.out, 29.85, t);
+    const aOut = S(t, K.chute, { f: 0.9, z: 1 }), aIn = eo(K.out, 29.88, t);
     const ax = t < K.out ? -1500 * aOut : -1500 * (1 - aIn);
     A.c.style.transform = `translateX(${f3(ax)}px)`;
     set(A.c, t < K.out ? 1 - sm(K.chute + 0.6, K.chute + 0.9, t) : sm(K.out, K.out + 0.3, t));
-    const reset = t > 26.2;            // A est hors champ : elle redevient sale pour la boucle
+    const reset = t > K.chute + 1.15;            // A est hors champ : elle redevient sale pour la boucle
     // nettoyages : chaque calque s'efface derrière la bande de lumière
     const wPh = reset ? 0 : S(t, K.phWipe, P.wipe), wRa = reset ? 0 : S(t, K.raWipe, P.wipe), wDu = reset ? 0 : S(t, K.dust, { f: 0.7, z: 1 });
     const mk = (p) => `linear-gradient(90deg,transparent ${f3(-8 + 116 * p)}%,#000 ${f3(-4 + 116 * p)}%)`;
@@ -348,7 +349,7 @@
     let bx = 0.28 + 0.84 * S(t, K.scan, { f: 0.62, z: 1 }), bo = 1 - sm(1.25, 1.55, t);
     const wins = [[K.phWipe, wPh], [K.raWipe, wRa], [K.dust, wDu]];
     for (const [t0, p] of wins) if (t > t0 - 0.05 && t < t0 + 1.4) { bx = -0.06 + 1.18 * p; bo = sm(t0 - 0.05, t0 + 0.05, t) * (1 - sm(t0 + 0.9, t0 + 1.3, t)); }
-    if (t >= K.out) { bx = 0.28; bo = sm(29.2, 29.9, t); }
+    if (t >= K.out) { bx = 0.28; bo = sm(K.out + 0.3, 29.9, t); }
     if (t < K.scan) { bx = 0.28; bo = 1; }
     const bp = bx * 100;
     A.band.style.background = `linear-gradient(100deg,transparent ${f3(bp - 7)}%,rgba(255,120,50,.35) ${f3(bp - 2.5)}%,rgba(255,240,228,.95) ${f3(bp)}%,rgba(255,120,50,.35) ${f3(bp + 2.5)}%,transparent ${f3(bp + 7)}%)`;
@@ -378,9 +379,9 @@
     set(pinsA.belt, heat.distribution); set(pinsA.clutch, heat.embrayage); set(pinsA.culasse, heat.culasse);
 
     // --- voiture B : « comme neuve »
-    const bIn = S(t, K.chute + 0.15, { f: 0.85, z: 1 }), bOut = sm(K.out, 29.4, t);
+    const bIn = S(t, K.chute + 0.15, { f: 0.85, z: 1 }), bOut = sm(K.out, K.out + 0.5, t);
     B.c.style.transform = `translateX(${f3(1500 * (1 - bIn) + 1500 * bOut)}px)`;
-    set(B.c, sm(K.chute, K.chute + 0.2, t) * (1 - sm(29.3, 29.5, t)));
+    set(B.c, sm(K.chute, K.chute + 0.2, t) * (1 - sm(K.out + 0.4, K.out + 0.55, t)));
     B.clean.style.filter = 'contrast(1.14) brightness(1.06) saturate(1.1) drop-shadow(0 0 2px rgba(255,190,150,.8)) drop-shadow(0 0 30px rgba(255,110,40,.35))';
     const bsw = lerp(-10, 120, S(t, K.chute + 0.5, { f: 0.7, z: 1 }));
     B.band.style.background = `linear-gradient(100deg,transparent ${f3(bsw - 7)}%,rgba(255,240,228,.6) ${f3(bsw)}%,transparent ${f3(bsw + 7)}%)`;
@@ -434,7 +435,7 @@
     labP.style.transform = `translateY(${f3((1 - sm(lt - 0.1, lt + 0.2, t)) * 14)}px)`;
     // l'écart
     writeWord(wGain, t, K.gain, 0.06, 26);
-    const gOut = sm(K.xr - 0.3, K.xr + 0.1, t);
+    const gOut = sm(K.xr - 0.1, K.xr + 0.3, t);
     setA(wGain.grp, 1 - gOut); set(labGain, sm(K.gain - 0.1, K.gain + 0.2, t) * (1 - gOut));
 
     // --- cartes vidéo
