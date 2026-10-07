@@ -18,7 +18,7 @@ Promesse : tu sais quelle voiture acheter sans peur, et laquelle laisser, avant 
 CTA : aucun, rien de proposé, ni dit ni écrit  Type / durée : motion design narratif, 28 à 30 s, en boucle
 Voix : Simon (ElevenLabs), même voix que MO5
 Musique : Controlled Drop (ton morceau), calé à 120 BPM
-Ouvertures : A = « elle a fait fuir tout le monde » / B = « 60 € contre 600 € » (0-3,5 s, même corps)
+Ouvertures : A = « elle a fait fuir tout le monde » / B = « 30 € contre 600 € » (0-3,5 s, même corps)
 Format : 9:16, 1080×1920, 60 i/s           Données : ordres de grandeur pour une petite citadine, mention à l'écran
 Interdits : produit, logo de plateforme, CTA, morale, visages, plaques lisibles
 ```
@@ -28,8 +28,8 @@ Interdits : produit, logo de plateforme, CTA, morale, visages, plaques lisibles
 | Ce qui se voit · fonce | Coût | Ce qui se cache · vérifie | Coût | Le test en 10 s |
 |---|---|---|---|---|
 | Phares jaunis | ≈ 20 € (kit de rénovation) | Distribution | ≈ 400 à 800 € | Demande la facture du dernier changement (date et kilométrage) |
-| Rayure superficielle | ≈ 30 à 80 € (polish, retouche) | Embrayage | ≈ 600 à 1 000 € | En 4e vers 50 km/h, pied au plancher : si le moteur monte sans que la voiture accélère, il patine |
-| Intérieur sale, odeur | ≈ 40 € (produits) | Joint de culasse | ≈ 1 000 € et plus | Mousse blanche sous le bouchon d'huile, fumée blanche épaisse à chaud : méfiance |
+| Rayure superficielle | ≈ 30 € (kit efface-rayures) | Embrayage | ≈ 450 à 700 € (plus avec volant moteur) | En 4e vers 50 km/h, pied au plancher : si le moteur monte sans que la voiture accélère, il patine |
+| Intérieur sale, odeur | ≈ 50 € (produits, location d'un injecteur) | Joint de culasse | ≈ 1 000 € et plus | Mousse blanche sous le bouchon d'huile, fumée blanche épaisse à chaud : méfiance |
 
 Les coûts sont des ordres de grandeur pour une petite citadine, pièces et main-d'œuvre courantes : mention à l'écran.
 Je les vérifie et les source dans la timeline (étape 2), comme les frais de MO5. La mousse sous le bouchon peut aussi
@@ -44,8 +44,8 @@ secondes.
 
 | | Levier | Voix | Texte à l'écran | Image |
 |---|---|---|---|---|
-| A | Démonstration, bénéfice | « Cette voiture a fait fuir tout le monde. Cent vingt euros plus tard, elle vaut six cents euros de plus. » | 120 € → + 600 € | La Polo terne, phares jaunes, rayure, sièges tachés ; des étiquettes de verre s'allument sur chaque défaut. |
-| B | Phrase impossible à ignorer | « Une rayure : soixante euros. Une distribution : six cents. Une seule des deux se voit. » | 60 € · 600 € | Une rayure brille sur la carrosserie, puis la voiture devient transparente et la distribution s'allume dedans. |
+| A | Démonstration, bénéfice | « Cette voiture a fait fuir tout le monde. Cent euros plus tard, elle vaut six cents de plus. » | 100 € → + 600 € | La Polo terne, phares jaunes, rayure, sièges tachés ; des étiquettes de verre s'allument sur chaque défaut. |
+| B | Phrase impossible à ignorer | « Une rayure : trente euros. Une distribution : six cents. Une seule des deux se voit. » | 30 € · 600 € | Une rayure brille sur la carrosserie, puis la voiture devient transparente et la distribution s'allume dedans. |
 | C | Croyance → vérité | « Tu crois qu'une voiture rayée, c'est un piège. C'est souvent la meilleure affaire de la rue. » | Rayée = bonne affaire | Deux voitures côte à côte, la rayée gagne une étiquette verte. |
 | D | Coût caché | « La voiture la plus propre de l'annonce peut te coûter mille deux cents euros. Et ça ne se voit pas. » | Propre ≠ sûre | Une voiture brillante, puis la radiographie montre le moteur qui rougit. |
 | E | Erreur intelligente | « Les débutants fuient les voitures rayées. Les pros les cherchent. » | Les pros cherchent les rayures | Un filtre de recherche qui trie les photos les plus sales en premier. |
@@ -67,15 +67,15 @@ avec deux chiffres) et ouvre « comment ? ». B pose toute la méthode en une ph
 | Temps | Ce qu'on voit | Voix (provisoire) | Émotion |
 |---|---|---|---|
 | 0-4 s · **la voiture qui fait fuir** | Ta Polo, dégradée : phares jaunis, rayure sur l'aile, sièges tachés. Un trait de lumière la balaie ; trois étiquettes de verre s'allument sur les défauts. | Hook A | Surprise, envie |
-| 4-10 s · **ce qui se voit** | Pour chaque défaut, le prix s'écrit à la lumière (20 €, 60 €, 40 €), puis le défaut s'efface sous le trait : phare clair, aile lisse, sièges propres. Le total 120 € roule. La cote s'écrit au-dessus : + 600 €. | « Phares jaunis : vingt euros. Rayure : soixante. Intérieur : quarante. Ça fait fuir les acheteurs. Pas toi. » | Satisfaction |
+| 4-10 s · **ce qui se voit** | Pour chaque défaut, le prix s'écrit à la lumière (20 €, 30 €, 50 €), puis le défaut s'efface sous le trait : phare clair, aile lisse, sièges propres. Le total 100 € roule. La cote s'écrit au-dessus : + 600 €. | « Phares jaunis : vingt euros. Rayure : trente. Intérieur : cinquante. Eux fuient. Toi, tu achètes. » | Satisfaction |
 | 10-13 s · **la bascule** | La caméra tourne autour de la voiture, qui devient transparente : une radiographie tracée en lignes de lumière, moteur et transmission visibles. | « Ce qui coûte vraiment, personne ne le voit. » | Tension |
 | 13-17 s · **la distribution** | La courroie s'allume en orange, 600 € s'écrit. Une facture en verre glisse : date, kilométrage cochés. | « La distribution : six cents euros. Demande la facture. » | Peur, puis contrôle |
-| 17-21 s · **l'embrayage** | L'embrayage s'allume, 800 €. Compte-tours et compteur de vitesse côte à côte : l'aiguille des tours monte, la vitesse ne bouge pas. | « L'embrayage : huit cents. En quatrième, plein gaz : le moteur monte, la voiture non ? Il patine. » | Peur, puis contrôle |
+| 17-21 s · **l'embrayage** | L'embrayage s'allume, 700 €. Compte-tours et compteur de vitesse côte à côte : l'aiguille des tours monte, la vitesse ne bouge pas. | « Embrayage : sept cents. En quatrième, plein gaz : les tours montent, pas la vitesse ? Il patine. » | Peur, puis contrôle |
 | 21-25 s · **la culasse** | La culasse s'allume, 1 200 €. Gros plan sur un bouchon d'huile : une mousse blanche apparaît. | « Le joint de culasse : mille deux cents. De la mousse blanche sous le bouchon d'huile ? Méfiance. » | Peur, puis contrôle |
 | 25-28,5 s · **la chute** | La caméra recule : à côté de ta Polo remise en état, la voiture brillante que tout le monde voulait. Sa radiographie s'allume, le bouchon d'huile luit en rouge. | « Et la voiture parfaite que tout le monde voulait ? Personne n'a regardé sous le bouchon. » | Humour noir, frisson |
 | 28,5-30 s · **la boucle** | Un trait de lumière balaie l'écran, la Polo redevient terne : image 0. | (enchaîne sur « Cette voiture a fait fuir tout le monde ») | Boucle |
 
-Le texte de la voix fait environ 90 mots : je le resserre à l'étape 4 pour tenir 30 s sans courir.
+Chiffres sourcés et voix resserrée dans `docs/timeline-mo6.md`. Le texte de la voix fait environ 90 mots : je le resserre à l'étape 4 pour tenir 30 s sans courir.
 
 ## Les codes repris de MO5
 
