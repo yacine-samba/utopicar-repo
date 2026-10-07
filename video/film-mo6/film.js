@@ -17,17 +17,17 @@
     heavy: 'heavy', roll: { f: 1.7, z: 0.95 }, cam: { f: 0.85, z: 1 }, camS: { f: 0.6, z: 1 }, wipe: { f: 0.9, z: 1 }, pop: { f: 2.0, z: 0.72 },
   };
   // ---------- minutage (seul endroit à recaler sur la voix) ----------
-  // calé sur audio/vo-mo6/vo-timing.json (prise A, atempo 1,12) : chaque geste tombe sur le mot qui le nomme
+  // calé sur audio/vo-mo6/vo-timing.json (prise B, atempo 1,15) : chaque geste tombe sur le mot qui le nomme
   const K = {
-    scan: 0.15, tags: 1.0, w100: 2.5, arrow: 3.3, w600: 3.85, hookOut: 4.75,
-    ph: 4.75, phWipe: 5.35, ph20: 5.95, c20: 6.5,
-    ra: 6.5, raWipe: 6.85, ra30: 7.45, c50: 7.95,
-    inn: 7.9, in50: 8.9, c100: 9.4, dust: 9.3,
-    back: 9.45, gain: 9.35,
-    xr: 10.25, txtX: 10.4, txtX2: 11.45, xrOut: 12.3,
-    eng: 12.25, dist: 12.7, fact: 14.0, emb: 15.15, gauge: 16.55, revs: 18.25, patine: 20.45, gaugeOut: 21.15,
-    cul: 21.45, cap: 23.2, unscrew: 23.45, foam: 24.05, mef: 25.1,
-    chute: 25.85, perso: 27.35, perso2: 28.3, out: 28.95,
+    scan: 0.15, tags: 0.9, w100: 2.07, arrow: 2.82, w600: 3.55, hookOut: 4.7,
+    ph: 4.7, phWipe: 5.25, ph20: 5.69, c20: 6.53,
+    ra: 6.38, raWipe: 6.78, ra30: 7.31, c50: 8.48,
+    inn: 8.33, in50: 9.2, c100: 10.12, dust: 10.01,
+    back: 10.16, gain: 10.06,
+    xr: 10.46, txtX: 10.67, txtX2: 11.67, xrOut: 12.64,
+    eng: 12.5, dist: 13.03, fact: 14.33, emb: 15.59, gauge: 17.13, revs: 18.09, patine: 20.66, gaugeOut: 21.53,
+    cul: 21.65, cap: 23.26, unscrew: 23.51, foam: 24.1, mef: 25.15,
+    chute: 25.99, perso: 27.37, perso2: 27.8, out: 28.95,
   };
 
   await Promise.all([
@@ -404,7 +404,7 @@
     writeWord(w600, t, K.w600, 0.06, 26);
 
     // --- compteur
-    const hud = fade(t, K.hookOut + 0.15, K.hookOut + 0.5, K.xr - 0.2, K.xr + 0.2);
+    const hud = fade(t, K.hookOut + 0.15, K.hookOut + 0.5, K.txtX - 0.1, K.txtX + 0.25);
     const val = t < K.c20 + 0.05 ? 0 : t < K.c50 + 0.05 ? 20 : t < K.c100 + 0.05 ? 50 : 100;
     const visH = S(t, K.c100 + 0.02, P.heavy), visT = S(t, K.c20, P.heavy);
     const vis = [visH, visT, 1];
@@ -435,7 +435,7 @@
     labP.style.transform = `translateY(${f3((1 - sm(lt - 0.1, lt + 0.2, t)) * 14)}px)`;
     // l'écart
     writeWord(wGain, t, K.gain, 0.06, 26);
-    const gOut = sm(K.xr - 0.1, K.xr + 0.3, t);
+    const gOut = sm(K.txtX - 0.05, K.txtX + 0.35, t);
     setA(wGain.grp, 1 - gOut); set(labGain, sm(K.gain - 0.1, K.gain + 0.2, t) * (1 - gOut));
 
     // --- cartes vidéo

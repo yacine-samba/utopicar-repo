@@ -33,30 +33,55 @@ Si tu as tes propres chiffres (vraies factures, vrais écarts de prix), ils remp
 
 ## La voix (enregistrée le 7 octobre 2026)
 
-Simon (`mvhJVdVoTWVUtL4keT7W`), eleven_v3, 2 prises (1 344 crédits). Prise A retenue : 44,9 s brute, prononciation
-vérifiée par une seconde transcription (faster-whisper medium). Mise en place par `scripts/vo-mo6.py` :
-- chaque réplique découpée sur le signal, accélérée de 12 % (atempo 1,12, timbre conservé) ;
+Simon (`mvhJVdVoTWVUtL4keT7W`), eleven_v3, 2 prises (1 344 crédits). **Prise B retenue par l'utilisateur** : 46,8 s
+brute, plus posée que la A. Prononciation vérifiée par une seconde transcription (faster-whisper medium), et de nouveau
+après le montage (tous les mots présents). Mise en place par `scripts/vo-mo6.py takeB.mp3` :
+- chaque réplique définie par ses mots, découpée aux pauses internes de plus de 0,3 s ;
+- chaque morceau coupé au plus près du signal (seuil −34 dB sous le pic : retire les souffles de fin de mot) ;
+- pauses internes ramenées à 0,16 s au plus, accélération de 15 % (atempo 1,15, timbre conservé) ;
 - « Eux fuient. Toi, tu achètes. » retirée (première coupe prévue) ;
-- répliques reposées avec des silences de 0,08 à 0,75 s ; la voix finit à 28,9 s, 1,1 s avant la boucle.
+- la voix finit à 28,9 s, 1,1 s avant la boucle. Débit ≈ 2,7 mots/s.
 
 Sorties : `audio/vo-mo6/vo-placed.wav`, `vo-timing.json` (répliques et mots, temps du film). Le film est recalé dessus
-(objet `K` de `film-mo6/film.js`).
+(objet `K` de `film-mo6/film.js`, que `scripts/audio-mo6.py` relit pour placer les bruitages).
 
 ```
  0,10  Cette voiture a fait fuir tout le monde.
- 2,50  Cent euros plus tard, elle vaut six cents de plus.
- 5,14  Phares jaunis : vingt euros.
- 6,84  Rayure : trente.
- 8,19  Intérieur : cinquante.
-10,31  Ce qui coûte vraiment ne se voit pas.
-12,54  La distribution : six cents.  14,11  Demande la facture.
-15,32  Embrayage : sept cents.  16,62  En quatrième, plein gaz : les tours montent, pas la vitesse ?  20,62  Il patine.
-21,48  Joint de culasse : mille deux cents.  23,41  Mousse blanche sous le bouchon d'huile ?  25,15  Méfiance.
-26,07  Et la voiture parfaite ?  27,41  Personne n'a regardé sous le bouchon.
+ 2,07  Cent euros plus tard, elle vaut six cents de plus.
+ 4,95  Phares jaunis : vingt euros.
+ 6,63  Rayure : trente.
+ 8,63  Intérieur : cinquante.
+10,62  Ce qui coûte vraiment ne se voit pas.
+12,90  La distribution : six cents.
+14,43  Demande la facture.
+15,69  Embrayage : sept cents.
+17,23  En quatrième, plein gaz :
+18,77  les tours montent, pas la vitesse ?
+20,66  Il patine.
+21,70  Joint de culasse : mille deux cents.
+23,51  Mousse blanche sous le bouchon d'huile ?
+25,15  Méfiance.
+26,14  Et la voiture parfaite ?
+27,37  Personne n'a regardé sous le bouchon.
 ```
 
 Ouverture B (même corps, à générer si on la teste) : « Une rayure : trente euros. Une distribution : six cents. Une
 seule des deux se voit. »
+
+## Le son
+
+`scripts/audio-mo6.py` → `audio/mix-mo6.wav`, pistes séparées dans `audio/stems-mo6/` (hors git), rapport
+`docs/mix_report-mo6.txt`.
+- Musique (Controlled Drop, 120 BPM) :
+  - mesure 13 pendant le nettoyage (0 → 10,46 s) ;
+  - mesures 2 à 9 assombries pendant « ce qui se cache », filtre qui s'ouvre de 1,1 à 6 kHz, niveau qui monte ;
+  - arrêt de bande juste avant « Méfiance », souffle inversé, drop de la mesure 55 sur la voiture parfaite (26,0 s).
+- Bruitages Mixkit, un son principal à la fois :
+  - polisseuse rotative (2646) sur les phares et la rayure, injecteur-extracteur (1835) sur l'intérieur ;
+  - scanner (2847) et grondement (2297) sur la radiographie ;
+  - claquement électrique (2365), impact grave et bourdonnement (3201) sur chaque organe ;
+  - cliquetis du bouchon (1674), bulles de savon (2925, 3000) sous le bouchon ;
+  - moteur qui monte en régime (1538, régime variable) coupé net sur « Il patine ».
 
 ## Les plans réels (Mixkit, licence gratuite)
 
