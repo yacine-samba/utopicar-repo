@@ -92,8 +92,18 @@ Livre le script sous cette forme :
 4. **Minutage mot à mot** : transcris chaque prise avec `creative_transcribe_audio` (Scribe). Les horodatages de mots
    servent à caler les textes à l'écran, les impacts et les sous-titres. Stocke `audio/vo-<projet>-<lang>-<bloc>.wav`
    et `audio/vo-<projet>-<lang>-<bloc>.words.json`.
-5. Si le connecteur n'est pas disponible ou si l'utilisateur refuse de dépenser : voix de l'utilisateur (il enregistre
+   **Sans Scribe** (ou pour économiser des crédits) : faster-whisper en local (`small`, `int8`,
+   `word_timestamps=True`, `language='fr'`) donne le même minutage mot à mot (MO5, MO6).
+5. **Récupérer et poser la prise** : les URL des générations sont dans `creative_get_flow_run_status` (téléchargement
+   avec `curl`). Si la prise est un peu lente pour le budget, `atempo=1.1` (ffmpeg) garde le timbre ; au-delà, ça
+   s'entend. Chaque réplique est ensuite posée à son temps (`vo-placed.wav`) et le film recalé sur
+   `vo-timing.json` (objet `K`, voir `techniques.md`).
+6. Si le connecteur n'est pas disponible ou si l'utilisateur refuse de dépenser : voix de l'utilisateur (il enregistre
    d'après le script minuté) ou film sans voix, textes à l'écran seulement — dis-le clairement, c'est un compromis.
+7. **Accès coupé par ElevenLabs** (MO6, oct. 2026) : « Unusual activity has been detected on your account, so Free
+   Tier access has been disabled » (déclenché par le proxy de l'environnement cloud). Ne pas relancer, citer le
+   message exact, vérifier côté utilisateur si des crédits ont été débités, proposer : abonnement payant, voix
+   enregistrée par l'utilisateur (on garde tout le reste de la chaîne), ou mise en attente.
 
 Contrôle d'une prise : débit dans le budget, noms et chiffres bien prononcés, pas de souffle ou de clic en tête,
 énergie qui démarre à la première syllabe (le hook se joue là).

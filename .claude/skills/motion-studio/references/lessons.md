@@ -1,4 +1,4 @@
-# Leçons des films UTOPICAR v1 → v6
+# Leçons des films UTOPICAR (v1 → v9, MO1 → MO6)
 
 À relire avant de construire. Chaque ligne est arrivée pour de vrai.
 
@@ -46,6 +46,22 @@
 | Réfs | Analyse à 0,5 s : coupes et transitions ratées | `ref-frames.py` image par image, planches 0,1 s, bandes −4…+4 images |
 | Réfs | Transcription en français forcé d'une voix anglaise : on obtient une traduction, pas les mots | Langue détectée (`--lang auto`) ; vérifier aussi que les sous-titres fournis sont bien ceux de la vidéo (réf. 5 : non) |
 | Réfs | « 4 coupes en 70 s » : le motion design enchaîne sans couper | Compter les **scènes** (corrélation basse définition sur ± 0,15 s), pas seulement les coupes : réf. 5 = 33 scènes, une toutes les 2,1 s |
+| MO5 | Brief écrit pour des particuliers alors que la cible était les débutants en achat-revente | Relire la cible du brief avant d'écrire une ligne ; « recommence à 0 » = nouveau brief, pas une retouche |
+| MO5 | Chiffre inventé (« 46 h de travail ») présenté comme vrai | Chaque chiffre sourcé ou annoncé comme exemple ; ce qu'on ne sait pas, on ne l'écrit pas |
+| MO5 | DA « trop statique, trop frontale », serif orange jugée moche | Verre, lueurs, caméra 3D, profondeur de champ, flou de bougé ; serif choisie sur planche de 7 (Fraunces) |
+| MO5 | Détourage « dégueulasse » (isnet) | BiRefNet + décontamination + liseré de lumière sur le contour (`scripts/cutout.py`) |
+| MO5 | Correspondance titre → id Mixkit fausse | Choisir sur une planche de vignettes étiquetées (`scripts/mixkit.py search --sheet`) |
+| MO5 | `decode()` parallèle de centaines d'images : « cannot be decoded » | Chargement séquentiel avec relance |
+| MO5 | Mix à −18,9 LUFS à cause des transitoires, voix à 0,4 dB de la musique | Limiteur à anticipation ; nivellement par réplique et ducking par bande (écart min 4 dB) |
+| MO5 | Une part de rendu valide supprimée par erreur après un redémarrage du conteneur | Regarder un dossier avant de le vider ; le dire tout de suite et refaire |
+| MO6 | Trois concepts refusés (conseil d'annonce, émotion sans valeur, fiche « à enregistrer ») | Envie + valeur concrète + rien de proposé + chute (`codes-attention.md`) |
+| MO6 | Prix illisibles sur la carrosserie quand la caméra zoome | Viser le point sous le texte (`y − (Y − FY)/s`) + voile sombre en haut indexé sur le zoom |
+| MO6 | Fils d'étiquettes invisibles | Un filtre SVG ne dessine pas un trait de largeur nulle : courbe `Q` |
+| MO6 | Écart de boucle 2,9 sur 255 | Bruit de caméra en rampe, fond périodique, grain modulo : 0,21 |
+| MO6 | ElevenLabs : offre gratuite coupée (« activité inhabituelle », proxy de l'environnement) en pleine étape voix | Ne pas relancer ; le dire avec le message exact ; options : abonnement, voix de l'utilisateur, ou attendre |
+| MO6 | `pkill -f sheet-mo6.mjs` a tué sa propre commande | `pkill` dans un appel séparé |
+| MO6 | Moniteur `until ! pgrep -f "render.mjs --all"` jamais terminé : il se trouvait lui-même | Attendre un fichier de sortie (ou `pgrep -f '[r]ender.mjs'`), jamais un motif présent dans la commande d'attente |
+| MO6 | Rendu final de 30 s avec verre dépoli : ≈ 2 h en 4 parties (6 à 15 s par image) | Prévenir l'utilisateur de la durée ; planches et images fixes pour tout contrôle avant |
 
 ## Ce qui a marché (à reprendre)
 
@@ -62,3 +78,6 @@
   « collés » au même niveau sur une musique à plat, jugé horrible → méthode d'ingénieur du son
   (`references/sound-design.md`). Musique : « un désastre » en synthèse ; banques libres puis morceau fourni par
   l'utilisateur, calé sur le pivot. Pixabay, ZapSplat et Sonniss sont bloqués ici : Mixkit fonctionne.
+- MO5/MO6 (vidéos d'attention) : la photo réelle de l'utilisateur détourée et redessinée à la lumière ; les textes
+  écrits lettre par lettre ; un compteur qui roule ; des raccords par la forme (disque → cadran, bouchon → loupe) ; une
+  boucle mesurée ; une chute qui relance la première phrase. Recettes : `references/techniques.md`.
