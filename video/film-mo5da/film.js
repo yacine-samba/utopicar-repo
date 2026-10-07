@@ -36,17 +36,32 @@
 
   // ---------- caméra ----------
   // A (0–4) : orbite lente autour du calcul · B (4–5,95) : neutre, puis poussée dans la carte des clés · C (5,95–9,5) : contre-plongée sur la Polo
+  // travellings : la caméra suit le trait de lumière, recule pour révéler, glisse en arc pendant l'attente
   function camA(t) {
-    return { rx: track(t, [[0, 13], [0, 8, P.soft]]) + noise(1, t * 0.45) * 0.5, ry: track(t, [[0, -17], [0, -6, P.soft]]) + noise(2, t * 0.4) * 0.7, z: track(t, [[0, -40], [0, 70, P.soft]]), f: 0 };
+    return {
+      rx: track(t, [[0, 10], [1.3, 7, { f: 0.5, z: 1 }], [2.5, 4, { f: 0.35, z: 1 }]]) + noise(1, t * 0.45) * 0.5,
+      ry: track(t, [[0, -12], [0.2, -4, { f: 0.45, z: 1 }], [2.5, 7, { f: 0.3, z: 1 }]]) + noise(2, t * 0.4) * 0.7,
+      z: track(t, [[0, 130], [1.35, -30, { f: 0.6, z: 1 }], [2.55, 140, { f: 0.35, z: 1 }]]),
+      x: track(t, [[0, -100], [0.25, 150, { f: 0.6, z: 1 }], [1.4, 0, { f: 0.6, z: 1 }], [2.55, 70, { f: 0.35, z: 1 }]]),
+      y: track(t, [[0, -120], [0.7, 120, { f: 0.6, z: 1 }], [1.4, 0, { f: 0.6, z: 1 }], [2.55, 90, { f: 0.35, z: 1 }]]),
+      f: 0 };
   }
-  const ID = { rx: 0, ry: 0, z: 0, f: 0 };
-  function mixCam(a, b, w) { return { rx: lerp(a.rx, b.rx, w), ry: lerp(a.ry, b.ry, w), z: lerp(a.z, b.z, w), f: lerp(a.f, b.f, w) }; }
-  function camB(t) { return { rx: noise(3, t * 0.4) * 0.4 + 2 * S(t, 5.2, P.push), ry: noise(4, t * 0.35) * 0.6, z: track(t, [[0, 0], [5.3, 1420, P.push]]), f: 0 }; }
+  const ID = { rx: 0, ry: 0, z: 0, x: 0, y: 0, f: 0 };
+  function mixCam(a, b, w) { const o = {}; for (const k in ID) o[k] = lerp(a[k], b[k], w); return o; }
+  // B : glisse le long des palettes, puis pousse dans la carte des clés
+  function camB(t) {
+    return { rx: noise(3, t * 0.4) * 0.4 + 2 * S(t, 5.2, P.push), ry: track(t, [[4.3, -8], [4.35, 6, { f: 0.5, z: 1 }], [5.1, 0, { f: 0.8, z: 1 }]]) + noise(4, t * 0.35) * 0.6,
+      z: track(t, [[0, 0], [5.3, 1420, P.push]]), x: track(t, [[4.3, -150], [4.35, 150, { f: 0.55, z: 1 }], [5.0, 0, { f: 0.8, z: 1 }]]), y: 0, f: 0 };
+  }
+  // la Polo entre par la droite et freine : rapide puis de plus en plus doux (ressort critique)
+  const carX = (t) => track(t, [[0, 1350], [5.98, 0, { f: 1.15, z: 1 }]]);
+  // C : la caméra accompagne la voiture, puis remonte le long de la pile en orbite lente
   function camC(t) {
-    return { rx: track(t, [[5.95, 10], [5.95, 5, P.drift]]) + noise(5, t * 0.4) * 0.4, ry: track(t, [[5.95, -14], [5.95, -4, P.drift]]) + noise(6, t * 0.35) * 0.6,
-      z: track(t, [[5.95, -260], [5.95, 0, { f: 0.55, z: 1 }]]), f: 0 };
+    return { rx: track(t, [[5.95, 10], [5.95, 5, P.drift]]) + noise(5, t * 0.4) * 0.4, ry: track(t, [[5.95, -14], [5.95, -4, P.drift], [7.6, 3, { f: 0.22, z: 1 }]]) + noise(6, t * 0.35) * 0.6,
+      z: track(t, [[5.95, -260], [5.95, 0, { f: 0.55, z: 1 }], [7.6, 90, { f: 0.25, z: 1 }]]), x: 0.32 * carX(t) + track(t, [[7.0, 0], [7.0, -40, { f: 0.25, z: 1 }]]),
+      y: track(t, [[6.9, 0], [7.0, -110, { f: 0.28, z: 1 }]]), f: 0 };
   }
-  const tf = (c, z, extra = '') => `perspective(1700px) translateZ(${f3(c.z)}px) rotateX(${f3(c.rx)}deg) rotateY(${f3(c.ry)}deg) translateZ(${f3(z)}px) ${extra}`;
+  const tf = (c, z, extra = '') => `perspective(1700px) translateZ(${f3(c.z)}px) rotateX(${f3(c.rx)}deg) rotateY(${f3(c.ry)}deg) translate3d(${f3(-c.x)}px,${f3(-c.y)}px,${f3(z)}px) ${extra}`;
   const dof = (c, z) => clamp(Math.abs(z + c.z - c.f) * 0.008, 0, 9);
 
   // ---------- couches ----------
@@ -132,7 +147,7 @@
   });
   const euro = el('div', 'abs', LH, 'font:700 104px Clash;line-height:172px;white-space:nowrap'); euro.textContent = '€';
   const VALS = [1500, 1314, 1236, 1211, 1051, 941, 801];
-  const T = [6.0, 6.5, 7.0, 8.0, 8.5, 9.0];
+  const T = [7.0, 7.45, 7.9, 8.5, 8.95, 9.4];
   const digitAt = (v, p) => Math.floor(v / 10 ** p) % 10;
   const rollKeys = [0, 1, 2, 3].map((p) => {
     const keys = [[0, digitAt(1500, p)]]; let idx = digitAt(1500, p);
@@ -163,6 +178,8 @@
   const cdefs = sv('defs', {}, csv); const cf = sv('filter', { id: 'cblur', x: '-20%', y: '-20%', width: '140%', height: '140%' }, cdefs); sv('feGaussianBlur', { stdDeviation: 6 }, cf);
   const cLine = sv('path', { d: PC.d, fill: 'none', stroke: '#ffe2cf', 'stroke-width': 3.2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'stroke-dasharray': `${PC.len} ${PC.len}` }, csv);
   const cPen = sv('g', {}, csv); sv('circle', { r: 30, fill: '#ff7a3a', opacity: 0.6, filter: 'url(#cblur)' }, cPen); sv('circle', { r: 7, fill: '#fff' }, cPen);
+  // traînées de lumière derrière la voiture pendant qu'elle entre (feux et reflets étirés par la vitesse)
+  const trails = [[0.62, 5], [0.7, 3], [0.8, 2]].map(([fy, h]) => el('div', 'abs', LP, `left:0;top:${CAR.top + CAR.h * fy}px;height:${h}px;border-radius:${h}px;background:linear-gradient(90deg,rgba(255,230,210,.9),rgba(255,120,50,.5),transparent);filter:blur(1px)`));
   const TAGS = [[180, 330, -8, '186 €'], [430, 225, 6, '78 €'], [715, 300, -5, '25 €'], [600, 470, 9, '160 €'], [95, 470, -12, '110 €'], [335, 385, -3, '140 €']];
   const tags = TAGS.map(([, , , txt]) => { const d = el('div', 'tag', LP); d.textContent = txt; return d; });
 
@@ -197,7 +214,7 @@
     const cA = camA(t);
 
     // fonds
-    bgA.style.transform = `scale(${f3(1.06 + 0.04 * S(t, 0, P.soft) + 0.5 * S(t, 5.3, P.push))})`;
+    bgA.style.transform = `translateY(${f3(260 * S(t, 3.95, P.heavy))}px) scale(${f3(1.06 + 0.04 * S(t, 0, P.soft) + 0.5 * S(t, 5.3, P.push))})`;
     bgImg.style.transform = `translate(${f3(noise(7, t * 0.3) * 20)}px,${f3(noise(8, t * 0.3) * 20)}px)`;
     set(bgA, 1 - toC);
     const cC = camC(t);
@@ -208,7 +225,7 @@
     const zA = -700 * out;
     LA.style.transform = tf(cA, zA, `translateX(${f3(shake * (1 - out))}px)`);
     LA.style.filter = `blur(${f3(dof(cA, zA) + 6 * out)}px)`;
-    set(LA, 1 - sm(4.05, 4.7, t));
+    set(LA, 1 - sm(3.92, 4.3, t));
     const sp = -300 + 1700 * S(t, 0, { f: 0.9, z: 1 });     // reflet qui traverse le calcul
     const st = [[sp - 160, 0], [sp - 40, 0.55], [sp + 40, 0.55], [sp + 160, 0]];
     st.forEach(([x, o], i) => { sh[i].setAttribute('offset', f3(clamp(x / 1080, 0, 1))); sh[i].setAttribute('stop-opacity', f3(o)); });
@@ -311,15 +328,22 @@
     const cin = S(t, 5.95, P.heavy);
     LP.style.transform = tf(cC, -80, `translateY(${f3((1 - cin) * 60)}px) scale(${f3(0.96 + 0.04 * cin)})`);
     set(LP, toC);
+    const cx0 = carX(t), vel = (carX(t + 0.01) - carX(t - 0.01)) / 0.02;   // vitesse (px/s, négative : vers la gauche)
+    const dip = 1.7 * Math.sin(Math.PI * clamp((t - 6.25) / 0.7, 0, 1)) * (t > 6.25 ? 1 : 0);
+    car.style.transformOrigin = '18% 92%';
+    car.style.transform = `translateX(${f3(cx0)}px) rotate(${f3(-dip)}deg)`;
+    for (const e of [shadow, refl, sweep, csv]) e.style.transform = (e === refl ? 'scaleY(-1) ' : '') + `translateX(${f3(cx0)}px)`;
+    const spd = clamp(-vel / 2600, 0, 1);
+    trails.forEach((tr, i) => { tr.style.transform = `translateX(${f3(CAR.left + CAR.w * 0.55 + cx0)}px)`; tr.style.width = `${f3(80 + 900 * spd)}px`; set(tr, spd * (0.9 - i * 0.2)); });
     car.style.filter = `brightness(${f3(0.15 + 0.82 * S(t, 6.0, { f: 0.9, z: 1 }))}) contrast(1.05) drop-shadow(0 0 2px rgba(255,170,120,${f3(0.85 * cin)})) drop-shadow(0 0 26px rgba(255,110,40,${f3(0.45 * cin)}))`;
-    const swx = lerp(-60, 160, S(t, 6.05, { f: 0.8, z: 1 }));
+    const swx = lerp(-60, 160, S(t, 6.95, { f: 0.8, z: 1 }));
     sweep.style.background = `linear-gradient(105deg,transparent ${f3(swx - 14)}%,rgba(255,220,190,.55) ${f3(swx)}%,transparent ${f3(swx + 14)}%)`;
-    const cp = S(t, 5.98, { f: 0.62, z: 1 });
+    const cp = S(t, 6.85, { f: 0.62, z: 1 });
     for (const e of [cGlow, cLine]) e.setAttribute('stroke-dashoffset', f3(PC.len * (1 - cp)));
-    cGlow.setAttribute('opacity', f3(0.9 - 0.45 * sm(6.9, 7.6, t)));
+    cGlow.setAttribute('opacity', f3(sm(6.85, 6.9, t) * (0.9 - 0.45 * sm(7.8, 8.5, t))));
     const pt = cLine.getPointAtLength(PC.len * Math.min(cp, 0.9999));
     cPen.setAttribute('transform', `translate(${f3(pt.x)},${f3(pt.y)})`);
-    cPen.setAttribute('opacity', f3(sm(5.98, 6.05, t) * (1 - sm(6.75, 7.0, t))));
+    cPen.setAttribute('opacity', f3(sm(6.85, 6.92, t) * (1 - sm(7.62, 7.9, t))));
     set(glowC, 0.5 + 0.5 * cin);
     cone.style.opacity = f3(0.6 + 0.4 * cin);
     floor.style.opacity = f3(cin);
@@ -336,13 +360,13 @@
     stack.forEach((n, k) => {
       let d = 0; for (let j = k + 1; j < T.length; j++) d += S(t, T[j], P.card);
       const ein = S(t, T[k], P.card);
-      const y = lerp(-380, 640, ein) - 58 * d, z = -210 * d, rz = (k % 2 ? 1.8 : -2.2) * ein + (1 - ein) * -9;
-      n.d.style.transform = `translate(150px,${f3(y)}px) translateZ(0) perspective(1300px) translateZ(${f3(z)}px) rotateX(${f3(4 + 4 * d)}deg) rotate(${f3(rz)}deg)`;
+      const y = 640 - 58 * d + (1 - ein) * 60, z = -210 * d, xin = lerp(1180, 150, ein), rz = (k % 2 ? 1.8 : -2.2) * ein + (1 - ein) * -9;
+      n.d.style.transform = `translate(${f3(xin)}px,${f3(y)}px) translateZ(0) perspective(1300px) translateZ(${f3(z)}px) rotateX(${f3(4 + 4 * d)}deg) rotate(${f3(rz)}deg)`;
       n.d.style.filter = `brightness(${f3(1 - 0.17 * d)}) blur(${f3(Math.min(6, d * 1.1))}px)`;
       n.d.style.opacity = f3(sm(T[k] - 0.06, T[k], t) * (1 - sm(2.2, 3.2, d)));
       if (t > T[k] - 0.1) drawSeq(n.c, n.seq, t - T[k] + 0.5);
     });
-    set(mention, sm(6.4, 6.8, t)); mention.style.transform = `translateY(${f3((1 - sm(6.4, 6.9, t)) * 12)}px)`;
+    set(mention, sm(7.1, 7.5, t)); mention.style.transform = `translateY(${f3((1 - sm(7.1, 7.6, t)) * 12)}px)`;
 
     // éclair qui cache la bascule vers la scène C
     set(flash, 0.9 * sm(5.7, 5.93, t) * (1 - sm(5.95, 6.35, t)) + 0.18 * imp);
@@ -351,10 +375,11 @@
 
   // flou de bougé : obturateur ouvert sur les gestes rapides
   const WIN = [[2.15, 2.55, 1], [3.9, 4.35, 0.6], [4.4, 4.75, 0.5], [5.35, 6.05, 1], [0.2, 0.9, 0.35], [0.7, 1.3, 0.4]];
-  T.forEach((x) => { WIN.push([x - 0.06, x + 0.3, 0.75]); WIN.push([x + 0.3, x + 0.75, 0.6]); });
+  WIN.push([5.95, 6.75, 1]);
+  T.forEach((x) => { WIN.push([x - 0.06, x + 0.3, 0.7]); WIN.push([x + 0.3, x + 0.75, 0.35]); });
   const fast = (t) => { let s = 0; for (const [a, b, v] of WIN) s = Math.max(s, v * sm(a - 0.05, a + 0.05, t) * (1 - sm(b - 0.05, b + 0.05, t))); return s; };
   window.shutter = (t) => Math.max(0.15, fast(t));
-  window.samples = (t) => (fast(t) > 0.3 ? 8 : 4);
+  window.samples = (t) => (fast(t) > 0.3 ? 4 : 2);
   window.seek = (t) => paint(t);
   paint(0);
   window.filmReady = true;
