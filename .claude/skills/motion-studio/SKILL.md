@@ -70,11 +70,15 @@ avant d'animer : changer un plan ici coûte une minute, après le rendu il en co
 
 ### Phase 4 — Son
 
+Lire d'abord `references/sound-design.md` : le sound design se fait sur l'image (repérage, un son principal à la fois, chaque son dans sa bande, la musique qui cède par bandes, drop sur le pivot), puis se vérifie sur le MP4 encodé (calage ≤ 3 images, niveaux par passage, version sans musique).
+
 Suis `references/sound.md` : musique (ElevenLabs Music instrumentale au BPM choisi, ou synthèse en code), grille
 mesurée (`beats.py`), bruitages, mix voix devant (ducking), master à −14 LUFS et plafond de travail −3,5 dBTP
 pour tenir ≤ −1 dBTP *après* l'encodage AAC, équilibre vérifié pour un haut-parleur de téléphone.
 
 ### Phase 5 — Construction
+
+Lire `references/fluidite.md` : caméra qui ne s'arrête jamais, chaîne sans coupe, flou de bougé réel (`MB=8`), fluidité mesurée avec `scripts/ref-motion.py` et comparée aux références.
 
 Film en code déterministe (`window.seek(t)`), springs fermés, vraie UI, mise en page **recomposée par format**
 (pas un recadrage), paramètres `?fmt=&lang=&hook=` — détails et pièges dans `references/motion-craft.md`.
@@ -103,6 +107,9 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 | `references/motion-craft.md` | Phases 3 et 5 : références, style, formats et zones sûres, architecture du film, règles d'animation |
 | `references/sound.md` | Phase 4 : musique, grille, bruitages, mix voix, mastering, téléphone |
 | `references/qa-delivery.md` | Phases 6 et 7 : grille de notes, contrôles, matrice de livraison, git, envoi |
+| `references/fluidite.md` | Phases 3 et 5 : ce qui rend un motion fluide (mesuré), règles, pièges, rendu avec flou de bougé |
+| `references/sound-design.md` | Phase 4 : sound design et mixage d'ingénieur du son (repérage, priorités, bandes, ducking, calage vérifié) |
 | `references/lessons.md` | Avant de construire : erreurs réelles des v1–v6 et ce qui a marché |
 | `scripts/qa_video.py` | Sur chaque MP4 livré : `python3 scripts/qa_video.py film.mp4 --out renders/qa` |
+| `scripts/ref-motion.py` | Fluidité d'une référence ou de notre rendu : `python3 scripts/ref-motion.py a.mp4 b.mp4 --out dossier` |
 | `scripts/ref-frames.py` | Sur chaque référence (et sur nos prises de voix) : `python3 scripts/ref-frames.py ref.mp4 --step 0.1` |

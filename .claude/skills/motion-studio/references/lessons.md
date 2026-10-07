@@ -57,3 +57,8 @@
 - Grille musicale mesurée : impacts à 0 frame des changements d'image ; silence volontaire avant le dernier acte.
 - Film = fonction du temps : rendu reproductible, retouche d'un plan sans tout casser, déclinaisons par paramètres.
 - Oct. 2026 : « GO / NO GO » laissait les spectateurs perdus, pros compris → verdict en verbe + conséquence en euros. Textes jugés « trop IA » → Stop Slop sur tout texte avant de le montrer. Carrousels : plus de mention « Données de démonstration » (décision de l'utilisateur).
+- Oct. 2026 (MO4, 9 références « fluides ») : nos films bougeaient sur 22–40 % des images contre 81–94 % → caméra
+  permanente, chaîne sans coupe, flou de bougé par sur-échantillonnage (`references/fluidite.md`). Son : bruitages
+  « collés » au même niveau sur une musique à plat, jugé horrible → méthode d'ingénieur du son
+  (`references/sound-design.md`). Musique : « un désastre » en synthèse ; banques libres puis morceau fourni par
+  l'utilisateur, calé sur le pivot. Pixabay, ZapSplat et Sonniss sont bloqués ici : Mixkit fonctionne.
