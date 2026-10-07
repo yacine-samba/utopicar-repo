@@ -200,7 +200,12 @@ from scipy.signal import fftconvolve
 for ch in range(2): fx[:, ch] += fftconvolve(fx[:, ch], ir)[:N] * db(-15)
 
 # ---------- somme, compression douce, loudness ----------
+# téléphone : la basse de la musique allégée sous 150 Hz (un haut-parleur de téléphone ne la rend pas)
+mlow = bp(mus, None, 150); mus = (mus - mlow) + mlow * db(-9)
+mus = bp(mus, 45, None, 2)
 mus_st = np.stack([mus, mus], 1) * db(-6)
+# voix : présence 2–5 kHz légèrement remontée
+vo = vo + bp(vo, 2000, 5000, 2) * (db(3) - 1)
 vo_st = np.stack([vo, vo], 1)
 vo_st = vo_st / (np.abs(vo_st).max() + 1e-9) * db(-3)
 mix = vo_st + mus_st + fx
