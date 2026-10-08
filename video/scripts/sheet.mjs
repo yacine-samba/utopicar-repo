@@ -13,7 +13,7 @@ const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, de
 page.on('pageerror', e => console.error('PAGEERR', e.message));
 await page.goto(`http://127.0.0.1:${server.address().port}/film-${CUT}/index.html?render=1`);
 await page.waitForFunction(() => window.filmReady === true, null, { timeout: 120000 });
-const dir = path.join(ROOT, 'renders', `_sheet${a}`); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+const dir = path.join(ROOT, 'renders', `_sheet-${CUT}-${a}`); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
 const N = Math.round((b - a) * 10);
 for (let i = 0; i < N; i++) { const t = +(a + i / 10).toFixed(2); await page.evaluate(t => window.seek(t), t); await page.screenshot({ path: path.join(dir, `f${String(i).padStart(4, '0')}.jpg`), type: 'jpeg', quality: 80 }); }
 await browser.close(); server.close();
