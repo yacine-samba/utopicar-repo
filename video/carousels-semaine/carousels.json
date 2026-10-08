@@ -1,0 +1,2685 @@
+{
+ "carousels": [
+  {
+   "id": "A01",
+   "slug": "5-moteurs-a-fuir",
+   "slides": [
+    {
+     "kicker": "5 moteurs à fuir en achat-revente",
+     "title": "Clio à 5 900 €.\nJusqu'à *10 000 €*\nde moteur.",
+     "car": {
+      "src": "img/car-clio.webp",
+      "credit": "Photo Wikimedia Commons : OSX, domaine public"
+     }
+    },
+    {
+     "kicker": "N° 5 · 1.6 N13 · 2011 à 2015",
+     "title": "BMW *116i*",
+     "body": "La chaîne de distribution s'allonge. Moteur froid, tu l'entends claquer.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Jusqu'à 5 000 €",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "car": {
+      "src": "img/car-bmw.webp",
+      "credit": "Photo Wikimedia Commons : Tokumeigakarinoaoshima, CC0"
+     },
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "kicker": "N° 4 · 1.4 TSI 122 et 160 ch · 2008 à 2012",
+     "title": "Golf *6*",
+     "body": "Chaîne et tendeur fragiles, pistons sur le 160 ch. Même moteur sur Polo et Scirocco.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Jusqu'à 7 000 €",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "car": {
+      "src": "img/car-golf.webp",
+      "credit": "Photo Wikimedia Commons : Thomas doerfer, CC BY 3.0, détourée"
+     },
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "kicker": "N° 3 · 1.0 EcoBoost · 2011 à 2018",
+     "title": "Fiesta et *Focus*",
+     "body": "Il chauffe, puis le joint de culasse cède.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Jusqu'à 7 000 €",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "car": {
+      "src": "img/car-fiesta.webp",
+      "credit": "Photo Wikimedia Commons : M 93, CC BY-SA 3.0 DE, détourée"
+     },
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "kicker": "N° 2 · 1.2 TCe 115 et 120 · fin 2012 à mi-2016",
+     "title": "Clio *4*",
+     "body": "Il boit plus d'un litre d'huile aux 1 000 km. Même moteur sur Captur et Mégane 3.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Jusqu'à 10 000 €",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "car": {
+      "src": "img/car-clio.webp",
+      "credit": "Photo Wikimedia Commons : OSX, domaine public"
+     },
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "kicker": "N° 1 · 1.2 PureTech · 2013 à mi-2022",
+     "title": "Peugeot *208*",
+     "body": "La courroie baigne dans l'huile et s'effrite. Ses débris bouchent la crépine.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Courroie : 400 à 600 €",
+         "warn"
+        ],
+        [
+         "Sinon : le moteur",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "car": {
+      "src": "img/car-p208.webp",
+      "credit": "Photo Wikimedia Commons : OSX, domaine public"
+     },
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "title": "Le 6e,\ntu le *connais* ?"
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Enregistre",
+    "k": "la liste",
+    "sub": "et sors-la devant chaque annonce.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "A02",
+   "slug": "golf-perte-1200",
+   "slides": [
+    {
+     "kicker": "Golf achetée 9 500 €, revendue 9 800 €",
+     "title": "Et tu perds\n*1 200 €*.",
+     "car": {
+      "src": "img/car-golf.webp",
+      "credit": "Photo Wikimedia Commons : Thomas doerfer, CC BY 3.0, détourée"
+     }
+    },
+    {
+     "title": "Sur le papier,\ntu gagnes *300 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente",
+         "9 800 €"
+        ],
+        [
+         "Achat",
+         "− 9 500 €"
+        ]
+       ],
+       "tot": "+ 300 €",
+       "totLab": "Écart",
+       "tone": "g",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Puis tu paies\nles *frais*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Remise en état, scénario prudent",
+         "1 100 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "186 €"
+        ],
+        [
+         "Trajet, 128 km aller-retour",
+         "64 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "150 €"
+        ]
+       ],
+       "tot": "1 500 €",
+       "totLab": "Frais",
+       "tone": "r",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Il te *reste*",
+     "comp": [
+      {
+       "k": "big",
+       "v": "−1 200 €",
+       "cap": "une fois les frais payés.",
+       "tone": "r"
+      }
+     ]
+    },
+    {
+     "title": "Ton prix max\nétait *7 500 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente",
+         "9 800 €"
+        ],
+        [
+         "Frais",
+         "− 1 500 €"
+        ],
+        [
+         "Ta marge minimum",
+         "− 800 €"
+        ]
+       ],
+       "tot": "7 500 €",
+       "totLab": "Prix max",
+       "tone": "",
+       "lab": null
+      }
+     ],
+     "body2": "Il demande 9 500 € ? Tu passes à l'annonce suivante."
+    },
+    {
+     "title": "Ce calcul, *avant*\nchaque appel."
+    }
+   ],
+   "car": null,
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "after": null
+  },
+  {
+   "id": "A03",
+   "slug": "faux-paiement-securise",
+   "slides": [
+    {
+     "kicker": "Tu vends ta 207 à 3 900 €",
+     "title": "Il l'achète\n*sans la voir*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Bonjour, je la prends sans visite. Je paie par le paiement sécurisé.",
+         "Un acheteur · 21:14"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Puis un *SMS*\narrive.",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Paiement de 3 900 € reçu. Validez vos coordonnées bancaires pour le recevoir : ==ouvrir le lien==",
+       "lab": "SMS · 21:31"
+      }
+     ]
+    },
+    {
+     "title": "Le lien veut\nta *carte*.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Numéro de carte",
+         "demandé",
+         "bad"
+        ],
+        [
+         "Date et cryptogramme",
+         "demandés",
+         "bad"
+        ],
+        [
+         "Test de 0,01 €",
+         "« pour valider »",
+         "warn"
+        ]
+       ],
+       "lab": "La page du lien"
+      }
+     ]
+    },
+    {
+     "comp": [
+      {
+       "k": "split",
+       "a": [
+        "Ce que tu crois",
+        "3 900 € reçus."
+       ],
+       "b": [
+        "Ce qui se passe",
+        "Un inconnu a ta carte."
+       ]
+      }
+     ],
+     "glow": [
+      "50% 100%",
+      0.3
+     ]
+    },
+    {
+     "title": "Tes *règles*",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Pour recevoir de l'argent, personne n'a besoin de ta carte."
+        ],
+        [
+         "Un paiement se vérifie dans l'appli, ouverte par toi."
+        ],
+        [
+         "L'acheteur veut quitter la messagerie ? Tu arrêtes."
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Carte donnée ?\nFais-la *opposer*."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui vend sa voiture.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "A04",
+   "slug": "ta-1re-revente-1",
+   "slides": [
+    {
+     "hero": {
+      "src": "../assets/demo/clio-2.webp",
+      "pos": "50% 45%",
+      "tag": [
+       "7 400 €",
+       "7 000 €"
+      ],
+      "tx": 560,
+      "ty": 300
+     },
+     "top": 800,
+     "kicker": "POV : ta 1re revente · partie 1",
+     "title": "8 000 € en poche.\n*+660 €* en 12 jours."
+    },
+    {
+     "title": "Jour 1 :\nl'*annonce*.",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Clio 4 TCe 90, 2016, 112 000 km. ++CT fait il y a 2 mois.++ Entretien à jour. 7 400 €, à débattre.",
+       "lab": "L'annonce"
+      }
+     ],
+     "body2": "Le 0.9 TCe 90 ne figure pas dans la liste des moteurs à fuir."
+    },
+    {
+     "title": "Avant d'appeler,\nton *prix max*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente estimée",
+         "8 300 €"
+        ],
+        [
+         "Frais prévus",
+         "− 640 €"
+        ],
+        [
+         "Ta marge minimum",
+         "− 600 €"
+        ]
+       ],
+       "tot": "7 060 €",
+       "totLab": "Prix max",
+       "tone": "",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Au *téléphone*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Je peux passer demain matin. Je vous propose 6 700 €."
+        ],
+        [
+         "v",
+         "7 000 et elle est à vous."
+        ],
+        [
+         "m",
+         "Avec le carnet et le double des clés ?"
+        ],
+        [
+         "v",
+         "Les deux."
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Jour 1, 18 h.",
+     "comp": [
+      {
+       "k": "big",
+       "v": "7 000 €",
+       "cap": "Tu achètes, 60 € sous ton plafond.",
+       "tone": "o"
+      }
+     ]
+    },
+    {
+     "title": "Il reste\nà la *revendre*."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Partie 2",
+    "k": "samedi",
+    "sub": "640 € de frais, puis 5 jours sans un appel.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "A05",
+   "slug": "trajet-300-euros",
+   "slides": [
+    {
+     "kicker": "POV : tu habites Lille, la Clio est à Marseille",
+     "title": "Tu gagnes *300 €*\nen négo.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Allez, 3 900 au lieu de 4 200.",
+         "Le vendeur · Marseille"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Ton *samedi*.",
+     "comp": [
+      {
+       "k": "tl",
+       "items": [
+        [
+         "6 h 12",
+         "TGV Lille → Marseille"
+        ],
+        [
+         "11 h 40",
+         "Visite, essai, 300 € de remise",
+         "v"
+        ],
+        [
+         "12 h 30",
+         "Tu signes et tu prends la route"
+        ],
+        [
+         "23 h 10",
+         "Lille, enfin"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "1 000 km\nde *retour*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Train aller",
+         "118 €"
+        ],
+        [
+         "Gazole, 1 000 km",
+         "96 €"
+        ],
+        [
+         "Péages",
+         "87 €"
+        ],
+        [
+         "Sandwich et café",
+         "11 €"
+        ]
+       ],
+       "tot": "312 €",
+       "totLab": "Trajet",
+       "tone": "r",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Le *bilan*.",
+     "comp": [
+      {
+       "k": "stats",
+       "items": [
+        [
+         "−12 €",
+         "ta négo, trajet payé",
+         true
+        ],
+        [
+         "15 h",
+         "de train et de route"
+        ],
+        [
+         "0",
+         "voiture revendue"
+        ]
+       ]
+      },
+      {
+       "k": "thought",
+       "t": "Et je dois encore la revendre.",
+       "lab": "Dans ta tête :",
+       "size": 58
+      }
+     ]
+    },
+    {
+     "title": "Le trajet se compte\n*avant* l'appel."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui fait 1 000 km pour 300 €.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "A06",
+   "slug": "ta-1re-revente-2",
+   "slides": [
+    {
+     "kicker": "POV : ta 1re revente · partie 2",
+     "title": "Annonce à 8 490 €.\n*5 jours*, zéro appel.",
+     "comp": [
+      {
+       "k": "listing",
+       "src": "../assets/demo/clio-2.webp",
+       "t": "Renault Clio 4 TCe 90",
+       "m": "2016 · 112 000 km · Essence · Manuelle",
+       "p": "8 490 €",
+       "l": "En ligne depuis 5 jours · 0 message",
+       "note": "0 appel",
+       "nx": 430,
+       "ny": 520,
+       "n": 8,
+       "cut": false
+      }
+     ]
+    },
+    {
+     "title": "Jour 2 :\nles *frais*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Carte grise, 5 CV",
+         "290 €"
+        ],
+        [
+         "2 pneus avant",
+         "160 €"
+        ],
+        [
+         "Plaquettes avant",
+         "90 €"
+        ],
+        [
+         "Nettoyage",
+         "40 €"
+        ],
+        [
+         "Trajet du jour 1",
+         "60 €"
+        ]
+       ],
+       "tot": "640 €",
+       "totLab": "Frais",
+       "tone": "",
+       "lab": null
+      }
+     ],
+     "body2": "Pile le budget prévu."
+    },
+    {
+     "title": "Jour 3 :\nton *annonce*.",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Clio 4 très bon état, CT OK. 8 490 €. ==Pas sérieux s'abstenir.==",
+       "lab": "Ce que tu publies"
+      }
+     ]
+    },
+    {
+     "title": "Jours 4 à 8.",
+     "comp": [
+      {
+       "k": "big",
+       "v": "0",
+       "cap": "message en 5 jours"
+      },
+      {
+       "k": "thought",
+       "t": "Je baisse à 7 990 ?",
+       "lab": "Dans ta tête :",
+       "size": 62
+      }
+     ]
+    },
+    {
+     "title": "Tu gardes ton prix.\nTu changes *4 lignes*."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Partie 3",
+    "k": "demain",
+    "sub": "les 4 lignes qui font sonner le téléphone.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "A07",
+   "slug": "ta-1re-revente-3",
+   "slides": [
+    {
+     "hero": {
+      "src": "../assets/demo/clio-2.webp",
+      "pos": "50% 45%",
+      "tag": [
+       "8 490 €",
+       "8 300 €"
+      ],
+      "tx": 560,
+      "ty": 300
+     },
+     "top": 800,
+     "kicker": "POV : ta 1re revente · partie 3",
+     "title": "4 lignes changées.\n*3 appels* en 2 jours."
+    },
+    {
+     "title": "Tu réécris\nl'*annonce*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Avant",
+        [
+         "Très bon état",
+         "CT OK",
+         "Pas sérieux s'abstenir"
+        ]
+       ],
+       "b": [
+        "Après",
+        [
+         "112 000 km, 2 propriétaires",
+         "CT d'août, aucun défaut",
+         "Pneus et plaquettes neufs, factures",
+         "Carnet complet, 2 clés"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Jour 10.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Bonjour, vous faites 7 900 ?",
+         "Un acheteur · 19:02"
+        ],
+        [
+         "m",
+         "8 300. Pneus et plaquettes neufs, factures à l'appui."
+        ],
+        [
+         "v",
+         "Je passe samedi. 8 300."
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Jour 12 :\nles *papiers*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Certificat de cession",
+         "en 2 exemplaires, signés"
+        ],
+        [
+         "Carte grise barrée",
+         "« Vendu le… » et ta signature"
+        ],
+        [
+         "Non-gage",
+         "moins de 15 jours"
+        ],
+        [
+         "Contrôle technique",
+         "moins de 6 mois : le tien a 3 mois"
+        ]
+       ],
+       "start": null
+      }
+     ],
+     "body2": "Puis tu déclares la cession en ligne."
+    },
+    {
+     "title": "Le *bilan*.",
+     "comp": [
+      {
+       "k": "stats",
+       "items": [
+        [
+         "+660 €",
+         "il te reste, frais payés",
+         true
+        ],
+        [
+         "12 jours",
+         "de l'achat à la vente"
+        ],
+        [
+         "640 €",
+         "de frais"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Le calcul du jour 1,\n*étape par étape* :"
+    }
+   ],
+   "car": null,
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "after": null
+  },
+  {
+   "id": "B01",
+   "slug": "demarrage-a-froid",
+   "slides": [
+    {
+     "kicker": "Moteur froid, les 3 premières secondes",
+     "title": "Un claquement,\njusqu'à *5 000 €*.",
+     "car": {
+      "src": "img/car-bmw.webp",
+      "credit": "Photo Wikimedia Commons : Tokumeigakarinoaoshima, CC0"
+     }
+    },
+    {
+     "title": "La chaîne\n*s'allonge*.",
+     "body": "Sur ces moteurs, la chaîne de distribution se détend avec les kilomètres. À froid, elle claque au démarrage.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "BMW 116i · 1.6 N13",
+         "2011 à 2015",
+         "bad"
+        ],
+        [
+         "Golf 6, Polo · 1.4 TSI",
+         "2008 à 2012",
+         "bad"
+        ]
+       ],
+       "lab": "Les plus connus"
+      }
+     ],
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "title": "Il l'a fait\n*chauffer*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Je l'ai démarrée ce matin pour vous, elle est prête !",
+         "Le vendeur · 9:02"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      },
+      {
+       "k": "thought",
+       "t": "Le bruit est parti avec.",
+       "lab": "Dans ta tête :",
+       "size": 60
+      }
+     ]
+    },
+    {
+     "title": "La *parade*",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "La veille, par message",
+         "« Ne la démarrez pas avant mon arrivée. »"
+        ],
+        [
+         "En arrivant",
+         "la main sur le capot : tiède, il l'a démarrée."
+        ],
+        [
+         "Au contact",
+         "capot ouvert, tu écoutes les premières secondes."
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Ça *claque* ?",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Chaîne à temps : 500 à 1 200 €",
+         "warn"
+        ],
+        [
+         "Si elle casse : jusqu'à 5 000 €",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "body2": "Tu le comptes dans ton prix max, ou tu passes.",
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "title": "Moteur froid,\nou tu ne *signes* pas."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui va voir une voiture ce week-end.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B02",
+   "slug": "arnaque-compteur",
+   "slides": [
+    {
+     "kicker": "Clio 3 de 2012, annonce Leboncoin",
+     "title": "89 000 km\nau compteur.\n*162 000*\nau dernier CT."
+    },
+    {
+     "title": "Le rapport\n*HistoVec*.",
+     "body": "Officiel et gratuit. Le vendeur le génère sur histovec.interieur.gouv.fr et te l'envoie. Depuis 2021, il affiche le kilométrage relevé à chaque contrôle technique."
+    },
+    {
+     "title": "Ses *relevés*.",
+     "comp": [
+      {
+       "k": "tl",
+       "items": [
+        [
+         "CT 2019",
+         "118 000 km"
+        ],
+        [
+         "CT 2021",
+         "141 000 km"
+        ],
+        [
+         "CT 2023",
+         "162 000 km",
+         "x"
+        ],
+        [
+         "Aujourd'hui",
+         "89 000 km au compteur",
+         "x"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Les chiffres\n*montent*.",
+     "body": "D'un CT à l'autre, le kilométrage augmente. Il baisse ? Tu demandes la facture du compteur remplacé, ou tu pars."
+    },
+    {
+     "title": "2 autres *preuves*",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Les factures d'entretien",
+         "le kilométrage y est écrit"
+        ],
+        [
+         "L'usure",
+         "volant, pédales, siège conducteur"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Le HistoVec,\n*avant* le trajet."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui achète sa voiture ce mois-ci.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B03",
+   "slug": "outil-premier-message",
+   "slides": [
+    {
+     "kicker": "Tu bosses de 9 h à 17 h",
+     "title": "7 h 12 :\nla Clio sort.\n12 h 30 :\ntu la *vois*."
+    },
+    {
+     "title": "12 h 31.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, toujours disponible ?",
+         "Toi · 12:31"
+        ],
+        [
+         "v",
+         "Désolé, quelqu'un passe la voir ce soir. Il m'a écrit à 7 h 20.",
+         "Le vendeur · 12:47"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Ton message\npart *sans toi*.",
+     "body": "Avec la messagerie utopicar, tu choisis une recherche Leboncoin et tu écris ton message une fois. Chaque annonce trouvée reçoit ton premier message."
+    },
+    {
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Une annonce toutes les 1 à 2 minutes",
+         null
+        ],
+        [
+         "Jamais deux fois la même",
+         null
+        ],
+        [
+         "« Pas de démarchage » : ignorée par défaut",
+         null
+        ]
+       ],
+       "lab": "Comment il part"
+      }
+     ]
+    },
+    {
+     "title": "Le même jour.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, votre Clio est-elle toujours disponible ? Je peux me déplacer rapidement.",
+         "Ton message, parti seul"
+        ],
+        [
+         "v",
+         "Oui, vous pouvez passer ce soir ?",
+         "Le vendeur"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Tu bosses.\nTon message *part*."
+    }
+   ],
+   "car": null,
+   "word": "MESSAGE",
+   "guide": "Ta première revente, étape par étape",
+   "after": "je t'envoie en privé\n*comment l'activer*"
+  },
+  {
+   "id": "B04",
+   "slug": "outil-copier-coller",
+   "slides": [
+    {
+     "kicker": "21 h 40, ton canapé",
+     "title": "Le même\nmessage,\ncollé *40 fois*."
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, toujours disponible ?",
+         "Annonce 1"
+        ],
+        [
+         "m",
+         "Bonjour, toujours disponible ?",
+         "Annonce 2"
+        ],
+        [
+         "m",
+         "Bonjour, toujours disponible ?",
+         "Annonce 37"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      },
+      {
+       "k": "thought",
+       "t": "J'ai déjà écrit à celle-là ?",
+       "lab": "Dans ta tête :",
+       "size": 60
+      }
+     ]
+    },
+    {
+     "title": "Avec la messagerie\n*utopicar*.",
+     "comp": [
+      {
+       "k": "tl",
+       "items": [
+        [
+         "Critères",
+         "marque, modèle, budget"
+        ],
+        [
+         "Annonces trouvées",
+         "la liste de ta recherche, avec les photos"
+        ],
+        [
+         "Message et envoi",
+         "tu l'écris une fois",
+         "v"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Le *rythme*.",
+     "comp": [
+      {
+       "k": "stats",
+       "items": [
+        [
+         "1 à 2 min",
+         "entre deux annonces",
+         true
+        ],
+        [
+         "1",
+         "message par annonce"
+        ],
+        [
+         "0",
+         "doublon"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Ta soirée,\n*sans copier-coller*."
+    }
+   ],
+   "car": null,
+   "word": "MESSAGE",
+   "guide": "Ta première revente, étape par étape",
+   "after": "je t'envoie en privé\n*comment l'activer*"
+  },
+  {
+   "id": "B05",
+   "slug": "annonce-decryptee-clio-tce",
+   "slides": [
+    {
+     "kicker": "Annonce décryptée n° 1 · Clio 4 à 5 900 €",
+     "title": "« Consomme\nun peu d'*huile* »",
+     "car": {
+      "src": "img/car-clio.webp",
+      "credit": "Photo Wikimedia Commons : OSX, domaine public"
+     }
+    },
+    {
+     "title": "L'*annonce*.",
+     "comp": [
+      {
+       "k": "listing",
+       "src": "img/car-clio.webp",
+       "t": "Renault Clio 4 TCe 120 EDC",
+       "m": "2014 · 121 000 km · Essence · Automatique",
+       "p": "5 900 €",
+       "l": "« Consomme un peu d'huile, rien de grave. »",
+       "note": "2014 ?",
+       "nx": 430,
+       "ny": 520,
+       "n": 8,
+       "cut": true
+      }
+     ],
+     "credit": "Photo Wikimedia Commons : OSX, domaine public"
+    },
+    {
+     "title": "Le moteur :\n1.2 *TCe 120*.",
+     "body": "De fin 2012 à mi-2016, il peut boire plus d'un litre d'huile aux 1 000 km. Au bout : soupapes abîmées, parfois la casse.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Jusqu'à 10 000 €",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "title": "Ce que tu\n*vérifies*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Les factures d'entretien",
+         "vidanges faites à temps"
+        ],
+        [
+         "La jauge, devant toi",
+         "et la fumée bleue quand tu accélères"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Le *verdict*.",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "À éviter",
+       "tone": "bad",
+       "sub": "Le moteur peut coûter **jusqu'à 10 000 €**, plus que la voiture.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Annonce n° 2 vendredi :\nune 208 *PureTech*."
+    }
+   ],
+   "car": null,
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "after": null
+  },
+  {
+   "id": "B06",
+   "slug": "prix-ferme",
+   "slides": [
+    {
+     "kicker": "POV : tu revends ta 1re voiture",
+     "title": "Tu écris\n« prix ferme ».\nTu lâches *400 €*."
+    },
+    {
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Peugeot 207, 2010, 128 000 km. CT OK. 4 200 €. ==Prix ferme.==",
+       "lab": "Ton annonce"
+      }
+     ]
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Bonjour, 3 800 et je viens ce soir avec l'argent.",
+         "Le 1er appel · 19:03"
+        ],
+        [
+         "m",
+         "C'est un prix ferme…"
+        ],
+        [
+         "v",
+         "3 800, je suis devant chez vous dans 20 minutes."
+        ],
+        [
+         "m",
+         "… d'accord."
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "2 minutes\nde *négo*.",
+     "comp": [
+      {
+       "k": "stats",
+       "items": [
+        [
+         "−400 €",
+         "ta marge, partie en 2 minutes",
+         true
+        ],
+        [
+         "4 200 €",
+         "ton prix « ferme »"
+        ],
+        [
+         "3 800 €",
+         "ton vrai prix"
+        ]
+       ]
+      },
+      {
+       "k": "thought",
+       "t": "Je visais 500 € de marge.",
+       "lab": "Dans ta tête :",
+       "size": 58
+      }
+     ]
+    },
+    {
+     "title": "Le bon *réglage*",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Ton prix plancher",
+         "fixé avant l'annonce : en dessous, tu dis non"
+        ],
+        [
+         "Ton prix affiché",
+         "le plancher + 200 à 300 € de négo"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Ton plancher se fixe\n*avant* le 1er appel."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui écrit « prix ferme ».",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B07",
+   "slug": "budget-2000",
+   "slides": [
+    {
+     "kicker": "Tu te lances avec 2 000 €",
+     "title": "Ta voiture :\n*1 500 €*\nmaximum."
+    },
+    {
+     "title": "Les *500 €*\nqui restent.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Carte grise, 4 CV, plus de 10 ans",
+         "≈ 110 €"
+        ],
+        [
+         "2 pneus montés",
+         "≈ 120 €"
+        ],
+        [
+         "Plaquettes, balais",
+         "≈ 80 €"
+        ],
+        [
+         "Trajet, nettoyage",
+         "≈ 70 €"
+        ],
+        [
+         "Imprévu",
+         "120 €"
+        ]
+       ],
+       "tot": "500 €",
+       "totLab": "Réserve",
+       "tone": "",
+       "lab": null
+      }
+     ],
+     "credit": "Carte grise : chevaux fiscaux × tarif de ta région, divisé par 2 après 10 ans, + 13,76 €"
+    },
+    {
+     "title": "Sans *réserve*,\ntu bloques.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Contre-visite : disques avant à changer.",
+         "Le contrôle technique"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      },
+      {
+       "k": "thought",
+       "t": "Il me reste 0 €.",
+       "lab": "Dans ta tête :",
+       "size": 62
+      }
+     ]
+    },
+    {
+     "title": "Ta *marge*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente estimée",
+         "2 400 €"
+        ],
+        [
+         "Achat",
+         "− 1 500 €"
+        ],
+        [
+         "Frais",
+         "− 500 €"
+        ]
+       ],
+       "tot": "400 €",
+       "totLab": "Il te reste",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "body2": "Sur une voiture à 1 500 €, vise au moins 400 €, frais payés."
+    },
+    {
+     "title": "Avant ta 3e voiture :\nle *statut*.",
+     "body": "Acheter pour revendre de façon régulière, c'est une activité commerciale. Tu la déclares, en micro-entreprise le plus souvent."
+    },
+    {
+     "title": "Tes 2 000 €,\n*étape par étape*."
+    }
+   ],
+   "car": null,
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "after": null
+  },
+  {
+   "id": "B08",
+   "slug": "outil-pros-s-abstenir",
+   "slides": [
+    {
+     "kicker": "L'annonce dit « pros s'abstenir »",
+     "title": "Ton message\nne part\n*pas*."
+    },
+    {
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Clio 4 dCi 90, 2015, 138 000 km. 6 800 €. ==Pas de démarchage, pros s'abstenir.==",
+       "lab": "L'annonce"
+      }
+     ]
+    },
+    {
+     "title": "La messagerie\nla *saute*.",
+     "body": "Avant d'envoyer, la messagerie utopicar lit l'annonce. Ces phrases la mettent de côté :",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "pas de démarchage",
+         "bad"
+        ],
+        [
+         "pros s'abstenir",
+         "bad"
+        ],
+        [
+         "pas de marchands",
+         "bad"
+        ],
+        [
+         "particuliers uniquement",
+         "bad"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Les autres\nreçoivent ton *message*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, votre Clio est-elle toujours disponible ? Je peux me déplacer rapidement.",
+         "Ton message"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ],
+     "body2": "Une annonce toutes les 1 à 2 minutes, jamais deux fois la même."
+    },
+    {
+     "title": "Tu *choisis*.",
+     "body": "Le filtre est actif par défaut. Tu peux le couper, campagne par campagne."
+    },
+    {
+     "title": "Tu écris aux vendeurs\nqui *acceptent*."
+    }
+   ],
+   "car": null,
+   "word": "MESSAGE",
+   "guide": "Ta première revente, étape par étape",
+   "after": "je t'envoie en privé\n*comment l'activer*"
+  },
+  {
+   "id": "B09",
+   "slug": "arnaque-acompte",
+   "slides": [
+    {
+     "kicker": "Clio 3 à 2 900 €, 1 200 € sous la cote",
+     "title": "Le vendeur\nest muté.\nIl veut *300 €*."
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Je suis muté à Madrid, la voiture est chez un transporteur.",
+         "Le vendeur"
+        ],
+        [
+         "v",
+         "Envoyez 300 € d'acompte par virement, elle est livrée chez vous jeudi.",
+         "Le vendeur"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "comp": [
+      {
+       "k": "split",
+       "a": [
+        "Ce qu'il promet",
+        "Livrée jeudi."
+       ],
+       "b": [
+        "Ce qui arrive",
+        "Plus de réponse après ton virement."
+       ]
+      }
+     ],
+     "glow": [
+      "50% 100%",
+      0.3
+     ]
+    },
+    {
+     "title": "Les *signaux*",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Un prix très sous la cote",
+         "sans explication"
+        ],
+        [
+         "Un vendeur loin",
+         "mutation, transporteur, armée"
+        ],
+        [
+         "De l'argent avant la visite",
+         "acompte, réservation, frais de livraison"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Ta *règle*",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Pas vue, pas payée",
+         "aucun acompte avant la visite"
+        ],
+        [
+         "Les photos dans Google Lens",
+         "les mêmes ailleurs ? Arnaque."
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Pas vue,\n*pas payée*."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui a trouvé « l'affaire du siècle ».",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B10",
+   "slug": "dico-annonces",
+   "slides": [
+    {
+     "kicker": "5 phrases d'annonce, traduites",
+     "title": "« Petit bruit,\nrien de *grave* »",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "« Clim à recharger »",
+         "neu"
+        ],
+        [
+         "« Embrayage un peu dur »",
+         "neu"
+        ],
+        [
+         "« Vendue sans CT »",
+         "neu"
+        ],
+        [
+         "« Sûrement un capteur »",
+         "neu"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "kicker": "N° 1",
+     "title": "« Petit bruit,\nrien de *grave* »",
+     "comp": [
+      {
+       "k": "thought",
+       "t": "Personne n'a cherché d'où il vient.",
+       "lab": "Traduction :",
+       "size": null
+      }
+     ],
+     "body2": "Moteur froid, capot ouvert : tu écoutes avant de signer."
+    },
+    {
+     "kicker": "N° 2",
+     "title": "« Clim à\n*recharger* »",
+     "comp": [
+      {
+       "k": "thought",
+       "t": "Elle fuit, peut-être.",
+       "lab": "Traduction :",
+       "size": null
+      },
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Recharge : 50 à 100 €",
+         "neu"
+        ],
+        [
+         "Fuite, compresseur : 500 € et plus",
+         "bad"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "kicker": "N° 3",
+     "title": "« Embrayage\nun peu *dur* »",
+     "comp": [
+      {
+       "k": "thought",
+       "t": "Il arrive en fin de vie.",
+       "lab": "Traduction :",
+       "size": null
+      }
+     ],
+     "body2": "Compte un embrayage dans ton prix max : 600 € et plus."
+    },
+    {
+     "kicker": "N° 4",
+     "title": "« Vendue\nsans *CT* »",
+     "comp": [
+      {
+       "k": "thought",
+       "t": "Les réparations du CT seront pour toi.",
+       "lab": "Traduction :",
+       "size": null
+      }
+     ],
+     "body2": "Entre particuliers, le vendeur fournit un CT de moins de 6 mois pour une voiture de plus de 4 ans."
+    },
+    {
+     "kicker": "N° 5",
+     "title": "« Voyant allumé,\nsûrement un *capteur* »",
+     "comp": [
+      {
+       "k": "thought",
+       "t": "Il n'a pas lu les codes défaut.",
+       "lab": "Traduction :",
+       "size": null
+      }
+     ],
+     "body2": "Demande une lecture des défauts au garage avant de signer."
+    },
+    {
+     "title": "Ta 6e phrase\nà *traduire* ?"
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Enregistre",
+    "k": "le dico",
+    "sub": "et relis-le avant chaque appel.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B11",
+   "slug": "206-reparations",
+   "slides": [
+    {
+     "kicker": "POV : ta 1re affaire à 1 200 €",
+     "title": "206 à 1 200 €.\n*1 400 €* de\nréparations."
+    },
+    {
+     "title": "Jour 1 :\nl'*affaire*.",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "206 1.4, 2007, 167 000 km. Roule bien, ==quelques frais à prévoir==. 1 200 €.",
+       "lab": "L'annonce"
+      },
+      {
+       "k": "thought",
+       "t": "Revendue 2 300 €, je fais +1 100.",
+       "lab": "Dans ta tête :",
+       "size": 58
+      }
+     ]
+    },
+    {
+     "title": "Puis le contrôle\n*technique*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Rotules et silentblocs",
+         "380 €"
+        ],
+        [
+         "Disques et plaquettes",
+         "240 €"
+        ],
+        [
+         "2 pneus",
+         "130 €"
+        ],
+        [
+         "Embrayage",
+         "650 €"
+        ]
+       ],
+       "tot": "1 400 €",
+       "totLab": "Réparations",
+       "tone": "r",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Le *bilan*.",
+     "comp": [
+      {
+       "k": "stats",
+       "items": [
+        [
+         "−300 €",
+         "avant même la carte grise",
+         true
+        ],
+        [
+         "1 200 €",
+         "l'achat"
+        ],
+        [
+         "2 300 €",
+         "la revente"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "« Quelques frais\nà *prévoir* »",
+     "body": "Lis cette phrase comme une ligne de ton calcul. Tu chiffres le pire cas, puis tu fais ton offre."
+    },
+    {
+     "title": "L'affaire se calcule\n*frais compris*."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui achète au prix le plus bas.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B12",
+   "slug": "outil-jamais-deux-fois",
+   "slides": [
+    {
+     "kicker": "Mardi, puis jeudi",
+     "title": "Tu écris\n2 fois au même\n*vendeur*."
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, toujours disponible ?",
+         "Toi · mardi"
+        ],
+        [
+         "m",
+         "Bonjour, toujours disponible ?",
+         "Toi · jeudi"
+        ],
+        [
+         "v",
+         "Vous m'avez déjà écrit mardi…",
+         "Le vendeur"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "La messagerie\nlit ta *boîte*.",
+     "body": "Avant d'envoyer, la messagerie utopicar relit ta boîte de réception Leboncoin. Une annonce déjà contactée, même à la main, sort de la file."
+    },
+    {
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Annonce contactée à la main",
+         "ignorée",
+         "warn"
+        ],
+        [
+         "Annonce déjà dans une campagne",
+         "ignorée",
+         "warn"
+        ],
+        [
+         "Nouvelle annonce",
+         "message envoyé",
+         "ok"
+        ]
+       ],
+       "lab": "Ta file d'envoi"
+      }
+     ]
+    },
+    {
+     "title": "Un message\npar *annonce*."
+    }
+   ],
+   "car": null,
+   "word": "MESSAGE",
+   "guide": "Ta première revente, étape par étape",
+   "after": "je t'envoie en privé\n*comment l'activer*"
+  },
+  {
+   "id": "B13",
+   "slug": "outil-reponses",
+   "slides": [
+    {
+     "kicker": "18 h, tu sors du boulot",
+     "title": "*3 vendeurs*\nt'ont répondu."
+    },
+    {
+     "title": "Ta *boîte*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Oui toujours dispo, vous passez quand ?",
+         "Clio 4 · 6 900 €"
+        ],
+        [
+         "v",
+         "Je peux descendre à 6 400.",
+         "208 · 7 200 €"
+        ],
+        [
+         "v",
+         "Vendue ce matin, désolé.",
+         "Polo · 5 500 €"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Tu n'as écrit\nà *personne*.",
+     "body": "Ce matin, tu as choisi ta recherche et ton message. La messagerie utopicar l'a envoyé, annonce par annonce."
+    },
+    {
+     "title": "Ton *suivi*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Messages envoyés",
+         "premier message uniquement"
+        ],
+        [
+         "En attente",
+         "une annonce toutes les 1 à 2 minutes"
+        ],
+        [
+         "Réponses reçues",
+         "lues dans ta boîte Leboncoin"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Toi, tu *réponds*.",
+     "body": "Tu gardes ton temps pour les vendeurs qui répondent, et tu négocies avec ton prix max."
+    },
+    {
+     "title": "Tu sors du boulot,\ntu lis les *réponses*."
+    }
+   ],
+   "car": null,
+   "word": "MESSAGE",
+   "guide": "Ta première revente, étape par étape",
+   "after": "je t'envoie en privé\n*comment l'activer*"
+  },
+  {
+   "id": "B14",
+   "slug": "annonce-decryptee-208",
+   "slides": [
+    {
+     "kicker": "Annonce décryptée n° 2 · 208 à 8 400 €",
+     "title": "« Courroie changée,\n*facture* »",
+     "car": {
+      "src": "img/car-p208.webp",
+      "credit": "Photo Wikimedia Commons : OSX, domaine public"
+     }
+    },
+    {
+     "title": "L'*annonce*.",
+     "comp": [
+      {
+       "k": "listing",
+       "src": "img/car-p208.webp",
+       "t": "Peugeot 208 1.2 PureTech 110",
+       "m": "2017 · 96 000 km · Essence · Manuelle",
+       "p": "8 400 €",
+       "l": "« Courroie changée en 2023, facture. Entretien Peugeot. »",
+       "note": "la facture !",
+       "nx": 380,
+       "ny": 520,
+       "n": 8,
+       "cut": true
+      }
+     ],
+     "credit": "Photo Wikimedia Commons : OSX, domaine public"
+    },
+    {
+     "title": "Le *défaut*.",
+     "body": "Sur le 1.2 PureTech, de 2013 à mi-2022, la courroie baigne dans l'huile et s'effrite. Ses débris bouchent la crépine, et le moteur casse.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Courroie changée : 400 à 600 €",
+         "warn"
+        ]
+       ]
+      }
+     ],
+     "credit": "Coûts : ordres de grandeur relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "title": "Ce que tu\n*demandes*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "La facture de courroie",
+         "date et kilométrage"
+        ],
+        [
+         "Les 3 dernières factures d'entretien",
+         "pour l'extension de garantie"
+        ],
+        [
+         "L'huile utilisée",
+         "écrite sur les factures"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "La *garantie*.",
+     "body": "Depuis mars 2024, Stellantis couvre ce moteur jusqu'à 10 ans ou 175 000 km, si l'entretien suit le carnet. Un concessionnaire vérifie l'éligibilité avec le numéro de série."
+    },
+    {
+     "title": "Le *verdict*.",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "À acheter",
+       "tone": "ok",
+       "sub": "Avec la facture. Sans elle, compte **400 à 600 €** de courroie dans ton prix max.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Annonce n° 3 dimanche :\nune Golf à *négocier*."
+    }
+   ],
+   "car": null,
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "after": null
+  },
+  {
+   "id": "B15",
+   "slug": "arnaque-faux-virement",
+   "slides": [
+    {
+     "kicker": "Tu vends ta 208 à 6 900 €",
+     "title": "Il te montre\nle virement.\nTon compte : *0 €*."
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "C'est fait, virement instantané ! Regardez.",
+         "L'acheteur · samedi 18:40"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      },
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Virement instantané",
+         "effectué",
+         "ok"
+        ],
+        [
+         "Montant",
+         "6 900 €",
+         "ok"
+        ]
+       ],
+       "lab": "Sur son téléphone"
+      }
+     ]
+    },
+    {
+     "title": "Dans *ton* appli.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Solde",
+         "inchangé",
+         "bad"
+        ],
+        [
+         "Virements reçus",
+         "aucun",
+         "bad"
+        ]
+       ],
+       "lab": "Ton compte, 18:42"
+      }
+     ]
+    },
+    {
+     "comp": [
+      {
+       "k": "split",
+       "a": [
+        "Ce qu'il dit",
+        "« Ça met 24 h à arriver. »"
+       ],
+       "b": [
+        "Ce qui se passe",
+        "Il part avec la voiture et la carte grise."
+       ]
+      }
+     ],
+     "body2": "Un virement instantané arrive en quelques secondes.",
+     "glow": [
+      "50% 100%",
+      0.3
+     ]
+    },
+    {
+     "title": "Ta *règle*",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Les clés et la carte grise",
+         "quand l'argent est sur ton compte, vu dans ton appli"
+        ],
+        [
+         "Une capture d'écran",
+         "ne prouve rien"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "L'argent d'abord,\npuis les *clés*."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui vend sa voiture ce week-end.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B16",
+   "slug": "6-verifs-visite",
+   "slides": [
+    {
+     "kicker": "Le vendeur attend, l'argent est dans ta poche",
+     "title": "6 vérifs\navant de *payer*."
+    },
+    {
+     "title": "Sous le *capot*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Le capot, moteur froid",
+         "tiède ? Il l'a démarrée. Écoute les premières secondes."
+        ],
+        [
+         "L'huile",
+         "une mousse beige sous le bouchon peut signaler un joint de culasse."
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Autour de la *voiture*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Le numéro de série",
+         "pare-brise et carte grise : le même, au caractère près."
+        ],
+        [
+         "Les pneus",
+         "usés d'un seul côté ? La géométrie, ou un choc."
+        ]
+       ],
+       "start": 3
+      }
+     ]
+    },
+    {
+     "title": "Au *volant*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Les voyants",
+         "contact mis, tous s'allument. Il en manque un ? Quelqu'un l'a peut-être débranché."
+        ],
+        [
+         "L'embrayage",
+         "en 3e, à bas régime, accélère fort : le moteur monte, la voiture traîne ? Il patine."
+        ]
+       ],
+       "start": 5
+      }
+     ]
+    },
+    {
+     "title": "Ta liste,\n*devant la voiture*."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Enregistre",
+    "k": "la liste",
+    "sub": "et ouvre-la à ta prochaine visite.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B17",
+   "slug": "outil-avant-apres",
+   "slides": [
+    {
+     "kicker": "Chercher ta prochaine voiture",
+     "title": "40 messages\ntapés.\nOu *1* seul."
+    },
+    {
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "À la main",
+        [
+         "Tu tapes 40 fois",
+         "Tu oublies qui tu as contacté",
+         "Tu écris aux « pros s'abstenir »"
+        ]
+       ],
+       "b": [
+        "Messagerie",
+        [
+         "Tu écris 1 fois",
+         "Jamais 2 fois la même annonce",
+         "Refus de démarchage ignorés"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "3 *étapes*.",
+     "comp": [
+      {
+       "k": "tl",
+       "items": [
+        [
+         "Critères",
+         "marque, modèle, budget"
+        ],
+        [
+         "Annonces trouvées",
+         "la liste de ta recherche"
+        ],
+        [
+         "Message et envoi",
+         "une annonce toutes les 1 à 2 minutes",
+         "v"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Ton prochain soir,\n*1 message*."
+    }
+   ],
+   "car": null,
+   "word": "MESSAGE",
+   "guide": "Ta première revente, étape par étape",
+   "after": "je t'envoie en privé\n*comment l'activer*"
+  },
+  {
+   "id": "B18",
+   "slug": "carnet-oublie",
+   "slides": [
+    {
+     "kicker": "POV : tu revends ta Clio 6 500 €",
+     "title": "« Le carnet ? »\nTu l'as laissé\nau *vendeur*."
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Elle me plaît. Je peux voir le carnet et les factures ?",
+         "L'acheteur"
+        ],
+        [
+         "m",
+         "Euh… l'ancien propriétaire les a gardés."
+        ],
+        [
+         "v",
+         "Sans historique, je propose 6 100.",
+         "L'acheteur"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "comp": [
+      {
+       "k": "big",
+       "v": "−400 €",
+       "cap": "pour un carnet resté dans un tiroir.",
+       "tone": "r"
+      }
+     ]
+    },
+    {
+     "title": "Le jour de\nton *achat*",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Le carnet d'entretien",
+         "tamponné"
+        ],
+        [
+         "Les factures",
+         "distribution, embrayage, pneus"
+        ],
+        [
+         "Le double des clés",
+         "plus de 100 € à refaire"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Ton dossier de revente\nse fait à l'*achat*."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui part sans les papiers.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B19",
+   "slug": "4-questions-avant-trajet",
+   "slides": [
+    {
+     "kicker": "Tu as fait 100 km pour la voir",
+     "title": "La carte grise\nn'est pas\nà *son nom*."
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "C'est la voiture de mon beau-frère, il m'a dit de la vendre.",
+         "Le vendeur"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      },
+      {
+       "k": "thought",
+       "t": "100 km aller, 100 km retour.",
+       "lab": "Dans ta tête :",
+       "size": 62
+      }
+     ]
+    },
+    {
+     "title": "4 questions\n*par message*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "La carte grise est à votre nom ?"
+        ],
+        [
+         "Le CT date de quand, avec quels défauts ?"
+        ],
+        [
+         "La distribution est faite ? Avec facture ?"
+        ],
+        [
+         "Vous m'envoyez le rapport HistoVec ?"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Une réponse\n*floue* ?",
+     "body": "Tu restes chez toi. Un vendeur sérieux répond aux 4, photos à l'appui."
+    },
+    {
+     "title": "Tes 4 questions,\n*avant* le trajet."
+    }
+   ],
+   "car": null,
+   "share": {
+    "lead": "Enregistre",
+    "k": "les 4 questions",
+    "sub": "et colle-les à chaque vendeur.",
+    "sign": ""
+   }
+  },
+  {
+   "id": "B20",
+   "slug": "annonce-decryptee-golf",
+   "slides": [
+    {
+     "kicker": "Annonce décryptée n° 3 · Golf à 7 900 €",
+     "title": "« CT OK,\ndéfauts *mineurs* »",
+     "car": {
+      "src": "img/car-golf.webp",
+      "credit": "Photo Wikimedia Commons : Thomas doerfer, CC BY 3.0, détourée"
+     }
+    },
+    {
+     "title": "L'*annonce*.",
+     "comp": [
+      {
+       "k": "listing",
+       "src": "img/car-golf.webp",
+       "t": "Volkswagen Golf 6 1.6 TDI 105",
+       "m": "2011 · 186 000 km · Diesel · Manuelle",
+       "p": "7 900 €",
+       "l": "« CT OK, défauts mineurs. »",
+       "note": "lesquels ?",
+       "nx": 430,
+       "ny": 520,
+       "n": 8,
+       "cut": true
+      }
+     ],
+     "credit": "Photo Wikimedia Commons : Thomas doerfer, CC BY 3.0, détourée"
+    },
+    {
+     "title": "Tu demandes\nle *PV du CT*.",
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Défaillances mineures : ==disques de frein avant usés==, ==pneu arrière gauche usé==. Pas de contre-visite.",
+       "lab": "Le procès-verbal"
+      }
+     ]
+    },
+    {
+     "title": "Tu *chiffres*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Disques et plaquettes avant",
+         "≈ 250 €"
+        ],
+        [
+         "1 pneu arrière",
+         "≈ 80 €"
+        ]
+       ],
+       "tot": "330 €",
+       "totLab": "À prévoir",
+       "tone": "r",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Au *téléphone*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Le PV note les disques avant et un pneu : 330 € à prévoir. Je vous propose 7 400 €."
+        ],
+        [
+         "v",
+         "On coupe la poire en deux : 7 600.",
+         "Le vendeur"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Le *verdict*.",
+     "comp": [
+      {
+       "k": "verdict",
+       "v": "À négocier",
+       "tone": "warn",
+       "sub": "Deux lignes du PV t'ont fait gagner **300 €**.",
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Négocier avec le PV,\n*étape par étape*."
+    }
+   ],
+   "car": null,
+   "word": "DÉBUTANT",
+   "guide": "Ta première revente, étape par étape",
+   "after": null
+  },
+  {
+   "id": "B21",
+   "slug": "outil-message-personnalise",
+   "slides": [
+    {
+     "kicker": "1 message pour toute ta recherche",
+     "title": "Chaque vendeur\nlit *sa* voiture."
+    },
+    {
+     "comp": [
+      {
+       "k": "quote",
+       "t": "Bonjour, votre ++{titre}++ est-elle toujours disponible ? Je peux me déplacer rapidement. Bonne journée.",
+       "lab": "Ce que tu écris, une fois"
+      }
+     ]
+    },
+    {
+     "title": "Ce qui *part*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Bonjour, votre Clio 4 TCe 90 est-elle toujours disponible ?…",
+         "Annonce 1"
+        ],
+        [
+         "m",
+         "Bonjour, votre 208 PureTech 110 est-elle toujours disponible ?…",
+         "Annonce 2"
+        ],
+        [
+         "m",
+         "Bonjour, votre Golf 6 1.6 TDI est-elle toujours disponible ?…",
+         "Annonce 3"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ]
+    },
+    {
+     "title": "Ce qui ne part *pas*.",
+     "comp": [
+      {
+       "k": "list",
+       "items": [
+        [
+         "Les annonces déjà contactées",
+         "lues dans ta boîte Leboncoin"
+        ],
+        [
+         "Les « pas de démarchage »",
+         "ignorées par défaut"
+        ]
+       ],
+       "start": null
+      }
+     ]
+    },
+    {
+     "title": "Tu l'écris une fois,\nil part *à chaque annonce*."
+    }
+   ],
+   "car": null,
+   "word": "MESSAGE",
+   "guide": "Ta première revente, étape par étape",
+   "after": "je t'envoie en privé\n*comment l'activer*"
+  }
+ ]
+}

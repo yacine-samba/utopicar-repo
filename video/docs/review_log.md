@@ -440,3 +440,28 @@ rendu (`MB=8`, `window.shutter`, `window.samples`).
   Notes : hook 8, clarté 8, lisibilité 360 px 8, zones sûres 9, mouvement 8, variété 9, marque 9, son 8 (mesuré, pas
   écouté), conformité 8. Reste en dessous des références : la part d'images en mouvement (59 % contre 81–94 %), car le
   fond du site est un aplat.
+
+## MO9 « 974 € » (`film-mo9/`) : série recette 47, épisode 1, la revente qui marche
+
+- Round 1 (brouillon 540p encodé avec la voix, planche à 4 img/s, test à 360 px) :
+  - 5–7 s : les cinq annonces tassées en haut, deux tiers de l'écran vides → la caméra descend les annonces au centre
+    pendant qu'on les compte, puis remonte quand la formule entre ;
+  - 10–12,8 s : la visite en bas de l'écran, haut vide → la caméra cadre la Clio au centre, puis recule pour le compteur ;
+  - 18,2–19,1 s : plan presque figé entre l'offre et le virement → bulle de réponse « D'accord. » sur « Tu acceptes »
+    (écho de l'ouverture) ;
+  - mention « Exemple · prix moyens constatés » illisible à 360 px → 22 → 26 px.
+- Round 2 (premier rendu final, `qa_video.py`) : « 974 € » entrait dans la bande droite (texte : FAIL) → 350 → 290 px ;
+  compteur « MARGE » dans la bande du haut (retour de caméra trop lent, poussée quand ça sonne) → retour plus tôt et plus
+  vif, poussée réduite. Pauses mesurées de 1,1 à 2,1 s → point de lumière sur la flèche de l'ouverture, poussée lente
+  sur le 974, dérive continue sur les décisions.
+- Round 3 (deuxième rendu final) : « MARGE » encore 15 à 30 px dans la bande du haut, « Pneus lisses » au bord de la
+  bande du bas pendant le recul et au rembobinage → compteur et jauge descendus de 40 px, retour de caméra à f = 0,8,
+  étiquette remontée sur la roue, pastilles absentes du rembobinage.
+- Round 4 (troisième rendu final, `qa_video.py`, `review.py mo9-final`) : aucun FAIL. Restent trois alertes de zones
+  sûres à droite (2,5 s, 15,5 s, 17–18 s) : le virement, un débit et les messages qui glissent depuis le bord le temps
+  de leur entrée, posés ensuite dans la colonne. −14,3 LUFS, −3,6 dBTP sur le MP4, son dès 0 s, 42 % sous 150 Hz.
+  Écart de boucle 0,22/255 (médiane entre images 0,8). Images en mouvement 61,9 % ; pauses voulues : la flèche de
+  l'ouverture (1,2 s), « 974 euros » (1,1 s), le kebab et la chute (2,1 s, la seule pause de la recette), les trois
+  décisions à lire (1,4 s), l'image 0 avant la boucle. Couverture à 4,46 s, lisible à 200 px de large.
+  Notes : hook 8, clarté 8, lisibilité 360 px 8, zones sûres 9, mouvement 8, variété 8, marque 8, voix 8 (débit validé
+  par l'utilisateur après « trop rapide »), son 8 (mesuré, pas écouté), conformité 9.

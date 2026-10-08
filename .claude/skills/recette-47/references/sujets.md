@@ -13,6 +13,12 @@ sujet avance : idée → brief → en production → publié (avec le lien vers 
 | MO8 « Les 5 moteurs » | il y a des marques à fuir | on fuit un moteur, à des années précises | cinq moteurs, leurs années, leur coût | en production |
 | MO7 « Une semaine » | revendre prend des semaines | six jours, six gestes | un geste par jour | brief en réserve |
 
+## En production
+
+| Vidéo | Croyance (son calcul) | Vérité | Méthode du pro | Chute |
+|---|---|---|---|---|
+| MO9 « 974 € » (brief `video/brief-mo9.md`, 8 oct. 2026) | une revente qui marche, c'est de la chance | elle se décide avant l'achat | trois décisions au jour 0 : prix de revente sur les annonces d'à côté, prix max frais compris, défauts chiffrés à la visite | « Bénéfice : 974 euros. Même le kebab était prévu. » |
+
 ## Développés dans `video/serie-47.md` (à valider)
 
 | Épisode | Croyance (son calcul) | Vérité | Méthode du pro | Chute possible |
@@ -20,6 +26,9 @@ sujet avance : idée → brief → en production → publié (avec le lien vers 
 | É1 « Le PV » | la moins chère rapporte le plus : achetée 1 500, revendue 3 000, « le double » | le procès-verbal du contrôle technique listait déjà les réparations | lire le PV avant le prix : mineure, majeure, critique, et chiffrer chaque majeure | une marge négative, « tu as payé pour la vendre », et tout était écrit sur le PV |
 | É2 « La cote » | la cote dit 5 000, je l'affiche à 5 000 | l'acheteur ne voit pas la cote, il voit les annonces d'à côté | le prix des annonces comparables (même moteur, même boîte, kilométrage et année proches) | six semaines et des baisses de prix pour vendre sous toutes les autres |
 | É3 « Deux voitures » | une voiture 500 €, deux voitures 1 000 € | la deuxième immobilise l'argent et double les frais | compter la marge par jour, une voiture à la fois tant qu'on ne vend pas vite | moins de bénéfice à deux qu'avec une seule |
+| É1 « Le PV » (écarté au brief le 8 oct. 2026, gardé : `video/brief-reserve-pv.md`) | la moins chère rapporte le plus : achetée 1 500, revendue 3 000, « le double » | le procès-verbal du contrôle technique listait déjà les réparations | lire le PV avant le prix : mineure, majeure, critique, et chiffrer chaque majeure | une marge négative, « tu as payé pour la vendre », et tout était écrit sur le PV |
+| É2 « La cote » (écarté au brief le 8 oct. 2026, trop proche de MO5 ; gardé : `video/brief-reserve-cote.md`) | la cote dit 5 000, je l'affiche à 5 000 | l'acheteur ne voit pas la cote, il voit les annonces d'à côté | le prix des annonces comparables (même moteur, même boîte, kilométrage et année proches) | six semaines et des baisses de prix pour vendre sous toutes les autres |
+| É3 « Deux voitures » → **MO10, en production** (`video/brief-mo10.md`) | deux voitures, 1 000 € de marge chacune : 2 000 € | la deuxième reste, ses frais tournent : 120 € pour les deux en 40 jours | la marge par jour (55 € contre 3 €) ; la deuxième s'achète le jour où la première est vendue | « Moins qu'avec une seule. » |
 | É4 « La pochette » | vendre, c'est trouver un acheteur | sans les papiers, l'acheteur repart | la pochette avant l'annonce : contrôle technique de moins de 6 mois, certificat de situation administrative, certificat de cession, carte grise barrée | l'acheteur repart avec son argent, et achète celle d'à côté |
 | É5 « Tout ton budget » | j'ai 3 000 €, j'achète une voiture à 3 000 € | dans l'exemple sourcé de MO5, les frais font 953 € sur une voiture de 3 500 € (27 %) | garder une réserve pour les frais avant de fixer son prix d'achat | vendue en l'état, sous son prix d'achat, faute de pouvoir payer la contre-visite |
 

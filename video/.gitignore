@@ -46,3 +46,14 @@ renders/strip-mo*.png
 renders/phone-mo*.png
 renders/draft-mo*.mp4
 scripts/__pycache__/
+assets/photos-mo9/src/
+film-mo9/seq/
+renders/_at/
+audio/vo-mo9/vo-placed-take*.wav
+audio/stems-*/
+renders/draft-mo9-*.mp4
+assets/photos-mo10/src/
+film-mo10/seq/
+audio/vo-mo10/vo-placed-take*.wav
+renders/draft-mo10-*.mp4
+assets/stock/mo10/
