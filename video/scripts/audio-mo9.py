@@ -4,8 +4,8 @@ Voix   : audio/vo-mo9/vo-placed.wav (Simon, prise A, répliques posées sur le f
 Musique: audio/music/Controlled Drop.mp3, recalée à 120 BPM, comme MO5 : mesure 13 dès l'image 0, la musique garde sa
          basse et monte quand ça sonne, arrêt net à l'arrivée du kebab, silence (tampon, rire, chute), bande qui
          rembobine, remontée à l'envers puis mesure 55 sur « Tout s'est joué ».
-         Grille : temps à 0,35 + 0,5 k s, pour que « 974 » (19,35 s), le kebab (20,85 s) et la reprise (24,35 s)
-         tombent sur des temps, la reprise sur un premier temps.
+         Grille de la première partie calée pour que « 974 » tombe sur un temps ; la reprise (mesure 55) repart de son
+         premier temps sur « Tout s'est joué ». Tous les temps viennent de audio/vo-mo9/vo-timing.json.
 Bruits : étape 5 (pas encore placés : cette version sert à valider la voix).
 Sortie : audio/mix-mo9.wav (lu par render.mjs), audio/stems-mo9/{voix,musique}.wav, docs/mix_report-mo9.txt
 """
@@ -17,9 +17,14 @@ from scipy.ndimage import minimum_filter1d
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 A = lambda *p: os.path.join(ROOT, 'audio', *p)
 SR = 48000
-DUR = 30.0
+VT = __import__('json').load(open(A('vo-mo9', 'vo-timing.json')))
+DUR = VT['dur']
 N = int(DUR * SR)
-OFF = 0.35                                 # premier temps de la grille
+mk = lambda k: VT['marks'][k]['t']; mke = lambda k: VT['marks'][k]['end']
+T_BIG = mk('n974') - 0.06                  # « 974 € » à l'écran (film-mo9/film.js, T.big)
+OFF = T_BIG % 0.5                          # premier temps de la grille : « 974 » tombe sur un temps
+T_STOP = mke('euros') + 0.08               # le kebab arrive : la musique s'arrête net
+T_BACK = mk('tout') + 0.05                 # « Tout s'est joué » : mesure 55, son premier temps sur la voix
 
 def load(path, sr=SR, mono=True):
     y, _ = librosa.load(path, sr=sr, mono=mono)
@@ -38,8 +43,6 @@ def env_curve(points, n=N):
     return np.interp(t, xs, ys)
 
 # ---------- voix ----------
-VT = json.load(open(A('vo-mo9', 'vo-timing.json')))
-mk = lambda k: VT['marks'][k]['t']
 vo = load(A('vo-mo9', 'vo-placed.wav'))[:N]
 vo = np.pad(vo, (0, N - len(vo)))
 vo = bp(vo, 80, 14000)
@@ -58,10 +61,8 @@ def stretch(seg):
     return librosa.effects.time_stretch(seg, rate=RATE)
 BAR_SRC = 4 * 60 / 123.05
 s1 = 13 * BAR_SRC - OFF * RATE            # la mesure 13 tombe sur le premier temps de la grille
-m1 = stretch(src[int(s1 * SR):int((s1 + 21.5 * RATE) * SR)])
-m2 = stretch(src[int(55 * BAR_SRC * SR):int((55 * BAR_SRC + 6.5 * RATE) * SR)])
-T_STOP = 20.85                            # le kebab arrive : la musique s'arrête net
-T_BACK = 24.35                            # « Tout s'est joué » : mesure 55 sur le premier temps
+m1 = stretch(src[int(s1 * SR):int((s1 + (T_STOP + 0.8) * RATE) * SR)])
+m2 = stretch(src[int(55 * BAR_SRC * SR):int((55 * BAR_SRC + (DUR - T_BACK + 0.5) * RATE) * SR)])
 REW = (VT['marks']['prevu2']['end'] + 0.3, VT['marks']['prevu2']['end'] + 1.1)
 mus = np.zeros(N)
 a = m1[:int(T_STOP * SR)]
@@ -83,7 +84,7 @@ b = m2[:N - int(T_BACK * SR)]
 mus[int(T_BACK * SR):int(T_BACK * SR) + len(b)] = b
 # mise en scène : attaque à l'image 0, la musique monte quand ça sonne (elle garde sa basse), fondu de boucle
 t_s = mk('sonne')
-lvl = env_curve([(0, db(-1)), (t_s - 0.6, db(-1)), (19.35, db(0.5)), (T_STOP, db(0.5)), (T_BACK, db(0)), (29.6, db(0)), (DUR, db(-3))])
+lvl = env_curve([(0, db(-1)), (t_s - 0.6, db(-1)), (T_BIG, db(0.5)), (T_STOP, db(0.5)), (T_BACK, db(0)), (DUR - 0.4, db(0)), (DUR, db(-3))])
 mus *= lvl
 # la musique cède sa place à la voix (bande de présence et niveau global)
 venv = np.abs(vo); k = int(0.03 * SR); venv = np.convolve(venv, np.ones(k) / k, 'same')
@@ -137,7 +138,9 @@ g = db(gain_total)
 for name, x in [('voix', vo_st), ('musique', mus_st)]: sf.write(A('stems-mo9', f'{name}.wav'), x * g, SR, subtype='PCM_24')
 Lm = meter.integrated_loudness(mix); up = librosa.resample(mix.T, orig_sr=SR, target_sr=4 * SR).T
 rep = [f'MO9 · mix voix + musique (bruitages à l\'étape 5) : {Lm:.1f} LUFS intégrés, true peak {20*np.log10(np.abs(up).max()):.1f} dBTP']
-for a_, b_, nm in [(0, 4.4, 'ouverture'), (4.5, 12.1, 'jour 0'), (12.8, 16.0, 'frais'), (16.0, 19.3, 'ça sonne'), (19.35, 23.3, '974'), (24.35, 27.8, 'décisions')]:
+Lk = {l['key']: l for l in VT['lines']}
+for a_, b_, nm in [(0, Lk['ok']['end'], 'ouverture'), (Lk['j0']['t'], Lk['acc']['end'], 'jour 0'), (Lk['frais']['t'], Lk['frais']['end'], 'frais'),
+                   (Lk['sonne']['t'], T_BIG, 'ça sonne'), (T_BIG, Lk['keb']['end'], '974'), (T_BACK, VT['loop'], 'décisions')]:
     seg = mix[int(a_ * SR):int(b_ * SR)]; rep.append(f'RMS {nm:10s} {20*np.log10(np.sqrt((seg**2).mean())+1e-9):6.1f} dBFS')
 open(os.path.join(ROOT, 'docs', 'mix_report-mo9.txt'), 'w').write('\n'.join(rep) + '\n')
 print('\n'.join(rep))

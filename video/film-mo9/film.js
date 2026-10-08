@@ -1,4 +1,4 @@
-// MO9 « 974 € » (30 s). Contrat : window.seek(t) peint la frame t, sans état entre les frames.
+// MO9 « 974 € » (31,4 s). Contrat : window.seek(t) peint la frame t, sans état entre les frames.
 // window.shutter(t) / window.samples(t) : flou de bougé au rendu (MB=4).
 // Minutage lu dans la voix retenue (audio/vo-mo9/vo-timing.json, scripts/vo-mo9.py) : chaque événement suit son mot.
 // Construit sur lib/kit47.js (modules de MO5) ; la mise en page reprend film-mo9/tests.html, validée à l'étape 2.
@@ -6,10 +6,10 @@
   const { track, clamp, lerp, noise } = Motion;
   const { f3, S, sm, P, el, sv, set, defs, word, writeWord, fullWord, notif, load, loadSeqs, drawSeq, flaps, paintFlaps, counter, rollKeys, paintCounter } = Kit47;
   const stage = document.getElementById('stage');
-  const DUR = 30.0, LOOP = 27.85;
 
   // ---------- minutage ----------
   const VT = await (await fetch('../audio/vo-mo9/vo-timing.json')).json();
+  const DUR = VT.dur, LOOP = VT.loop;                     // 31,4 s, boucle à 29,24 s (scripts/vo-mo9.py)
   const M = (k) => VT.marks[k].t, ME = (k) => VT.marks[k].end;
   const T = {
     w2: M('revends') - 0.05,                  // « 5 600 » s'écrit sur « tu la revends »

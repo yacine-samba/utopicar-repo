@@ -200,36 +200,38 @@ Tout s'est joué au jour zéro. La prochaine fois que tu te dis…
 - **Le rire** : *small* l'avale dans « Même » (28,74-30,38 s). Recalé sur l'enveloppe : rire 29,34-30,0 s, phrase
   dès 30,02 s. Il est gardé, posé 0,25 s après le tampon du kebab : c'est la réaction au tampon.
 - **Pose** (`scripts/vo-mo9.py`) : à × 1,15 partout, la parole d'avant le rembobinage occupe 21,7 s pour une
-  place de 22,6 s : plus de respiration entre les répliques. Tempos : ouverture × 1,15, récit × 1,25 (la liste, comme la chute de MO8), chute et fin × 1,15 (le poids de
-  « 974 euros »), pauses internes ramenées à 0,10-0,25 s. Parole posée : 23,0 s. Le film passe de 29,6 à **30,0 s**
-  (boucle à 27,85 s) plutôt que d'accélérer la chute : MO8 faisait aussi 30 s, l'écart ne pèse pas comme variable.
+  place de 22,6 s : plus de respiration entre les répliques. Première pose : récit × 1,25, film de 30,0 s.
+  **Retour de l'utilisateur (8 oct.) : « trop rapide ».** Pose retenue : ouverture × 1,15, récit × 1,2, chute et fin
+  × 1,15, 0,2 à 0,4 s entre les phrases, pauses internes ramenées à 0,10-0,30 s. Parole posée : 23,8 s. Le film passe
+  à **31,4 s** (boucle à 29,24 s) ; sa durée se calcule depuis la voix (`vo-timing.json` : `dur`, `loop`).
 - **Le film suit la voix** : `film-mo9/film.js` lit `audio/vo-mo9/vo-timing.json` (comme MO8). Temps retenus :
 
 | Événement | t (s) | Sur le mot |
 |---|---|---|
 | « 5 600 » s'écrit | 1,59 | « tu la revends » |
 | le virement se pose | 2,45 | fin de « 5 600 » |
-| « Cette fois, » · ✓ · « d'accord. » | 2,59 · 3,39 · 4,04 | « Cette fois » · « ton compte en banque » · « d'accord » |
-| le calcul se replie, palettes JOUR 0 | 4,46 · 4,51 | « Jour 0 » (4,71) |
-| annonces · cercle sur la médiane · lignes de la formule | 4,96 · 6,52 · 6,92 | « tu comptes » · « côté » · « 5 650 » |
-| « prix max 3 900 € », éclair | 8,74 | « 3 900 » |
-| la Clio entre | 9,15 | fin de « 3 900 » |
-| pastilles pneus · phares · rayure | 9,85 · 10,64 · 11,49 | chaque défaut |
-| « 4 400 » barré, compteur MARGE | 12,10 | « Il accepte » |
-| débits : carte grise, contrôle, 2 pneus, puis vidange, phares, rayure, intérieur | 12,88 · 13,60 · 14,23 · 14,59 · 14,91 · 15,23 · 15,55 | les trois premiers sur leur mot, les quatre autres en pluie qui accélère |
-| le jour, J+1 → J+6, 12 messages (un toutes les 0,075 s) | 15,95 → 16,78 | « ça sonne » |
-| l'offre · le virement | 16,84 · 18,30 | « Il négocie » · après « Tu acceptes » |
-| **974 €** | 19,35 | « 974 » (sur un temps) |
-| kebab · tampon · rire | 20,85 · 21,10 · 21,35 | juste après « euros » ; silence |
-| « Même le kebab / était prévu. » s'écrit | 22,05 · 22,61 | sur les mots |
-| rembobinage | 23,46 → 24,26 | 0,3 s après « prévu » |
-| « Tout s'est joué *au jour 0.* » · trois décisions | 24,30 · 24,94 / 25,54 / 26,14 | « Tout » · « jour 0 » |
-| boucle | 27,85 → 30,0 | « La prochaine fois que tu te dis… » (28,3) |
+| « Cette fois, » · ✓ · « d'accord. » | 2,69 · 3,49 · 4,14 | « Cette fois » · « ton compte en banque » · « d'accord » |
+| le calcul se replie, palettes JOUR 0 | 4,56 · 4,66 | « Jour 0 » (4,86) |
+| annonces · cercle sur la médiane · lignes de la formule | 5,11 · 6,82 · 7,22 | « tu comptes » · « côté » · « 5 650 » |
+| « prix max 3 900 € », éclair | 9,17 | « 3 900 » |
+| la Clio entre | 9,60 | fin de « 3 900 » |
+| pastilles pneus · phares · rayure | 10,37 · 11,21 · 12,12 | chaque défaut |
+| « 4 400 » barré, compteur MARGE | 12,80 | « Il accepte » |
+| débits : carte grise, contrôle, 2 pneus, puis vidange, phares, rayure, intérieur | 13,67 · 14,42 · 15,12 · 15,48 · 15,80 · 16,12 · 16,44 | les trois premiers sur leur mot, les quatre autres en pluie qui accélère |
+| le jour, J+1 → J+6, 12 messages (un toutes les 0,075 s) | 17,04 → 17,86 | « ça sonne » |
+| l'offre · le virement | 18,00 · 19,55 | « Il négocie » · après « Tu acceptes » |
+| **974 €** | 20,71 | « 974 » (sur un temps) |
+| kebab · tampon · rire | 22,20 · 22,45 · 22,70 | juste après « euros » ; silence |
+| « Même le kebab / était prévu. » s'écrit | 23,40 · 23,97 | sur les mots |
+| rembobinage | 24,81 → 25,61 | 0,3 s après « prévu » |
+| « Tout s'est joué *au jour 0.* » · trois décisions | 25,69 · 26,33 / 26,93 / 27,53 | « Tout » · « jour 0 » |
+| boucle | 29,24 → 31,40 | « La prochaine fois que tu te dis… » (29,69) |
 
-- **Musique** (`scripts/audio-mo9.py`) : Controlled Drop recalé à 120 BPM, grille décalée de 0,35 s pour que « 974 »,
-  le kebab et la reprise tombent sur des temps : mesure 13 dès l'image 0, montée quand ça sonne, arrêt net à
-  l'arrivée du kebab (20,85 s), silence sous le tampon, le rire et la chute, bande qui rembobine, remontée à l'envers,
-  mesure 55 sur le premier temps à 24,35 s. Mix voix + musique : −14,4 LUFS, −3,5 dBTP. Bruitages : étape 5.
+- **Musique** (`scripts/audio-mo9.py`) : Controlled Drop recalé à 120 BPM, grille calée pour que « 974 » tombe sur un
+  temps : mesure 13 dès l'image 0, montée quand ça sonne, arrêt net à
+  l'arrivée du kebab (21,94 s), silence sous le tampon, le rire et la chute, bande qui rembobine, remontée à l'envers,
+  mesure 55 repartie de son premier temps sur « Tout s'est joué » (25,74 s). Tous ces temps sont lus dans
+  `vo-timing.json`. Mix voix + musique : −14,4 LUFS, −3,5 dBTP. Bruitages : étape 5.
 - Écoute : `audio/vo-mo9/ecoute-voix-musique.mp3`, `audio/vo-mo9/ecoute-voix-seule.mp3` ; brouillon vidéo avec le son
   `renders/draft-mo9-9x16.mp4` (540 × 960, hors dépôt) ; instants choisis `renders/review/mo9-voix-at.jpg`.
 - Corrigé en relisant les instants : la pile de débits passait sur le compteur en partant (16,2 s) ; elle s'efface

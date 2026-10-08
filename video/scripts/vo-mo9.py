@@ -1,4 +1,4 @@
-"""MO9 « 974 € » : pose la voix off sur la timeline de 30 s.
+"""MO9 « 974 € » : pose la voix off et en déduit la durée du film (30,5 s environ).
 
     python3 scripts/vo-mo9.py takeA.mp3 [--retenue]  → audio/vo-mo9/vo-placed-<take>.wav, vo-timing-<take>.json
 
@@ -18,31 +18,32 @@ import numpy as np, soundfile as sf
 ROOT = Path(__file__).resolve().parents[1]
 D = ROOT / 'audio/vo-mo9'
 TAKE = sys.argv[1] if len(sys.argv) > 1 else 'takeA.mp3'
-SR, DUR = 48000, 30.0
+SR = 48000
+DUR = 32.0                                                   # place de travail ; la durée du film est calculée à la fin
 W = [[w['s'], w['e'], w['w']] for w in json.load(open(D / 'words.json'))[TAKE]]
 W[52][:2] = [30.02, 30.2]; W[53][:2] = [30.2, 30.38]          # « Même le » (voir plus haut)
 W[49][1] = 26.48                                              # « Bénéfice » finit à 26,48 s (enveloppe)
 E = lambda k, v: float(os.environ.get(k, v))
-TH, TV, TC, TF = E('TH', 1.15), E('TV', 1.25), E('TC', 1.15), E('TF', 1.15)   # tempos : ouverture, récit, chute, fin
+TH, TV, TC, TF = E('TH', 1.15), E('TV', 1.2), E('TC', 1.15), E('TF', 1.15)   # tempos : ouverture, récit, chute, fin
 
 # répliques : (clé, mots (i0, i1) ou ('raw', a, b), texte, ancre, tempo, pause interne max)
 LINES = [
     ('h1', (0, 3), "Tu l'achètes 3 900,", 0.10, TH, 0.1),
     ('h2', (4, 7), "tu la revends 5 600.", ('+', 0.12), TH, 0.1),
-    ('ok', (8, 15), "Cette fois, ton compte en banque est d'accord.", ('+', 0.15), TH, 0.15),
-    ('j0', (16, 19), "Jour 0, tu comptes.", ('+', 0.25), TV, 0.12),
-    ('ann', (20, 26), "Les annonces d'à côté : 5 650.", ('+', 0.15), TV, 0.15),
-    ('max', (27, 30), "Ton prix max : 3 900.", ('+', 0.15), TV, 0.15),
-    ('def', (31, 33), "Pneus lisses, phares jaunis, rayure.", ('+', 0.3), TV, 0.12),
-    ('acc', (34, 35), "Il accepte.", ('+', 0.15), TV, 0.1),
-    ('frais', (36, 40), "Carte grise, contrôle, pneus : prévu.", ('+', 0.15), TV, 0.1),
-    ('sonne', (41, 44), "Et là, ça sonne.", ('+', 0.25), TV, 0.25),
-    ('neg', (45, 48), "Il négocie. Tu acceptes.", ('+', 0.35), TV, 0.2),
-    ('ben', (49, 51), "Bénéfice : 974 euros.", ('+', 0.12), TC, 0.22),
+    ('ok', (8, 15), "Cette fois, ton compte en banque est d'accord.", ('+', 0.25), TH, 0.15),
+    ('j0', (16, 19), "Jour 0, tu comptes.", ('+', 0.3), TV, 0.15),
+    ('ann', (20, 26), "Les annonces d'à côté : 5 650.", ('+', 0.2), TV, 0.18),
+    ('max', (27, 30), "Ton prix max : 3 900.", ('+', 0.2), TV, 0.18),
+    ('def', (31, 33), "Pneus lisses, phares jaunis, rayure.", ('+', 0.35), TV, 0.15),
+    ('acc', (34, 35), "Il accepte.", ('+', 0.2), TV, 0.1),
+    ('frais', (36, 40), "Carte grise, contrôle, pneus : prévu.", ('+', 0.2), TV, 0.15),
+    ('sonne', (41, 44), "Et là, ça sonne.", ('+', 0.3), TV, 0.3),
+    ('neg', (45, 48), "Il négocie. Tu acceptes.", ('+', 0.4), TV, 0.25),
+    ('ben', (49, 51), "Bénéfice : 974 euros.", ('+', 0.2), TC, 0.22),
     ('rire', ('raw', 29.34, 30.0), "[rire]", ('+', 0.45), TC, 0.0),
     ('keb', (52, 56), "Même le kebab était prévu.", ('+', 0.06), TC, 0.1),
-    ('joue', (57, 63), "Tout s'est joué au jour 0.", 24.3, TF, 0.12),
-    ('proch', (64, 70), "La prochaine fois que tu te dis…", 28.3, TF, 0.12),
+    ('joue', (57, 63), "Tout s'est joué au jour 0.", ('+', 1.1), TF, 0.12),          # après le rembobinage (0,8 s)
+    ('proch', (64, 70), "La prochaine fois que tu te dis…", ('after', 'joue', 4.0), TF, 0.12),   # titre + trois décisions, puis la boucle
 ]
 # repères du film (indices de mots) : film-mo9/film.js lit leurs temps dans vo-timing.json
 MARKS = dict(achete=2, b3900=3, revends=6, b5600=7, cette=8, accord=15, jour0=16, annonces=21, v5650=25, prix=28, m3900=30,
@@ -103,6 +104,8 @@ for key, span, text, anchor, tempo, inner in LINES:
     seg, words = build(span, tempo, inner)
     if isinstance(anchor, tuple) and anchor[0] == 'at':
         start = anchor[2] - next(w[1] for w in words if w[0] == anchor[1])
+    elif isinstance(anchor, tuple) and anchor[0] == 'after':
+        start = next(L['t'] for L in timing['lines'] if L['key'] == anchor[1]) + anchor[2]
     elif isinstance(anchor, tuple):
         start = t + anchor[1]
     else:
@@ -116,10 +119,15 @@ for key, span, text, anchor, tempo, inner in LINES:
     t = start + len(seg) / SR
     timing['lines'].append({'key': key, 't': round(start, 3), 'end': round(t, 3), 'text': text})
 timing['marks'] = {k: WT[i] for k, i in MARKS.items()}
+# la boucle : les cartes se replient 0,45 s avant « La prochaine fois », le film finit 0,35 s après « dis… »
+timing['loop'] = round(timing['lines'][-1]['t'] - 0.45, 2)
+DUR = timing['dur'] = round(np.ceil((t + 0.35) * 20) / 20, 2)
 tag = Path(TAKE).stem
 sf.write(D / f'vo-placed-{tag}.wav', out[:int(DUR * SR)], SR)
 json.dump(timing, open(D / f'vo-timing-{tag}.json', 'w'), ensure_ascii=False, indent=1)
 for L in timing['lines']: print(f"{L['t']:6.2f}-{L['end']:6.2f} {L['key']:5} {L['text']}")
-print('fin de la voix', round(t, 2), 's · parole', round(sum(L['end'] - L['t'] for L in timing['lines']), 2), 's')
+print('fin de la voix', round(t, 2), 's · parole', round(sum(L['end'] - L['t'] for L in timing['lines']), 2), 's · boucle', timing['loop'], 's · film', DUR, 's')
 if '--retenue' in sys.argv:
-    sf.write(D / 'vo-placed.wav', out[:int(DUR * SR)], SR); json.dump(timing, open(D / 'vo-timing.json', 'w'), ensure_ascii=False, indent=1); print('→ vo-placed.wav, vo-timing.json')
+    sf.write(D / 'vo-placed.wav', out[:int(DUR * SR)], SR); json.dump(timing, open(D / 'vo-timing.json', 'w'), ensure_ascii=False, indent=1)
+    tl = ROOT / 'timeline-mo9.json'; TLJ = json.load(open(tl)); TLJ['dur'] = DUR; json.dump(TLJ, open(tl, 'w'), ensure_ascii=False, indent=1); open(tl, 'a').write('\n')
+    print('→ vo-placed.wav, vo-timing.json, timeline-mo9.json (durée)')

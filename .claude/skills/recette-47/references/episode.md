@@ -37,6 +37,8 @@ Remplis la colonne de droite. Chaque ligne doit avoir une réponse précise ; un
 Budget de voix : environ 22 s de parole sur 29,6 s, une vingtaine de répliques courtes, 7 à 8 s de silence. MO5 tient
 en 75 mots écrits, en comptant « 3 500 » pour deux. Un chiffre se dit en plus de mots qu'il ne s'écrit
 (« trois mille cinq cents ») : chronomètre la lecture à voix haute, c'est elle qui tranche.
+MO9 : 74 mots, dont sept montants dits en toutes lettres, ont donné 23,8 s de parole et un film de 31,4 s. Simon
+accéléré de 25 % a été jugé « trop rapide » : × 1,2 au plus sur le récit, et de l'air entre les phrases.
 
 ## 3. Les hooks
 

@@ -1,7 +1,7 @@
 MO9 · mix voix + musique (bruitages à l'étape 5) : -14.4 LUFS intégrés, true peak -3.5 dBTP
-RMS ouverture   -16.6 dBFS
-RMS jour 0      -17.3 dBFS
-RMS frais       -17.7 dBFS
+RMS ouverture   -16.7 dBFS
+RMS jour 0      -17.1 dBFS
+RMS frais       -17.5 dBFS
 RMS ça sonne    -17.6 dBFS
-RMS 974         -17.5 dBFS
-RMS décisions   -16.2 dBFS
+RMS 974         -17.2 dBFS
+RMS décisions   -16.1 dBFS
