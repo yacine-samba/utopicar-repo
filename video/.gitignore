@@ -31,3 +31,6 @@ audio/stems-mo8/
 assets/photos-mo9/src/
 film-mo9/seq/
 renders/_at/
+audio/vo-mo9/vo-placed-take*.wav
+audio/stems-*/
+renders/draft-mo9-*.mp4

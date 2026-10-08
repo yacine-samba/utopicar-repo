@@ -92,7 +92,7 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 | Épisode | Amélioration | Avant | Après |
 |---|---|---|---|
 | MO5 | référence | rendu en 4 parties à MB = 4 (durée non notée ; MO6, même technique : ≈ 2 h), −14,3 LUFS, −3,5 dBTP, avertissement zones sûres (étiquettes en bas) | — |
-| MO9 | `lib/kit47.js` : les modules de MO5 rendus réutilisables, film MO9 construit dessus | MO5 : modules écrits à la main dans un seul fichier | brief validé et maquettage complet le même jour (8 oct.) ; kit pas encore vérifié en rendant MO5 avec lui |
+| MO9 | `lib/kit47.js` : les modules de MO5 rendus réutilisables, film MO9 construit dessus ; minutage lu dans `vo-timing.json` (chaque événement attaché à son mot) | MO5 : modules écrits à la main dans un seul fichier, temps recopiés à la main | brief validé, maquettage et voix posée le même jour (8 oct.) ; kit pas encore vérifié en rendant MO5 avec lui |
 
 ## 6. Leçons
 
@@ -102,6 +102,7 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 | oct. 2026 | carrousels | Nommer la cible dans les trois premiers mots, montrer une perte à éviter, donner un conseil à garder (« 3 règles » : 1 000 vues contre 200 à 300) | confirmé par MO5 |
 | oct. 2026 | utilisateur, après MO6 | Plus de Polo : une autre vraie voiture à chaque épisode | décision |
 | 8 oct. 2026 | utilisateur, au brief de MO9 | « Le PV » écarté (« autre chose »), puis « La cote » (« c'est la même chose que ma dernière vidéo »), puis trois sujets de pièges (« ça ne m'attire pas »). Choisi : **une revente qui marche**. Leçon : la recette garde sa mécanique, mais l'histoire ne doit pas redire MO5 (acheter, payer, attendre, vendre mal) ; après une vidéo de perte, proposer l'envie. Voiture en photo libre plutôt qu'une des siennes | hypothèse |
+| 8 oct. 2026 | MO9, étape 4 | 74 mots dits par Simon : 35,5 s bruts ; à × 1,15 partout, 21,7 s de parole avant le rembobinage pour 22,6 s de place (plus de respiration entre les répliques). Posés à × 1,25 (récit) et × 1,15 (ouverture, chute) : 23,0 s de parole, film porté à 30,0 s. Pour tenir 29,6 s sans dépasser × 1,25, écrire 68 à 70 mots | hypothèse |
 | 8 oct. 2026 | test du skill par un agent neuf | Il a écrit seul un brief d'épisode complet ; ses dix questions ont précisé le skill (questionnaire sauté pour la série, numérotation MO, voiture et musique hors variables, chute négative, documents officiels en carte de verre) | appliqué |
 
 ## 7. Versions de la recette

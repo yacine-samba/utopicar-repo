@@ -63,6 +63,8 @@
 | MO6 | Moniteur `until ! pgrep -f "render.mjs --all"` jamais terminé : il se trouvait lui-même | Attendre un fichier de sortie (ou `pgrep -f '[r]ender.mjs'`), jamais un motif présent dans la commande d'attente |
 | MO6 | Rendu final de 30 s avec verre dépoli : ≈ 2 h en 4 parties (6 à 15 s par image) | Prévenir l'utilisateur de la durée ; planches et images fixes pour tout contrôle avant |
 | MO9 | `estimate_only` a annoncé 1 052 crédits sans signaler le solde ; la génération a échoué : « This request exceeds your quota of 10000. You have 232 credits remaining, while 526 credits are required » | L'estimation ne vérifie pas le solde. Demander à l'utilisateur son solde ElevenLabs (ou générer une phrase courte) avant de promettre une prise ; ne jamais relancer après un échec de quota |
+| MO9 | faster-whisper *small* écrit « banquets », « Pneulis », « fargenis » et avale le rire `[chuckles]` dans le mot suivant (0,9 s pour « Même ») | Contrôler la prononciation avec le modèle *medium* (il relit le texte exact), sur la prise puis sur le mix ; recaler à l'enveloppe les mots que *small* étire |
+| MO9 | Rendu `--draft` à 60 i/s : ≈ 1,1 s par image, 33 min pour 30 s | Brouillon d'écoute à 30 i/s (`fps` du timeline le temps du rendu), 60 i/s pour le rendu final |
 
 ## Ce qui a marché (à reprendre)
 

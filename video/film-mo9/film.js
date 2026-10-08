@@ -1,12 +1,38 @@
-// MO9 « 974 € » (29,6 s). Contrat : window.seek(t) peint la frame t, sans état entre les frames.
+// MO9 « 974 € » (30 s). Contrat : window.seek(t) peint la frame t, sans état entre les frames.
 // window.shutter(t) / window.samples(t) : flou de bougé au rendu (MB=4).
-// Minutage provisoire (docs/timeline-mo9.md) : il se recale mot à mot sur la voix à l'étape 4.
+// Minutage lu dans la voix retenue (audio/vo-mo9/vo-timing.json, scripts/vo-mo9.py) : chaque événement suit son mot.
 // Construit sur lib/kit47.js (modules de MO5) ; la mise en page reprend film-mo9/tests.html, validée à l'étape 2.
 (async function () {
   const { track, clamp, lerp, noise } = Motion;
   const { f3, S, sm, P, el, sv, set, defs, word, writeWord, fullWord, notif, load, loadSeqs, drawSeq, flaps, paintFlaps, counter, rollKeys, paintCounter } = Kit47;
   const stage = document.getElementById('stage');
-  const DUR = 29.6, LOOP = 27.45;
+  const DUR = 30.0, LOOP = 27.85;
+
+  // ---------- minutage ----------
+  const VT = await (await fetch('../audio/vo-mo9/vo-timing.json')).json();
+  const M = (k) => VT.marks[k].t, ME = (k) => VT.marks[k].end;
+  const T = {
+    w2: M('revends') - 0.05,                  // « 5 600 » s'écrit sur « tu la revends »
+    notif: ME('b5600') - 0.05,                // le virement se pose quand « 5 600 » finit
+    ok1: M('cette'), chk: M('cette') + 0.8, ok2: M('accord') - 0.08,
+    out: ME('accord') + 0.2,                  // le calcul se replie
+    j0: M('jour0') - 0.2, ads: M('jour0') + 0.25, capJ: M('annonces') - 0.15,
+    ring: M('v5650') - 0.45, card: M('v5650') - 0.27, rows: M('v5650') - 0.05, bar: M('m3900') - 0.65, max: M('m3900') - 0.05,
+    car: ME('m3900') - 0.28,                  // la Clio entre pendant que « 3 900 » finit
+    pins: { 'Phares jaunis': M('phares') - 0.05, Rayure: M('rayure') - 0.05, 'Pneus lisses': M('pneus') - 0.05 },
+    strike: M('il') - 0.05, annN: M('accepte') + 0.07,
+    sonne: M('sonne'), bubble: M('negocie'), credit: ME('acceptes') + 0.02,
+    big: M('n974') - 0.06, keb: ME('euros') + 0.08,
+    pk1: M('meme') - 0.05, pk2: M('etait') - 0.04,
+    tout: M('tout'), jour0b: M('jour0b') - 0.1,
+  };
+  T.jOut = T.car + 0.2; T.ann = T.car + 0.55; T.contour = T.car + 0.8; T.dip = T.car + 0.85;
+  T.hud = T.strike + 0.05; T.roll = T.credit + 0.35; T.stamp9 = T.keb + 0.25;
+  // les frais : les trois premiers sur leur mot, les quatre autres en pluie qui accélère (le trait de lumière sur les trois derniers)
+  const d2 = M('pneu') - 0.05;
+  T.deb = [M('carte') - 0.05, M('controle') - 0.05, d2, d2 + 0.36, d2 + 0.68, d2 + 1.0, d2 + 1.32];
+  T.rew = [ME('prevu2') + 0.3, ME('prevu2') + 1.1];
+  T.td = [T.jour0b + 0.08, T.jour0b + 0.68, T.jour0b + 1.28];
 
   await Promise.all([
     document.fonts.load('700 150px Clash'), document.fonts.load('600 50px Clash'), document.fonts.load('500 22px Satoshi'),
@@ -19,8 +45,8 @@
   const car = await load('../assets/photos-mo9/clio-a.png');
   const coins = await load('../film-mo5/frames/22168.jpg');
 
-  // ---------- temps du récit : il avance, puis se rembobine (22,3 → 23,3 s) jusqu'à la visite ----------
-  const REW = [22.3, 23.3], ST_FROM = 21.4, ST_TO = 9.5;
+  // ---------- temps du récit : il avance, puis se rembobine (après la chute) jusqu'à la visite ----------
+  const REW = T.rew, ST_FROM = REW[0] - 0.9, ST_TO = T.car + 0.65;
   const story = (t) => {
     if (t < REW[0]) return t;
     if (t < REW[1]) { const u = (t - REW[0]) / (REW[1] - REW[0]); const e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; return lerp(ST_FROM, ST_TO, e); }
@@ -30,25 +56,28 @@
   // ---------- caméras ----------
   const tf = (c, z = 0, extra = '') => `perspective(1700px) translateZ(${f3(c.z)}px) rotateX(${f3(c.rx)}deg) rotateY(${f3(c.ry)}deg) translate(${f3(-c.x)}px,${f3(-c.y)}px)${z ? ` translateZ(${f3(z)}px)` : ''} ${extra}`;
   // A : avance lente vers le calcul, glisse en arc vers le ✓
+  const cA2 = T.ok1 + 0.1;
   const camA = (t) => ({
-    rx: track(t, [[0, 9], [0.4, 6, { f: 0.5, z: 1 }], [2.4, 3, { f: 0.35, z: 1 }]]) + noise(1, t * 0.45) * 0.5,
-    ry: track(t, [[0, -10], [0.2, -3, { f: 0.45, z: 1 }], [2.4, 5, { f: 0.3, z: 1 }]]) + noise(2, t * 0.4) * 0.7,
-    z: track(t, [[0, 60], [0.2, -40, { f: 0.4, z: 1 }], [2.4, 110, { f: 0.35, z: 1 }]]),
-    x: track(t, [[0, -60], [0.2, 40, { f: 0.4, z: 1 }], [2.4, 30, { f: 0.35, z: 1 }]]),
-    y: track(t, [[0, -60], [0.2, 20, { f: 0.4, z: 1 }], [2.4, 120, { f: 0.35, z: 1 }]]),
+    rx: track(t, [[0, 9], [0.4, 6, { f: 0.5, z: 1 }], [cA2, 3, { f: 0.35, z: 1 }]]) + noise(1, t * 0.45) * 0.5,
+    ry: track(t, [[0, -10], [0.2, -3, { f: 0.45, z: 1 }], [cA2, 5, { f: 0.3, z: 1 }]]) + noise(2, t * 0.4) * 0.7,
+    z: track(t, [[0, 60], [0.2, -40, { f: 0.4, z: 1 }], [cA2, 110, { f: 0.35, z: 1 }]]),
+    x: track(t, [[0, -60], [0.2, 40, { f: 0.4, z: 1 }], [cA2, 30, { f: 0.35, z: 1 }]]),
+    y: track(t, [[0, -60], [0.2, 20, { f: 0.4, z: 1 }], [cA2, 120, { f: 0.35, z: 1 }]]),
   });
   // W : le monde du récit (jour 0, visite, frais, attente, vente), une seule prise
+  const [w0, w1, w2, w3, w4, w5] = [T.out, T.jOut, T.deb[0] - 0.1, T.sonne - 0.15, T.big - 0.05, REW[0]];
   const camW = (t) => ({
     rx: 5 + noise(5, t * 0.4) * 0.45,
-    ry: track(t, [[4.0, -8], [4.0, 4, { f: 0.22, z: 1 }], [8.9, -4, { f: 0.25, z: 1 }], [11.8, 3, { f: 0.25, z: 1 }], [15.2, -3, { f: 0.3, z: 1 }], [19.3, 0, { f: 0.4, z: 1 }]]) + noise(6, t * 0.35) * 0.6,
-    z: track(t, [[4.0, -240], [4.0, 0, { f: 0.5, z: 1 }], [8.9, 60, { f: 0.3, z: 1 }], [11.8, 0, { f: 0.3, z: 1 }], [15.2, 90, { f: 0.3, z: 1 }], [19.3, -40, { f: 0.45, z: 1 }], [22.3, 40, { f: 0.3, z: 1 }]]),
-    x: track(t, [[4.0, -120], [4.0, 50, { f: 0.25, z: 1 }], [8.9, 0, { f: 0.3, z: 1 }], [11.8, -30, { f: 0.25, z: 1 }], [15.2, 30, { f: 0.3, z: 1 }], [19.3, 0, { f: 0.4, z: 1 }]]),
-    y: track(t, [[4.0, -80], [4.0, 30, { f: 0.25, z: 1 }], [8.9, 0, { f: 0.3, z: 1 }], [11.8, -30, { f: 0.25, z: 1 }], [15.2, 0, { f: 0.3, z: 1 }]]),
+    ry: track(t, [[w0, -8], [w0, 4, { f: 0.22, z: 1 }], [w1, -4, { f: 0.25, z: 1 }], [w2, 3, { f: 0.25, z: 1 }], [w3, -3, { f: 0.3, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]) + noise(6, t * 0.35) * 0.6,
+    z: track(t, [[w0, -240], [w0, 0, { f: 0.5, z: 1 }], [w1, 60, { f: 0.3, z: 1 }], [w2, 0, { f: 0.3, z: 1 }], [w3, 90, { f: 0.3, z: 1 }], [w4, -40, { f: 0.45, z: 1 }], [w5, 40, { f: 0.3, z: 1 }]]),
+    x: track(t, [[w0, -120], [w0, 50, { f: 0.25, z: 1 }], [w1, 0, { f: 0.3, z: 1 }], [w2, -30, { f: 0.25, z: 1 }], [w3, 30, { f: 0.3, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]),
+    y: track(t, [[w0, -80], [w0, 30, { f: 0.25, z: 1 }], [w1, 0, { f: 0.3, z: 1 }], [w2, -30, { f: 0.25, z: 1 }], [w3, 0, { f: 0.3, z: 1 }]]),
   });
   // F : orbite lente qui descend le long des trois décisions
+  const f0 = REW[1] - 0.15;
   const camF = (t) => ({
-    rx: track(t, [[23.2, 8], [23.2, 3, { f: 0.3, z: 1 }]]) + noise(9, t * 0.4) * 0.4, ry: track(t, [[23.2, -10], [23.2, 5, { f: 0.22, z: 1 }]]) + noise(10, t * 0.35) * 0.5,
-    z: track(t, [[23.2, -120], [23.2, 70, { f: 0.3, z: 1 }]]), x: track(t, [[23.2, 30], [23.2, -15, { f: 0.3, z: 1 }]]), y: track(t, [[23.2, -90], [23.2, 60, { f: 0.22, z: 1 }]]),
+    rx: track(t, [[f0, 8], [f0, 3, { f: 0.3, z: 1 }]]) + noise(9, t * 0.4) * 0.4, ry: track(t, [[f0, -10], [f0, 5, { f: 0.22, z: 1 }]]) + noise(10, t * 0.35) * 0.5,
+    z: track(t, [[f0, -120], [f0, 70, { f: 0.3, z: 1 }]]), x: track(t, [[f0, 30], [f0, -15, { f: 0.3, z: 1 }]]), y: track(t, [[f0, -90], [f0, 60, { f: 0.22, z: 1 }]]),
   });
 
   // ---------- fonds ----------
@@ -138,7 +167,7 @@
   // ---------- H : compteur « MARGE », jauge des frais, mention ----------
   const LH = el('div', 'L', stage);
   const C = counter(LH, { top: 282, label: 'MARGE', labelTop: 232 });
-  const keys = rollKeys([1000, 974], [0, 19.0]);
+  const keys = rollKeys([1000, 974], [0, T.roll]);
   const gauge = el('div', 'glass', LH, 'left:190px;top:478px;width:700px;height:70px;border-radius:35px;padding:0');
   const gFill = el('div', 'abs', gauge, 'left:6px;top:6px;width:0;height:58px;border-radius:29px;background:linear-gradient(90deg,rgba(255,90,31,.55),rgba(255,138,76,.85));box-shadow:0 0 24px rgba(255,110,40,.6)');
   const gTxt = el('div', 'abs', gauge, 'left:0;top:0;width:700px;line-height:70px;text-align:center;font:700 30px Satoshi;white-space:nowrap');
@@ -147,9 +176,9 @@
 
   // ---------- N : les frais tombent, chacun prévu ----------
   const LN = el('div', 'L', stage);
-  const DEB = [[11.9, 'signe', 'Carte grise', 152], [12.4, 'ct', 'Contrôle technique', 78], [12.9, 'moteur', 'Vidange', 110], [13.4, 'pneu', '2 pneus', 160],
-    [13.9, 'phares', 'Phares · kit', 20], [14.4, 'phares', 'Rayure · kit', 30], [14.9, 'interieur', 'Intérieur', 50]];
-  const LATE = [[15.8, 34], [16.3, 40], [16.8, 40], [20.6, 12]];      // option de l'annonce, essence, assurance, kebab
+  const DEB = [['signe', 'Carte grise', 152], ['ct', 'Contrôle technique', 78], ['pneu', '2 pneus', 160], ['moteur', 'Vidange', 110],
+    ['phares', 'Phares · kit', 20], ['phares', 'Rayure · kit', 30], ['interieur', 'Intérieur', 50]].map((d, i) => [T.deb[i], ...d]);
+  const LATE = [[T.sonne + 0.1, 34], [T.sonne + 0.45, 40], [T.sonne + 0.8, 40], [T.keb, 12]];      // option de l'annonce, essence, assurance, kebab
   const debs = DEB.map(([, s, ti, a]) => {
     const w = el('div', 'abs', LN, 'width:780px;height:184px');
     const n = notif(w, ti, `${a},00`); n.d.style.left = '0'; n.d.style.top = '0';
@@ -163,7 +192,7 @@
   const flD = flaps(LW, ['J', '+', '1'], { y: 600, w: 116, h: 156, fs: 104, g: 10 });
   const MSG = ['Toujours dispo ?', 'Toujours dispo ?', 'Elle est encore là ?', 'Toujours dispo ?', 'Je peux passer samedi ?', 'Toujours dispo ?',
     'Toujours dispo ?', 'Dispo ce soir ?', 'Toujours dispo ?', 'Toujours dispo ?', 'Encore dispo ?', 'Toujours dispo ?'];
-  const TM = MSG.map((_, i) => 15.6 + i * 0.13);
+  const TM = MSG.map((_, i) => T.sonne + i * 0.075);              // le téléphone sonne sans arrêt jusqu'à l'offre
   const msgs = MSG.map((m, i) => { const d = el('div', 'glass msg', LW, `left:${i % 2 ? 250 : 190}px;top:0`); d.textContent = m; return d; });
   const mCount = el('div', 'glass pill', LW, 'left:640px;top:790px;font:700 34px Satoshi;color:#ffb38a');
 
@@ -205,7 +234,7 @@
     el('div', 't', b).textContent = ti; el('div', 's', b).textContent = s; el('div', 'v', b).textContent = v; return d;
   });
   const dM = el('div', 'abs', LD, 'left:0;width:1080px;top:1330px;text-align:center;font:500 22px Satoshi;color:rgba(246,239,231,.5)'); dM.textContent = 'Exemple · prix moyens constatés';
-  const TD = [24.0, 24.7, 25.4];
+  const TD = T.td;
 
   const rewFx = el('div', 'L', stage, 'background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 6px);mix-blend-mode:screen');
   const flash = el('div', 'L', stage, 'background:radial-gradient(60% 45% at 50% 50%,#fff1e6,rgba(255,140,80,.6) 45%,transparent 75%);mix-blend-mode:screen');
@@ -215,9 +244,9 @@
   function paint(t) {
     const st = story(t);
     const tA = t >= LOOP ? 0 : t;
-    const out = t >= LOOP ? 0 : S(t, 3.95, P.heavy);
-    const showA = t < LOOP ? 1 - sm(3.95, 4.4, t) : sm(LOOP + 0.45, LOOP + 1.3, t);
-    const world = t < LOOP ? sm(4.0, 4.5, t) : 1 - sm(LOOP, LOOP + 0.8, t);
+    const out = t >= LOOP ? 0 : S(t, T.out, P.heavy);
+    const showA = t < LOOP ? 1 - sm(T.out, T.out + 0.45, t) : sm(LOOP + 0.45, LOOP + 1.3, t);
+    const world = t < LOOP ? sm(T.out + 0.05, T.out + 0.55, t) : 1 - sm(LOOP, LOOP + 0.8, t);
     const cA = camA(tA), cW = camW(t);
     if (t >= LOOP) { const u = sm(LOOP, DUR, t); cA.z += 160 * (1 - u); cA.ry += -5 * (1 - u); cA.y += -40 * (1 - u); }
 
@@ -225,107 +254,108 @@
     set(bgA, showA);
     bgImg.style.transform = `translate(${f3(noise(7, tA * 0.3) * 20)}px,${f3(noise(8, tA * 0.3) * 20)}px) scale(${f3(1.04 + 0.03 * S(tA, 0, P.soft))})`;
     set(bgW, world);
-    const dayK = sm(15.0, 15.7, st) * (1 - sm(19.2, 19.6, st));
+    const dayK = sm(T.sonne - 0.45, T.sonne + 0.25, st) * (1 - sm(T.big - 0.15, T.big + 0.25, st));
     set(day, dayK);
     floor.style.transform = `perspective(900px) rotateX(72deg) translateX(${f3(-cW.x * 0.6)}px)`;
-    set(glowCar, sm(8.7, 9.4, st) * 0.9);
+    set(glowCar, sm(T.car - 0.05, T.car + 0.65, st) * 0.9);
 
     // A : le calcul
     LA.style.transform = tf(cA, 0, `translateY(${f3(-300 * out)}px)`);
     set(LA, showA);
-    fullWord(W1); writeWord(W2, tA, 0.35, 0.07, 30);
-    const sx = lerp(-300, 1500, S(tA, 1.1, { f: 0.7, z: 1 }));        // la lumière passe sur les chiffres une fois écrits
+    fullWord(W1); writeWord(W2, tA, T.w2, 0.07, 30);
+    const tSh = T.w2 + 0.45, sx = lerp(-300, 1500, S(tA, tSh, { f: 0.7, z: 1 }));        // la lumière passe sur les chiffres une fois écrits
     shS[0].setAttribute('offset', f3(clamp((sx - 260) / 1080, 0, 1))); shS[0].setAttribute('stop-opacity', '0');
     shS[1].setAttribute('offset', f3(clamp((sx - 60) / 1080, 0, 1))); shS[1].setAttribute('stop-opacity', '.85');
     shS[2].setAttribute('offset', f3(clamp((sx + 60) / 1080, 0, 1))); shS[2].setAttribute('stop-opacity', '.85');
     shS[3].setAttribute('offset', f3(clamp((sx + 260) / 1080, 0, 1))); shS[3].setAttribute('stop-opacity', '0');
-    shine.setAttribute('opacity', f3(0.55 * sm(1.05, 1.15, tA) * (1 - sm(2.2, 2.6, tA))));
+    shine.setAttribute('opacity', f3(0.55 * sm(tSh - 0.05, tSh + 0.05, tA) * (1 - sm(tSh + 1.1, tSh + 1.5, tA))));
     arrow.setAttribute('stroke-dashoffset', '0'); arrowG.setAttribute('opacity', f3(0.85 + 0.15 * Math.sin(Math.PI * clamp((tA - 0.4) / 0.8, 0, 1))));
-    set(glowA, 0.35 + 0.45 * S(tA, 0.6, P.heavy) + 0.35 * S(tA, 2.8, P.heavy) * (1 - out));
-    const cp = S(tA, 2.8, P.pen);
+    set(glowA, 0.35 + 0.45 * S(tA, 0.6, P.heavy) + 0.35 * S(tA, T.chk, P.heavy) * (1 - out));
+    const cp = S(tA, T.chk, P.pen);
     chk.setAttribute('stroke-dashoffset', f3(CHK.L * (1 - cp))); chkGlow.setAttribute('stroke-dashoffset', f3(CHK.L * (1 - cp)));
     const [px, py] = chkAt(cp); chkPen.setAttribute('transform', `translate(${f3(px)},${f3(py)})`);
-    chkPen.setAttribute('opacity', f3(sm(2.78, 2.86, tA) * (1 - sm(3.3, 3.6, tA))));
-    const o1 = S(tA, 2.9, P.rise), o2 = S(tA, 3.25, P.rise);
+    chkPen.setAttribute('opacity', f3(sm(T.chk - 0.02, T.chk + 0.06, tA) * (1 - sm(T.chk + 0.5, T.chk + 0.8, tA))));
+    const o1 = S(tA, T.ok1, P.rise), o2 = S(tA, T.ok2, P.rise);
     ok1.style.opacity = f3(o1); ok1.style.transform = `translateY(${f3((1 - o1) * 24)}px)`; ok1.style.filter = `blur(${f3((1 - o1) * 8)}px)`;
     ok2.style.opacity = f3(o2); ok2.style.transform = `translateY(${f3((1 - o2) * 24)}px)`; ok2.style.filter = `blur(${f3((1 - o2) * 8)}px)`;
     // la notification se pose sous le calcul, sans le percuter
-    const hx = track(tA, [[0, 1250], [2.1, 0, P.card]]), hr = track(tA, [[0, -10], [2.1, 0, P.card]]);
+    const hx = track(tA, [[0, 1250], [T.notif, 0, P.card]]), hr = track(tA, [[0, -10], [T.notif, 0, P.card]]);
     LAN.style.transform = tf(cA, 120, `translateY(${f3(-300 * out)}px)`);
     hookN.d.style.transform = `translate(${f3(150 + hx)}px,1080px) rotate(${f3(hr)}deg)`;
-    set(hookN.d, t < LOOP ? sm(2.08, 2.14, t) * (1 - sm(3.95, 4.3, t)) : 0);
-    if (t > 2.05 && t < 4.4) drawSeq(hookN.c, IMG.cles, t - 2.1);
+    set(hookN.d, t < LOOP ? sm(T.notif - 0.02, T.notif + 0.04, t) * (1 - sm(T.out, T.out + 0.35, t)) : 0);
+    if (t > T.notif - 0.05 && t < T.out + 0.45) drawSeq(hookN.c, IMG.cles, t - T.notif);
 
     // J : jour 0
-    const jIn = sm(4.0, 4.15, t), jOut = S(t, 8.9, P.push);
+    const jIn = sm(T.out + 0.05, T.out + 0.2, t), jOut = S(t, T.jOut, P.push);
     LJ.style.transform = tf(cW, -60, `translateY(${f3(-1300 * jOut)}px)`);
     LJ.style.filter = jOut > 0.01 ? `blur(${f3(10 * jOut)}px)` : '';
-    set(LJ, jIn * (1 - sm(9.3, 9.6, t)) * (t < LOOP ? 1 : 0));
-    paintFlaps(fl0, t, 4.08);
+    set(LJ, jIn * (1 - sm(T.jOut + 0.4, T.jOut + 0.7, t)) * (t < LOOP ? 1 : 0));
+    paintFlaps(fl0, t, T.j0);
     ads.forEach((d, i) => {
-      const a = S(t, 4.42 + i * 0.22, P.card);
+      const ta = T.ads + i * 0.2, a = S(t, ta, P.card);
       d.style.transform = `perspective(1200px) translateY(${f3((1 - a) * 140)}px) rotateX(${f3((1 - a) * 50)}deg) scale(${f3(0.85 + 0.15 * a)})`;
-      set(d, sm(4.4 + i * 0.22, 4.48 + i * 0.22, t) * (i === 2 ? 1 : 0.85 + 0.15 * (1 - sm(6.0, 6.3, t))));
+      set(d, sm(ta - 0.02, ta + 0.06, t) * (i === 2 ? 1 : 0.85 + 0.15 * (1 - sm(T.ring - 0.05, T.ring + 0.25, t))));
     });
-    const rg = S(t, 5.8, P.tag); set(ring, sm(5.78, 5.85, t)); ring.style.transform = `scale(${f3(lerp(1.25, 1, rg))})`;
-    const cj = S(t, 4.9, P.rise); set(capJ, cj); capJ.style.transform = `translateY(${f3((1 - cj) * 20)}px)`;
-    const ci = S(t, 6.3, P.card);
+    const rg = S(t, T.ring, P.tag); set(ring, sm(T.ring - 0.02, T.ring + 0.05, t)); ring.style.transform = `scale(${f3(lerp(1.25, 1, rg))})`;
+    const cj = S(t, T.capJ, P.rise); set(capJ, cj); capJ.style.transform = `translateY(${f3((1 - cj) * 20)}px)`;
+    const ci = S(t, T.card, P.card);
     card.style.transform = `perspective(1500px) translateY(${f3((1 - ci) * 260)}px) rotateX(${f3((1 - ci) * 28)}deg)`;
-    set(card, sm(6.28, 6.36, t)); set(glowF, 0.4 + 0.6 * S(t, 8.0, P.heavy));
-    rows.forEach((r, i) => { const p = S(t, 6.5 + i * 0.4, P.rise); r.style.opacity = f3(p); r.style.transform = `translateY(${f3((1 - p) * 26)}px)`; r.style.filter = `blur(${f3((1 - p) * 6)}px)`; });
-    const bp = S(t, 7.7, P.pen); barL.setAttribute('stroke-dashoffset', f3(760 * (1 - bp))); barGlow.setAttribute('stroke-dashoffset', f3(760 * (1 - bp)));
-    const pm = S(t, 8.0, P.rise); rMax.style.opacity = f3(pm); rMax.style.transform = `translateY(${f3((1 - pm) * 30)}px) scale(${f3(0.96 + 0.04 * pm)})`;
+    set(card, sm(T.card - 0.02, T.card + 0.06, t)); set(glowF, 0.4 + 0.6 * S(t, T.max, P.heavy));
+    rows.forEach((r, i) => { const p = S(t, T.rows + i * 0.38, P.rise); r.style.opacity = f3(p); r.style.transform = `translateY(${f3((1 - p) * 26)}px)`; r.style.filter = `blur(${f3((1 - p) * 6)}px)`; });
+    const bp = S(t, T.bar, P.pen); barL.setAttribute('stroke-dashoffset', f3(760 * (1 - bp))); barGlow.setAttribute('stroke-dashoffset', f3(760 * (1 - bp)));
+    const pm = S(t, T.max, P.rise); rMax.style.opacity = f3(pm); rMax.style.transform = `translateY(${f3((1 - pm) * 30)}px) scale(${f3(0.96 + 0.04 * pm)})`;
 
     // P : la voiture
-    const carX = track(st, [[0, 1350], [8.75, 0, { f: 1.15, z: 1 }]]);
-    const pOut = sm(23.0, 23.5, t);
+    const carX = track(st, [[0, 1350], [T.car, 0, { f: 1.15, z: 1 }]]);
+    const pOut = sm(REW[1] - 0.25, REW[1] + 0.2, t);
     LP.style.transform = tf(cW, 0, `translateX(${f3(carX * 0.15)}px)`);
-    const big0 = sm(19.35, 19.7, st) * (1 - sm(22.25, 22.5, t));
-    set(LP, sm(8.7, 8.8, st) * (1 - pOut) * (1 - 0.85 * big0) * (t < LOOP ? 1 : 0));
-    const dip = 1.6 * Math.sin(Math.PI * clamp((st - 9.6) / 0.7, 0, 1)) * (st > 9.6 ? 1 : 0);
+    const big0 = sm(T.big, T.big + 0.35, st) * (1 - sm(REW[0] - 0.05, REW[0] + 0.2, t));
+    set(LP, sm(T.car - 0.05, T.car + 0.05, st) * (1 - pOut) * (1 - 0.85 * big0) * (t < LOOP ? 1 : 0));
+    const dip = 1.6 * Math.sin(Math.PI * clamp((st - T.dip) / 0.7, 0, 1)) * (st > T.dip ? 1 : 0);
     carBox.style.transform = `translateX(${f3(carX)}px) rotate(${f3(dip * 0.6)}deg)`;
     carBox.style.filter = LP.style.visibility === 'hidden' ? '' : `blur(${f3(clamp(Math.abs(carX) / 900, 0, 1) * 6)}px)`;
-    // remise en état sous le trait de lumière : phares (13,9), rayure (14,4), tout le vernis (14,9)
-    const sP = S(st, 13.9, P.pen), sR = S(st, 14.4, P.pen), sT = S(st, 14.9, { f: 0.8, z: 1 });
+    // remise en état sous le trait de lumière : phares, rayure, tout le vernis (avec leurs débits)
+    const [dP, dR, dT] = [T.deb[4], T.deb[5], T.deb[6]], SW = { f: 1.5, z: 1 };
+    const sP = S(st, dP, SW), sR = S(st, dR, SW), sT = S(st, dT, { f: 0.8, z: 1 });
     const posP = lerp(-6, 56, sP), posR = lerp(46, 68, sR), posT = lerp(-6, 106, sT);
     const mask = (p) => (p <= -5 ? '' : `linear-gradient(90deg,transparent ${f3(p)}%,#000 ${f3(p + 3)}%)`);
     lay[0].style.webkitMaskImage = mask(posT); lay[1].style.webkitMaskImage = mask(Math.max(posP, posT)); lay[2].style.webkitMaskImage = mask(Math.max(posR > 46.5 ? posR : -6, posT));
-    const swOn = Math.max(sm(13.88, 13.95, st) * (1 - sm(14.25, 14.4, st)), sm(14.38, 14.45, st) * (1 - sm(14.75, 14.9, st)), sm(14.88, 14.95, st) * (1 - sm(15.5, 15.7, st)));
-    const swPos = st < 14.38 ? posP : st < 14.88 ? posR : posT;
+    const swOn = Math.max(sm(dP - 0.02, dP + 0.05, st) * (1 - sm(dR - 0.1, dR, st)), sm(dR - 0.02, dR + 0.05, st) * (1 - sm(dT - 0.1, dT, st)), sm(dT - 0.02, dT + 0.05, st) * (1 - sm(dT + 0.6, dT + 0.8, st)));
+    const swPos = st < dR - 0.02 ? posP : st < dT - 0.02 ? posR : posT;
     sweep.style.left = `${f3(CAR.w * swPos / 100)}px`; sweep.style.transform = 'rotate(5deg)'; set(sweep, swOn);
-    const cd = S(st, 9.7, P.draw);
+    const cd = S(st, T.contour, P.draw);
     cLine.setAttribute('stroke-dashoffset', f3(CC.len * (1 - cd))); cGlow.setAttribute('stroke-dashoffset', f3(CC.len * (1 - cd)));
-    cLine.setAttribute('opacity', f3(sm(9.68, 9.75, st) * (0.95 - 0.55 * sm(11.0, 11.8, st))));
-    cGlow.setAttribute('opacity', f3(sm(9.68, 9.75, st) * (0.8 - 0.5 * sm(11.0, 11.8, st))));
+    cLine.setAttribute('opacity', f3(sm(T.contour - 0.02, T.contour + 0.05, st) * (0.95 - 0.55 * sm(T.strike + 0.3, T.strike + 1.1, st))));
+    cGlow.setAttribute('opacity', f3(sm(T.contour - 0.02, T.contour + 0.05, st) * (0.8 - 0.5 * sm(T.strike + 0.3, T.strike + 1.1, st))));
     pins.forEach(({ p, l }, i) => {
-      const a = S(st, 9.6 + i * 0.2, P.tag), o = sm(9.58 + i * 0.2, 9.66 + i * 0.2, st) * (1 - sm(11.5, 11.8, st));
+      const tp = T.pins[DEF[i][0]], a = S(st, tp, P.tag), o = sm(tp - 0.02, tp + 0.06, st) * (1 - sm(T.strike + 0.5, T.strike + 0.8, st));
       set(p, o); p.style.transform = `scale(${f3(lerp(2.2, 1, a))})`;
       set(l, o); l.style.transform = `translateY(${f3((1 - a) * 18)}px) scale(${f3(0.9 + 0.1 * a)})`;
     });
-    const an = S(st, 9.4, P.rise);
-    set(annP, sm(9.38, 9.46, st) * (1 - sm(11.7, 11.9, st))); annP.style.transform = `translateY(${f3((1 - an) * 24)}px)`;
-    stPath.setAttribute('stroke-dashoffset', f3(200 * (1 - S(st, 10.6, P.pen))));
-    const nn = S(st, 10.85, P.rise); annN.style.opacity = f3(nn); annN.style.transform = `translateY(${f3((1 - nn) * 20)}px)`;
+    const an = S(st, T.ann, P.rise);
+    set(annP, sm(T.ann - 0.02, T.ann + 0.06, st) * (1 - sm(T.strike + 0.65, T.strike + 0.85, st))); annP.style.transform = `translateY(${f3((1 - an) * 24)}px)`;
+    stPath.setAttribute('stroke-dashoffset', f3(200 * (1 - S(st, T.strike, P.pen))));
+    const nn = S(st, T.annN, P.rise); annN.style.opacity = f3(nn); annN.style.transform = `translateY(${f3((1 - nn) * 20)}px)`;
 
     // H : compteur, jauge, mention
-    const big = sm(19.35, 19.7, st) * (1 - sm(22.25, 22.5, t));
-    const hud = sm(10.75, 10.85, st) * (1 - big) * (1 - pOut) * (t < LOOP ? 1 : 0);
+    const big = big0;
+    const hud = sm(T.hud - 0.05, T.hud + 0.05, st) * (1 - big) * (1 - pOut) * (t < LOOP ? 1 : 0);
     LH.style.transform = tf(cW, 200);
     set(LH, hud);
-    const vis4 = 1 - S(st, 19.05, P.heavy);
-    paintCounter(C, st, keys, [vis4, 1, 1, 1], (i) => ({ draw: S(st, 10.8 + i * 0.07, P.draw), glass: S(st, 11.02 + i * 0.07, P.heavy) }), 1);
-    C.labL.forEach((s, i) => { const p = S(st, 11.0 + i * 0.045, P.rise); s.style.opacity = f3(p); s.style.transform = `translateY(${f3((1 - p) * 18)}px)`; });
-    const gIn = S(st, 11.1, P.card); gauge.style.transform = `scaleX(${f3(0.6 + 0.4 * gIn)})`; set(gauge, sm(11.08, 11.16, st));
+    const vis4 = 1 - S(st, T.roll + 0.05, P.heavy);
+    paintCounter(C, st, keys, [vis4, 1, 1, 1], (i) => ({ draw: S(st, T.hud + i * 0.07, P.draw), glass: S(st, T.hud + 0.22 + i * 0.07, P.heavy) }), 1);
+    C.labL.forEach((s, i) => { const p = S(st, T.hud + 0.2 + i * 0.045, P.rise); s.style.opacity = f3(p); s.style.transform = `translateY(${f3((1 - p) * 18)}px)`; });
+    const tg = T.hud + 0.3, gIn = S(st, tg, P.card); gauge.style.transform = `scaleX(${f3(0.6 + 0.4 * gIn)})`; set(gauge, sm(tg - 0.02, tg + 0.06, st));
     const sp = spent(st); gFill.style.width = `${f3(688 * clamp(sp / 750, 0, 1))}px`;
     gTxt.textContent = `Frais prévus · ${Math.round(sp)} / 750 €`;
     const lateK = Math.max(...LATE.map(([T]) => sm(T + 0.1, T + 0.16, st) * (1 - sm(T + 0.42, T + 0.55, st))));
     set(gStamp, lateK); gStamp.style.transform = `rotate(-8deg) scale(${f3(1 + 0.4 * (1 - lateK))})`;
-    set(mention, sm(11.0, 11.4, st) * (1 - sm(19.2, 19.4, st)) * (1 - pOut) * (t < 22.3 ? 1 : 0));
+    set(mention, sm(T.hud + 0.2, T.hud + 0.6, st) * (1 - sm(T.big - 0.15, T.big + 0.05, st)) * (1 - pOut) * (t < REW[0] ? 1 : 0));
 
     // N : les frais
     LN.style.transform = tf(cW, 120);
-    const leave = S(st, 15.3, P.push);
-    set(LN, sm(11.85, 11.9, st) * (1 - sm(15.6, 15.9, st)));
+    const tl = T.deb[6] + 0.35, leave = S(st, tl, P.push);
+    set(LN, sm(T.deb[0] - 0.05, T.deb[0], st) * (1 - sm(tl + 0.05, tl + 0.3, st)));      // la pile s'efface avant d'atteindre le compteur
     debs.forEach((d, i) => {
       const T = DEB[i][0], a = S(st, T, P.card);
       let k = 0; for (let j = i + 1; j < DEB.length; j++) k += S(st, DEB[j][0], P.card);
@@ -341,10 +371,11 @@
 
     // W : ça sonne
     LW.style.transform = tf(cW, 80);
-    set(LW, sm(15.25, 15.4, st) * (1 - sm(17.3, 17.6, st)));
-    const u = clamp((st - 15.4) / 1.7, 0, 1), dv = 1 + Math.min(5, Math.floor(5 * Math.pow(u, 0.8) + 1e-6)), pf = (5 * Math.pow(u, 0.8)) % 1;
-    paintFlaps(flD.slice(0, 2), st, 15.3);
-    flD[2].s.textContent = String(dv); flD[2].d.style.opacity = f3(sm(15.3, 15.4, st));
+    const tw = T.sonne - 0.13;
+    set(LW, sm(tw - 0.05, tw + 0.1, st) * (1 - sm(T.bubble, T.bubble + 0.3, st)));
+    const u = clamp((st - tw - 0.1) / (T.bubble - tw - 0.25), 0, 1), dv = 1 + Math.min(5, Math.floor(5 * Math.pow(u, 0.8) + 1e-6)), pf = (5 * Math.pow(u, 0.8)) % 1;
+    paintFlaps(flD.slice(0, 2), st, tw);
+    flD[2].s.textContent = String(dv); flD[2].d.style.opacity = f3(sm(tw, tw + 0.1, st));
     flD[2].d.style.transform = `perspective(700px) rotateX(${f3(u < 1 ? (1 - Math.min(1, pf * 3)) * 70 : 0)}deg)`;
     msgs.forEach((m, i) => {
       const a = S(st, TM[i], P.card); let k = 0; for (let j = i + 1; j < TM.length; j++) k += S(st, TM[j], P.card);
@@ -353,36 +384,36 @@
       set(m, sm(TM[i] - 0.04, TM[i] + 0.02, st) * clamp(1 - 0.22 * k, 0, 1));
     });
     const nm = TM.filter((x) => st >= x + 0.05).length;
-    mCount.textContent = `Messages · ${nm}`; set(mCount, sm(15.6, 15.7, st)); mCount.style.transform = `scale(${f3(1 + 0.08 * Math.max(...TM.map((x) => sm(x, x + 0.04, st) * (1 - sm(x + 0.04, x + 0.16, st)))))})`;
+    mCount.textContent = `Messages · ${nm}`; set(mCount, sm(TM[0] - 0.02, TM[0] + 0.06, st)); mCount.style.transform = `scale(${f3(1 + 0.08 * Math.max(...TM.map((x) => sm(x, x + 0.04, st) * (1 - sm(x + 0.04, x + 0.16, st)))))})`;
 
     // R : la vente
     LR.style.transform = tf(cW, 100);
-    set(LR, sm(17.45, 17.55, st) * (1 - sm(19.3, 19.5, st)));
-    const bz = st > 17.5 && st < 18.0 ? Math.sin((st - 17.5) * 90) * 6 * (1 - (st - 17.5) / 0.5) : 0;
-    const bi = S(st, 17.5, P.card);
+    set(LR, sm(T.bubble - 0.06, T.bubble + 0.04, st) * (1 - sm(T.big - 0.05, T.big + 0.15, st)));
+    const bz = st > T.bubble && st < T.bubble + 0.5 ? Math.sin((st - T.bubble) * 90) * 6 * (1 - (st - T.bubble) / 0.5) : 0;
+    const bi = S(st, T.bubble, P.card);
     bubble.style.transform = `translate(${f3(bz)}px,${f3((1 - bi) * 120)}px) scale(${f3(0.9 + 0.1 * bi)})`;
-    const ca = S(st, 18.8, P.card);
-    credit.d.style.transform = `translate(${f3(150 + 1150 * (1 - ca))}px,860px)`; set(credit.d, sm(18.78, 18.84, st));
-    if (st > 18.75 && st < 19.6) drawSeq(credit.c, IMG.cles, st - 18.8);
+    const ca = S(st, T.credit, P.card);
+    credit.d.style.transform = `translate(${f3(150 + 1150 * (1 - ca))}px,860px)`; set(credit.d, sm(T.credit - 0.02, T.credit + 0.04, st));
+    if (st > T.credit - 0.05 && st < T.big + 0.25) drawSeq(credit.c, IMG.cles, st - T.credit);
 
     // 9 : 974 €
     set(dim, big * 0.9);
     L9.style.transform = tf(cW, 160);
     set(L9, big);
-    const s9 = S(st, 19.4, { f: 1.4, z: 0.85 });
-    big9.style.transform = `scale(${f3(0.86 + 0.14 * s9)})`; set(glow9, 0.4 + 0.6 * S(st, 19.5, P.heavy));
-    const kb = S(st, 20.6, P.card);
-    kebW.style.transform = `translate(${f3(1150 * (1 - kb))}px,0) scale(.82)`; set(kebW, sm(20.58, 20.64, st));
-    const ks = S(st, 20.8, P.stamp); set(kebSt, sm(20.78, 20.84, st)); kebSt.style.transform = `rotate(-8deg) scale(${f3(lerp(1.8, 1, ks))})`;
-    writeWord(pk1, st, 21.0, 0.035); writeWord(pk2, st, 21.42, 0.035);
+    const s9 = S(st, T.big + 0.05, { f: 1.4, z: 0.85 });
+    big9.style.transform = `scale(${f3(0.86 + 0.14 * s9)})`; set(glow9, 0.4 + 0.6 * S(st, T.big + 0.15, P.heavy));
+    const kb = S(st, T.keb, P.card);
+    kebW.style.transform = `translate(${f3(1150 * (1 - kb))}px,0) scale(.82)`; set(kebW, sm(T.keb - 0.02, T.keb + 0.04, st));
+    const ks = S(st, T.stamp9, P.stamp); set(kebSt, sm(T.stamp9 - 0.02, T.stamp9 + 0.04, st)); kebSt.style.transform = `rotate(-8deg) scale(${f3(lerp(1.8, 1, ks))})`;
+    writeWord(pk1, st, T.pk1, 0.035); writeWord(pk2, st, T.pk2, 0.035);
 
     // D : ce qui a fait la marge
-    const dIn = sm(23.1, 23.6, t) * (t < LOOP ? 1 : 1 - sm(LOOP, LOOP + 0.6, t));
+    const dIn = sm(REW[1] - 0.25, REW[1] + 0.25, t) * (t < LOOP ? 1 : 1 - sm(LOOP, LOOP + 0.6, t));
     const cF = camF(t);
     LD.style.transform = tf(cF, 0);
     set(LD, dIn);
-    if (dIn > 0.01) drawSeq(dCv, IMG.calc, t - 23.1);
-    const t1 = S(t, 23.4, P.rise), t2 = S(t, 23.75, P.rise);
+    if (dIn > 0.01) drawSeq(dCv, IMG.calc, t - REW[1] + 0.25);
+    const t1 = S(t, T.tout, P.rise), t2 = S(t, T.jour0b, P.rise);
     dT1.style.opacity = f3(t1); dT1.style.transform = `translateY(${f3((1 - t1) * 26)}px)`;
     dT2.style.opacity = f3(t2); dT2.style.transform = `translateY(${f3((1 - t2) * 26)}px)`;
     decs.forEach((d, i) => {
@@ -390,17 +421,17 @@
       d.style.transform = `perspective(1400px) translateY(${f3((1 - a) * 220)}px) rotateX(${f3((1 - a) * 35)}deg)`;
       set(d, sm(TD[i] - 0.02, TD[i] + 0.06, t));
     });
-    set(dM, S(t, 24.0, P.rise));
+    set(dM, S(t, TD[0], P.rise));
 
     // effets
-    set(rewFx, sm(22.3, 22.45, t) * (1 - sm(23.15, 23.3, t)) * 0.9);
+    set(rewFx, sm(REW[0], REW[0] + 0.15, t) * (1 - sm(REW[1] - 0.15, REW[1], t)) * 0.9);
     rewFx.style.transform = `translateY(${f3((t * 900) % 6)}px)`;
-    set(flash, 0.5 * sm(8.0, 8.08, t) * (1 - sm(8.08, 8.5, t)) + 0.35 * sm(19.4, 19.48, st) * (1 - sm(19.48, 19.9, st)) * (t < 22.3 ? 1 : 0) + 0.5 * sm(LOOP, LOOP + 0.2, t) * (1 - sm(LOOP + 0.2, LOOP + 0.7, t)));
+    set(flash, 0.5 * sm(T.max, T.max + 0.08, t) * (1 - sm(T.max + 0.08, T.max + 0.5, t)) + 0.35 * sm(T.big + 0.05, T.big + 0.13, st) * (1 - sm(T.big + 0.13, T.big + 0.55, st)) * (t < REW[0] ? 1 : 0) + 0.5 * sm(LOOP, LOOP + 0.2, t) * (1 - sm(LOOP + 0.2, LOOP + 0.7, t)));
   }
 
   // flou de bougé : obturateur ouvert sur les gestes rapides
-  const WIN = [[8.75, 9.7, 0.8], [8.9, 9.5, 0.6], [19.3, 19.8, 0.6], [22.3, 23.3, 0.7], [4.0, 4.5, 0.5]];
-  [...DEB.map((d) => d[0]), ...TM, 17.5, 18.8, 20.6, ...TD].forEach((x) => WIN.push([x - 0.04, x + 0.35, 0.6]));
+  const WIN = [[T.car, T.car + 0.95, 0.8], [T.jOut, T.jOut + 0.6, 0.6], [T.big - 0.05, T.big + 0.45, 0.6], [REW[0], REW[1], 0.7], [T.out, T.out + 0.5, 0.5]];
+  [...DEB.map((d) => d[0]), ...TM, T.bubble, T.credit, T.keb, ...TD].forEach((x) => WIN.push([x - 0.04, x + 0.35, 0.6]));
   const fast = (t) => { let s = 0; for (const [a, b, v] of WIN) s = Math.max(s, v * sm(a - 0.05, a + 0.05, t) * (1 - sm(b - 0.05, b + 0.05, t))); return s; };
   window.shutter = (t) => Math.max(0.12, fast(t));
   window.samples = (t) => (fast(t) > 0.3 ? 4 : 1);
