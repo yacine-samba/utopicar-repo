@@ -6,6 +6,9 @@
   const { track, clamp, lerp, noise } = Motion;
   const { f3, S, sm, P, el, sv, set, defs, word, writeWord, fullWord, notif, load, loadSeqs, drawSeq, counter, rollKeys, paintCounter } = Kit47;
   const stage = document.getElementById('stage');
+  // Clash rend l'espace normale très étroite : « 4 000 » se lit « 4000 ». Espaces des milliers et avant « € » élargies.
+  const TH = (str) => str.replace(/(\d) (\d{3})/g, '$1<i class="th"></i>$2').replace(/ €/g, '<i class="th"></i>€');
+  const fixAm = (n) => { const a = n.d.querySelector('.am'); a.innerHTML = TH(a.innerHTML); return n; };
 
   // ---------- minutage ----------
   const VT = await (await fetch('../audio/vo-mo10/vo-timing.json')).json();
@@ -139,15 +142,15 @@
   // ouverture : « +1 000 € » sur chaque voiture (« mille… chacune »), puis les deux montent se fondre dans « = 2 000 € »
   T.tag = [M('mille') - 0.06, M('chacune') - 0.04]; T.tagUp = T.w2 - 0.12;
   const TAGS = [[366, 1080], [665, 1008]].map(([x, y]) => {
-    const d = el('div', 'glass pill', LP, 'left:0;top:0;font:700 54px Clash;color:#ffb38a;padding:10px 26px'); d.textContent = '+1 000 €';
+    const d = el('div', 'glass pill', LP, 'left:0;top:0;font:700 54px Clash;color:#ffb38a;padding:10px 26px'); d.innerHTML = TH('+1 000 €');
     return { d, x, y };
   });
   // l'annonce de la 207 pendant l'attente : 4 000 → 3 800 → 3 700
   const annP = el('div', 'glass pill', LP, 'left:0;top:0;font:700 40px Clash;padding:12px 26px');
   el('span', '', annP, 'color:rgba(246,239,231,.75);font:500 30px Satoshi').textContent = 'Annonce · ';
-  const annV = el('span', '', annP, 'display:inline-block;position:relative;min-width:150px;height:46px;vertical-align:-6px;overflow:hidden');
+  const annV = el('span', '', annP, 'display:inline-block;position:relative;width:196px;height:46px;vertical-align:-6px;overflow:hidden');
   const PRICES = ['4 000 €', '3 800 €', '3 700 €'];
-  const annS = PRICES.map((p) => { const s = el('span', '', annV, 'position:absolute;left:0;top:0;white-space:nowrap'); s.textContent = p; return s; });
+  const annS = PRICES.map((p) => { const s = el('span', '', annV, 'position:absolute;left:0;top:0;white-space:nowrap'); s.innerHTML = TH(p); return s; });
   const annStk = sv('svg', { width: 160, height: 40, viewBox: '0 0 160 40', style: 'position:absolute;left:0;top:4px;overflow:visible' }, annV);
   const stP = sv('path', { d: 'M2 24 C 50 10, 100 30, 156 12', stroke: '#ff5a1f', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round', 'stroke-dasharray': '180 180', 'stroke-dashoffset': 180 }, annStk);
 
@@ -176,12 +179,12 @@
   const DROPS = [[tOfDay(18), 200], [tOfDay(30), 100]];
   const mk = (title, amt, opts, stampTxt, stampX = 520, stampY = 62, fs = 34) => {
     const w = el('div', 'abs', LN, 'width:780px;height:184px');
-    const n = notif(w, title, amt, opts); n.d.style.left = '0'; n.d.style.top = '0';
+    const n = fixAm(notif(w, title, amt, opts)); n.d.style.left = '0'; n.d.style.top = '0';
     const st = stampTxt ? el('div', 'stamp', w, `left:${stampX}px;top:${stampY}px;font-size:${fs}px`) : null; if (st) st.textContent = stampTxt;
     return { w, n, st };
   };
   const debs = DEB.map(([, s, ti, a, x2]) => ({ ...mk(ti, `${a},00`, { app: 'Compte courant · jour 1' }, x2 ? '× 2' : null, 600), s }));
-  const waits = WAIT.map((x) => ({ ...mk(x.ti, `${x.a},00`, { app: x.app }, x.gag ? 'le voisin a compté' : null, 392, 40, 30), s: x.s, x }));
+  const waits = WAIT.map((x) => ({ ...mk(x.ti, `${x.a},00`, { app: x.app }, x.gag ? 'le voisin a compté' : null, 500, 100, 26), s: x.s, x }));
   const sold = mk('Virement reçu', '4 000,00', { sign: '+', app: 'Compte courant · jour 8' }, 'vendue ✓', 500, 30);
 
   // ---------- R : la vente de la 207 ----------
@@ -191,7 +194,7 @@
   el('div', '', bubble, 'font:700 46px Satoshi;line-height:1.2').innerHTML = '3 600 € et je la prends <span style="font-family:Fraunces;font-style:italic;font-weight:500;color:#ff8a4c">ce soir.</span>';
   const reply = el('div', 'glass msg', LR, 'right:150px;top:884px;border-radius:34px 34px 10px 34px;background:linear-gradient(140deg,rgba(255,120,50,.42),rgba(255,90,31,.16));font-size:42px');
   reply.textContent = "D'accord.";
-  const credit = notif(LR, 'Virement reçu', '3 600,00', { sign: '+', app: 'Compte courant · jour 40' });
+  const credit = fixAm(notif(LR, 'Virement reçu', '3 600,00', { sign: '+', app: 'Compte courant · jour 40' }));
 
   // ---------- 9 : 120 € ----------
   const L9 = el('div', 'L', stage);
@@ -215,8 +218,8 @@
   const shS = [0, 0, 0, 0].map(() => sv('stop', { 'stop-color': '#fff' }, sheen));
   // « 2 × 1 000 € » puis « = 2 000 € ? », chacun centré sur x = 540 et ramené à 700 px de large au plus (caméra comprise, rien au-delà de x = 940)
   const gW1 = sv('g', {}, svgA), gW2 = sv('g', {}, svgA);
-  const W1 = word(gW1, '2 × 1 000 €', '700 150px Clash', 150, 0, 520, { align: 'left' });
-  const W2 = word(gW2, '= 2 000 €', '700 150px Clash', 150, 0, 700, { align: 'left' });
+  const W1 = word(gW1, '2 × 1  000 €', '700 150px Clash', 150, 0, 520, { align: 'left' });   // deux espaces : l'espace des milliers se voit
+  const W2 = word(gW2, '= 2  000 €', '700 150px Clash', 150, 0, 700, { align: 'left' });
   const WQ = word(gW2, '?', 'italic 500 150px Fraunces', 150, W2.width + 34, 700, { italic: true, align: 'left', fill: 'url(#qga)', strokeColor: '#ffb38a', sw: 2 });
   const shine = (() => { const gS = sv('g', {}, gW1); for (const g of W1.items) { const s = sv('text', { x: g.left, y: g.base, 'font-family': 'Clash', 'font-weight': 700, 'font-size': 150, fill: 'url(#sheenA)' }, gS); s.textContent = g.ch; } return gS; })();
   const fitW = (g, w, base) => { const k = Math.min(1, 700 / w); g.setAttribute('transform', `translate(${f3(540 - w * k / 2)},${f3(base * (1 - k))}) scale(${f3(k)})`); };
@@ -232,9 +235,9 @@
   const dCv = el('canvas', 'abs', LD, 'left:-400px;top:-400px;width:1880px;height:2720px;filter:blur(22px) brightness(.26) saturate(.7) sepia(.5)'); dCv.width = 400; dCv.height = 300;
   el('div', 'abs', LD, 'left:-400px;top:-400px;width:1880px;height:2720px;background:radial-gradient(42% 38% at 50% 46%,rgba(70,30,10,.35),rgba(8,7,10,.92) 70%,#08070a)');
   el('div', 'glow', LD, 'left:160px;top:520px;width:760px;height:700px;background:radial-gradient(closest-side,rgba(255,120,50,.32),transparent)');
-  const dT = el('div', 'abs', LD, 'left:0;width:1080px;top:246px;text-align:center;white-space:nowrap;font:700 58px Satoshi;line-height:1.1');
+  const dT = el('div', 'abs', LD, 'left:0;width:1080px;top:240px;text-align:center;white-space:nowrap;font:700 64px Satoshi;line-height:1.1');
   const dT1 = el('div', '', dT); dT1.textContent = 'Ceux qui gagnent';
-  const dT2 = el('div', 'serif', dT, 'font-size:84px;display:inline-block;margin-top:2px'); dT2.textContent = 'comptent en jours.';
+  const dT2 = el('div', 'serif', dT, 'font-size:90px;display:inline-block;margin-top:2px'); dT2.textContent = 'comptent en jours.';
   const vcard = el('div', 'glass vcard', LD, 'top:500px'); el('div', 'sheen', vcard);
   el('div', '', vcard, 'font:700 26px Satoshi;letter-spacing:.3em;color:#a59a90;text-align:center;margin-bottom:6px').textContent = 'MARGE ÷ JOURS';
   function vrow(title, sub, digits) {
@@ -243,23 +246,25 @@
     const o = el('div', 'odo', r); const cols = [];
     for (let i = 0; i < digits; i++) {
       const w = el('div', 'win', o); const c = el('div', 'col', w);
-      for (let k = 0; k <= 10; k++) { const s = el('span', '', c); s.textContent = k % 10; }
+      for (let k = 0; k <= 9; k++) { const s = el('span', '', c); s.textContent = k; }
       cols.push({ w, c });
     }
-    el('span', 'u', o).textContent = '€'; el('span', 'pj', o).textContent = '/ jour';
-    return { r, cols };
+    const u = el('span', 'u', o); u.textContent = '€'; const pj = el('span', 'pj', o); pj.textContent = '/ jour';
+    return { r, o, cols, u, pj };
   }
   const R1 = vrow('Ta première', '440 € ÷ 8 jours', 2);
   el('div', '', vcard, 'height:2px;margin:4px 0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent)');
   const R2 = vrow('Les deux ensemble', '120 € ÷ 40 jours', 1);
-  const paintOdo = (R, x) => {
-    const n = R.cols.length; let rest = x;
+  // chaque chiffre roule de 0 à sa valeur (comme le compteur MARGE), les dizaines un peu avant les unités ;
+  // la position finale tombe exactement sur le chiffre (min(1, p / 0.99))
+  const paintOdo = (R, target, t, t0) => {
+    const ds = String(target).padStart(R.cols.length, '0').split('').map(Number);
     R.cols.forEach((c, i) => {
-      const p = n - 1 - i;                       // 0 = unités
-      const u = x % 10, pos = p === 0 ? u : Math.floor(x / 10) % 10 + Math.max(0, u - 9);
-      c.c.style.transform = `translateY(${f3(-pos * 150)}px)`;
-      if (p > 0) c.w.style.opacity = f3(sm(9, 9.8, x));       // pas de zéro de tête : la dizaine apparaît en passant 10
+      const p = S(t, t0 + 0.12 * i, { f: 1.1, z: 1 }), q = p >= 0.99 ? 1 : p / 0.99, pos = ds[i] * q;
+      c.c.style.transform = `translateY(${f3(-pos * 170)}px)`;
+      c.w.style.filter = p > 0.02 && p < 0.97 ? `blur(${f3(4 * Math.sin(Math.PI * p))}px)` : '';
     });
+    R.o.style.opacity = f3(sm(t0 - 0.06, t0 + 0.06, t));          // rien avant le roulement
   };
   const verd = el('div', 'abs', LD, 'left:0;width:1080px;top:1170px;text-align:center;white-space:nowrap');
   const vd1 = el('div', '', verd, 'font:700 46px Satoshi'); vd1.textContent = "La deuxième, tu l'achètes";
@@ -456,13 +461,11 @@
     const t1 = S(t, T.ceux, P.rise), t2 = S(t, T.comptent, P.rise);
     dT1.style.opacity = f3(t1); dT1.style.transform = `translateY(${f3((1 - t1) * 26)}px)`;
     dT2.style.opacity = f3(t2); dT2.style.transform = `translateY(${f3((1 - t2) * 26)}px)`;
-    const tc = T.comptent - 0.1, vc = S(t, tc, P.card);                       // la carte arrive sur « comptent en jours »
+    const tc = REW[1] + 0.02, vc = S(t, tc, P.card);                          // la carte arrive dès la fin du rembobinage
     vcard.style.transform = `perspective(1500px) translateY(${f3((1 - vc) * 220)}px) rotateX(${f3((1 - vc) * 28)}deg)`; set(vcard, sm(tc - 0.02, tc + 0.06, t));
     const rr = (R, t0) => { const p = S(t, t0, P.rise); R.r.style.opacity = f3(p); R.r.style.transform = `translateY(${f3((1 - p) * 26)}px)`; R.r.style.filter = `blur(${f3((1 - p) * 6)}px)`; };
     rr(R1, T.r1); rr(R2, T.r2);
-    const odoP = (t0) => { const p = S(t, t0, { f: 0.95, z: 1 }); return p >= 0.99 ? 1 : p / 0.99; };
-    paintOdo(R1, 55 * odoP(T.v1)); paintOdo(R2, 3 * odoP(T.v2));
-    for (const [R, t0] of [[R1, T.v1], [R2, T.v2]]) R.cols[R.cols.length - 1].w.style.opacity = f3(sm(t0 - 0.06, t0 + 0.04, t));   // rien avant le roulement
+    paintOdo(R1, 55, t, T.v1); paintOdo(R2, 3, t, T.v2);
     const v1 = S(t, T.verd, P.rise), v2 = S(t, T.verd2, P.rise);
     vd1.style.opacity = f3(v1); vd1.style.transform = `translateY(${f3((1 - v1) * 26)}px)`;
     vd2.style.opacity = f3(v2); vd2.style.transform = `translateY(${f3((1 - v2) * 26)}px) scale(${f3(0.94 + 0.06 * v2)})`;

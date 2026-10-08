@@ -60,12 +60,13 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
 .vrow{display:flex;justify-content:space-between;align-items:center;height:210px}
 .vrow .t{font:700 44px Satoshi;white-space:nowrap}
 .vrow .s{font:500 32px Satoshi;color:rgba(246,239,231,.7);margin-top:8px;white-space:nowrap}
-.odo{position:relative;display:flex;align-items:baseline;white-space:nowrap}
-.odo .win{position:relative;overflow:hidden;height:150px;width:84px}
-.odo .col{position:absolute;left:0;top:0;width:84px}
-.odo .col span{display:block;height:150px;line-height:150px;text-align:center;font:700 150px Clash;font-variant-numeric:tabular-nums}
-.odo .u{font:700 64px Clash;margin-left:8px}
-.odo .pj{font:500 34px Satoshi;color:rgba(246,239,231,.75);margin-left:12px}
+.odo{position:relative;display:flex;align-items:flex-end;white-space:nowrap}
+.odo .win{position:relative;overflow:hidden;height:170px;width:96px}
+.odo .col{position:absolute;left:0;top:0;width:96px}
+.odo .col span{display:block;height:170px;line-height:170px;text-align:center;font:700 132px Clash}
+.odo .u{font:700 62px Clash;margin-left:8px;margin-bottom:24px}
+.odo .pj{font:500 34px Satoshi;color:rgba(246,239,231,.75);margin-left:12px;margin-bottom:38px}
+.th{display:inline-block;width:.26em}
 #grain{position:absolute;inset:-50%;pointer-events:none;opacity:.085;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 #vign{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 65% at 50% 45%,transparent 50%,rgba(0,0,0,.72))}
