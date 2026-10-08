@@ -34,8 +34,8 @@ l'étape 4, chronomètre en main.
 
 | Ordre | Épisode | Ce qu'on teste en plus du sujet | Ce qui tranchera |
 |---|---|---|---|
-| 1 | É1 « Le PV » | rien : la recette seule, sur un autre calcul | vues et part encore là à 3 s, comparées à MO5 |
-| 2 | É2 « La cote » | l'accumulation en grille d'annonces au lieu des débits | durée moyenne, creux entre 6 et 12 s |
+| 1 | É2 « La cote » (MO9) | l'accumulation en grille d'annonces au lieu des débits | durée moyenne, creux entre 6 et 12 s |
+| réserve | É1 « Le PV » | rien : la recette seule, sur un autre calcul | vues et part encore là à 3 s, comparées à MO5 |
 | 3 | É3 « Deux voitures » | un autre chiffre héros : la marge par jour | visionnages complets, enregistrements |
 | 4 | É4 « La pochette » | une ouverture en scène au lieu du calcul | part encore là à 3 s |
 | 5 | É5 « Tout ton budget » | une version courte, 24 s | visionnages complets |
@@ -47,7 +47,7 @@ comparaison. Les résultats de É1 peuvent changer la suite : c'est le principe.
 
 ## É1 « Le PV » : la voiture pas chère
 
-**Brief complet : `brief-mo9.md`** (MO9, 8 octobre 2026, à valider).
+**En réserve** : écarté au brief le 8 octobre 2026 (« autre chose »). Brief complet gardé : `brief-reserve-pv.md`.
 
 Il démarre avec peu d'argent et veut doubler sa mise sur une petite voiture. Le film lui montre que les réparations
 étaient écrites sur le procès-verbal du contrôle technique qu'on lui a remis, et comment le lire avant de parler prix.
@@ -111,6 +111,8 @@ et le sapin · **on commente** pour raconter son pire PV.
 ---
 
 ## É2 « La cote » : le prix affiché
+
+**Choisi le 8 octobre 2026 : MO9, premier épisode produit.** Brief complet : `brief-mo9.md` (voiture en photo libre).
 
 Sa voiture est en ligne, personne n'appelle. Le film lui montre que l'acheteur ne voit jamais la cote : il voit les
 annonces d'à côté, et la sienne est la plus chère.

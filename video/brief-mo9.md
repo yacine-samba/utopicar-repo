@@ -1,234 +1,231 @@
-# Brief : MO9 « Le PV » (série recette 47, épisode 1)
+# Brief : MO9 « La cote » (série recette 47, épisode 1)
 
-Il démarre avec un petit budget : une voiture à 1 500 €, revendue 3 000 €, « le double ». La vidéo suit cette voiture
-du jour de l'achat au jour de la vente. Les réparations tombent une par une, la marge passe sous zéro, puis la vidéo
-rembobine jusqu'à la boîte à gants : tout était écrit sur le procès-verbal du contrôle technique que le vendeur lui a
-remis. Il repart avec la façon de lire un PV et le prix max qui va avec.
+Il vient d'acheter sa voiture pour la revendre. Il regarde la cote, elle dit 5 000 €, il affiche 5 000 €. La vidéo
+suit l'annonce du jour 1 au jour de la vente : la caméra recule et montre les neuf annonces du même modèle autour de
+la sienne, toutes moins chères ; personne n'appelle, il baisse chaque semaine, et il finit par vendre moins cher que
+toutes les autres. Puis la vidéo rembobine et montre comment fixer son prix sur les annonces d'à côté.
 
+Thème choisi avec toi le 8 octobre 2026, à la place de « Le PV » (en réserve : `brief-reserve-pv.md`).
 Écrit avec les skills recette-47, motion-studio et « L'art du hook ». Textes passés à Stop Slop.
 
 ```
 Produit / URL : aucun, rien à vendre       Objectif : arrêt net, revisionnage, enregistrement et partage spontanés
 Plateforme : TikTok, puis Reels et Shorts  Public : débutants qui veulent se lancer dans l'achat-revente auto
-Promesse : tu sais lire un PV de contrôle technique avant de parler prix, et tu en tires ton prix max.
+Promesse : tu fixes ton prix sur les annonces d'à côté, pas sur la cote, et tu sais comment les choisir.
 CTA : aucun, ni dit ni écrit                Type / durée : motion design narratif, 29,6 s, en boucle
 Voix : Simon (ElevenLabs), ton de MO5      Musique : Controlled Drop, mêmes passages que MO5, 120 BPM
-Ouvertures : A = « le contrôle technique a fait une liste » / B = « la liste que tu n'as pas lue »
-Format : 9:16, 1080×1920, 60 i/s           Voiture : une petite voiture à toi, en photo (pas la Polo)
-Données : exemple chiffré, prix moyens sourcés à l'étape 2, « Exemple · prix moyens constatés » à l'écran
-Livrables : 2 MP4 (A et B) + couverture + sous-titres SRT + pistes voix, musique, bruitages
-Interdits : produit, logos de marques et de plateformes, plaques, visages, CTA, morale, chiffre non sourcé
+Ouvertures : A = « ton téléphone n'a pas lu la cote » / C = « et la tienne, à 5 000 »
+Format : 9:16, 1080×1920, 60 i/s           Voiture : photo libre de droits, détourée, sans logo ni plaque
+Données : exemple chiffré, « Exemple · prix moyens constatés » à l'écran, méthode sourcée
+Livrables : 2 MP4 (A et C) + couverture + sous-titres SRT + pistes voix, musique, bruitages
+Interdits : produit, logos de marques et de plateformes, nom de site de cote, plaques, visages, CTA, morale
 ```
 
 ## Pourquoi ce thème
 
-- **Le plus proche de MO5.** Même calcul de débutant en ouverture, même marge qui fond, même chute, même calcul à
-  l'envers. C'est le thème qui a le plus de chances de refaire les vues de MO5, et le seul qui dise si la recette
-  marche sur un autre sujet (épisode 1 du plan, `serie-47.md`).
-- **Le débutant commence petit.** Une première voiture à 1 500 € est le budget de beaucoup de ceux qui se lancent,
-  et « je la revends le double » est le calcul qu'ils font.
-- **Une voiture sur cinq.** En 2025, 19,3 % des contrôles techniques se sont terminés par une contre-visite : 18,6 %
-  pour une défaillance majeure, 0,7 % pour une critique (bilan UTAC-OTC relayé par
-  [La Tribune Auto](https://www.latribuneauto.com/conseils/controle-technique/16453-pres-dun-vehicule-sur-cinq-presente-une-defaillance-necessitant-une-reparation-lors-du-controle-technique-en-2025),
-  à recouper sur le bilan). Le piège est courant, et il est écrit noir sur blanc.
-- **Une valeur qui se garde.** Les trois catégories du PV et le prix max se ressortent le jour où un vendeur tend son
-  contrôle technique.
+- **Il l'a déjà vécu, ou il va le vivre.** Mettre sa voiture « au prix de la cote » est le réflexe du débutant, et
+  « personne n'appelle » est sa première angoisse de vendeur (le temps fort de l'attente de MO5).
+- **Le même calcul que MO5, côté vente.** MO5 démolissait « revente − achat » ; MO9 démolit « prix de vente = cote ».
+  L'ouverture garde la mécanique : son chiffre, puis un objet qui le contredit.
+- **La méthode est sourcée.** La cote suppose une voiture en parfait état et s'écarte du prix réel ; on compare à des
+  annonces du même modèle, même moteur et même finition, avec un kilométrage et une année proches, récentes et proches
+  de chez soi ([Ornikar](https://www.ornikar.com/permis/autour-voiture/achat/occasion/argus),
+  [CapCar](https://www.capcar.fr/blog/la-cote-argus-est-elle-toujours-fiable), sites commerciaux, à recouper à
+  l'étape 2).
+- **Une valeur qui se garde.** Les trois filtres d'une annonce comparable et la règle du prix servent le soir même,
+  au moment de publier.
 
 ## Hypothèse (recette v1)
 
-- **On garde** : les 9 ingrédients, le minutage de MO5, la voix, la musique et ses passages, la charte.
-- **On change** : rien, à part le sujet. La voiture change aussi (décision après MO6), comme à chaque épisode : on la
-  note, on ne la teste pas.
-- **On saura si** : à J+7, MO9 fait au moins la moitié des vues de MO5 à la même période, et sa part encore là à 3 s
-  reste à moins de 5 points de celle de MO5. Alors la recette se transporte. Sous le tiers des vues de MO5, on regarde
-  d'abord le sujet (commentaires, part à 3 s). Seuils provisoires : ils se fixent quand on aura les chiffres complets
-  de MO5.
-- **Fabrication** : le gabarit `film-47`. Le film de MO5 devient un film qui lit un fichier d'épisode (textes,
-  montants, temps des débits, vidéos, voiture, formule). MO9 est le premier épisode fait avec. Deux mesures : le temps
-  entre ce brief validé et le premier maquettage complet, et la fidélité (MO5 rendu par le gabarit, comparé image par
-  image à l'original sur 10 instants).
+- **On garde** : l'ouverture (son chiffre, un contradicteur), le compteur « MARGE », jour 1, l'attente, la chute, le
+  renversement, la boucle, le minutage, la voix, la musique, la charte.
+- **On change** : la forme de l'accumulation. Au lieu des neuf débits, neuf annonces voisines s'allument, une par
+  temps. C'est la variable prévue pour cet épisode dans le journal, et c'est le cœur du sujet.
+- **Deuxième écart, à noter** : la voiture est une photo libre, pas une voiture à toi (ingrédient 3). Si MO9 fait
+  moins bien que MO5, on ne saura pas lequel des deux a pesé. Le test « recette seule », prévu avec « Le PV », passe à
+  un épisode suivant.
+- **On saura si** : durée moyenne et creux de la courbe entre 6 et 12 s, comparés à MO5 ; vues à J+7 dans la même
+  zone que MO5 (au moins la moitié). Seuils provisoires, fixés quand on aura les chiffres complets de MO5.
+- **Fabrication** : le gabarit `film-47` (le film de MO5 piloté par un fichier d'épisode), avec un nouveau module,
+  **la grille qui se filtre**. Mesures : le temps entre ce brief validé et le premier maquettage complet, la fidélité
+  du gabarit (MO5 rendu par le gabarit, comparé à l'original sur 10 instants), la part d'images en mouvement de la
+  grille (`ref-motion.py`).
 
 ## Le hook (skill « L'art du hook »)
 
-**Analyse** : douleur visée, il a un petit budget et peur de tout perdre sur sa première voiture · croyance, « moins je
-paie, plus je gagne : achetée 1 500, revendue 3 000, c'est le double » · vérité, sur une voiture à 1 500 €, les
-réparations imposées par le contrôle technique mangent la marge, et le PV les annonçait avant l'achat.
+**Analyse** : douleur visée, son annonce est en ligne et personne n'appelle · croyance, « le bon prix, c'est la cote »
+· vérité, l'acheteur ne voit jamais la cote ; il voit les annonces voisines du même modèle, et il passe la plus chère.
 
 | | Levier | Voix | Texte à l'écran | Image 0 |
 |---|---|---|---|---|
-| A | Croyance → vérité (mécanique MO5) | « Tu l'achètes 1 500, tu la revends 3 000. Le contrôle technique, lui, a fait une liste. » | 1 500 → 3 000 = × 2 ? | « 1 500 → 3 000 » en Clash géant, « × 2 ? » écrit à la lumière ; un ruban de papier se déroule depuis la droite et percute le « 2 » |
-| B | Coût caché | « Une voiture à 1 500 €, c'est surtout une liste de réparations que tu n'as pas lue. » | La liste que tu n'as pas lue | Une boîte à gants s'ouvre sur un PV plié, éclairé par le trait de lumière |
-| C | Démonstration | « Rotule. Flexible de frein. Échappement. Ta voiture à 1 500 €, vue par le contrôle technique. » | Ta 1re voiture, vue par le CT | Les lignes du PV s'allument une à une sur la carrosserie |
-| D | Phrase impossible à ignorer | « La voiture la moins chère de l'annonce a souvent le PV le plus long. » | Le PV le plus long | Un PV qui se déroule jusqu'à sortir du cadre |
+| A | Croyance → vérité (mécanique MO5) | « La cote dit 5 000, tu l'affiches à 5 000. Ton téléphone n'a pas lu la cote. » | Cote 5 000 € = prix ? | « Cote 5 000 € » écrit à la lumière, « = prix ? » dessous ; un téléphone posé, écran noir |
+| B | Coût caché | « Mettre ta voiture au prix de la cote, ça ne coûte rien le premier jour. Ensuite, 200 € par semaine. » | − 200 € par semaine | Le prix de l'annonce barré, réécrit, barré, réécrit |
+| C | Démonstration | « Même modèle : 4 700, 4 650, 4 590. Et la tienne, à 5 000. » | Et la tienne ? | Neuf cartes d'annonces, la sienne allumée en orange au centre |
+| D | Erreur intelligente | « Les débutants sérieux vérifient tous la cote. L'acheteur, lui, ne l'a jamais vue. » | L'acheteur n'a pas vu la cote | Une cote qui s'efface derrière une grille d'annonces |
 
-**Recommandation** : A en ouverture principale, B en test. A reprend mot pour mot la mécanique de MO5 sur un autre
-calcul, ce que l'épisode doit mesurer. B garde le sujet avec un autre levier : si elle retient mieux, on l'apprend.
+**Recommandation** : A en ouverture principale, C en test. A reprend la mécanique de MO5 avec un nouveau contradicteur
+(le téléphone). C montre la grille dès l'image 0 : si elle retient mieux, la grille tient aussi comme ouverture.
 
 **Les 4 verrous de A** :
-- Temps ✅ : « achètes » et le premier prix dans les quatre premiers mots, le second prix dans la même phrase.
-- Sens ✅ : deux phrases courtes, voix active, « contrôle technique » connu de tous.
-- Miroir ✅ : c'est son calcul de petit budget, en « tu ».
-- Écart ✅ : il voit « le double » ; « a fait une liste » ouvre la question de ce qu'il y a dessus, sans le dire.
+- Temps ✅ : « la cote » et « 5 000 » dans les quatre premiers mots, le second « 5 000 » dans la même phrase.
+- Sens ✅ : deux phrases courtes, aucun mot de pro.
+- Miroir ✅ : c'est exactement ce qu'il a fait en publiant, en « tu ».
+- Écart ✅ : il croit son prix juste ; le téléphone muet dit non, sans dire pourquoi.
 
-**Relances dans le corps** : « Jour 1. » à 4,3 s · « Ils appellent tous. » à 12,4 s · « moins 123 » à 18,6 s ·
-« Tout était écrit sur le PV. » à 21 s.
+**Relances dans le corps** : « Jour 1. » à 4,3 s · « Et la tienne, à 5 000. » à 9 s · « Chaque semaine, tu baisses. »
+à 12,4 s · « 70 euros » à 18,6 s · « Ceux qui vendent vite… » à 21 s.
 
 ## La grille de transposition
 
 | Temps | MO5 | MO9 |
 |---|---|---|
-| Ouverture | « Tu l'achètes 3 500, tu la revends 5 000. » / « Ton compte en banque n'est pas d'accord. » | « Tu l'achètes 1 500, tu la revends 3 000. » / « Le contrôle technique, lui, a fait une liste. » |
-| Image 0 | « 5 000 − 3 500 = 1 500 € ? » | « 1 500 → 3 000 = × 2 ? » |
-| Chiffre héros | MARGE 1 500 € | MARGE 1 500 € (le même compteur : la série se reconnaît) |
-| Héros visible | la Polo, étiquettes de prix | ta petite voiture, étiquettes de prix ; le PV dans la boîte à gants |
-| Jour 1 | « Jour 1, tu l'achètes. » | « Jour 1, tu l'achètes. » Le vendeur lui tend le PV, il le range sans le lire. |
-| Accumulation | 9 débits, chacun avec sa vidéo | 9 débits : les lignes du PV, puis les frais d'une première voiture |
-| Gag | « Kebab · après la 4e visite » | « Désodorisant sapin × 4 · − 8 € » |
-| Attente | J+1 → J+23, « Et là, personne n'appelle. » | J+1 → J+18, « Ils appellent tous. Pour 2 000. » : les messages pleuvent, les offres sont basses |
-| Chute | « Bénéfice, 47 euros. Même pas un plein. » | « Bénéfice : moins 123 euros. Tu as payé pour la vendre. » |
-| Renversement | le calcul à l'envers, 2 750 € | le PV relu (mineure, majeure, critique) puis le calcul à l'envers : 875 € |
-| Boucle | « La prochaine fois que tu te dis… » | « La prochaine fois que tu te dis… » |
-| Ce qu'on enregistre | la liste des frais, la formule | les trois catégories du PV, la formule avec les réparations |
-| Ce qu'on envoie | « Même pas un plein », le kebab | « Tu as payé pour la vendre », le sapin |
-| Ce qu'on commente | ses frais oubliés | son pire PV |
+| Ouverture | « Tu l'achètes 3 500, tu la revends 5 000. » / « Ton compte en banque n'est pas d'accord. » | « La cote dit 5 000, tu l'affiches à 5 000. » / « Ton téléphone n'a pas lu la cote. » |
+| Image 0 | « 5 000 − 3 500 = 1 500 € ? » | « Cote 5 000 € = prix ? » |
+| Chiffre héros | MARGE 1 500 € | MARGE 1 000 € (achetée 4 000 €, frais compris) |
+| Héros visible | la Polo, étiquettes de prix | la voiture dans sa carte d'annonce ; le prix barré et réécrit, une étiquette par baisse |
+| Jour 1 | « Jour 1, tu l'achètes. » | « Jour 1, tu publies. » L'annonce part en ligne. |
+| Accumulation | 9 débits, chacun avec sa vidéo | 9 annonces du même modèle s'allument autour de la sienne, prix et kilométrage |
+| Gag | « Kebab · après la 4e visite » | une annonce : « Échange possible contre jet-ski » |
+| Attente | J+1 → J+23, « Et là, personne n'appelle. » | J+7 → J+41, une baisse de 200 € par semaine, « Toujours en vente. *Zéro appel.* » |
+| Chute | « Bénéfice, 47 euros. Même pas un plein. » | « 4 200, tu acceptes. Bénéfice : 70 euros. La moins chère de toutes. » |
+| Renversement | le calcul à l'envers, 2 750 € | la grille se filtre, le prix du milieu, « ton prix : 4 650 » |
+| Boucle | « La prochaine fois que tu te dis… » | « La prochaine fois que tu te dis… » → « La cote dit 5 000… » |
+| Ce qu'on enregistre | la liste des frais, la formule | les trois filtres, la règle du prix |
+| Ce qu'on envoie | « Même pas un plein », le kebab | « La moins chère de toutes », le jet-ski |
+| Ce qu'on commente | ses frais oubliés | pour ou contre la cote, ses propres baisses de prix |
 
-## Le scénario chiffré (exemple, à sourcer à l'étape 2)
+## Le scénario chiffré (exemple)
 
-Une petite citadine essence de plus de 10 ans, achetée 1 500 €, revente visée 3 000 €. Marge prévue : 1 500 €. Le PV
-remis par le vendeur liste cinq défaillances majeures, parmi les plus fréquentes au contrôle (feux, pneus, freinage,
-suspension, échappement).
+Une citadine essence de 2014, boîte manuelle, 125 000 km, achetée 4 000 € frais compris. La cote dit 5 000 €. Marge
+prévue : 1 000 €.
 
-| Moment | Débit | Montant (provisoire) | Compteur |
+**La grille** (neuf annonces du même modèle, toutes sous 5 000 €) :
+
+| Prix | Détail | Gardée au renversement ? |
+|---|---|---|
+| 4 450 € | 168 000 km | non : kilométrage trop loin |
+| 4 590 € | 2014 · 131 000 km | oui |
+| 4 650 € | 2014 · 124 000 km | oui |
+| 4 690 € | diesel | non : autre moteur |
+| 4 700 € | 2014 · 128 000 km | oui |
+| 4 750 € | 2014 · 119 000 km | oui |
+| 4 790 € | 2016 | non : autre année |
+| 4 850 € | « échange possible contre jet-ski », boîte auto | non : autre boîte (le gag) |
+| 4 900 € | 2014 · 112 000 km | oui |
+
+**L'attente** (compteur « MARGE ») :
+
+| Jour | Ce qui tombe | Prix affiché | Marge |
 |---|---|---|---|
-| Accumulation | Carte grise | 150 € | 1 350 |
-| | Rotule de suspension | 150 € | 1 200 |
-| | Flexible de frein | 80 € | 1 120 |
-| | Silencieux | 150 € | 970 |
-| | 2 pneus | 120 € | 850 |
-| | Réglage des feux | 20 € | 830 |
-| | Contre-visite | 25 € | 805 |
-| | Produits de nettoyage | 20 € | 785 |
-| | **Désodorisant sapin × 4** | 8 € | 777 |
-| Attente | Essence · 5 visites | 35 € | 742 |
-| | Assurance · 1 mois | 35 € | 707 |
-| | Annonce remontée | 30 € | 677 |
-| Chute | Vendue 2 200 € au lieu de 3 000 € | − 800 € | **− 123** |
+| Jour 1 | publication | 5 000 € | 1 000 € |
+| J+7 | Baisse de prix · − 200 € | 4 800 € | 800 € |
+| J+14 | Baisse de prix · − 200 € ; Annonce remontée · − 30 € | 4 600 € | 570 € |
+| J+21 | Baisse de prix · − 200 € ; Assurance · 1 mois · − 35 € | 4 400 € | 335 € |
+| J+30 | Annonce remontée · − 30 € | 4 400 € | 305 € |
+| J+38 | Assurance · 2e mois · − 35 € | 4 400 € | 270 € |
+| J+41 | « Je vois que vous l'avez baissée. 4 200 ? » | 4 200 € | **70 €** |
 
-Réparations du PV : 545 €. Autres frais : 278 €, arrondis à 280 dans la formule (MO5 arrondissait 953 à 950). Le calcul à l'envers : revente réelle 2 200 − réparations du PV 545 −
-frais 280 − marge voulue 500 = **prix max 875 €**. À 1 500 €, on passe son tour.
+4 200 €, c'est moins que les neuf annonces de la grille : « la moins chère de toutes ».
 
-Premiers ordres de grandeur relevés le 8 octobre 2026 (sur une Clio II), à préciser à l'étape 2 : rotule de suspension
-45 à 250 € selon la source ([Mecazen](https://mecazen.fr/carnet-entretien-auto/renault/clio-2/rotules-de-suspension),
-[GoodMecano](https://www.goodmecano.com/reparation-automobile-par-marque/renault/clio-ii/remplacement-jeu-rotule-suspension-avant-66)),
-flexible de frein 50 à 100 € posé ([AD](https://www.ad.fr/guides/guide-conseil/freinage/flexible-de-frein)),
-silencieux arrière 70 à 200 € pièce et pose ([GoodMecano](https://www.goodmecano.com/reparation-automobile-par-marque/renault/clio-ii/remplacement-silencieux-arriere-72),
-[Oscaro](https://www.oscaro.com/silencieux-arriere-renault-clio-ii-3-portes-1-4-i-75cv-3437-11661-0-gt)). Contrôle
-technique, contre-visite et carte grise : méthode et sources de MO5 (`docs/timeline-mo5.md`). Les défaillances les plus
-fréquentes (feu de croisement mal orienté, pneu endommagé) viennent des bilans UTAC 2023-2024 relayés par
-[J2R Auto](https://j2rauto.com/reseaux/controle-technique-ce-quil-faut-retenir-du-bilan-2024), à recouper.
+**Le renversement** : les cinq annonces gardées valent 4 590, 4 650, 4 700, 4 750 et 4 900 €. Le prix du milieu est
+4 700 € ; « ton prix » se place juste dessous, à **4 650 €**, soit 650 € de marge au lieu de 70, et 450 € de plus
+qu'à J+41.
 
-Si une fourchette sourcée fait remonter le chiffre final au-dessus de zéro, la chute garde la forme de MO5 : un
-chiffre ridicule et une comparaison de tous les jours.
-
-## Les règles du PV (vérifiées le 8 octobre 2026, à recouper sur la fiche officielle)
-
-- Défaillance **mineure** : pas de contre-visite. **Majeure** : réparer et passer la contre-visite dans les 2 mois.
-  **Critique** : la voiture ne roule plus après minuit le jour du contrôle
-  ([Ornikar](https://www.ornikar.com/code/cours/mecanique-vehicule/entretien/defaillances-majeures),
-  [Fiches-auto](https://www.fiches-auto.fr/articles-auto/controle-technique/s-3287-difference-entre-defaillance-mineure-majeure-et-critique.php),
-  [Allianz](https://www.allianz.fr/assurance-particulier/vehicules/assurance-auto/conseils-pratiques/contre-visite-controle-technique.html)).
-- Le vendeur d'une voiture de plus de 4 ans remet un contrôle de moins de 6 mois, de moins de 2 mois s'il y a une
-  contre-visite ([Groupama](https://www.groupama.fr/assurance-auto/conseils/vendre-sa-voiture/sans-controle-technique/)).
-  C'est pour ça que le PV est dans la boîte à gants le jour de l'achat : il l'avait en main.
-- À l'écran, le PV est une carte de verre de notre charte, « Procès-verbal de contrôle technique » écrit en texte. On
-  ne redessine pas le vrai document.
+À l'étape 2 : un vrai modèle courant pour la photo, et une grille de prix cohérente avec ses annonces réelles du
+moment, sans reproduire aucune annonce ni nommer aucun site. Les frais de l'attente reprennent les sources de MO5
+(`docs/timeline-mo5.md`).
 
 ## L'histoire en 7 temps
 
-Minutage indicatif, celui de MO5 ; l'étape 2 le fixe à l'image près sur la grille musicale.
+Minutage indicatif, celui de MO5, avec une accumulation un peu plus courte et une attente plus longue (six semaines à
+raconter) ; l'étape 2 le fixe à l'image près sur la grille musicale.
 
 | Temps | Ce qu'on voit | Ce qu'on entend | Émotion |
 |---|---|---|---|
-| 0-4,2 s · **le calcul** | Image 0 déjà composée : « 1 500 → 3 000 » en chiffres géants, « × 2 ? » écrit à la lumière, le « ? » en Fraunces orange. Un ruban de papier arrive par la droite et percute le « 2 », qui tremble. | « Tu l'achètes 1 500, tu la revends 3 000. Le contrôle technique, lui, a fait une liste. » Choc du papier. | sourire, question |
-| 4,2-5,9 s · **jour 1** | Palettes « JOUR 1 ». La voiture entre par la droite et freine, son contour se trace à la lumière. Le compteur « MARGE 1 500 € » se construit. Une main pose le PV plié dans la boîte à gants, qui se referme. | « Jour 1, tu l'achètes. » Palettes, clic de la boîte à gants. | élan |
-| 5,9-12 s · **la liste** | Les débits tombent dans la profondeur, un par temps, chacun avec sa vidéo dedans (garage, pont élévateur, frein, pneu, échappement). Chaque débit colle une étiquette de prix sur la voiture. Le sapin arrive seul, plus petit, de travers. Le compteur roule 1 500 → 777. | « Rotule, flexible de frein, échappement. Contre-visite. » Un choc de débit par temps, chacun sur une note plus basse. | peur qui monte, rire |
-| 12-15,6 s · **l'attente** | La nuit tombe, palettes J+1 → J+18. Les messages s'empilent en verre : « 2 000 cash ? », « Dernier prix ? », « Je passe demain », puis plus rien. Les derniers frais tombent sous le calendrier. Compteur 677. | « Ils appellent tous. Pour 2 000. » La musique perd sa basse, vibrations. | agacement, peur |
-| 15,6-20,9 s · **la chute** | Une bulle : « 2 200 et je la prends. » Virement + 2 200 €. Le compteur roule sous zéro et se fond dans un « − 123 € » géant ; tout le reste s'éteint, la musique s'arrête net. « *Tu as payé pour la vendre.* » s'écrit dessous. | « Tu lâches à 2 200. Bénéfice : moins 123 euros. » (silence) « Tu as payé pour la vendre. » Arrêt de bande. | humour noir |
-| 20,9-27,4 s · **le PV relu** | Rembobinage jusqu'au jour 1 : les étiquettes se décollent, le compteur remonte, la boîte à gants se rouvre et le PV se déplie en carte de verre. Trois lignes s'allument : « Mineure · rien à refaire », « Majeure · contre-visite sous 2 mois », « Critique · à l'arrêt le soir même ». Puis la formule : revente 2 200 − réparations du PV 545 − frais 280 − marge voulue 500 = « *prix max* 875 € ». « Annonce · 1 500 € » glisse dessous et se barre. | « Tout était écrit sur le PV. Ceux qui gagnent le lisent avant le prix. Ton prix max : 875. À 1 500, tu passes ton tour. » Souffle inversé, la musique repart sur le temps. | soulagement, valeur |
-| 27,4-29,6 s · **la boucle** | La formule s'efface, « 1 500 → 3 000 = × 2 ? » revient dans le cadre de l'image 0. | « La prochaine fois que tu te dis… » → « Tu l'achètes 1 500… » | boucle |
+| 0-4,2 s · **la cote** | Image 0 déjà composée : « Cote 5 000 € » en Clash géant, écrit à la lumière, « = prix ? » dessous, le « ? » en Fraunces orange. À côté, un téléphone posé, écran noir ; il ne s'allume pas. | « La cote dit 5 000, tu l'affiches à 5 000. Ton téléphone n'a pas lu la cote. » | sourire, question |
+| 4,2-5,9 s · **jour 1** | Palettes « JOUR 1 ». La voiture entre par la droite et freine dans sa carte d'annonce en verre, prix 5 000 €. Le compteur « MARGE 1 000 € » se construit en haut. | « Jour 1, tu publies. » Palettes, petit son d'envoi. | élan |
+| 5,9-10,5 s · **la grille** | La caméra recule : neuf cartes d'annonces du même modèle s'allument autour de la sienne, une par temps, chacune avec sa photo floutée, son prix et son kilométrage. Le jet-ski arrive de travers. La sienne reste la seule au-dessus de 4 900. | « Même modèle : 4 700, 4 650, 4 590. Et la tienne, à 5 000. » Une note par carte. | peur qui monte, rire |
+| 10,5-15,6 s · **l'attente** | La nuit tombe, palettes J+7 → J+41. À chaque semaine, une notification « Baisse de prix · − 200 € » ; le prix de la carte se barre et se réécrit ; une étiquette se colle sur la voiture. Les petits frais tombent dessous. « Toujours en vente. *Zéro appel.* » Le compteur fond jusqu'à 270. | « Chaque semaine, tu baisses. » La musique perd sa basse ; palettes, tic-tac. | peur |
+| 15,6-20,9 s · **la chute** | Le téléphone vibre enfin : « Je vois que vous l'avez baissée. 4 200 ? » Virement + 4 200 €. Le compteur roule jusqu'à 70 et se fond dans un « 70 € » géant ; la grille se rallume en arrière-plan, toutes les cartes au-dessus de la sienne. La musique s'arrête net. « *La moins chère de toutes.* » s'écrit dessous. | « Il a vu que tu baissais. 4 200, tu acceptes. Bénéfice : 70 euros. » (silence) « La moins chère de toutes. » | humour noir |
+| 20,9-27,4 s · **le renversement** | Rembobinage jusqu'au jour 1 : les étiquettes se décollent, le prix remonte à 5 000, le compteur remonte. La grille revient et se filtre en trois gestes, chacun écrit sur une carte de verre : « Même moteur, même boîte » · « Kilométrage proche » · « Même année ». Les cartes écartées tombent, il en reste cinq ; leur prix du milieu s'allume (4 700). Puis : « Ton prix : 4 700 − 50 = *4 650 €* ». L'annonce à 5 000 € se barre et devient 4 650 €. | « Ceux qui vendent vite regardent les annonces d'à côté. Ton prix : 4 650. » Souffle inversé, la musique repart sur le temps, une note par filtre. | soulagement, valeur |
+| 27,4-29,6 s · **la boucle** | La grille s'efface, « Cote 5 000 € = prix ? » revient dans le cadre de l'image 0. | « La prochaine fois que tu te dis… » → « La cote dit 5 000… » | boucle |
 
-**La voix complète (provisoire, 82 mots écrits en comptant « 1 500 » pour deux ; MO5 en fait 75)** :
+**La voix complète (provisoire, 80 mots écrits en comptant « 5 000 » pour deux ; MO5 en fait 75)** :
 
 ```
-Tu l'achètes 1 500, tu la revends 3 000.
-Le contrôle technique, lui, a fait une liste.
-Jour 1, tu l'achètes.
-Rotule, flexible de frein, échappement. Contre-visite.
-Ils appellent tous. Pour 2 000.
-Tu lâches à 2 200.
-Bénéfice : moins 123 euros.
-Tu as payé pour la vendre.
-Tout était écrit sur le PV.
-Ceux qui gagnent le lisent avant le prix.
-Ton prix max : 875. À 1 500, tu passes ton tour.
+La cote dit 5 000, tu l'affiches à 5 000.
+Ton téléphone n'a pas lu la cote.
+Jour 1, tu publies.
+Même modèle : 4 700, 4 650, 4 590.
+Et la tienne, à 5 000.
+Chaque semaine, tu baisses.
+Il a vu que tu baissais.
+4 200, tu acceptes.
+Bénéfice : 70 euros.
+La moins chère de toutes.
+Ceux qui vendent vite regardent les annonces d'à côté.
+Ton prix : 4 650.
 La prochaine fois que tu te dis…
 ```
 
-Ouverture B (même corps) : « Une voiture à 1 500 €, c'est surtout une liste de réparations que tu n'as pas lue. »
-Je la resserre à l'étape 4, chronomètre en main : la parole doit tenir en 22 s environ. Première coupe possible : ne
-dire que « Ton prix max : 875. » et laisser « À 1 500, tu passes ton tour. » à l'écran.
+Ouverture C (même corps) : « Même modèle : 4 700, 4 650, 4 590. Et la tienne, à 5 000. » Le corps passe alors
+directement à « Jour 1 » sans répéter la grille parlée. Je resserre la voix à l'étape 4, chronomètre en main : la
+parole doit tenir en 22 s environ.
 
 ## La direction artistique
 
 La charte de MO5, sans changement : fond #08070a, orange #ff5a1f / #ff8a4c / #ffb38a, Clash Display pour les
-chiffres, Satoshi pour l'interface, Fraunces italique en dégradé orange pour le mot porteur (« liste », « vendre »,
-« prix max », « passes ton tour »). Verre dépoli pour les notifications, le compteur, les palettes, les messages et le
-PV ; lueurs orange (la dérogation de MO5 à « pas de glow sur l'interface », demandée par toi le 6 octobre, est
-reconduite pour toute la série) ; grain ; caméra continue avec flou de bougé.
+chiffres, Satoshi pour l'interface, Fraunces italique en dégradé orange pour le mot porteur (« prix ? », « Zéro
+appel. », « La moins chère de toutes. », « 4 650 € »). Verre dépoli pour les cartes d'annonces, le compteur, les
+palettes, les notifications et les filtres ; lueurs orange (la dérogation de MO5 à « pas de glow sur l'interface »,
+demandée par toi le 6 octobre, est reconduite pour la série) ; grain ; caméra continue avec flou de bougé.
 
 **Nouveau dans MO9** :
-- **Le ruban du PV** : une bande de papier qui se déroule à l'ouverture, se plie dans la boîte à gants, puis se
-  déplie en carte de verre au renversement. Il relie le début, le milieu et la fin.
-- **La boîte à gants** : dessinée en lignes de lumière dans l'habitacle, comme la radiographie de MO6. Elle s'ouvre
-  au jour 1 et au renversement.
-- **Le compteur sous zéro** : le rouleau des milliers affiche un signe moins quand la marge passe sous zéro.
+- **La grille d'annonces** : des cartes de verre de notre charte (photo floutée, prix, kilométrage, année), jamais
+  l'interface d'un site d'annonces. Elles s'allument une par temps pendant que la caméra recule.
+- **La grille qui se filtre** : à chaque filtre, les cartes écartées basculent et tombent dans la profondeur, les
+  autres se resserrent ; le prix du milieu se trace à la lumière.
+- **Le prix qui se barre** : à chaque baisse, un trait orange barre le prix de la carte et le nouveau s'écrit dessous,
+  comme une annonce qu'on modifie.
 
-**Plans réels** (Mixkit, comme MO5) : garage et pont élévateur, mains sur un pneu, frein ou étrier, échappement vu de
-dessous, signature d'un papier, éponge sur une carrosserie, téléphone posé la nuit. Je réutilise les plans de MO5 qui
-conviennent (`docs/timeline-mo5.md`) et je cherche les autres sur une planche de vignettes à l'étape 2.
+**La voiture** : une photo libre de droits (Wikimedia Commons, licence et auteur notés comme pour MO8), détourée avec
+`cutout.py`, contour tracé à la lumière, logos et plaque retirés. Un modèle courant qui n'apparaît pas dans la liste de
+MO8 (« Les 5 moteurs »), pour ne pas brouiller les deux vidéos : par exemple une Toyota Yaris, une Dacia Sandero ou une
+Opel Corsa. Je te propose deux ou trois photos à l'étape 2.
+
+**Plans réels** (Mixkit, comme MO5) : téléphone posé la nuit, main qui fait défiler un téléphone, route de nuit. Je
+réutilise ceux de MO5 qui conviennent.
 
 ## Le son
 
-- **Musique** : Controlled Drop, les passages de MO5 (mesure 13 jusqu'à la chute, arrêt de bande sur « moins 123 »,
+- **Musique** : Controlled Drop, les passages de MO5 (mesure 13 jusqu'à la chute, arrêt de bande sur « 70 euros »,
   souffle inversé, mesure 55 pour le renversement), recalés sur la nouvelle voix.
-- **Bruitages** : papier qui se déroule, boîte à gants, palettes, chocs de débit sur des notes qui descendent,
-  vibrations, papier qui se déplie, feutre. Banque Mixkit de MO5 d'abord.
+- **Bruitages** : écriture à la lumière, palettes, son d'envoi de l'annonce, une note par carte de la grille, trait
+  qui barre le prix, vibration, cartes qui tombent au filtre. Banque Mixkit de MO5 d'abord.
 - **Mix** : la méthode de MO5, −14 LUFS, plafond −3,5 dBTP avant l'encodage, contrôle sur le MP4.
 
 ## Pourquoi on la revoit, on l'enregistre et on l'envoie
 
-- **Revoir** : la dernière phrase relance la première, et les neuf débits passent trop vite pour tous les lire.
-- **Enregistrer** : les trois catégories du PV et la formule du prix max, à ressortir le jour où un vendeur tend son
-  contrôle technique.
-- **Envoyer** : « Tu as payé pour la vendre » et le sapin, au pote qui cherche une voiture pas chère.
-- **Commenter** : chacun voudra raconter son pire PV.
+- **Revoir** : la dernière phrase relance la première, et les neuf annonces passent trop vite pour toutes les lire.
+- **Enregistrer** : les trois filtres d'une annonce comparable et la règle « juste sous le prix du milieu », à
+  ressortir au moment de publier.
+- **Envoyer** : « La moins chère de toutes » et le jet-ski, au pote qui vient de mettre sa voiture en ligne.
+- **Commenter** : chacun voudra défendre la cote, ou raconter combien de fois il a baissé.
 
 ## Production : les 5 étapes
 
 | Étape | Ce que je livre | Ce que tu valides |
 |---|---|---|
 | 1. Brief | ce document | « OK », ou tes changements |
-| 2. Timeline et images tests | le déroulé seconde par seconde, les montants sourcés, les plans réels et leurs licences, 3 à 5 images tests en 1080×1920 (le calcul, la liste, − 123 €, le PV relu, la formule), le gabarit `film-47` vérifié sur MO5 | la DA et le déroulé |
+| 2. Timeline et images tests | le déroulé seconde par seconde, le modèle et sa photo libre, la grille de prix, la méthode recoupée, 3 à 5 images tests en 1080×1920 (la cote, la grille, 70 €, le filtre, 4 650 €), le gabarit `film-47` vérifié sur MO5 | la DA et le déroulé |
 | 3. Maquettage complet | une image toutes les 0,1 s, en planches par temps | chaque temps |
 | 4. Voix off | le script final, deux prises de Simon posées sur la musique ; estimation des crédits ElevenLabs avant de générer | le texte, puis la prise |
 | 5. Animation | le film, le son, le mix, `qa_video.py` sans FAIL, les 2 MP4, la couverture, les SRT | la livraison |
 
 ## Ce qu'il me faut
 
-1. **Ton « OK » sur ce brief**, ou ce que tu changes. Et l'ouverture : A en principale (ma recommandation), ou B.
-2. **La voiture** : une photo d'une petite voiture à toi, ta Clio 2 si tu en as une (trois quarts avant, plein jour,
-   personne autour, plaque visible ou non : je la retire). Sinon, dis-moi si on reprend la Polo.
-3. **Si tu en as un** : un vrai PV de contrôle technique avec des défaillances majeures (photo, nom et plaque cachés).
-   Une vraie liste remplace la liste d'exemple.
-4. **Avant la publication** (pas avant la production) : les chiffres de MO5 dans TikTok Studio, pour fixer les seuils
+1. **Ton « OK » sur ce brief**, ou ce que tu changes. Et l'ouverture : A en principale (ma recommandation), ou C.
+2. **Si tu as vécu ce cas** : le prix que tu avais affiché, combien de fois tu as baissé, à combien tu as vendu. Un
+   exemple vécu remplace l'exemple construit.
+3. **Avant la publication** (pas avant la production) : les chiffres de MO5 dans TikTok Studio, pour fixer les seuils
    de l'hypothèse.
