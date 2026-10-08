@@ -129,7 +129,7 @@ def cue(t, i, role, prio=2, st=0, dur=None, pan=0.0, gain=0, rev=False, lead=0.0
 
 E_ = EV
 # ouverture : « 5 600 » s'écrit à la lumière, le virement se pose (sans choc), le ✓ se trace
-cue(0.15, 2589, 'orn', 3, dur=0.8, pan=-0.15, gain=-3)                       # la flèche pulse
+cue(E_['b3900'] + 0.25, 2589, 'orn', 2, dur=0.9, gain=-3)                    # le point de lumière descend la flèche
 cue(E_['w2'], 3005, 'orn', 2, dur=0.7, pan=0.1)                               # « 5 600 » s'écrit
 cue(E_['notif'], 1490, 'whoosh', 2, dur=0.5, pan=0.45, lead=0.12)             # le virement arrive de la droite
 cue(E_['notif'] + 0.04, 2354, 'ui', 1, st=2, pan=0.2, gain=-2)                # il se pose : une note, pas d'impact

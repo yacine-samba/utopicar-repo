@@ -12,7 +12,7 @@
   const DUR = VT.dur, LOOP = VT.loop;                     // 31,4 s, boucle à 29,24 s (scripts/vo-mo9.py)
   const M = (k) => VT.marks[k].t, ME = (k) => VT.marks[k].end;
   const T = {
-    w2: M('revends') - 0.05,                  // « 5 600 » s'écrit sur « tu la revends »
+    b3900: M('b3900'), w2: M('revends') - 0.05,   // la lumière sur « 3 900 » ; « 5 600 » s'écrit sur « tu la revends »
     notif: ME('b5600') - 0.05,                // le virement se pose quand « 5 600 » finit
     ok1: M('cette'), chk: M('cette') + 0.8, ok2: M('accord') - 0.08,
     out: ME('accord') + 0.2,                  // le calcul se replie
@@ -66,20 +66,21 @@
   });
   // W : le monde du récit (jour 0, visite, frais, attente, vente), une seule prise
   // les annonces descendent au centre pendant qu'on les compte, la visite se cadre sur la voiture, puis on recule pour le compteur
-  const [w0, w1, w2, w3, w4, w5] = [T.out, T.jOut, T.hud - 0.15, T.sonne - 0.15, T.big - 0.05, REW[0]];
+  const [w0, w1, w2, w3, w4, w5] = [T.out, T.jOut, T.strike - 0.35, T.sonne - 0.15, T.big - 0.05, REW[0]];
   const [a0, a1] = [T.ads - 0.1, T.card - 0.1];
   const camW = (t) => ({
     rx: 5 + noise(5, t * 0.4) * 0.45,
     ry: track(t, [[w0, -8], [w0, 4, { f: 0.22, z: 1 }], [w1, -4, { f: 0.25, z: 1 }], [w2, 3, { f: 0.25, z: 1 }], [w3, -3, { f: 0.3, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]) + noise(6, t * 0.35) * 0.6,
-    z: track(t, [[w0, -240], [w0, 0, { f: 0.5, z: 1 }], [a0, 40, { f: 0.3, z: 1 }], [a1, 0, { f: 0.35, z: 1 }], [w1, 90, { f: 0.3, z: 1 }], [w2, 0, { f: 0.3, z: 1 }], [w3, 90, { f: 0.3, z: 1 }], [w4, -40, { f: 0.45, z: 1 }], [w5, 40, { f: 0.3, z: 1 }]]),
+    z: track(t, [[w0, -240], [w0, 0, { f: 0.5, z: 1 }], [a0, 40, { f: 0.3, z: 1 }], [a1, 0, { f: 0.35, z: 1 }], [w1, 90, { f: 0.3, z: 1 }], [w2, 0, { f: 0.6, z: 1 }], [w3, 30, { f: 0.3, z: 1 }], [w4, -40, { f: 0.45, z: 1 }], [w5, 40, { f: 0.3, z: 1 }]]),
     x: track(t, [[w0, -120], [w0, 50, { f: 0.25, z: 1 }], [w1, 0, { f: 0.3, z: 1 }], [w2, -30, { f: 0.25, z: 1 }], [w3, 30, { f: 0.3, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]),
-    y: track(t, [[w0, -80], [w0, 30, { f: 0.25, z: 1 }], [a0, -300, { f: 0.3, z: 1 }], [a1, 30, { f: 0.35, z: 1 }], [w1, 230, { f: 0.3, z: 1 }], [w2, -30, { f: 0.3, z: 1 }], [w3, 0, { f: 0.3, z: 1 }]]),
+    y: track(t, [[w0, -80], [w0, 30, { f: 0.25, z: 1 }], [a0, -300, { f: 0.3, z: 1 }], [a1, 30, { f: 0.35, z: 1 }], [w1, 230, { f: 0.3, z: 1 }], [w2, -40, { f: 0.6, z: 1 }], [w3, -40, { f: 0.3, z: 1 }]]),
   });
   // F : orbite lente qui descend le long des trois décisions
   const f0 = REW[1] - 0.15;
   const camF = (t) => ({
     rx: track(t, [[f0, 8], [f0, 3, { f: 0.3, z: 1 }]]) + noise(9, t * 0.4) * 0.4, ry: track(t, [[f0, -10], [f0, 5, { f: 0.22, z: 1 }]]) + noise(10, t * 0.35) * 0.5,
-    z: track(t, [[f0, -120], [f0, 70, { f: 0.3, z: 1 }]]), x: track(t, [[f0, 30], [f0, -15, { f: 0.3, z: 1 }]]), y: track(t, [[f0, -90], [f0, 60, { f: 0.22, z: 1 }]]),
+    z: track(t, [[f0, -120], [f0, 70, { f: 0.3, z: 1 }]]) + 8 * Math.max(0, t - f0), x: track(t, [[f0, 30], [f0, -15, { f: 0.3, z: 1 }]]),
+    y: track(t, [[f0, -90], [f0, 60, { f: 0.22, z: 1 }]]) - 18 * Math.max(0, t - f0),      // dérive continue : pas de plan figé avant la boucle
   });
 
   // ---------- fonds ----------
@@ -101,10 +102,11 @@
   const shS = [0, 0, 0, 0].map(() => sv('stop', { 'stop-color': '#fff' }, sheen));
   const W1 = word(svgA, '3 900', '700 190px Clash', 190, 540, 568);
   const W2 = word(svgA, '5 600', '700 190px Clash', 190, 540, 852);
-  const shine = sv('g', {}, svgA);
-  for (const w of [W1, W2]) for (const g of w.items) { const s = sv('text', { x: g.left, y: g.base, 'font-family': 'Clash', 'font-weight': 700, 'font-size': 190, fill: 'url(#sheenA)' }, shine); s.textContent = g.ch; }
+  const shine = [W1, W2].map((w) => { const gS = sv('g', {}, svgA); for (const g of w.items) { const s = sv('text', { x: g.left, y: g.base, 'font-family': 'Clash', 'font-weight': 700, 'font-size': 190, fill: 'url(#sheenA)' }, gS); s.textContent = g.ch; } return gS; });
   const arrowG = sv('g', { transform: 'translate(510,592)', filter: 'url(#gla)' }, svgA);
   const arrow = sv('path', { d: 'M30 6 V70 M10 50 L30 74 L50 50', stroke: '#ffb38a', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-dasharray': '140 140' }, arrowG);
+  // un point de lumière descend la flèche, de « 3 900 » vers « 5 600 » (la revente)
+  const arPen = sv('g', {}, svgA); sv('circle', { r: 24, fill: '#ff7a3a', opacity: 0.65, filter: 'url(#softa)' }, arPen); sv('circle', { r: 7, fill: '#fff' }, arPen);
   const CHK = { x: 420, y: 880, d: 'M18 92 L88 150 L222 18', L: 279.1 };
   const chkG = sv('g', { transform: `translate(${CHK.x},${CHK.y}) scale(1,.82)` }, svgA);
   const chkGlow = sv('path', { d: CHK.d, stroke: '#ff8a4c', 'stroke-width': 22, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', filter: 'url(#softa)', opacity: 0.7, 'stroke-dasharray': `${CHK.L} ${CHK.L}` }, chkG);
@@ -210,9 +212,9 @@
   // ---------- 9 : 974 € ----------
   const L9 = el('div', 'L', stage);
   const glow9 = el('div', 'glow', L9, 'left:160px;top:480px;width:760px;height:600px;background:radial-gradient(closest-side,rgba(255,100,40,.55),transparent)');
-  const lab9 = el('div', 'abs', L9, 'left:0;width:1080px;top:470px;text-align:center;font:700 30px Satoshi;letter-spacing:.34em;color:#a59a90'); lab9.textContent = 'BÉNÉFICE';
-  const big9 = el('div', 'abs', L9, 'left:0;width:1080px;top:530px;text-align:center;font:700 350px Clash;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#f6efe7;text-shadow:0 1px 0 #d8cfc6,0 2px 0 #bfb5ab,0 3px 0 #a79c92,0 4px 0 #8f8479,0 5px 0 #786d63,0 6px 0 #61574e,0 16px 30px rgba(0,0,0,.6)');
-  big9.innerHTML = '974<span style="font-size:190px;margin-left:12px">€</span>';
+  const lab9 = el('div', 'abs', L9, 'left:0;width:1080px;top:500px;text-align:center;font:700 30px Satoshi;letter-spacing:.34em;color:#a59a90'); lab9.textContent = 'BÉNÉFICE';
+  const big9 = el('div', 'abs', L9, 'left:0;width:1080px;top:560px;text-align:center;font:700 290px Clash;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#f6efe7;text-shadow:0 1px 0 #d8cfc6,0 2px 0 #bfb5ab,0 3px 0 #a79c92,0 4px 0 #8f8479,0 5px 0 #786d63,0 6px 0 #61574e,0 16px 30px rgba(0,0,0,.6)');
+  big9.innerHTML = '974<span style="font-size:160px;margin-left:10px">€</span>';      // tient dans la colonne 140 → 940, caméra comprise
   const svg9 = sv('svg', { width: 1080, height: 1920, viewBox: '0 0 1080 1920', style: 'position:absolute;left:0;top:0;overflow:visible' }, L9); defs(svg9, '9');
   const pk1 = word(svg9, 'Même le kebab', 'italic 500 104px Fraunces', 104, 540, 1000, { italic: true, fill: 'url(#qg9)', strokeColor: '#ffb38a', sw: 1.8 });
   const pk2 = word(svg9, 'était prévu.', 'italic 500 104px Fraunces', 104, 540, 1108, { italic: true, fill: 'url(#qg9)', strokeColor: '#ffb38a', sw: 1.8 });
@@ -267,12 +269,17 @@
     LA.style.transform = tf(cA, 0, `translateY(${f3(-300 * out)}px)`);
     set(LA, showA);
     fullWord(W1); writeWord(W2, tA, T.w2, 0.07, 30);
-    const tSh = T.w2 + 0.45, sx = lerp(-300, 1500, S(tA, tSh, { f: 0.7, z: 1 }));        // la lumière passe sur les chiffres une fois écrits
+    // la lumière passe sur « 3 900 » quand la voix le dit, puis sur les deux chiffres une fois « 5 600 » écrit
+    const tSh = T.w2 + 0.45, sx = tA < tSh - 0.2 ? lerp(-300, 1500, S(tA, T.b3900, { f: 0.9, z: 1 })) : lerp(-300, 1500, S(tA, tSh, { f: 0.7, z: 1 }));
     shS[0].setAttribute('offset', f3(clamp((sx - 260) / 1080, 0, 1))); shS[0].setAttribute('stop-opacity', '0');
     shS[1].setAttribute('offset', f3(clamp((sx - 60) / 1080, 0, 1))); shS[1].setAttribute('stop-opacity', '.85');
     shS[2].setAttribute('offset', f3(clamp((sx + 60) / 1080, 0, 1))); shS[2].setAttribute('stop-opacity', '.85');
     shS[3].setAttribute('offset', f3(clamp((sx + 260) / 1080, 0, 1))); shS[3].setAttribute('stop-opacity', '0');
-    shine.setAttribute('opacity', f3(0.55 * sm(tSh - 0.05, tSh + 0.05, tA) * (1 - sm(tSh + 1.1, tSh + 1.5, tA))));
+    const sh1 = 0.5 * sm(T.b3900 - 0.05, T.b3900 + 0.05, tA) * (1 - sm(T.b3900 + 0.75, T.b3900 + 1.0, tA)), sh2 = 0.55 * sm(tSh - 0.05, tSh + 0.05, tA) * (1 - sm(tSh + 1.1, tSh + 1.5, tA));
+    shine[0].setAttribute('opacity', f3(Math.max(sh1, sh2))); shine[1].setAttribute('opacity', f3(sh2));
+    const ap = S(tA, T.b3900 + 0.25, { f: 0.75, z: 1 });
+    arPen.setAttribute('transform', `translate(540,${f3(598 + 70 * ap)})`);
+    arPen.setAttribute('opacity', f3(sm(T.b3900 + 0.2, T.b3900 + 0.32, tA) * (1 - sm(T.w2 + 0.05, T.w2 + 0.3, tA))));
     arrow.setAttribute('stroke-dashoffset', '0'); arrowG.setAttribute('opacity', f3(0.85 + 0.15 * Math.sin(Math.PI * clamp((tA - 0.4) / 0.8, 0, 1))));
     set(glowA, 0.35 + 0.45 * S(tA, 0.6, P.heavy) + 0.35 * S(tA, T.chk, P.heavy) * (1 - out));
     const cp = S(tA, T.chk, P.pen);
@@ -405,7 +412,7 @@
 
     // 9 : 974 €
     set(dim, big * 0.9);
-    L9.style.transform = tf(cW, 160);
+    L9.style.transform = tf(cW, 160, `scale(${f3(1 + 0.05 * sm(T.big + 0.3, REW[0], st))})`);      // poussée lente jusqu'au rembobinage
     set(L9, big);
     const s9 = S(st, T.big + 0.05, { f: 1.4, z: 0.85 });
     big9.style.transform = `scale(${f3(0.86 + 0.14 * s9)})`; set(glow9, 0.4 + 0.6 * S(st, T.big + 0.15, P.heavy));
