@@ -35,6 +35,9 @@ Style et plans : `docs/launch_style_guide.md`, `docs/launch_shotlist.md`. La ré
   (2 ouvertures × 2 langues × Vertical / Square / Desktop).
 - Ailleurs (claude.ai, autre dépôt) : colle **`MASTER_PROMPT.md`** (version compilée du skill ; la régénérer avec
   `python3 .claude/skills/motion-studio/scripts/build_master_prompt.py`). Paquet installable : `renders/skill/motion-studio.skill`.
+- Série « recette 47 » (même recette que MO5, plus de 6 000 vues) : tape **`/recette-47`** (skill
+  `.claude/skills/recette-47/`). Épisodes à valider : `serie-47.md`. Paquet installable : `renders/skill/recette-47.skill`.
+  Après chaque publication, donne les chiffres de TikTok Studio : ils vont dans le journal du skill.
 - Contrôle mesuré d'un MP4 : `python3 .claude/skills/motion-studio/scripts/qa_video.py renders/<film>.mp4 --out renders/qa`.
 - Rendu des déclinaisons (films qui lisent `?fmt=&lang=&hook=`) : `CUT=<projet> FMT=square VLANG=en HOOK=B node scripts/render.mjs --all`.
 - Analyse critique de la v5 : `docs/analyse_v5_explainer.md`.

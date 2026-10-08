@@ -59,3 +59,4 @@
   (centre de la zone sûre) : le décalage de 40 px vers la gauche se voit sur un téléphone.
 - Chiffres démo dans une pub vidéo : mention « Données de démonstration » à l'écran. Carrousels : aucune mention (décision de l'utilisateur, oct. 2026).
 - Processus complet (brief, script, voix, A/B, langues, formats, livraison) : skill `/motion-studio`.
+- Épisodes de la série qui reprend MO5 « 47 € » : skill `/recette-47` (recette, épisodes, journal des résultats).

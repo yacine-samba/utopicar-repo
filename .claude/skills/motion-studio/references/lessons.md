@@ -65,6 +65,8 @@
 
 ## Ce qui a marché (à reprendre)
 
+- Oct. 2026 : MO5 « 47 € » publiée, plus de 6 000 vues, notre meilleur résultat (le meilleur carrousel : 1 000).
+  Sa recette est devenue le skill `recette-47`, avec un journal des résultats à compléter après chaque publication.
 - Vraie UI + curseur + surligneur sur le montant : c'est ce qui rend une démo lisible sur téléphone.
 - Chiffre géant qui tranche (7 500 €, 1 450 € sous la cote) après chaque preuve.
 - Phrases en deux graisses tapées lettre à lettre (léger gris → gras encre) ; aplat d'accent plein cadre au moment clé.
