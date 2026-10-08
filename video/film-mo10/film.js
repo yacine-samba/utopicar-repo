@@ -66,7 +66,7 @@
   const camA = (t) => ({
     rx: track(t, [[0, 6], [0.3, 3, { f: 0.45, z: 1 }], [T.tally, 1, { f: 0.35, z: 1 }]]) + noise(1, t * 0.45) * 0.5,
     ry: track(t, [[0, -6], [0.2, 2, { f: 0.4, z: 1 }], [T.tally, -2, { f: 0.3, z: 1 }]]) + noise(2, t * 0.4) * 0.6,
-    z: track(t, [[0, 0], [0.2, 60, { f: 0.3, z: 1 }], [T.tally, 30, { f: 0.35, z: 1 }]]),
+    z: track(t, [[0, 0], [0.2, 30, { f: 0.3, z: 1 }], [T.tally, 10, { f: 0.35, z: 1 }]]),
     x: track(t, [[0, -20], [0.2, 10, { f: 0.35, z: 1 }]]),
     y: track(t, [[0, -30], [0.2, 0, { f: 0.35, z: 1 }], [T.tally, 50, { f: 0.35, z: 1 }]]),
   });
@@ -75,9 +75,9 @@
   const camW0 = (t) => ({
     rx: 4 + noise(5, t * 0.4) * 0.45,
     ry: track(t, [[0, -3], [w1, 3, { f: 0.25, z: 1 }], [w2, -2, { f: 0.3, z: 1 }], [w3, 2, { f: 0.22, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]) + noise(6, t * 0.35) * 0.6,
-    z: track(t, [[0, -40], [w1, 30, { f: 0.35, z: 1 }], [w2, 0, { f: 0.4, z: 1 }], [w3, 70, { f: 0.22, z: 1 }], [w4, -40, { f: 0.45, z: 1 }]]),
+    z: track(t, [[0, -40], [w1, 10, { f: 0.35, z: 1 }], [w2, -10, { f: 0.4, z: 1 }], [w3, 25, { f: 0.22, z: 1 }], [w4, -40, { f: 0.45, z: 1 }]]),
     x: track(t, [[0, 0], [w1, 30, { f: 0.25, z: 1 }], [w2, -40, { f: 0.3, z: 1 }], [w3, 0, { f: 0.25, z: 1 }]]),
-    y: track(t, [[0, 0], [w1, -20, { f: 0.3, z: 1 }], [w3, 30, { f: 0.25, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]),
+    y: track(t, [[0, 0], [w1, -20, { f: 0.3, z: 1 }], [w3, -10, { f: 0.25, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]),
   });
   const C0 = camW0(0);
   const camW = (t) => { const c = camW0(t); if (t < LOOP) return c; const u = sm(LOOP, DUR - 0.12, t); for (const k in c) c[k] = lerp(c[k], C0[k], u); return c; };
@@ -112,7 +112,7 @@
   }
   // 207 derrière (à droite), Twingo devant (à gauche) ; au jour 8, la 207 seule vient au centre et grandit
   const PG = carBox(pgI, 'p207-a', 820), TW = carBox(twI, 'twingo-a', 520);
-  const BOX = { tw: { x: 90, y: 1150, s: 1 }, pg: { x: 420, y: 1072, s: 560 / 820 }, pgC: { x: 130, y: 1105, s: 1 } };
+  const BOX = { tw: { x: 80, y: 1150, s: 1 }, pg: { x: 395, y: 1080, s: 540 / 820 }, pgC: { x: 140, y: 1112, s: 800 / 820 } };   // tout reste entre x = 60 et 940
   // poussière sur la 207 (la photo elle-même sert de masque) et bâtons du voisin sur ses vitres
   // la poussière se dépose surtout en haut (toit, capot, vitres) : masque = la photo × un dégradé vertical
   const dust = el('div', 'dust', PG.b, `width:${PG.w}px;height:${PG.h}px;-webkit-mask-image:url(${pgI.src}),linear-gradient(#000 0%,rgba(0,0,0,.75) 45%,rgba(0,0,0,.2) 75%,transparent 92%);-webkit-mask-composite:source-in;-webkit-mask-size:100% 100%,100% 100%`);
@@ -138,7 +138,7 @@
   const pinTW = el('div', 'pin', TW.b, `left:${TW.w * 0.24}px;top:${TW.h * 0.42}px`), pinPG = el('div', 'pin', PG.b, `left:${PG.w * 0.12}px;top:${PG.h * 0.33}px`);
   // ouverture : « +1 000 € » sur chaque voiture (« mille… chacune »), puis les deux montent se fondre dans « = 2 000 € »
   T.tag = [M('mille') - 0.06, M('chacune') - 0.04]; T.tagUp = T.w2 - 0.12;
-  const TAGS = [[376, 1080], [700, 1000]].map(([x, y]) => {
+  const TAGS = [[366, 1080], [665, 1008]].map(([x, y]) => {
     const d = el('div', 'glass pill', LP, 'left:0;top:0;font:700 54px Clash;color:#ffb38a;padding:10px 26px'); d.textContent = '+1 000 €';
     return { d, x, y };
   });
@@ -153,13 +153,13 @@
 
   // ---------- H : compteur « MARGE » et mention ----------
   const LH = el('div', 'L', stage);
-  const C = counter(LH, { top: 322, label: 'MARGE', labelTop: 272 });
-  const mention = el('div', 'abs', LH, 'left:0;width:1080px;top:516px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55)'); mention.textContent = 'Exemple · prix moyens constatés';
+  const C = counter(LH, { top: 352, label: 'MARGE', labelTop: 302 });     // sous la bande du haut, caméra comprise
+  const mention = el('div', 'abs', LH, 'left:0;width:1080px;top:546px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55)'); mention.textContent = 'Exemple · prix moyens constatés';
 
   // ---------- J : les jours (palettes « JOUR n ») ----------
   const LJ = el('div', 'L', stage);
   const JT = ['J', 'O', 'U', 'R', '1', '0'].map((c) => {
-    const d = el('div', 'flapT glass', LJ, 'left:0;top:584px;width:86px;height:116px;font-size:80px;border-radius:13px');
+    const d = el('div', 'flapT glass', LJ, 'left:0;top:612px;width:86px;height:116px;font-size:80px;border-radius:13px');
     el('div', 'sheen', d); const s = el('span', '', d); s.textContent = c; el('i', '', d); return { d, s };
   });
 
@@ -182,7 +182,7 @@
   };
   const debs = DEB.map(([, s, ti, a, x2]) => ({ ...mk(ti, `${a},00`, { app: 'Compte courant · jour 1' }, x2 ? '× 2' : null, 600), s }));
   const waits = WAIT.map((x) => ({ ...mk(x.ti, `${x.a},00`, { app: x.app }, x.gag ? 'le voisin a compté' : null, 392, 40, 30), s: x.s, x }));
-  const sold = mk('Virement reçu', '4 000,00', { sign: '+', app: 'Compte courant · jour 8' }, 'vendue ✓', 560, 30);
+  const sold = mk('Virement reçu', '4 000,00', { sign: '+', app: 'Compte courant · jour 8' }, 'vendue ✓', 500, 30);
 
   // ---------- R : la vente de la 207 ----------
   const LR = el('div', 'L', stage);
@@ -213,19 +213,19 @@
   defs(svgA, 'a');
   const sheen = sv('linearGradient', { id: 'sheenA', gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 1080, y2: 0 }, svgA.firstChild);
   const shS = [0, 0, 0, 0].map(() => sv('stop', { 'stop-color': '#fff' }, sheen));
-  // « 2 × 1 000 € » puis « = 2 000 € ? », chacun centré sur x = 540 et ramené à 800 px de large au plus
+  // « 2 × 1 000 € » puis « = 2 000 € ? », chacun centré sur x = 540 et ramené à 700 px de large au plus (caméra comprise, rien au-delà de x = 940)
   const gW1 = sv('g', {}, svgA), gW2 = sv('g', {}, svgA);
   const W1 = word(gW1, '2 × 1 000 €', '700 150px Clash', 150, 0, 520, { align: 'left' });
   const W2 = word(gW2, '= 2 000 €', '700 150px Clash', 150, 0, 700, { align: 'left' });
   const WQ = word(gW2, '?', 'italic 500 150px Fraunces', 150, W2.width + 34, 700, { italic: true, align: 'left', fill: 'url(#qga)', strokeColor: '#ffb38a', sw: 2 });
   const shine = (() => { const gS = sv('g', {}, gW1); for (const g of W1.items) { const s = sv('text', { x: g.left, y: g.base, 'font-family': 'Clash', 'font-weight': 700, 'font-size': 150, fill: 'url(#sheenA)' }, gS); s.textContent = g.ch; } return gS; })();
-  const fitW = (g, w, base) => { const k = Math.min(1, 800 / w); g.setAttribute('transform', `translate(${f3(540 - w * k / 2)},${f3(base * (1 - k))}) scale(${f3(k)})`); };
+  const fitW = (g, w, base) => { const k = Math.min(1, 700 / w); g.setAttribute('transform', `translate(${f3(540 - w * k / 2)},${f3(base * (1 - k))}) scale(${f3(k)})`); };
   fitW(gW1, W1.width, 520); fitW(gW2, W2.width + 34 + WQ.width, 700);
   const HT = tally(svgA, 15, [[372, 800], [522, 800], [672, 800]], 92, 26, 7, 20);
   const tTal = HT.map((_, k) => T.tally + 1.5 * Math.pow(k / 15, 0.72));
-  const cap = el('div', 'abs', LA, 'left:0;width:1080px;top:930px;text-align:center;white-space:nowrap;font:500 44px Satoshi');
+  const cap = el('div', 'abs', LA, 'left:0;width:1080px;top:926px;text-align:center;white-space:nowrap;font:500 48px Satoshi');
   const cap1 = el('span', '', cap, 'display:inline-block'); cap1.textContent = 'Ton voisin';
-  const cap2 = el('span', 'serif', cap, 'display:inline-block;font-size:60px;margin-left:12px'); cap2.textContent = 'compte les jours.';
+  const cap2 = el('span', 'serif', cap, 'display:inline-block;font-size:66px;margin-left:12px'); cap2.textContent = 'compte les jours.';
 
   // ---------- D : ceux qui gagnent comptent en jours ----------
   const LD = el('div', 'L', stage);
@@ -287,7 +287,7 @@
     const out = t >= LOOP ? 0 : S(t, T.out, P.heavy);
     const showA = t < LOOP ? 1 - sm(T.out, T.out + 0.45, t) : sm(LOOP + 0.12, LOOP + 0.75, t);
     const cA = camA(tA), cW = camW(t);
-    if (t >= LOOP) { const u = sm(LOOP, DUR, t); cA.z += 160 * (1 - u); cA.ry += -5 * (1 - u); cA.y += -40 * (1 - u); }
+    if (t >= LOOP) { const u = sm(LOOP, DUR, t); cA.z += 90 * (1 - u); cA.ry += -5 * (1 - u); cA.y += -40 * (1 - u); }
     const day = dayAt(st);
     const waitK = sm(T.d2 - 0.2, T.d2 + 0.6, st) * (1 - sm(T.big - 0.2, T.big + 0.3, st));     // l'attente (nuit)
 
@@ -349,7 +349,7 @@
 
     // H : compteur et mention
     const hud = sm(T.hud - 0.05, T.hud + 0.05, st) * (1 - big0) * (1 - pOut) * (t < LOOP ? 1 : 0);
-    LH.style.transform = tf(cW, 200);
+    LH.style.transform = tf(cW, 60);                                          // près du plan : le compteur ne monte pas dans la bande du haut
     set(LH, hud);
     const vis0 = 1 - S(st, tBelow1000 + 0.05, P.heavy);
     paintCounter(C, st, keys, [vis0, 1, 1, 1], (i) => ({ draw: S(st, T.hud + i * 0.07, P.draw), glass: S(st, T.hud + 0.22 + i * 0.07, P.heavy) }), 1);
@@ -373,7 +373,7 @@
     });
 
     // N : les débits du jour 1 (en double), la vente de la Twingo, puis ceux de l'attente
-    LN.style.transform = tf(cW, 120);
+    LN.style.transform = tf(cW, 60);
     const tl = T.deb[7] + 0.35, leave = S(st, tl, P.push);
     debs.forEach((d, i) => {
       const T0 = DEB[i][0], a = S(st, T0, P.card);
