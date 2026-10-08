@@ -15,6 +15,7 @@ import { comptesActifs } from "@/lib/supabase/config";
 import { titreVehicule } from "@/lib/titre";
 import { vendeurDe } from "@/lib/analyse/vendeur";
 import { supabaseServeur } from "@/lib/supabase/serveur";
+import { ipDe, tropDeDemandes } from "@/lib/limite";
 
 export const maxDuration = 300;
 
@@ -50,23 +51,11 @@ async function stockerPhotos(uid: string, photos: { media_type: string; data: st
   return urls.filter((u): u is string => !!u);
 }
 
-// Limite par adresse IP (par instance), en plus des quotas de chaque formule.
-const FENETRE = 10 * 60 * 1000;
-const MAX = 12;
-const vus = new Map<string, number[]>();
-function tropDeDemandes(ip: string) {
-  const now = Date.now();
-  const l = (vus.get(ip) ?? []).filter((t) => now - t < FENETRE);
-  l.push(now);
-  vus.set(ip, l);
-  return l.length > MAX;
-}
-
+// Limite par adresse IP (par instance), en plus des quotas de chaque formule : 12 analyses par 10 minutes.
 const erreur = (message: string, status: number, extra: Record<string, unknown> = {}) => Response.json({ erreur: message, ...extra }, { status });
 
 export async function POST(req: Request) {
-  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "local";
-  if (tropDeDemandes(ip)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
+  if (tropDeDemandes("analyse", ipDe(req), 12, 10 * 60_000)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
 
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return erreur(r.error.issues[0]?.message ?? "Demande invalide.", 400);

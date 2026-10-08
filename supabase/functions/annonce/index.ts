@@ -1,7 +1,8 @@
 // Import d'une annonce par son lien : Leboncoin (acteur « Leboncoin Ad Details Scraper »), La Centrale (memo23/lacentrale-scraper)
 // ou AutoScout24 (blackfalcondata/autoscout24-scraper). La fonction renvoie l'annonce au format Leboncoin (celui que lit l'outil),
 // jusqu'à 6 photos prêtes à analyser et les liens de 30 photos au plus pour le rapport.
-// Réservé aux personnes connectées (jeton de session vérifié ici), 30 imports par jour et par personne.
+// Comptes : 30 imports par jour et par personne. Visiteurs (aperçu de l'accueil, sans compte) : 3 par jour et par adresse IP,
+// 200 imports anonymes par jour en tout ; l'import est journalisé avec l'IP.
 // Le jeton Apify reste dans la table `reglages` : il n'apparaît jamais côté navigateur.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -12,6 +13,8 @@ const ACTEUR_LC = "memo23~lacentrale-scraper";
 const ACTEUR_AS24 = "blackfalcondata~autoscout24-scraper";
 const MAX_LIENS = 30;
 const MAX_PAR_JOUR = 30;
+const MAX_VISITEUR_JOUR = 3;
+const MAX_VISITEURS_JOUR = 200;
 const MAX_PHOTOS = 6;
 
 function cors(origin: string | null) {
@@ -185,8 +188,8 @@ Deno.serve(async (req) => {
 
   const jeton = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
   const { data: qui } = jeton ? await sb.auth.getUser(jeton) : { data: { user: null } };
-  const user = qui?.user;
-  if (!user) return json({ ok: false, erreur: "connexion" }, 401);
+  const user = qui?.user ?? null;
+  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "inconnue";
 
   let body: any = {};
   try { body = await req.json(); } catch { /* vide */ }
@@ -195,13 +198,20 @@ Deno.serve(async (req) => {
   const url = lbc ?? autre?.url;
   if (!url) return json({ ok: false, erreur: "lien" }, 400);
 
-  // plus d'analyse disponible : aucun import (Apify est payant), la personne est invitée à changer de formule
-  const { data: reste } = await sb.rpc("analyses_restantes", { p_uid: user.id });
-  if (typeof reste === "number" && reste <= 0) return json({ ok: false, erreur: "quota" }, 402);
-
   const depuis = new Date(Date.now() - 86400_000).toISOString();
-  const { count } = await sb.from("imports_annonces").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", depuis);
-  if ((count ?? 0) >= MAX_PAR_JOUR) return json({ ok: false, erreur: "trop" }, 429);
+  if (user) {
+    // plus d'analyse disponible : aucun import (Apify est payant), la personne est invitée à changer de formule
+    const { data: reste } = await sb.rpc("analyses_restantes", { p_uid: user.id });
+    if (typeof reste === "number" && reste <= 0) return json({ ok: false, erreur: "quota" }, 402);
+    const { count } = await sb.from("imports_annonces").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", depuis);
+    if ((count ?? 0) >= MAX_PAR_JOUR) return json({ ok: false, erreur: "trop" }, 429);
+  } else {
+    const [{ count: parIp }, { count: tous }] = await Promise.all([
+      sb.from("imports_annonces").select("id", { count: "exact", head: true }).is("user_id", null).eq("ip", ip).gte("created_at", depuis),
+      sb.from("imports_annonces").select("id", { count: "exact", head: true }).is("user_id", null).gte("created_at", depuis),
+    ]);
+    if ((parIp ?? 0) >= MAX_VISITEUR_JOUR || (tous ?? 0) >= MAX_VISITEURS_JOUR) return json({ ok: false, erreur: "trop" }, 429);
+  }
 
   const { data: cfg } = await sb.from("reglages").select("valeur").eq("cle", "apify_token").maybeSingle();
   if (!cfg?.valeur) return json({ ok: false, erreur: "config" }, 503);
@@ -229,7 +239,7 @@ Deno.serve(async (req) => {
   }
   const it = items.map(o).find((x) => !x.error && !x.errorMessage);
   if (!it) statut = statut === "ok" ? "introuvable" : statut;
-  await sb.from("imports_annonces").insert({ user_id: user.id, url, statut, cout_usd: it ? cout : 0 });
+  await sb.from("imports_annonces").insert({ user_id: user?.id ?? null, ip: user ? null : ip, url, statut, cout_usd: it ? cout : 0 });
   if (!it) return json({ ok: false, erreur: statut === "introuvable" ? "introuvable" : "apify" }, 502);
 
   const { ad, photos: liens, vendeur } = autre ? normaliserAutre(autre.site, it) : normaliser(it);

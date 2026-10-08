@@ -27,7 +27,7 @@ export default async function Page() {
             </h1>
             <p className="text-lg text-ink-2">Collez l&apos;annonce. Nous vous disons combien elle va vraiment vous coûter et ce qu&apos;il faut vérifier avant d&apos;acheter, en langage clair.</p>
             <p className="text-sm text-ink-3">
-              Un compte gratuit vous sera demandé pour voir le résultat. Déjà inscrit ? <Link href="/connexion?next=/app/analyser" className="text-o2 underline underline-offset-4">Connectez-vous</Link>.
+              L&apos;aperçu est immédiat et sans compte ; le rapport complet demande un compte gratuit. Déjà inscrit ? <Link href="/connexion?next=/app/analyser" className="text-o2 underline underline-offset-4">Connectez-vous</Link>.
             </p>
             <details className="carte mt-2 p-4 text-sm text-ink-2">
               <summary className="cursor-pointer font-medium text-ink">Comment copier une annonce ?</summary>

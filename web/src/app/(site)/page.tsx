@@ -3,14 +3,68 @@ import { Rotateur } from "@/components/accueil/Rotateur";
 import { Demo } from "@/components/accueil/Demo";
 import { Defile } from "@/components/site/Defile";
 import { Faq } from "@/components/site/Faq";
-import { BoutonOnboarding } from "@/components/site/BoutonOnboarding";
+import { Essai } from "@/components/accueil/Essai";
+import { fournisseursActifs } from "@/lib/fournisseurs";
+import { JsonLdFaq } from "@/components/site/JsonLd";
+import { dateTxt, listeCotes, nb } from "@/lib/cotes-publiques";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { Symbole } from "@/components/site/Logo";
 import { compteCourant } from "@/lib/compte";
 import { PARTICULIERS } from "@/lib/offres";
 
 const MODELES = ["Renault Clio IV", "Peugeot 208", "Toyota Yaris", "Dacia Sandero", "VW Polo V", "Citroën C3", "Ford Fiesta", "Opel Corsa", "Hyundai i20", "Suzuki Swift", "Renault Twingo", "Seat Ibiza", "Kia Rio", "Skoda Fabia"];
-const VERIFS = ["Cote du marché", "38 défauts recherchés", "Moteurs à éviter signalés", "Coût réel d'achat", "Prix à proposer", "Questions au vendeur", "Contrôle sur place", "Analyse des photos"];
+
+/** Les trois étapes, chacune avec un petit visuel concret (ce que la personne voit vraiment à cette étape). */
+const ETAPES: { t: string; d: string; v: React.ReactNode }[] = [
+  {
+    t: "Vous collez l'annonce",
+    d: "Le lien Leboncoin suffit. Sur un autre site, le texte de la page.",
+    v: (
+      <div className="flex items-center gap-2">
+        <span className="min-w-0 flex-1 truncate rounded-full border border-line-2 bg-glass px-3 py-1.5 text-ink-3">https://www.leboncoin.fr/ad/voitures/2817…</span>
+        <span className="shrink-0 rounded-full bg-o px-3 py-1.5 font-display text-xs font-semibold text-[#160904]">Analyser</span>
+      </div>
+    ),
+  },
+  {
+    t: "Utopicar vérifie",
+    d: "La cote sur les annonces comparables, 38 défauts dans le texte, le moteur, les papiers.",
+    v: (
+      <ul className="grid gap-1.5">
+        {[["ok", "Cote : 7 550 € (174 Clio comparables)"], ["warn", "Choc de carrosserie : 150 à 700 €"], ["ok", "Moteur 0.9 TCe : réputé fiable"], ["neutre", "CT de moins de 6 mois : à demander"]].map(([ton, t]) => (
+          <li key={t} className="flex items-center gap-2">
+            <span className={`grid size-4 shrink-0 place-items-center rounded-full text-[9px] ${ton === "ok" ? "bg-ok/20 text-ok" : ton === "warn" ? "bg-warn/20 text-warn" : "bg-glass text-ink-3"}`}>{ton === "ok" ? "✓" : ton === "warn" ? "!" : "?"}</span>
+            <span className="text-ink-2">{t}</span>
+          </li>
+        ))}
+      </ul>
+    ),
+  },
+  {
+    t: "Vous savez quoi faire",
+    d: "Un verdict, le prix à proposer, les questions à poser et ce qu'il faut contrôler sur place.",
+    v: (
+      <div className="grid gap-2">
+        <span className="w-fit rounded-full border border-ok/40 bg-ok/10 px-3 py-1 font-semibold text-ok">Bon prix</span>
+        <p className="text-ink-2">
+          Proposez <b className="num text-ink">6 250 €</b> · Demandez le CT et les factures avant de vous déplacer.
+        </p>
+      </div>
+    ),
+  },
+];
+
+/** La FAQ en texte brut, pour les données structurées (Google affiche les questions sous le résultat). */
+const FAQ_TEXTE = [
+  { q: "L'analyse est-elle vraiment gratuite ?", r: "Oui, la première analyse est offerte, sans carte bancaire : il suffit de créer un compte. Ensuite, la formule Essentiel coûte 4,99 € par mois sans engagement, ou des crédits à l'unité dès 2,99 € l'analyse." },
+  { q: "Ça marche sur quelles voitures ?", r: "Sur les annonces de voitures particulières de Leboncoin, La Centrale ou AutoScout24. La cote est la plus précise sur les modèles courants ; sur un modèle rare, l'outil prévient que l'estimation est moins sûre." },
+  { q: "Est-ce que ça remplace un garagiste ?", r: "Non. L'outil évite les mauvais déplacements et donne un prix de départ ; il sépare ce qui est écrit dans l'annonce de ce qui reste à vérifier sur place. Pour une voiture chère ou un doute mécanique, il conseille une inspection." },
+  { q: "Je colle le lien, ou tout le texte ?", r: "Sur Leboncoin, le lien suffit : l'annonce et ses photos sont récupérées. Sur les autres sites, copiez la page entière et collez-la." },
+  { q: "Ça marche aussi sur une annonce de professionnel ?", r: "Oui. L'outil lit le type de vendeur et en tient compte : garantie du professionnel, vente en l'état du particulier, prix à proposer et questions adaptés." },
+  { q: "Combien de temps dure une analyse ?", r: "L'aperçu s'affiche en 2 secondes. Le rapport complet, photos lues et questions rédigées, prend environ une minute." },
+  { q: "Comment résilier ?", r: "En deux clics depuis votre compte, à tout moment. L'accès reste ouvert jusqu'à la fin du mois déjà payé." },
+  { q: "Que faites-vous de mes informations ?", r: "Votre email sert à votre compte, vos analyses restent privées. Pas de revente de données, pas de publicité." },
+];
 
 const Coche = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true" className="text-ok">
@@ -19,10 +73,13 @@ const Coche = () => (
 );
 
 export default async function Accueil() {
-  const compte = await compteCourant();
+  const [compte, fournisseurs, cotes] = await Promise.all([compteCourant(), fournisseursActifs(), listeCotes()]);
+  // vrais chiffres de la base du marché (rien d'arrondi à la hausse) : annonces relevées et modèles cotés
+  const annonces = cotes.reduce((s, c) => s + c.n, 0);
+  const releve = dateTxt(cotes.map((c) => c.maj).filter((d): d is string => !!d).sort().pop() ?? null);
   return (
     <>
-      {/* ---------------- héros ---------------- */}
+      {/* ---------------- héros : le champ d'essai est le produit ---------------- */}
       <section className="relative overflow-hidden pb-16 pt-14 text-center sm:pt-20">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_80%_55%_at_50%_0,#000_25%,transparent_78%)]" aria-hidden="true" />
         <div className="wrap">
@@ -33,11 +90,8 @@ export default async function Accueil() {
           <p className="arrivee mx-auto mt-6 max-w-2xl text-lg text-ink-2 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
             Collez une annonce Leboncoin, La Centrale ou AutoScout24. Utopicar estime sa cote, repère les défauts qui coûtent cher et vous dit quoi faire.
           </p>
-          <div className="arrivee mt-9 flex flex-wrap justify-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
-            <Link href="/analyse" className="btn btn-o">
-              Estimer une affaire <span aria-hidden="true">→</span>
-            </Link>
-            <BoutonOnboarding>M&apos;orienter en 3 questions</BoutonOnboarding>
+          <div className="arrivee mt-9" style={{ "--i": 3 } as React.CSSProperties}>
+            <Essai fournisseurs={fournisseurs} depuis="hero" />
           </div>
           <ul className="arrivee mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-2" style={{ "--i": 4 } as React.CSSProperties}>
             <li className="flex items-center gap-2">
@@ -57,7 +111,34 @@ export default async function Accueil() {
       </section>
 
       <Defile items={MODELES} label="Modèles analysés" />
-      <Defile items={VERIFS} label="Ce que l'outil vérifie" inverse />
+      {annonces > 0 && (
+        <section aria-label="La base du marché" className="wrap py-6">
+          <dl className="grid gap-3 text-center sm:grid-cols-3">
+            {(
+              [
+                [nb(annonces), "annonces Leboncoin relevées", releve ? `dernier relevé le ${releve}` : "en ligne"],
+                [String(cotes.length), "modèles cotés génération par génération", null],
+                ["38", "défauts recherchés dans chaque annonce", "embrayage, distribution, chocs, papiers…"],
+              ] as [string, string, string | null][]
+            ).map(([v, l, s], i) => (
+              <div key={l} className="flex flex-col rounded-2xl border border-line px-4 py-4">
+                {/* le chiffre d'abord à l'écran, l'intitulé d'abord pour les lecteurs d'écran (dt avant dd) */}
+                <dt className="order-2 text-sm text-ink-2">{l}</dt>
+                <dd className="num order-1 font-display text-3xl font-semibold text-ink">{v}</dd>
+                <dd className="order-3 mt-0.5 text-xs text-ink-3">
+                  {i === 1 ? (
+                    <Link href="/cote" className="text-o2 underline underline-offset-4">
+                      voir les cotes par modèle
+                    </Link>
+                  ) : (
+                    s
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
 
       {/* ---------------- démo ---------------- */}
       <section id="demo" className="scroll-mt-24 py-24">
@@ -65,9 +146,9 @@ export default async function Accueil() {
           <div className="apparait mx-auto mb-10 max-w-2xl text-center">
             <span className="kicker">Démonstration</span>
             <h2 className="h-sec mt-5">
-              L&apos;annonce dit « bonne affaire ». <span className="it">La fiche dit la vérité.</span>
+              Regardez l&apos;outil analyser <span className="it">une vraie annonce</span>
             </h2>
-            <p className="mt-4 text-lg text-ink-2">Choisissez une annonce et regardez l&apos;outil l&apos;analyser : à gauche ce que vous voyez sur Leboncoin, à droite ce qu&apos;Utopicar vous rend.</p>
+            <p className="mt-4 text-lg text-ink-2">À gauche, l&apos;annonce telle qu&apos;elle est sur Leboncoin. À droite, ce qu&apos;Utopicar vous dit en 10 secondes : le prix du marché, les défauts, le moteur, le prix à proposer.</p>
           </div>
           <Demo />
         </div>
@@ -79,14 +160,18 @@ export default async function Accueil() {
           <div className="apparait mx-auto mb-12 max-w-2xl text-center">
             <span className="kicker">Ce que l&apos;outil vérifie</span>
             <h2 className="h-sec mt-5">
-              Tout ce qu&apos;il faudrait vérifier à la main, <span className="it">en une fiche</span>
+              Ce qu&apos;Utopicar vérifie <span className="it">à votre place</span>
             </h2>
+            <p className="mt-4 text-lg text-ink-2">Le prix du marché, les défauts, le moteur, le coût réel : ce qu&apos;un acheteur averti vérifie avant d&apos;acheter, fait en 10 secondes.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-6">
             <article className="carte apparait p-6 md:col-span-4">
               <p className="text-sm font-medium text-o2">Cote du marché</p>
               <h3 className="mt-2 font-display text-2xl font-semibold">Le prix de l&apos;annonce, face au marché</h3>
               <p className="mt-2 text-ink-2">Même modèle, même moteur, même âge, même kilométrage. Vous voyez tout de suite si le prix est au-dessus ou en dessous.</p>
+              <Link href="/cote" className="mt-2 inline-block text-sm font-medium text-o2 underline underline-offset-4">
+                Voir les cotes par modèle
+              </Link>
               <svg viewBox="0 0 600 200" className="mt-5 w-full" role="img" aria-label="Exemple : la cote est à 6 950 €, l'annonce à 7 400 €, au-dessus du marché.">
                 <defs>
                   <linearGradient id="aire" x1="0" x2="0" y1="0" y2="1">
@@ -165,6 +250,7 @@ export default async function Accueil() {
             <h2 className="h-sec mt-5">
               Vous achetez pour vous, <span className="it">ou pour revendre</span>
             </h2>
+            <p className="mt-4 text-lg text-ink-2">Dans les deux cas, ça commence pareil : vous collez une annonce. Ce qui change, c&apos;est ce qu&apos;Utopicar vous rend.</p>
           </div>
           <div className="grid gap-5 md:grid-cols-2">
             <article className="carte apparait flex flex-col p-7">
@@ -178,8 +264,8 @@ export default async function Accueil() {
                   </li>
                 ))}
               </ul>
-              <Link href="/analyse" className="btn btn-o mt-7 w-fit">
-                Analyser une annonce <span aria-hidden="true">→</span>
+              <Link href="#essai" className="btn btn-o mt-7 w-fit">
+                Coller une annonce <span aria-hidden="true">→</span>
               </Link>
             </article>
             <article className="carte apparait flex flex-col p-7" style={{ "--i": 1 } as React.CSSProperties}>
@@ -195,9 +281,14 @@ export default async function Accueil() {
                   </li>
                 ))}
               </ul>
-              <Link href="/benef" className="btn mt-7 w-fit">
-                Découvrir Benef <span aria-hidden="true">→</span>
-              </Link>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link href="/benef#essai" className="btn btn-o w-fit">
+                  Chiffrer une annonce
+                </Link>
+                <Link href="/benef" className="btn w-fit">
+                  Découvrir Benef
+                </Link>
+              </div>
             </article>
           </div>
         </div>
@@ -209,19 +300,18 @@ export default async function Accueil() {
           <div className="apparait mx-auto mb-12 max-w-2xl text-center">
             <span className="kicker">Comment ça marche</span>
             <h2 className="h-sec mt-5">
-              Trois étapes, <span className="it">aucun tableur</span>
+              Vous collez l&apos;annonce, <span className="it">Utopicar fait le reste</span>
             </h2>
           </div>
           <ol className="grid gap-5 md:grid-cols-3">
-            {[
-              ["Vous collez l'annonce", "Le texte de la page, et des photos si vous le souhaitez."],
-              ["L'outil fait les vérifications", "Cote du marché, 38 défauts recherchés dans le texte, moteur fiable ou à éviter, contrôle technique, entretien."],
-              ["Vous savez quoi faire", "Un verdict clair, le prix à proposer, les questions à poser et ce qu'il faut contrôler sur place."],
-            ].map(([t, d], i) => (
-              <li key={t} className="carte apparait p-6" style={{ "--i": i } as React.CSSProperties}>
-                <span className="font-display text-sm font-semibold text-o2">Étape {String(i + 1).padStart(2, "0")}</span>
-                <h3 className="mt-2 font-display text-xl font-semibold">{t}</h3>
-                <p className="mt-2 text-ink-2">{d}</p>
+            {ETAPES.map((e, i) => (
+              <li key={e.t} className="carte apparait flex flex-col p-6" style={{ "--i": i } as React.CSSProperties}>
+                <span className="font-display text-sm font-semibold text-o2">Étape {i + 1}</span>
+                <h3 className="mt-2 font-display text-xl font-semibold">{e.t}</h3>
+                <p className="mt-2 text-ink-2">{e.d}</p>
+                <div className="mt-5 rounded-2xl border border-line bg-black/25 p-4 text-sm" aria-hidden="true">
+                  {e.v}
+                </div>
               </li>
             ))}
           </ol>
@@ -258,6 +348,9 @@ export default async function Accueil() {
               { cat: "Prix", q: "L'analyse est-elle vraiment gratuite ?", r: <p>Oui, la première analyse est offerte, sans carte bancaire : il suffit de créer un compte. Pour analyser plusieurs annonces, la formule Essentiel coûte 4,99 € par mois, sans engagement. Sans abonnement, vous pouvez aussi acheter des crédits à l&apos;unité, dès 2,99 € l&apos;analyse.</p> },
               { cat: "Annonces", q: "Ça marche sur quelles voitures ?", r: <p>Sur les annonces de voitures particulières de Leboncoin, La Centrale ou AutoScout24 : il suffit de copier le texte de la page. La cote est la plus précise sur les modèles courants. Sur un modèle rare, l&apos;outil vous prévient que l&apos;estimation est moins sûre.</p> },
               { cat: "Fiabilité", q: "Est-ce que ça remplace un garagiste ?", r: <p>Non. L&apos;outil vous évite les mauvais déplacements et vous donne un prix de départ. Il sépare ce qui est écrit dans l&apos;annonce de ce qui reste à vérifier sur place, et vous dit quoi regarder. Pour une voiture chère ou un doute mécanique, il vous conseille de la faire inspecter.</p> },
+              { cat: "Lien ou texte", q: "Je colle le lien, ou tout le texte ?", r: <p>Sur Leboncoin, le lien suffit : l&apos;annonce et ses photos sont récupérées toutes seules. Sur les autres sites, copiez la page entière (Ctrl+A, Ctrl+C) et collez-la : le titre, le prix, le kilométrage et la description sont lus dans le texte.</p> },
+              { cat: "Vendeurs", q: "Ça marche aussi sur une annonce de professionnel ?", r: <p>Oui. L&apos;outil lit le type de vendeur et en tient compte : un professionnel vend plus cher mais doit une garantie, un particulier vend « en l&apos;état ». Le prix à proposer et les questions à poser changent en conséquence.</p> },
+              { cat: "Délai", q: "Combien de temps dure une analyse ?", r: <p>L&apos;aperçu (cote, défauts lus dans le texte, moteur) s&apos;affiche en 2 secondes. Le rapport complet, qui lit aussi les photos et rédige les questions au vendeur, prend environ une minute.</p> },
               { cat: "Abonnement", q: "Comment résilier ?", r: <p>En deux clics depuis votre compte, à tout moment. Vous gardez l&apos;accès jusqu&apos;à la fin du mois déjà payé.</p> },
               { cat: "Données", q: "Que faites-vous de mes informations ?", r: <p>Votre email sert à votre compte, vos analyses restent privées. Pas de revente de données, pas de publicité. Détails dans la <Link href="/legal#confidentialite" className="text-o2 underline underline-offset-4">politique de confidentialité</Link>.</p> },
             ]}
@@ -274,8 +367,8 @@ export default async function Accueil() {
               Votre prochaine voiture, <span className="it">au bon prix</span>
             </h2>
             <p className="mt-3 text-lg text-ink-2">Première analyse offerte, résultat en quelques secondes.</p>
-            <Link href="/analyse" className="btn btn-o mt-8">
-              Estimer une affaire <span aria-hidden="true">→</span>
+            <Link href="#essai" className="btn btn-o mt-8">
+              Analyser une annonce <span aria-hidden="true">→</span>
             </Link>
             <p className="mx-auto mt-10 flex w-fit items-center gap-3 text-left text-sm text-ink-3">
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-o/15 font-display text-o2" aria-hidden="true">
@@ -288,6 +381,7 @@ export default async function Accueil() {
           </div>
         </div>
       </section>
+      <JsonLdFaq questions={FAQ_TEXTE} />
     </>
   );
 }

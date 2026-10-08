@@ -3,7 +3,7 @@ import { Logo } from "./Logo";
 import { BoutonAnimations } from "./BoutonAnimations";
 
 const COLONNES = [
-  { titre: "Utopicar", liens: [["/analyse", "Estimer une affaire"], ["/tarifs", "Tarifs"], ["/guide", "Guides"], ["/app", "Mon espace"]] },
+  { titre: "Utopicar", liens: [["/analyse", "Analyser une annonce"], ["/cote", "Cotes du marché"], ["/moteur", "Moteurs à éviter"], ["/tarifs", "Tarifs"], ["/guide", "Guides"], ["/app", "Mon espace"]] },
   { titre: "Benef", liens: [["/benef", "Découvrir Benef"], ["/tarifs#benef", "Formules Benef"], ["/guide?guide=premiere-revente", "Guide de la première revente"]] },
   { titre: "Informations", liens: [["/legal#mentions", "Mentions légales"], ["/legal#confidentialite", "Confidentialité"], ["/legal#conditions", "Conditions"], ["/legal#vente", "Conditions de vente"], ["/legal#accessibilite", "Accessibilité"], ["/legal#contact", "Contact"]] },
 ];
@@ -22,10 +22,10 @@ export function Pied() {
         {COLONNES.map((c) => (
           <nav key={c.titre} aria-label={c.titre}>
             <h2 className="mb-3 font-display text-sm font-semibold text-ink">{c.titre}</h2>
-            <ul className="grid gap-2 text-sm">
+            <ul className="grid gap-0.5 text-sm">
               {c.liens.map(([href, l]) => (
                 <li key={href}>
-                  <Link href={href} className="text-ink-3 hover:text-ink">
+                  <Link href={href} className="inline-block py-1.5 text-ink-3 hover:text-ink">
                     {l}
                   </Link>
                 </li>

@@ -2,30 +2,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
-import { supabaseNavigateur } from "@/lib/supabase/navigateur";
-import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
+import { connecter, emailValide, fonctionCompte, inscrire } from "@/lib/compte-client";
 import { inputCls } from "../ui";
 
 type Mode = "inscription" | "connexion";
-
-const MESSAGES: Record<string, string> = {
-  invalid_credentials: "Email ou mot de passe incorrect.",
-  user_already_exists: "Un compte existe déjà avec cet email. Connectez-vous.",
-  email_exists: "Un compte existe déjà avec cet email. Connectez-vous.",
-  email_not_confirmed: "Ce compte n'est pas encore activé. Utilisez « Recevoir un lien de connexion » ci-dessous.",
-  over_email_send_rate_limit: "Trop d'emails envoyés. Patientez une minute puis réessayez.",
-  over_request_rate_limit: "Trop de tentatives. Patientez une minute puis réessayez.",
-  weak_password: "Mot de passe trop simple : 8 caractères au moins, avec des lettres et des chiffres.",
-};
-const traduire = (e: { code?: string; message: string }) => MESSAGES[e.code ?? ""] ?? "Une erreur est survenue. Réessayez dans un instant.";
-
-function profilOnboarding() {
-  try {
-    return JSON.parse(localStorage.getItem("utp-profil") || "{}") as Record<string, string | null>;
-  } catch {
-    return {};
-  }
-}
 
 export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: string; actif: boolean }) {
   const router = useRouter();
@@ -38,17 +18,6 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
   const [charge, setCharge] = useState(false);
   const [erreur, setErreur] = useState("");
   const [envoye, setEnvoye] = useState("");
-
-  /** Fonction `compte` (Supabase) : comptes créés déjà confirmés, emails envoyés depuis utopicar.fr. */
-  async function fonctionCompte(corps: Record<string, unknown>): Promise<{ ok?: boolean; erreur?: string }> {
-    const r = await fetch(`${SUPABASE_URL}/functions/v1/compte`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", apikey: SUPABASE_CLE },
-      body: JSON.stringify(corps),
-    }).catch(() => null);
-    if (!r) return { erreur: "Connexion impossible. Vérifiez votre réseau et réessayez." };
-    return r.json().catch(() => ({ erreur: "Le service ne répond pas. Réessayez dans un instant." }));
-  }
 
   if (!actif)
     return (
@@ -69,21 +38,13 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
   async function envoyer(e: React.FormEvent) {
     e.preventDefault();
     setErreur("");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErreur("Indiquez une adresse email valide, par exemple nom@exemple.fr.");
+    if (!emailValide(email)) return setErreur("Indiquez une adresse email valide, par exemple nom@exemple.fr.");
     if (mdp.length < 8) return setErreur("Le mot de passe doit contenir au moins 8 caractères.");
     if (mode === "inscription" && !cgu) return setErreur("Acceptez les conditions d'utilisation pour créer votre compte.");
     setCharge(true);
-    const sb = supabaseNavigateur();
     try {
-      if (mode === "inscription") {
-        const j = await fonctionCompte({ action: "inscription", email, password: mdp, prenom: prenom.trim(), onboarding: profilOnboarding() });
-        if (!j.ok) return setErreur(j.erreur ?? "L'inscription n'a pas marché. Réessayez dans un instant.");
-        const { error } = await sb.auth.signInWithPassword({ email, password: mdp });
-        if (error) return setErreur(traduire(error));
-      } else {
-        const { error } = await sb.auth.signInWithPassword({ email, password: mdp });
-        if (error) return setErreur(traduire(error));
-      }
+      const err = mode === "inscription" ? await inscrire(email, mdp, prenom) : await connecter(email, mdp);
+      if (err) return setErreur(err);
       router.replace(suite);
       router.refresh();
     } finally {
@@ -93,7 +54,7 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
 
   async function lienMagique() {
     setErreur("");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErreur("Indiquez d'abord votre adresse email.");
+    if (!emailValide(email)) return setErreur("Indiquez d'abord votre adresse email.");
     setCharge(true);
     const j = await fonctionCompte({ action: "lien", email, suite });
     setCharge(false);
@@ -103,7 +64,7 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
 
   async function oubli() {
     setErreur("");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErreur("Indiquez d'abord votre adresse email.");
+    if (!emailValide(email)) return setErreur("Indiquez d'abord votre adresse email.");
     setCharge(true);
     const j = await fonctionCompte({ action: "oubli", email });
     setCharge(false);

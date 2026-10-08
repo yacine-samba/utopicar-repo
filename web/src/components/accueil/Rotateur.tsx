@@ -42,7 +42,8 @@ export function Rotateur({ mots }: { mots: string[] }) {
   const plusLong = mots.reduce((a, b) => (b.length > a.length ? b : a), "");
   return (
     <>
-      <span className="sr-only">{mots[0]}</span>
+      {/* nom accessible du titre : la phrase complète, avec tous les mots qui défilent */}
+      <span className="sr-only">{mots.length > 1 ? `${mots.slice(0, -1).join(", ")} ou ${mots[mots.length - 1]}` : mots[0]}</span>
       {/* Sur sa propre ligne et centré : la place réservée au mot le plus long ne laisse jamais de vide à côté du titre. */}
       <span className="grid justify-items-center text-center" aria-hidden="true">
         <span className="invisible col-start-1 row-start-1 whitespace-nowrap pr-[.25em] max-[420px]:whitespace-normal">{plusLong}</span>
