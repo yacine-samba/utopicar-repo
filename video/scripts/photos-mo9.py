@@ -1,8 +1,8 @@
-"""MO9 « 974 € » : la Dacia Sandero II (photo libre, Wikimedia Commons) → logo et plaque effacés, tournée vers la gauche
+"""MO9 « 974 € » : la Clio IV noire retenue (et la Sandero II des images tests), photos libres de Wikimedia Commons → logo et plaque effacés, tournée vers la gauche
 (elle entre par la droite), détourée (BiRefNet), étalonnée dans la charte.
-    python3 scripts/photos-mo9.py            → assets/photos-mo9/sandero-a.png (RGBA) + vignettes b et c pour le choix
+    python3 scripts/photos-mo9.py [clio-a]   → assets/photos-mo9/<nom>.png (RGBA)
 Originaux dans assets/photos-mo9/src/wm-<nom>.jpg (vignettes 1920 px de Commons) ; auteurs et licences :
-assets/photos-mo9/CREDITS.tsv (CC0 pour a, crédit dans la légende du post si on prend b ou c).
+assets/photos-mo9/CREDITS.tsv (clio-a et sandero-a en CC0 : aucun crédit obligatoire).
 """
 import numpy as np, cv2, sys
 from pathlib import Path
@@ -13,9 +13,12 @@ D = Path(__file__).resolve().parent.parent / 'assets' / 'photos-mo9'
 # zones (pixels de l'original 1920 px) : ('logo', cx, cy, rx, ry) repeint ; ('plate', x0, y0, x1, y1) plaque vierge
 CARS = {
     'sandero-a': (True, [('logo', 1535, 708, 48, 58), ('logo', 857, 200, 42, 46), ('plate', 1452, 826, 1672, 992)]),  # logo, affichette vue par le pare-brise, plaque
+    'clio-a': (True, [('logo', 1556, 640, 42, 62), ('plate', 1432, 818, 1704, 918)]),  # Clio IV noire retenue le 8 oct. 2026 : logo, plaque
 }
+ONLY = sys.argv[1:]  # python3 scripts/photos-mo9.py clio-a : une seule voiture
 ses = new_session('birefnet-general-lite')
 for k, (flip, zones) in CARS.items():
+    if ONLY and k not in ONLY: continue
     im = cv2.imread(str(D / 'src' / f'wm-{k}.jpg'))
     for z in zones:
         if z[0] == 'logo':
@@ -35,6 +38,7 @@ for k, (flip, zones) in CARS.items():
     f = im.astype(np.float32) / 255
     hsv = cv2.cvtColor(f, cv2.COLOR_BGR2HSV); hsv[..., 1] *= .8; f = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
     f = np.clip((f - .5) * 1.12 + .5, 0, 1) * .9
+    if k.startswith('clio'): f = np.clip(f * 1.55 + .03, 0, 1)   # voiture noire : on la remonte pour qu'elle se détache du fond (comme MO8)
     lum = f.mean(2, keepdims=True); f = f * (np.array([.86, .94, 1.04], np.float32) * (1 - lum) + lum)
     H, W = f.shape[:2]; yy, xx = np.mgrid[0:H, 0:W] / max(H, W)
     f *= (1.06 - .40 * np.clip(yy * .9 + (xx if not flip else 1 - xx) * .2 - .25, 0, 1))[..., None]
