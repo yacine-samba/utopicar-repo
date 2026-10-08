@@ -47,6 +47,8 @@ comparaison. Les résultats de É1 peuvent changer la suite : c'est le principe.
 
 ## É1 « Le PV » : la voiture pas chère
 
+**Brief complet : `brief-mo9.md`** (MO9, 8 octobre 2026, à valider).
+
 Il démarre avec peu d'argent et veut doubler sa mise sur une petite voiture. Le film lui montre que les réparations
 étaient écrites sur le procès-verbal du contrôle technique qu'on lui a remis, et comment le lire avant de parler prix.
 
