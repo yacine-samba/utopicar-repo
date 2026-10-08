@@ -37,3 +37,12 @@ audio/stems-mo11/
 assets/photos-mo9/src/
 assets/photos-mo10/src/
 assets/photos-mo11/src/
+renders/stills-*/
+renders/range-*/
+renders/_cells*/
+renders/contact-mo*.png
+renders/beats-mo*.png
+renders/strip-mo*.png
+renders/phone-mo*.png
+renders/draft-mo*.mp4
+scripts/__pycache__/
