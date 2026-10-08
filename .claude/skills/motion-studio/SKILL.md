@@ -16,7 +16,9 @@ réellement commise ou garde une réussite réelle — `references/lessons.md` l
 **Deux formats.** Une **pub produit** suit le déroulé ci-dessous (phases 0 à 7). Une **vidéo d'attention** (30 s, rien
 à vendre, aucun CTA, en boucle) suit le processus en 5 étapes de `references/codes-attention.md` : brief → timeline et
 images tests → maquettage toutes les 0,1 s → voix → animation finale, avec un « OK » à chaque étape. Dans les deux cas,
-les recettes de construction sont dans `references/techniques.md`.
+les recettes de construction sont dans `references/techniques.md`. Pour les épisodes de la série qui reprend MO5
+(> 6 000 vues, notre meilleur résultat), le skill **recette-47** décide du contenu et tient le journal des résultats ;
+ce skill-ci reste celui de la fabrication.
 
 ## Principes qui priment sur tout le reste
 
