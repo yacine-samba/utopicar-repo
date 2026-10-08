@@ -137,7 +137,7 @@ export function Demo() {
             <span>Annonce Leboncoin</span>
             <span>{ex.lieu}</span>
           </div>
-          <div className="relative overflow-hidden rounded-2xl bg-[#1d1814]">
+          <div className="relative overflow-hidden rounded-2xl bg-creux">
             {/* eslint-disable-next-line @next/next/no-img-element -- photos de l'annonce, déjà au bon format */}
             <img key={ex.photos[p]} src={ex.photos[p]} srcSet={`${petite(ex.photos[p])} 400w, ${ex.photos[p]} 800w`} sizes="(min-width: 1024px) 460px, 100vw" alt={`${ex.titre}, photo ${p + 1} de l'annonce`} width={800} height={600} className="aspect-[4/3] w-full object-cover" />
             <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs text-ink">{ex.nbPhotos} photos</span>
@@ -189,8 +189,8 @@ export function Demo() {
               <div className="flex items-center gap-4">
                 <div className="relative size-[86px] shrink-0">
                   <svg viewBox="0 0 86 86" className="size-full -rotate-90" aria-hidden="true">
-                    <circle cx="43" cy="43" r={r} fill="none" stroke="rgb(244 241 236 / .1)" strokeWidth="7" />
-                    <circle cx="43" cy="43" r={r} fill="none" stroke={ANNEAU[ex.ton]} strokeWidth="7" strokeLinecap="round" strokeDasharray={tour} strokeDashoffset={tour * (1 - score / 10)} />
+                    <circle cx="43" cy="43" r={r} fill="none" className="stroke-line" strokeWidth="7" />
+                    <circle cx="43" cy="43" r={r} fill="none" style={{ stroke: ANNEAU[ex.ton] }} strokeWidth="7" strokeLinecap="round" strokeDasharray={tour} strokeDashoffset={tour * (1 - score / 10)} />
                   </svg>
                   <span className="absolute inset-0 grid place-content-center text-center leading-none">
                     <b className="num font-display text-2xl">{Math.round(score)}<small className="text-sm text-ink-3">/10</small></b>
@@ -214,7 +214,7 @@ export function Demo() {
                   </li>
                 ))}
               </ul>
-              <div className="flex items-start gap-3 rounded-2xl border border-line bg-black/25 p-3 text-sm">
+              <div className="flex items-start gap-3 rounded-2xl border border-line bg-creux p-3 text-sm">
                 <p className="flex-1 text-ink-2">
                   Message prêt à envoyer : <em className="text-ink">« {ex.message} »</em>
                 </p>

@@ -2,11 +2,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
+import { BoutonTheme } from "./BoutonTheme";
 
 export type LienNav = { href: string; label: string };
 
 /** Menu déroulant du téléphone : bouton annoncé, fermeture par Échap et au changement de page. */
-export function MenuMobile({ liens, compte }: { liens: LienNav[]; compte: LienNav }) {
+export function MenuMobile({ liens, compte, theme }: { liens: LienNav[]; compte: LienNav; theme: "clair" | "sombre" }) {
   const [ouvert, setOuvert] = useState(false);
   const id = useId();
   const chemin = usePathname();
@@ -32,13 +33,14 @@ export function MenuMobile({ liens, compte }: { liens: LienNav[]; compte: LienNa
           {ouvert ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
         </svg>
       </button>
-      <div id={id} hidden={!ouvert} className="absolute inset-x-0 top-full border-b border-line bg-bg0/95 backdrop-blur">
+      <div id={id} hidden={!ouvert} className="absolute inset-x-0 top-full border-b border-line bg-bg0 shadow-[0_24px_40px_-24px_rgb(0_0_0/0.35)]">
         <nav aria-label="Menu" className="wrap grid gap-1 py-4">
           {[...liens, compte].map((l) => (
             <Link key={l.href} href={l.href} aria-current={chemin === l.href ? "page" : undefined} className="rounded-xl px-3 py-3 text-lg text-ink-2 hover:bg-glass hover:text-ink aria-[current=page]:text-o2">
               {l.label}
             </Link>
           ))}
+          <BoutonTheme initial={theme} ligne />
         </nav>
       </div>
     </div>

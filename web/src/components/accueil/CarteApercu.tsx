@@ -138,8 +138,8 @@ function Exemple({ cle }: { cle: string }) {
       <div className="arrivee flex items-center gap-4">
         <div className="relative size-[70px] shrink-0">
           <svg viewBox="0 0 70 70" className="size-full -rotate-90" aria-hidden="true">
-            <circle cx="35" cy="35" r={r} fill="none" stroke="rgb(244 241 236 / .1)" strokeWidth="6" />
-            <circle cx="35" cy="35" r={r} fill="none" stroke={ANNEAU_EXEMPLE[ex.ton]} strokeWidth="6" strokeLinecap="round" strokeDasharray={tour} strokeDashoffset={tour * (1 - (plein ? ex.fiab.note : 0) / 10)} className="transition-[stroke-dashoffset] duration-1000 ease-out" />
+            <circle cx="35" cy="35" r={r} fill="none" className="stroke-line" strokeWidth="6" />
+            <circle cx="35" cy="35" r={r} fill="none" style={{ stroke: ANNEAU_EXEMPLE[ex.ton] }} strokeWidth="6" strokeLinecap="round" strokeDasharray={tour} strokeDashoffset={tour * (1 - (plein ? ex.fiab.note : 0) / 10)} className="transition-[stroke-dashoffset] duration-1000 ease-out" />
           </svg>
           <span className="absolute inset-0 grid place-content-center text-center leading-none">
             <b className="num font-display text-xl">
