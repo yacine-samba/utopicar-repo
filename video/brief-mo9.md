@@ -5,7 +5,7 @@ calcul avant d'acheter, il chiffre les défauts à la visite, chaque frais tombe
 téléphone sonne, et la marge tient. Le spectateur repart avec les trois décisions qui ont fait la marge, toutes prises
 avant d'acheter. C'est la vidéo qui donne envie d'y aller.
 
-Pitch validé avec toi le 8 octobre 2026, après « Le PV » et « La cote » (en réserve : `brief-reserve-pv.md`,
+Pitch et brief validés avec toi le 8 octobre 2026 (ouverture A), après « Le PV » et « La cote » (en réserve : `brief-reserve-pv.md`,
 `brief-reserve-cote.md`). Elle reprend ce qu'on a montré dans nos vidéos et nos carrousels : le calcul à l'envers
 (MO5), les défauts qui se voient et coûtent peu (MO6), le prix fixé sur les annonces d'à côté (carrousels).
 Écrit avec les skills recette-47, motion-studio et « L'art du hook ». Textes passés à Stop Slop.
@@ -82,7 +82,7 @@ résultat d'abord, avec le kebab comme crochet.
 |---|---|---|
 | Ouverture | « Tu l'achètes 3 500, tu la revends 5 000. » / « Ton compte en banque n'est pas d'accord. » | « Tu l'achètes 2 900, tu la revends 4 600. » / « Cette fois, ton compte en banque est d'accord. » |
 | Image 0 | « 5 000 − 3 500 = 1 500 € ? » | « 2 900 → 4 600 ✓ » |
-| Chiffre héros | MARGE 1 500 € qui tombe | MARGE 1 020 € qui tient, puis 974 € |
+| Chiffre héros | MARGE 1 500 € qui tombe | MARGE 1 000 € qui tient, puis 974 € |
 | Héros visible | la Polo, couverte d'étiquettes | la voiture, terne à l'achat, qui brille de plus en plus : phares, rayure, intérieur remis en état |
 | Jour 1 | « Jour 1, tu l'achètes. » | **Jour 0** (nouveau) : « Jour 0, tu comptes. » Puis la visite et l'achat |
 | Accumulation | 9 débits qui font fondre la marge | les mêmes débits, chacun tamponné « prévu ✓ » ; la jauge « frais prévus » se remplit, la marge ne bouge pas |
@@ -102,12 +102,12 @@ Une citadine essence de 2014, annoncée 3 400 €.
 **Jour 0, avant d'acheter** :
 - Prix de revente : les annonces d'à côté (même moteur et même boîte, kilométrage proche, même année) valent 4 590,
   4 650, 4 700, 4 750 et 4 900 € ; le prix du milieu est 4 700 €, il vise **4 650 €**.
-- Frais prévus : **730 €** (détail ci-dessous).
+- Frais prévus : **750 €** (détail ci-dessous, arrondi au-dessus du total).
 - Marge voulue : 1 000 €.
-- Prix max : 4 650 − 730 − 1 000 = **2 920 €**. Il proposera 2 900 €.
+- Prix max : 4 650 − 750 − 1 000 = **2 900 €**.
 
 **La visite** : pneus lisses, phares jaunis, rayure sur l'aile. Il les chiffre devant le vendeur et propose 2 900 €.
-Le vendeur accepte. Marge prévue : 4 650 − 2 900 − 730 = **1 020 €**.
+Le vendeur accepte. Marge prévue : 4 650 − 2 900 − 750 = **1 000 €**.
 
 **Les frais, tous prévus** :
 
@@ -123,7 +123,7 @@ Le vendeur accepte. Marge prévue : 4 650 − 2 900 − 730 = **1 020 €**.
 | Essence · 2 visites | 40 € | hypothèse (MO5) |
 | Assurance · 1 mois | 40 € | hypothèse (MO5) |
 | **Kebab · pour fêter** | 12 € | le gag |
-| **Total** | **726 €** | 4 € sous les 730 prévus |
+| **Total** | **726 €** | 24 € sous les 750 prévus |
 
 **La vente** : annonce à 4 650 €, photos en plein jour. J+6 : « 4 600 et je la prends. » Il accepte.
 Marge réelle : 4 600 − 2 900 − 726 = **974 €**.
@@ -139,10 +139,10 @@ Minutage indicatif, celui de MO5 ; l'étape 2 le fixe à l'image près sur la gr
 | Temps | Ce qu'on voit | Ce qu'on entend | Émotion |
 |---|---|---|---|
 | 0-4,2 s · **le calcul** | Image 0 déjà composée : « 2 900 → 4 600 » en Clash géant, écrit à la lumière. Une notification bancaire arrive par la droite, comme dans MO5, mais au lieu de percuter le calcul, elle se pose dessous et un « ✓ » orange se trace. | « Tu l'achètes 2 900, tu la revends 4 600. Cette fois, ton compte en banque est d'accord. » | surprise, curiosité |
-| 4,2-9,5 s · **jour 0 et la visite** | Palettes « JOUR 0 ». Les annonces d'à côté s'allument en grille, leur prix du milieu se trace (4 700, puis 4 650) ; la formule s'écrit sur une carte de verre : 4 650 − 730 − 1 000 = *prix max* 2 920. La voiture entre par la droite et freine, annonce « 3 400 € ». Trois défauts s'allument sur la carrosserie (pneus, phare, aile) ; « 3 400 » se barre, « 2 900 » s'écrit. Le compteur « MARGE 1 020 € » se construit. | « Jour 0, tu comptes. Les annonces d'à côté : 4 650. Tes frais : 730. Ton prix max : 2 900. » « Pneus lisses, phares jaunis, rayure. Il accepte. » | maîtrise |
+| 4,2-9,5 s · **jour 0 et la visite** | Palettes « JOUR 0 ». Les annonces d'à côté s'allument en grille, leur prix du milieu se trace (4 700, puis 4 650) ; la formule s'écrit sur une carte de verre : 4 650 − 750 − 1 000 = *prix max* 2 900. La voiture entre par la droite et freine, annonce « 3 400 € ». Trois défauts s'allument sur la carrosserie (pneus, phare, aile) ; « 3 400 » se barre, « 2 900 » s'écrit. Le compteur « MARGE 1 000 € » se construit. | « Jour 0, tu comptes. Les annonces d'à côté : 4 650. Tes frais : 750. Ton prix max : 2 900. » « Pneus lisses, phares jaunis, rayure. Il accepte. » | maîtrise |
 | 9,5-12,4 s · **les frais tombent** | Les débits tombent dans la profondeur, un par temps, chacun avec sa vidéo dedans, comme dans MO5 ; chacun reçoit un tampon « prévu ✓ » et remplit la jauge « frais prévus » sous le compteur. Pendant ce temps, le trait de lumière passe sur la voiture : le phare s'éclaircit, la rayure s'efface, l'intérieur se nettoie (procédé de MO6). Le compteur ne bouge pas. | « Carte grise, contrôle, pneus : prévu. » Un choc de débit par temps, sur une note qui **monte**. | satisfaction |
 | 12,4-15,6 s · **ça sonne** | Plein jour. Palettes J+1 → J+6. Le téléphone vibre sans arrêt, les messages s'empilent en verre : « Toujours dispo ? » × 12, « Je peux passer samedi ? ». Le kebab arrive, tamponné « prévu ✓ ». | « Et là, ça sonne. » La musique garde sa basse et monte. | joie |
-| 15,6-20,9 s · **la chute** | Une bulle : « 4 600 et je la prends. » Virement + 4 600 €. Le compteur roule de 1 020 à 974 et se fond dans un « 974 € » géant ; tout le reste s'éteint ; une seule pause, la musique retient son souffle. « *Même le kebab était prévu.* » s'écrit dessous. | « Six jours. Il négocie. Tu acceptes. Bénéfice : 974 euros. » (pause) « Même le kebab était prévu. » | fierté, rire |
+| 15,6-20,9 s · **la chute** | Une bulle : « 4 600 et je la prends. » Virement + 4 600 €. Le compteur roule de 1 000 à 974 et se fond dans un « 974 € » géant ; tout le reste s'éteint ; une seule pause, la musique retient son souffle. « *Même le kebab était prévu.* » s'écrit dessous. | « Six jours. Il négocie. Tu acceptes. Bénéfice : 974 euros. » (pause) « Même le kebab était prévu. » | fierté, rire |
 | 20,9-27,4 s · **ce qui a fait la marge** | Rembobinage jusqu'au jour 0 : les tampons se décollent, la voiture redevient terne, le compteur redescend à zéro. Trois cartes de verre s'allument, une par temps : « 1 · Le prix de revente : les annonces d'à côté » · « 2 · Le prix max : revente − frais − marge » · « 3 · À la visite : chaque défaut chiffré ». | « Tout s'est joué au jour 0. » Souffle inversé, la musique repart sur le temps, une note par carte. | soulagement, valeur |
 | 27,4-29,6 s · **la boucle** | Les cartes se replient, « 2 900 → 4 600 » revient dans le cadre de l'image 0. | « La prochaine fois que tu te dis… » → « Tu l'achètes 2 900… » | boucle |
 
@@ -152,7 +152,7 @@ Minutage indicatif, celui de MO5 ; l'étape 2 le fixe à l'image près sur la gr
 Tu l'achètes 2 900, tu la revends 4 600.
 Cette fois, ton compte en banque est d'accord.
 Jour 0, tu comptes.
-Les annonces d'à côté : 4 650. Tes frais : 730.
+Les annonces d'à côté : 4 650. Tes frais : 750.
 Ton prix max : 2 900.
 Pneus lisses, phares jaunis, rayure. Il accepte.
 Carte grise, contrôle, pneus : prévu.
@@ -166,7 +166,7 @@ La prochaine fois que tu te dis…
 
 Ouverture B (même corps) : « 974 € de marge, vendue en six jours. Et tout était prévu. Même le kebab. »
 Je resserre la voix à l'étape 4, chronomètre en main (la parole doit tenir en 22 s) ; première coupe possible :
-« Tes frais : 730 » seulement à l'écran.
+« Tes frais : 750 » seulement à l'écran.
 
 ## La direction artistique
 
@@ -182,7 +182,7 @@ lumière, les notes montent au lieu de descendre, la voiture brille de plus en p
 **Nouveau dans MO9** :
 - **Le tampon « prévu ✓ »** : chaque notification de débit reçoit un tampon orange tracé à la lumière, puis glisse
   dans la jauge « frais prévus ».
-- **La jauge « frais prévus »** : une barre de verre sous le compteur, qui se remplit jusqu'à 726 sur 730.
+- **La jauge « frais prévus »** : une barre de verre sous le compteur, qui se remplit jusqu'à 726 sur 750.
 - **L'avant / après** : le trait de lumière de MO6 passe sur le phare, la rayure et l'intérieur, et les remet en état.
 
 **La voiture** : une photo libre de droits (Wikimedia Commons, licence et auteur notés comme pour MO8), détourée avec
@@ -216,8 +216,8 @@ qui vibre en plein jour, main qui tend des clés pour la vente.
 | Étape | Ce que je livre | Ce que tu valides |
 |---|---|---|
 | 1. Brief | ce document | « OK », ou tes changements |
-| 2. Timeline et images tests | le déroulé seconde par seconde, deux ou trois photos libres de la voiture, les montants relus et datés, 3 à 5 images tests en 1080×1920 (le calcul ✓, le jour 0, « prévu ✓ », 974 €, les trois décisions), le gabarit `film-47` vérifié sur MO5 | la DA et le déroulé |
-| 3. Maquettage complet | une image toutes les 0,1 s, en planches par temps | chaque temps |
+| 2. Timeline et images tests | le déroulé seconde par seconde, deux ou trois photos libres de la voiture, les montants relus et datés, 3 à 5 images tests en 1080×1920 (le calcul ✓, le jour 0, « prévu ✓ », 974 €, les trois décisions) | la DA et le déroulé |
+| 3. Maquettage complet | le film animé, construit sur le gabarit `film-47` (vérifié sur MO5), et une image toutes les 0,1 s en planches par temps | chaque temps |
 | 4. Voix off | le script final, deux prises de Simon posées sur la musique ; estimation des crédits ElevenLabs avant de générer | le texte, puis la prise |
 | 5. Animation | le film, le son, le mix, `qa_video.py` sans FAIL, les 2 MP4, la couverture, les SRT | la livraison |
 

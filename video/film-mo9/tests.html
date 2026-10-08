@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>MO9 · images tests</title>
+<!-- Étape 2 : cinq images clés de MO9 « 974 € », une scène par ?s=1..5, rendues par
+     node scripts/stills.mjs film-mo9/tests.html 1,2,3,4,5 renders/review/mo9-test -->
+<style>
+@font-face{font-family:Clash;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format("woff2");font-weight:700}
+@font-face{font-family:Clash;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format("woff2");font-weight:600}
+@font-face{font-family:Satoshi;src:url(../assets/fonts-site/Satoshi-500.woff2) format("woff2");font-weight:500}
+@font-face{font-family:Satoshi;src:url(../assets/fonts-site/Satoshi-700.woff2) format("woff2");font-weight:700}
+@font-face{font-family:Fraunces;src:url(../assets/fonts-mo5/Fraunces.woff2) format("woff2");font-style:italic}
+:root{--bg0:#08070a;--o1:#ff5a1f;--o2:#ff8a4c;--o3:#ffb38a;--ink:#f6efe7;--mute:#a59a90}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
+.stage{position:absolute;inset:0;overflow:hidden;font-family:Satoshi;color:var(--ink);background:var(--bg0);-webkit-font-smoothing:antialiased}
+.scene{position:absolute;inset:0;display:none}.on{display:block}
+.abs{position:absolute}
+.bg{position:absolute;background-size:cover;background-position:center}
+.fog{position:absolute;inset:0;pointer-events:none}
+.cone{position:absolute;left:540px;top:-200px;width:1500px;height:1500px;transform:translateX(-50%);background:conic-gradient(from 180deg at 50% 0%,transparent 160deg,rgba(255,138,76,.10) 175deg,rgba(255,179,138,.16) 180deg,rgba(255,138,76,.10) 185deg,transparent 200deg);filter:blur(30px);mix-blend-mode:screen}
+.floor{position:absolute;left:-300px;width:1680px;height:900px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 2px,transparent 2px 120px),repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 2px,transparent 2px 120px);transform:perspective(900px) rotateX(72deg);transform-origin:50% 0;-webkit-mask-image:linear-gradient(transparent,#000 30%,#000 60%,transparent)}
+.grain{position:absolute;inset:-50%;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='9'/></filter><rect width='256' height='256' filter='url(%23n)'/></svg>")}
+.vign{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 65% at 50% 45%,transparent 50%,rgba(0,0,0,.7))}
+.glow{position:absolute;border-radius:50%;filter:blur(60px);mix-blend-mode:screen;pointer-events:none}
+.n{font-family:Clash;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ext{text-shadow:0 1px 0 #d8cfc6,0 2px 0 #bfb5ab,0 3px 0 #a79c92,0 4px 0 #8f8479,0 5px 0 #786d63,0 6px 0 #61574e,0 16px 30px rgba(0,0,0,.6)}
+.lit{filter:drop-shadow(0 0 26px rgba(255,120,50,.35)) drop-shadow(0 0 2px rgba(255,200,170,.6))}
+.serif{font-family:Fraunces;font-style:italic;font-weight:500;background:linear-gradient(100deg,var(--o1),var(--o2) 55%,var(--o3));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px rgba(255,100,40,.35))}
+.glass{position:absolute;border-radius:36px;background:linear-gradient(140deg,rgba(255,255,255,.20),rgba(255,255,255,.05) 45%,rgba(255,255,255,.08));-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);border:1.5px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -20px 40px rgba(0,0,0,.18),0 40px 80px rgba(0,0,0,.5);overflow:hidden}
+.glass::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.18) 42%,transparent 52%);pointer-events:none}
+.mention{position:absolute;left:540px;transform:translateX(-50%);font:500 22px Satoshi;color:rgba(246,239,231,.5);white-space:nowrap}
+/* notification bancaire (MO5) */
+.notif{width:780px;height:184px;display:flex;align-items:center;gap:26px;padding:22px 32px 22px 22px}
+.notif .th{width:186px;height:138px;border-radius:22px;flex:none;background-size:cover;background-position:center;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.notif .app{font:500 22px Satoshi;color:rgba(246,239,231,.7);margin-bottom:6px;white-space:nowrap}
+.notif .ti{font:700 34px Satoshi;white-space:nowrap}
+.notif .am{font:700 54px Clash;font-variant-numeric:tabular-nums;white-space:nowrap}
+.notif .am b{color:var(--o2)}
+/* tampon « prévu ✓ » : tracé à la lumière, posé de biais */
+.stamp{position:absolute;padding:8px 22px 10px;border:4px solid var(--o2);border-radius:14px;font:700 34px Clash;color:var(--o3);letter-spacing:.04em;white-space:nowrap;box-shadow:0 0 22px rgba(255,110,40,.55),inset 0 0 14px rgba(255,110,40,.35);text-shadow:0 0 14px rgba(255,120,50,.6);background:rgba(8,7,10,.35)}
+/* compteur à rouleaux (MO5), figé sur une valeur */
+.cell{position:absolute;width:124px;height:172px;border-radius:24px}
+.cell span{position:absolute;inset:0;text-align:center;line-height:172px;font:700 128px Clash;color:var(--ink)}
+.cell::after{content:"";position:absolute;inset:0;border-radius:24px;background:linear-gradient(rgba(8,7,10,.55),transparent 26%,transparent 74%,rgba(8,7,10,.55))}
+.flapT{position:absolute;width:132px;height:180px;border-radius:20px;display:flex;align-items:center;justify-content:center;font:700 128px Clash}
+.flapT i{position:absolute;left:0;right:0;top:50%;height:3px;background:rgba(0,0,0,.5)}
+.ad{position:absolute;width:152px;height:184px;border-radius:22px;padding:9px}
+.ad .ph{height:84px;border-radius:14px;background-size:cover;background-position:center;filter:blur(2px) brightness(.8)}
+.ad .p{font:700 34px Clash;margin-top:10px;text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ad .k{font:500 18px Satoshi;color:rgba(246,239,231,.65);white-space:nowrap;text-align:center}
+.sweep{position:absolute;width:90px;margin-left:-45px;background:linear-gradient(90deg,rgba(255,90,31,0),rgba(255,120,50,.25) 30%,rgba(255,236,220,.95) 48%,#fff 50%,rgba(255,236,220,.95) 52%,rgba(255,120,50,.25) 70%,rgba(255,90,31,0));-webkit-mask-image:linear-gradient(transparent,#000 15%,#000 85%,transparent);mix-blend-mode:screen;filter:blur(1px)}
+.row{display:flex;justify-content:space-between;align-items:baseline;white-space:nowrap}
+.dec{position:absolute;left:110px;width:860px;height:268px;padding:30px 40px;display:flex;align-items:center;gap:34px}
+.dec .num{font:700 150px Clash;line-height:1;width:96px;text-align:center;background:linear-gradient(180deg,#ffd2b8,var(--o2));-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(255,110,40,.45))}
+.dec .t{font:700 46px Satoshi;white-space:nowrap}
+.dec .s{font:500 32px Satoshi;color:rgba(246,239,231,.7);margin-top:4px;white-space:nowrap}
+.dec .v{font:700 52px Clash;margin-top:10px;white-space:nowrap;color:var(--o3)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="lg" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="lg2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</svg>
+<div class="stage">
+
+<!-- ===== 1 · LE CALCUL (t = 3,2 s) : « 2 900 → 4 600 », le virement se pose dessous, le ✓ se trace ===== -->
+<section class="scene" data-s="1">
+  <div class="bg" style="inset:-12%;background-image:url(../film-mo5/frames/22168.jpg);filter:blur(16px) brightness(.8) saturate(1.2)"></div>
+  <div class="fog" style="background:radial-gradient(62% 40% at 50% 42%,rgba(8,7,10,.15),rgba(8,7,10,.93))"></div>
+  <div class="glow" style="left:170px;top:430px;width:740px;height:560px;background:rgba(255,100,40,.42)"></div>
+  <div class="abs" style="left:0;width:1080px;top:380px;text-align:center;white-space:nowrap">
+    <div class="n ext lit" style="font-size:190px;line-height:1">2 900</div>
+    <svg width="60" height="84" viewBox="0 0 60 84" style="display:block;margin:6px auto 0;filter:url(#lg)"><path d="M30 6 V70 M10 50 L30 74 L50 50" stroke="#ffb38a" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="n ext lit" style="font-size:190px;line-height:1;margin-top:4px">4 600</div>
+  </div>
+  <!-- le ✓ tracé à la lumière, la plume encore dessus -->
+  <svg class="abs" style="left:420px;top:880px;overflow:visible" width="240" height="140" viewBox="0 0 240 170">
+    <path d="M18 92 L88 150 L222 18" stroke="#ff8a4c" stroke-width="22" fill="none" stroke-linecap="round" stroke-linejoin="round" style="filter:url(#lg2)" opacity=".7"/>
+    <path d="M18 92 L88 150 L222 18" stroke="#ffe2cf" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="222" cy="18" r="11" fill="#fff" style="filter:url(#lg2)"/>
+  </svg>
+  <div class="glass notif" style="left:150px;top:1080px">
+    <div class="th" style="background-image:url(../film-mo5/frames/34140.jpg)"></div>
+    <div><div class="app">Compte courant · maintenant</div><div class="ti">Virement reçu</div><div class="am"><b style="color:var(--o3)">+</b> 4 600,00 €</div></div>
+  </div>
+  <div class="abs" style="left:540px;top:1300px;transform:translateX(-50%);white-space:nowrap;font:500 46px Satoshi">Cette fois, <span class="serif" style="font-size:62px">d'accord.</span></div>
+</section>
+
+<!-- ===== 2 · JOUR 0 (t = 7,4 s) : les annonces d'à côté, puis la formule du prix max ===== -->
+<section class="scene" data-s="2">
+  <div class="bg" style="inset:0;background:radial-gradient(70% 50% at 50% 50%,#1d1520,#08070a 75%)"></div>
+  <div class="cone" style="top:-180px"></div>
+  <!-- JOUR 0 en palettes, petit, en haut -->
+  <div class="abs" id="flaps" style="left:0;top:236px;width:1080px;height:120px"></div>
+  <!-- les annonces d'à côté : cinq cartes dans la colonne 140 → 940, la médiane allumée -->
+  <div class="glass ad" style="left:140px;top:446px;opacity:.82"><div class="ph" style="background-image:url(../film-mo5/frames/42136.jpg)"></div><div class="p">4 590 €</div><div class="k">131 000 km</div></div>
+  <div class="glass ad" style="left:302px;top:446px;opacity:.82"><div class="ph" style="background-image:url(../film-mo5/frames/47585.jpg)"></div><div class="p">4 650 €</div><div class="k">124 000 km</div></div>
+  <div class="glass ad" style="left:464px;top:430px;box-shadow:0 0 0 3px rgba(255,179,138,.9),0 0 40px rgba(255,110,40,.6),0 40px 80px rgba(0,0,0,.5)"><div class="ph" style="background-image:url(../film-mo5/frames/45755.jpg)"></div><div class="p" style="color:var(--o3)">4 700 €</div><div class="k">128 000 km</div></div>
+  <div class="glass ad" style="left:626px;top:446px;opacity:.82"><div class="ph" style="background-image:url(../film-mo5/frames/13260.jpg)"></div><div class="p">4 750 €</div><div class="k">119 000 km</div></div>
+  <div class="glass ad" style="left:788px;top:446px;opacity:.82"><div class="ph" style="background-image:url(../film-mo5/frames/4716.jpg)"></div><div class="p">4 900 €</div><div class="k">112 000 km</div></div>
+  <div class="abs" style="left:0;width:1080px;top:652px;text-align:center;font:500 30px Satoshi;color:rgba(246,239,231,.75)">Annonces d'à côté · même moteur, même boîte, même année</div>
+  <!-- la formule -->
+  <div class="glow" style="left:180px;top:800px;width:720px;height:520px;background:rgba(255,110,40,.28)"></div>
+  <div class="glass" style="left:110px;top:730px;width:860px;height:652px;border-radius:44px;padding:52px 58px">
+    <div class="row" style="font:600 50px Clash;color:rgba(246,239,231,.75)"><span>Revente visée</span><span class="n" style="font-size:86px;color:var(--ink)">4 650</span></div>
+    <div class="row" style="font:600 50px Clash;color:rgba(246,239,231,.75);margin-top:18px"><span>− frais prévus</span><span class="n" style="font-size:86px;color:var(--ink)">750</span></div>
+    <div class="row" style="font:600 50px Clash;color:rgba(246,239,231,.75);margin-top:18px"><span>− marge voulue</span><span class="n" style="font-size:86px;color:var(--ink)">1 000</span></div>
+    <svg width="744" height="30" style="display:block;margin-top:22px;overflow:visible"><line x1="0" y1="15" x2="744" y2="15" stroke="#ff8a4c" stroke-width="14" stroke-linecap="round" style="filter:url(#lg2)" opacity=".6"/><line x1="0" y1="15" x2="744" y2="15" stroke="#ffe2cf" stroke-width="6" stroke-linecap="round"/></svg>
+    <div class="row" style="margin-top:20px"><span class="serif" style="font-size:84px;padding:.05em .14em .12em .3em;margin-left:-.3em">prix max</span><span class="n lit" style="font-size:118px">2 900 €</span></div>
+  </div>
+  <div class="mention" style="top:1410px">Exemple · prix moyens constatés</div>
+</section>
+
+<!-- ===== 3 · PRÉVU ✓ (t = 11,0 s) : les frais tombent dans le plan, la marge tient, la voiture se remet en état ===== -->
+<section class="scene" data-s="3">
+  <div class="bg" style="inset:0;background:radial-gradient(70% 50% at 50% 62%,#1d1520,#08070a 75%)"></div>
+  <div class="cone" style="top:-300px"></div>
+  <div class="floor" style="top:1430px"></div>
+  <div class="glow" style="left:90px;top:1180px;width:900px;height:380px;background:rgba(255,110,40,.30)"></div>
+  <!-- compteur MARGE -->
+  <div class="abs" style="left:0;top:232px;width:1080px;text-align:center;font:700 30px Satoshi;letter-spacing:.32em;color:var(--mute)">MARGE</div>
+  <div class="abs" id="counter" style="left:0;top:282px;width:1080px;height:172px"></div>
+  <!-- jauge des frais prévus -->
+  <div class="glass" style="left:190px;top:478px;width:700px;height:70px;border-radius:35px;padding:0">
+    <div class="abs" style="left:6px;top:6px;width:400px;height:58px;border-radius:29px;background:linear-gradient(90deg,rgba(255,90,31,.55),rgba(255,138,76,.85));box-shadow:0 0 24px rgba(255,110,40,.6)"></div>
+    <div class="abs" style="left:0;top:0;width:700px;line-height:70px;text-align:center;font:700 30px Satoshi;white-space:nowrap">Frais prévus · 374 / 750 €</div>
+  </div>
+  <!-- les débits, chacun tamponné -->
+  <div class="mention" style="top:568px">Exemple · prix moyens constatés</div>
+  <div class="glass notif" style="left:150px;top:616px;transform:scale(.88);transform-origin:50% 0;opacity:.72">
+    <div class="th" style="background-image:url(../film-mo5/frames/13260.jpg)"></div>
+    <div><div class="app">Compte courant · mercredi</div><div class="ti">Contrôle technique</div><div class="am"><b>−</b> 78,00 €</div></div>
+  </div>
+  <div class="stamp" style="left:676px;top:706px;transform:rotate(-6deg) scale(.86);opacity:.8">prévu ✓</div>
+  <div class="glass notif" style="left:150px;top:800px">
+    <div class="th" style="background-image:url(../film-mo5/frames/4716.jpg)"></div>
+    <div><div class="app">Compte courant · maintenant</div><div class="ti">Vidange</div><div class="am"><b>−</b> 110,00 €</div></div>
+  </div>
+  <div class="stamp" style="left:700px;top:880px;transform:rotate(-8deg)">prévu ✓</div>
+  <!-- la Sandero, remise en état sous le trait de lumière (à gauche du trait : propre ; à droite : encore terne) -->
+  <div class="abs" style="left:150px;top:1010px;width:780px;height:543px;transform:perspective(1500px) rotateY(8deg) rotateX(2deg)">
+    <img src="../assets/photos-mo9/sandero-a.png" style="position:absolute;inset:0;width:100%">
+    <img src="../assets/photos-mo9/terne.png" style="position:absolute;inset:0;width:100%;-webkit-mask-image:linear-gradient(90deg,transparent 47%,#000 50%)">
+    <img src="../assets/photos-mo9/phares.png" style="position:absolute;inset:0;width:100%;-webkit-mask-image:linear-gradient(90deg,transparent 47%,#000 50%)">
+    <img src="../assets/photos-mo9/rayure.png" style="position:absolute;inset:0;width:100%;-webkit-mask-image:linear-gradient(90deg,transparent 47%,#000 50%)">
+    <div class="sweep" style="left:380px;top:-50px;height:640px;transform:rotate(5deg)"></div>
+  </div>
+</section>
+
+<!-- ===== 4 · LA CHUTE (t = 20,0 s) : « 974 € » géant, « Même le kebab était prévu. » ===== -->
+<section class="scene" data-s="4">
+  <div class="bg" style="inset:0;background:radial-gradient(70% 50% at 50% 50%,#1d1520,#08070a 75%)"></div>
+  <div class="abs" style="left:150px;top:1210px;width:780px;height:543px;opacity:.28;filter:blur(3px)"><img src="../assets/photos-mo9/sandero-a.png" style="width:100%"></div>
+  <div class="glow" style="left:160px;top:480px;width:760px;height:600px;background:rgba(255,100,40,.55)"></div>
+  <div class="abs" style="left:0;width:1080px;top:470px;text-align:center;font:700 30px Satoshi;letter-spacing:.34em;color:var(--mute)">BÉNÉFICE</div>
+  <div class="abs n ext" style="left:0;width:1080px;top:530px;text-align:center;font-size:350px;line-height:1;color:var(--ink)">974<span style="font-size:190px;margin-left:12px">€</span></div>
+  <div class="abs" style="left:0;width:1080px;top:930px;text-align:center;line-height:1.08"><span class="serif" style="font-size:104px">Même le kebab<br>était prévu.</span></div>
+  <div class="glass notif" style="left:150px;top:1200px;transform:scale(.82);transform-origin:50% 0">
+    <div class="th" style="background-image:url(../film-mo5/frames/22168.jpg)"></div>
+    <div><div class="app">Compte courant · samedi</div><div class="ti">Kebab · pour fêter</div><div class="am"><b>−</b> 12,00 €</div></div>
+  </div>
+  <div class="stamp" style="left:668px;top:1218px;transform:rotate(-8deg)">prévu ✓</div>
+</section>
+
+<!-- ===== 5 · CE QUI A FAIT LA MARGE (t = 25,4 s) : les trois décisions du jour 0 ===== -->
+<section class="scene" data-s="5">
+  <div class="bg" style="inset:-10%;background-image:url(../film-mo5/frames/49219.jpg);filter:blur(22px) brightness(.26) saturate(.7) sepia(.5)"></div>
+  <div class="fog" style="background:radial-gradient(75% 55% at 50% 46%,rgba(70,30,10,.35),rgba(8,7,10,.92))"></div>
+  <div class="glow" style="left:160px;top:560px;width:760px;height:700px;background:rgba(255,120,50,.30)"></div>
+  <div class="abs" style="left:0;width:1080px;top:262px;text-align:center;white-space:nowrap;font:700 54px Satoshi">Tout s'est joué <span class="serif" style="font-size:76px">au jour 0.</span></div>
+  <div class="glass dec" style="top:420px"><div class="num">1</div><div><div class="t">Le prix de revente</div><div class="s">les annonces d'à côté</div><div class="v">4 650 €</div></div></div>
+  <div class="glass dec" style="top:722px"><div class="num">2</div><div><div class="t">Le prix max</div><div class="s">revente − frais − marge</div><div class="v">2 900 €</div></div></div>
+  <div class="glass dec" style="top:1024px"><div class="num">3</div><div><div class="t">À la visite</div><div class="s">chaque défaut chiffré</div><div class="v">3 400 → 2 900 €</div></div></div>
+  <div class="mention" style="top:1330px">Exemple · prix moyens constatés</div>
+</section>
+
+<div class="grain"></div><div class="vign"></div>
+</div>
+<script>
+// palettes « JOUR 0 » et compteur « 1 000 € », construits comme dans MO5 (centrés sur x = 540)
+(function () {
+  const mk = (parent, cls, css, html) => { const d = document.createElement('div'); d.className = cls; d.style.cssText = css; if (html != null) d.innerHTML = html; parent.appendChild(d); return d; };
+  const f = document.getElementById('flaps'), L = ['J', 'O', 'U', 'R', '0'], w = 92, g = 8, gap = 28;
+  const tot = L.length * w + (L.length - 1) * g + gap; let x = 540 - tot / 2;
+  L.forEach((c, i) => { if (i === 4) x += gap; mk(f, 'glass flapT', `left:${x}px;top:0;width:${w}px;height:120px;font-size:84px;border-radius:16px`, c + '<i></i>'); x += w + g; });
+  const k = document.getElementById('counter'), D = ['1', '0', '0', '0'], cw = 124, cg = 12, eu = 86;
+  const ctot = D.length * cw + (D.length - 1) * cg + 16 + eu; let cx = 540 - ctot / 2;
+  D.forEach((c) => { mk(k, 'glass cell', `left:${cx}px;top:0`, `<span>${c}</span>`); cx += cw + cg; });
+  mk(k, 'abs', `left:${cx + 4}px;top:0;font:700 104px Clash;line-height:172px`, '€');
+  const s = new URLSearchParams(location.search).get('s') || '1';
+  document.querySelector(`.scene[data-s="${s}"]`).classList.add('on');
+  // images de fond (CSS) préchargées, sinon la capture peut partir avant qu'elles soient peintes
+  const urls = [...new Set([...document.querySelectorAll('[style*="url("]')].map((e) => (e.getAttribute('style').match(/url\(([^)]+)\)/) || [])[1]).filter(Boolean))];
+  const pre = urls.map((u) => new Promise((r) => { const im = new Image(); im.onload = im.onerror = r; im.src = u; }));
+  Promise.all([...pre, ...[...document.images].map((im) => im.decode().catch(() => {}))]).then(() => document.fonts.ready)
+    .then(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))).then(() => { window.ready = true; });
+})();
+</script>
+</body></html>
