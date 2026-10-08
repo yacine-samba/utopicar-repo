@@ -442,6 +442,8 @@
   const fast = (t) => { let s = 0; for (const [a, b, v] of WIN) s = Math.max(s, v * sm(a - 0.05, a + 0.05, t) * (1 - sm(b - 0.05, b + 0.05, t))); return s; };
   window.shutter = (t) => Math.max(0.12, fast(t));
   window.samples = (t) => (fast(t) > 0.3 ? 4 : 1);
+  // temps des événements, lus par scripts/audio-mo9.py pour poser les bruitages (scripts/events.mjs → film-mo9/events.json)
+  window.EVENTS = { ...T, deb: DEB.map((d) => d[0]), late: LATE.map((d) => d[0]), tm: TM, td: TD, rew: REW, loop: LOOP, dur: DUR, stTo: ST_TO };
   window.seek = (t) => paint(t >= DUR ? t - DUR : t);
   paint(0);
   window.filmReady = true;
