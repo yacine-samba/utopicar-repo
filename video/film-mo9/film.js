@@ -66,14 +66,14 @@
   });
   // W : le monde du récit (jour 0, visite, frais, attente, vente), une seule prise
   // les annonces descendent au centre pendant qu'on les compte, la visite se cadre sur la voiture, puis on recule pour le compteur
-  const [w0, w1, w2, w3, w4, w5] = [T.out, T.jOut, T.strike - 0.35, T.sonne - 0.15, T.big - 0.05, REW[0]];
+  const [w0, w1, w2, w3, w4, w5] = [T.out, T.jOut, T.strike - 0.6, T.sonne - 0.15, T.big - 0.05, REW[0]];
   const [a0, a1] = [T.ads - 0.1, T.card - 0.1];
   const camW = (t) => ({
     rx: 5 + noise(5, t * 0.4) * 0.45,
     ry: track(t, [[w0, -8], [w0, 4, { f: 0.22, z: 1 }], [w1, -4, { f: 0.25, z: 1 }], [w2, 3, { f: 0.25, z: 1 }], [w3, -3, { f: 0.3, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]) + noise(6, t * 0.35) * 0.6,
-    z: track(t, [[w0, -240], [w0, 0, { f: 0.5, z: 1 }], [a0, 40, { f: 0.3, z: 1 }], [a1, 0, { f: 0.35, z: 1 }], [w1, 90, { f: 0.3, z: 1 }], [w2, 0, { f: 0.6, z: 1 }], [w3, 30, { f: 0.3, z: 1 }], [w4, -40, { f: 0.45, z: 1 }], [w5, 40, { f: 0.3, z: 1 }]]),
+    z: track(t, [[w0, -240], [w0, 0, { f: 0.5, z: 1 }], [a0, 40, { f: 0.3, z: 1 }], [a1, 0, { f: 0.35, z: 1 }], [w1, 90, { f: 0.3, z: 1 }], [w2, 0, { f: 0.8, z: 1 }], [w3, 30, { f: 0.3, z: 1 }], [w4, -40, { f: 0.45, z: 1 }], [w5, 40, { f: 0.3, z: 1 }]]),
     x: track(t, [[w0, -120], [w0, 50, { f: 0.25, z: 1 }], [w1, 0, { f: 0.3, z: 1 }], [w2, -30, { f: 0.25, z: 1 }], [w3, 30, { f: 0.3, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]),
-    y: track(t, [[w0, -80], [w0, 30, { f: 0.25, z: 1 }], [a0, -300, { f: 0.3, z: 1 }], [a1, 30, { f: 0.35, z: 1 }], [w1, 230, { f: 0.3, z: 1 }], [w2, -40, { f: 0.6, z: 1 }], [w3, -40, { f: 0.3, z: 1 }]]),
+    y: track(t, [[w0, -80], [w0, 30, { f: 0.25, z: 1 }], [a0, -300, { f: 0.3, z: 1 }], [a1, 30, { f: 0.35, z: 1 }], [w1, 230, { f: 0.3, z: 1 }], [w2, -40, { f: 0.8, z: 1 }], [w3, -40, { f: 0.3, z: 1 }]]),
   });
   // F : orbite lente qui descend le long des trois décisions
   const f0 = REW[1] - 0.15;
@@ -157,7 +157,7 @@
   const cLine = sv('path', { d: CC.d, fill: 'none', stroke: '#ffe2cf', 'stroke-width': 3.6, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'stroke-dasharray': `${CC.len} ${CC.len}` }, csv);
   const sweep = el('div', 'sweep', carBox, `top:-60px;height:${CAR.h + 120}px`);
   // les trois défauts de la visite (coordonnées dans la voiture)
-  const DEF = [['Phares jaunis', 319, 202, -310, -110], ['Rayure', 440, 198, 40, -128], ['Pneus lisses', 435, 317, 70, 52]];
+  const DEF = [['Phares jaunis', 319, 202, -310, -110], ['Rayure', 440, 198, 40, -128], ['Pneus lisses', 435, 317, 60, -34]];
   const pins = DEF.map(([lab, x, y, dx, dy]) => {
     const p = el('div', 'pin', carBox, `left:${x}px;top:${y}px`);
     const l = el('div', 'glass pill', carBox, `left:${x + dx}px;top:${y + dy}px`); l.textContent = lab; return { p, l };
@@ -170,13 +170,13 @@
 
   // ---------- H : compteur « MARGE », jauge des frais, mention ----------
   const LH = el('div', 'L', stage);
-  const C = counter(LH, { top: 282, label: 'MARGE', labelTop: 232 });
+  const C = counter(LH, { top: 322, label: 'MARGE', labelTop: 272 });     // sous la bande du haut, caméra comprise
   const keys = rollKeys([1000, 974], [0, T.roll]);
-  const gauge = el('div', 'glass', LH, 'left:190px;top:478px;width:700px;height:70px;border-radius:35px;padding:0');
+  const gauge = el('div', 'glass', LH, 'left:190px;top:518px;width:700px;height:70px;border-radius:35px;padding:0');
   const gFill = el('div', 'abs', gauge, 'left:6px;top:6px;width:0;height:58px;border-radius:29px;background:linear-gradient(90deg,rgba(255,90,31,.55),rgba(255,138,76,.85));box-shadow:0 0 24px rgba(255,110,40,.6)');
   const gTxt = el('div', 'abs', gauge, 'left:0;top:0;width:700px;line-height:70px;text-align:center;font:700 30px Satoshi;white-space:nowrap');
-  const gStamp = el('div', 'stamp', LH, 'left:760px;top:466px;font-size:24px;padding:4px 14px 6px;border-width:3px'); gStamp.textContent = 'prévu ✓';
-  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:566px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55)'); mention.textContent = 'Exemple · prix moyens constatés';
+  const gStamp = el('div', 'stamp', LH, 'left:760px;top:506px;font-size:24px;padding:4px 14px 6px;border-width:3px'); gStamp.textContent = 'prévu ✓';
+  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:600px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55)'); mention.textContent = 'Exemple · prix moyens constatés';
 
   // ---------- N : les frais tombent, chacun prévu ----------
   const LN = el('div', 'L', stage);
@@ -339,7 +339,7 @@
     cLine.setAttribute('opacity', f3(sm(T.contour - 0.02, T.contour + 0.05, st) * (0.95 - 0.55 * sm(T.strike + 0.3, T.strike + 1.1, st))));
     cGlow.setAttribute('opacity', f3(sm(T.contour - 0.02, T.contour + 0.05, st) * (0.8 - 0.5 * sm(T.strike + 0.3, T.strike + 1.1, st))));
     pins.forEach(({ p, l }, i) => {
-      const tp = T.pins[DEF[i][0]], a = S(st, tp, P.tag), o = sm(tp - 0.02, tp + 0.06, st) * (1 - sm(T.strike + 0.5, T.strike + 0.8, st));
+      const tp = T.pins[DEF[i][0]], a = S(st, tp, P.tag), o = sm(tp - 0.02, tp + 0.06, st) * (1 - sm(T.strike + 0.5, T.strike + 0.8, st)) * (t < REW[0] ? 1 : 0);   // pas de retour au rembobinage
       set(p, o); p.style.transform = `scale(${f3(lerp(2.2, 1, a))})`;
       set(l, o); l.style.transform = `translateY(${f3((1 - a) * 18)}px) scale(${f3(0.9 + 0.1 * a)})`;
     });
