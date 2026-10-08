@@ -6,6 +6,9 @@ Un format à part des pubs produit : une vidéo de 30 s au plus, qui ne vend rie
 (`video/brief-mo6.md`, `video/docs/timeline-mo6.md`, `video/film-mo6/film.js`). Les recettes techniques sont dans
 `techniques.md`.
 
+MO5, publiée début octobre 2026, a passé les 6 000 vues. Sa recette exacte (ingrédients, minutage, voix, son), la
+série qui la reprend et le journal des résultats sont dans le skill **recette-47** (`.claude/skills/recette-47/`).
+
 ## Processus en 5 étapes (chaque étape attend un « OK »)
 
 1. **Brief** : concept, hooks, histoire, émotions. `video/brief-<projet>.md`.
