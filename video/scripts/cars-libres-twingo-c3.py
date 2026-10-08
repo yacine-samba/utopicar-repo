@@ -5,11 +5,11 @@ versions exactes, même angle (trois quarts avant, avant vers la gauche), couleu
 → logos (losange, chevrons, centres d'enjoliveurs) et plaques effacés (plaques vierges, texte du cadre de concession),
 vignette de stationnement et plaque vue à travers le pare-brise effacées, détourées (BiRefNet), bords décontaminés,
 étalonnées dans la charte comme MO8 (ombres chaudes, fond noir), plus leur contour vectoriel pour le liseré de lumière.
-    python3 scripts/photos-mo11.py   → assets/photos-mo11/car-<nom>.png (RGBA, rognée)
-                                       assets/photos-mo11/car-<nom>-contour.js (window.CAR_<NOM>_CONTOUR, même rognage)
-    python3 scripts/photos-mo11.py --retouche   → src/retouche-<nom>.png seulement (contrôle des zones effacées)
-Originaux dans assets/photos-mo11/src/wm-<nom>.jpg (hors git, vignettes 1920 px de Commons) ; auteurs et licences :
-assets/photos-mo11/CREDITS.tsv (crédit dans la légende du post pour la Twingo, CC BY-SA 4.0).
+    python3 scripts/cars-libres-twingo-c3.py   → assets/cars-libres/car-<nom>.png (RGBA, rognée)
+                                       assets/cars-libres/car-<nom>-contour.js (window.CAR_<NOM>_CONTOUR, même rognage)
+    python3 scripts/cars-libres-twingo-c3.py --retouche   → src/retouche-<nom>.png seulement (contrôle des zones effacées)
+Originaux dans assets/cars-libres/src/wm-<nom>.jpg (hors git, vignettes 1920 px de Commons) ; auteurs et licences :
+assets/cars-libres/CREDITS.tsv (crédit dans la légende du post pour la Twingo, CC BY-SA 4.0).
 Contour au format de film-mo5da/polo-contour.js : {w: 1000, h, d, len, n}, repère 1000 px de large = largeur du PNG.
 """
 import json, sys
@@ -18,7 +18,7 @@ from pathlib import Path
 from PIL import Image
 from rembg import new_session, remove
 
-D = Path(__file__).resolve().parent.parent / 'assets' / 'photos-mo11'
+D = Path(__file__).resolve().parent.parent / 'assets' / 'cars-libres'
 
 
 def c3_slats(x):
