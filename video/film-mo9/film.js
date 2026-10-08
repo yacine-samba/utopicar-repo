@@ -21,7 +21,7 @@
     car: ME('m3900') - 0.28,                  // la Clio entre pendant que « 3 900 » finit
     pins: { 'Phares jaunis': M('phares') - 0.05, Rayure: M('rayure') - 0.05, 'Pneus lisses': M('pneus') - 0.05 },
     strike: M('il') - 0.05, annN: M('accepte') + 0.07,
-    sonne: M('sonne'), bubble: M('negocie'), credit: ME('acceptes') + 0.02,
+    sonne: M('sonne'), bubble: M('negocie'), reply: M('tuacc') - 0.03, credit: ME('acceptes') + 0.02,
     big: M('n974') - 0.06, keb: ME('euros') + 0.08,
     pk1: M('meme') - 0.05, pk2: M('etait') - 0.04,
     tout: M('tout'), jour0b: M('jour0b') - 0.1,
@@ -65,13 +65,15 @@
     y: track(t, [[0, -60], [0.2, 20, { f: 0.4, z: 1 }], [cA2, 120, { f: 0.35, z: 1 }]]),
   });
   // W : le monde du récit (jour 0, visite, frais, attente, vente), une seule prise
-  const [w0, w1, w2, w3, w4, w5] = [T.out, T.jOut, T.deb[0] - 0.1, T.sonne - 0.15, T.big - 0.05, REW[0]];
+  // les annonces descendent au centre pendant qu'on les compte, la visite se cadre sur la voiture, puis on recule pour le compteur
+  const [w0, w1, w2, w3, w4, w5] = [T.out, T.jOut, T.hud - 0.15, T.sonne - 0.15, T.big - 0.05, REW[0]];
+  const [a0, a1] = [T.ads - 0.1, T.card - 0.1];
   const camW = (t) => ({
     rx: 5 + noise(5, t * 0.4) * 0.45,
     ry: track(t, [[w0, -8], [w0, 4, { f: 0.22, z: 1 }], [w1, -4, { f: 0.25, z: 1 }], [w2, 3, { f: 0.25, z: 1 }], [w3, -3, { f: 0.3, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]) + noise(6, t * 0.35) * 0.6,
-    z: track(t, [[w0, -240], [w0, 0, { f: 0.5, z: 1 }], [w1, 60, { f: 0.3, z: 1 }], [w2, 0, { f: 0.3, z: 1 }], [w3, 90, { f: 0.3, z: 1 }], [w4, -40, { f: 0.45, z: 1 }], [w5, 40, { f: 0.3, z: 1 }]]),
+    z: track(t, [[w0, -240], [w0, 0, { f: 0.5, z: 1 }], [a0, 40, { f: 0.3, z: 1 }], [a1, 0, { f: 0.35, z: 1 }], [w1, 90, { f: 0.3, z: 1 }], [w2, 0, { f: 0.3, z: 1 }], [w3, 90, { f: 0.3, z: 1 }], [w4, -40, { f: 0.45, z: 1 }], [w5, 40, { f: 0.3, z: 1 }]]),
     x: track(t, [[w0, -120], [w0, 50, { f: 0.25, z: 1 }], [w1, 0, { f: 0.3, z: 1 }], [w2, -30, { f: 0.25, z: 1 }], [w3, 30, { f: 0.3, z: 1 }], [w4, 0, { f: 0.4, z: 1 }]]),
-    y: track(t, [[w0, -80], [w0, 30, { f: 0.25, z: 1 }], [w1, 0, { f: 0.3, z: 1 }], [w2, -30, { f: 0.25, z: 1 }], [w3, 0, { f: 0.3, z: 1 }]]),
+    y: track(t, [[w0, -80], [w0, 30, { f: 0.25, z: 1 }], [a0, -300, { f: 0.3, z: 1 }], [a1, 30, { f: 0.35, z: 1 }], [w1, 230, { f: 0.3, z: 1 }], [w2, -30, { f: 0.3, z: 1 }], [w3, 0, { f: 0.3, z: 1 }]]),
   });
   // F : orbite lente qui descend le long des trois décisions
   const f0 = REW[1] - 0.15;
@@ -172,7 +174,7 @@
   const gFill = el('div', 'abs', gauge, 'left:6px;top:6px;width:0;height:58px;border-radius:29px;background:linear-gradient(90deg,rgba(255,90,31,.55),rgba(255,138,76,.85));box-shadow:0 0 24px rgba(255,110,40,.6)');
   const gTxt = el('div', 'abs', gauge, 'left:0;top:0;width:700px;line-height:70px;text-align:center;font:700 30px Satoshi;white-space:nowrap');
   const gStamp = el('div', 'stamp', LH, 'left:760px;top:466px;font-size:24px;padding:4px 14px 6px;border-width:3px'); gStamp.textContent = 'prévu ✓';
-  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:568px;text-align:center;font:500 22px Satoshi;color:rgba(246,239,231,.5)'); mention.textContent = 'Exemple · prix moyens constatés';
+  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:566px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55)'); mention.textContent = 'Exemple · prix moyens constatés';
 
   // ---------- N : les frais tombent, chacun prévu ----------
   const LN = el('div', 'L', stage);
@@ -201,6 +203,8 @@
   const bubble = el('div', 'glass', LR, 'left:150px;top:640px;width:780px;padding:30px 36px;border-radius:40px 40px 40px 12px'); el('div', 'sheen', bubble);
   el('div', '', bubble, 'font:500 24px Satoshi;color:rgba(246,239,231,.7);margin-bottom:10px').textContent = 'Acheteur · message';
   el('div', '', bubble, 'font:700 46px Satoshi;line-height:1.2').innerHTML = '5 600 € et je la prends <span style="font-family:Fraunces;font-style:italic;font-weight:500;color:#ff8a4c">aujourd\'hui.</span>';
+  const reply = el('div', 'glass msg', LR, 'right:150px;top:884px;border-radius:34px 34px 10px 34px;background:linear-gradient(140deg,rgba(255,120,50,.42),rgba(255,90,31,.16));font-size:42px');
+  reply.textContent = "D'accord.";                                   // répond à l'offre, en écho à l'ouverture
   const credit = notif(LR, 'Virement reçu', '5 600,00', { sign: '+' });
 
   // ---------- 9 : 974 € ----------
@@ -233,7 +237,7 @@
     el('div', 'num', d).textContent = n; const b = el('div', '', d);
     el('div', 't', b).textContent = ti; el('div', 's', b).textContent = s; el('div', 'v', b).textContent = v; return d;
   });
-  const dM = el('div', 'abs', LD, 'left:0;width:1080px;top:1330px;text-align:center;font:500 22px Satoshi;color:rgba(246,239,231,.5)'); dM.textContent = 'Exemple · prix moyens constatés';
+  const dM = el('div', 'abs', LD, 'left:0;width:1080px;top:1330px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55)'); dM.textContent = 'Exemple · prix moyens constatés';
   const TD = T.td;
 
   const rewFx = el('div', 'L', stage, 'background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 6px);mix-blend-mode:screen');
@@ -392,6 +396,9 @@
     const bz = st > T.bubble && st < T.bubble + 0.5 ? Math.sin((st - T.bubble) * 90) * 6 * (1 - (st - T.bubble) / 0.5) : 0;
     const bi = S(st, T.bubble, P.card);
     bubble.style.transform = `translate(${f3(bz)}px,${f3((1 - bi) * 120)}px) scale(${f3(0.9 + 0.1 * bi)})`;
+    const rb = S(st, T.reply, P.card), rOut = S(st, T.credit - 0.05, P.push);
+    reply.style.transform = `translate(${f3((1 - rb) * 320)}px,${f3(-60 * rOut)}px) scale(${f3(0.9 + 0.1 * rb)})`;
+    set(reply, sm(T.reply - 0.02, T.reply + 0.06, st) * (1 - sm(T.credit - 0.05, T.credit + 0.15, st)));
     const ca = S(st, T.credit, P.card);
     credit.d.style.transform = `translate(${f3(150 + 1150 * (1 - ca))}px,860px)`; set(credit.d, sm(T.credit - 0.02, T.credit + 0.04, st));
     if (st > T.credit - 0.05 && st < T.big + 0.25) drawSeq(credit.c, IMG.cles, st - T.credit);
@@ -431,7 +438,7 @@
 
   // flou de bougé : obturateur ouvert sur les gestes rapides
   const WIN = [[T.car, T.car + 0.95, 0.8], [T.jOut, T.jOut + 0.6, 0.6], [T.big - 0.05, T.big + 0.45, 0.6], [REW[0], REW[1], 0.7], [T.out, T.out + 0.5, 0.5]];
-  [...DEB.map((d) => d[0]), ...TM, T.bubble, T.credit, T.keb, ...TD].forEach((x) => WIN.push([x - 0.04, x + 0.35, 0.6]));
+  [...DEB.map((d) => d[0]), ...TM, T.bubble, T.reply, T.credit, T.keb, ...TD].forEach((x) => WIN.push([x - 0.04, x + 0.35, 0.6]));
   const fast = (t) => { let s = 0; for (const [a, b, v] of WIN) s = Math.max(s, v * sm(a - 0.05, a + 0.05, t) * (1 - sm(b - 0.05, b + 0.05, t))); return s; };
   window.shutter = (t) => Math.max(0.12, fast(t));
   window.samples = (t) => (fast(t) > 0.3 ? 4 : 1);
