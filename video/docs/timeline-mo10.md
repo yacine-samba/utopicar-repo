@@ -156,3 +156,33 @@ verdict 1170-1330, mention 1404.
 - Hashtags (jeu A débutants de `docs/hashtags_test.md`) : #achatrevente #achatreventevoiture #voitureoccasion #entrepreneur
 - Couverture : `renders/poster-mo10.png` (5,25 s : le calcul complet, les bâtons du voisin, les deux voitures).
 - Sous-titres : `renders/9x16-mo10.srt`.
+
+## Contrôle et livraison (8 octobre 2026)
+
+Rendu : `CUT=mo10 MB=4 PARTS=4 PART=<i> node scripts/render.mjs --all` (4 parties en parallèle, flou de bougé sur les
+gestes rapides), environ 47 min par passe sur 4 cœurs, puis `--assemble`.
+
+| Round | Ce qui a été corrigé | Mesures |
+|---|---|---|
+| maquette (planches 0,1 s) | ouverture trop immobile de 0 à 2,7 s → « +1 000 € » sur chaque voiture, qui montent se fondre dans le total ; carte « par jour » trop tardive → elle arrive sur « comptent en jours » ; retour de boucle en fondu → la carte part vers le haut, le calcul et les voitures reviennent ; tampon du gag sur le montant, poussière en voile uniforme, débits qui se chevauchaient | — |
+| 1 (MP4) | — | aucun FAIL ; −14,4 LUFS, −4,0 dBTP ; WARN zones sûres : « ? » de l'ouverture et « MARGE » dans les bandes TikTok |
+| 2 (MP4 livré) | calcul ramené à 700 px de large, compteur rapproché du plan, 207 entre x = 60 et 940, légende du voisin plus grande | voir ci-dessous |
+
+Mesures du film livré (`renders/qa/9x16-mo10-qa.md`, `scripts/review.py mo10-r2`) :
+- H.264 yuv420p 1080 × 1920, 60 i/s, 32,60 s ; AAC 48 kHz.
+- −14,4 LUFS intégrés, true peak −4,0 dBTP mesuré sur le MP4 ; son dès l'image 0 (−12,9 LUFS sur les 2 premières
+  secondes) ; 43 % de l'énergie sous 150 Hz (téléphone OK). Voix au-dessus de la musique de 7 à 15 dB par réplique.
+- Première image pleine, aucune image vide, aucun plan figé de plus de 0,9 s (deux de plus de 0,6 s : la pause voulue
+  sur « 120 € » et la fin « tu te dis… », caméra lente).
+- Boucle : écart moyen image finale / image 0 = **0,42** sur 255 (MO5 0,57 ; MO8 0,74).
+- Zones sûres : WARN restant sur des cartes **en mouvement** (débits qui entrent par la droite à 6,0, 8,8 et 15,8 s,
+  virement qui sort par la gauche à 12,0 s, carte finale qui sort par le haut à 30,3 s) ; aucun texte arrêté dans une
+  zone interdite (vérifié sur `9x16-mo10-safe.png`).
+- Lecture à 360 px : `renders/review/mo10-r2-phone.png` ; couverture lisible à 200 px de large.
+
+Notes (sur 10) : hook 8, lisibilité 8, mouvement 8, variété 8, marque 8, synchro son 8. Le son a été mesuré et calé
+sur les mots ; il n'a pas été écouté par un humain.
+
+Fichiers : `renders/9x16-mo10.mp4` (film), `renders/9x16-mo10-apercu.mp4` (aperçu léger 540 × 960),
+`renders/poster-mo10.png`, `renders/9x16-mo10.srt`, `audio/vo-mo10/ecoute-mix.mp3`, `audio/vo-mo10/ecoute-voix-seule.mp3`.
+Pistes séparées (hors dépôt, refaites par `scripts/audio-mo10.py`) : `audio/stems-mo10/`.

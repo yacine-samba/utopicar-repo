@@ -93,7 +93,7 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 |---|---|---|---|
 | MO5 | référence | rendu en 4 parties à MB = 4 (durée non notée ; MO6, même technique : ≈ 2 h), −14,3 LUFS, −3,5 dBTP, avertissement zones sûres (étiquettes en bas) | — |
 | MO9 | `lib/kit47.js` : les modules de MO5 rendus réutilisables, film MO9 construit dessus ; minutage lu dans `vo-timing.json` (chaque événement attaché à son mot) | MO5 : modules écrits à la main dans un seul fichier, temps recopiés à la main | brief validé, maquettage et voix posée le même jour (8 oct.) ; kit pas encore vérifié en rendant MO5 avec lui |
-| MO10 | deuxième film sur `lib/kit47.js` (film-mo9 comme point de départ) ; texte et étiquettes au-dessus de y = 1480 ; deux voitures détourées dans le même plan, à deux profondeurs ; compteur « par jour » en rouleaux lisible à 360 px | MO9 : un jour du brief au maquettage | brief, photos, voix, maquettage et mix dans la même session (8 oct.), sans porte de validation à la demande de l'utilisateur ; rendu et mesures : voir `video/docs/timeline-mo10.md` |
+| MO10 | deuxième film sur `lib/kit47.js` (film-mo9 comme point de départ) ; texte et étiquettes au-dessus de y = 1480 ; deux voitures détourées dans le même plan, à deux profondeurs ; compteur « par jour » en rouleaux lisible à 360 px | MO9 : un jour du brief au maquettage | brief, photos, voix, maquettage et mix dans la même session (8 oct.), sans porte de validation à la demande de l'utilisateur ; rendu 4 × 47 min environ (deux passes), −14,4 LUFS, −4,0 dBTP, boucle 0,42, aucun texte arrêté hors zone sûre (`video/docs/timeline-mo10.md`) |
 
 ## 6. Leçons
 
