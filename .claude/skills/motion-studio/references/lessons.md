@@ -62,6 +62,11 @@
 | MO6 | `pkill -f sheet-mo6.mjs` a tué sa propre commande | `pkill` dans un appel séparé |
 | MO6 | Moniteur `until ! pgrep -f "render.mjs --all"` jamais terminé : il se trouvait lui-même | Attendre un fichier de sortie (ou `pgrep -f '[r]ender.mjs'`), jamais un motif présent dans la commande d'attente |
 | MO6 | Rendu final de 30 s avec verre dépoli : ≈ 2 h en 4 parties (6 à 15 s par image) | Prévenir l'utilisateur de la durée ; planches et images fixes pour tout contrôle avant |
+| MO8 | Silhouettes de voitures dessinées en SVG jugées « chiasse » | Vraies photos des modèles exacts (Wikimedia Commons, versions et générations exactes, licences notées), détourées, plaques et logos effacés, toutes tournées du même côté |
+| MO8 | Photos Pexels « proches » (mauvaise génération, mauvais modèle) refusées : « ce ne sont pas les vrais modèles » | Chercher la version exacte (moteur, génération) ; Commons a des photos par motorisation ; l'API Commons limite le débit : requêtes espacées, vignettes aux tailles standard (1920 px) |
+| MO8 | « 1.4 TSI » lu « un-quatre T-S-I » | La cylindrée se dit en litres : « un litre quatre », « un litre deux », « deux litres » (`script-voice.md`) ; ne refaire que les répliques fautives et les remonter dans la prise retenue |
+| MO8 | Repères de mots trop tôt : whisper compte le silence d'avant dans le premier mot d'une réplique | Borner chaque mot au début du son de son morceau ; repères donnés par réplique et rang, pas par indice global |
+| MO8 | Pièces 3D (Three.js en rendu logiciel) + flou de bougé : ≈ 2 h 30 pour 30 s en 4 parties (4 à 20 s par image) | Planches 0,1 s pour tout contrôle ; ne relancer le rendu final qu'une fois la voix figée |
 
 ## Ce qui a marché (à reprendre)
 
