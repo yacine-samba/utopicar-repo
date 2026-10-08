@@ -71,7 +71,7 @@ Plan de départ. Le résultat de chaque épisode peut le changer : c'est le but.
 | **MO9 « 974 € »** (premier produit, hors plan, choisi par l'utilisateur) | le sens de l'histoire : la marge tient au lieu de fondre ; voiture en photo libre (écart à l'ingrédient 3, noté) | savoir si la recette marche dans le registre de l'envie | vues et part à 3 s ; enregistrements et partages pour 1 000 vues, comparés à MO5 |
 | É2 « La cote » (réserve) | la forme de l'accumulation (grille d'annonces au lieu des débits) | tester si la notification bancaire est un ingrédient ou un détail | durée moyenne, creux entre 6 et 12 s |
 | É1 « Le PV » (réserve) | rien, à part le sujet | savoir si la recette se transporte sur un autre calcul | vues et part à 3 s proches de MO5 ou non |
-| É3 | le chiffre héros (marge par jour au lieu de la marge) | un autre compteur peut-il porter l'histoire | visionnages complets, enregistrements |
+| **MO10 « Deux voitures »** (É3, en production le 8 oct., `video/brief-mo10.md`) | le chiffre héros du renversement : « 55 € par jour » contre « 3 € par jour » au lieu d'un prix max ; deux photos libres (CC0) ; film de 32,6 s | un autre compteur peut-il porter l'histoire | visionnages complets, enregistrements pour 1 000 vues, comparés à MO5 et MO9 |
 | É4 | le type d'ouverture (une scène au lieu d'un calcul) | l'ingrédient 1 est-il le calcul ou seulement le « tu » chiffré | part à 3 s |
 | É5 | la durée (≈ 24 s) | une version plus courte se termine-t-elle plus souvent | visionnages complets, durée moyenne en % |
 
@@ -94,6 +94,8 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 |---|---|---|---|
 | MO5 | référence | rendu en 4 parties à MB = 4 (durée non notée ; MO6, même technique : ≈ 2 h), −14,3 LUFS, −3,5 dBTP, avertissement zones sûres (étiquettes en bas) | — |
 | MO9 | `lib/kit47.js` : les modules de MO5 rendus réutilisables, film MO9 construit dessus ; minutage lu dans `vo-timing.json` (chaque événement attaché à son mot), bruitages lus dans `events.json` | MO5 : modules écrits à la main dans un seul fichier, temps recopiés à la main ; rendu final MO6 ≈ 2 h ; avertissement zones sûres en bas | brief validé, voix posée et film livré le même jour (8 oct.) ; rendu final ≈ 40 min en 4 morceaux ; aucun texte dans la bande du bas ; couverture vérifiée à 200 px. Kit pas encore vérifié en rendant MO5 avec lui |
+| MO9 | `lib/kit47.js` : les modules de MO5 rendus réutilisables, film MO9 construit dessus ; minutage lu dans `vo-timing.json` (chaque événement attaché à son mot) | MO5 : modules écrits à la main dans un seul fichier, temps recopiés à la main | brief validé, maquettage et voix posée le même jour (8 oct.) ; kit pas encore vérifié en rendant MO5 avec lui |
+| MO10 | deuxième film sur `lib/kit47.js` (film-mo9 comme point de départ) ; texte et étiquettes au-dessus de y = 1480 ; deux voitures détourées dans le même plan, à deux profondeurs ; compteur « par jour » en rouleaux lisible à 360 px | MO9 : un jour du brief au maquettage | brief, photos, voix, maquettage et mix dans la même session (8 oct.), sans porte de validation à la demande de l'utilisateur ; rendu et mesures : voir `video/docs/timeline-mo10.md` |
 
 ## 6. Leçons
 
@@ -105,6 +107,8 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 | 8 oct. 2026 | utilisateur, au brief de MO9 | « Le PV » écarté (« autre chose »), puis « La cote » (« c'est la même chose que ma dernière vidéo »), puis trois sujets de pièges (« ça ne m'attire pas »). Choisi : **une revente qui marche**. Leçon : la recette garde sa mécanique, mais l'histoire ne doit pas redire MO5 (acheter, payer, attendre, vendre mal) ; après une vidéo de perte, proposer l'envie. Voiture en photo libre plutôt qu'une des siennes | hypothèse |
 | 8 oct. 2026 | MO9, étape 4, utilisateur | 74 mots dits par Simon : 35,5 s bruts. Posés à × 1,25 (récit) et × 1,15 (ouverture, chute), film de 30,0 s : **« trop rapide »**. Retenu : récit × 1,2, 0,2 à 0,4 s entre les phrases, 23,8 s de parole, film de 31,4 s. Leçon : avec Simon, ne pas dépasser × 1,2 et laisser respirer entre les phrases ; pour tenir 29,6 s, écrire 65 mots environ. La durée bouge (31,4 s contre 29,6 s pour MO5) : à noter dans la ligne de l'épisode, pas comme variable testée | hypothèse |
 | 8 oct. 2026 | test du skill par un agent neuf | Il a écrit seul un brief d'épisode complet ; ses dix questions ont précisé le skill (questionnaire sauté pour la série, numérotation MO, voiture et musique hors variables, chute négative, documents officiels en carte de verre) | appliqué |
+| 8 oct. 2026 | MO10, utilisateur | « Une seule génération » ElevenLabs : une prise (generations_count = 1, 580 crédits, estimation faite avant), l'ouverture B dite à la fin du même texte après une pause. Voix calée sur la prise B de MO8 (même voix, même modèle, même ton). Une réplique de trop se coupe au montage (« Jour un. » retiré pour tenir 32,6 s) plutôt que de régénérer | méthode |
+| 8 oct. 2026 | MO10, étape 4 | faster-whisper *medium* relit le texte exact mais place parfois un mot 0,8 s trop tard (« Bénéfice ») : recaler les bornes sur l'enveloppe à 20 ms avant de poser les répliques ; retranscrire la pose pour vérifier qu'aucun mot n'est coupé | méthode |
 
 ## 7. Versions de la recette
 

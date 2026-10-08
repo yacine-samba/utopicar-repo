@@ -37,7 +37,7 @@ l'étape 4, chronomètre en main.
 | 1 | **MO9 « 974 € »**, la revente qui marche (hors liste, choisie le 8 oct.) : `brief-mo9.md` | le sens de l'histoire : la marge tient au lieu de fondre | vues, part à 3 s, enregistrements et partages pour 1 000 vues, comparés à MO5 |
 | réserve | É2 « La cote » | l'accumulation en grille d'annonces au lieu des débits | durée moyenne, creux entre 6 et 12 s |
 | réserve | É1 « Le PV » | rien : la recette seule, sur un autre calcul | vues et part encore là à 3 s, comparées à MO5 |
-| 3 | É3 « Deux voitures » | un autre chiffre héros : la marge par jour | visionnages complets, enregistrements |
+| 2 | **MO10 « Deux voitures »** (É3, 8 oct., choisi sans questionnaire à la demande de l'utilisateur) : `brief-mo10.md` | un autre chiffre héros : la marge par jour | visionnages complets, enregistrements |
 | 4 | É4 « La pochette » | une ouverture en scène au lieu du calcul | part encore là à 3 s |
 | 5 | É5 « Tout ton budget » | une version courte, 24 s | visionnages complets |
 
