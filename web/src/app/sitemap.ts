@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { listeCotes, slugCote } from "@/lib/cotes-publiques";
+import { MOTEURS } from "@/lib/moteurs";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.utopicar.fr";
 
@@ -14,6 +15,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE}/benef`, lastModified: maj, changeFrequency: "monthly", priority: 0.9 },
     { url: `${SITE}/cote`, lastModified: maj, changeFrequency: "daily", priority: 0.8 },
     ...cotes.map((c) => ({ url: `${SITE}/cote/${slugCote(c.nom)}`, lastModified: c.maj ? new Date(c.maj) : maj, changeFrequency: "daily" as const, priority: 0.7 })),
+    { url: `${SITE}/moteur`, lastModified: maj, changeFrequency: "monthly", priority: 0.7 },
+    ...MOTEURS.map((m) => ({ url: `${SITE}/moteur/${m.slug}`, lastModified: maj, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${SITE}/tarifs`, lastModified: maj, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE}/guide`, lastModified: maj, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE}/legal`, lastModified: maj, changeFrequency: "yearly", priority: 0.2 },

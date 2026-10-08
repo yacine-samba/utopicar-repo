@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- photos d'annonces (Leboncoin ou stockées) affichées telles quelles */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cx } from "@/lib/cx";
+import { usePiegeFocus } from "@/lib/piege-focus";
 
 /** Silhouette de voiture quand l'annonce n'a pas de photo. */
 export function SansPhoto({ className }: { className?: string }) {
@@ -89,6 +90,8 @@ export function Carrousel({ photos, alt, className }: { photos: string[]; alt: s
 function Visionneuse({ photos, depart, alt, fermer }: { photos: string[]; depart: number; alt: string; fermer: () => void }) {
   const [i, setI] = useState(depart);
   const x0 = useRef<number | null>(null);
+  const boite = useRef<HTMLDivElement>(null);
+  usePiegeFocus(boite, true);
   const n = photos.length;
   const suivante = useCallback((d: number) => setI((k) => (k + d + n) % n), [n]);
   useEffect(() => {
@@ -107,6 +110,7 @@ function Visionneuse({ photos, depart, alt, fermer }: { photos: string[]; depart
   }, [fermer, suivante]);
   return (
     <div
+      ref={boite}
       role="dialog"
       aria-modal="true"
       aria-label="Photos de la voiture"

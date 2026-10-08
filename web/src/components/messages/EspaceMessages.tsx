@@ -4,7 +4,8 @@
    validation des annonces trouvées, puis le message). En bas : le suivi des campagnes. L'envoi est fait par la fonction « messages ». */
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
-import { useEffect, useId, useState, useSyncExternalStore, type ReactNode } from "react";
+import { usePiegeFocus } from "@/lib/piege-focus";
+import { useEffect, useId, useState, useSyncExternalStore, type ReactNode, useRef } from "react";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { cx, inputCls } from "@/lib/cx";
 import { FILTRES_VIDES, type FiltresRecherche, type Recherche } from "@/lib/recherches";
@@ -46,6 +47,8 @@ function Interrupteur({ on, onClick, label, disabled }: { on: boolean; onClick: 
 function Fenetre({ titre, onFermer, children, large }: { titre: string; onFermer: () => void; children: ReactNode; large?: boolean }) {
   const id = useId();
   const monte = useSyncExternalStore(rien, () => true, () => false);
+  const boite = useRef<HTMLDivElement>(null);
+  usePiegeFocus(boite, monte);
   useEffect(() => {
     const f = (e: KeyboardEvent) => e.key === "Escape" && onFermer();
     addEventListener("keydown", f);
@@ -58,7 +61,7 @@ function Fenetre({ titre, onFermer, children, large }: { titre: string; onFermer
   if (!monte) return null;
   return createPortal(
     <div className="fixed inset-0 z-[70] grid items-end bg-black/70 backdrop-blur-sm sm:place-items-center sm:px-4" onClick={onFermer}>
-      <div role="dialog" aria-modal="true" aria-labelledby={`${id}-t`} onClick={(e) => e.stopPropagation()} className={cx("max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border border-line-2 bg-bg1 p-5 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)] sm:rounded-3xl sm:p-6", large ? "sm:max-w-4xl" : "sm:max-w-2xl")}>
+      <div ref={boite} role="dialog" aria-modal="true" aria-labelledby={`${id}-t`} onClick={(e) => e.stopPropagation()} className={cx("max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border border-line-2 bg-bg1 p-5 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)] sm:rounded-3xl sm:p-6", large ? "sm:max-w-4xl" : "sm:max-w-2xl")}>
         <div className="mb-4 flex items-center justify-between gap-4">
           <h2 id={`${id}-t`} className="font-display text-xl font-semibold">{titre}</h2>
           <button type="button" onClick={onFermer} aria-label="Fermer" className="rounded-full px-2 py-1 text-ink-3 hover:text-ink">✕</button>

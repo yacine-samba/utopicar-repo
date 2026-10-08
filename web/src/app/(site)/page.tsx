@@ -6,13 +6,13 @@ import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { JsonLdFaq } from "@/components/site/JsonLd";
+import { dateTxt, listeCotes, nb } from "@/lib/cotes-publiques";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { Symbole } from "@/components/site/Logo";
 import { compteCourant } from "@/lib/compte";
 import { PARTICULIERS } from "@/lib/offres";
 
 const MODELES = ["Renault Clio IV", "Peugeot 208", "Toyota Yaris", "Dacia Sandero", "VW Polo V", "Citroën C3", "Ford Fiesta", "Opel Corsa", "Hyundai i20", "Suzuki Swift", "Renault Twingo", "Seat Ibiza", "Kia Rio", "Skoda Fabia"];
-const VERIFS = ["Cote du marché", "38 défauts recherchés", "Moteurs à éviter signalés", "Coût réel d'achat", "Prix à proposer", "Questions au vendeur", "Contrôle sur place", "Analyse des photos"];
 
 /** Les trois étapes, chacune avec un petit visuel concret (ce que la personne voit vraiment à cette étape). */
 const ETAPES: { t: string; d: string; v: React.ReactNode }[] = [
@@ -73,7 +73,10 @@ const Coche = () => (
 );
 
 export default async function Accueil() {
-  const [compte, fournisseurs] = await Promise.all([compteCourant(), fournisseursActifs()]);
+  const [compte, fournisseurs, cotes] = await Promise.all([compteCourant(), fournisseursActifs(), listeCotes()]);
+  // vrais chiffres de la base du marché (rien d'arrondi à la hausse) : annonces relevées et modèles cotés
+  const annonces = cotes.reduce((s, c) => s + c.n, 0);
+  const releve = dateTxt(cotes.map((c) => c.maj).filter((d): d is string => !!d).sort().pop() ?? null);
   return (
     <>
       {/* ---------------- héros : le champ d'essai est le produit ---------------- */}
@@ -108,7 +111,34 @@ export default async function Accueil() {
       </section>
 
       <Defile items={MODELES} label="Modèles analysés" />
-      <Defile items={VERIFS} label="Ce que l'outil vérifie" inverse />
+      {annonces > 0 && (
+        <section aria-label="La base du marché" className="wrap py-6">
+          <dl className="grid gap-3 text-center sm:grid-cols-3">
+            {(
+              [
+                [nb(annonces), "annonces Leboncoin relevées", releve ? `dernier relevé le ${releve}` : "en ligne"],
+                [String(cotes.length), "modèles cotés génération par génération", null],
+                ["38", "défauts recherchés dans chaque annonce", "embrayage, distribution, chocs, papiers…"],
+              ] as [string, string, string | null][]
+            ).map(([v, l, s], i) => (
+              <div key={l} className="flex flex-col rounded-2xl border border-line px-4 py-4">
+                {/* le chiffre d'abord à l'écran, l'intitulé d'abord pour les lecteurs d'écran (dt avant dd) */}
+                <dt className="order-2 text-sm text-ink-2">{l}</dt>
+                <dd className="num order-1 font-display text-3xl font-semibold text-ink">{v}</dd>
+                <dd className="order-3 mt-0.5 text-xs text-ink-3">
+                  {i === 1 ? (
+                    <Link href="/cote" className="text-o2 underline underline-offset-4">
+                      voir les cotes par modèle
+                    </Link>
+                  ) : (
+                    s
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
 
       {/* ---------------- démo ---------------- */}
       <section id="demo" className="scroll-mt-24 py-24">

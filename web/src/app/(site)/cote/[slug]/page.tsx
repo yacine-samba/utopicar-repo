@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { coteParSlug, dateTxt, eur, nb, kmTxt, libelle, marqueDe, slugCote, TRANCHES_KM, type CoteDetail } from "@/lib/cotes-publiques";
 import { aEviterPour, fiabiliteModele } from "@/lib/analyse/fiabilite";
+import { moteurParIndex } from "@/lib/moteurs";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { Barres } from "@/components/cote/Barres";
 import { Essai } from "@/components/accueil/Essai";
@@ -172,14 +173,27 @@ export default async function PageCote({ params }: Params) {
               <p className="text-sm font-medium text-warn">Signalés par l&apos;outil sur chaque annonce</p>
               <h3 className="mt-2 font-display text-xl font-semibold">Moteurs et boîtes à éviter</h3>
               <ul className="mt-4 grid gap-2.5 text-sm text-ink-2">
-                {[...(fiab?.aEviter ?? []), ...aEviter].map((t) => (
-                  <li key={t} className="flex gap-2.5">
-                    <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-warn/15 text-[11px] text-warn" aria-hidden="true">
-                      !
-                    </span>
-                    {t}
-                  </li>
-                ))}
+                {[...(fiab?.aEviter ?? []).map((texte) => ({ texte, index: -1 })), ...aEviter].map((t) => {
+                  const m = moteurParIndex(t.index);
+                  return (
+                    <li key={t.texte} className="flex gap-2.5">
+                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-warn/15 text-[11px] text-warn" aria-hidden="true">
+                        !
+                      </span>
+                      <span>
+                        {t.texte}
+                        {m && (
+                          <>
+                            {" "}
+                            <Link href={`/moteur/${m.slug}`} className="whitespace-nowrap text-o2 underline underline-offset-4">
+                              le guide
+                            </Link>
+                          </>
+                        )}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}

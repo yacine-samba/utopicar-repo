@@ -72,7 +72,8 @@ export function fiabiliteModele(nom: string, y0: number, y1: number) {
 }
 
 /** Moteurs et boîtes signalés par l'outil pour une marque (boîtes robotisées : toutes les marques). */
-export const aEviterPour = (marque: string) => EVITER_GLOBAL.filter((_, i) => !MARQUES_EVITER[i].length || MARQUES_EVITER[i].includes(flatA(marque))).map(([, why]) => why);
+export const aEviterPour = (marque: string) =>
+  EVITER_GLOBAL.map(([, why], i) => ({ texte: why, index: i })).filter((x) => !MARQUES_EVITER[x.index].length || MARQUES_EVITER[x.index].includes(flatA(marque)));
 
 export type Fiabilite = {
   k: "fiable" | "limite" | "eviter" | "hors";

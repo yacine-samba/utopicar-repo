@@ -4,6 +4,7 @@
 import { createPortal } from "react-dom";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { cx } from "@/lib/cx";
+import { usePiegeFocus } from "@/lib/piege-focus";
 
 export type EntreeSommaire = { id: string; label: string; resume?: string | null; ton?: "ok" | "warn" | "bad" | null; verrou?: string | null };
 
@@ -125,6 +126,8 @@ export function BoutonSections({ entrees, actif, visible, flottant, className }:
   const id = useId();
   const [ouvert, setOuvert] = useState(false);
   const bouton = useRef<HTMLButtonElement>(null);
+  const boite = useRef<HTMLDivElement>(null);
+  usePiegeFocus(boite, ouvert);
   useEffect(() => {
     if (!ouvert) return;
     const f = (e: KeyboardEvent) => e.key === "Escape" && setOuvert(false);
@@ -166,6 +169,7 @@ export function BoutonSections({ entrees, actif, visible, flottant, className }:
         createPortal(
           <div className="fixed inset-0 z-[70] grid items-end bg-black/70 backdrop-blur-sm sm:place-items-center sm:px-4" onClick={() => setOuvert(false)}>
             <div
+              ref={boite}
               role="dialog"
               aria-modal="true"
               aria-labelledby={`${id}-t`}

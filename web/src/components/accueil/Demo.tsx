@@ -5,6 +5,9 @@ import { ANNEAU_EXEMPLE as ANNEAU, CLES_EXEMPLES as CLES, euros, EXEMPLES, TON_E
 
 const ETAPES = ["Lecture du texte et des photos", "Estimation de la cote du marché", "Recherche des 38 défauts qui coûtent cher", "Calcul du prix à proposer"];
 
+/** Version 400 px d'une photo de la démo (vignettes et téléphones). */
+const petite = (u: string) => u.replace(/\.webp$/, "-400.webp");
+
 const reduit = () => typeof window !== "undefined" && (matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.hasAttribute("data-calme"));
 
 /** Compte de 0 à la valeur (instantané si les animations sont réduites). */
@@ -136,7 +139,7 @@ export function Demo() {
           </div>
           <div className="relative overflow-hidden rounded-2xl bg-[#1d1814]">
             {/* eslint-disable-next-line @next/next/no-img-element -- photos de l'annonce, déjà au bon format */}
-            <img key={ex.photos[p]} src={ex.photos[p]} alt={`${ex.titre}, photo ${p + 1} de l'annonce`} width={800} height={600} className="aspect-[4/3] w-full object-cover" />
+            <img key={ex.photos[p]} src={ex.photos[p]} srcSet={`${petite(ex.photos[p])} 400w, ${ex.photos[p]} 800w`} sizes="(min-width: 1024px) 460px, 100vw" alt={`${ex.titre}, photo ${p + 1} de l'annonce`} width={800} height={600} className="aspect-[4/3] w-full object-cover" />
             <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs text-ink">{ex.nbPhotos} photos</span>
             {!fini && <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 animate-pulse bg-gradient-to-b from-o/25 to-transparent" aria-hidden="true" />}
           </div>
@@ -145,7 +148,7 @@ export function Demo() {
               <li key={src}>
                 <button type="button" onClick={() => setPhoto(i)} aria-label={`Voir la photo ${i + 1}`} aria-pressed={i === p} className={cx("block w-full overflow-hidden rounded-lg border-2 transition", i === p ? "border-o" : "border-transparent opacity-70 hover:opacity-100")}>
                   {/* eslint-disable-next-line @next/next/no-img-element -- vignette */}
-                  <img src={src} alt="" width={200} height={150} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+                  <img src={petite(src)} alt="" width={200} height={150} loading="lazy" className="aspect-[4/3] w-full object-cover" />
                 </button>
               </li>
             ))}
