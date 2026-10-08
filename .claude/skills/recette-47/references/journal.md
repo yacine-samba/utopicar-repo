@@ -92,6 +92,7 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 | Épisode | Amélioration | Avant | Après |
 |---|---|---|---|
 | MO5 | référence | rendu en 4 parties à MB = 4 (durée non notée ; MO6, même technique : ≈ 2 h), −14,3 LUFS, −3,5 dBTP, avertissement zones sûres (étiquettes en bas) | — |
+| MO9 | `lib/kit47.js` : les modules de MO5 rendus réutilisables, film MO9 construit dessus | MO5 : modules écrits à la main dans un seul fichier | brief validé et maquettage complet le même jour (8 oct.) ; kit pas encore vérifié en rendant MO5 avec lui |
 
 ## 6. Leçons
 

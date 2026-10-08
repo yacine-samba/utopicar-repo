@@ -161,10 +161,20 @@ Vidéos hors dépôt (`assets/stock/`), retéléchargeables (`motion-studio/scri
 
 À chercher à l'étape 3 : un téléphone posé en plein jour (l'attente de MO9 se passe le jour, celle de MO5 la nuit).
 
-## Ce qui reste à faire à l'étape 3
+## Étape 3 : le maquettage (fait le 8 octobre 2026)
 
-- Le gabarit `film-47` : le code de MO5 en modules réutilisables (écriture à la lumière, compteur, notifications,
-  palettes, voiture et étiquettes, rembobinage, boucle), vérifié en rendant MO5 avec lui ; MO9 construit dessus, avec
-  ses modules nouveaux (tampon, jauge, grille d'annonces, avant / après).
-- Les séquences Mixkit retéléchargées et extraites (elles ne sont pas dans le dépôt).
-- Le film complet animé, minutage provisoire, puis les planches toutes les 0,1 s.
+- Film animé complet : `film-mo9/index.html` + `film-mo9/film.js` (`window.seek(t)`, minutage provisoire de ce
+  document), planches toutes les 0,1 s : `renders/review/mo9-planche-0.1s-0-10.jpg`, `-10-20.jpg`, `-20-29.6.jpg`
+  (`CUT=mo9 node scripts/sheet.mjs 0 10`). Instants choisis : `CUT=mo9 node scripts/at.mjs 0,9.8,19.9 renders/review/mo9-at.jpg`.
+- Construit sur `lib/kit47.js` : les modules de MO5 rendus réutilisables (écriture à la lumière, compteur à rouleaux,
+  notifications, palettes, séquences vidéo, tampon). MO5 garde son propre code : le kit n'a pas encore été vérifié en
+  rendant MO5 avec lui.
+- Séquences Mixkit : `film-mo9/seq/` (hors dépôt), refaites par
+  `python3 ../.claude/skills/motion-studio/scripts/mixkit.py get 241 13260 4716 45755 47830 36522 31961 42136 34140 49219 --out assets/stock/mo9`
+  puis `mixkit.py seq assets/stock/mo9/mixkit-<id>.mp4 film-mo9/seq/<nom> --start 1.0 --dur 4` (noms : signe, ct,
+  moteur, pneu, phares, interieur, essence, phone, cles, calc).
+- Corrigé en relisant les planches : l'image 0 montre « 3 900 ↓ » et « 5 600 » s'écrit sur la voix ; les annonces
+  arrivent pendant que le calcul s'en va, la voiture pendant que la formule s'en va (plus d'écran vide) ; la pile de
+  messages est rangée, avec un compteur « Messages · 12 » ; les trois décisions arrivent dès 24,0 s ; la boucle avance
+  jusqu'au cadre exact de l'image 0.
+- Reste pour l'étape 5 : le rendu final avec flou de bougé, la mesure de fluidité (`ref-motion.py`) et de la boucle.
