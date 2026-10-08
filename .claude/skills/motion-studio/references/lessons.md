@@ -62,6 +62,7 @@
 | MO6 | `pkill -f sheet-mo6.mjs` a tué sa propre commande | `pkill` dans un appel séparé |
 | MO6 | Moniteur `until ! pgrep -f "render.mjs --all"` jamais terminé : il se trouvait lui-même | Attendre un fichier de sortie (ou `pgrep -f '[r]ender.mjs'`), jamais un motif présent dans la commande d'attente |
 | MO6 | Rendu final de 30 s avec verre dépoli : ≈ 2 h en 4 parties (6 à 15 s par image) | Prévenir l'utilisateur de la durée ; planches et images fixes pour tout contrôle avant |
+| MO9 | `estimate_only` a annoncé 1 052 crédits sans signaler le solde ; la génération a échoué : « This request exceeds your quota of 10000. You have 232 credits remaining, while 526 credits are required » | L'estimation ne vérifie pas le solde. Demander à l'utilisateur son solde ElevenLabs (ou générer une phrase courte) avant de promettre une prise ; ne jamais relancer après un échec de quota |
 
 ## Ce qui a marché (à reprendre)
 

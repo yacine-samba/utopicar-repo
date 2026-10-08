@@ -178,3 +178,17 @@ Vidéos hors dépôt (`assets/stock/`), retéléchargeables (`motion-studio/scri
   messages est rangée, avec un compteur « Messages · 12 » ; les trois décisions arrivent dès 24,0 s ; la boucle avance
   jusqu'au cadre exact de l'image 0.
 - Reste pour l'étape 5 : le rendu final avec flou de bougé, la mesure de fluidité (`ref-motion.py`) et de la boucle.
+
+## Étape 4 : la voix (en attente)
+
+Texte final (74 mots) envoyé à Simon (`mvhJVdVoTWVUtL4keT7W`, eleven_v3) le 8 octobre 2026, une prise à la demande de
+l'utilisateur (526 crédits estimés). **Échec côté ElevenLabs** : « This request exceeds your quota of 10000. You have
+232 credits remaining, while 526 credits are required for this request. » Rien n'a été généré ; pas de nouvel essai.
+
+```
+Tu l'achètes trois mille neuf cents, tu la revends cinq mille six cents. Cette fois, ton compte en banque est d'accord.
+Jour zéro, tu comptes. Les annonces d'à côté : cinq mille six cent cinquante. Ton prix max : trois mille neuf cents.
+Pneus lisses, phares jaunis, rayure. Il accepte. Carte grise, contrôle, pneus : prévu. Et là… ça sonne. Il négocie.
+Tu acceptes. Bénéfice : [short pause] neuf cent soixante-quatorze euros. [chuckles] Même le kebab était prévu.
+Tout s'est joué au jour zéro. La prochaine fois que tu te dis…
+```
