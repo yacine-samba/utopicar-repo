@@ -65,6 +65,7 @@
 | MO9 | `estimate_only` a annoncé 1 052 crédits sans signaler le solde ; la génération a échoué : « This request exceeds your quota of 10000. You have 232 credits remaining, while 526 credits are required » | L'estimation ne vérifie pas le solde. Demander à l'utilisateur son solde ElevenLabs (ou générer une phrase courte) avant de promettre une prise ; ne jamais relancer après un échec de quota |
 | MO9 | faster-whisper *small* écrit « banquets », « Pneulis », « fargenis » et avale le rire `[chuckles]` dans le mot suivant (0,9 s pour « Même ») | Contrôler la prononciation avec le modèle *medium* (il relit le texte exact), sur la prise puis sur le mix ; recaler à l'enveloppe les mots que *small* étire |
 | MO9 | Rendu `--draft` à 60 i/s : ≈ 1,1 s par image, 33 min pour 30 s | Brouillon d'écoute à 30 i/s (`fps` du timeline le temps du rendu), 60 i/s pour le rendu final |
+| MO9 | Caméra qui cadre de près et calques en profondeur (`translateZ` 160-200) : « 974 € » sortait de la colonne, « MARGE » montait dans la bande du haut ; vu seulement par `qa_video.py` sur le MP4, deux rendus finaux de 40 min de plus | Dimensionner les gros chiffres avec le grossissement de la caméra la plus proche ; avant chaque rendu final, mesurer les bandes interdites sur des images fixes (`at.mjs` + seuil de luminance) aux temps où la caméra bouge |
 
 ## Ce qui a marché (à reprendre)
 

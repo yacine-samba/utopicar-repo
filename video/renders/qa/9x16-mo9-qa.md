@@ -4,7 +4,7 @@ Format détecté : **vertical**, zones interdites {'top': 220, 'bottom': 440, 'l
 
 | Niveau | Contrôle | Détail |
 |---|---|---|
-| WARN | Zones sûres | contenu net dans une zone interdite ({'top': 220, 'bottom': 440, 'left': 60, 'right': 140}) : droite : 2.50–2.75s, 15.50–15.75s, 17.00–18.00s; haut : 13.00–13.25s, 13.50–14.25s; bas : 25.25–25.50s — vérifier sur 9x16-mo9-safe.png ; si c'est un texte, un logo ou le CTA, c'est un FAIL |
+| WARN | Zones sûres | contenu net dans une zone interdite ({'top': 220, 'bottom': 440, 'left': 60, 'right': 140}) : droite : 2.50–2.75s, 15.50–15.75s, 17.00–18.00s — vérifier sur 9x16-mo9-safe.png ; si c'est un texte, un logo ou le CTA, c'est un FAIL |
 | OK | Codec vidéo | h264 yuv420p 1080×1920 60.00 i/s, 31.40 s (vertical) |
 | OK | Codec audio | aac 48000 Hz |
 | OK | Première image | écart-type 33.8 — contient déjà du contenu |

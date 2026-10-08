@@ -13,6 +13,7 @@ demander à l'utilisateur, capture d'écran à l'appui.
 | Vidéo | Publiée | Variable testée | Vues J+2 | Vues J+7 | Encore là à 3 s | Durée moyenne | Vision. complets | Partages / 1 000 | Enreg. / 1 000 | Comm. / 1 000 | « Pour toi » | Verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | MO5 « 47 € » | début oct. 2026, TikTok (date, heure, légende à noter) | aucune : référence | ? | **> 6 000** (8 oct.) | ? | ? | ? | ? | ? | ? | ? | référence de la série |
+| MO9 « 974 € » | à publier (livré le 8 oct. 2026) ; 31,4 s, ouverture A, Controlled Drop, Clio IV en photo libre | le sens de l'histoire (la marge tient) | ? | ? | ? | ? | ? | ? | ? | ? | ? | ? |
 
 Points de comparaison plus anciens (carrousels, même compte) : « 3 règles » environ 1 000 vues, les 29 autres 200 à
 300 (`video/docs/analyse_perf_carrousels.md`). MO6 « Ce qui se voit, ce qui se cache » et MO8 « Les 5 moteurs » : à
@@ -92,6 +93,7 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 | Épisode | Amélioration | Avant | Après |
 |---|---|---|---|
 | MO5 | référence | rendu en 4 parties à MB = 4 (durée non notée ; MO6, même technique : ≈ 2 h), −14,3 LUFS, −3,5 dBTP, avertissement zones sûres (étiquettes en bas) | — |
+| MO9 | `lib/kit47.js` : les modules de MO5 rendus réutilisables, film MO9 construit dessus ; minutage lu dans `vo-timing.json` (chaque événement attaché à son mot), bruitages lus dans `events.json` | MO5 : modules écrits à la main dans un seul fichier, temps recopiés à la main ; rendu final MO6 ≈ 2 h ; avertissement zones sûres en bas | brief validé, voix posée et film livré le même jour (8 oct.) ; rendu final ≈ 40 min en 4 morceaux ; aucun texte dans la bande du bas ; couverture vérifiée à 200 px. Kit pas encore vérifié en rendant MO5 avec lui |
 | MO9 | `lib/kit47.js` : les modules de MO5 rendus réutilisables, film MO9 construit dessus ; minutage lu dans `vo-timing.json` (chaque événement attaché à son mot) | MO5 : modules écrits à la main dans un seul fichier, temps recopiés à la main | brief validé, maquettage et voix posée le même jour (8 oct.) ; kit pas encore vérifié en rendant MO5 avec lui |
 | MO10 | deuxième film sur `lib/kit47.js` (film-mo9 comme point de départ) ; texte et étiquettes au-dessus de y = 1480 ; deux voitures détourées dans le même plan, à deux profondeurs ; compteur « par jour » en rouleaux lisible à 360 px | MO9 : un jour du brief au maquettage | brief, photos, voix, maquettage et mix dans la même session (8 oct.), sans porte de validation à la demande de l'utilisateur ; rendu et mesures : voir `video/docs/timeline-mo10.md` |
 

@@ -179,7 +179,7 @@ Vidéos hors dépôt (`assets/stock/`), retéléchargeables (`motion-studio/scri
   jusqu'au cadre exact de l'image 0.
 - Reste pour l'étape 5 : le rendu final avec flou de bougé, la mesure de fluidité (`ref-motion.py`) et de la boucle.
 
-## Étape 4 : la voix (faite le 8 octobre 2026, à valider)
+## Étape 4 : la voix (faite et validée le 8 octobre 2026)
 
 Texte final (74 mots) dit par Simon (`mvhJVdVoTWVUtL4keT7W`, eleven_v3), une prise à la demande de l'utilisateur.
 Premier envoi refusé par ElevenLabs (quota : 232 crédits restants pour 526 demandés), rien de généré, pas de nouvel
@@ -236,3 +236,17 @@ Tout s'est joué au jour zéro. La prochaine fois que tu te dis…
   `renders/draft-mo9-9x16.mp4` (540 × 960, hors dépôt) ; instants choisis `renders/review/mo9-voix-at.jpg`.
 - Corrigé en relisant les instants : la pile de débits passait sur le compteur en partant (16,2 s) ; elle s'efface
   maintenant avant de l'atteindre.
+
+## Étape 5 : animation, son, contrôle, livraison (8 octobre 2026)
+
+- **Bruitages** (`scripts/audio-mo9.py`) : 76 sons des banques MO5 et MO6 (Mixkit), repérés sur l'image : le film
+  écrit ses temps dans `film-mo9/events.json` (`window.EVENTS`, `scripts/events.mjs`). Une note par annonce et par
+  débit, qui monte ; le kebab joue la note la plus haute, puis le tampon seul dans le silence ; moteur de la Clio et
+  vibration du téléphone fabriqués comme dans MO5 ; bruitages −7 dB sous la voix. Voix au moins 7,7 dB au-dessus des
+  bruitages et 8,1 dB au-dessus de la musique (médiane 10 dB). Version sans musique : `audio/vo-mo9/ecoute-sans-musique.mp3`.
+- **Rendu final** : `CUT=mo9 MB=4 PARTS=4 PART=0..3 node scripts/render.mjs --all`, puis `--assemble` : ≈ 40 min en
+  4 morceaux parallèles (MO6 : ≈ 2 h). Trois rendus, corrigés entre chaque sur les mesures (`docs/review_log.md`).
+- **Contrôle** : `qa_video.py` sans FAIL, −14,3 LUFS, −3,6 dBTP, boucle 0,22/255, notes toutes ≥ 8.
+- **Livré** : `renders/9x16-mo9.mp4` (1080 × 1920, 60 i/s, 31,4 s, 16,8 Mo), `renders/poster-mo9.png` (4,46 s),
+  `renders/9x16-mo9.srt` (14 cartons), `renders/qa/9x16-mo9-qa.md` et `-safe.png`, pistes `audio/stems-mo9/` (hors dépôt,
+  refaites par `audio-mo9.py`).
