@@ -166,7 +166,8 @@ gestes rapides), environ 47 min par passe sur 4 cœurs, puis `--assemble`.
 |---|---|---|
 | maquette (planches 0,1 s) | ouverture trop immobile de 0 à 2,7 s → « +1 000 € » sur chaque voiture, qui montent se fondre dans le total ; carte « par jour » trop tardive → elle arrive sur « comptent en jours » ; retour de boucle en fondu → la carte part vers le haut, le calcul et les voitures reviennent ; tampon du gag sur le montant, poussière en voile uniforme, débits qui se chevauchaient | — |
 | 1 (MP4) | — | aucun FAIL ; −14,4 LUFS, −4,0 dBTP ; WARN zones sûres : « ? » de l'ouverture et « MARGE » dans les bandes TikTok |
-| 2 (MP4 livré) | calcul ramené à 700 px de large, compteur rapproché du plan, 207 entre x = 60 et 940, légende du voisin plus grande | voir ci-dessous |
+| 2 | calcul ramené à 700 px de large, compteur rapproché du plan, 207 entre x = 60 et 940, légende du voisin plus grande | aucun FAIL ; WARN seulement sur des cartes en mouvement |
+| 3 (MP4 livré, retour de l'utilisateur) | **chiffres « par jour » coupés** : fenêtres de 84 × 150 px pour des chiffres de 150 px → fenêtres à la taille du chiffre (96 × 170 px, 132 px), roulement chiffre par chiffre qui s'arrête pile, « € / jour » sur la ligne du chiffre ; **espace des milliers invisible** dans Clash (« 1000 », « 4000,00 », « 3800 ») → espaces élargies partout ; « € » de l'annonce coupé ; tampon du gag qui recouvrait « −35,00 € » ; 0,7 s d'écran presque vide après le rembobinage → la carte arrive dès la fin du rembobinage, titre plus grand | voir ci-dessous |
 
 Mesures du film livré (`renders/qa/9x16-mo10-qa.md`, `scripts/review.py mo10-r2`) :
 - H.264 yuv420p 1080 × 1920, 60 i/s, 32,60 s ; AAC 48 kHz.
