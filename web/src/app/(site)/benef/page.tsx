@@ -5,7 +5,8 @@ import { Peurs } from "@/components/benef/Peurs";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { Faq } from "@/components/site/Faq";
 import { Defile } from "@/components/site/Defile";
-import { BoutonOnboarding } from "@/components/site/BoutonOnboarding";
+import { Essai } from "@/components/accueil/Essai";
+import { fournisseursActifs } from "@/lib/fournisseurs";
 import { compteCourant } from "@/lib/compte";
 import { BENEF, GUIDE } from "@/lib/offres";
 
@@ -34,7 +35,7 @@ const CHAPITRES = [
 ];
 
 export default async function Benef() {
-  const compte = await compteCourant();
+  const [compte, fournisseurs] = await Promise.all([compteCourant(), fournisseursActifs()]);
   return (
     <>
       <section className="relative overflow-hidden pb-16 pt-14 text-center sm:pt-20">
@@ -54,9 +55,10 @@ export default async function Benef() {
               Ouvrir l&apos;espace Benef
             </Link>
           </div>
-          <p className="arrivee mt-5 text-sm text-ink-3" style={{ "--i": 4 } as React.CSSProperties}>
-            Pas sûr de la formule ? <BoutonOnboarding className="text-o2 underline underline-offset-4">Répondez à 3 questions</BoutonOnboarding>
-          </p>
+          <div className="arrivee mt-8" style={{ "--i": 4 } as React.CSSProperties}>
+            <p className="mb-3 text-sm text-ink-3">Collez une annonce : l&apos;aperçu est immédiat, sans compte.</p>
+            <Essai fournisseurs={fournisseurs} depuis="benef" familleInitiale="benef" />
+          </div>
         </div>
       </section>
 

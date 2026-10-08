@@ -3,7 +3,8 @@ import { Rotateur } from "@/components/accueil/Rotateur";
 import { Demo } from "@/components/accueil/Demo";
 import { Defile } from "@/components/site/Defile";
 import { Faq } from "@/components/site/Faq";
-import { BoutonOnboarding } from "@/components/site/BoutonOnboarding";
+import { Essai } from "@/components/accueil/Essai";
+import { fournisseursActifs } from "@/lib/fournisseurs";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { Symbole } from "@/components/site/Logo";
 import { compteCourant } from "@/lib/compte";
@@ -19,10 +20,10 @@ const Coche = () => (
 );
 
 export default async function Accueil() {
-  const compte = await compteCourant();
+  const [compte, fournisseurs] = await Promise.all([compteCourant(), fournisseursActifs()]);
   return (
     <>
-      {/* ---------------- héros ---------------- */}
+      {/* ---------------- héros : le champ d'essai est le produit ---------------- */}
       <section className="relative overflow-hidden pb-16 pt-14 text-center sm:pt-20">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_80%_55%_at_50%_0,#000_25%,transparent_78%)]" aria-hidden="true" />
         <div className="wrap">
@@ -33,11 +34,8 @@ export default async function Accueil() {
           <p className="arrivee mx-auto mt-6 max-w-2xl text-lg text-ink-2 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
             Collez une annonce Leboncoin, La Centrale ou AutoScout24. Utopicar estime sa cote, repère les défauts qui coûtent cher et vous dit quoi faire.
           </p>
-          <div className="arrivee mt-9 flex flex-wrap justify-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
-            <Link href="/analyse" className="btn btn-o">
-              Estimer une affaire <span aria-hidden="true">→</span>
-            </Link>
-            <BoutonOnboarding>M&apos;orienter en 3 questions</BoutonOnboarding>
+          <div className="arrivee mt-9" style={{ "--i": 3 } as React.CSSProperties}>
+            <Essai fournisseurs={fournisseurs} depuis="hero" />
           </div>
           <ul className="arrivee mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-2" style={{ "--i": 4 } as React.CSSProperties}>
             <li className="flex items-center gap-2">

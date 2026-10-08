@@ -12,6 +12,7 @@ import { CommandeK, SeuilMarge } from "@/components/espace/OutilsEspace";
 import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { AnalysesEnFond } from "@/components/espace/AnalysesEnFond";
 import { PreferencesEspace } from "@/components/espace/Preferences";
+import { ProfilDepuisNavigateur } from "@/components/espace/ProfilDepuisNavigateur";
 
 export const metadata: Metadata = { title: { default: "Mon espace", template: "%s · Mon espace Utopicar" }, robots: { index: false } };
 // Espace personnel : toujours rendu à la demande (session, formule, quotas).
@@ -65,6 +66,7 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
 
   return (
     <PreferencesEspace favoris={c.favoris}>
+    <ProfilDepuisNavigateur />
     <AnalysesEnFond mode={benef && c.offre.famille === "benef" ? "benef" : "particulier"} actif={!benef || c.offre.famille === "benef"} maxPhotos={c.offre.photos} ville={c.ville}>
     <div className="min-h-dvh lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
       <aside className="sticky top-0 hidden h-dvh flex-col gap-5 overflow-y-auto border-r border-line bg-bg0/60 px-4 py-5 lg:flex">

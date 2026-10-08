@@ -15,6 +15,8 @@ import { Ico } from "@/components/espace/Icones";
 import { BoutonRechercher, RechercheRapide } from "@/components/espace/RechercheRapide";
 import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
+import { phraseAccueil } from "@/lib/orientation";
+import { CartePremiersPas } from "@/components/espace/PremiersPasCompte";
 
 /** Téléphone : deux boutons qui ouvrent une fenêtre, au lieu des grands blocs « collez le lien » et « rechercher ». */
 function ActionsMobile({ recherche }: { recherche: boolean }) {
@@ -61,11 +63,13 @@ function EnTeteTableau({ c, texte }: { c: Compte; texte: string }) {
   );
 }
 
-function Bonjour({ c, texte }: { c: Compte; texte: string }) {
+/** La phrase d'accueil suit ce que la personne a dit d'elle sur le site (pastille « pour moi / je revends »). */
+async function Bonjour({ c, texte }: { c: Compte; texte: string }) {
+  const { data: p } = await (await supabaseServeur()).from("profils").select("onboarding, famille").eq("id", c.id).maybeSingle();
   return (
     <div>
       <h1 className="font-display text-[clamp(28px,5vw,40px)] font-semibold leading-tight tracking-tight">Bonjour{c.prenom ? ` ${c.prenom}` : ""}</h1>
-      <p className="mt-1 text-ink-2">{texte}</p>
+      <p className="mt-1 text-ink-2">{phraseAccueil(p?.onboarding, p?.famille as string | null) ?? texte}</p>
     </div>
   );
 }
@@ -81,6 +85,7 @@ async function TableauParticulier({ c }: { c: Compte }) {
   return (
     <div className="grid gap-8">
       <Bonjour c={c} texte="Votre projet d'achat, étape par étape, sans mauvaise surprise." />
+      <CartePremiersPas c={c} />
       <ActionsMobile recherche={false} />
       <div className="hidden sm:block">
         <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle va vraiment vous coûter et ce qu'il faut vérifier." />
@@ -174,6 +179,7 @@ async function TableauComplet({ c }: { c: Compte }) {
   return (
     <div className="grid gap-8">
       <EnTeteTableau c={c} texte={`${nomFormule(c)} · votre parc, vos marges et le marché.`} />
+      <CartePremiersPas c={c} />
 
       <section aria-labelledby="tb-pipe" className="carte grid gap-5 p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -340,6 +346,7 @@ async function TableauBenef({ c }: { c: Compte }) {
   return (
     <div className="grid gap-8">
       <EnTeteTableau c={c} texte={`${nomFormule(c)} · vos chiffres du mois, depuis le 1er.`} />
+      <CartePremiersPas c={c} />
       {recherches && <RechercheRapide recentes={recherches} />}
 
       <section aria-labelledby="tb-analyses">
@@ -407,6 +414,7 @@ export default async function Accueil() {
   return (
     <div className="grid gap-8">
       <Bonjour c={c} texte="Bienvenue dans votre espace Benef. Choisissez votre formule pour chiffrer vos premières annonces." />
+      <CartePremiersPas c={c} />
       <ul className="grid gap-3 sm:grid-cols-3">
         {[
           ["Marge nette", "Ce qu'il vous reste une fois la voiture revendue, après carte grise, trajet, remise en état et commissions."],
