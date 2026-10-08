@@ -139,6 +139,9 @@ export default async function Accueil() {
               <p className="text-sm font-medium text-o2">Cote du marché</p>
               <h3 className="mt-2 font-display text-2xl font-semibold">Le prix de l&apos;annonce, face au marché</h3>
               <p className="mt-2 text-ink-2">Même modèle, même moteur, même âge, même kilométrage. Vous voyez tout de suite si le prix est au-dessus ou en dessous.</p>
+              <Link href="/cote" className="mt-2 inline-block text-sm font-medium text-o2 underline underline-offset-4">
+                Voir les cotes par modèle
+              </Link>
               <svg viewBox="0 0 600 200" className="mt-5 w-full" role="img" aria-label="Exemple : la cote est à 6 950 €, l'annonce à 7 400 €, au-dessus du marché.">
                 <defs>
                   <linearGradient id="aire" x1="0" x2="0" y1="0" y2="1">

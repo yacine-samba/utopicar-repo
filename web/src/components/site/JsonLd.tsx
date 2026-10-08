@@ -22,6 +22,16 @@ export function JsonLdSite() {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
 }
 
+/** Fil d'Ariane d'une page (chemins relatifs au site). */
+export function JsonLdFil({ etapes }: { etapes: { nom: string; chemin: string }[] }) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: etapes.map((e, i) => ({ "@type": "ListItem", position: i + 1, name: e.nom, item: `${SITE}${e.chemin}` })),
+  };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
+
 /** FAQ d'une page, au format que Google affiche sous le résultat. */
 export function JsonLdFaq({ questions }: { questions: { q: string; r: string }[] }) {
   const data = {

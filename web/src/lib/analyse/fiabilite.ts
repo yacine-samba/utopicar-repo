@@ -59,6 +59,21 @@ const normEn = (s: string) => {
   return /diesel|gazole/.test(s) ? "diesel" : /hybride/.test(s) ? "hybride" : /essence/.test(s) ? "essence" : /lectrique/.test(s) ? "electrique" : /gpl/.test(s) ? "gpl" : "";
 };
 
+/* Marques concernées par chaque entrée d'EVITER_GLOBAL (même ordre) ; vide : toutes les marques. Sert aux pages de cote. */
+const MARQUES_EVITER: string[][] = [["peugeot", "citroen", "ds", "opel"], ["peugeot", "citroen", "ds", "mini"], ["peugeot", "citroen", "mini"], ["ford"], ["renault", "dacia", "nissan", "mercedes"], ["toyota"], []];
+
+/** Fiche d'un modèle de la liste fiable (pages publiques de cote), si sa tranche d'années recoupe celle de la page. */
+export function fiabiliteModele(nom: string, y0: number, y1: number) {
+  const t = flatA(nom);
+  const id = FIAB_RE.find(([, b, m]) => (!b || b.test(t)) && m.test(t))?.[0];
+  const e = id ? FIABLES.find((x) => x.id === id) : null;
+  if (!e || e.ans[1] < y0 || e.ans[0] > y1) return null;
+  return { nom: e.nom, bons: e.bons, verif: e.verif, pourquoi: e.pourquoi, ans: e.ans, km: e.km, aEviter: e.ev.map(([, why]) => why) };
+}
+
+/** Moteurs et boîtes signalés par l'outil pour une marque (boîtes robotisées : toutes les marques). */
+export const aEviterPour = (marque: string) => EVITER_GLOBAL.filter((_, i) => !MARQUES_EVITER[i].length || MARQUES_EVITER[i].includes(flatA(marque))).map(([, why]) => why);
+
 export type Fiabilite = {
   k: "fiable" | "limite" | "eviter" | "hors";
   modele: string | null;

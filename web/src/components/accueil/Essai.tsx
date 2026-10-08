@@ -32,7 +32,7 @@ const ERREURS_IMPORT: Record<string, string> = {
   apify: "Lecture de l'annonce impossible pour le moment : collez le texte de la page.",
 };
 
-export function Essai({ fournisseurs, depuis, familleInitiale = null }: { fournisseurs: Fournisseur[]; depuis: "hero" | "benef"; familleInitiale?: Famille | null }) {
+export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: { fournisseurs: Fournisseur[]; depuis: "hero" | "benef" | "cote"; familleInitiale?: Famille | null; retour?: string }) {
   const router = useRouter();
   const id = useId();
   const champ = useRef<HTMLTextAreaElement>(null);
@@ -48,7 +48,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null }: { fourni
   const [connecte, setConnecte] = useState<boolean | null>(null);
   const [famille, setFamille] = useState<Famille | null>(familleInitiale);
   const [sec, setSec] = useState(0);
-  const suite = `${depuis === "benef" ? "/benef" : "/"}?reprise=1`;
+  const suite = `${retour ?? (depuis === "benef" ? "/benef" : "/")}?reprise=1`;
 
   useEffect(() => {
     let actif = true;
