@@ -9,7 +9,9 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.utopicar.fr"),
-  title: { default: "Utopicar : voyez en 10 secondes si une occasion est une vraie affaire", template: "%s · Utopicar" },
+  title: { default: "Utopicar : cote et analyse d'une annonce de voiture d'occasion", template: "%s · Utopicar" },
+  // adresse canonique de chaque page (sans ?reprise, ?paiement…)
+  alternates: { canonical: "./" },
   description: "Collez une annonce de voiture d'occasion : Utopicar estime sa cote, repère les défauts qui coûtent cher et vous dit quoi faire. Première analyse offerte.",
   openGraph: { siteName: "Utopicar", locale: "fr_FR", type: "website" },
 };

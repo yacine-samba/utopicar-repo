@@ -67,7 +67,7 @@ export function Demo() {
     setCopie(false);
     if (reduit()) return setEtape(4);
     setEtape(0);
-    [1, 2, 3, 4].forEach((n) => minuteurs.current.push(setTimeout(() => setEtape(n), 650 * n + (n === 4 ? 250 : 0))));
+    [1, 2, 3, 4].forEach((n) => minuteurs.current.push(setTimeout(() => setEtape(n), 420 * n + (n === 4 ? 200 : 0))));
   }
 
   // L'analyse démarre la première fois que la démo entre dans l'écran.

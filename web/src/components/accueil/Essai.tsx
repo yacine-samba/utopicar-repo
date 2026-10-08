@@ -61,6 +61,22 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null }: { fourni
     };
   }, []);
 
+  // Lien « #essai » (sections de la page, autres pages) : le champ prend le focus.
+  useEffect(() => {
+    if (location.hash === "#essai") champ.current?.focus();
+    // Next fait défiler sans événement hashchange : on écoute aussi les clics sur les liens vers #essai
+    const f = (e: Event) => {
+      const a = (e.target as HTMLElement | null)?.closest?.('a[href$="#essai"]');
+      if (a || (e.type === "hashchange" && location.hash === "#essai")) setTimeout(() => champ.current?.focus({ preventScroll: true }), 450);
+    };
+    addEventListener("hashchange", f);
+    document.addEventListener("click", f);
+    return () => {
+      removeEventListener("hashchange", f);
+      document.removeEventListener("click", f);
+    };
+  }, []);
+
   useEffect(() => {
     if (etat !== "analyse") return;
     const t0 = Date.now();
@@ -232,7 +248,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null }: { fourni
     );
 
   return (
-    <div className="mx-auto grid max-w-2xl gap-5">
+    <div id="essai" className="mx-auto grid max-w-2xl scroll-mt-28 gap-5">
       {etat !== "apercu" && (
         <form method="get" action="/analyse" onSubmit={envoyer} className="grid gap-3">
           <label htmlFor={`${id}-a`} className="sr-only">

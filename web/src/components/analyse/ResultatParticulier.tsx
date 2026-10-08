@@ -5,6 +5,7 @@ import { coutParticulier, DEFAUTS_PART, eur, type Analyse, type Niveau } from "@
 import { OFFRES, PACKS, prixTxt } from "@/lib/offres";
 import { Copier, Panneau, Pastille, cx, inputCls, type Ton } from "../ui";
 import { AnalysePhotos } from "./AnalysePhotos";
+import { Fourchette } from "./Fourchette";
 
 const VERDICTS: Record<Niveau, { l: string; ton: Ton; phrase: string }> = {
   bon: { l: "Bon prix", ton: "ok", phrase: "Elle coûte moins cher que les voitures comparables." },
@@ -97,6 +98,7 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
         <p className="mt-3 max-w-xl text-lg text-ink">{phrasePrix}</p>
         {!risque && <p className="mt-2 max-w-xl text-ink-2"><b className="text-ink">Notre conseil :</b> {v.conseil}</p>}
         {realiste != null && <p className="mt-1 text-ink-2">Prix du marché pour cette voiture : environ {eur(realiste)}.</p>}
+        {c.prix != null && a.cote && a.cote.n >= 5 && <Fourchette prix={c.prix} p25={a.cote.p25} p75={a.cote.p75} />}
         {risque && (
           <p className={cx("mt-4 rounded-2xl border px-4 py-3", risque.ton === "bad" ? "border-bad/40 bg-bad/10 text-bad" : "border-warn/40 bg-warn/10 text-warn")}>
             <b>{risque.l}.</b> {risque.phrase}
@@ -120,6 +122,7 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
             {c.total != null ? eur(c.total) : "—"}
           </b>
         </div>
+        <BarreFrais lignes={c.lignes} />
         <ul className="divide-y divide-line">
           {c.lignes.map((l) => (
             <li key={l.l} className="flex items-baseline justify-between gap-4 py-2.5">
@@ -306,6 +309,35 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
           Imprimer
         </button>
       </div>
+    </div>
+  );
+}
+
+/* Ce qui s'ajoute au prix demandé, en une barre : chaque poste a sa part, avant la liste chiffrée. */
+const TEINTES = ["bg-o/80", "bg-o3/70", "bg-warn/70", "bg-bad/70", "bg-ink-3/60"];
+function BarreFrais({ lignes }: { lignes: { l: string; v: number | null }[] }) {
+  const frais = lignes.filter((l) => l.l !== "Prix demandé" && (l.v ?? 0) > 0);
+  const total = frais.reduce((s, l) => s + (l.v ?? 0), 0);
+  if (!total) return null;
+  return (
+    <div className="mb-4" role="img" aria-label={`En plus du prix demandé : ${eur(total)}, soit ${frais.map((l) => `${l.l} ${eur(l.v ?? 0)}`).join(", ")}.`}>
+      <p className="mb-1.5 flex items-baseline justify-between text-sm">
+        <span className="text-ink-2">En plus du prix demandé</span>
+        <b className="num">+&nbsp;{eur(total)}</b>
+      </p>
+      <div className="flex h-3 gap-px overflow-hidden rounded-full bg-line">
+        {frais.map((l, i) => (
+          <span key={l.l} className={`min-w-[4px] ${TEINTES[i % TEINTES.length]}`} style={{ flex: l.v ?? 0 }} />
+        ))}
+      </div>
+      <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-ink-3" aria-hidden="true">
+        {frais.map((l, i) => (
+          <li key={l.l} className="flex items-center gap-1">
+            <span className={`size-2 rounded-full ${TEINTES[i % TEINTES.length]}`} />
+            {l.l}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

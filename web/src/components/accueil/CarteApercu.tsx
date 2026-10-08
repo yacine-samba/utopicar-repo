@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { cx } from "../ui";
 import type { Apercu } from "../analyse/Patience";
 import { ANNEAU_EXEMPLE, euros, EXEMPLES, TON_EXEMPLE } from "@/lib/demo";
+import { Fourchette } from "../analyse/Fourchette";
 
 /* La fiche qui s'ouvre sous le champ de l'accueil : d'abord trois étapes qui se cochent, puis le résultat ligne par ligne.
    Deux contenus : l'aperçu réel d'une annonce collée (règles et cote de l'outil, sans IA) ou l'un des trois exemples de la démo.
@@ -14,7 +15,7 @@ const reduit = () => typeof window !== "undefined" && (matchMedia("(prefers-redu
 
 export type Contenu = { type: "apercu"; a: Apercu } | { type: "exemple"; cle: string };
 
-/** Étapes qui se cochent une à une (650 ms chacune), puis `fini`. Immédiat si les animations sont réduites. */
+/** Étapes qui se cochent une à une (380 ms chacune), puis `fini`. Immédiat si les animations sont réduites. */
 export function useEtapes(actif: boolean, n = ETAPES.length) {
   const [etape, setEtape] = useState(0);
   useEffect(() => {
@@ -25,7 +26,7 @@ export function useEtapes(actif: boolean, n = ETAPES.length) {
       return;
     }
     setEtape(0);
-    const t = Array.from({ length: n }, (_, i) => setTimeout(() => setEtape(i + 1), 650 * (i + 1)));
+    const t = Array.from({ length: n }, (_, i) => setTimeout(() => setEtape(i + 1), 380 * (i + 1)));
     return () => t.forEach(clearTimeout);
   }, [actif, n]);
   return etape;
@@ -43,32 +44,6 @@ function Etapes({ etape }: { etape: number }) {
         </li>
       ))}
     </ol>
-  );
-}
-
-/** Repère du prix sur la fourchette de la cote (moitié centrale), animé à l'ouverture. */
-function Fourchette({ prix, p25, p75 }: { prix: number; p25: number; p75: number }) {
-  const [pose, setPose] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setPose(true), reduit() ? 0 : 50);
-    return () => clearTimeout(t);
-  }, []);
-  // la fourchette occupe le tiers central ; au-delà, le repère s'approche des bords sans les dépasser
-  const etendue = Math.max(1, p75 - p25);
-  const pos = Math.max(4, Math.min(96, 33 + ((prix - p25) / etendue) * 34));
-  return (
-    <div className="mt-3" aria-hidden="true">
-      <div className="relative h-2 rounded-full bg-[linear-gradient(90deg,rgb(62_203_127/.55),rgb(244_241_236/.15)_33%,rgb(244_241_236/.15)_67%,rgb(255_122_122/.6))]">
-        <span className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-bg0 bg-o transition-[left] duration-700 ease-[var(--ease-doux)]" style={{ left: `${pose ? pos : 50}%` }} />
-      </div>
-      <div className="mt-1.5 flex justify-between text-[11px] text-ink-3">
-        <span>moins cher</span>
-        <span>
-          cote {eur(p25)} – {eur(p75)}
-        </span>
-        <span>plus cher</span>
-      </div>
-    </div>
   );
 }
 

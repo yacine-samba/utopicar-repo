@@ -72,8 +72,9 @@ export default async function Benef() {
           <div className="apparait mx-auto mb-12 max-w-2xl text-center">
             <span className="kicker">Si vous n&apos;avez pas encore commencé</span>
             <h2 className="h-sec mt-5">
-              Ce n&apos;est pas la motivation qui manque. <span className="it">C&apos;est la méthode.</span>
+              Ce qui fait peur quand on commence, <span className="it">et ce qui vous protège</span>
             </h2>
+            <p className="mt-4 text-lg text-ink-2">Trois craintes qu&apos;on entend tout le temps. Pour chacune, ce que la méthode Benef prévoit, concrètement.</p>
           </div>
           <Peurs />
         </div>
