@@ -147,3 +147,12 @@ Ta deuxième voiture va manger la marge de la première.
 Zones sûres : rien de lisible au-dessus de y = 246 ; compteur 272-494, palettes 584-700, débits 800-984, annonce
 1009-1081, voitures jusqu'à y = 1461 (au-dessus de 1480, avertissement de MO5 corrigé) ; carte finale 500-1034,
 verdict 1170-1330, mention 1404.
+
+## Publication (proposition)
+
+- Ouverture publiée : A. Même créneau que MO5 (jour et heure à noter dans le journal de la recette).
+- Légende, sans appel à l'action : « Deux voitures d'un coup pour aller plus vite en achat-revente : le calcul que
+  personne ne fait. Exemple chiffré, prix moyens constatés. »
+- Hashtags (jeu A débutants de `docs/hashtags_test.md`) : #achatrevente #achatreventevoiture #voitureoccasion #entrepreneur
+- Couverture : `renders/poster-mo10.png` (5,25 s : le calcul complet, les bâtons du voisin, les deux voitures).
+- Sous-titres : `renders/9x16-mo10.srt`.

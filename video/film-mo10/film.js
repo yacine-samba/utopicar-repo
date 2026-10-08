@@ -136,6 +136,12 @@
   const tMark = PGT.map((_, k) => tOfDay(1 + (k + 1) * 39 / 40));
   // un point de lumière par voiture : chaque débit en double allume les deux
   const pinTW = el('div', 'pin', TW.b, `left:${TW.w * 0.24}px;top:${TW.h * 0.42}px`), pinPG = el('div', 'pin', PG.b, `left:${PG.w * 0.12}px;top:${PG.h * 0.33}px`);
+  // ouverture : « +1 000 € » sur chaque voiture (« mille… chacune »), puis les deux montent se fondre dans « = 2 000 € »
+  T.tag = [M('mille') - 0.06, M('chacune') - 0.04]; T.tagUp = T.w2 - 0.12;
+  const TAGS = [[376, 1080], [700, 1000]].map(([x, y]) => {
+    const d = el('div', 'glass pill', LP, 'left:0;top:0;font:700 54px Clash;color:#ffb38a;padding:10px 26px'); d.textContent = '+1 000 €';
+    return { d, x, y };
+  });
   // l'annonce de la 207 pendant l'attente : 4 000 → 3 800 → 3 700
   const annP = el('div', 'glass pill', LP, 'left:0;top:0;font:700 40px Clash;padding:12px 26px');
   el('span', '', annP, 'color:rgba(246,239,231,.75);font:500 30px Satoshi').textContent = 'Annonce · ';
@@ -252,6 +258,7 @@
       const p = n - 1 - i;                       // 0 = unités
       const u = x % 10, pos = p === 0 ? u : Math.floor(x / 10) % 10 + Math.max(0, u - 9);
       c.c.style.transform = `translateY(${f3(-pos * 150)}px)`;
+      if (p > 0) c.w.style.opacity = f3(sm(9, 9.8, x));       // pas de zéro de tête : la dizaine apparaît en passant 10
     });
   };
   const verd = el('div', 'abs', LD, 'left:0;width:1080px;top:1170px;text-align:center;white-space:nowrap');
@@ -278,7 +285,7 @@
     const st = story(t);
     const tA = t >= LOOP ? 0 : t;
     const out = t >= LOOP ? 0 : S(t, T.out, P.heavy);
-    const showA = t < LOOP ? 1 - sm(T.out, T.out + 0.45, t) : sm(LOOP + 0.45, LOOP + 1.3, t);
+    const showA = t < LOOP ? 1 - sm(T.out, T.out + 0.45, t) : sm(LOOP + 0.12, LOOP + 0.75, t);
     const cA = camA(tA), cW = camW(t);
     if (t >= LOOP) { const u = sm(LOOP, DUR, t); cA.z += 160 * (1 - u); cA.ry += -5 * (1 - u); cA.y += -40 * (1 - u); }
     const day = dayAt(st);
@@ -295,7 +302,14 @@
     // P : les voitures
     LP.style.transform = tf(cW, 0);
     const big0 = sm(T.big, T.big + 0.35, st) * (1 - sm(REW[0] - 0.05, REW[0] + 0.2, t));
-    set(LP, (1 - pOut) * (1 - 0.85 * big0) * (t < LOOP ? 1 : sm(LOOP + 0.2, LOOP + 1.0, t)));
+    set(LP, (1 - pOut) * (1 - 0.85 * big0) * (t < LOOP ? 1 : sm(LOOP + 0.05, LOOP + 0.6, t)));
+    // « +1 000 € » : chaque voiture reçoit sa marge, puis les deux montent vers le total
+    const up = S(tA, T.tagUp, P.push);
+    TAGS.forEach((g, i) => {
+      const a = S(tA, T.tag[i], P.tag), w = 270;
+      g.d.style.transform = `translate(${f3(lerp(g.x - w / 2, 540 - w / 2, up))}px,${f3(lerp(g.y + (1 - a) * 30, 600, up))}px) scale(${f3((0.85 + 0.15 * a) * (1 - 0.45 * up))})`;
+      set(g.d, sm(T.tag[i] - 0.02, T.tag[i] + 0.06, tA) * (1 - sm(0.55, 0.85, up)) * (t < LOOP || tA === 0 ? 1 : 0));
+    });
     // Twingo : part vers la gauche au jour 8 (accélère), revient au rembobinage
     const go = clamp((st - T.leave) / 0.95, 0, 1), twX = -1350 * go * go * go;
     TW.b.style.transform = `translate(${f3(BOX.tw.x + twX)}px,${BOX.tw.y}px)`;
@@ -442,12 +456,13 @@
     const t1 = S(t, T.ceux, P.rise), t2 = S(t, T.comptent, P.rise);
     dT1.style.opacity = f3(t1); dT1.style.transform = `translateY(${f3((1 - t1) * 26)}px)`;
     dT2.style.opacity = f3(t2); dT2.style.transform = `translateY(${f3((1 - t2) * 26)}px)`;
-    const vc = S(t, T.r1 - 0.1, P.card);
-    vcard.style.transform = `perspective(1500px) translateY(${f3((1 - vc) * 220)}px) rotateX(${f3((1 - vc) * 28)}deg)`; set(vcard, sm(T.r1 - 0.12, T.r1 - 0.04, t));
+    const tc = T.comptent - 0.1, vc = S(t, tc, P.card);                       // la carte arrive sur « comptent en jours »
+    vcard.style.transform = `perspective(1500px) translateY(${f3((1 - vc) * 220)}px) rotateX(${f3((1 - vc) * 28)}deg)`; set(vcard, sm(tc - 0.02, tc + 0.06, t));
     const rr = (R, t0) => { const p = S(t, t0, P.rise); R.r.style.opacity = f3(p); R.r.style.transform = `translateY(${f3((1 - p) * 26)}px)`; R.r.style.filter = `blur(${f3((1 - p) * 6)}px)`; };
     rr(R1, T.r1); rr(R2, T.r2);
     const odoP = (t0) => { const p = S(t, t0, { f: 0.95, z: 1 }); return p >= 0.99 ? 1 : p / 0.99; };
     paintOdo(R1, 55 * odoP(T.v1)); paintOdo(R2, 3 * odoP(T.v2));
+    for (const [R, t0] of [[R1, T.v1], [R2, T.v2]]) R.cols[R.cols.length - 1].w.style.opacity = f3(sm(t0 - 0.06, t0 + 0.04, t));   // rien avant le roulement
     const v1 = S(t, T.verd, P.rise), v2 = S(t, T.verd2, P.rise);
     vd1.style.opacity = f3(v1); vd1.style.transform = `translateY(${f3((1 - v1) * 26)}px)`;
     vd2.style.opacity = f3(v2); vd2.style.transform = `translateY(${f3((1 - v2) * 26)}px) scale(${f3(0.94 + 0.06 * v2)})`;
@@ -467,7 +482,7 @@
   window.shutter = (t) => Math.max(0.12, fast(t));
   window.samples = (t) => (fast(t) > 0.3 ? 4 : 1);
   // temps des événements, lus par scripts/audio-mo10.py pour poser les bruitages (scripts/events.mjs → film-mo10/events.json)
-  window.EVENTS = { ...T, deb: DEB.map((d) => d[0]), x2: DEB.map((d) => d[4]), wait: WAIT.map((x) => x.t), gag: WAIT.find((x) => x.gag).t,
+  window.EVENTS = { ...T, tag: T.tag, deb: DEB.map((d) => d[0]), x2: DEB.map((d) => d[4]), wait: WAIT.map((x) => x.t), gag: WAIT.find((x) => x.gag).t,
     drops: DROPS.map((d) => d[0]), marks: tMark, tally: tTal, rew: REW, loop: LOOP, dur: DUR, stTo: ST_TO };
   window.seek = (t) => paint(t >= DUR ? t - DUR : t);
   paint(0);

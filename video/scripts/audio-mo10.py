@@ -140,6 +140,8 @@ E_ = EV
 if HOOK == 'A':
     cue(E_['sh1'], 2589, 'orn', 2, dur=0.8, gain=-3, pan=-0.2)                  # la lumière sur « 2 × »
     cue(E_['sh2'], 2589, 'orn', 3, st=3, dur=0.8, gain=-4, pan=0.2)             # … puis sur « 1 000 € »
+    for k, x in enumerate(E_['tag']): cue(x, 2384, 'ui', 2, st=2 + 3 * k, pan=-0.3 + 0.5 * k, gain=-3)   # « +1 000 € » sur chaque voiture
+    cue(E_['tagUp'], 1490, 'whoosh', 3, st=4, dur=0.4, gain=-6)                 # … qui montent vers le total
     cue(E_['w2'], 3005, 'orn', 2, dur=0.7, pan=0.1)                             # « = 2 000 € » s'écrit
     cue(E_['q'], 2369, 'orn', 3, st=2, dur=0.5, gain=-3)                        # le « ? »
     for k, x in enumerate(E_['tally']):                                         # quinze bâtons, de plus en plus vite
