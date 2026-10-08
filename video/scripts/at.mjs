@@ -15,7 +15,7 @@ page.on('pageerror', e => console.error('PAGEERR', e.message));
 page.on('console', m => { if (m.type() === 'error') console.error('CONSOLE', m.text().slice(0, 200)); });
 await page.goto(`http://127.0.0.1:${server.address().port}/film-${CUT}/index.html?render=1`);
 await page.waitForFunction(() => window.filmReady === true, null, { timeout: 300000 });
-const dir = path.join(ROOT, 'renders', '_at'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+const dir = path.join(ROOT, 'renders', `_at-${CUT}`); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
 for (const [i, t] of times.entries()) { await page.evaluate(t => window.seek(t), t); await page.screenshot({ path: path.join(dir, `f${String(i).padStart(3, '0')}.jpg`), type: 'jpeg', quality: 85 }); }
 await browser.close(); server.close();
 const out = path.resolve(ROOT, outRel);
