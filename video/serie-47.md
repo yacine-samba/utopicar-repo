@@ -34,7 +34,8 @@ l'étape 4, chronomètre en main.
 
 | Ordre | Épisode | Ce qu'on teste en plus du sujet | Ce qui tranchera |
 |---|---|---|---|
-| 1 | É2 « La cote » (MO9) | l'accumulation en grille d'annonces au lieu des débits | durée moyenne, creux entre 6 et 12 s |
+| 1 | **MO9 « 974 € »**, la revente qui marche (hors liste, choisie le 8 oct.) : `brief-mo9.md` | le sens de l'histoire : la marge tient au lieu de fondre | vues, part à 3 s, enregistrements et partages pour 1 000 vues, comparés à MO5 |
+| réserve | É2 « La cote » | l'accumulation en grille d'annonces au lieu des débits | durée moyenne, creux entre 6 et 12 s |
 | réserve | É1 « Le PV » | rien : la recette seule, sur un autre calcul | vues et part encore là à 3 s, comparées à MO5 |
 | 3 | É3 « Deux voitures » | un autre chiffre héros : la marge par jour | visionnages complets, enregistrements |
 | 4 | É4 « La pochette » | une ouverture en scène au lieu du calcul | part encore là à 3 s |
@@ -112,7 +113,7 @@ et le sapin · **on commente** pour raconter son pire PV.
 
 ## É2 « La cote » : le prix affiché
 
-**Choisi le 8 octobre 2026 : MO9, premier épisode produit.** Brief complet : `brief-mo9.md` (voiture en photo libre).
+**En réserve** : écarté au brief le 8 octobre 2026, trop proche de MO5. Brief complet gardé : `brief-reserve-cote.md`.
 
 Sa voiture est en ligne, personne n'appelle. Le film lui montre que l'acheteur ne voit jamais la cote : il voit les
 annonces d'à côté, et la sienne est la plus chère.

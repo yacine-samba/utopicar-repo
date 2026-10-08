@@ -67,7 +67,8 @@ Plan de départ. Le résultat de chaque épisode peut le changer : c'est le but.
 
 | Épisode | Ce qu'on change | Pourquoi | Ce qui tranchera |
 |---|---|---|---|
-| É2 « La cote » = **MO9** (premier produit) | la forme de l'accumulation (grille d'annonces au lieu des débits) ; voiture en photo libre (choix de l'utilisateur, écart à l'ingrédient 3, noté) | tester si la notification bancaire est un ingrédient ou un détail | durée moyenne, creux entre 6 et 12 s |
+| **MO9 « 974 € »** (premier produit, hors plan, choisi par l'utilisateur) | le sens de l'histoire : la marge tient au lieu de fondre ; voiture en photo libre (écart à l'ingrédient 3, noté) | savoir si la recette marche dans le registre de l'envie | vues et part à 3 s ; enregistrements et partages pour 1 000 vues, comparés à MO5 |
+| É2 « La cote » (réserve) | la forme de l'accumulation (grille d'annonces au lieu des débits) | tester si la notification bancaire est un ingrédient ou un détail | durée moyenne, creux entre 6 et 12 s |
 | É1 « Le PV » (réserve) | rien, à part le sujet | savoir si la recette se transporte sur un autre calcul | vues et part à 3 s proches de MO5 ou non |
 | É3 | le chiffre héros (marge par jour au lieu de la marge) | un autre compteur peut-il porter l'histoire | visionnages complets, enregistrements |
 | É4 | le type d'ouverture (une scène au lieu d'un calcul) | l'ingrédient 1 est-il le calcul ou seulement le « tu » chiffré | part à 3 s |
@@ -99,7 +100,7 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 | 8 oct. 2026 | MO5, > 6 000 vues | Son calcul en ouverture, un chiffre qui fond, une chute qui fait rire jaune, la méthode du pro appliquée au même exemple, la boucle : la recette v1 | référence |
 | oct. 2026 | carrousels | Nommer la cible dans les trois premiers mots, montrer une perte à éviter, donner un conseil à garder (« 3 règles » : 1 000 vues contre 200 à 300) | confirmé par MO5 |
 | oct. 2026 | utilisateur, après MO6 | Plus de Polo : une autre vraie voiture à chaque épisode | décision |
-| 8 oct. 2026 | utilisateur, au brief de MO9 | « Le PV » écarté (« autre chose »), « La cote » choisie parmi quatre ; voiture en photo libre de droits plutôt qu'une des siennes | décision |
+| 8 oct. 2026 | utilisateur, au brief de MO9 | « Le PV » écarté (« autre chose »), puis « La cote » (« c'est la même chose que ma dernière vidéo »), puis trois sujets de pièges (« ça ne m'attire pas »). Choisi : **une revente qui marche**. Leçon : la recette garde sa mécanique, mais l'histoire ne doit pas redire MO5 (acheter, payer, attendre, vendre mal) ; après une vidéo de perte, proposer l'envie. Voiture en photo libre plutôt qu'une des siennes | hypothèse |
 | 8 oct. 2026 | test du skill par un agent neuf | Il a écrit seul un brief d'épisode complet ; ses dix questions ont précisé le skill (questionnaire sauté pour la série, numérotation MO, voiture et musique hors variables, chute négative, documents officiels en carte de verre) | appliqué |
 
 ## 7. Versions de la recette
