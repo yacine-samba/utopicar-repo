@@ -61,9 +61,22 @@ export function lienLeboncoin(s: string): string | null {
   return t;
 }
 
+/** Lien d'une annonce que la fonction `annonce` sait lire : Leboncoin, La Centrale ou AutoScout24. Sinon null. */
+export function lienImportable(s: string): string | null {
+  const t = s.trim();
+  if (/\s/.test(t)) return null;
+  if (lienLeboncoin(t)) return t;
+  if (/^https?:\/\/(www\.)?lacentrale\.fr\/auto-occasion-annonce-\d{6,}\.html/i.test(t)) return t;
+  if (/^https?:\/\/(www\.)?autoscout24\.[a-z.]{2,6}\/(offres|offers|angebote|annunci|ofertas|aanbod)\/\S+/i.test(t)) return t;
+  return null;
+}
+
+/** Site d'origine d'un lien d'annonce, pour les textes. */
+export const siteAnnonce = (u: string) => (/lacentrale\./i.test(u) ? "La Centrale" : /autoscout24\./i.test(u) ? "AutoScout24" : "Leboncoin");
+
 /** Annonce lue par la fonction `annonce` (Apify) : même texte que la copie de l'extension. */
-export function texteDepuisImport(d: { url: string; ad: unknown; brut?: string }): string {
-  return texteDepuisExtension(PREFIXE_EXTENSION + JSON.stringify({ src: "leboncoin", url: d.url, ad: d.ad, text: d.brut ?? "" })) ?? "";
+export function texteDepuisImport(d: { url: string; ad: unknown; brut?: string; src?: string }): string {
+  return texteDepuisExtension(PREFIXE_EXTENSION + JSON.stringify({ src: d.src ?? "leboncoin", url: d.url, ad: d.ad, text: d.brut ?? "" })) ?? "";
 }
 
 /** Photos jointes par l'extension (balises <img src="data:…"> dans le presse-papiers HTML). */
@@ -81,7 +94,7 @@ export function origineDepuisExtension(brut: string): Origine | null {
     const o = obj(JSON.parse(brut.slice(PREFIXE_EXTENSION.length)));
     const ad = obj(o.ad);
     const owner = obj(ad.owner);
-    const liens = (Array.isArray(o.photoUrls) ? o.photoUrls : []).filter((u): u is string => typeof u === "string" && /^https:\/\//.test(u)).slice(0, 12);
+    const liens = (Array.isArray(o.photoUrls) ? o.photoUrls : []).filter((u): u is string => typeof u === "string" && /^https:\/\//.test(u)).slice(0, 30);
     const typeV = owner.type === "pro" ? "pro" : owner.type === "private" ? "particulier" : null;
     return {
       liens,

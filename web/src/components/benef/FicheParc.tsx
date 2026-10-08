@@ -51,11 +51,11 @@ export function FicheParc({ v, onFini }: { v: Partial<Vehicule>; onFini: () => v
   const mandat = f.structure === "mandat" || f.structure === "depot" || f.structure === "intermediation";
 
   async function ajouterPhotos(fs: File[]) {
-    const place = 12 - photos.length;
-    if (place <= 0) return setEnvoi("12 photos au plus.");
+    const place = 30 - photos.length;
+    if (place <= 0) return setEnvoi("30 photos au plus.");
     setEnvoi("Envoi des photos…");
     const { urls, refusees } = await envoyerPhotos(fs.filter((x) => x.type.startsWith("image/")).slice(0, place), "parc");
-    setPhotos((p) => [...p, ...urls].slice(0, 12));
+    setPhotos((p) => [...p, ...urls].slice(0, 30));
     setEnvoi(refusees ? `${refusees} photo${refusees > 1 ? "s" : ""} n'${refusees > 1 ? "ont" : "a"} pas pu être envoyée${refusees > 1 ? "s" : ""}.` : "");
   }
 

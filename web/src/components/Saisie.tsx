@@ -4,64 +4,19 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
 import { Patience, type Apercu } from "./analyse/Patience";
-import { lienLeboncoin, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
+import { lienImportable, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { useExtension } from "@/lib/extension";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { Champ, cx, inputCls } from "./ui";
+import { depuisDataUrl, estImage, reduire, type PhotoLocale } from "@/lib/photos-analyse";
 
-type PhotoLocale = { id: string; url: string; data: string };
 const BROUILLON = "utp-brouillon";
-
-/** Image décodée par le navigateur : createImageBitmap, sinon une balise img (Safari lit ainsi les photos HEIC de l'iPhone). */
-async function decoder(f: Blob): Promise<{ img: CanvasImageSource; w: number; h: number }> {
-  try {
-    const bmp = await createImageBitmap(f);
-    return { img: bmp, w: bmp.width, h: bmp.height };
-  } catch {
-    const u = URL.createObjectURL(f);
-    try {
-      const im = new Image();
-      im.src = u;
-      await im.decode();
-      return { img: im, w: im.naturalWidth, h: im.naturalHeight };
-    } finally {
-      setTimeout(() => URL.revokeObjectURL(u), 1000);
-    }
-  }
-}
-
-/** Réduit une photo (1280 px, JPEG) pour l'envoyer à l'analyse sans dépasser la taille autorisée. */
-async function reduire(f: File): Promise<PhotoLocale | null> {
-  try {
-    const { img, w, h } = await decoder(f);
-    if (!w || !h) return null;
-    const k = Math.min(1, 1280 / Math.max(w, h));
-    const c = document.createElement("canvas");
-    c.width = Math.round(w * k);
-    c.height = Math.round(h * k);
-    c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
-    const url = c.toDataURL("image/jpeg", 0.8);
-    const data = url.split(",")[1] ?? "";
-    // canvas vide (image non décodée) ou trop lourde pour l'analyse
-    if (data.length < 2000 || data.length > 1_500_000) return null;
-    return { id: Math.random().toString(36).slice(2), url, data };
-  } catch {
-    return null;
-  }
-}
-const estImage = (f: File) => f.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|gif|bmp|avif)$/i.test(f.name);
-
-/** Photo reçue en data URL (import par lien) : même réduction que les photos ajoutées à la main. */
-async function depuisDataUrl(u: string, i: number) {
-  const b = await (await fetch(u)).blob();
-  return reduire(new File([b], `photo-${i + 1}.jpg`, { type: b.type || "image/jpeg" }));
-}
 
 const QUOTA_EPUISE = "Vous n'avez plus d'analyse disponible. Continuez tout de suite avec des crédits à l'unité, sans abonnement, ou passez à une formule.";
 
 const ERREURS_IMPORT: Record<string, string> = {
-  lien: "Ce lien n'est pas celui d'une annonce Leboncoin. Pour La Centrale ou AutoScout24, copiez la page et collez-la ci-dessous.",
+  lien: "Ce lien n'est pas celui d'une annonce Leboncoin, La Centrale ou AutoScout24. Copiez la page de l'annonce et collez-la ci-dessous.",
   introuvable: "Annonce introuvable : elle a peut-être été retirée ou vendue.",
   trop: "Vous avez importé beaucoup d'annonces aujourd'hui. Copiez la page de l'annonce et collez-la ci-dessous.",
 };
@@ -125,7 +80,7 @@ export function Saisie({
         setTexte(b.texte);
         if (b.ville) setVille(b.ville);
         sessionStorage.removeItem(BROUILLON);
-      } else if (lienInitial && lienLeboncoin(lienInitial)) {
+      } else if (lienInitial && lienImportable(lienInitial)) {
         setLien(lienInitial);
         // Le lien quitte l'adresse : actualiser la page ne relance pas l'import.
         history.replaceState(null, "", location.pathname);
@@ -197,7 +152,7 @@ export function Saisie({
   async function importer(url: string, villeChoisie = ville) {
     setErreur(null);
     if (quotaEpuise()) return;
-    if (!lienLeboncoin(url)) {
+    if (!lienImportable(url)) {
       setErreur({ t: ERREURS_IMPORT.lien });
       return;
     }
@@ -267,7 +222,7 @@ export function Saisie({
           texte: t,
           ville: v,
           photos: ph.map((p) => ({ media_type: "image/jpeg", data: p.data })),
-          ...(og ? { photosLiens: og.liens.filter((u) => /^https:\/\//.test(u)).slice(0, 12), lienAnnonce: og.lien || undefined, vendeur: og.vendeur } : {}),
+          ...(og ? { photosLiens: og.liens.filter((u) => /^https:\/\//.test(u)).slice(0, 30), lienAnnonce: og.lien || undefined, vendeur: og.vendeur } : {}),
         }),
       });
       const j = await r.json().catch(() => null);
@@ -297,7 +252,7 @@ export function Saisie({
       onPaste={async (e) => {
         // Copie de l'extension UTOPICAR Scanner : texte structuré et photos jointes.
         const brut = e.clipboardData.getData("text/plain");
-        const url = lienLeboncoin(brut);
+        const url = lienImportable(brut);
         if (url && (e.target as HTMLElement).tagName === "TEXTAREA") {
           e.preventDefault();
           setLien(url);
@@ -340,7 +295,7 @@ export function Saisie({
     >
       <div className="grid gap-2">
         <label htmlFor="lien-annonce" className="text-sm text-ink-2">
-          Lien de l&apos;annonce Leboncoin
+          Lien de l&apos;annonce (Leboncoin, La Centrale, AutoScout24)
         </label>
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
@@ -350,7 +305,7 @@ export function Saisie({
             value={lien}
             onChange={(e) => setLien(e.target.value)}
             onPaste={(e) => {
-              const url = lienLeboncoin(e.clipboardData.getData("text/plain"));
+              const url = lienImportable(e.clipboardData.getData("text/plain"));
               if (!url) return;
               e.preventDefault();
               e.stopPropagation();

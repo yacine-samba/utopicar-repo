@@ -2,15 +2,17 @@
    « active » : ouverte en onglet sur la page Recherche ; les autres restent dans l'historique. */
 import type { Choix } from "@/components/marche/ChoixVehicule";
 
-export type FiltresRecherche = { version: string; phase: string; carrosserie: string; moteur: string; chMin: string; chMax: string; energie: string; boite: string; anneeMin: string; anneeMax: string; prixMin: string; prixMax: string; kmMax: string; vendeur: string; mots: string; exclure: string; sousCote: string; fiables: boolean; tri: string };
+export type FiltresRecherche = { version: string; phase: string; carrosserie: string; moteur: string; chMin: string; chMax: string; energie: string; boite: string; anneeMin: string; anneeMax: string; prixMin: string; prixMax: string; kmMin?: string; kmMax: string; vendeur: string; dep?: string; mots: string; exclure: string; sousCote: string; fiables: boolean; tri: string };
 export type Meilleure = { titre: string; prix: number; ecart: number; pct: number; url: string | null };
 export type Recherche = {
   id: string; nom: string; active: boolean; criteres: { choix: Choix; f: FiltresRecherche };
   trouvees: number | null; sous_cote: number | null; meilleure: Meilleure | null; derniere_le: string;
+  /** alerte e-mail liée (interrupteur de la recherche) */
+  alerte_id?: string | null;
 };
 
-export const FILTRES_VIDES: FiltresRecherche = { version: "", phase: "", carrosserie: "", moteur: "", chMin: "", chMax: "", energie: "", boite: "", anneeMin: "", anneeMax: "", prixMin: "", prixMax: "", kmMax: "", vendeur: "", mots: "", exclure: "", sousCote: "", fiables: true, tri: "ecart" };
-export const COLONNES_RECHERCHE = "id, nom, active, criteres, trouvees, sous_cote, meilleure, derniere_le";
+export const FILTRES_VIDES: FiltresRecherche = { version: "", phase: "", carrosserie: "", moteur: "", chMin: "", chMax: "", energie: "", boite: "", anneeMin: "", anneeMax: "", prixMin: "", prixMax: "", kmMin: "", kmMax: "", vendeur: "", dep: "", mots: "", exclure: "", sousCote: "", fiables: true, tri: "ecart" };
+export const COLONNES_RECHERCHE = "id, nom, active, criteres, trouvees, sous_cote, meilleure, derniere_le, alerte_id";
 
 /** Une ligne du journal : chaque recherche lancée, avec ses filtres exacts. */
 export type Lancement = { id: string; recherche_id: string | null; nom: string; marque: string; modele: string; gen: string | null; criteres: { choix: Choix; f: Partial<FiltresRecherche> }; trouvees: number | null; sous_cote: number | null; created_at: string };
@@ -30,7 +32,7 @@ export function resumeFiltres(f: Partial<FiltresRecherche>) {
     f.chMin || f.chMax ? `${f.chMin || "…"} – ${f.chMax || "…"} ch` : "",
     f.energie, f.boite === "auto" ? "automatique" : f.boite,
     f.anneeMin || f.anneeMax ? `${f.anneeMin || "…"} – ${f.anneeMax || "…"}` : "",
-    f.prixMax ? `≤ ${eur(f.prixMax)}` : "", f.kmMax ? `≤ ${Number(f.kmMax).toLocaleString("fr-FR")} km` : "",
+    f.prixMax ? `≤ ${eur(f.prixMax)}` : "", f.kmMin || f.kmMax ? `${f.kmMin ? Number(f.kmMin).toLocaleString("fr-FR") : "…"} – ${f.kmMax ? Number(f.kmMax).toLocaleString("fr-FR") : "…"} km` : "", f.dep ? `dép. ${f.dep}` : "",
     f.vendeur === "pro" ? "pros" : f.vendeur === "particulier" ? "particuliers" : "",
     f.mots ? `« ${f.mots} »` : "", f.sousCote ? `${f.sousCote} % sous la cote` : "",
   ].filter(Boolean).join(" · ");

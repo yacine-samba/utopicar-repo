@@ -1,0 +1,8 @@
+MO9 · mix : -14.4 LUFS intégrés, true peak -3.5 dBTP
+bruitages placés : 76 · retirés pour collision : 18 2589@10.40, 1384@12.85, 1384@12.92, 1384@12.99, 1384@13.06, 1490@13.55, 1490@14.30, 1490@15.00, 1490@15.36, 1490@15.68, 2380@15.70, 1490@16.00, 2380@16.02, 1490@16.32, 2380@16.34, 2380@16.66, 2380@17.94, 2589@26.25
+RMS ouverture   -16.8 dBFS
+RMS jour 0      -16.8 dBFS
+RMS frais       -17.6 dBFS
+RMS ça sonne    -17.0 dBFS
+RMS 974         -17.1 dBFS
+RMS décisions   -16.3 dBFS

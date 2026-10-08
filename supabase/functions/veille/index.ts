@@ -139,7 +139,7 @@ function runCost(run: any) {
 
 // ---------- E-mail des nouvelles annonces (Resend) ----------
 const APP_URL = 'https://claude.ai/artifact/8bHqs6YhWoWT2zje3mSF3q';
-const SITE_URL = 'https://utopicar.fr/app/alertes'; // alertes créées depuis le site (comptes illimités)
+const SITE_URL = 'https://www.utopicar.fr/app/recherche'; // alertes du site : un interrupteur sur chaque recherche
 const escH = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as any)[c]);
 const fmt = (n: unknown) => n == null ? '' : Math.round(Number(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 // destinataire : l'adresse de l'alerte (site), sinon celle des réglages (outil) ; expéditeur : le domaine utopicar.fr vérifié
@@ -170,7 +170,7 @@ function mailNouvelles(v: any, list: any[]) {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${shown.map(card).join('')}</table>
     ${list.length > shown.length ? `<p style="color:#555">Et ${list.length - shown.length} autre(s) dans l'outil.</p>` : ''}
     <p style="margin:18px 0"><a href="${v.user_id ? SITE_URL : APP_URL}" style="background:${v.user_id ? '#ff5a1f' : '#15307f'};color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold">${v.user_id ? 'Voir mes alertes sur Utopicar' : 'Ouvrir UTOPICAR (cote, état, analyse)'}</a></p>
-    <p style="color:#999;font-size:12px">${v.user_id ? 'Envoyé par votre alerte Utopicar. Pour ne plus recevoir ces e-mails, désactivez l\'e-mail de cette alerte dans Mon espace › Alertes.' : 'Envoyé par votre recherche suivie UTOPICAR. Pour ne plus recevoir ces e-mails, décochez « E-mail » sur la recherche dans l\'onglet Recherches.'}</p></div>`;
+    <p style="color:#999;font-size:12px">${v.user_id ? 'Envoyé par votre alerte Utopicar. Pour ne plus recevoir ces e-mails, éteignez l\'interrupteur « Alerte e-mail » de la recherche dans Mon espace › Recherche.' : 'Envoyé par votre recherche suivie UTOPICAR. Pour ne plus recevoir ces e-mails, décochez « E-mail » sur la recherche dans l\'onglet Recherches.'}</p></div>`;
   const first = list[0];
   const subject = `${list.length} nouvelle${list.length > 1 ? 's' : ''} ${v.nom}${first && first.prix != null ? ` · dès ${fmt(Math.min(...list.map((x: any) => x.prix ?? 1e9)))} €` : ''}`;
   return { subject, html };
@@ -282,8 +282,9 @@ async function start(v: any, R: Record<string, string>) {
 }
 
 
-// ---------- Cotes : jusqu'à 1 000 annonces d'un modèle pour estimer le vrai prix de marché ----------
-const COTE_MAX = 1000;
+// ---------- Cotes : toutes les annonces d'une génération (jusqu'à 3 000), pour la cote et pour une recherche alignée sur Leboncoin ----------
+// (1 000 ne suffisaient pas : 4 763 Clio diesel 2012-2019 sur Leboncoin le 8 octobre 2026 ; ~0,01 $ les 1 000 annonces)
+const COTE_MAX = 3000;
 function coteRow(c: any, it: any) {
   const r = norm(it); if (!r.id || r.prix == null) return null;
   const A = Array.isArray(it.attributes) ? it.attributes : [];
@@ -295,13 +296,15 @@ function coteRow(c: any, it: any) {
   return { cle: c.cle, id: r.id, prix: r.prix, annee: r.annee, km: r.km, energie: r.energie, boite: r.boite, titre: cut(r.titre, 120), dep: r.departement, vendeur: r.vendeur_type, etat: att(/vehicle_damage|vehicle_condition|condition/i) || null, cv: r.cv, publie_le: r.publie_le,
     texte: cut(r.titre + ' | ' + r.description.replace(/\s+/g, ' '), 700), ch: ch && ch < 700 ? ch : null, places: pl && pl < 10 ? pl : null, carrosserie: att(/^vehicle_type$/i) || null,
     version: cut(att(/^u_car_version$/i), 160) || null, finition: cut(att(/^u_car_finition$/i), 80) || null, mec: mec ? `${mec[2]}-${mec[1]}` : null, portes: po && po < 8 ? po : null,
-    lbc_min: pmin && pmin > 100 ? pmin : null, lbc_max: pmax && pmax > 100 ? pmax : null, lbc_pos: cut(att(/^car_price_positioning$/i), 40) || null };
+    lbc_min: pmin && pmin > 100 ? pmin : null, lbc_max: pmax && pmax > 100 ? pmax : null, lbc_pos: cut(att(/^car_price_positioning$/i), 40) || null,
+    // vignette de l'annonce (lien Leboncoin, rien n'est stocké) : affichée dans la recherche et son historique
+    photo: r.photos[0]?.startsWith('https://') ? withRule(r.photos[0], 'ad-small').slice(0, 600) : null };
 }
 async function startCote(c: any, R: Record<string, string>) {
   const f = c.filtres || {};
   const input = { category: '2', sort: 'relevance', max_results: COTE_MAX, owner_type: 'all', proxyConfiguration: { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'], apifyProxyCountry: 'FR' }, ...f };
   const hook = [{ eventTypes: ['ACTOR.RUN.SUCCEEDED', 'ACTOR.RUN.FAILED', 'ACTOR.RUN.TIMED_OUT', 'ACTOR.RUN.ABORTED'], requestUrl: `${FN}?k=${encodeURIComponent(R.cle_interne)}&cote=${encodeURIComponent(c.cle)}` }];
-  const url = `${APIFY}/acts/${encodeURIComponent(R.apify_actor || 'scrapifier~leboncoin-universal-scraper-vehicles')}/runs?token=${encodeURIComponent(R.apify_token)}&timeout=1200&memory=1024&webhooks=${encodeURIComponent(btoa(JSON.stringify(hook)))}`;
+  const url = `${APIFY}/acts/${encodeURIComponent(R.apify_actor || 'scrapifier~leboncoin-universal-scraper-vehicles')}/runs?token=${encodeURIComponent(R.apify_token)}&timeout=2400&memory=1024&webhooks=${encodeURIComponent(btoa(JSON.stringify(hook)))}`;
   const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
   const t = await r.text();
   if (!r.ok) { const err = apifyErr(r.status, t); await sb.from('cotes').update({ statut: 'erreur', erreur: err }).eq('cle', c.cle); return { cote: c.cle, err }; }
@@ -315,13 +318,13 @@ async function collectCote(c: any, R: Record<string, string>) {
   const run = JSON.parse(t).data;
   if (['READY', 'RUNNING'].includes(run.status)) {
     const age = Date.now() - new Date(c.run_debut || run.startedAt).getTime();
-    if (age < 25 * 60000) return { cote: c.cle, statut: 'en cours' };
+    if (age < 45 * 60000) return { cote: c.cle, statut: 'en cours' };
     await fetch(`${APIFY}/actor-runs/${c.run_id}/abort?token=${encodeURIComponent(R.apify_token)}`, { method: 'POST' });
     run.status = 'TIMED-OUT';
   }
   const { data: claim } = await sb.from('cotes').update({ run_id: null }).eq('cle', c.cle).eq('run_id', c.run_id).select('cle');
   if (!claim || !claim.length) return { cote: c.cle, statut: 'déjà traité' };
-  const cout = runCost(run); let err: string | null = null; let n = 0; let items: any[] = [];
+  const cout = runCost(run); let err: string | null = null; let n = 0; let items: any[] = []; let complete = false;
   if (run.status === 'SUCCEEDED') {
     const d = await fetch(`${APIFY}/datasets/${run.defaultDatasetId}/items?token=${encodeURIComponent(R.apify_token)}&clean=true&format=json&limit=${COTE_MAX + 100}`);
     const j = await d.json(); items = Array.isArray(j) ? j : [];
@@ -336,12 +339,16 @@ async function collectCote(c: any, R: Record<string, string>) {
     const rows: any[] = items.map(it => coteRow(c, it)).filter((x: any) => x && !seen.has(x.id) && seen.add(x.id));
     // base cumulative : les annonces déjà relevées restent (une annonce vendue garde son prix pour la cote), les autres sont mises à jour
     const vu = new Date().toISOString();
+    // relevé complet : moins d'annonces que le maximum, et pas un relevé bloqué à moitié vide (au moins la moitié des annonces en ligne au relevé précédent).
+    // Une annonce absente d'un relevé complet a été retirée de Leboncoin : la recherche ne la propose plus (marche_candidats).
+    const { count: avant } = c.maj ? await sb.from('cote_annonces').select('id', { count: 'exact', head: true }).eq('cle', c.cle).gte('vu_le', new Date(Date.parse(c.maj) - 3 * 3600e3).toISOString()) : { count: 0 } as any;
+    complete = items.length < COTE_MAX && rows.length >= 0.5 * (avant || 0);
     for (let k = 0; k < rows.length; k += 100) { const { error } = await sb.from('cote_annonces').upsert(rows.slice(k, k + 100).map((r: any) => ({ ...r, vu_le: vu })), { onConflict: 'cle,id' }); if (error) err = 'enregistrement : ' + error.message; }
     const { count: total } = await sb.from('cote_annonces').select('id', { count: 'exact', head: true }).eq('cle', c.cle);
     n = rows.length ? (total ?? rows.length) : 0;
     if (!n) err = 'Aucune annonce trouvée pour ce modèle : vérifiez la recherche.';
   } else err = `Run Apify ${run.status}` + (run.statusMessage ? ` : ${String(run.statusMessage).slice(0, 160)}` : '');
-  await sb.from('cotes').update({ statut: err ? 'erreur' : 'ok', erreur: err, n: err && !n ? c.n : n, maj: n ? new Date().toISOString() : c.maj, cout_usd: cout }).eq('cle', c.cle);
+  await sb.from('cotes').update({ statut: err ? 'erreur' : 'ok', erreur: err, n: err && !n ? c.n : n, maj: n ? new Date().toISOString() : c.maj, cout_usd: cout, complete: !err && complete }).eq('cle', c.cle);
   await sb.from('veille_passages').insert({ fin: new Date().toISOString(), statut: err ? 'erreur' : 'ok', recues: n, trouvees: items.length, nouvelles: 0, cout_usd: cout, erreur: err ? 'cote ' + c.cle + ' : ' + err : null });
   return { cote: c.cle, n, cout, err };
 }

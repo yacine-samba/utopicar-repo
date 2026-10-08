@@ -13,7 +13,7 @@ export function NavCote({ entrees }: { entrees: EntreeNav[] }) {
   const chemin = usePathname();
   return (
     <nav aria-label="Espace" className="grid gap-0.5">
-      {entrees.map((e) => {
+      {entrees.filter((e) => e.menu !== false).map((e) => {
         const actif = estActif(chemin, e.href);
         return (
           <Link

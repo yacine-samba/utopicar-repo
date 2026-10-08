@@ -20,7 +20,7 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restante
     const v = a.ia?.vehicule;
     const titre = [v?.marque, v?.modele, v?.version].filter(Boolean).join(" ") || a.faits.titre || "Annonce";
     const entete = (a.photosUrls?.length || a.lien) ? (
-      <EnTeteRapport titre={titre} prix={a.faits.prix ?? v?.prix ?? null} photos={a.photosUrls ?? []} lien={a.lien ?? null} vendeur={a.vendeur ?? null} maxPhotos={12} date="" retour={{ onClick: () => (setA(null), scrollTo({ top: 0 })), l: "Nouvelle analyse" }} />
+      <EnTeteRapport titre={titre} prix={a.faits.prix ?? v?.prix ?? null} photos={a.photosUrls ?? []} lien={a.lien ?? null} vendeur={a.vendeur ?? null} maxPhotos={30} date="" retour={{ onClick: () => (setA(null), scrollTo({ top: 0 })), l: "Nouvelle analyse" }} />
     ) : null;
     if (a.rapport)
       return (

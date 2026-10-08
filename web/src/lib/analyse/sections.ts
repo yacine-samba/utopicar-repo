@@ -5,16 +5,18 @@ import type { Rapport } from "./rapport";
 
 export const SECTIONS = [
   ["annonce", "Annonce"], ["alertes", "Alertes"], ["etat", "État"], ["nego", "Négociation"], ["prix", "Prix"], ["km", "Kilométrage"], ["controles", "Contrôles"],
-  ["papiers", "Papiers"], ["moteur", "Moteur"], ["photos", "Photos"], ["travaux", "Travaux"], ["deal", "Deal"], ["risques", "Risques"], ["decision", "Décision"],
+  ["papiers", "Papiers"], ["moteur", "Moteur"], ["photos", "Photos"], ["travaux", "Travaux"], ["deal", "Deal"], ["risques", "Risques"], ["decision", "Décision"], ["documents", "Documents"],
 ] as const;
 export type Section = (typeof SECTIONS)[number][0];
 
 const TOUT = SECTIONS.map((s) => s[0]) as Section[];
 export const SECTIONS_PAR_OFFRE: Partial<Record<OffreId, Section[]>> = {
   pro: TOUT,
-  croissance: ["annonce", "alertes", "etat", "nego", "prix", "km", "controles", "papiers", "moteur", "photos", "travaux", "decision"],
-  starter: ["annonce", "alertes", "etat", "nego", "prix", "controles", "decision"],
+  croissance: ["annonce", "alertes", "etat", "nego", "prix", "km", "controles", "papiers", "moteur", "photos", "travaux", "decision", "documents"],
+  starter: ["annonce", "alertes", "etat", "nego", "prix", "controles", "decision", "documents"],
 };
+/** Vue pro (par défaut) : l'essentiel pour décider, entre la synthèse et le détail. Le reste s'ouvre avec « Détail profond ». */
+export const SECTIONS_PRO: Section[] = ["alertes", "etat", "prix", "nego", "travaux", "decision", "documents"];
 export const sectionsDe = (o: OffreId) => SECTIONS_PAR_OFFRE[o] ?? SECTIONS_PAR_OFFRE.starter!;
 /** Formule la plus basse qui ouvre une section (pour le cadenas). */
 export const ouvertePar = (s: Section): OffreId => (SECTIONS_PAR_OFFRE.starter!.includes(s) ? "starter" : SECTIONS_PAR_OFFRE.croissance!.includes(s) ? "croissance" : "pro");

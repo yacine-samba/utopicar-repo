@@ -1,0 +1,749 @@
+{
+ "dur": 31.4,
+ "take": "takeA.mp3",
+ "lines": [
+  {
+   "key": "h1",
+   "t": 0.1,
+   "end": 1.283,
+   "text": "Tu l'achètes 3 900,"
+  },
+  {
+   "key": "h2",
+   "t": 1.403,
+   "end": 2.661,
+   "text": "tu la revends 5 600."
+  },
+  {
+   "key": "ok",
+   "t": 2.911,
+   "end": 4.567,
+   "text": "Cette fois, ton compte en banque est d'accord."
+  },
+  {
+   "key": "j0",
+   "t": 4.867,
+   "end": 6.045,
+   "text": "Jour 0, tu comptes."
+  },
+  {
+   "key": "ann",
+   "t": 6.245,
+   "end": 8.06,
+   "text": "Les annonces d'à côté : 5 650."
+  },
+  {
+   "key": "max",
+   "t": 8.26,
+   "end": 9.948,
+   "text": "Ton prix max : 3 900."
+  },
+  {
+   "key": "def",
+   "t": 10.298,
+   "end": 12.63,
+   "text": "Pneus lisses, phares jaunis, rayure."
+  },
+  {
+   "key": "acc",
+   "t": 12.83,
+   "end": 13.463,
+   "text": "Il accepte."
+  },
+  {
+   "key": "frais",
+   "t": 13.663,
+   "end": 16.017,
+   "text": "Carte grise, contrôle, pneus : prévu."
+  },
+  {
+   "key": "sonne",
+   "t": 16.317,
+   "end": 17.613,
+   "text": "Et là, ça sonne."
+  },
+  {
+   "key": "neg",
+   "t": 18.013,
+   "end": 19.57,
+   "text": "Il négocie. Tu acceptes."
+  },
+  {
+   "key": "ben",
+   "t": 19.77,
+   "end": 22.255,
+   "text": "Bénéfice : 974 euros."
+  },
+  {
+   "key": "rire",
+   "t": 22.705,
+   "end": 23.262,
+   "text": "[rire]"
+  },
+  {
+   "key": "keb",
+   "t": 23.322,
+   "end": 24.589,
+   "text": "Même le kebab était prévu."
+  },
+  {
+   "key": "joue",
+   "t": 25.689,
+   "end": 26.889,
+   "text": "Tout s'est joué au jour 0."
+  },
+  {
+   "key": "proch",
+   "t": 29.689,
+   "end": 31.038,
+   "text": "La prochaine fois que tu te dis…"
+  }
+ ],
+ "words": [
+  {
+   "line": "h1",
+   "t": 0.063,
+   "end": 0.185,
+   "w": "Tu"
+  },
+  {
+   "line": "h1",
+   "t": 0.185,
+   "end": 0.289,
+   "w": "l"
+  },
+  {
+   "line": "h1",
+   "t": 0.289,
+   "end": 0.515,
+   "w": "'achètes"
+  },
+  {
+   "line": "h1",
+   "t": 0.515,
+   "end": 1.176,
+   "w": "3900,"
+  },
+  {
+   "line": "h2",
+   "t": 1.454,
+   "end": 1.523,
+   "w": "tu"
+  },
+  {
+   "line": "h2",
+   "t": 1.523,
+   "end": 1.645,
+   "w": "la"
+  },
+  {
+   "line": "h2",
+   "t": 1.645,
+   "end": 1.871,
+   "w": "revends"
+  },
+  {
+   "line": "h2",
+   "t": 1.871,
+   "end": 2.497,
+   "w": "5600."
+  },
+  {
+   "line": "ok",
+   "t": 2.693,
+   "end": 3.058,
+   "w": "Cette"
+  },
+  {
+   "line": "ok",
+   "t": 3.058,
+   "end": 3.284,
+   "w": "fois,"
+  },
+  {
+   "line": "ok",
+   "t": 3.527,
+   "end": 3.614,
+   "w": "ton"
+  },
+  {
+   "line": "ok",
+   "t": 3.614,
+   "end": 3.788,
+   "w": "compte"
+  },
+  {
+   "line": "ok",
+   "t": 3.788,
+   "end": 3.91,
+   "w": "en"
+  },
+  {
+   "line": "ok",
+   "t": 3.91,
+   "end": 4.119,
+   "w": "banquets"
+  },
+  {
+   "line": "ok",
+   "t": 4.119,
+   "end": 4.223,
+   "w": "d"
+  },
+  {
+   "line": "ok",
+   "t": 4.223,
+   "end": 4.362,
+   "w": "'accord."
+  },
+  {
+   "line": "j0",
+   "t": 4.859,
+   "end": 5.075,
+   "w": "Jour"
+  },
+  {
+   "line": "j0",
+   "t": 5.075,
+   "end": 5.292,
+   "w": "0,"
+  },
+  {
+   "line": "j0",
+   "t": 5.542,
+   "end": 5.675,
+   "w": "tu"
+  },
+  {
+   "line": "j0",
+   "t": 5.675,
+   "end": 6.009,
+   "w": "comptes."
+  },
+  {
+   "line": "ann",
+   "t": 6.254,
+   "end": 6.354,
+   "w": "Les"
+  },
+  {
+   "line": "ann",
+   "t": 6.354,
+   "end": 6.57,
+   "w": "annonces"
+  },
+  {
+   "line": "ann",
+   "t": 6.57,
+   "end": 6.67,
+   "w": "d"
+  },
+  {
+   "line": "ann",
+   "t": 6.67,
+   "end": 6.704,
+   "w": "'à"
+  },
+  {
+   "line": "ann",
+   "t": 6.704,
+   "end": 6.887,
+   "w": "côté,"
+  },
+  {
+   "line": "ann",
+   "t": 7.268,
+   "end": 7.418,
+   "w": "5"
+  },
+  {
+   "line": "ann",
+   "t": 7.418,
+   "end": 7.852,
+   "w": "650."
+  },
+  {
+   "line": "max",
+   "t": 8.245,
+   "end": 8.412,
+   "w": "Ton"
+  },
+  {
+   "line": "max",
+   "t": 8.412,
+   "end": 8.562,
+   "w": "prix"
+  },
+  {
+   "line": "max",
+   "t": 8.562,
+   "end": 8.762,
+   "w": "max,"
+  },
+  {
+   "line": "max",
+   "t": 9.217,
+   "end": 9.884,
+   "w": "3900."
+  },
+  {
+   "line": "def",
+   "t": 10.423,
+   "end": 10.807,
+   "w": "Pneulis,"
+  },
+  {
+   "line": "def",
+   "t": 11.257,
+   "end": 11.69,
+   "w": "fargenis,"
+  },
+  {
+   "line": "def",
+   "t": 12.174,
+   "end": 12.49,
+   "w": "rayures,"
+  },
+  {
+   "line": "acc",
+   "t": 12.853,
+   "end": 12.937,
+   "w": "il"
+  },
+  {
+   "line": "acc",
+   "t": 12.937,
+   "end": 13.403,
+   "w": "accepte."
+  },
+  {
+   "line": "frais",
+   "t": 13.719,
+   "end": 13.902,
+   "w": "Carte"
+  },
+  {
+   "line": "frais",
+   "t": 13.902,
+   "end": 14.269,
+   "w": "grise,"
+  },
+  {
+   "line": "frais",
+   "t": 14.469,
+   "end": 14.702,
+   "w": "contrôle,"
+  },
+  {
+   "line": "frais",
+   "t": 15.171,
+   "end": 15.421,
+   "w": "pneu,"
+  },
+  {
+   "line": "frais",
+   "t": 15.684,
+   "end": 15.934,
+   "w": "prévu."
+  },
+  {
+   "line": "sonne",
+   "t": 16.361,
+   "end": 16.494,
+   "w": "Et"
+  },
+  {
+   "line": "sonne",
+   "t": 16.494,
+   "end": 16.627,
+   "w": "là,"
+  },
+  {
+   "line": "sonne",
+   "t": 17.039,
+   "end": 17.239,
+   "w": "ça"
+  },
+  {
+   "line": "sonne",
+   "t": 17.239,
+   "end": 17.556,
+   "w": "sonne."
+  },
+  {
+   "line": "neg",
+   "t": 18.001,
+   "end": 18.135,
+   "w": "Il"
+  },
+  {
+   "line": "neg",
+   "t": 18.135,
+   "end": 18.535,
+   "w": "négocie."
+  },
+  {
+   "line": "neg",
+   "t": 18.881,
+   "end": 19.081,
+   "w": "Tu"
+  },
+  {
+   "line": "neg",
+   "t": 19.081,
+   "end": 19.531,
+   "w": "acceptes."
+  },
+  {
+   "line": "ben",
+   "t": 19.862,
+   "end": 20.401,
+   "w": "Benefice,"
+  },
+  {
+   "line": "ben",
+   "t": 20.766,
+   "end": 21.862,
+   "w": "974"
+  },
+  {
+   "line": "ben",
+   "t": 21.862,
+   "end": 22.123,
+   "w": "euros."
+  },
+  {
+   "line": "keb",
+   "t": 23.453,
+   "end": 23.609,
+   "w": "Même"
+  },
+  {
+   "line": "keb",
+   "t": 23.609,
+   "end": 23.766,
+   "w": "le"
+  },
+  {
+   "line": "keb",
+   "t": 23.766,
+   "end": 24.009,
+   "w": "kebab"
+  },
+  {
+   "line": "keb",
+   "t": 24.009,
+   "end": 24.166,
+   "w": "était"
+  },
+  {
+   "line": "keb",
+   "t": 24.166,
+   "end": 24.514,
+   "w": "prévu."
+  },
+  {
+   "line": "joue",
+   "t": 25.692,
+   "end": 25.796,
+   "w": "Tout"
+  },
+  {
+   "line": "joue",
+   "t": 25.796,
+   "end": 25.97,
+   "w": "s"
+  },
+  {
+   "line": "joue",
+   "t": 25.97,
+   "end": 26.022,
+   "w": "'est"
+  },
+  {
+   "line": "joue",
+   "t": 26.022,
+   "end": 26.248,
+   "w": "joué"
+  },
+  {
+   "line": "joue",
+   "t": 26.248,
+   "end": 26.353,
+   "w": "au"
+  },
+  {
+   "line": "joue",
+   "t": 26.353,
+   "end": 26.492,
+   "w": "jour"
+  },
+  {
+   "line": "joue",
+   "t": 26.492,
+   "end": 26.753,
+   "w": "0."
+  },
+  {
+   "line": "proch",
+   "t": 29.622,
+   "end": 29.83,
+   "w": "La"
+  },
+  {
+   "line": "proch",
+   "t": 29.83,
+   "end": 30.056,
+   "w": "prochaine"
+  },
+  {
+   "line": "proch",
+   "t": 30.056,
+   "end": 30.282,
+   "w": "fois"
+  },
+  {
+   "line": "proch",
+   "t": 30.282,
+   "end": 30.439,
+   "w": "que"
+  },
+  {
+   "line": "proch",
+   "t": 30.439,
+   "end": 30.543,
+   "w": "tu"
+  },
+  {
+   "line": "proch",
+   "t": 30.543,
+   "end": 30.665,
+   "w": "te"
+  },
+  {
+   "line": "proch",
+   "t": 30.665,
+   "end": 31.013,
+   "w": "dis..."
+  }
+ ],
+ "marks": {
+  "achete": {
+   "line": "h1",
+   "t": 0.289,
+   "end": 0.515,
+   "w": "'achètes"
+  },
+  "b3900": {
+   "line": "h1",
+   "t": 0.515,
+   "end": 1.176,
+   "w": "3900,"
+  },
+  "revends": {
+   "line": "h2",
+   "t": 1.645,
+   "end": 1.871,
+   "w": "revends"
+  },
+  "b5600": {
+   "line": "h2",
+   "t": 1.871,
+   "end": 2.497,
+   "w": "5600."
+  },
+  "cette": {
+   "line": "ok",
+   "t": 2.693,
+   "end": 3.058,
+   "w": "Cette"
+  },
+  "accord": {
+   "line": "ok",
+   "t": 4.223,
+   "end": 4.362,
+   "w": "'accord."
+  },
+  "jour0": {
+   "line": "j0",
+   "t": 4.859,
+   "end": 5.075,
+   "w": "Jour"
+  },
+  "annonces": {
+   "line": "ann",
+   "t": 6.354,
+   "end": 6.57,
+   "w": "annonces"
+  },
+  "v5650": {
+   "line": "ann",
+   "t": 7.268,
+   "end": 7.418,
+   "w": "5"
+  },
+  "prix": {
+   "line": "max",
+   "t": 8.412,
+   "end": 8.562,
+   "w": "prix"
+  },
+  "m3900": {
+   "line": "max",
+   "t": 9.217,
+   "end": 9.884,
+   "w": "3900."
+  },
+  "pneus": {
+   "line": "def",
+   "t": 10.423,
+   "end": 10.807,
+   "w": "Pneulis,"
+  },
+  "phares": {
+   "line": "def",
+   "t": 11.257,
+   "end": 11.69,
+   "w": "fargenis,"
+  },
+  "rayure": {
+   "line": "def",
+   "t": 12.174,
+   "end": 12.49,
+   "w": "rayures,"
+  },
+  "il": {
+   "line": "acc",
+   "t": 12.853,
+   "end": 12.937,
+   "w": "il"
+  },
+  "accepte": {
+   "line": "acc",
+   "t": 12.937,
+   "end": 13.403,
+   "w": "accepte."
+  },
+  "carte": {
+   "line": "frais",
+   "t": 13.719,
+   "end": 13.902,
+   "w": "Carte"
+  },
+  "controle": {
+   "line": "frais",
+   "t": 14.469,
+   "end": 14.702,
+   "w": "contrôle,"
+  },
+  "pneu": {
+   "line": "frais",
+   "t": 15.171,
+   "end": 15.421,
+   "w": "pneu,"
+  },
+  "prevu": {
+   "line": "frais",
+   "t": 15.684,
+   "end": 15.934,
+   "w": "prévu."
+  },
+  "etla": {
+   "line": "sonne",
+   "t": 16.361,
+   "end": 16.494,
+   "w": "Et"
+  },
+  "sonne": {
+   "line": "sonne",
+   "t": 17.039,
+   "end": 17.239,
+   "w": "ça"
+  },
+  "negocie": {
+   "line": "neg",
+   "t": 18.001,
+   "end": 18.135,
+   "w": "Il"
+  },
+  "tuacc": {
+   "line": "neg",
+   "t": 18.881,
+   "end": 19.081,
+   "w": "Tu"
+  },
+  "acceptes": {
+   "line": "neg",
+   "t": 19.081,
+   "end": 19.531,
+   "w": "acceptes."
+  },
+  "benef": {
+   "line": "ben",
+   "t": 19.862,
+   "end": 20.401,
+   "w": "Benefice,"
+  },
+  "n974": {
+   "line": "ben",
+   "t": 20.766,
+   "end": 21.862,
+   "w": "974"
+  },
+  "euros": {
+   "line": "ben",
+   "t": 21.862,
+   "end": 22.123,
+   "w": "euros."
+  },
+  "meme": {
+   "line": "keb",
+   "t": 23.453,
+   "end": 23.609,
+   "w": "Même"
+  },
+  "kebab": {
+   "line": "keb",
+   "t": 23.766,
+   "end": 24.009,
+   "w": "kebab"
+  },
+  "etait": {
+   "line": "keb",
+   "t": 24.009,
+   "end": 24.166,
+   "w": "était"
+  },
+  "prevu2": {
+   "line": "keb",
+   "t": 24.166,
+   "end": 24.514,
+   "w": "prévu."
+  },
+  "tout": {
+   "line": "joue",
+   "t": 25.692,
+   "end": 25.796,
+   "w": "Tout"
+  },
+  "jour0b": {
+   "line": "joue",
+   "t": 26.353,
+   "end": 26.492,
+   "w": "jour"
+  },
+  "prochaine": {
+   "line": "proch",
+   "t": 29.622,
+   "end": 29.83,
+   "w": "La"
+  },
+  "dis": {
+   "line": "proch",
+   "t": 30.665,
+   "end": 31.013,
+   "w": "dis..."
+  }
+ },
+ "loop": 29.24
+}

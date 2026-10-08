@@ -4,11 +4,13 @@ import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { cx } from "@/lib/cx";
 import type { NouveauFavori } from "@/lib/favoris";
 import { Ico } from "./Icones";
+import { usePreferences } from "./Preferences";
 
 /** Étoile « à revoir plus tard » : ajoute ou retire la voiture des favoris, sans passer par le parc. */
 export function BoutonFavori({ f, initial, compact, className, onChange }: { f: NouveauFavori; initial: boolean; compact?: boolean; className?: string; onChange?: (actif: boolean) => void }) {
   const [actif, setActif] = useState(initial);
   const [occupe, setOccupe] = useState(false);
+  const { favoris } = usePreferences();
   async function basculer() {
     setOccupe(true);
     const sb = supabaseNavigateur();
@@ -21,6 +23,8 @@ export function BoutonFavori({ f, initial, compact, className, onChange }: { f: 
     else onChange?.(suivant);
     setOccupe(false);
   }
+  // favoris désactivés (Compte › Accessibilité) : pas d'étoile
+  if (!favoris) return null;
   return (
     <button
       type="button"

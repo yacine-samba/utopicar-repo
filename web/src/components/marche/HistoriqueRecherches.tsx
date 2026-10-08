@@ -5,6 +5,8 @@ import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { cx } from "@/lib/cx";
 import { quandRecherche, resumeFiltres, type Recherche } from "@/lib/recherches";
 import { Ico } from "../espace/Icones";
+import { useCatalogue } from "@/lib/vehicules/useCatalogue";
+import { InterrupteurAlerte } from "./InterrupteurAlerte";
 
 export type AlerteSupprimee = {
   id: string; nom: string; filtres: { utp?: { site?: Record<string, string> } } | null; created_at: string; supprimee_le: string;
@@ -15,7 +17,14 @@ const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;
 const date = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 
 /** Historique : toutes les recherches faites (ouvertes ou fermées) et les alertes supprimées, à relancer ou réactiver. */
-export function HistoriqueRecherches({ recherches, supprimees, alertes }: { recherches: Recherche[]; supprimees: AlerteSupprimee[]; alertes: boolean }) {
+export function HistoriqueRecherches({ recherches, supprimees, alertes, photos = {}, etatsAlertes = {} }: {
+  recherches: Recherche[]; supprimees: AlerteSupprimee[]; alertes: boolean;
+  /** vignettes des annonces trouvées, par nom de recherche */
+  photos?: Record<string, string[]>;
+  /** alerte liée : allumée ou en pause */
+  etatsAlertes?: Record<string, boolean>;
+}) {
+  const cat = useCatalogue(alertes);
   const [liste, setListe] = useState(recherches);
   const [anciennes, setAnciennes] = useState(supprimees);
   const [q, setQ] = useState("");
@@ -48,15 +57,13 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
     setEtat(`« ${a.nom} » est de retour dans vos alertes, en pause : allumez-la quand vous voulez.`);
   }
 
-  const lienAlerte = (r: Recherche) => `/app/alertes?${new URLSearchParams({ ...r.criteres.choix, ...Object.fromEntries(Object.entries(r.criteres.f).filter(([, v]) => typeof v === "string" && v)) } as Record<string, string>)}`;
-
   return (
     <div className="grid gap-8">
       <section aria-labelledby="hi-r" className="grid gap-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 id="hi-r" className="font-display text-xl font-semibold">Par voiture</h2>
-            <p className="text-sm text-ink-3">Une ligne par voiture. Active : en onglet et sur le tableau de bord. Désactivée : rangée ici, résultats gardés.</p>
+            <h2 id="hi-r" className="font-display text-xl font-semibold">Mes recherches</h2>
+            <p className="text-sm text-ink-3">Une ligne par voiture, avec ses résultats gardés. L&apos;interrupteur « Alerte e-mail » envoie les nouvelles annonces par e-mail.</p>
           </div>
           <label className="relative w-full sm:w-72">
             <span className="sr-only">Filtrer par voiture</span>
@@ -68,7 +75,8 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
         {vues.length ? (
           <ul className="grid gap-3">
             {vues.map((r) => (
-              <li key={r.id} className="carte grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+              <li key={r.id} className="carte grid gap-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center">
+                <Vignettes urls={photos[r.nom] ?? []} nom={r.nom} />
                 <div className="grid min-w-0 gap-1">
                   <p className="flex flex-wrap items-center gap-2">
                     <b className="font-semibold">{r.nom}</b>
@@ -85,7 +93,7 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
                 <div className="flex flex-wrap gap-2 sm:justify-end">
                   <Link href={`/app/recherche?r=${r.id}`} className="btn btn-o btn-sm">Ouvrir</Link>
                   <button type="button" onClick={() => basculer(r)} aria-pressed={r.active} className="btn btn-sm">{r.active ? "Désactiver" : "Activer"}</button>
-                  {alertes && <Link href={lienAlerte(r)} className="btn btn-sm">Suivre par e-mail</Link>}
+                  {alertes && <InterrupteurAlerte r={r} actif={!!(r.alerte_id && etatsAlertes[r.alerte_id])} cat={cat} />}
                   {aConfirmer === r.id ? (
                     <button type="button" onClick={() => retirer(r)} className="btn btn-sm border-bad/60 text-bad" title="Ses annonces restent dans « Annonces trouvées » et dans la cote">Supprimer (annonces gardées)</button>
                   ) : (
@@ -127,5 +135,23 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes }: { rech
         </section>
       )}
     </div>
+  );
+}
+
+/** Les photos des annonces trouvées par la recherche (vignettes Leboncoin), pour reconnaître la voiture d'un coup d'œil. */
+function Vignettes({ urls, nom }: { urls: string[]; nom: string }) {
+  if (!urls.length)
+    return (
+      <span className="hidden h-20 w-28 place-items-center rounded-xl border border-dashed border-line-2 text-ink-3 sm:grid" aria-hidden="true">
+        <Ico nom="parc" className="size-6" />
+      </span>
+    );
+  return (
+    <span className="flex gap-1.5" aria-label={`Photos des annonces trouvées : ${nom}`}>
+      {urls.slice(0, 4).map((u, i) => (
+        // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
+        <img key={u} src={u} alt="" loading="lazy" referrerPolicy="no-referrer" className={cx("h-20 w-28 rounded-xl border border-line object-cover", i > 1 && "max-sm:hidden")} />
+      ))}
+    </span>
   );
 }

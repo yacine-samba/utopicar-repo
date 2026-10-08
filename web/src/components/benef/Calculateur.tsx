@@ -1,7 +1,9 @@
 "use client";
 import { useId, useState } from "react";
 
-const SCENARIOS = [
+type Scenario = { l: string; a: number; f: number; r: number };
+
+const SCENARIOS: Scenario[] = [
   { l: "Clio IV bien achetée", a: 5000, f: 630, r: 6300 },
   { l: "Embrayage oublié", a: 5000, f: 1430, r: 6300 },
   { l: "Petite citadine", a: 2800, f: 450, r: 3700 },
@@ -26,11 +28,11 @@ function Curseur({ label, aide, v, min, max, pas, onChange }: { label: string; a
   );
 }
 
-/** Calculateur de marge : achat, frais, revente → bénéfice net. */
-export function Calculateur() {
-  const [a, setA] = useState(5000);
-  const [f, setF] = useState(630);
-  const [r, setR] = useState(6300);
+/** Calculateur de marge : achat, frais, revente → bénéfice net. Le premier exemple donne les valeurs de départ. */
+export function Calculateur({ scenarios = SCENARIOS }: { scenarios?: Scenario[] }) {
+  const [a, setA] = useState(scenarios[0].a);
+  const [f, setF] = useState(scenarios[0].f);
+  const [r, setR] = useState(scenarios[0].r);
   const net = r - a - f;
   const ton = net >= 500 ? "text-ok" : net >= 0 ? "text-warn" : "text-bad";
   const verdict = net >= 500 ? "Bonne affaire" : net >= 0 ? "Marge trop faible" : "Vous perdez de l'argent";
@@ -41,7 +43,7 @@ export function Calculateur() {
         <Curseur label="Frais et remise en état" aide="Carte grise, pneus, CT, nettoyage, trajet" v={f} min={0} max={3000} pas={10} onChange={setF} />
         <Curseur label="Prix de revente" aide="Ce que paie votre acheteur" v={r} min={1000} max={15000} pas={100} onChange={setR} />
         <div className="flex flex-wrap gap-2" role="group" aria-label="Exemples">
-          {SCENARIOS.map((s) => (
+          {scenarios.map((s) => (
             <button key={s.l} type="button" onClick={() => (setA(s.a), setF(s.f), setR(s.r))} className="rounded-full border border-line-2 px-3.5 py-1.5 text-sm text-ink-2 hover:border-o/50 hover:text-ink">
               {s.l}
             </button>

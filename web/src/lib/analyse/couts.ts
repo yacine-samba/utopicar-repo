@@ -131,7 +131,7 @@ export function dealPro(a: Analyse, p: ParamsPro, prixSaisi: number | null, dist
   if (flags.prixHT) caps.push({ v: 55, why: "prix affiché hors taxes" });
   if (gain != null && gain < seuil) caps.push({ v: 59, why: `il vous resterait moins que votre seuil de ${eur(seuil)}` });
   if (nonChiffrables > 0) caps.push({ v: 69, why: "une réparation ne peut pas être chiffrée sans inspection" });
-  caps.push({ v: 79, why: "ni HistoVec ni PV de contrôle technique vérifiés" });
+  // documents absents (CT, HistoVec) : pas de plafond, ils s'ajoutent au dossier après le premier contact
   if (alertes > 0) caps.push({ v: 84, why: "au moins une alerte dans le dossier" });
   caps.sort((x, y) => x.v - y.v);
   const cap = caps.find((c) => note > c.v) ? caps[0] : null;

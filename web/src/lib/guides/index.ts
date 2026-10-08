@@ -170,6 +170,31 @@ export const GUIDES: { id: GuideId; titre: string; pour: string; resume: string;
   { id: "acheter-occasion", titre: "Acheter votre prochaine occasion sans vous faire avoir", pour: "Particuliers", resume: "Les vérifications à faire, dans l'ordre, jusqu'aux papiers.", html: guideParticulier },
 ];
 
+/** Guides ouverts en entier par chaque formule. Les autres : deux chapitres offerts, ou les quatre à vie avec l'achat à 9 €. */
+const GUIDES_FORMULE: Record<string, GuideId[]> = {
+  serenite: ["acheter-occasion"],
+  starter: ["premiere-revente"],
+  croissance: ["premiere-revente", "trier-annonces", "estimer-reprise"],
+  pro: ["premiere-revente", "trier-annonces", "estimer-reprise"],
+};
+
+/** Guides qu'un compte lit en entier : tous s'il est illimité ou a acheté les guides (achat « guide »),
+    sinon ceux de sa formule et ceux offerts un par un depuis l'administration (achats « guide:<id> »). */
+export function guidesOuverts(illimite: boolean, formule: string, produits: string[]): GuideId[] {
+  if (illimite || produits.includes("guide")) return GUIDES.map((g) => g.id);
+  const ouverts = new Set<string>([...(GUIDES_FORMULE[formule] ?? []), ...produits.filter((p) => p.startsWith("guide:")).map((p) => p.slice(6))]);
+  return GUIDES.filter((g) => ouverts.has(g.id)).map((g) => g.id);
+}
+
+/** Guides mis en avant selon la formule (page « Mes guides » du profil) ; les autres restent accessibles en dessous.
+    Benef Starter : la première vente ; Croissance et Pro : la méthode de tri et l'estimation de reprise ; particuliers : l'achat. */
+export function guidesPour(formule: string, famille: "particulier" | "benef"): GuideId[] {
+  if (famille === "particulier") return ["acheter-occasion"];
+  if (formule === "starter") return ["premiere-revente"];
+  if (formule === "croissance") return ["trier-annonces", "estimer-reprise", "premiere-revente"];
+  return ["trier-annonces", "estimer-reprise"];
+}
+
 /** Contenu d'un guide : complet, ou limité aux deux premiers chapitres (extrait gratuit). */
 export function contenuGuide(id: GuideId, prenom: string, complet: boolean) {
   const g = GUIDES.find((x) => x.id === id) ?? GUIDES[0];

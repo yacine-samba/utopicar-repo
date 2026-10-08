@@ -5,16 +5,19 @@ import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { FILTRES_VIDES, quandRecherche, resumeFiltres, type FiltresRecherche, type Recherche } from "@/lib/recherches";
 import { cleFavori } from "@/lib/favoris";
 import { BoutonFavori } from "../espace/BoutonFavori";
+import { BoutonAnalyserAnnonce } from "../espace/BoutonAnalyserAnnonce";
 import { useNotification } from "../espace/Notification";
 import { Ico } from "../espace/Icones";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque, CoteAnnonce } from "@/lib/vehicules/types";
 import { motorisationsTypes } from "@/lib/vehicules/phases";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
+import { lienRechercheLeboncoin } from "@/lib/vehicules/leboncoin";
+import { InterrupteurAlerte } from "./InterrupteurAlerte";
 
 type Annonce = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; ch: number | null; pro: boolean; lieu: string | null;
-  source: string; vu: string | null; url: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
+  source: string; vu: string | null; url: string | null; photo?: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
   moteur: string | null; version: string | null;
   /** motorisation déduite de la puissance (pas écrite) ; génération d'après l'année seulement (doute) ; version et estimation Leboncoin */
   moteurDeduit?: boolean; genPar?: "texte" | "puissance" | "annee" | null; doute?: boolean;
@@ -27,6 +30,8 @@ type Resultat = {
   /** annonces placées dans la génération d'après leur année seulement */
   incertaines?: number;
   total: number; trouvees: number; sousLaCote: number; annonces: Annonce[]; ms: number;
+  /** annonces retirées de Leboncoin (absentes du dernier relevé complet), écartées des résultats ; date du dernier relevé de la génération */
+  retirees?: number; releve?: string | null;
   /** lancement gardé : date des résultats affichés */
   journal: { id: string; le: string } | null; criteres?: { choix: Choix; f: Partial<Filtres> };
 };
@@ -40,8 +45,10 @@ const CARROSSERIES: [string, string][] = [["berline", "Berline / 5 portes"], ["b
 
 /** Recherche dans la base du marché. Chaque recherche est enregistrée (une par véhicule) et reste ouverte en onglet :
     on peut chercher une autre voiture sans perdre la précédente, et la retrouver depuis le tableau de bord. */
-export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, journal, favoris = [] }: {
-  cat: CatMarque[]; alertes: boolean; initiales: Recherche[]; ouvrir?: string | null; prerempli?: Choix | null;
+export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ouvrir, prerempli, journal, favoris = [], nouvelleRecherche = false }: {
+  cat: CatMarque[]; alertes: boolean; etatsAlertes?: Record<string, boolean>; initiales: Recherche[]; ouvrir?: string | null; prerempli?: Choix | null;
+  /** « Chercher une annonce » : formulaire vide, sans rouvrir le dernier onglet */
+  nouvelleRecherche?: boolean;
   /** lancement du journal à rouvrir (résultats gardés ; relancé seulement s'il n'en a pas) */
   journal?: { id: string; choix: Choix; f: Partial<Filtres> } | null; favoris?: string[];
 }) {
@@ -57,6 +64,8 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
   // téléphone : les filtres se replient pendant et après la recherche, pour voir le chargement puis les résultats
   const [filtresOuverts, setFiltresOuverts] = useState(true);
   const [ouverture, setOuverture] = useState(false);
+  // formulaire allégé : voiture, prix, kilométrage, année ; le reste derrière « Plus de filtres »
+  const [plusFiltres, setPlusFiltres] = useState(false);
   const cache = useRef(new Map<string, Resultat>());
   // collecte Leboncoin en cours pour la recherche affichée (base trop maigre) : suivie, puis la recherche se relance seule
   const [collecte, setCollecte] = useState<(Collecte & { choix: Choix; f: Filtres; rid: string | null }) | null>(null);
@@ -90,7 +99,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
         body: JSON.stringify({
           marque: c.marque, modele: c.modele, gen: c.gen || undefined, energie: fx.energie, boite: fx.boite,
           version: fx.version || undefined, phase: fx.phase || undefined, carrosserie: fx.carrosserie, moteur: fx.moteur.trim() || undefined, chMin: n(fx.chMin), chMax: n(fx.chMax),
-          anneeMin: n(fx.anneeMin), anneeMax: n(fx.anneeMax), prixMin: n(fx.prixMin), prixMax: n(fx.prixMax), kmMax: n(fx.kmMax),
+          anneeMin: n(fx.anneeMin), anneeMax: n(fx.anneeMax), prixMin: n(fx.prixMin), prixMax: n(fx.prixMax), kmMin: n(fx.kmMin ?? ""), kmMax: n(fx.kmMax), dep: fx.dep?.trim() || undefined,
           vendeur: fx.vendeur, mots: fx.mots, exclure: fx.exclure, sousCote: n(fx.sousCote) ?? 0, fiables: fx.fiables, tri: fx.tri, saisie: fx,
         }),
       });
@@ -228,7 +237,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
         void lancer(prerempli, VIDE);
       } else {
         const dernier = [...initiales].filter((r) => r.active).sort((x, y) => y.derniere_le.localeCompare(x.derniere_le))[0];
-        if (dernier) afficher(dernier);
+        if (dernier && !nouvelleRecherche) afficher(dernier);
       }
     }, 0);
     return () => clearTimeout(t);
@@ -243,7 +252,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
     const t0 = performance.now();
     const i = setInterval(async () => {
       if (fini) return;
-      if (performance.now() - t0 > 30 * 60e3) {
+      if (performance.now() - t0 > 45 * 60e3) {
         fini = true;
         clearInterval(i);
         setCollecte((x) => (x ? { ...x, statut: "erreur", erreur: "La collecte prend plus de temps que prévu. Relancez la recherche dans quelques minutes." } : x));
@@ -272,9 +281,10 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
     // eslint-disable-next-line react-hooks/exhaustive-deps -- une boucle par collecte
   }, [suivie?.cle]);
 
-  const alerteHref = choix.marque && choix.modele
-    ? `/app/alertes?${new URLSearchParams({ marque: choix.marque, modele: choix.modele, gen: choix.gen, energie: f.energie, boite: f.boite, anneeMin: f.anneeMin, anneeMax: f.anneeMax, prixMin: f.prixMin, prixMax: f.prixMax, kmMax: f.kmMax, mots: f.mots, exclure: f.exclure, sousCote: f.sousCote, version: f.version, moteur: f.moteur, chMin: f.chMin, chMax: f.chMax }).toString()}`
-    : "/app/alertes";
+  const rechercheCourante = (courant && liste.find((x) => x.id === courant)) || res?.recherche || null;
+  const avance = !!(f.version || f.phase || f.carrosserie || f.moteur || f.energie || f.boite || f.vendeur || f.anneeMax || f.prixMin || f.mots || f.exclure || f.sousCote || f.tri !== "ecart" || !f.fiables);
+  const filtresCaches = !(plusFiltres || avance);
+  const lienLbc = lienRechercheLeboncoin(marqueCat, modeleCat, genCat, f);
 
   return (
     <div className="grid gap-6">
@@ -337,6 +347,39 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
           }}
           idPrefixe="rm"
         />
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Prix max. (€)</span>
+          <input inputMode="numeric" value={f.prixMax} onChange={maj("prixMax")} placeholder="ex. 9 000" className={inputCls} />
+        </label>
+        <fieldset className="grid gap-1.5 text-sm">
+          <legend className="mb-1.5 text-ink-2">Kilométrage</legend>
+          <div className="grid grid-cols-2 gap-3">
+            <input inputMode="numeric" value={f.kmMin ?? ""} onChange={maj("kmMin")} placeholder="min." aria-label="Kilométrage minimum" className={inputCls} />
+            <input inputMode="numeric" value={f.kmMax} onChange={maj("kmMax")} placeholder="max. ex. 150000" aria-label="Kilométrage maximum" className={inputCls} />
+          </div>
+        </fieldset>
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Année min.</span>
+          <input inputMode="numeric" value={f.anneeMin} onChange={maj("anneeMin")} placeholder="2010" className={inputCls} />
+        </label>
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Départements</span>
+          <input value={f.dep ?? ""} onChange={maj("dep")} placeholder="Toute la France, ou ex. 76, 27" className={inputCls} />
+        </label>
+        <fieldset className="grid gap-1.5 text-sm">
+          <legend className="mb-1.5 text-ink-2">Puissance (ch, réelle)</legend>
+          <div className="grid grid-cols-2 gap-3">
+            <input inputMode="numeric" value={f.chMin} onChange={maj("chMin")} placeholder="min. ex. 110" aria-label="Puissance minimum en chevaux" className={inputCls} />
+            <input inputMode="numeric" value={f.chMax} onChange={maj("chMax")} placeholder="max." aria-label="Puissance maximum en chevaux" className={inputCls} />
+          </div>
+        </fieldset>
+        {!avance && (
+          <button type="button" onClick={() => setPlusFiltres((v) => !v)} aria-expanded={plusFiltres} aria-controls="rm-plus" className="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-o2 underline-offset-4 hover:underline sm:col-span-2 lg:col-span-3">
+            {plusFiltres ? "Moins de filtres" : "Plus de filtres"} <span aria-hidden="true">{plusFiltres ? "▴" : "▾"}</span>
+            <span className="font-normal text-ink-3">version, motorisation, puissance, énergie, boîte, vendeur, sous la cote…</span>
+          </button>
+        )}
+        <div id="rm-plus" className={filtresCaches ? "hidden" : "contents"}>
         {genCat?.v ? (
           <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Version, carrosserie</span>
@@ -382,13 +425,6 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
             ))}
           </datalist>
         </label>
-        <fieldset className="grid gap-1.5 text-sm">
-          <legend className="mb-1.5 text-ink-2">Puissance (ch)</legend>
-          <div className="grid grid-cols-2 gap-3">
-            <input inputMode="numeric" value={f.chMin} onChange={maj("chMin")} placeholder="min. ex. 150" aria-label="Puissance minimum (ch)" className={inputCls} />
-            <input inputMode="numeric" value={f.chMax} onChange={maj("chMax")} placeholder="max." aria-label="Puissance maximum (ch)" className={inputCls} />
-          </div>
-        </fieldset>
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Énergie</span>
           <select value={f.energie} onChange={maj("energie")} className={inputCls}>
@@ -418,28 +454,14 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className="grid gap-1.5 text-sm">
-            <span className="text-ink-2">Année min.</span>
-            <input inputMode="numeric" value={f.anneeMin} onChange={maj("anneeMin")} placeholder="2010" className={inputCls} />
-          </label>
-          <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Année max.</span>
             <input inputMode="numeric" value={f.anneeMax} onChange={maj("anneeMax")} placeholder="2016" className={inputCls} />
           </label>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
           <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Prix min. (€)</span>
             <input inputMode="numeric" value={f.prixMin} onChange={maj("prixMin")} className={inputCls} />
           </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className="text-ink-2">Prix max. (€)</span>
-            <input inputMode="numeric" value={f.prixMax} onChange={maj("prixMax")} className={inputCls} />
-          </label>
         </div>
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Kilométrage max.</span>
-          <input inputMode="numeric" value={f.kmMax} onChange={maj("kmMax")} placeholder="150000" className={inputCls} />
-        </label>
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Moteur, finition, mots-clés</span>
           <input value={f.mots} onChange={maj("mots")} placeholder="ex. 1.2 tce, intens" className={inputCls} />
@@ -465,6 +487,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
         <label className="flex items-center gap-2 self-end pb-2.5 text-sm text-ink-2">
           <input type="checkbox" checked={f.fiables} onChange={maj("fiables")} className="size-4 accent-[#ff5a1f]" /> Masquer les pièges (pour pièces, moteur HS, prix suspects…)
         </label>
+        </div>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-3">
           <button type="submit" disabled={charge} className="btn btn-o btn-sm">
             {charge ? "Recherche…" : "Rechercher"}
@@ -472,11 +495,7 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
           <button type="button" className="btn btn-sm" onClick={nouvelle}>
             Nouvelle recherche
           </button>
-          {alertes && choix.modele && (
-            <Link href={alerteHref} className="btn btn-sm">
-              Créer une alerte e-mail avec ces critères
-            </Link>
-          )}
+          {alertes && rechercheCourante && <InterrupteurAlerte key={rechercheCourante.id} r={rechercheCourante} actif={!!(rechercheCourante.alerte_id && etatsAlertes[rechercheCourante.alerte_id])} cat={cat} />}
           <p className="text-sm text-ink-3" role="status">{etat}</p>
         </div>
       </form>
@@ -498,10 +517,23 @@ export function RechercheMarche({ cat, alertes, initiales, ouvrir, prerempli, jo
               {res.trouvees} annonce{res.trouvees > 1 ? "s" : ""} · {res.recherche?.nom ?? res.modele.nom}
               {resumeFiltres(f) && <span className="block text-sm font-normal text-ink-3">{resumeFiltres(f)}</span>}
             </h2>
-            <p className="text-sm text-ink-3">
-              {res.total} annonces de ce modèle en base · {res.sousLaCote} à 5 % ou plus sous la cote
-            </p>
+            <div className="grid justify-items-end gap-1 text-right">
+              <p className="text-sm text-ink-3">
+                {res.total} annonces de ce modèle en base · {res.sousLaCote} à 5 % ou plus sous la cote
+              </p>
+              {lienLbc && (
+                <a href={lienLbc} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-o2 underline underline-offset-4">
+                  Comparer avec la même recherche sur Leboncoin ↗
+                </a>
+              )}
+            </div>
           </div>
+          {(res.releve || !!res.retirees) && (
+            <p className="text-xs text-ink-3" suppressHydrationWarning>
+              {res.releve ? `Annonces relevées sur Leboncoin le ${new Date(res.releve).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} (mises à jour quand le relevé a plus de 3 jours).` : ""}
+              {res.retirees ? ` ${res.retirees} annonce${res.retirees > 1 ? "s" : ""} retirée${res.retirees > 1 ? "s" : ""} de Leboncoin depuis (vendue${res.retirees > 1 ? "s" : ""} ou supprimée${res.retirees > 1 ? "s" : ""}) : écartée${res.retirees > 1 ? "s" : ""} des résultats, gardée${res.retirees > 1 ? "s" : ""} pour la cote.` : ""}
+            </p>
+          )}
           {res.journal && (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line px-4 py-2.5 text-sm">
               <span className="text-ink-2" suppressHydrationWarning>
@@ -579,7 +611,13 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
   const c = a.cote;
   const bon = c?.pct != null && c.pct >= 0.05, cher = c?.pct != null && c.pct <= -0.05;
   return (
-    <li className="carte grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
+    <li className="carte grid gap-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center">
+      {a.photo ? (
+        // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
+        <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-28 w-40 rounded-xl border border-line object-cover max-sm:h-44 max-sm:w-full" />
+      ) : (
+        <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">photo bientôt</span>
+      )}
       <div className="min-w-0">
         <p className="truncate font-medium">{a.titre || "Annonce"}</p>
         <p className="mt-0.5 text-sm text-ink-3">
@@ -622,8 +660,9 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
             compact
             initial={fav}
             onChange={onFav}
-            f={{ cle: cleFavori(a.url, `marche:${a.id}`), titre: a.titre || "Annonce", prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: null, source: "recherche", cote: c ? { P: c.P ?? null, ecart: c.ecart ?? null, pct: c.pct ?? null } : null }}
+            f={{ cle: cleFavori(a.url, `marche:${a.id}`), titre: a.titre || "Annonce", prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: a.photo ?? null, source: "recherche", cote: c ? { P: c.P ?? null, ecart: c.ecart ?? null, pct: c.pct ?? null } : null }}
           />
+          <BoutonAnalyserAnnonce url={a.url} />
           {a.url && (
             <a href={a.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">
               Ouvrir
@@ -642,11 +681,13 @@ function BandeauCollecte({ c, base }: { c: Collecte; base: number }) {
     <section role="status" aria-live="polite" className={cx("carte grid gap-1.5 p-4 sm:p-5", enCours ? "border-o/40" : c.statut === "ok" ? "border-ok/40" : "border-warn/40")}>
       <p className="flex items-center gap-2.5 font-semibold">
         {enCours ? <span className="size-4 shrink-0 animate-spin rounded-full border-2 border-o/30 border-t-o" aria-hidden="true" /> : <span aria-hidden="true" className={c.statut === "ok" ? "text-ok" : "text-warn"}>{c.statut === "ok" ? "✓" : "!"}</span>}
-        {enCours ? `Collecte Leboncoin en cours : ${c.nom}` : c.statut === "ok" ? `Collecte terminée : ${c.n ?? 0} annonces ajoutées à la base` : c.statut === "quota" ? "Collecte non lancée" : "Collecte interrompue"}
+        {enCours ? `${base >= 150 ? "Mise à jour depuis Leboncoin" : "Collecte Leboncoin en cours"} : ${c.nom}` : c.statut === "ok" ? `Collecte terminée : ${c.n ?? 0} annonces ajoutées à la base` : c.statut === "quota" ? "Collecte non lancée" : "Collecte interrompue"}
       </p>
       <p className="text-sm text-ink-2">
         {enCours
-          ? `La base n'avait que ${base} annonce${base > 1 ? "s" : ""} de cette génération : jusqu'à 1 000 annonces sont relevées sur Leboncoin (3 à 10 minutes). La recherche se relance toute seule à la fin, et une notification s'affiche.`
+          ? base >= 150
+            ? "Le dernier relevé a plus de 3 jours : toutes les annonces de cette génération sont relues sur Leboncoin (5 à 15 minutes), pour retirer les vendues et ajouter les nouvelles. Les résultats ci-dessous viennent du relevé précédent ; la recherche se relance toute seule à la fin."
+            : `La base n'avait que ${base} annonce${base > 1 ? "s" : ""} de cette génération : toutes ses annonces sont relevées sur Leboncoin (5 à 15 minutes). La recherche se relance toute seule à la fin, et une notification s'affiche.`
           : c.erreur ?? "Les résultats ci-dessous incluent les nouvelles annonces."}
       </p>
     </section>

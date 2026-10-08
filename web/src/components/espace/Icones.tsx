@@ -21,6 +21,9 @@ const TRACES: Record<Icone | "plus" | "fermer" | "sortie" | "site" | "lien" | "h
   sortie: "M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10",
   site: "M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4",
   historique: "M12 21a9 9 0 1 0-8.5-6M3 20v-5h5M12 7.5V12l3 2",
+  messages: "M4 5h16v11H8l-4 4V5Zm4 5h8M8 8h5",
+  estimation: "M5 3h14v18H5V3Zm3 4h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h8",
+  admin: "M12 3 5 6v5c0 4.5 3 8.3 7 9.5 4-1.2 7-5 7-9.5V6l-7-3Zm-3 9 2 2 4-4",
   lien: "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
 };
 
