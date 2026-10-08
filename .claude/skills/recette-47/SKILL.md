@@ -23,8 +23,9 @@ ceux qui gagnent. Rien à vendre, et la fin relance le début.
 
 Chacun vient du film publié. Le pourquoi compte plus que la lettre : un nouvel épisode change le sujet, pas la mécanique.
 
-1. **L'ouverture, c'est son calcul.** Phrase 1 : le calcul ou le plan du débutant, en « tu », avec deux chiffres ronds
-   dans les six premiers mots. Phrase 2 : un objet de sa vie le contredit, pince-sans-rire, sans dire pourquoi.
+1. **L'ouverture, c'est son calcul.** Phrase 1 : le calcul ou le plan du débutant, en « tu », avec deux chiffres
+   ronds (le premier dans les quatre premiers mots, le second avant la fin de la phrase). Phrase 2 : un objet ou une
+   personne de sa vie le contredit, pince-sans-rire, sans dire pourquoi.
    MO5 : « Tu l'achètes 3 500, tu la revends 5 000. Ton compte en banque n'est pas d'accord. » Image 0 : le calcul
    écrit en grand, terminé par un « ? ». Il se reconnaît en deux secondes (miroir) et la phrase 2 ouvre la question
    « pourquoi ? » que seul le film referme (écart).
@@ -39,8 +40,9 @@ Chacun vient du film publié. Le pourquoi compte plus que la lettre : un nouvel 
 5. **L'attente.** Le temps passe en palettes (J+1 → J+23), la nuit tombe, la musique perd sa basse, la voix se tait
    presque (« Et là, personne n'appelle. »). Les petits frais continuent de tomber.
 6. **La chute.** La vente en deux phrases courtes (« Il négocie. Tu acceptes. »), le compteur dégringole, le chiffre
-   final remplit l'écran, la musique s'arrête net : la seule pause du film. Puis une comparaison de tous les jours en
-   moins de cinq mots, en Fraunces orange (« Même pas un plein. »).
+   final remplit l'écran, la musique s'arrête net : la seule pause du film. Puis une phrase concrète de cinq mots au
+   plus, en Fraunces orange : une comparaison de tous les jours (« Même pas un plein. ») ou, si le chiffre est négatif,
+   la situation retournée (« Tu as payé pour la vendre. »).
 7. **Le renversement.** « Ceux qui gagnent font le calcul à l'envers. » L'histoire se rembobine jusqu'au jour 1
    (étiquettes qui se décollent, compteur qui remonte), puis la méthode du pro s'écrit sur une carte de verre, appliquée
    **au même exemple**, avec un verdict sur l'annonce du début (« À 3 500, tu passes ton tour. »). C'est ce que le
@@ -61,7 +63,8 @@ Chacun vient du film publié. Le pourquoi compte plus que la lettre : un nouvel 
 | Renversement | 20,9 → 27,4 | « Ceux qui gagnent font le calcul à l'envers. Ton prix max, 2 750. À 3 500, tu passes ton tour. » | soulagement, valeur |
 | Boucle | 27,4 → 29,6 | « La prochaine fois que tu te dis… » | relance |
 
-29,6 s, 1080 × 1920, 60 i/s. 75 mots en 21 répliques, 21,7 s de parole : les silences comptent autant que les mots.
+29,6 s, 1080 × 1920, 60 i/s. 75 mots écrits (« 3 500 » compte pour deux) en 21 répliques, 21,7 s de parole : les
+silences comptent autant que les mots. Pour un épisode, la contrainte qui compte est la durée parlée : environ 22 s.
 Quelque chose de neuf toutes les 0,5 à 2 s, une seule pause (sur le chiffre final). Détail image par image, son et
 code : `references/anatomie-mo5.md`.
 
@@ -69,6 +72,13 @@ code : `references/anatomie-mo5.md`.
 
 Le processus en 5 étapes de motion-studio (`references/codes-attention.md` de ce skill-là), avec un « OK » de
 l'utilisateur à chaque étape. Ce skill ajoute ce qui suit.
+
+**Ce qui est déjà décidé pour un épisode de la série** (ne repose pas le questionnaire de motion-studio) : public,
+plateforme, durée, format, voix, musique, charte, absence de CTA (bloc commun de `video/serie-47.md`). Ne demande que
+ce qui change : le sujet, la photo de la voiture, le « OK ». « Comme celle de la Polo » veut dire la même recette, pas
+la même voiture. Le projet prend le numéro MO suivant (`brief-mo9.md`, `film-mo9/`, `audio-mo9.py`…) et son titre dit
+« série recette 47, épisode n ». Un sujet demandé hors du plan prend la place du prochain épisode et la variable
+prévue pour lui dans le journal.
 
 0. **Lis `references/journal.md`** : version de la recette en cours, leçons confirmées, expérience prévue pour cet
    épisode. Puis `references/sujets.md`.
@@ -91,7 +101,11 @@ réutilisable (voir le journal).
 
 **La voiture.** Après MO6, l'utilisateur a écarté la Polo (« on l'a assez vue »). La recette garde le principe : une
 vraie voiture à lui. Demande à chaque épisode une photo d'une autre de ses voitures (trois quarts avant, plein jour,
-sans personne autour). Ne reprends la Polo que s'il le demande.
+sans personne autour). Ne reprends la Polo que s'il le demande. Ce changement est imposé, pas testé : il ne compte
+pas comme la variable de l'épisode, mais il se note dans le journal.
+
+**Les documents et sites officiels** (PV du contrôle technique, HistoVec, ANTS) se montrent en carte de verre de la
+charte, leur nom écrit en texte. On ne redessine jamais leur interface (`video/CLAUDE.md`).
 
 ## Après la publication : la boucle d'amélioration
 

@@ -50,7 +50,12 @@ Règles de décision :
   l'autre sans rapport avec le film. Une leçon reste une **hypothèse** tant qu'un seul épisode la porte ; elle devient
   un **ingrédient** quand deux épisodes la confirment.
 - **Une seule variable par épisode**, en plus du sujet (qui change toujours). Avec deux changements, on ne sait plus
-  lequel a joué.
+  lequel a joué. La voiture change aussi à chaque épisode (décision de l'utilisateur après MO6) : c'est une constante
+  de la série, notée dans la ligne de l'épisode, pas une variable testée. La musique reste celle de MO5, mêmes passages,
+  tant qu'elle n'est pas la variable.
+- **Il faut la référence.** Tant que MO5 n'a que ses vues, un épisode se compare sur les vues à J+7. Demande les autres
+  chiffres de MO5 (part à 3 s, durée moyenne, visionnages complets) avant de publier l'épisode suivant : sans eux, une
+  hypothèse sur l'ouverture ou le rythme ne peut pas se trancher.
 - **Comparer à MO5 et à la médiane de la série**, pas au meilleur score.
 - Quand un épisode fait nettement moins bien que MO5 sans variable en cause, regarder d'abord le sujet (commentaires,
   part à 3 s) : la mécanique peut être juste et le calcul pas assez partagé par la cible.
@@ -94,6 +99,7 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 | 8 oct. 2026 | MO5, > 6 000 vues | Son calcul en ouverture, un chiffre qui fond, une chute qui fait rire jaune, la méthode du pro appliquée au même exemple, la boucle : la recette v1 | référence |
 | oct. 2026 | carrousels | Nommer la cible dans les trois premiers mots, montrer une perte à éviter, donner un conseil à garder (« 3 règles » : 1 000 vues contre 200 à 300) | confirmé par MO5 |
 | oct. 2026 | utilisateur, après MO6 | Plus de Polo : une autre vraie voiture à chaque épisode | décision |
+| 8 oct. 2026 | test du skill par un agent neuf | Il a écrit seul un brief d'épisode complet ; ses dix questions ont précisé le skill (questionnaire sauté pour la série, numérotation MO, voiture et musique hors variables, chute négative, documents officiels en carte de verre) | appliqué |
 
 ## 7. Versions de la recette
 

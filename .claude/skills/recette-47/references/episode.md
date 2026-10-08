@@ -34,8 +34,9 @@ Remplis la colonne de droite. Chaque ligne doit avoir une réponse précise ; un
 | Ce qu'on envoie | le détail qu'on montre à un pote | « Même pas un plein », le kebab | |
 | Ce qu'on commente | ce que chacun voudra ajouter | ses propres frais oubliés | |
 
-Budget de voix : 70 à 80 mots en 29,6 s, une vingtaine de répliques courtes, 7 à 8 s de silence au total. Un chiffre
-dit (« 3 500 ») compte pour un mot à l'écrit mais en prend quatre à l'oral : relis à voix haute en chronométrant.
+Budget de voix : environ 22 s de parole sur 29,6 s, une vingtaine de répliques courtes, 7 à 8 s de silence. MO5 tient
+en 75 mots écrits, en comptant « 3 500 » pour deux. Un chiffre se dit en plus de mots qu'il ne s'écrit
+(« trois mille cinq cents ») : chronomètre la lecture à voix haute, c'est elle qui tranche.
 
 ## 3. Les hooks
 
@@ -50,7 +51,10 @@ Règle du dépôt : tout hook s'écrit avec le skill **art-du-hook**. Pour un é
 - les relances du corps (en général : « Jour 1. », le silence de l'attente, le chiffre final, « Ceux qui gagnent… »).
 
 Le contradicteur change à chaque épisode : compte en banque (MO5), contrôle technique, téléphone, calendrier,
-acheteur, batterie… Un objet ou une personne de sa vie, jamais un expert ni la marque.
+acheteur, batterie… Un objet ou une personne de sa vie, jamais un expert ni une marque.
+
+Dans la phrase 1, le premier chiffre arrive dans les quatre premiers mots et le second avant la fin de la phrase
+(MO5 : « Tu l'achètes 3 500, tu la revends 5 000. »). Le sujet est dans cette phrase, comme le veut art-du-hook.
 
 ## 4. Modèle de brief d'épisode
 
@@ -66,7 +70,7 @@ Produit / URL : aucun, rien à vendre       Objectif : arrêt net, revisionnage,
 Plateforme : TikTok, puis Reels et Shorts  Public : débutants qui veulent se lancer dans l'achat-revente auto
 Promesse : <une phrase>
 CTA : aucun, ni dit ni écrit                Type / durée : motion design narratif, 29,6 s, en boucle
-Voix : Simon (ElevenLabs), ton MO5          Musique : <passage / morceau>, calé à 120 BPM
+Voix : Simon (ElevenLabs), ton MO5          Musique : Controlled Drop, passages de MO5, 120 BPM
 Ouvertures : A = <...> / B = <...>          Format : 9:16, 1080×1920, 60 i/s
 Voiture : <photo de l'utilisateur>          Données : exemple chiffré, sourcé à l'étape 2, mention à l'écran
 Interdits : produit, logos de marques et de plateformes, plaques, visages, CTA, morale, chiffre non sourcé

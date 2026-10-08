@@ -15,12 +15,16 @@ timeline, images tests).
 Produit / URL : aucun, rien à vendre       Objectif : arrêt net, revisionnage, enregistrement et partage spontanés
 Plateforme : TikTok, puis Reels et Shorts  Public : débutants qui veulent se lancer dans l'achat-revente auto
 CTA : aucun, ni dit ni écrit                Type / durée : motion design narratif, 29,6 s, en boucle
-Voix : Simon (ElevenLabs), ton de MO5      Musique : Controlled Drop (un autre passage), calé à 120 BPM
+Voix : Simon (ElevenLabs), ton de MO5      Musique : Controlled Drop, mêmes passages que MO5, 120 BPM
 Charte : celle de MO5 (fond sombre, orange, verre, lumière qui écrit, Clash, Satoshi, Fraunces)
 Voiture : une autre de tes voitures, en photo (pas la Polo)
 Données : exemple chiffré, chaque montant sourcé à l'étape 2, « Exemple · prix moyens constatés » à l'écran
 Interdits : produit, logos de marques et de plateformes, plaques, visages, CTA, morale, chiffre non sourcé
 ```
+
+La musique et la charte de MO5 deviennent la signature de la série : elles ne changent que si elles sont la variable
+d'un épisode. La voiture change à chaque fois (pas la Polo) ; c'est une constante, pas une variable testée. Chaque
+épisode prend le numéro MO suivant quand il passe en production (É1 → MO9 s'il part en premier).
 
 Les sept temps de MO5 restent, à leur durée : ouverture (4,2 s), jour 1, accumulation avec un gag, attente, chute,
 renversement « ceux qui gagnent… », boucle. Les voix ci-dessous sont provisoires (70 à 80 mots) ; je les resserre à
@@ -246,9 +250,10 @@ phrase 2 dit non, sans dire pourquoi).
 - Contrôle de moins de 6 mois pour une voiture de plus de 4 ans, de moins de 2 mois en cas de contre-visite ; pas
   exigé si un professionnel rachète la voiture ([Groupama](https://www.groupama.fr/assurance-auto/conseils/vendre-sa-voiture/sans-controle-technique/),
   [LegalPlace](https://www.legalplace.fr/guides/vendre-voiture-sans-controle-technique/)).
-- Certificat de situation administrative : moins de 15 jours selon la plupart des sources, un mois selon une fiche
-  DGCCRF : **à trancher** ([Fiches-auto](https://www.fiches-auto.fr/articles-auto/acheter-vendre-une-voiture-d-occasion/s-232-papiers-necessaires-a-la-vente-d-une-voiture.php),
-  [DGCCRF](https://bretagne.dreets.gouv.fr/sites/bretagne.dreets.gouv.fr/IMG/pdf/fiches_pratique_dgccrf_vehicule-d-occasion.pdf)).
+- Certificat de situation administrative : daté de moins de 15 jours, à obtenir sur HistoVec. Un gage n'empêche pas
+  la vente ; une opposition la bloque tant qu'elle n'est pas levée ([service-public.gouv.fr, fiche F1360](https://www.service-public.gouv.fr/particuliers/vosdroits/F1360),
+  vérifiée le 26 février 2026, lue le 8 octobre 2026). Une fiche DGCCRF plus ancienne parlait d'un mois : on suit
+  service-public.
 - Déclaration de cession dans les 15 jours (article R322-4 du Code de la route), gratuite sur le site de l'ANTS ; des
   sites payants imitent le service public (un usager cite 59,99 €) ([Toyota](https://www.toyota.fr/occasions/nos-conseils/achat-vente-entre-particuliers/declaration-cession-vehicule),
   [Plus.transformation.gouv.fr](https://www.plus.transformation.gouv.fr/experiences/277767_declaration-de-cession-dun-vehicule-sur-ants)).

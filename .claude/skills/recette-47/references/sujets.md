@@ -27,7 +27,7 @@ sujet avance : idée → brief → en production → publié (avec le lien vers 
 
 | Idée | Croyance | Méthode du pro | À vérifier |
 |---|---|---|---|
-| « Le vendeur pressé » | il part demain, il la laisse 2 000 sous la cote : affaire | demander le rapport Histovec (gage, opposition, sinistres, propriétaires) avant de se déplacer | ce que montre Histovec, ce que le vendeur doit fournir |
+| « Le vendeur pressé » | il part demain, il la laisse 2 000 sous la cote : affaire | demander le rapport HistoVec avant de se déplacer : une opposition bloque la vente, un gage ne l'empêche pas mais se règle avec le vendeur (service-public F1360) | ce que HistoVec montre du kilométrage relevé aux contrôles techniques (un brief d'essai bâti sur un compteur trafiqué en dépend) |
 | « Le premier qui appelle » | la première offre est trop basse, j'attends mieux | fixer son prix plancher avant de publier, et accepter au-dessus | le coût d'une semaine d'attente (assurance, annonce, baisse) sur un exemple |
 | « La préparation » | 300 € de préparation, + 1 000 € à la revente | les remises en état qui rapportent, celles qui ne rapportent pas | prix des prestations, ordre de grandeur de l'effet sur le prix (sources) |
 | « La couleur » | elle me plaît, elle plaira | acheter ce qui se vend vite, pas ce qu'on aime | une source sur les délais de vente par couleur ou par version |
