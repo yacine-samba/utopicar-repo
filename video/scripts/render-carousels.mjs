@@ -3,7 +3,7 @@
 import { chromium } from 'playwright';
 import http from 'http'; import fs from 'fs'; import path from 'path'; import { execFileSync } from 'child_process';
 import { ROOT } from './ui.mjs';
-const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.woff2': 'font/woff2', '.svg': 'image/svg+xml' };
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => {
   const p = path.join(ROOT, decodeURIComponent(req.url.split('?')[0]));
   if (!p.startsWith(ROOT) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) { res.writeHead(404); return res.end(); }
@@ -15,7 +15,9 @@ const CAR = process.env.CAR || 'carousels';   // dossier du gabarit (carousels, 
 const DATA = JSON.parse(fs.readFileSync(path.join(ROOT, CAR, 'carousels.json'), 'utf8'));
 const only = process.argv[2] ? process.argv[2].split(',').map(Number) : DATA.carousels.map((_, i) => i);
 const OUT = path.join(ROOT, 'renders', CAR === 'carousels' ? 'carousels' : CAR); fs.mkdirSync(OUT, { recursive: true });
-const browser = await chromium.launch({ args: ['--force-color-profile=srgb', '--disable-lcd-text', '--font-render-hinting=none'] });
+// CHROMIUM = chemin d'un autre Chromium si celui de Playwright n'est pas installé ; PYTHON = python3 par défaut (python sous Windows)
+const PY = process.env.PYTHON || 'python3';
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined, args: ['--force-color-profile=srgb', '--disable-lcd-text', '--font-render-hinting=none'] });
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
 page.on('pageerror', e => console.error('PAGEERR', e.message));
 const issues = [];
@@ -28,24 +30,26 @@ for (const c of only) {
     if (await page.evaluate(() => window.overflow)) issues.push(`${name} image ${s + 1} : contenu trop haut`);
     await page.screenshot({ path: path.join(dir, `${name}-${s + 1}.png`) });
   }
-  execFileSync('python3', ['-c', `
+  execFileSync(PY, ['-c', `
 import sys,glob
 from PIL import Image
-fs=sorted(glob.glob(sys.argv[1]+'/*-[1-5].png')); ims=[Image.open(f).convert('RGB').resize((432,768)) for f in fs]
+fs=sorted(glob.glob(sys.argv[1]+'/*-[0-9]*.png'),key=lambda f:int(f.rsplit('-',1)[1][:-4])); ims=[Image.open(f).convert('RGB').resize((432,768)) for f in fs]
 S=Image.new('RGB',(len(ims)*442+10,788),'#1b1f27')
 for i,im in enumerate(ims): S.paste(im,(10+i*442,10))
 S.save(sys.argv[1]+'/planche.jpg',quality=88)`, dir]);
   console.log('→', name);
 }
-execFileSync('python3', ['-c', `
+// une vue d'ensemble par groupe : première lettre des identifiants (A, D, P en v3 ; A, B pour les variantes de la semaine)
+const GROUPS = CAR === 'carousels' ? '' : [...new Set(DATA.carousels.map(c => (c.id || '')[0]).filter(Boolean))].join('');
+execFileSync(PY, ['-c', `
 import sys,glob
 from PIL import Image
-for g in (['A','D','P'] if sys.argv[2]!='carousels' else ['']):
+for g in (list(sys.argv[2]) or ['']):
  fs=sorted(glob.glob(sys.argv[1]+'/'+g+'*/planche.jpg')); ims=[Image.open(f) for f in fs]
  if ims:
   w=ims[0].width//2; h=ims[0].height//2; cols=2; rows=(len(ims)+1)//2
   S=Image.new('RGB',(cols*w,rows*h),'#1b1f27')
   for i,im in enumerate(ims): S.paste(im.resize((w,h)),((i%cols)*w,(i//cols)*h))
-  S.save(sys.argv[1]+'/apercu'+('-'+g if g else '-30')+'.jpg',quality=85)`, OUT, CAR]);
+  S.save(sys.argv[1]+'/apercu'+('-'+g if g else '-30')+'.jpg',quality=85)`, OUT, GROUPS]);
 if (issues.length) console.log('À vérifier :\n' + issues.join('\n')); else console.log('Aucun débordement.');
 await browser.close(); server.close();
