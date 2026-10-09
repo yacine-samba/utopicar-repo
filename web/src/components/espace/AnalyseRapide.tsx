@@ -3,11 +3,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { lienLeboncoin } from "@/lib/analyse/import";
-import { inputCls } from "@/lib/cx";
+import { cx, inputCls } from "@/lib/cx";
 import { Ico } from "./Icones";
 
-/** Champ « collez le lien » du tableau de bord : ouvre l'analyse et lance l'import tout de suite. */
-export function AnalyseRapide({ titre, texte }: { titre: string; texte: string }) {
+/** Champ « collez le lien » du tableau de bord : ouvre l'analyse et lance l'import tout de suite.
+    `compact` : le champ seul, aligné à gauche, pour l'en-tête du tableau de bord (qui porte déjà le titre). */
+export function AnalyseRapide({ titre, texte, compact = false }: { titre?: string; texte?: string; compact?: boolean }) {
   const router = useRouter();
   const id = useId();
   const [v, setV] = useState("");
@@ -17,14 +18,22 @@ export function AnalyseRapide({ titre, texte }: { titre: string; texte: string }
     if (!l) return setErr("Collez le lien d'une annonce Leboncoin (il commence par https://www.leboncoin.fr/). Pour un autre site, utilisez « Coller le texte ».");
     router.push(`/app/analyser?lien=${encodeURIComponent(l)}`);
   };
+  const Enveloppe = compact ? "div" : "section";
   return (
-    <section aria-labelledby={`${id}-t`} className="relative overflow-hidden rounded-3xl border border-o/30 bg-[radial-gradient(120%_120%_at_50%_0%,rgb(255_90_31/0.18),transparent_65%)] px-5 py-7 text-center sm:px-10 sm:py-10">
-      <h2 id={`${id}-t`} className="font-display text-2xl font-semibold sm:text-3xl">
-        {titre}
-      </h2>
-      <p className="mx-auto mt-2 max-w-2xl text-ink-2">{texte}</p>
+    <Enveloppe
+      aria-labelledby={compact ? undefined : `${id}-t`}
+      className={compact ? "w-full" : "relative overflow-hidden rounded-3xl border border-o/30 bg-[radial-gradient(120%_120%_at_50%_0%,rgb(255_90_31/0.18),transparent_65%)] px-5 py-7 text-center sm:px-10 sm:py-10"}
+    >
+      {!compact && (
+        <>
+          <h2 id={`${id}-t`} className="font-display text-2xl font-semibold sm:text-3xl">
+            {titre}
+          </h2>
+          <p className="mx-auto mt-2 max-w-2xl text-ink-2">{texte}</p>
+        </>
+      )}
       <form
-        className="mx-auto mt-6 flex max-w-2xl flex-col gap-3 sm:flex-row"
+        className={cx("flex flex-col gap-3 sm:flex-row", !compact && "mx-auto mt-6 max-w-2xl")}
         onSubmit={(e) => {
           e.preventDefault();
           aller(v);
@@ -52,7 +61,7 @@ export function AnalyseRapide({ titre, texte }: { titre: string; texte: string }
             }}
             inputMode="url"
             autoComplete="off"
-            placeholder="https://www.leboncoin.fr/ad/voitures/…"
+            placeholder={compact ? "Collez le lien d'une annonce Leboncoin" : "https://www.leboncoin.fr/ad/voitures/…"}
             aria-invalid={!!err}
             aria-describedby={err ? `${id}-e` : undefined}
             className={`${inputCls} min-h-14 pl-12 text-base`}
@@ -74,6 +83,6 @@ export function AnalyseRapide({ titre, texte }: { titre: string; texte: string }
           </Link>
         </p>
       )}
-    </section>
+    </Enveloppe>
   );
 }

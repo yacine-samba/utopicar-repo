@@ -1,22 +1,21 @@
 import Link from "next/link";
-import { titreVehicule } from "@/lib/titre";
 import { compteBenef } from "@/lib/benef";
 import { debutPeriode, type Compte } from "@/lib/compte";
 import { familleEspace, nomFormule, type Icone } from "@/lib/espace";
 import { BENEF, GUIDE, OFFRES, prixTxt } from "@/lib/offres";
 import { supabaseServeur } from "@/lib/supabase/serveur";
-import { EN_STOCK, joursStock, margePrevue, margeReelle, STATUTS_PARC, statsParc, type Vehicule } from "@/lib/parc";
+import { EN_STOCK, joursStock, margePrevue, margeReelle, statsParc, type Vehicule } from "@/lib/parc";
 import { ListeRapports } from "@/components/benef/ListeRapports";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { AnalyseRapide } from "@/components/espace/AnalyseRapide";
 import { ProjetAchat } from "@/components/espace/ProjetAchat";
 import { GraphMarges, type BarreMarge } from "@/components/benef/GraphMarges";
-import { Ico } from "@/components/espace/Icones";
 import { BoutonRechercher, RechercheRapide } from "@/components/espace/RechercheRapide";
 import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
 import { phraseAccueil } from "@/lib/orientation";
 import { CartePremiersPas } from "@/components/espace/PremiersPasCompte";
+import { Affaires, AlertesParc, Chiffre, EnTeteTableau as EnTeteComplet, EtapesParc, eur, Outil, TitreSection, type EtapeParc } from "@/components/espace/Tableau";
 
 /** Téléphone : deux boutons qui ouvrent une fenêtre, au lieu des grands blocs « collez le lien » et « rechercher ». */
 function ActionsMobile({ recherche }: { recherche: boolean }) {
@@ -34,7 +33,6 @@ async function dernieresRecherches() {
   return (data ?? []) as Recherche[];
 }
 
-const eur = (v: number | null) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 
 function Tuile({ l, v, sous, alerte, lien }: { l: string; v: string; sous?: React.ReactNode; alerte?: boolean; lien?: { href: string; l: string } }) {
   return (
@@ -167,9 +165,18 @@ async function TableauComplet({ c }: { c: Compte }) {
   });
   alertes.sort((a, b) => (a.lvl === "bad" ? 0 : 1) - (b.lvl === "bad" ? 0 : 1));
 
-  const comptes = (["repere", "achete", "preparation", "en_vente", "vendu"] as const).map((s) => [s, vivants.filter((v) => v.statut === s).length] as const);
-  const total = comptes.reduce((s, [, k]) => s + k, 0);
-  const TONS: Record<string, string> = { repere: "bg-ink-3/40", achete: "bg-o3/70", preparation: "bg-warn/80", en_vente: "bg-o", vendu: "bg-ok" };
+  const ETAPES = [
+    ["repere", "Repérées", "bg-ink-3"],
+    ["achete", "Achetées", "bg-o3"],
+    ["preparation", "En préparation", "bg-warn"],
+    ["en_vente", "En vente", "bg-o"],
+    ["vendu", "Vendues", "bg-ok"],
+  ] as const;
+  const etapes: EtapeParc[] = ETAPES.map(([s, l, ton]) => {
+    const vs = vivants.filter((v) => v.statut === s);
+    return { cle: s, l, ton, n: vs.length, photos: vs.map((v) => v.photos?.[0]).filter((p): p is string => !!p) };
+  });
+  const total = etapes.reduce((s, e) => s + e.n, 0);
 
   const barres: BarreMarge[] = [
     ...vivants.filter((v) => v.statut === "vendu").map((v) => ({ v, m: margeReelle(v) })).filter((x) => x.m != null)
@@ -177,45 +184,98 @@ async function TableauComplet({ c }: { c: Compte }) {
     ...prevues.map(({ v, m }) => ({ id: v.id, nom: v.titre, marge: m!, prevue: true })),
   ].slice(0, 12);
 
+  // « En bref » : les trois choses à savoir en arrivant, en mots simples
+  const critiques = alertes.filter((a) => a.lvl === "bad").length;
+  const resume = [
+    semaineGo?.length ? `${semaineGo.length} affaire${semaineGo.length > 1 ? "s" : ""} GO cette semaine` : "Aucune affaire GO cette semaine",
+    alertes.length ? `${alertes.length} point${alertes.length > 1 ? "s" : ""} à surveiller${critiques ? `, dont ${critiques} critique${critiques > 1 ? "s" : ""}` : ""}` : "Parc à jour",
+    c.illimite ? `${c.utilisees} analyse${c.utilisees > 1 ? "s" : ""} ce mois` : `${c.restantes} analyse${c.restantes > 1 ? "s" : ""} restante${c.restantes > 1 ? "s" : ""}`,
+  ];
 
   return (
-    <div className="grid gap-8">
-      <EnTeteTableau c={c} texte={`${nomFormule(c)} · votre parc, vos marges et le marché.`} />
+    <div className="grid gap-10">
+      <EnTeteComplet
+        prenom={c.prenom}
+        sous="Collez une annonce : marge nette, prix d'offre et plafond en une minute."
+        resume={resume}
+        action={
+          <>
+            <div className="hidden sm:block">
+              <AnalyseRapide compact />
+            </div>
+            <div className="sm:hidden">
+              <BoutonAnalyser className="w-full justify-center" />
+            </div>
+          </>
+        }
+      />
       <CartePremiersPas c={c} />
 
-      <section aria-labelledby="tb-pipe" className="carte grid gap-5 p-5">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 id="tb-pipe" className="font-display text-lg font-semibold">Parc automobile</h2>
-          <span className="flex items-baseline gap-4 text-sm">
-            <span className="text-ink-3">{total} véhicule{total > 1 ? "s" : ""} suivi{total > 1 ? "s" : ""}</span>
-            <Link href="/app/parc" className="text-o2 underline-offset-4 hover:underline">Gérer le parc</Link>
-          </span>
-        </div>
-        <div className="flex h-8 overflow-hidden rounded-xl" role="img" aria-label={comptes.map(([s, k]) => `${STATUTS_PARC[s]} : ${k}`).join(", ")}>
-          {total ? comptes.filter(([, k]) => k).map(([s, k]) => (
-            <span key={s} className={`grid place-items-center text-xs font-semibold text-bg0 ${TONS[s]}`} style={{ flex: k }}>{k}</span>
-          )) : <span className="grid flex-1 place-items-center bg-glass text-xs text-ink-3">Aucun véhicule</span>}
-        </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3">
-          {comptes.map(([s, k]) => (
-            <span key={s} className="flex items-center gap-1.5"><span className={`size-2.5 rounded-full ${TONS[s]}`} aria-hidden="true" />{STATUTS_PARC[s]} <b className="num text-ink-2">{k}</b></span>
-          ))}
-        </div>
-        <h3 className="sr-only">Chiffres clés</h3>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
-          <Kpi l="En stock" v={String(st.enStock)} s={`${vivants.filter((v) => v.statut === "repere").length} repérée(s)`} />
-          <Kpi l="Capital immobilisé" v={eur(st.capital)} s="achats et frais engagés" />
-          <Kpi l="Marge réalisée" v={eur(st.margeTotale)} s={`${st.vendus} vente${st.vendus > 1 ? "s" : ""}`} ton={st.margeTotale < 0 ? "bad" : st.margeTotale > 0 ? "ok" : undefined} />
-          <Kpi l="Marge moyenne" v={eur(st.margeMoyenne)} s="par voiture vendue" ton={st.margeMoyenne != null && st.margeMoyenne < 750 ? "warn" : undefined} />
-          <Kpi l="Rotation moyenne" v={st.rotation != null ? `${st.rotation} j` : "—"} s="de l'achat à la vente" />
-          <Kpi l="Marge en attente" v={eur(prevues.length ? attente : null)} s={prevues.length ? `${prevues.length} voiture(s) du stock` : "indiquez le prix conseillé dans le parc"} ton={prevues.length && attente < 0 ? "bad" : undefined} />
+      <section aria-labelledby="tb-chiffres">
+        <h2 id="tb-chiffres" className="sr-only">Chiffres clés</h2>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Chiffre i={0} fort icone="rentabilite" l="Marge réalisée ce mois" v={eur(st.margeMois)} ton={st.margeMois < 0 ? "bad" : undefined}
+            s={<>Au total : <b className="num text-ink-2">{eur(st.margeTotale)}</b> sur {st.vendus} vente{st.vendus > 1 ? "s" : ""}</>} />
+          <Chiffre i={1} icone="parc" l="Marge en attente" v={eur(prevues.length ? attente : null, true)} ton={!prevues.length ? undefined : attente < 0 ? "bad" : "ok"}
+            s={prevues.length ? `${prevues.length} voiture${prevues.length > 1 ? "s" : ""} du stock` : "Indiquez le prix conseillé dans le parc"} />
+          <Chiffre i={2} icone="credits" l="Capital immobilisé" v={eur(st.capital)} s={`${st.enStock} voiture${st.enStock > 1 ? "s" : ""} en stock, achats et frais`} />
+          <Chiffre i={3} icone="historique" l="Rotation moyenne" v={st.rotation != null ? `${st.rotation} j` : "—"} ton={st.rotation != null && st.rotation > 45 ? "warn" : undefined}
+            s={st.margeMoyenne != null ? <>De l&apos;achat à la vente · marge moyenne <b className="num text-ink-2">{eur(st.margeMoyenne)}</b></> : "De l'achat à la vente"} />
         </div>
       </section>
 
-      <section aria-labelledby="tb-marges" className="carte grid gap-4 p-5">
-        <h2 id="tb-marges" className="font-display text-lg font-semibold">Marge par voiture</h2>
-        <GraphMarges barres={barres} />
+      <section aria-labelledby="tb-parc">
+        <TitreSection id="tb-parc" aside={`${total} voiture${total > 1 ? "s" : ""} suivie${total > 1 ? "s" : ""}`} lien={{ href: "/app/parc", l: "Gérer le parc" }}>
+          Votre parc
+        </TitreSection>
+        <EtapesParc etapes={etapes} lien="/app/parc" />
       </section>
+
+      <div className="grid gap-10 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+        <section aria-labelledby="tb-best">
+          <TitreSection id="tb-best" lien={{ href: "/app/rapports", l: "Tous les rapports" }}>Les meilleures affaires de la semaine</TitreSection>
+          {semaineGo?.length ? (
+            <Affaires affaires={semaineGo.slice(0, 3)} />
+          ) : (
+            <p className="carte p-6 text-ink-2">Rien au-dessus de votre seuil cette semaine. Cherchez sous la cote dans la recherche, ou analysez une annonce.</p>
+          )}
+        </section>
+        <section aria-labelledby="tb-alertes">
+          <TitreSection id="tb-alertes" aside={alertes.length ? `${alertes.length} au total` : undefined}>À surveiller</TitreSection>
+          {alertes.length ? (
+            <AlertesParc alertes={alertes.slice(0, 5).map((a) => ({ href: `/app/parc/${a.v.id}`, titre: `${a.v.immat ? `${a.v.immat} · ` : ""}${a.v.titre}`, txt: a.txt, lvl: a.lvl }))} />
+          ) : (
+            <p className="carte flex items-center gap-3 p-5 text-sm text-ink-2">
+              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ok/15 text-ok" aria-hidden="true">✓</span>
+              Rien à signaler : durées de stock, prix d&apos;achat et marges sont dans les clous.
+            </p>
+          )}
+        </section>
+      </div>
+
+      <div className="grid gap-10 lg:grid-cols-2">
+        <section aria-labelledby="tb-marges" className="carte grid content-start gap-4 p-5 sm:p-6">
+          <h2 id="tb-marges" className="font-display text-xl font-semibold tracking-tight">Marge par voiture</h2>
+          <GraphMarges barres={barres} />
+        </section>
+        <section aria-labelledby="tb-analyses" className="carte grid content-start gap-4 p-5 sm:p-6">
+          <h2 id="tb-analyses" className="font-display text-xl font-semibold tracking-tight">Analyses du mois</h2>
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-5">
+            {[
+              ["Analyses", c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`, c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`],
+              ["Affaires GO", String(go.length), `sur ${n} annonce${n > 1 ? "s" : ""}`],
+              ["Marge moyenne des GO", eur(go.length ? go.reduce((s, r) => s + (r.marge ?? 0), 0) / go.length : null), "estimée avant achat"],
+              ["Taux de GO", n ? `${Math.round((go.length / n) * 100)} %` : "—", "des annonces analysées"],
+            ].map(([l, v, s]) => (
+              <div key={l} className="min-w-0">
+                <dt className="text-sm text-ink-3">{l}</dt>
+                <dd className="num mt-1 font-display text-2xl font-semibold">{v}</dd>
+                <dd className="text-xs text-ink-3">{s}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </div>
 
       {recherches && (
         <>
@@ -228,89 +288,22 @@ async function TableauComplet({ c }: { c: Compte }) {
         </>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section aria-labelledby="tb-best" className="grid content-start gap-3">
-          <div className="flex items-baseline justify-between gap-3">
-            <h2 id="tb-best" className="font-display text-lg font-semibold">Les meilleures affaires de la semaine</h2>
-            <Link href="/app/rapports" className="shrink-0 whitespace-nowrap text-sm text-o2 underline-offset-4 hover:underline">Rapports</Link>
-          </div>
-          {semaineGo?.length ? (
-            <ul className="grid gap-2">
-              {semaineGo.map((r) => (
-                <li key={r.id}>
-                  <Link href={`/app/rapports/${r.id}`} className="carte flex items-center justify-between gap-3 p-3 transition hover:border-o/40">
-                    <span className="min-w-0">
-                      <span className="block truncate font-medium">{titreVehicule(r.titre)}</span>
-                      <span className="text-xs text-ink-3">{r.verdict} · prix {eur(r.prix)}{r.note != null ? ` · ${r.note}/100` : ""}</span>
-                    </span>
-                    <b className={`num shrink-0 ${(r.marge ?? 0) >= 0 ? "text-ok" : "text-bad"}`}>{r.marge != null ? `${r.marge >= 0 ? "+" : ""}${eur(r.marge)}` : "—"}</b>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="carte p-5 text-sm text-ink-2">Rien au-dessus de votre seuil cette semaine. Cherchez sous la cote dans la recherche, ou analysez une annonce.</p>
-          )}
-        </section>
-
-        <section aria-labelledby="tb-alertes" className="grid content-start gap-3">
-          <div className="flex items-baseline justify-between gap-2">
-            <h2 id="tb-alertes" className="font-display text-lg font-semibold">À surveiller dans le parc</h2>
-            <span className="text-sm text-ink-3">{alertes.length ? `${alertes.filter((a) => a.lvl === "bad").length} critique(s), ${alertes.length} au total` : ""}</span>
-          </div>
-          {alertes.length ? (
-            <ul className="grid gap-2">
-              {alertes.slice(0, 6).map((a, i) => (
-                <li key={i}>
-                  <Link href={`/app/parc/${a.v.id}`} className={`carte flex gap-3 p-3 text-sm transition hover:border-o/40 ${a.lvl === "bad" ? "border-bad/35" : "border-warn/30"}`}>
-                    <span className={`w-1 shrink-0 rounded-full ${a.lvl === "bad" ? "bg-bad" : "bg-warn"}`} aria-hidden="true" />
-                    <span>
-                      <b className="block font-medium">{a.v.immat ? `${a.v.immat} · ` : ""}{a.v.titre}</b>
-                      <span className="text-ink-2">{a.txt}</span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="carte p-5 text-sm text-ink-2">Aucune alerte : durées de stock, prix d&apos;achat et marges sont dans les clous.</p>
-          )}
-        </section>
-      </div>
-
-      <section aria-labelledby="tb-analyses">
-        <h2 id="tb-analyses" className="mb-3 font-display text-lg font-semibold">Analyses du mois</h2>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Kpi l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} s={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} ton={!c.illimite && c.restantes <= 3 ? "warn" : undefined} />
-          <Kpi l="Affaires GO repérées" v={String(go.length)} s={`sur ${n} annonce${n > 1 ? "s" : ""}`} />
-          <Kpi l="Marge moyenne des GO" v={eur(go.length ? go.reduce((s, r) => s + (r.marge ?? 0), 0) / go.length : null)} s="estimée avant achat" />
-          <Kpi l="Marge réalisée ce mois" v={eur(st.margeMois)} s="voitures vendues ce mois" />
-        </div>
-      </section>
-
       <section aria-labelledby="tb-outils">
-        <h2 id="tb-outils" className="mb-3 font-display text-lg font-semibold">Outils</h2>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <TitreSection id="tb-outils">Vos outils</TitreSection>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {([
             ["/app/recherche", "recherche", "Recherche", "Le marché par génération, sous la cote, avec alertes e-mail"],
             c.illimite ? ["/app/cote", "cote", "Cote du marché", "Coller un relevé, placer une voiture"] : ["/app/estimation", "estimation", "Estimer une cote", "Vos critères, notre base d'annonces"],
             ["/app/messages", "messages", "Messages Leboncoin", c.messages ? "Premier message automatique, boîte de réception" : "Option de Benef Pro"],
-          ] as [string, Icone, string, string][]).map(([href, ico, l, d]) => (
-            <Link key={href} href={href} className="carte grid gap-2 p-4 transition hover:border-o/40">
-              <Ico nom={ico} className="size-5 text-o2" />
-              <span className="font-medium">{l}</span>
-              <span className="text-xs text-ink-3">{d}</span>
-            </Link>
+          ] as [string, Icone, string, string][]).map(([href, ico, l, d], i) => (
+            <Outil key={href} i={i} href={href} icone={ico} l={l} d={d} />
           ))}
         </div>
       </section>
 
       <section aria-labelledby="tb-derniers">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 id="tb-derniers" className="font-display text-lg font-semibold">Derniers rapports</h2>
-          <Link href="/app/rapports" className="text-sm text-o2 underline-offset-4 hover:underline">Tous les rapports</Link>
-        </div>
-        <ListeRapports rapports={derniers ?? []} comparateur={false} choixVue={false} vide="Aucun rapport pour le moment : cliquez sur « Analyser une annonce »." />
+        <TitreSection id="tb-derniers" lien={{ href: "/app/rapports", l: "Tous les rapports" }}>Derniers rapports</TitreSection>
+        <ListeRapports rapports={derniers ?? []} comparateur={false} choixVue={false} vide="Aucun rapport pour le moment : collez le lien d'une annonce en haut de la page." />
       </section>
     </div>
   );
@@ -319,16 +312,6 @@ async function TableauComplet({ c }: { c: Compte }) {
 /* Hors des composants : l'heure courante n'est lue qu'au rendu serveur de la page. */
 const ilYa = (jours: number) => Date.now() - jours * 86400000;
 const joursDepuis = (d: string) => Math.round((Date.now() - new Date(d).getTime()) / 86400000);
-
-function Kpi({ l, v, s, ton }: { l: string; v: string; s?: string; ton?: "ok" | "warn" | "bad" }) {
-  return (
-    <div className="carte p-4">
-      <p className="text-xs text-ink-3">{l}</p>
-      <p className={`num mt-1 font-display text-2xl font-semibold ${ton === "ok" ? "text-ok" : ton === "warn" ? "text-warn" : ton === "bad" ? "text-bad" : ""}`}>{v}</p>
-      {s && <p className="mt-0.5 text-xs text-ink-3">{s}</p>}
-    </div>
-  );
-}
 
 async function TableauBenef({ c }: { c: Compte }) {
   const sb = await supabaseServeur();
