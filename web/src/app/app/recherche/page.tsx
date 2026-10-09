@@ -3,6 +3,7 @@ import { supabaseServeur } from "@/lib/supabase/serveur";
 import { VerrouBenef } from "@/components/benef/Verrou";
 import { ListeRapports } from "@/components/benef/ListeRapports";
 import { ExportCsv } from "@/components/benef/ExportCsv";
+import Link from "next/link";
 import { cx, inputCls } from "@/lib/cx";
 import { catalogue } from "@/lib/vehicules/catalogue";
 import { RechercheMarche } from "@/components/marche/RechercheMarche";
@@ -167,7 +168,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
 }
 
 function EnTete({ vue }: { vue: "marche" | "historique" | "annonces" | "rapports" }) {
-  const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
+  const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-center text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
   const sous = { marche: "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération.", historique: "Vos recherches, leurs photos et leurs résultats gardés. Une alerte e-mail s'allume sur chaque recherche.", annonces: "Toutes les annonces trouvées par vos recherches, gardées pour toujours.", rapports: "Vos rapports enregistrés, par verdict, marge, prix ou période." }[vue];
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
@@ -175,14 +176,13 @@ function EnTete({ vue }: { vue: "marche" | "historique" | "annonces" | "rapports
         <h1 className="font-display text-3xl font-semibold">Recherche</h1>
         <p className="mt-1 text-ink-2">{sous}</p>
       </div>
-      <div className="flex max-w-full flex-wrap items-center gap-2">
-      <a href="/app/recherche?vue=chercher" className="btn btn-o btn-sm gap-2"><span aria-hidden="true">+</span> Chercher une annonce</a>
-      <nav aria-label="Type de recherche" className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-line p-1">
-        <a href="/app/recherche" aria-current={vue === "historique" ? "page" : undefined} className={onglet(vue === "historique")}>Mes recherches</a>
-        <a href="/app/recherche?vue=annonces" aria-current={vue === "annonces" ? "page" : undefined} className={onglet(vue === "annonces")}>Annonces trouvées</a>
-        <a href="/app/recherche?vue=rapports" aria-current={vue === "rapports" ? "page" : undefined} className={onglet(vue === "rapports")}>Mes rapports</a>
+      {/* Un seul jeu d'onglets : « Chercher » est l'un d'eux, toujours visible comme actif quand le formulaire est ouvert. */}
+      <nav aria-label="Recherche" className="grid w-full grid-cols-2 gap-1 rounded-3xl border border-line p-1 sm:flex sm:w-auto sm:max-w-full sm:overflow-x-auto sm:rounded-full">
+        <Link href="/app/recherche?vue=chercher" aria-current={vue === "marche" ? "page" : undefined} className={onglet(vue === "marche")}>Chercher</Link>
+        <Link href="/app/recherche" aria-current={vue === "historique" ? "page" : undefined} className={onglet(vue === "historique")}>Mes recherches</Link>
+        <Link href="/app/recherche?vue=annonces" aria-current={vue === "annonces" ? "page" : undefined} className={onglet(vue === "annonces")}>Annonces trouvées</Link>
+        <Link href="/app/recherche?vue=rapports" aria-current={vue === "rapports" ? "page" : undefined} className={onglet(vue === "rapports")}>Mes rapports</Link>
       </nav>
-      </div>
     </div>
   );
 }

@@ -84,7 +84,7 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
           </select>
         </label>
         <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Série</span>
+          <span className="text-ink-2">Génération</span>
           <select value={gen} onChange={(e) => { setGen(e.target.value); raz(); }} className={inputCls}>
             <option value="">Toutes</option>
             {options.gens.map((k) => <option key={k} value={k}>{noms.gens[k] ?? k.split(" ").pop()!.toUpperCase()}</option>)}
@@ -117,7 +117,7 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
                   // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
                   <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-28 w-40 rounded-xl border border-line object-cover max-sm:h-44 max-sm:w-full" />
                 ) : (
-                  <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">photo bientôt</span>
+                  <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">Sans photo</span>
                 )}
                 <div className="min-w-0">
                   <p className="truncate font-medium">{a.titre}</p>
