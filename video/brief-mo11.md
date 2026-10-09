@@ -142,8 +142,8 @@ Minutage cible provisoire, grille de 120 BPM (temps de 0,5 s, mesure de 2 s). À
 | Jour 1 | 4,6 → 5,8 | le calcul devient le compteur « PRIX AFFICHÉ 2 900 € » ; palettes SAMEDI · 13:00 | « Samedi, treize heures. » | élan |
 | Accumulation | 5,8 → 11,7 | six avant / après en ligne de partage, dans un seul mouvement de caméra ; six débits ; le prix roule vers le haut sans s'arrêter ; la carte « Sous les sièges · une frite » | « Les sièges. L'odeur. Les enjoliveurs. » | plaisir qui monte, rire |
 | Attente | 11,7 → 15,9 | 13:00 → 16:30, le soleil baisse et dore la voiture ; viseur, déclic ; la photo devient l'annonce ; J+4 ; deux messages | « Et là, tu attends le soleil. » « Photo 1. » | attente heureuse, beauté |
-| Chute | 15,9 → 20,3 | « 3 300 et je la prends. », virement, « + 400 € » géant, « − 109,60 € de prépa », la seule pause | « Quatre jours. Quatre cents de plus. » … « Ton samedi le mieux payé. » | fierté, rire |
-| Renversement | 20,3 → 27,8 | rembobinage jusqu'à 13:10 (lavée, encore rayée) ; carte « Avant la photo 1 » en trois lignes ; l'ongle glisse sur la rayure ; « Carrossier · 300 € » barré | « Ceux qui gagnent ne réparent pas tout. » « L'ongle glisse sur la rayure ? Quinze euros de polish. » | soulagement, valeur |
+| Chute | 15,9 → 20,3 | « 3 300 et je la prends. », virement, « + 400 € » géant, « − 109,60 € de prépa », la seule pause | « Quatre cents de plus. » … « Ton samedi le mieux payé. » | fierté, rire |
+| Renversement | 20,3 → 27,8 | rembobinage jusqu'à 13:10 (lavée, encore rayée) ; carte « Avant la photo 1 » en trois lignes ; la plume entoure l'éraflure du bouclier, ✗ ; l'ongle glisse sur la rayure ; « Carrossier · 300 € » barré | « Ceux qui gagnent ne réparent pas tout. » « Le pare-chocs, tu le laisses. » « L'ongle glisse sur la rayure ? Quinze euros de polish. » | soulagement, valeur |
 | Boucle | 27,8 → 30,5 | la poussière revient, l'image 0 revient | « La prochaine fois que tu te dis… » | relance |
 
 ## La grille de transposition
@@ -158,8 +158,8 @@ Minutage cible provisoire, grille de 120 BPM (temps de 0,5 s, mesure de 2 s). À
 | Accumulation | 5,8 → 11,7 s | 9 débits qui font fondre la marge | 7 débits tamponnés « prévu ✓ » | 6 avant / après : lavage, phares, sièges, odeur, rayure, enjoliveurs. La voix en nomme trois : « Les sièges. L'odeur. Les enjoliveurs. » | plaisir qui monte, rire |
 | Gag | 9,0 s | « Kebab · après la 4e visite · − 12 € » | « Kebab · pour fêter · prévu ✓ » | **« Sous les sièges · 3,40 € · une frite »**, sur une carte « trouvé », pas une notification bancaire | rire |
 | Attente | 11,7 → 15,9 s | J+1 → J+23, la nuit, « Et là, personne n'appelle. » | J+1 → J+6, « Et là, ça sonne. » | 13:00 → 16:30, la lumière dore la voiture : « Et là, tu attends le soleil. » Déclic : « Photo 1. » La photo devient l'annonce, J+4, deux messages | attente heureuse, beauté |
-| Chute | 15,9 → 20,3 s | « Il négocie. Tu acceptes. Bénéfice, 47 euros. Même pas un plein. » | « Bénéfice : 974 euros. » / « Même le kebab était prévu. » | « Quatre jours. Quatre cents de plus. » « + 400 € » géant, « − 109,60 € de prépa », la seule pause, puis « Ton samedi le mieux payé. » | fierté, rire |
-| Renversement | 20,3 → 27,8 s | « Ceux qui gagnent font le calcul à l'envers. » 4 500 − 950 − 800 = 2 750 ; « À 3 500, tu passes ton tour. » | « Tout s'est joué au jour 0. » Trois décisions | Rembobinage à 13:10. « Ceux qui gagnent ne réparent pas tout. » Carte : « Ça se voit → tu le fais » · « Travaux > 15 % du prix → en l'état » · « Ici : 500 € max · pare-chocs 600 € ✗ ». Verdict sur la rayure de cette Clio : « L'ongle glisse sur la rayure ? Quinze euros de polish. » ; « Carrossier · 300 € » barré | soulagement, valeur |
+| Chute | 15,9 → 20,3 s | « Il négocie. Tu acceptes. Bénéfice, 47 euros. Même pas un plein. » | « Bénéfice : 974 euros. » / « Même le kebab était prévu. » | « Quatre cents de plus. » « + 400 € » géant, « − 109,60 € de prépa », la seule pause, puis « Ton samedi le mieux payé. » | fierté, rire |
+| Renversement | 20,3 → 27,8 s | « Ceux qui gagnent font le calcul à l'envers. » 4 500 − 950 − 800 = 2 750 ; « À 3 500, tu passes ton tour. » | « Tout s'est joué au jour 0. » Trois décisions | Rembobinage à 13:10. « Ceux qui gagnent ne réparent pas tout. » Carte : « Ça se voit → tu le fais » · « Travaux > 15 % du prix → en l'état » · « Ici : 500 € max · pare-chocs 600 € ✗ », et l'éraflure du bouclier entourée puis barrée : « Le pare-chocs, tu le laisses. » Verdict sur la rayure de cette Clio : « L'ongle glisse sur la rayure ? Quinze euros de polish. » ; « Carrossier · 300 € » barré | soulagement, valeur |
 | Boucle | 27,8 → 30,5 s | « La prochaine fois que tu te dis… » | idem | idem ; la Clio redevient sale, l'image 0 revient | relance |
 | Ce qu'on enregistre | | la liste des frais, la formule | les trois décisions | les six coups et leur prix, la photo 1 et sa lumière, le test de l'ongle, la règle des 15 % | |
 | Ce qu'on envoie | | « Même pas un plein », le kebab | « Même le kebab était prévu » | « une frite » sous les sièges, « Ton samedi le mieux payé. » | |
@@ -252,17 +252,17 @@ sur x = 540, dans la colonne 140 → 940 ; le point visé de chaque coup reste e
 | 13,9 → 14,5 | Avancée lente de la caméra, parallaxe (ombre au sol et décor sur des calques séparés) ; un viseur se referme sur la voiture ; déclic (14,5). « Photo 1 · trois quarts avant ». | « Photo 1. » (14,25-14,85) | déclic d'appareil |
 | 14,8 → 15,6 | La photo du viseur devient la carte d'annonce « 3 330 € · 2008 · 150 000 km » (aucun site, aucune annonce voisine). Sur le même panneau, les palettes passent de 16:30 à J+4. | | palettes |
 | 15,3 · 15,7 | Deux messages se posent sur la vignette de la photo : « Belle photo. Toujours dispo ? », puis « Je passe demain ? ». | | vibration, notes de message |
-| 15,95 → 16,2 | Bulle : « 3 300 et je la prends. » | « Quatre jours. » (15,95-16,60) | |
+| 15,95 → 16,2 | Bulle : « 3 300 et je la prends. » | (« Quatre jours. » retiré au round 2 : J+4 le dit) | |
 | 16,8 | « Virement reçu · + 3 300,00 € ». | « Quatre cents de plus. » (16,90-17,70) | |
 | 17,3 → 17,9 | Le compteur se fond dans un « **+ 400 €** » géant, petit libellé « SUR TON PLAN » au-dessus ; tout le reste s'éteint ; dessous, « − 109,60 € de prépa » en 44 px au moins, visible pendant toute la pause. | | arrêt de bande à 18,0, silence : **la seule pause** (18,0-18,7) |
 | 18,7 | « *Ton samedi le mieux payé.* » s'écrit à la lumière sous le 400. | « Ton samedi le mieux payé. » (18,70-20,15) | voix seule |
 | 20,4 → 21,1 | Rembobinage : le soleil remonte, les notifications repartent, les enjoliveurs bruns reviennent, la rayure, le voile des vitres et le jaune des phares reviennent ; la voiture reste lavée. Palettes SAMEDI · 13:10. Le compteur redescend en roulant et se replie dans le titre de la carte. | | bande qui rembobine, souffle inversé |
 | 21,1 | Carte de verre « Avant la photo 1 » ; « *Pas tout.* » s'écrit en Fraunces sur « pas tout ». | « Ceux qui gagnent ne réparent pas tout. » (21,15-22,60) | la musique repart au premier temps de 22,0 (mesure 55) |
-| 22,5 · 23,0 · 23,5 | Trois lignes, une par temps : « Ça se voit → *tu le fais* » · « Travaux > 15 % du prix → *en l'état* » · « Ici : 500 € max · Pare-chocs · 600 € », que la lumière barre d'un ✗ (23,9). | | une note par ligne |
+| 22,5 · 23,0 · 23,5 | Trois lignes, une par temps : « Ça se voit → *tu le fais* » · « Travaux > 15 % du prix → *en l'état* » · « Ici : 500 € max · Pare-chocs · 600 € », que la lumière barre d'un ✗ (24,2). La caméra glisse vers le bouclier (23,3) : la plume entoure l'éraflure du coin avant gauche (23,4-23,9), jamais réparée, et le ✗ s'y répète. | « Le pare-chocs, tu le laisses. » (23,30-24,81, round 2) | une note par ligne ; la plume |
 | 24,5 | La caméra plonge sur l'aile de la Clio lavée, rayure visible. | | |
-| 25,3 | La plume devient l'ongle : un trait court traverse la rayure et glisse, petit scintillement. | « L'ongle glisse sur la rayure ? » (24,75-26,00) | frottement court |
-| 25,9 → 27,8 | Le verdict s'écrit sous la rayure et reste 1,9 s : « L'ongle glisse ? *Tu lustres.* » « Polish · 15 € » s'allume (26,3) ; à côté, « Carrossier · 300 € » se barre (26,9). | « Quinze euros de polish. » (26,25-27,35) | note ; note grave sur la barre |
-| 27,8 | La carte se replie, la caméra revient au cadre de l'image 0 ; la poussière revient en front inverse, « LAVE-MOI » se retrace, « 2 000 → 2 900 » et « telle quelle ? » se rallument. | « La prochaine fois que tu te dis… » (28,40-29,90) | la musique boucle sur la mesure |
+| 25,3 | La plume devient l'ongle : un trait court traverse la rayure et glisse, petit scintillement. | « L'ongle glisse sur la rayure ? » (25,11-26,12) | frottement court |
+| 25,9 → 27,8 | Le verdict s'écrit sous la rayure et reste 1,9 s : « L'ongle glisse ? *Tu lustres.* » « Polish · 15 € » s'allume (26,3) ; à côté, « Carrossier · 300 € » se barre (26,9). | « Quinze euros de polish. » (26,42-27,43) | note ; note grave sur la barre |
+| 27,8 | La carte se replie, la caméra revient au cadre de l'image 0 ; la poussière revient en front inverse, « LAVE-MOI » se retrace, « 2 000 → 2 900 » et « telle quelle ? » se rallument. | « La prochaine fois que tu te dis… » (28,43-29,77) | la musique boucle sur la mesure |
 | 30,5 | = image 0 | → « Tu l'achètes 2 000… » | |
 
 Quelque chose de neuf toutes les 0,5 à 2 s ; une seule pause (18,0-18,7). L'ordre réel d'une préparation est
@@ -270,8 +270,10 @@ respecté : on lave d'abord, et le test de l'ongle se fait sur la voiture lavée
 
 ## La voix
 
-Simon (`mvhJVdVoTWVUtL4keT7W`, eleven_v3), ton de MO5 : le pote qui en a revendu cinquante. **64 mots écrits
-(« 2 000 » compte pour deux), 16 répliques, 91 syllabes dites.** Chronométrage : 5,6 syllabes par seconde (débit de
+Simon (`mvhJVdVoTWVUtL4keT7W`, eleven_v3), ton de MO5 : le pote qui en a revendu cinquante. **67 mots écrits
+(« 2 000 » compte pour deux), 16 répliques, 97 syllabes dites (compte de `scripts/vo-mo11.py`).** Round 2 : « Quatre
+jours. » sort du texte (les palettes affichent J+4), « Le pare-chocs, tu le laisses. » entre dans le renversement,
+où la voix se taisait 2,3 s pendant les trois règles. Chronométrage : 5,6 syllabes par seconde (débit de
 MO9 posée), 0,55 s au moins pour une réplique courte (MO9 : « Il accepte. » 0,63 s), 1,15 s pour « Samedi, treize
 heures. » (MO9 : « Jour 0, tu comptes. » 1,18 s), 0,2 à 0,4 s entre les phrases. Environ **17,5 s de parole**, film
 d'environ **30,5 s** : 1 s de marge avant 31,5 s si la prise est plus lente.
@@ -287,24 +289,24 @@ d'environ **30,5 s** : 1 s de marge avant 31,5 s si la prise est plus lente.
 | 7 | Les enjoliveurs. | 10,75-11,65 | 2 | 5 | × 1,2 |
 | 8 | Et là, tu attends le soleil. | 12,20-13,95 | 6 | 8 | × 1,15 |
 | 9 | Photo 1. | 14,25-14,85 | 2 | 3 | × 1,15 |
-| 10 | Quatre jours. | 15,95-16,60 | 2 | 3 | × 1,15 |
-| 11 | Quatre cents de plus. | 16,90-17,70 | 4 | 4 | × 1,15 |
-| 12 | Ton samedi le mieux payé. | 18,70-20,15 | 5 | 8 | × 1,15 |
-| 13 | Ceux qui gagnent ne réparent pas tout. | 21,15-22,60 | 7 | 8 | × 1,2 |
-| 14 | L'ongle glisse sur la rayure ? | 24,75-26,00 | 5 | 7 | × 1,2 |
-| 15 | Quinze euros de polish. | 26,25-27,35 | 4 | 6 | × 1,2 |
-| 16 | La prochaine fois que tu te dis… | 28,40-29,90 | 7 | 8 | × 1,15 |
+| 10 | Quatre cents de plus. | 16,90-17,70 | 4 | 4 | × 1,15 |
+| 11 | Ton samedi le mieux payé. | 18,70-20,15 | 5 | 8 | × 1,15 |
+| 12 | Ceux qui gagnent ne réparent pas tout. | 21,15-22,60 | 7 | 8 | × 1,2 |
+| 13 | Le pare-chocs, tu le laisses. | 23,30-24,81 | 5 | 7 | × 1,2 |
+| 14 | L'ongle glisse sur la rayure ? | 25,11-26,12 | 5 | 7 | × 1,2 |
+| 15 | Quinze euros de polish. | 26,42-27,43 | 4 | 6 | × 1,2 |
+| 16 | La prochaine fois que tu te dis… | 28,43-29,77 | 7 | 8 | × 1,15 |
 
 Pose (leçons de MO9 et MO10) : × 1,2 au plus, 0,2 à 0,4 s entre les phrases, pauses internes ramenées à 0,10-0,30 s ;
 mot à mot par faster-whisper *medium* (le *small* déforme les mots), bornes recalées sur l'enveloppe à 20 ms,
 retranscription de la pose pour vérifier qu'aucun mot n'est coupé ; une réplique de trop se coupe au montage plutôt
-que de régénérer. **Coupes si le film dépasse 31,5 s, dans cet ordre** : « Samedi, treize heures. » → « Samedi. »
-(les palettes affichent 13:00) ; puis « Quatre jours. » à l'écran seulement (les palettes affichent J+4).
+que de régénérer. **Coupe si le film dépasse 31,5 s** : « Samedi, treize heures. » → « Samedi. » (les palettes
+affichent 13:00). La deuxième coupe prévue, « Quatre jours. », est faite avant la génération (round 2).
 
 ### Texte ElevenLabs (une seule génération, à lancer quand l'utilisateur aura débloqué le compte)
 
-Voix `mvhJVdVoTWVUtL4keT7W`, modèle `eleven_v3`, **generations_count 1**, français. **494 caractères**, soit environ
-494 crédits (MO9 : 526). Demander le solde avant d'envoyer (leçon de MO9 : l'estimation ne vérifie pas le quota) ; ne
+Voix `mvhJVdVoTWVUtL4keT7W`, modèle `eleven_v3`, **generations_count 1**, français. **510 caractères**, soit environ
+510 crédits (MO9 : 526). Demander le solde avant d'envoyer (leçon de MO9 : l'estimation ne vérifie pas le quota) ; ne
 jamais relancer après un échec. L'ouverture B est dite à la fin, après une longue pause, dans la même génération
 (méthode de MO10).
 
@@ -312,8 +314,8 @@ jamais relancer après un échec. L'ouverture B est dite à la fin, après une l
 Tu l'achètes deux mille, tu la revends deux mille neuf cents. Ton aspirateur trouve ça donné.
 Samedi, treize heures. Les sièges. L'odeur. Les enjoliveurs.
 Et là… tu attends le soleil. Photo un.
-Quatre jours. Quatre cents de plus. [short pause] Ton samedi le mieux payé.
-Ceux qui gagnent ne réparent pas tout. L'ongle glisse sur la rayure ? Quinze euros de polish.
+Quatre cents de plus. [short pause] Ton samedi le mieux payé.
+Ceux qui gagnent ne réparent pas tout. Le pare-chocs, tu le laisses. L'ongle glisse sur la rayure ? Quinze euros de polish.
 La prochaine fois que tu te dis…
 [long pause]
 La revendre sale t'économise un après-midi. Et ça peut te coûter quatre cents euros.
@@ -321,7 +323,7 @@ La revendre sale t'économise un après-midi. Et ça peut te coûter quatre cent
 
 Script de pose : `scripts/vo-mo11.py` (méthode de `scripts/vo-mo9.py`), sorties dans `audio/vo-mo11/`
 (`vo-placed.wav`, `vo-timing.json` avec `dur` et `loop`). En attendant la prise, `--provisoire` y écrit un minutage
-estimé au même format (`"provisional": true`, film de 30,1 s) : le film lit ses repères dès maintenant. Marche à
+estimé au même format (`"provisional": true`, film de 30,15 s depuis le round 2) : le film lit ses repères dès maintenant. Marche à
 suivre une fois la prise déposée : `docs/timeline-mo11.md`, « La voix ».
 
 ## Les textes à l'écran (6 mots au plus chacun)
@@ -349,7 +351,7 @@ suivre une fois la prise déposée : `docs/timeline-mo11.md`, « La voix ».
 carrossier, trois cents » quitte la voix (le geste et la barre le disent) ; « Ceux qui gagnent ne réparent pas tout »
 n'oppose rien à rien, la carte donne la suite. Restent par choix : la personnification « Ton aspirateur trouve ça
 donné » (la blague de la série, `SKILL.md`, étape 1) ; les répliques en fragments (« Les sièges. L'odeur. Les
-enjoliveurs. », « Quatre jours. Quatre cents de plus. ») : chacune tombe sur un coup ou une palette, c'est la
+enjoliveurs. », « Le pare-chocs, tu le laisses. ») : chacune tombe sur un coup ou une palette, c'est la
 mécanique de MO5 ; le « peut » de l'ouverture B, qui garde l'exemple sans promesse. Note : 41 / 50 (direct 8,
 rythme 8, confiance 8, naturel 8, densité 9).
 
@@ -447,7 +449,7 @@ sur leur fichier de sortie.
 ## Ce qu'il me faut
 
 Rien pour avancer jusqu'au maquettage complet. Pour la voix : que l'utilisateur débloque ElevenLabs (abonnement ou
-attente) et donne son solde de crédits ; une génération d'environ 494 crédits suffit. Avant la publication : les
+attente) et donne son solde de crédits ; une génération d'environ 510 crédits suffit. Avant la publication : les
 chiffres de MO5 et de MO9 dans TikTok Studio, pour fixer les seuils de l'hypothèse ; et savoir si MO6 est publiée
 (l'ouverture C et le prix du polish en dépendent, voir `docs/timeline-mo11.md`).
 

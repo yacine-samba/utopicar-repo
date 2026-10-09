@@ -448,3 +448,146 @@ téléphone refait (`renders/phone-mo12.png`, 15 instants à 360 px). Les planch
 - Entre deux questions, la bulle reste vide 0,1 s (7,9 · 9,25 s).
 - Pendant 0,14 s (29,6 → 29,8 s), la liste du mardi rapetisse sur la C3 floue du fond, que la scène gardait déjà à 28 %.
 - Planches à 0,1 s et notes : pas refaites ; le round 3 de critique les refait.
+
+## Round 3 (9 octobre 2026, critique seule : le film n'a pas été modifié)
+
+Film jugé : `film-mo12/film.js` de 14 h 06, `index.html` de 13 h 50, `lib/kit47-pochette.js` de 7 h 28, `events.json` de
+14 h 04, mix de 14 h 04 (corrections du round 2). Depuis, seuls des documents ont changé (`find -newer film.js`).
+
+**Matériel regardé**
+- Planches toutes les 0,1 s : `renders/review/mo12-planche-0.1s-0-10.jpg`, `-10-20.jpg`, `-20-31.05.jpg`. Elles ont été
+  tirées de 14 h 26 à 14 h 58, après la dernière modification du film, et montrent bien le film jugé : écart moyen de
+  1,7 à 2,8 sur 255 avec les images fixes refaites au même instant, de 6,8 à 10,3 avec l'instant voisin. Les 311 images
+  regardées seconde par seconde (10 images de 270 × 480), puis recadrées sur la liste du mardi (24,0 · 25,0 · 25,1 ·
+  26,3 · 26,4 s) et sur le rembobinage (20,8 · 20,9 · 21,0 s).
+- Test téléphone refait : `renders/phone-mo12.png` (0 · 2,9 · 4,2 · 8,9 · 9,5 · 11,5 · 14,6 · 16,4 · 20,5 · 25,5 ·
+  26,9 · 28,9 s).
+- 17 images pleine définition refaites dans `renders/stills-mo12/` (0 · 2,9 · 7,1 · 8,4 · 13,7 · 15,9 · 17,3 · 20,9 ·
+  22,0 · 24,0 · 25,0 · 25,1 · 26,3 · 28,9 · 29,65 · 29,8 · 31,033 s).
+- Montage 540p avec le son (`render.mjs --draft`) et `qa_video.py` : voir « FAIL de `qa_video.py` » plus bas.
+- Son : `audio/mix-mo12.wav` et `audio/stems-mo12/` mesurés (réduction du limiteur toutes les 50 ms, attaque de chaque
+  bruitage), `docs/mix_report-mo12.txt`. **Rien n'a été écouté.**
+- Aucune erreur `PAGEERR` ni `CONSOLE` (`render.mjs --phone` et `--at`).
+
+**Notes**
+
+| Hook | Lisibilité 360 | Zones sûres | Mouvement | Variété / rythme | Marque | Voix (provisoire) | Son | Recette 47 / envie |
+|---|---|---|---|---|---|---|---|---|
+| 8 (8) | 7 (7) | 9 (9) | 7 (7) | 7 (7) | 8 (8) | 8 (8) | 7 (7) | 8 (7) |
+
+Entre parenthèses : round 2. Pas livrable en l'état (lisibilité, mouvement, variété, son < 8).
+
+**Mesures**
+- Boucle : écart moyen 0,095 sur 255 entre `t00.000` et `t31.033` (inchangé).
+- Plans calmes (écart moyen d'une image de planche à la suivante) : sous 0,6, seulement la pause voulue (18,4 → 19,4 s)
+  et 30,9 → 31,0 s ; sous 1,0, en plus 14,4 → 15,1 s (la pile de la déclaration) et 27,8 → 28,4 s (le verdict qui
+  s'écrit). L'ouverture bouge (caméra, reflet), mais rien de neuf n'entre avant les rouleaux de 2,22 s.
+- Tailles à 360 px (police × échelle ÷ 3) : nom d'un bandeau 13,3 px, valeur 15,4 px ; **chiffre de l'anneau d'un
+  bandeau 9,5 px, unité 5,4 px** ; chiffre de l'anneau d'une carte 15,3 px, unité 8,7 px ; lignes du contrôle 14,7 px ;
+  « vendre ≤ 9 sept. » 12,7 px ; « Vendu le 10/10/2026 · 11 h 16 » 11,3 px ; « Acheteur », « Beau-frère » et la
+  pastille « Essai » 10 px ; la mention 8,7 px.
+- Voix provisoire : 72 mots écrits, 20,15 s de parole, 2,32 mots par seconde de film (MO5 : 2,53 ; MO9 : 2,36),
+  3,57 mots par seconde de parole ; 0,30 s entre les phrases d'un même temps (0,45 s avant la phrase de boucle), aucun
+  chevauchement ; dernière réplique finie à 30,83 s pour un film de 31,05 s. Cohérent avec le brief.
+- Son, avant encodage : −14,2 LUFS, −3,7 dBTP (rapport). Chaque bruitage isolé attaque sur son repère (0 à 7 ms :
+  sonnette, tampon VENDUE, bulle, cartes 1 à 4, tapotements, déclaration, « 0,00 € », code, cloche du gag, « 20 min »,
+  tasse, « encore chaud. », bande, « Pochette : 78 € », « < 6 mois », contrôle d'achat barré) ; les repères suivent les
+  gestes vus sur les planches. Limiteur : réduction de plus de 3 dB sur 22 % du film et de plus de 6 dB sur 17 coups
+  (les quatre notes des cartes à 7,75 · 8,2 · 8,65 · 9,1 s, 12,0 → 12,55 s, 17,4 → 17,85 s, 29,1 s) : sans voix, la
+  normalisation monte tout de 14,9 dB et chaque bruitage creuse la musique de 6 à 9 dB.
+
+**Ce qui a progressé** : chaque question est posée sur sa carte (8,0 à 9,6 s, aussi à 360 px) ; les rangements dans la
+pochette ne font plus passer de texte sous le liseré ; le gag reste seul et plein jusqu'à « 20 min » ; « MAR 6 OCT »
+se lit à 360 px ; « vendre ≤ 9 sept. » ne se confond plus avec la fin de validité ; le verdict « refait le 6 oct. ·
+78 € » reste complet environ 0,8 s, avec PRÊTE ; le mardi sort en montant et en rapetissant, et la C3 revient sur un
+fond vide (29,65 · 29,8 s). La liste complète est propre de 26,4 à 29,4 s.
+
+### Les 3 problèmes les plus graves
+
+**1. Les durées de la pochette ne se lisent pas sur la liste à garder (22,9 → 29,5 s).** Le brief promet « les cinq
+pièces de la pochette, leur durée de validité » et veut des bandeaux « lisibles (nom, badge, valeur) ». Dans un
+bandeau, l'anneau passe à l'échelle 0,62 (`lib/kit47-pochette.js`, `paintDoc`, `const s = lerp(1, 0.62, b)`) : chiffre
+à 9,5 px et unité à 5,4 px à 360. Sur `phone-mo12.png` (25,5 et 26,9 s), on devine « 15 » et « 1 », jamais « j » ni
+« mois » : quatre durées sur cinq (situation administrative, cession, déclaration : 15 jours ; carte grise : 1 mois)
+manquent sur l'image qu'on enregistre. Seul le contrôle a sa règle en toutes lettres. Correction : dans un bandeau,
+l'anneau cède la place à sa durée écrite.
+- `lib/kit47-pochette.js` (module propre à MO12, aucun autre film ne le charge) : dans `doc()`, si `o.dur`, créer
+  `D.dur = el('div', 'kp-dur', D.root)` avec le texte ; dans `paintDoc()`, `const dB = D.dur ? sm(0.85, 1, b) : 0`,
+  opacité de `D.badge.r` multipliée par `1 − dB`, `set(D.dur, dB)` et `translate(22px, ${(o.hb − 38) / 2}px)` (le texte
+  entre une fois le bandeau formé), et `x0 = lerp(168, D.dur ? 184 : 104, b)` quand le bandeau a une durée.
+- `film-mo12/index.html` : `.kp-dur{position:absolute;left:0;top:0;font:700 38px Clash;line-height:38px;color:#ffb38a;white-space:nowrap}`
+  (12,7 px à 360).
+- `film-mo12/film.js`, `MD` : `dur: '6 mois' | '15 j' | '15 j' | '1 mois' | '15 j'`, et les lignes `xl2`, `xl6` à
+  `translate(184px, …)` au lieu de 104. Place mesurée sur le test téléphone : « Déclaration · ANTS » fait 356 px et
+  finirait à 540 pour « 0 € » à 637 ; « Carte grise » finirait à 381 pour « à barrer » à 511 (à vérifier avec
+  `KP.textW`).
+- Vérifier : `CUT=mo12 node scripts/render.mjs --phone 24.0,25.5,26.9,28.9` : cinq durées lisibles à 360 px.
+
+**2. La règle du contrôle arrive dans le désordre (24,0 → 26,4 s).** C'est la phrase à garder (« deux ans pour rouler,
+six mois pour vendre ») et chaque ligne entre par-dessus la liste. À 25,0 s (`t25.000.png`), « 2 ans pour rouler » est
+à moitié allumé sur « Situation adm. », pendant que le bandeau de la déclaration, qui tombe à travers la liste, cache
+« Cession » ; à 25,1 s, « Déclaration · ANTS » a retrouvé son texte et se pose sur « Carte grise », 50 px au-dessus de
+sa place ; à 26,3 s, « < 6 mois à sa carte grise » est à moitié allumé sur le haut de « Situation adm. ». Trois causes
+dans `film-mo12/film.js`, section M :
+- `set(xl2, g2)` et `set(xl6, g6)` : la ligne s'allume avec le ressort qui agrandit le bandeau, et son cadre
+  (`94 + 10(1 − g)` à `+ 44`) déborde sur le bandeau suivant (`102 + 52 g`) tant que `g < 0,9`. → `set(xl2, sm(0.88,
+  1, g2))`, `set(xl6, sm(0.88, 1, g6))` (le texte entre une fois la place faite, règle du conteneur qui se transforme).
+- `T.l2 = M('deuxans') − 0.05` (24,895 s) tombe pendant la chute de la cinquième carte (`T.m[4] + 0.36` = 24,86 s). →
+  après la définition de `T.m` : `T.l2 = Math.max(T.l2, T.m[4] + 0.36 + 0.3)` (25,16 s, la liste grandit une fois la
+  dernière carte posée), puis `CUT=mo12 node scripts/events.mjs` et `python3 scripts/audio-mo12.py` (la note
+  « 2 ans pour rouler » suit).
+- `const dk = 1 - sm(0.02, 0.22, dr) * (1 - sm(0.72, 0.95, dr))` : le texte d'une carte qui tombe revient à 72 % de sa
+  chute. → `sm(0.9, 1, dr)`.
+- Vérifier : `CUT=mo12 node scripts/at.mjs 24.9,25.0,25.1,25.2,25.3,26.2,26.3,26.4 renders/review/mo12-r3-regle.jpg 0.5` :
+  aucun texte sur un autre.
+
+**3. Le rembobinage commence par un fondu enchaîné (20,79 → 21,04 s).** Le brief veut « “20 min” redevient 11:20 » ;
+le film fond « 20 min », la tasse et « encore chaud. » pendant que la pile des cartes revient en fondu : à 20,9 s
+(planche), « 20 min », « encore chaud. », le gag, « Code de cession » et les bandeaux sont superposés à demi. Cause :
+`big0 = sm(T.big, T.big + 0.25, st) * (1 - sm(REW[0] - 0.05, REW[0] + 0.2, t))` éteint le chiffre en 0,25 s de film
+alors que le temps du récit `st` ne recule presque pas (`io` cubique : 0,08 s de récit pendant les 0,1 premières
+secondes), et les calques de la scène reviennent avec `1 − sm(0.2, 1, big0)`. C'est la seule transition du film qui
+reste un fondu enchaîné (`video/CLAUDE.md`, direction interdite), au début de l'ingrédient 7. Correction
+(`film-mo12/film.js`, `paint`) : un retour du chiffre en deux temps, comme l'aller.
+- `const back = S(t, REW[0] - 0.04, { f: 2.4, z: 1 })` ;
+- `big20` : `s20 × (1 − back)` dans sa transformation (il rapetisse à 0,457 et remonte en (686, 386), la case des
+  minutes), `minS` suit ; `set(L20, sm(T.big, T.big + 0.25, st) * (1 - sm(0.8, 1, back)))` ;
+- horloge : `mg` et `hg` multipliés par `1 − sm(0.7, 1, back)` (les cases « 11: » et « 20 » reviennent quand le 20
+  s'y pose) ;
+- `big0 = sm(T.big, T.big + 0.25, st) * (1 - sm(0.55, 0.9, back))` : le voile et la pile ne reviennent qu'une fois le 20
+  rentré ; la tasse garde sa sortie actuelle (elle monte et rapetisse).
+- Vérifier : `CUT=mo12 node scripts/at.mjs 20.8,20.86,20.92,20.98,21.04,21.1 renders/review/mo12-r3-rew.jpg 0.5` :
+  jamais deux scènes superposées, le 20 se pose dans l'horloge.
+
+### Les autres problèmes
+
+4. **Son (mesuré, pas écouté)** : 17 coups à plus de 6 dB de réduction du limiteur, 22 % du film à plus de 3 dB ; la
+   musique se creuse sous chaque note de carte. Tant que la voix est provisoire, `scripts/audio-mo12.py` peut plafonner
+   le gain de normalisation (par exemple + 8 dB quand `VT['provisional']`) ou baisser les rôles `ui`, `chime` et
+   `accent` de 4 dB ; cible : réduction ≤ 3 dB sur 95 % du film. Au retour de la basse (12,19 s), musique − 3 dB
+   pendant 0,4 s (round 2, point 14). À remesurer avec la vraie voix.
+5. **Transitoires de texte dans la scène** : à 8,4 s (`t08.400.png`), « Situation adm. » se lit au-dessus de la carte
+   « Contrôle » pendant que sa carte monte derrière (le texte entre à `sm(0.75, 0.97, a)` : `sm(0.9, 1, a)`) ; à 13,7 s
+   (`t13.700.png`), « 0,00 € » est coupé à mi-hauteur par la carte du virement. Une ou deux images chacune.
+6. **Au mardi, une carte qui tombe cache la liste** (24,0 s : « Cession », vide, sur « Contrôle » et « Situation
+   adm. ») : acceptable pendant le remplissage, à garder bref.
+7. **L'éclair** (28,8 → 29,1 s) : un zigzag de 26 px entre la carte du contrôle d'achat et la liste ; à 360 px, une
+   marque perdue (`phone-mo12.png`, 28,9 s). Le retirer, ou un trait qui va vraiment de « refait » au bandeau
+   « Contrôle ».
+8. **Ouverture** : rien de neuf n'entre de 0 à 2,22 s (le reflet, la vibration de 0,1 s, l'onde de « sonne » à 1,46 s),
+   et l'image 0 revient immobile de 30,2 à 31,05 s. La voix portera ce passage ; à revoir avec la vraie prise, et à
+   comparer à MO5, où « 1 500 € » puis « ? » s'écrivent dès l'image 0.
+9. **La bulle dit « Je suis devant. » de 5,5 à 7,8 s** pendant « Il demande les papiers » (round 2, point 12) : inchangé.
+10. **Variété** : de 7,8 à 17,0 s, la même forme (carte de verre, pile qui descend) revient neuf fois ; le gag et la
+    bande des clés la cassent. Entre 13,8 et 14,85 s, seule la caméra bouge.
+11. **Pendant « Contrôle : »** (24,16 s), l'image montre la carte « Carte grise » qui entre : une pulsation de l'anneau
+    ou du liseré du bandeau « Contrôle » sur `M('controle')` ramènerait l'œil en haut de la liste.
+
+### FAIL de `qa_video.py`
+
+QA_DRAFT
+
+### Ce qui n'a pas été vérifié
+
+Le son n'a pas été écouté. La voix est estimée : la vraie prise de Simon décidera de l'ouverture (0 → 2,2 s), de la
+bulle pendant « Il demande les papiers » et du limiteur. Le hook B n'a pas d'image propre à juger (même film).

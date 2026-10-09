@@ -84,9 +84,13 @@ HOOK_B = [
     ('hB2', "Trois voitures plus tard : 3 100.", ('+', 0.3), TH, 0.2),
 ]
 SANS_B = ('h1', 'h2', 'h3', 'proch')
-FOLD = 0.9            # la carte et l'escalier se replient en 0,9 s vers l'image 0 (brief : 30,5 → 31,4)
+FOLD = 1.1            # la carte et l'escalier se replient en 1,1 s vers l'image 0 (brief : 30,5 → 31,4)
 FOLD_B = 0.5          # version B : repli en 0,5 s, sans réplique de boucle (brief : 30,5 → 31,0)
-TAIL = 0.2            # le film finit 0,2 s après « dis… » : avec « Dix » à 0,10 s, 0,3 s entre les phrases à la boucle
+TAIL = 0.4            # le film finit 0,4 s après « dis… » : avec « Dix » à 0,10 s, 0,5 s entre les phrases à la boucle
+# Round 1 (9 octobre) : TAIL 0,2 → 0,4 et FOLD 0,9 → 1,1, boucle inchangée (30,35 s), film de 31,25 → 31,45 s. La
+# jointure de boucle de la musique (dernier temps de la reprise → premier temps de l'image 0) passe de 292 à ≈ 490 ms,
+# soit un temps de la grille (500 ms) ; le repli a la place de finir la carte et l'escalier avant que la rue revienne.
+# À revérifier dans docs/mix_report-mo13.txt (ligne « boucle ») une fois la vraie prise posée.
 GAP = 0.3             # entre deux phrases, au moins (ancres 'max', mode provisoire)
 
 # Coupes du brief si le film dépasse 31,5 s, dans cet ordre (--coupes k applique les k premières), sans regénérer :

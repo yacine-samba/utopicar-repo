@@ -233,7 +233,7 @@ for k in range(5): cue(E_['sam'] + 0.12 + k * 0.07, 1119, 'tick', 3, pan=-0.3 + 
 # les six coups : chaque préparation a son outil, sa ligne de partage, puis son débit sur une note qui monte
 C_ = COUPS
 cue(C_['lavage']['t0'], 3215, 'tool', 2, st=-2, dur=0.7, pan=-0.2, pan2=0.2, what='lavage : le jet suit la ligne')
-cue(C_['phares']['t0'], 850, 'tool', 2, start=2.0, dur=0.6, pan=-0.1, what='phares : ponçage court')
+cue(C_['phares']['t0'] + 0.1, 850, 'tool', 2, start=2.0, dur=0.6, pan=-0.1, what='phares : ponçage court (+ 0,1 s : le débit du lavage, sur la croche, tombe 0,1 s avant le départ)')
 cue(C_['sieges']['t0'], 1835, 'tool', 2, start=3.0, dur=0.65, what='sièges : aspiration humide')
 cue(C_['odeur']['t0'] + 0.13, 1832, 'tool', 2, dur=0.6, pan=0.15, what="odeur : la molette, puis le souffle (après les pièces)")
 cue(C_['rayure']['t0'] + 0.13, 3087, 'tool', 2, dur=0.65, pan=0.1, what='rayure : le polish passé à la main')
@@ -275,7 +275,8 @@ cue(REW[0], 1092, 'accent', 1, dur=REW[1] - REW[0] + 0.1, gain=-6, what='rembobi
 cue(E_['card'], 3120, 'whoosh', 2, dur=0.7, lead=0.08, what='carte « Avant la photo 1 »')
 cue(E_['pas'], 3005, 'orn', 2, dur=0.6, gain=-1, what='« Pas tout. » s\'écrit')
 for k, x in enumerate(E_['l']): cue(x, 2369, 'orn', 2, st=2 * k, dur=0.45, gain=-3, what=f'règle {k + 1}')
-cue(E_['x'], 3005, 'orn', 2, st=-3, dur=0.5, what='la lumière barre « Pare-chocs · 600 € »')
+cue(E_['pc'] + 0.25, 2589, 'orn', 3, st=5, dur=0.45, gain=-5, what="la plume entoure l'éraflure du pare-chocs (round 2)")
+cue(E_['x'], 3005, 'orn', 2, st=-3, dur=0.5, what='« tu le laisses » : la lumière barre « Pare-chocs · 600 € » et le bouclier')
 cue(E_['dive2'], 1492, 'whoosh', 2, st=2, dur=0.7, lead=0.1, gain=-3, what="plongée sur l'aile")
 cue(E_['nail'], 1898, 'tool', 2, start=0.65, dur=0.4, lo=2000, gain=-2, what="l'ongle glisse sur la rayure")
 cue(E_['nail'] + 0.2, 2589, 'orn', 3, st=7, dur=0.35, gain=-4, what='… petit scintillement')

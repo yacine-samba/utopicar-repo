@@ -547,7 +547,9 @@ prorata de leurs syllabes, nombres comptés comme ils se disent.
 | B2 | Trois voitures plus tard : 3 100. | 1,50-3,21 | 1,72 | 2,04 | |
 
 **Résultat** : 17,8 s de parole estimée ; la voix finit à 31,02 s ; la carte se replie à 30,35 s (`loop`) ; film
-proposé de **31,25 s** (0,2 s après « dis… », soit 0,3 s avant « Dix » quand la vidéo boucle). La version B finit
+proposé de **31,25 s** (0,2 s après « dis… », soit 0,3 s avant « Dix » quand la vidéo boucle), porté à **31,45 s** au
+round 1 de la critique (`TAIL` 0,4 s, repli de 1,1 s, boucle inchangée : jointure de la musique à ≈ 500 ms ; voir
+`docs/review_log-mo13.md`). La version B finit
 sur la carte, sans réplique de boucle : 30,85 s. Les contrôles du script passent : 0,3 s au moins entre deux phrases,
 aucune réplique ne déborde sur la boucle, la seule pause garde ses 0,8 s, l'ouverture B finit 1,8 s avant « Tu
 gardes ».
@@ -616,7 +618,7 @@ avant la pose.
 `film-mo13/index.html`, `film-mo13/film.js` (copie de `film-mo9/` adaptée, sur `lib/kit47.js`, lu et jamais modifié),
 `film-mo13/kit-mo13.js` (modules nouveaux : compteur et palettes sous une seule plaque de verre, marche de verre peint,
 étiquette en papier, ticket de frais, silhouettes, fonds flous en petit canvas). `timeline-mo13.json` : 60 i/s, 120 BPM,
-1080 × 1920, 31,25 s (B : 30,85 s), poster = image 0. Le film lit `audio/vo-mo13/vo-timing.json` au chargement et
+1080 × 1920, 31,45 s depuis le round 1 (B : 30,85 s), poster = image 0. Le film lit `audio/vo-mo13/vo-timing.json` au chargement et
 attache chaque geste à son mot (`marks`) ; `window.EVENTS` donne les temps des gestes (`CUT=mo13 node
 scripts/events.mjs` → `film-mo13/events.json`, 93 clés). Tous les temps ci-dessous bougeront avec la vraie prise.
 
@@ -643,7 +645,7 @@ scripts/events.mjs` → `film-mo13/events.json`, 93 clés). Tous les temps ci-de
 | 24,11 → 25,41 | rembobinage (silhouettes, compteur à l'envers jusqu'à 1 500) | Ceux qui gagnent… |
 | 25,41 · 26,0 · 26,5 · 27,0 | la carte ; une ligne par temps, frais réels dessous | vente |
 | 27,17 · 27,42 · 27,94 | la marche vide s'allume ; « 3 100 − 600 = » ; « *prix max* 2 500 € » claque, « Ta 4e » | quatrième · deux mille cinq cents |
-| 30,35 → 31,25 | la carte et l'escalier se replient, l'image 0 revient | La prochaine fois… |
+| 30,35 → 31,45 | la carte file par le haut, l'escalier se replie (→ 30,9), puis l'image 0 revient (round 1) | La prochaine fois… |
 
 **Écarts au brief** :
 - Minutage : celui de la voix provisoire (modèle ajusté sur MO9 et MO10, § 9), pas les créneaux du brief ; tout est

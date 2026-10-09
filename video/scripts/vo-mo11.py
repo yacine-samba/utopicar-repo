@@ -37,8 +37,8 @@ VOIX, MODELE_TTS = 'mvhJVdVoTWVUtL4keT7W', 'eleven_v3'
 TEXTE = """Tu l'achètes deux mille, tu la revends deux mille neuf cents. Ton aspirateur trouve ça donné.
 Samedi, treize heures. Les sièges. L'odeur. Les enjoliveurs.
 Et là… tu attends le soleil. Photo un.
-Quatre jours. Quatre cents de plus. [short pause] Ton samedi le mieux payé.
-Ceux qui gagnent ne réparent pas tout. L'ongle glisse sur la rayure ? Quinze euros de polish.
+Quatre cents de plus. [short pause] Ton samedi le mieux payé.
+Ceux qui gagnent ne réparent pas tout. Le pare-chocs, tu le laisses. L'ongle glisse sur la rayure ? Quinze euros de polish.
 La prochaine fois que tu te dis…
 [long pause]
 La revendre sale t'économise un après-midi. Et ça peut te coûter quatre cents euros."""
@@ -59,10 +59,11 @@ LINES = [
     ('enjo', "Les enjoliveurs.", ('max', 10.75, 0.3), TV, 0.1),    # le coup rayure passe sans voix
     ('soleil', "Et là, tu attends le soleil.", ('max', 12.20, 0.3), TC, 0.3),
     ('photo', "Photo 1.", ('max', 14.25, 0.3), TC, 0.1),
-    ('j4', "4 jours.", ('max', 15.95, 0.3), TC, 0.1),
     ('c400', "400 de plus.", ('max', 16.90, 0.3), TC, 0.1),
     ('paye', "Ton samedi le mieux payé.", ('max', 18.70, 1.0), TC, 0.12),    # la seule pause, sous « + 400 € »
     ('ceux', "Ceux qui gagnent ne réparent pas tout.", ('max', 21.15, 1.0), TF, 0.12),  # après le rembobinage
+    ('pchocs', "Le pare-chocs, tu le laisses.", ('max', 23.30, 0.25), TF, 0.12),   # round 2 : la 3e règle, sur la
+                                                                                     # voiture (la plume trace l'éraflure)
     ('ongle', "L'ongle glisse sur la rayure ?", ('max', 24.75, 0.3), TF, 0.15),
     ('polish', "15 euros de polish.", ('max', 26.25, 0.3), TF, 0.1),
     ('proch', "La prochaine fois que tu te dis…", ('max', 28.40, 1.0), TL, 0.12),   # la carte se replie avant
@@ -81,10 +82,10 @@ MARKS = dict(
     sieges=('sieg', 'sieges'), odeur=('odeur', 'lodeur'), enjo=('enjo', 'enjoliveurs'),          # les coups nommés
     etla=('soleil', 'et'), attends=('soleil', 'attends'), soleil=('soleil', 'soleil'),           # 13:00 → 16:30
     photo=('photo', 'photo'), un=('photo', '1'),                                                  # viseur, déclic
-    quatre=('j4', '4'), jours=('j4', 'jours'),                                                    # la vente : bulle, virement
     n400=('c400', '400'), plus=('c400', 'plus'),                                                  # le chiffre final : « + 400 € »
     ton2=('paye', 'ton'), samedi2=('paye', 'samedi'), mieux=('paye', 'mieux'), paye=('paye', 'paye'),   # la chute
     ceux=('ceux', 'ceux'), gagnent=('ceux', 'gagnent'), pas=('ceux', 'pas'), tout=('ceux', 'tout'),     # la méthode
+    pchocs=('pchocs', 'parechocs'), laisses=('pchocs', 'laisses'),                                      # l'éraflure, le ✗
     ongle=('ongle', 'longle'), glisse=('ongle', 'glisse'), rayure=('ongle', 'rayure'),                  # le verdict
     quinze=('polish', '15'), euros=('polish', 'euros'), polish=('polish', 'polish'),
     prochaine=('proch', 'la'), dis=('proch', 'dis'),                                              # la boucle
@@ -92,7 +93,9 @@ MARKS = dict(
 # Corrections à l'oreille, une fois la prise écoutée (indices de la transcription affichée) :
 FIX = {}              # {indice: (début, fin)} en temps de prise, mesuré sur l'enveloppe à 20 ms
 SPAN = {}             # {clé de réplique: (i0, i1)} si l'alignement automatique se trompe de mots
-# Coupes du brief si le film dépasse 31,5 s, dans cet ordre : {'sam': 'Samedi.'}, puis {'sam': 'Samedi.', 'j4': ''}.
+# Coupe du brief si le film dépasse 31,5 s : {'sam': 'Samedi.'}. « Quatre jours. » (la deuxième coupe prévue) est
+# retiré du texte au round 2, avant la génération : les palettes affichent J+4, et ses mots vont à « Le pare-chocs,
+# tu le laisses. » (la règle des 15 % appliquée à la voiture, dans le silence de 2,3 s du renversement).
 # Le texte gardé reprend le début de la réplique ; '' la retire (ses repères restent, sans durée, à sa place).
 COUPE = {}
 

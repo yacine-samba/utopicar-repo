@@ -26,15 +26,18 @@
     si: M('sieges') - 0.33, od: M('odeur') - 0.2, en: LT('enjo').t - 0.2,      // l'arrêt de la ligne tombe sur le mot
     sun0: M('etla') - 0.3, sun1: ME('soleil') + 0.02, sbas: M('etla') + 0.4, heure: M('soleil') - 0.35,
     vf: ME('soleil') - 0.04, lab1: M('photo') - 0.06, click: M('un') - 0.1,
-    ann: M('un') + 0.16, j4: M('un') + 0.3, msg1: ME('un') + 0.5, msg2: M('quatre') - 0.3,
-    bubble: M('quatre') - 0.05, credit: M('n400') - 0.12, big: M('plus') - 0.12, prepa: M('plus') + 0.25,
+    ann: M('un') + 0.16, j4: M('un') + 0.3, msg1: ME('un') + 0.5, msg2: M('n400') - 1.25,   // « Quatre jours. » retiré
+    bubble: M('n400') - 1.0, credit: M('n400') - 0.12,                                         // (round 2) : J+4 le dit
+    big: M('plus') - 0.12, prepa: M('plus') + 0.25,
     pay1: M('ton2') - 0.03, pay2: M('mieux') - 0.2,
     ceux: M('ceux') - 0.04, pas: M('pas') - 0.04,
     nail: M('glisse') + 0.04, verd: ME('rayure') + 0.06, pol: M('quinze') + 0.04, carr: M('polish') - 0.03,
   };
   T.ph = (T.lav + T.si) / 2; T.ra = (T.od + T.en) / 2;
   T.gag = (T.si + 0.7 + T.od) / 2 + 0.05;
-  T.l = [ME('tout') + 0.02, ME('tout') + 0.52, ME('tout') + 1.02]; T.x = T.l[2] + 0.42;
+  T.l = [ME('tout') + 0.02, ME('tout') + 0.52, ME('tout') + 1.02];
+  T.pc = T.l[2] - 0.1;                                                // « Le pare-chocs, » : la plume trace l'éraflure
+  T.x = Math.max(T.l[2] + 0.42, M('laisses') - 0.25);                 // « tu le laisses. » : ✗ sur la carte et le bouclier
   T.dive2 = M('ongle') - 0.3; T.cw = LOOP + 0.42;                     // le calcul se réécrit pendant « La prochaine fois… »
   const REW = [ME('paye') + 0.36, M('ceux') - 0.05];
   T.card = REW[1];
@@ -43,12 +46,15 @@
   const COUPS = [
     { key: 'lavage', t0: T.lav, x0: 0, xm: 905, x1: 1809, y0: -30, y1: 1262, seq: 'lavage', ti: 'Lavage · haute pression', am: '8,00', P: [905, 640], s: 1.06, Y: 960, ry: 2, rx: 2 },
     { key: 'phares', t0: T.ph, x0: 30, xm: 895, x1: 1130, y0: 425, y1: 850, lay: ['phares'], seq: 'phares', ti: 'Phares · kit + vernis', am: '25,00', P: [895, 636], s: 2.2, Y: 900, ry: -5, rx: 1 },
-    { key: 'sieges', t0: T.si, x0: 488, xm: 1140, x1: 1380, y0: 46, y1: 412, lay: ['parebrise'], seq: 'sieges', ti: 'Sièges · injecteur loué', am: '30,00', P: [1140, 225], s: 1.9, Y: 900, ry: -1, rx: 4 },
+    { key: 'sieges', t0: T.si, x0: 488, xm: 1140, x1: 1380, y0: 46, y1: 412, lay: ['parebrise'], seq: 'sieges', ti: 'Sièges · injecteur loué', am: '30,00', P: [1150, 230], s: 2.4, Y: 900, ry: -1, rx: 4 },
     { key: 'odeur', t0: T.od, x0: 1378, xm: 1540, x1: 1704, y0: 46, y1: 356, lay: ['vitres'], seq: 'odeur', ti: 'Odeur · filtre à charbon', am: '15,00', P: [1540, 200], s: 2.5, Y: 900, ry: 4, rx: 3 },
     { key: 'rayure', t0: T.ra, x0: 1150, xm: 1252, x1: 1356, y0: 556, y1: 712, seq: 'rayure', ti: 'Rayure · polish', am: '15,00', P: [1252, 634], s: 2.75, Y: 900, ry: 5, rx: -1 },
     { key: 'enjo', t0: T.en, x0: 1170, xm: 1256, x1: 1792, y0: 800, y1: 1186, lay: ['enjo'], after: ['neufs'], seq: 'roue', ti: 'Enjoliveurs · jeu de 4', am: '20,00', P: [1256, 991], s: 2.3, Y: 900, ry: 3, rx: -4 },
   ];
-  const TD = COUPS.map((c) => c.t0 + 0.72);            // le débit tombe quand la ligne a fini
+  // le débit tombe quand la ligne a fini, arrondi à la croche de la musique : « + 400 € » (T.big) tombe sur un premier
+  // temps du mix (scripts/audio-mo11.py), la grille est donc T.big + 0,25 k (round 2 : lavage et phares tombaient
+  // 0,107 et 0,067 s hors de la croche)
+  const TD = COUPS.map((c) => T.big + 0.25 * Math.round((c.t0 + 0.72 - T.big) / 0.25));
   const TI = TD.map((x) => x + 0.33);                   // l'étincelle arrive au compteur : impulsion
   const DV = [80, 90, 90, 60, 70, 40];                  // 2 900 → 3 330 € ; aucune valeur n'est lue à un coup
   const DM = [10, 30, 40, 15, 25, 20];                  // l'horloge avance à chaque coup : 13:00 → 15:20
@@ -101,7 +107,7 @@
   const pool = el('div', 'glow', LW, 'left:-260px;top:1040px;width:1600px;height:620px;background:radial-gradient(closest-side,rgba(255,170,90,.42),rgba(255,120,50,.12) 60%,transparent);visibility:hidden');
   const CAR = { left: 40, top: 650, w: 1000 };
   const C = E.car(LW, { img: carI, w: CAR.w, left: CAR.left, top: CAR.top, reflect: 0, layers: [
-    ['poussiere', A + 'clio3-poussiere.png'], ['phares', A + 'clio3-phares.png'], ['parebrise', A + 'clio3-pare-brise.png'],
+    ['poussiere', A + 'clio3-poussiere.png'], ['parechocs', A + 'clio3-parechocs.png'], ['phares', A + 'clio3-phares.png'], ['parebrise', A + 'clio3-pare-brise.png'],
     ['vitres', A + 'clio3-vitres.png'], ['rayure', SVGU.rayure], ['enjo', SVGU.enjo], ['neufs', SVGU.neufs]] });
   E.prepSun(C, carI);
   await Promise.all([C.base, ...Object.values(C.L)].map((e) => e.decode().catch(() => 0)));
@@ -130,9 +136,11 @@
   })();
   // contour du passage de l'embout entre xs et xe : bords qui ondulent, attaque arrondie
   const bandPoly = (xs, xe) => {
-    const n = Math.max(2, Math.ceil((xe - xs) / 18)), top = [], bot = [];
-    for (let i = 0; i <= n; i++) { const x = lerp(xs, xe, i / n); top.push([x, BAND.c(x) - BAND.hw + 7 * noise(21, x / 40)]); bot.push([x, BAND.c(x) + BAND.hw + 7 * noise(22, x / 37)]); }
-    const cy = BAND.c(xe), lead = [0.35, 0.7, 0.92].map((a) => [xe + 16 * Math.sin(Math.PI * a), cy - BAND.hw * Math.cos(Math.PI * a)]);
+    // round 2 : l'attaque fait 70 px (16 px laissaient un bord vertical droit de 190 px quand l'embout s'arrête) ; la
+    // partie droite finit 30 px avant xe, le bout arrondi passe sous la tête de l'embout (± 40 px) tant qu'elle avance
+    const xb = Math.max(xs, xe - 30), R = Math.min(70, xe + 40 - xb), n = Math.max(2, Math.ceil((xb - xs) / 18)), top = [], bot = [];
+    for (let i = 0; i <= n; i++) { const x = lerp(xs, xb, i / n); top.push([x, BAND.c(x) - BAND.hw + 7 * noise(21, x / 40)]); bot.push([x, BAND.c(x) + BAND.hw + 7 * noise(22, x / 37)]); }
+    const cy = BAND.c(xb), lead = [0.2, 0.4, 0.6, 0.8, 0.95].map((a) => [xb + R * Math.sin(Math.PI * a), cy - BAND.hw * Math.cos(Math.PI * a)]);
     return [...top, ...lead, ...bot.reverse()];
   };
   const dust = Array.from({ length: 38 }, (_, i) => {
@@ -162,6 +170,22 @@
   sv('path', { d: NAILP, fill: 'rgba(255,226,207,.22)', stroke: '#fff4ea', 'stroke-width': 4, 'stroke-linejoin': 'round' }, nail);
   sv('circle', { cy: 16, r: 6.5, fill: '#fff' }, nail);
   const twk = sv('path', { d: 'M0 -34 L6 -6 L34 0 L6 6 L0 34 L-6 6 L-34 0 L-6 -6 Z', fill: '#fff4ea', display: 'none' }, tools);
+  // l'éraflure du pare-chocs (round 2) : la plume l'entoure à la lumière (traits du contour), puis le ✗ de la carte s'y
+  // répète. Boucle à la main autour de la lèvre frottée (x 30 → 280, dirty-mo11.py), un peu de dépassement à la fin.
+  const PCC = [158, 990], PCR = [158, 64], PCA = Math.atan(0.40);
+  const pcPts = []; for (let i = 0; i <= 64; i++) { const a = -2.6 + (2 * Math.PI + 0.5) * i / 64, rr = 1 + 0.05 * noise(41, i / 9);
+    const ex = PCR[0] * rr * Math.cos(a), ey = PCR[1] * rr * Math.sin(a); pcPts.push([PCC[0] + ex * Math.cos(PCA) - ey * Math.sin(PCA), PCC[1] + ex * Math.sin(PCA) + ey * Math.cos(PCA)]); }
+  const pcD = 'M' + pcPts.map(([x, y]) => `${f3(x)} ${f3(y)}`).join(' L');
+  const pcG = sv('g', { display: 'none' }, tools);
+  const pcGlow = sv('path', { d: pcD, fill: 'none', stroke: '#ff7a3a', 'stroke-width': f3(13 / C.k), filter: 'url(#softt)', opacity: 0.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, pcG);
+  const pcLine = sv('path', { d: pcD, fill: 'none', stroke: '#ffe2cf', 'stroke-width': f3(3.4 / C.k), opacity: 0.95, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, pcG);
+  const pcLen = pcLine.getTotalLength();
+  for (const e of [pcGlow, pcLine]) e.setAttribute('stroke-dasharray', `${f3(pcLen)} ${f3(pcLen)}`);
+  const pcPen = sv('g', {}, pcG); sv('circle', { r: f3(26 / C.k), fill: '#ff7a3a', opacity: 0.6, filter: 'url(#softt)' }, pcPen); sv('circle', { r: f3(6.5 / C.k), fill: '#fff' }, pcPen);
+  const PX = [352, 1004], PXr = 36, pxD = `M${PX[0] - PXr} ${PX[1] - PXr} L${PX[0] + PXr} ${PX[1] + PXr} M${PX[0] + PXr} ${PX[1] - PXr} L${PX[0] - PXr} ${PX[1] + PXr}`;
+  const pxG = sv('path', { d: pxD, fill: 'none', stroke: '#ff8a4c', 'stroke-width': f3(14 / C.k), filter: 'url(#softt)', opacity: 0.6, 'stroke-linecap': 'round' }, pcG);
+  const pxL = sv('path', { d: pxD, fill: 'none', stroke: '#ff5a1f', 'stroke-width': f3(6 / C.k), 'stroke-linecap': 'round' }, pcG);
+  const pxLen = pxL.getTotalLength(); for (const e of [pxG, pxL]) e.setAttribute('stroke-dasharray', `${f3(pxLen)} ${f3(pxLen)}`);
 
   // ---------- caméras ----------
   const camTf = (c) => `translate(540px,${FY}px) perspective(1700px) rotateX(${f3(c.rx)}deg) rotateY(${f3(c.ry)}deg) scale(${f3(c.s)}) translate(${f3(-c.x)}px,${f3(-c.y)}px)`;
@@ -178,7 +202,7 @@
     [T.fold - 0.1, { x: 540, y: 966, s: 1.0, rx: 1.5, ry: 0 }, { f: 0.5, z: 1 }],
     [T.fold + 0.4, { x: 516, y: 992, s: 1.035, rx: 3, ry: -4 }, { f: 0.5, z: 1 }],   // la caméra glisse avant le lavage : pas de plan figé
     ...COUPS.map((c, i) => { const a = aim(c.P, c.s, c.Y); return [c.t0 - (i ? 0.38 : 0.45), { ...a, rx: c.rx, ry: c.ry }, i ? CAMP : { f: 0.6, z: 1 }]; }),
-    [T.en + 0.78, { x: 540, y: 985, s: 1.0, rx: 2, ry: 0 }, { f: 0.6, z: 1 }],
+    [T.en + 0.78, { x: 540, y: 940, s: 0.97, rx: 2, ry: 0 }, { f: 0.6, z: 1 }],   // round 2 : le toit reste sous les palettes (y 985, s 1 : il les touchait)
     [T.sun0 + 0.15, { x: 540, y: 818, s: 0.95, rx: 3, ry: -2 }, { f: 0.38, z: 1 }],
     [T.vf - 0.15, { x: 548, y: 838, s: 1.02, rx: 2, ry: 0.5 }, { f: 0.42, z: 1 }],
     [T.click + 0.1, { x: 540, y: 850, s: 1.06, rx: 2, ry: 1.5 }, { f: 0.3, z: 1 }],
@@ -196,13 +220,15 @@
   // pendant la carte : orbite lente (ry − 3° → + 5°) et poussée (0,90 → 0,98), la caméra ne se pose plus (round 1)
   const FKs = keysOf([[REW[0], cr0], [REW[0] + 0.05, { x: 540, y: 930, s: 0.9, rx: 4, ry: -3 }, { f: 0.6, z: 1 }],
     [T.card + 0.1, { x: 548, y: 905, s: 0.98, rx: 3.5, ry: 5 }, { f: 0.22, z: 1 }],
+    [T.l[1], { ...aim([360, 920], 1.3, 1240), rx: 3, ry: 6 }, { f: 0.7, z: 1 }],               // round 2 : vers le pare-chocs (≈ 200 px)
     [T.dive2, { ...aim([1252, 634], 2.7, 960), rx: 1, ry: 3 }, { f: 0.75, z: 1 }],
-    [T.verd, { ...aim([1262, 630], 2.8, 950), rx: 1.8, ry: 4.5 }, { f: 0.22, z: 1 }]]);           // poussée lente sur le verdict
+    [T.verd, { ...aim([1272, 628], 2.85, 950), rx: 2.6, ry: 8 }, { f: 0.22, z: 1 }]]);           // poussée lente et orbite sur le verdict
+    // (round 2 : ry 4,5 → 8, sinon 0,6-0,9 / 255 entre deux images à 0,1 s de 27,0 à 27,5 s)
   const camF = (t) => {
     const c = {}; for (const a of AX) c[a] = track(t, FKs[a]);
     c.x += noise(9, t * 0.3) * 6 / c.s; c.y += noise(10, t * 0.3) * 6 / c.s; c.ry += noise(11, t * 0.3) * 0.5;
     c.y += 6 * lineNudge(t) * (1 - sm(T.dive2, T.dive2 + 0.6, t)) / c.s;     // un pas vers chaque règle qui entre
-    if (t >= LOOP) { const u = sm(LOOP, DUR - 0.15, t); for (const a of AX) c[a] = lerp(c[a], C0[a], u); }
+    if (t >= LOOP - 0.45) { const u = sm(LOOP - 0.45, DUR - 0.15, t); for (const a of AX) c[a] = lerp(c[a], C0[a], u); }   // round 2 : 0,45 s plus tôt
     return c;
   };
   const cam = (t) => (t < REW[0] ? camR(t) : camF(t));
@@ -303,6 +329,7 @@
   const LN = el('div', 'L', stage);
   const debs = COUPS.map((c) => { const w = el('div', 'abs', LN, 'width:780px;height:184px'); const n = notif(w, c.ti, c.am); n.d.style.left = '0'; n.d.style.top = '0'; return { w, n, c }; });
   const gag = el('div', 'glass notif', LN, 'left:0;top:0;width:600px;height:150px;padding:16px 26px 16px 16px'); el('div', 'sheen', gag);
+  gag.style.background = 'linear-gradient(140deg,rgba(255,255,255,.20),rgba(255,255,255,.05) 45%,rgba(255,255,255,.08)),rgba(14,11,12,.55)';   // round 2 : lisible sur la carrosserie
   const gagC = el('canvas', '', gag, 'width:150px;height:112px'); gagC.width = 300; gagC.height = 224;
   const gagT = el('div', '', gag);
   el('div', 'app', gagT).textContent = 'Trouvé';
@@ -339,7 +366,7 @@
     c.fillStyle = rg; c.fillRect(0, 0, 920, 400);
     const h = 352, w = h * C.W / C.H, x = (920 - w) / 2, y = 380 - h;
     c.save(); c.globalAlpha = 0.55; c.filter = 'blur(10px)'; c.fillStyle = '#000'; c.beginPath(); c.ellipse(460, 372, w * 0.46, 22, 0, 0, Math.PI * 2); c.fill(); c.restore();
-    c.drawImage(C.gold, x, y, w, h); c.drawImage(neufI, x, y, w, h);
+    c.drawImage(C.gold, x, y, w, h); c.drawImage(C.L.parechocs, x, y, w, h); c.drawImage(neufI, x, y, w, h);   // on la vend en l'état
   }
   // la photo peinte dans l'écran du téléphone (deux triangles affines, puis le masque de la paume)
   const tmp = document.createElement('canvas'); tmp.width = 720; tmp.height = 406; const tc = tmp.getContext('2d');
@@ -410,9 +437,10 @@
   const pPol = el('div', 'glass pill', LC, 'left:0;top:1236px'); pPol.innerHTML = 'Polish · <span style="font-family:Clash">15 €</span>';
   const pCar = el('div', 'glass pill', LC, 'left:0;top:1236px;color:rgba(246,239,231,.75)'); pCar.innerHTML = 'Carrossier · <span style="font-family:Clash">300 €</span>';
   const pcSvg = sv('svg', { width: 400, height: 40, viewBox: '0 0 400 40', style: 'position:absolute;left:24px;top:28px;overflow:visible' }, pCar);
+  const pSw = el('div', 'abs', pPol, 'left:0;top:0;width:100%;height:100%;border-radius:999px;mix-blend-mode:screen');   // le lustre passe
   const pcL = sv('path', { d: 'M4 24 C 120 8, 260 30, 396 12', stroke: '#ff5a1f', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round', 'stroke-dasharray': '420 420', 'stroke-dashoffset': 420 }, pcSvg);
 
-  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:1430px;text-align:center;font:500 24px Satoshi;color:rgba(246,239,231,.55)'); mention.textContent = 'Exemple · prix moyens constatés';
+  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:1430px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55)'); mention.textContent = 'Exemple · prix moyens constatés';
   const rewFx = el('div', 'L', stage, 'background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 6px);mix-blend-mode:screen');
   const flash = el('div', 'L', stage, 'background:radial-gradient(60% 45% at 50% 52%,#fff1e6,rgba(255,140,80,.6) 45%,transparent 75%);mix-blend-mode:screen');
   const grain = el('div', '', stage); grain.id = 'grain'; el('div', '', stage).id = 'vign';
@@ -422,6 +450,9 @@
   pPol.style.left = `${f3(xP0)}px`; pCar.style.left = `${f3(xP0 + wPol + gP)}px`;
   pcSvg.setAttribute('width', wCar - 48); pcSvg.setAttribute('viewBox', `0 0 400 40`); pcSvg.setAttribute('preserveAspectRatio', 'none');
   const l3 = lines[2].s2; const l3x = () => [l3.offsetLeft + lines[2].r.offsetLeft, l3.offsetWidth];
+  // round 2 : tant que la 2e moitié d'une ligne n'est pas entrée, la 1re est centrée sur x = 540 (le span invisible gardait
+  // sa place : « Avant la photo 1 » seul à x = 380, « L'ongle glisse ? » à 328, « Soleil bas, » décalé)
+  const hT2 = (cT2.offsetWidth + 14) / 2, hV2 = (vd2.offsetWidth + 12) / 2, hS2 = (sb2.offsetWidth + 12) / 2;
 
   // ---------- la frame t ----------
   function paint(t) {
@@ -462,8 +493,10 @@
       E.clip(C, band, 0, C.W, null);
       band.style.clipPath = xN > xs + 1 ? `polygon(${bandPoly(xs, xN).map(([x, y]) => `${f3(100 * x / C.W)}% ${f3(100 * y / C.H)}%`).join(',')})` : 'inset(50%)';
       const { deg, p: bp0, hw: bh } = BN;                   // reflet le long du haut de la bande, puis éclaircie qui sèche
-      band.style.background = `linear-gradient(${deg}deg,transparent ${f3(bp0 - 0.78 * bh)}px,rgba(255,250,244,.85) ${f3(bp0 - 0.5 * bh)}px,rgba(255,250,244,.2) ${f3(bp0 - 0.2 * bh)}px,transparent ${f3(bp0 + 0.1 * bh)}px),`
-        + `linear-gradient(90deg,rgba(255,240,225,.24) ${f3(100 * BAND.x0 / C.W)}%,rgba(255,246,236,.5) ${f3(100 * xN / C.W)}%)`;
+      // round 2 : reflet .85 → .5 et éclaircie .24-.5 → .10-.22 (la bande montait à 237 de luminance contre 180 pour la
+      // peinture lavée : un film blanc collé, pas du vernis propre)
+      band.style.background = `linear-gradient(${deg}deg,transparent ${f3(bp0 - 0.78 * bh)}px,rgba(255,250,244,.5) ${f3(bp0 - 0.5 * bh)}px,rgba(255,250,244,.12) ${f3(bp0 - 0.2 * bh)}px,transparent ${f3(bp0 + 0.1 * bh)}px),`
+        + `linear-gradient(90deg,rgba(255,240,225,.10) ${f3(100 * BAND.x0 / C.W)}%,rgba(255,246,236,.22) ${f3(100 * xN / C.W)}%)`;
     }
     set(band, bK);
     // les coups suivants (le temps du récit les défait au rembobinage)
@@ -507,16 +540,33 @@
     const tw = Math.exp(-Math.max(0, t - T.nail - 0.2) * 7) * sm(T.nail + 0.16, T.nail + 0.22, t) * (1 - loopK);
     twk.setAttribute('display', tw > 0.01 ? 'inline' : 'none');
     twk.setAttribute('transform', `translate(1256,626) rotate(${f3(20 * (t - T.nail))}) scale(${f3((0.4 + 0.8 * tw) / (sc / 1.4))})`); twk.setAttribute('opacity', f3(tw));
+    // l'éraflure du pare-chocs : entourée sur « Le pare-chocs, », ✗ sur « tu le laisses. », éteinte à la plongée sur l'aile
+    const pcOn = sm(T.pc - 0.04, T.pc + 0.02, t) * (1 - sm(T.dive2 + 0.05, T.dive2 + 0.35, t)) * (1 - loopK);
+    pcG.setAttribute('display', pcOn > 0.002 ? 'inline' : 'none');
+    if (pcOn > 0.002) {
+      pcG.setAttribute('opacity', f3(pcOn));
+      const pd = Math.min(1, S(t, T.pc, P.pen) / 0.985), pp = pcLine.getPointAtLength(pcLen * Math.min(0.999, pd));
+      for (const e of [pcGlow, pcLine]) e.setAttribute('stroke-dashoffset', f3(pcLen * (1 - pd)));
+      pcPen.setAttribute('transform', `translate(${f3(pp.x)},${f3(pp.y)})`);
+      pcPen.setAttribute('opacity', f3(sm(T.pc - 0.02, T.pc + 0.04, t) * (1 - sm(T.pc + 0.5, T.pc + 0.75, t))));
+      const xq = Math.min(1, S(t, T.x, P.pen) / 0.985), xo = sm(T.x - 0.02, T.x + 0.03, t);
+      for (const e of [pxG, pxL]) e.setAttribute('stroke-dashoffset', f3(pxLen * (1 - xq)));
+      pxL.setAttribute('opacity', f3(xo)); pxG.setAttribute('opacity', f3(0.6 * xo));
+    }
 
     // voiles
-    set(veil, sm(1.15, 1.7, c.s));                        // y compris à la boucle : « 2 000 → » se réécrit sur ce voile
+    // y compris à la boucle : « 2 000 → » se réécrit sur ce voile. Round 2 : pendant le recul après les enjoliveurs, le
+    // toit passait sous le compteur et le repère (11,9 → 12,1 s) : le voile y suit l'échelle dès 1,0
+    const pbW = (t < REW[0] ? 1 : 0) * sm(T.en + 0.2, T.en + 0.4, t) * (1 - sm(T.sun0 + 0.3, T.sun0 + 0.6, t));
+    set(veil, Math.max(sm(1.15, 1.7, c.s), pbW * sm(1.0, 1.3, c.s)));
     set(dimW, Math.max(0.74 * sm(T.click + 0.06, T.ann + 0.25, st), 0.6 * sm(REW[1] - 0.1, REW[1] + 0.3, t) * (1 - sm(T.dive2, T.dive2 + 0.5, t)) * (1 - loopK)));
 
     // A : le calcul
     const cA = camA(t);
     LA.style.transform = camTf(cA);
-    const mv = tA > 0 ? S(tA, T.fold, { f: 1.25, z: 1 }) : 0;
-    const swap = sm(T.fold + 0.46, T.fold + 0.58, tA);
+    // round 2 : le ressort est ramené à 1 en 0,44 s (il n'était qu'à 0,875 au passage de relais, d'où un « 2900 » en double)
+    const mv = tA > 0 ? Math.min(1, S(tA, T.fold, { f: 1.25, z: 1 }) / 0.87) : 0;
+    const swap = sm(T.fold + 0.47, T.fold + 0.53, tA);
     set(LA, loopK ? sm(LOOP, LOOP + 0.05, t) : 1 - swap);
     if (loopK) {                                          // « La prochaine fois que tu te dis… » : le calcul se réécrit
       writeW(W1, t, T.cw, 0.05); writeW(W2, t, T.cw + 0.42, 0.05); writeW(Q, t, T.cw + 0.78, 0.035, 20);
@@ -539,7 +589,7 @@
         g.fill.setAttribute('opacity', f3(fi)); g.g.setAttribute('opacity', '1'); g.g.setAttribute('transform', `translate(0,${f3((1 - fi) * 22)})`);
       });
     }
-    gOut.setAttribute('transform', `translate(0,${f3(-120 * mv)})`); gOut.setAttribute('opacity', f3(1 - sm(0.05, 0.45, mv)));
+    gOut.setAttribute('transform', `translate(0,${f3(-120 * mv)})`); gOut.setAttribute('opacity', f3(1 - sm(0.03, 0.3, mv)));
     // la lumière rallume « 2 000 », puis « 2 900 »
     const tSh = tA < T.sh2 - 0.2 ? T.sh1 : T.sh2, sx = lerp(-300, 1500, S(tA, tSh, { f: 0.85, z: 1 }));
     [[sx - 220, 0], [sx - 60, 0.85], [sx + 60, 0.85], [sx + 220, 0]].forEach(([x, o], i) => { shS[i].setAttribute('offset', f3(clamp(x / 1080, 0, 1))); shS[i].setAttribute('stop-opacity', f3(o)); });
@@ -555,7 +605,9 @@
     W2.items.forEach((g, i) => {
       g.fill.setAttribute('fill', mixC(ink, gry, gr));
       if (!loopK) g.fill.setAttribute('opacity', i === 1 && rolling ? '0' : '1');
-      const tx = CELLX[i], ty = CT + 130, s = lerp(1, 128 / SZ, mv);
+      // round 2, mesuré sur l'image (5,22 s contre 5,7 s) : l'encre de « 2900 » se posait 9,6 px plus bas que les chiffres
+      // du compteur, d'où un « 2900 » en double pendant le relais (relais raccourci à 0,06 s)
+      const tx = CELLX[i], ty = CT + 120.5, s = lerp(1, 128 / SZ, mv);
       g.wrap.setAttribute('transform', `translate(${f3(lerp(g.cx, tx, mv))},${f3(lerp(BASE, ty, mv))}) scale(${f3(s)}) translate(${f3(-g.cx)},${-BASE})`);
     });
     rollT.forEach((e, j) => { if (ROLL[j] !== '?') e.setAttribute('fill', mixC(ink, gry, gr)); });
@@ -588,8 +640,8 @@
     const posU = v % 10, posT = (v / 10) % 10, posH = (Math.floor(v / 100) + sm(90, 100, v % 100)) % 10, posK = (Math.floor(v / 1000) + sm(990, 1000, v % 1000)) % 10;
     const keys = [posU, posT, posH, posK].map((p) => [[0, p]]);
     const tb = t < REW[0] ? st : T.fold + 2;
-    paintCounter(Cn, tb, keys, [1, 1, 1, 1], (i) => ({ draw: S(tb, T.fold + 0.06 + i * 0.06, P.draw), glass: S(tb, T.fold + 0.2 + i * 0.06, P.heavy) }), hud);
-    const digK = (t < REW[0] ? sm(T.fold + 0.46, T.fold + 0.58, st) : 1) * hud;
+    paintCounter(Cn, tb, keys, [1, 1, 1, 1], (i) => ({ draw: S(tb, T.fold + 0.2 + i * 0.05, P.draw), glass: S(tb, T.fold + 0.3 + i * 0.05, P.heavy) }), hud);   // round 2 : cellules tracées quand les chiffres arrivent
+    const digK = (t < REW[0] ? sm(T.fold + 0.47, T.fold + 0.53, st) : 1) * hud;
     Cn.cells.forEach((cc) => set(cc.d, digK));
     set(Cn.lab, hud);
     Cn.labL.forEach((s, i) => { const p = S(tb, T.fold + 0.3 + i * 0.04, P.rise); s.style.opacity = f3(p); s.style.transform = `translateY(${f3((1 - p) * 18)}px)`; });
@@ -625,7 +677,7 @@
     set(heure, hI * (1 - hO)); heure.style.transform = `translateY(${f3((1 - hI) * 18 - 30 * hO)}px)`;
     const s1 = S(st, T.sbas, P.rise), s2 = S(st, T.sbas + 0.22, P.rise), sO = sm(T.vf - 0.1, T.vf + 0.15, st);
     set(sbas, 1 - sO); sbas.style.transform = `translateY(${f3(-28 * sO)}px)`;
-    sb1.style.opacity = f3(s1); sb1.style.transform = `translateY(${f3((1 - s1) * 24)}px)`;
+    sb1.style.opacity = f3(s1); sb1.style.transform = `translate(${f3(hS2 * (1 - s2))}px,${f3((1 - s1) * 24)}px)`;
     sb2.style.opacity = f3(s2); sb2.style.transform = `translateY(${f3((1 - s2) * 24)}px)`;
     const l1 = S(st, T.lab1, P.rise), l1o = sm(T.click + 0.1, T.click + 0.35, st);
     set(lab1, l1 * (1 - l1o)); lab1.style.transform = `translateY(${f3((1 - l1) * 22 - 40 * l1o)}px)`;
@@ -651,8 +703,11 @@
       sp.g.setAttribute('transform', `translate(${f3(x)},${f3(y)})`); sp.g.setAttribute('opacity', f3(sm(0, 0.08, u) * (1 - sm(0.88, 1, u))));
       sp.tr.forEach((c2, j) => { const [x2, y2] = bez(Math.max(0, e - 0.07 * (j + 1))); c2.setAttribute('cx', f3(x2 - x)); c2.setAttribute('cy', f3(y2 - y)); });
     });
-    const ga = S(st, T.gag, P.card), gOut2 = S(st, TD[3] - 0.05, P.push);
-    gag.style.transform = `translate(${f3(240 - 1100 * (1 - ga) - 700 * gOut2)}px,${f3(990 - 260 * gOut2)}px) rotate(${f3(-3 + (1 - ga) * 8 - 8 * gOut2)}deg)`;
+    // round 2 : la carte reste 0,3 s de plus (sortie à TD[3] + 0,25 s). Pour ne pas couvrir la rayure (9,8 → 10,5 s, ligne
+    // jusqu'à y ≈ 1 020), elle descend de 80 px quand la caméra y arrive, puis sort vers la gauche, sans remonter, sur un
+    // ressort vif (P.push la laissait sur la rayure, puis sur la roue)
+    const ga = S(st, T.gag, P.card), gOut2 = S(st, TD[3] + 0.25, { f: 1.6, z: 1 }), gRoom = S(st, T.ra - 0.25, P.card);
+    gag.style.transform = `translate(${f3(240 - 1100 * (1 - ga) - 1150 * gOut2)}px,${f3(990 + 80 * gRoom + 40 * gOut2)}px) rotate(${f3(-3 + (1 - ga) * 8 - 8 * gOut2)}deg)`;
     set(gag, sm(T.gag - 0.05, T.gag + 0.01, st) * (1 - sm(0.3, 0.7, gOut2)));
     if (gag.style.visibility === 'visible') drawSeq(gagC, IMG.pieces, Math.max(0, st - T.gag + 0.2));
 
@@ -721,7 +776,7 @@
     const cRy = -0.5 * (c.ry - 1) * cIn * (1 - cmp), cNy = -12 * lineNudge(t) * (1 - cmp);
     cardW.style.transform = `translateY(${f3((1 - cIn) * 240 - 64 * cmp + 90 * cOut + cNy - 10 * cdr * (1 - cmp) * noise(31, t * 0.35))}px) perspective(1500px) rotateX(${f3((1 - cIn) * 24 + 1.6 * cdr * noise(32, t * 0.3))}deg) rotateY(${f3(cRy + 2.2 * cdr * noise(33, t * 0.27))}deg) scale(${f3((0.94 + 0.06 * cIn) * (1 - 0.12 * cmp) * (1 - 0.45 * cOut) * (1 + 0.012 * cdr * (1 - cmp)))})`;
     const tt1 = S(t, T.ceux + 0.1, P.rise), tt2 = S(t, T.pas, P.rise);
-    cT1.style.opacity = f3(tt1); cT1.style.transform = `translateY(${f3((1 - tt1) * 22)}px)`;
+    cT1.style.opacity = f3(tt1); cT1.style.transform = `translate(${f3(hT2 * (1 - tt2))}px,${f3((1 - tt1) * 22)}px)`;
     cT2.style.opacity = f3(tt2); cT2.style.transform = `translateY(${f3((1 - tt2) * 26)}px)`; cT2.style.filter = `blur(${f3((1 - tt2) * 6)}px)`;
     rule.style.transform = `scaleX(${f3(S(t, T.pas + 0.1, P.pen))})`;
     // la carte grandit ligne par ligne (le texte entre une fois le conteneur ouvert) : jamais de verre vide
@@ -742,12 +797,15 @@
     const vI = S(t, T.verd, P.rise), vI2 = S(t, T.verd + 0.24, P.rise), vO = loopK ? S(t, LOOP - 0.02, P.push) : 0;
     verd.style.transform = `translateY(${f3(120 * vO)}px)`;
     set(veilB, sm(T.verd - 0.2, T.verd + 0.2, t) * (1 - sm(LOOP, LOOP + 0.4, t)));
-    vd1.style.opacity = f3(vI); vd1.style.transform = `translateY(${f3((1 - vI) * 24)}px)`;
+    vd1.style.opacity = f3(vI); vd1.style.transform = `translate(${f3(hV2 * (1 - vI2))}px,${f3((1 - vI) * 24)}px)`;
     vd2.style.opacity = f3(vI2); vd2.style.transform = `translateY(${f3((1 - vI2) * 26)}px)`; vd2.style.filter = `blur(${f3((1 - vI2) * 6)}px)`;
     const pa = S(t, T.verd + 0.3, P.card), pl = sm(T.pol, T.pol + 0.12, t), pc = S(t, T.carr, P.pen);
     for (const [e, d2] of [[pPol, 0], [pCar, 0.08]]) { const a2 = S(t, T.verd + 0.3 + d2, P.card); e.style.transform = `translateY(${f3((1 - a2) * 60 + 140 * vO)}px) scale(${f3(0.9 + 0.1 * a2)})`; set(e, sm(T.verd + 0.28 + d2, T.verd + 0.34 + d2, t) * (1 - sm(0.2, 0.6, vO))); }
     pPol.style.boxShadow = `inset 0 1px 0 rgba(255,255,255,.45),0 0 0 ${f3(3 * pl)}px rgba(255,179,138,${f3(0.95 * pl)}),0 0 ${f3(36 * pl)}px rgba(255,110,40,${f3(0.55 * pl)})`;
     pPol.style.color = pl > 0.5 ? '#ffd2b8' : '#f6efe7';
+    // round 2 : le lustre du polish passe sur la pilule (le verdict ne se fige pas avant le retour de caméra)
+    const swu = sm(T.pol + 0.15, T.pol + 0.8, t), swx = lerp(-25, 125, swu);
+    set(pSw, Math.sin(Math.PI * swu)); if (swu > 0 && swu < 1) pSw.style.background = `linear-gradient(105deg,transparent ${f3(swx - 16)}%,rgba(255,236,220,.6) ${f3(swx)}%,transparent ${f3(swx + 16)}%)`;
     pcL.setAttribute('stroke-dashoffset', f3(420 * (1 - pc)));
     pCar.style.opacity = f3(+pCar.style.opacity * (1 - 0.35 * sm(T.carr + 0.1, T.carr + 0.4, t)));
 

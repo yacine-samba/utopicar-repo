@@ -43,11 +43,12 @@ enjoliveurs sont des SVG de même `viewBox` (pixels de la photo), nets à × 1,6
 | `car-clio3.png`, `car-clio3-contour.js` | la voiture propre et son contour de lumière (`window.CAR_CLIO3_CONTOUR`), copies de `assets/cars-libres/` | toute la photo | tout le film ; l'état « après » de chaque coup |
 | `clio3-poussiere.png` | la voiture entière, sale, **opaque sur la carrosserie** (elle remplace la propre tant que le lavage n'est pas passé) : voile de poussière beige mat en plaques, boue brune sur le tiers bas et autour des passages de roue, projections, coulures sombres sous les vitres latérales et sous les optiques, vernis sans éclat, « LAVE-MOI » tracé au doigt (la peinture réapparaît dans les lettres) | toute la carrosserie ; « LAVE-MOI » dans le quadrilatère (1 400, 520) (1 600, 482) (1 600, 570) (1 402, 628) ; coulures x 1 400 → 1 700 sous la ligne des vitres et x 60 → 1 090 sous les optiques | image 0 ; hook (l'embout aspire une bande x 1 150 → 1 650, y ≈ 480 → 600, « LAVE-MOI » part avec) ; lavage (ligne de partage sur toute la voiture) ; boucle |
 | `clio3-phares.png` | voile jaune saturé et laiteux, craquelé, reflets de l'optique gardés | x 38 → 1 123, y 448 → 825 (grand phare x 672 → 1 117, petit phare x 44 → 194) | phares |
-| `clio3-pare-brise.png` | voile gris sur la face intérieure du pare-brise, traces d'essuyage en arcs ; sièges devinables derrière | x 498 → 1 369, y 66 → 392 | sièges |
+| `clio3-pare-brise.png` | voile gris sur la face intérieure du pare-brise, traces d'essuyage en arcs ; sièges devinables derrière ; trois auréoles sur le dossier passager (round 2 : fond #c49a5c, liseré #5c4128, voile éclairci devant elles) | x 498 → 1 369, y 66 → 392 | sièges |
 | `clio3-vitres.png` | voile jaunâtre du tabac sur les vitres latérales, plus dense sur les bords et en haut | x 1 385 → 1 695, y 65 → 336 | odeur |
 | `clio3-rayure.svg` | rayure claire, effilée, interrompue deux fois (la clé a sauté), halo de vernis rayé, ombre fine sur le bord haut du sillon ; deux éraflures plus fines et quatre micro-rayures | trait principal de (1 165, 657) à (1 346, 592) ; le tout x 1 158 → 1 346, y 591 → 677 | rayure ; revient au rembobinage ; l'ongle la traverse au verdict |
 | `clio3-enjoliveurs.svg` | les enjoliveurs à l'achat : **la photo des enjoliveurs salie pixel par pixel** (PNG opaque intégré, à la résolution de la photo : rayons gardés, creux noircis par la poussière de frein, voile brun mat, plus dense vers le bord, bord roulé compris), puis en vectoriel le bord frotté, l'éclat manquant et la fissure du rayon fendu | avant : image x 1 179 → 1 333, y 820 → 1 162 (ellipse de centre (1 256, 991), demi-axes 67 × 169, 10°) ; arrière : x 1 723 → 1 777, y 513 → 713 | enjoliveurs ; reviennent au rembobinage |
 | `clio3-enjoliveurs-neufs.svg` | le reflet des neufs : un arc de lumière sur le bord, rien d'autre (la photo montre déjà des enjoliveurs gris argent propres, losanges effacés) | mêmes ellipses | enjoliveurs (après) |
+| `clio3-parechocs.png` (round 2) | le coin avant gauche du bouclier frotté sur une bordure : vernis abrasé blanchi, stries dans le sens du frottement, plastique noir à nu au coin, bord de vernis éclaté | lèvre basse x 30 → 280, y 896 → 1 086 | jamais réparé : la 3e règle (« Pare-chocs · 600 € ✗ »), entouré à la lumière sur « Le pare-chocs, », ✗ sur « tu le laisses. » ; visible tout le film, photo 1 comprise |
 | `CREDITS.tsv` | crédits de la photo, écrits par le script | | |
 
 États composés (`--check`) : **sale** = propre + poussière + phares + pare-brise + vitres + rayure + enjoliveurs ;
@@ -264,7 +265,7 @@ que la prise existera :
 | palettes 13:00 → 16:30, la lumière tombe · « Soleil bas, dans ton dos. » · « l'heure avant le coucher » | 11,90 → 13,90 · 12,60 · 13,20 | « Et là, tu attends le soleil » (12,20) |
 | avancée de la caméra, viseur · déclic | 13,90 → 14,50 · 14,50 | « Photo 1 » (14,25) |
 | la photo devient l'annonce · palettes 16:30 → J+4 · deux messages | 14,80 · 14,90 → 15,60 · 15,30 et 15,70 | après « Photo 1 » |
-| bulle « 3 300 et je la prends. » · virement | 16,20 · 16,80 | « Quatre jours » · avant « Quatre cents » |
+| bulle « 3 300 et je la prends. » · virement | 15,90 · 16,78 | 1 s avant « Quatre cents » (« Quatre jours » retiré, round 2) · avant « Quatre cents » |
 | « + 400 € » géant · « − 109,60 € de prépa » · arrêt de la musique | 17,30 → 17,90 · 17,60 · 18,00 | « de plus » · premier temps |
 | « Ton samedi le mieux payé. » s'écrit | 18,70 | sur les mots |
 | rembobinage jusqu'à 13:10 | 20,40 → 21,10 | 0,25 s après « payé » |
@@ -285,8 +286,8 @@ muet de 30,1 s. Le film lit ces repères comme il lira ceux de la prise : chaque
 
 ### Le texte à générer
 
-Une seule génération : Simon `mvhJVdVoTWVUtL4keT7W`, modèle `eleven_v3`, français, **generations_count 1**. 494
-caractères, soit environ 494 crédits (MO9 : 526 ; MO10 : 580). Avant d'envoyer, demander l'estimation, puis le solde :
+Une seule génération : Simon `mvhJVdVoTWVUtL4keT7W`, modèle `eleven_v3`, français, **generations_count 1**. 510
+caractères, soit environ 510 crédits (MO9 : 526 ; MO10 : 580). Avant d'envoyer, demander l'estimation, puis le solde :
 l'estimation de MO9 ne vérifiait pas le quota. Après un échec, on ne relance pas : on note l'erreur et on attend
 l'utilisateur. L'ouverture B se dit à la fin, après la longue pause, dans la même génération (méthode de MO10).
 
@@ -294,8 +295,8 @@ l'utilisateur. L'ouverture B se dit à la fin, après la longue pause, dans la m
 Tu l'achètes deux mille, tu la revends deux mille neuf cents. Ton aspirateur trouve ça donné.
 Samedi, treize heures. Les sièges. L'odeur. Les enjoliveurs.
 Et là… tu attends le soleil. Photo un.
-Quatre jours. Quatre cents de plus. [short pause] Ton samedi le mieux payé.
-Ceux qui gagnent ne réparent pas tout. L'ongle glisse sur la rayure ? Quinze euros de polish.
+Quatre cents de plus. [short pause] Ton samedi le mieux payé.
+Ceux qui gagnent ne réparent pas tout. Le pare-chocs, tu le laisses. L'ongle glisse sur la rayure ? Quinze euros de polish.
 La prochaine fois que tu te dis…
 [long pause]
 La revendre sale t'économise un après-midi. Et ça peut te coûter quatre cents euros.
@@ -324,16 +325,18 @@ réplique.
 | Les enjoliveurs. | 10,75-11,59 | 10,75-11,65 |
 | Et là, tu attends le soleil. | 12,20-13,88 | 12,20-13,95 |
 | Photo 1. | 14,25-14,80 | 14,25-14,85 |
-| 4 jours. | 15,95-16,50 | 15,95-16,60 |
+| ~~4 jours.~~ (retiré, round 2) | | 15,95-16,60 |
 | 400 de plus. | 16,90-17,57 | 16,90-17,70 |
 | Ton samedi le mieux payé. | 18,70-20,04 | 18,70-20,15 |
 | Ceux qui gagnent ne réparent pas tout. | 21,15-22,49 | 21,15-22,60 |
-| L'ongle glisse sur la rayure ? | 24,75-25,76 | 24,75-26,00 |
-| 15 euros de polish. | 26,25-27,26 | 26,25-27,35 |
-| La prochaine fois que tu te dis… | 28,40-29,74 | 28,40-29,90 |
+| Le pare-chocs, tu le laisses. (round 2) | 23,30-24,81 | |
+| L'ongle glisse sur la rayure ? | 25,11-26,12 | 24,75-26,00 |
+| 15 euros de polish. | 26,42-27,43 | 26,25-27,35 |
+| La prochaine fois que tu te dis… | 28,43-29,77 | 28,40-29,90 |
 
-Parole : 16,6 s (brief : 17,5 s). « aspirateur » à 3,02 s, « donné » à 4,02 s. La voix finit à 29,74 s, la boucle
-part à 27,8 s, le film proposé dure **30,1 s**. L'ouverture B, estimée de 0,10 à 4,30 s, finit avant « Samedi »
+Parole : 17,6 s (brief : 17,5 s). « aspirateur » à 3,02 s, « donné » à 4,02 s. La voix finit à 29,77 s, la boucle
+part à 27,83 s, le film proposé dure **30,15 s** (round 2 : « Quatre jours. » retiré, « Le pare-chocs, tu le
+laisses. » ajouté ; 30,1 s avant). L'ouverture B, estimée de 0,10 à 4,30 s, finit avant « Samedi »
 (4,66 s). Aucune réplique ne chevauche la suivante. Sous-titres provisoires : `python3 scripts/srt-mo11.py` →
 `renders/9x16-mo11.srt` (15 cartons, 32 caractères au plus par ligne).
 

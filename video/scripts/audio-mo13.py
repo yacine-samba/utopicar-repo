@@ -7,11 +7,12 @@ Voix   : audio/vo-mo13/vo-placed.wav, posée sur le film par scripts/vo-mo13.py.
          Ouverture A seulement : film-mo13/events.json est celui du film A (scripts/events.mjs ne lit pas ?hook=B).
 Musique: audio/music/Controlled Drop.mp3, recalée à 120 BPM, les passages de MO5 : mesure 13 dès l'image 0, grille calée
          pour que l'arrêt tombe sur un temps (le premier temps de la mesure 13 sur la première image, ou juste avant).
-         L'élan : la musique monte d'un cran à chaque virement (le compteur grandit, elle aussi) ; la tentation
-         (SEMAINE 8 → 11) retire la basse et passe le son sous 1 400 Hz, l'aigu revient avec les messages, la basse sur
-         le premier temps de la bulle « 2 950 » ; arrêt de bande quand « 3 100 € » géant est posé : la seule pause, en
-         silence ; la bande rembobine avec l'histoire, remontée à l'envers, puis mesure 55 dont le premier temps tombe
-         sur la première ligne de la méthode (une ligne par temps) ; fondu de boucle.
+         L'élan : attaque pleine sur le calcul, un pas en retrait à la marche 1, puis 1 dB de plus à chaque virement
+         (le compteur grandit, elle aussi) ; la tentation (SEMAINE 8 → 11) retire la basse et passe le son sous
+         1 400 Hz, l'aigu revient avec les messages, la basse sur le premier temps de la bulle « 2 950 » ; arrêt de bande
+         quand « 3 100 € » géant est posé, avec un seul coup court : la seule pause, en silence ; la bande rembobine
+         avec l'histoire, remontée à l'envers, puis mesure 55 dont le premier temps tombe sur la première ligne de la
+         méthode (une ligne par temps) ; fondu de boucle.
          Chaque premier temps est recalé sur l'attaque réelle du morceau (mesurée), pas sur la mesure théorique.
 Bruits : audio/bank/mo13 (5 sons Mixkit, SOURCES.tsv) et les banques de MO5, MO6, MO8 ; un son par geste, attaché à son
          repère de film-mo13/events.json (CUT=mo13 node scripts/events.mjs), rôle, priorité et panoramique ; un son
@@ -171,14 +172,18 @@ def music_shape(mus, keep=False):
     mus = shelf(mus, 200, g_lo=lo_cut)
     dark = env_curve([(0, 0), (T_T0, 0), (T_T0 + 0.4, 1), (T_MSG - 0.02, 1), (T_MSG + 0.12, 0), (DUR, 0)])
     mus = shelf(mus, 1400, g_hi=1 - dark)
-    # l'élan : attaque à l'image 0, un cran de plus à chaque virement jusqu'au chiffre ; retrait sous le gag
-    # (bruitage seul) ; creux de la tentation ; reprise pleine ; fondu de boucle
-    g0, g1 = EV['gag'], EV['toi']
-    lvl = (env_curve([(0, -1.5), (V1, -1.5), (V1 + 0.3, -1.0), (V2, -1.0), (V2 + 0.3, -0.5), (V3, -0.5), (V3 + 0.3, 0),
-                      (T_STOP, 0.5), (T_STOP + 0.01, 0), (DUR - 0.6, 0), (DUR, -6)])
+    # l'élan : attaque pleine à l'image 0 (le calcul), un pas en retrait quand le calcul se replie (la marche 1 et ses
+    # frais s'expliquent), puis 1 dB de plus à chaque virement jusqu'au chiffre (le compteur grandit, la musique
+    # aussi : 3,5 dB de la marche 1 à l'arrêt) ; retrait sous le gag (bruitage seul) ; creux de la tentation ;
+    # reprise pleine sur la méthode ; fondu de boucle
+    g0, g1, t_out = EV['gag'], EV['toi'], EV['out']
+    lvl = (env_curve([(0, -1.0), (t_out, -1.0), (t_out + 0.5, -2.5), (V1, -2.5), (V1 + 0.3, -1.5), (V2, -1.5),
+                      (V2 + 0.3, -0.5), (V3, -0.5), (V3 + 0.3, 0.5), (T_STOP, 1.0), (T_STOP + 0.01, 0), (DUR - 0.6, 0),
+                      (DUR, -6)])
            + env_curve([(0, 0), (g0 - 0.05, 0), (g0 + 0.05, -2), (g1 + 0.4, -2), (g1 + 0.7, 0), (DUR, 0)])
            + env_curve([(0, 0), (T_T0, 0), (T_T0 + 0.4, -4), (T_MSG - 0.02, -4), (T_MSG + 0.12, 0), (DUR, 0)]))
     mus = mus * db(lvl)
+    if keep: PHONE['lvl'] = lvl
     # ducking par bande sous la voix : présence (1,5–6 kHz) −10 dB, niveau −8 dB
     gP = 1 - (1 - db(-10)) * d2
     mus = shelf(shelf(mus, 1500, g_hi=gP), 6000, g_hi=1 / gP)
@@ -211,8 +216,8 @@ def sfx(i, st=0, dur=None, fade=0.04, rev=False, start=0.0):
         cache[key] = y / (np.abs(y).max() + 1e-9)
     return cache[key]
 
-ROLE = {  # crête visée (dBFS) et bande
-    'accent': (-4, 40, 16000), 'ui': (-10, 400, 14000), 'chime': (-13, 500, 12000), 'whoosh': (-14, 250, 9000),
+ROLE = {  # crête visée (dBFS) et bande ; accent à −7 comme MO12 (round 1 : −4 faisait travailler le limiteur 11 dB)
+    'accent': (-7, 40, 16000), 'ui': (-10, 400, 14000), 'chime': (-13, 500, 12000), 'whoosh': (-14, 250, 9000),
     'orn': (-17, 1500, 15000), 'tick': (-22, 1500, 12000), 'engine': (-11, 150, 9000), 'tool': (-15, 200, 10000),
     'thud': (-10, 40, 1000),               # le choc sourd (2150) : sous 1 kHz, comme la tentation
     'squeak': (-14, 200, 3000),            # le pneu qui couine sur la marche de verre (1013, SOURCES.tsv)
@@ -239,9 +244,10 @@ def flaps(t0, n, st=0, gap=0.04, prio=3, what='palettes'):
     le tic tombe quand la case se pose (≈ 0,1 s après son départ)."""
     for j in range(n): cue(t0 + 0.1 + gap * j, 1119, 'tick', prio, st=st, pan=-0.3 + 0.6 * j / max(1, n - 1), what=f'{what} {j + 1}')
 def note_debit(x, k, what):
-    """Un débit : la notification arrive de la droite (souffle), une note un demi-ton plus bas à chaque débit."""
+    """Un débit : la notification arrive de la droite (souffle), une note un demi-ton plus bas à chaque débit.
+    Round 2 : le premier (assurance) à −3 dB (crête du mix à 6,70 s, le limiteur y réduisait de 9,9 dB)."""
     cue(x - 0.03, 1490, 'whoosh', 3, start=0.35, gain=-6, pan=0.4, peak=True, what=f'{what} (arrive)')
-    cue(x, 2354, 'ui', 1, st=-k, pan=0.35, what=what)
+    cue(x, 2354, 'ui', 1, st=-k, pan=0.35, gain=-3 if k == 0 else 0, what=what)
 def bulle(x, st, what):
     """Une bulle d'acheteur ou une annonce qui arrive : le pop (la vibration est fabriquée plus bas)."""
     cue(x + 0.03, 2356, 'ui', 2, st=st, start=0.03, dur=0.19, pan=0.3, what=what)
@@ -250,7 +256,7 @@ def virement(x, st, what):
     cue(x + 0.03, 951, 'chime', 1, pan=0.2, what=what)
     cue(x + 0.05, 1107, 'chime', 1, st=st, gain=-4, pan=0.2, what=f'{what} (note)')   # une note par vente, qui monte
 def tampon(x, what, note=None):
-    cue(x, 2182, 'accent', 1, start=0.06, dur=0.12, gain=-10, what=f'{what} (coup)')
+    cue(x, 2182, 'accent', 1, start=0.06, dur=0.12, gain=-7, what=f'{what} (coup)')   # −14 dBFS de crête
     cue(x, 2380, 'tick', 1, dur=0.4, gain=10, what=f'{what} (papier)')
     if note is not None: cue(x + 0.04, 2354, 'ui', 1, st=note, pan=0.1, what=f'{what} (note)')
 KEYS = [(1558, 0.0, 0.6), (2838, 0.25, 0.42), (1558, 0.0, 0.6)]   # les clés, en alternance (SOURCES.tsv : 2838 0,27 → 0,67 s)
@@ -260,11 +266,12 @@ cue(E_['q'], 3005, 'orn', 2, st=5, pan=0.2, what='la plume repasse le « ? »')
 cue(E_['sh'], 2589, 'orn', 2, st=3, dur=0.6, gain=-3, pan=-0.15, what='la lumière passe sur « 1 500 »')
 cue(E_['focus'] + 0.4, 1436, 'whoosh', 2, start=0.6, dur=0.45, fade=0.12, gain=-6, peak=True, what='mise au point sur la 206')
 cue(E_['contour'], 2589, 'orn', 2, dur=0.8, pan=-0.1, what='le contour de la 206 se trace')
-cue(E_['tag'] + 0.1, 2369, 'orn', 2, dur=0.8, pan=-0.15, what='l\'étiquette « À VENDRE · 1 400 € » s\'écrit')
+# round 1 : l'étiquette arrive vierge avec la mise au point (E_['tag'], sous le contour) ; la plume y écrit le prix sur la voix
+cue(E_.get('prix0', E_['tag'] + 0.12), 2369, 'orn', 2, dur=0.8, pan=-0.15, what='« 1 400 € » s\'écrit sur l\'étiquette')
 cue(E_['trem'], 2150, 'thud', 1, start=0.1, dur=0.3, gain=-4, what='« 8 500 € ? » tremble')
 # marche 1 : le calcul se replie, « 1 500 » devient le compteur, palettes MARCHE 1 ; le prix max, la réserve
 cue(E_['out'] + 0.1, 3120, 'whoosh', 2, dur=0.7, peak=True, what='le calcul se replie')
-flaps(E_['flap1'], 6, what='palettes MARCHE 1')
+flaps(E_['flap1'], 6, prio=2, what='palettes MARCHE 1')   # round 1 : MARCHE 1 tombe à T.out + 0,3 s, entre les rouleaux et le prix barré (prio 3 : les six tics retirés)
 cue(E_['hud'] + 0.3, 1054, 'tick', 2, dur=0.4, gain=6, what='les rouleaux s\'enclenchent')
 for k, (x, xn) in enumerate(zip(E_['barres'], E_['prix'])):
     cue(x, 3005, 'orn', 2, st=-3, pan=-0.15, what=f'prix annoncé barré ({k + 1})')
@@ -279,7 +286,7 @@ for k, (x, what) in enumerate(zip(E_['debits'][:2], ['assurance − 40', 'carte 
     cue(x + 0.25, 1054, 'tick', 3, st=-1 - k, dur=0.4, gain=4, what=f'{what} : le compte roule')
 cue(E_['gag'] - 0.03, 1490, 'whoosh', 3, start=0.35, gain=-6, pan=0.4, peak=True, what='gag (arrive)')
 cue(E_['gag'], 2849, 'tool', 1, start=0.12, dur=0.35, fade=0.1, pan=0.3, what='gag : le pistolet de pompe décroché')
-tampon(E_['toi'], 'tampon « toi aussi »', note=9)                                             # la note la plus haute
+tampon(E_['tampons'][0], 'tampon « toi aussi »', note=9)                                     # la note la plus haute ; round 2 : quand le compte touche 50 €
 # vente 1, la caméra monte, marche 2 ; vente 2, marche 3 (les moteurs sont fabriqués plus bas)
 for k, (xb, xv, st) in enumerate(zip(E_['bulles'][:2], E_['ventes'][:2], [0, 3])):
     bulle(xb, 2 * k, f'bulle {k + 1} « … et je la prends »')
@@ -298,7 +305,7 @@ for k, x in enumerate(E_['tickets']):
     cue(x, 2384, 'ui', 1, st=-2 - k, gain=-3, pan=0.35, what=f'ticket de frais {k + 2} (note)')
 # la tentation : SEMAINE 8 → 11, de plus en plus lentes (une note plus basse à chaque semaine) ; l'annonce bute
 for k, x in enumerate([E_['sem8'], E_['sem9'], E_['sem10'], E_['sem11']]):
-    flaps(x, 2 if k >= 2 else 1, st=-k, what=f'palettes SEMAINE {8 + k}')
+    flaps(x, 2 if k == 2 else 1, st=-k, what=f'palettes SEMAINE {8 + k}')   # 9 → 10 retourne deux cases, 10 → 11 une
 bulle(E_['ann'], -2, 'l\'annonce à 1 600 € arrive')
 cue(E_['ann'] + 0.35 + 0.15, 1490, 'whoosh', 3, start=0.35, gain=-8, pan=0.15, peak=True, what='l\'annonce glisse vers le compte')
 cue(E_['bump'], 2150, 'thud', 1, start=0.1, dur=0.3, what='l\'annonce bute sur les 150 €')
@@ -312,12 +319,16 @@ bulle(E_['bulles'][2], 4, 'bulle 3 « 2 950 et je la prends »')
 virement(E_['ventes'][2], 5, 'virement 3')
 cue(E_['up3'], 1054, 'tick', 2, st=5, dur=1.0, gain=6, what='le compte roule 150 → 3 100')
 cue(E_['pull'], 3120, 'whoosh', 2, dur=T_STOP - E_['pull'], rev=True, gain=-4, what='la caméra recule (souffle inversé jusqu\'à l\'arrêt)')
-cue(T_STOP, 2909, 'accent', 1, dur=0.7, fade=0.35, gain=-2, what='« 3 100 € » posé')
-cue(T_STOP + 0.04, 1107, 'chime', 1, st=7, gain=-2, what='« 3 100 € » (note)')
+# le coup et sa note sont coupés courts (leçon du round 1 de MO12 : un accent de 0,8 s remplissait le silence de la
+# chute) : 2909 garde son premier coup (le second tombe à 0,75 s), la pause qui suit reste silencieuse
+# round 1 : −6 dB avant le limiteur (il réduisait de 12,8 dB à 21,58 s)
+cue(T_STOP, 2909, 'accent', 1, dur=0.35, fade=0.2, gain=-6, what='« 3 100 € » posé')
+cue(T_STOP + 0.04, 1107, 'chime', 1, st=7, dur=0.5, fade=0.3, gain=-2, what='« 3 100 € » (note)')
 # la seule pause : « Tu attendais d'avoir 10 000. » s'écrit
 cue(E_['att'], 2369, 'orn', 2, dur=0.8, gain=-3, what='« Tu attendais d\'avoir » s\'écrit')
 cue(E_['att2'], 2369, 'orn', 2, st=3, dur=0.45, gain=-4, what='« 10 000. » s\'écrit')
 # rembobinage, la carte, une ligne par temps, le verdict, la boucle
+# la bande qui rembobine passe sous « Ceux qui gagnent… » : −15 dBFS de crête (3 dB sous MO9), puis le ducking
 cue(REW[0], 1092, 'accent', 1, dur=REW[1] - REW[0] + 0.15, fade=0.2, gain=-8, what='bande qui rembobine')
 cue(E_['card'] + 0.05, 1490, 'whoosh', 3, st=-2, start=0.35, gain=-6, peak=True, what='la carte se pose')
 cue(E_['card'] + 0.15, 2369, 'orn', 3, dur=0.6, gain=-5, what='« budget − réserve = prix max » s\'écrit')
@@ -325,7 +336,8 @@ for k, x in enumerate(E_['lignes'][:3]):
     cue(x, 2384, 'ui', 2, st=2 * k, gain=-3, what=f'ligne {k + 1} de la carte')                # une note par temps
 cue(E_['step4'], 2589, 'orn', 2, st=7, dur=0.6, gain=-2, what='la 4e marche s\'allume')
 cue(E_['lignes'][3], 2384, 'ui', 2, st=5, gain=-3, what='ligne 4 « 3 100 − 600 = »')
-cue(E_['claque'], 2909, 'accent', 1, dur=1.0, gain=-3, what='« prix max 2 500 € » claque')
+# un seul coup (0,5 s : le second coup de 2909, à 0,75 s, tomberait sur « max. »)
+cue(E_['claque'], 2909, 'accent', 1, dur=0.5, fade=0.25, gain=-7, what='« prix max 2 500 € » claque')   # round 1 : −6 dB (limiteur −12,4 dB à 28,02 s)
 cue(E_['claque'] + 0.02, 1107, 'chime', 1, st=5, gain=-3, what='« prix max 2 500 € » (note)')
 cue(E_['loop'] + 0.1, 3120, 'whoosh', 2, dur=0.8, peak=True, what='tout se replie vers l\'image 0')
 
@@ -368,9 +380,10 @@ def put_moving(seg, s0, pan_pts):
     seg = seg[:N - i]; pan = pan[:len(seg)]
     fx[i:i + len(seg), 0] += seg * np.cos((pan + 1) * np.pi / 4); fx[i:i + len(seg), 1] += seg * np.sin((pan + 1) * np.pi / 4)
 ENG_ST = [3, 1, 2]
-def depart(t_go, st, until=None):
+def depart(t_go, st, until=None, gain=0):
     """La voiture part par la gauche : régime qui monte, du centre vers la gauche, pic quand elle file vers le bord."""
     eng, ipk = finish(varrate(y_eng[max(0, pk_src - int(0.35 * SR)):pk_src + int(1.1 * SR)], 1.0, 1.3), st, 0.1, 0.5)
+    eng = eng * db(gain)
     s0 = t_go + 0.3 - ipk
     if until is not None:
         tt = s0 + np.arange(len(eng)) / SR; eng = eng * np.interp(tt, [until - 0.08, until], [1, 0])
@@ -383,7 +396,9 @@ def arrivee(t_in, t_brake, st):
     eng, ipk = finish(eng, st, 0.25, 0.6)
     put_moving(eng, t_brake - ipk, [(t_in, 0.85), (t_brake, 0.0)])
 for k, x in enumerate(E_['departs']):
-    depart(x, ENG_ST[k], until=T_STOP + 0.03 if x < T_STOP < x + 2.5 else None)   # la Fiesta se tait avec l'arrêt
+    # la Fiesta se tait avec l'arrêt ; −3 dB (round 2) : son pic (20,9 s) tombait sur le coup de la musique à la chute,
+    # la plus forte crête du mix (le limiteur y réduisait de 6,7 dB)
+    depart(x, ENG_ST[k], until=T_STOP + 0.03 if x < T_STOP < x + 2.5 else None, gain=-3 if k == 2 else 0)
 for k, (x, xb) in enumerate(zip(E_['arrivees'], E_['freins'])):
     arrivee(x, xb, ENG_ST[k + 1])
 # vibrations (MO9) : chaque bulle d'acheteur et l'annonce vibrent (trois secousses en 0,25 s)
@@ -393,7 +408,7 @@ def buzz(dur, gap=None):
     if gap: b *= (tv < gap[0]) | (tv > gap[1])
     return bp(b, 120, 3000) * np.minimum(1, np.minimum(tv, dur - tv) / 0.01)
 for x in E_['bulles']: put(buzz(0.25) * db(-15), x, 0.3)
-put(buzz(0.25) * db(-17), E_['ann'], 0.3)
+put(buzz(0.25) * db(-20), E_['ann'], 0.3)          # round 2 : −3 dB (crête à 16,79 s, limiteur −9,7 dB)
 
 # les bruitages cèdent aussi à la voix (−7 dB pendant qu'elle parle)
 fx *= (1 - (1 - db(-7)) * d2)[:, None]
@@ -403,22 +418,59 @@ ir = bp(ir, 300, 7000); ir /= np.sqrt((ir ** 2).sum())
 for ch in range(2): fx[:, ch] += fftconvolve(fx[:, ch], ir)[:N] * db(-15)
 
 # ---------- somme, compression douce, loudness ----------
+MUS_THR = float(os.environ.get('MUS_THR', -20))   # seuils des étages de crête (dBFS avant normalisation)
+FX_THR = float(os.environ.get('FX_THR', -17))
+def comp_gain(det, thr=-14, ratio=1.8):
+    """Gain (dB) du compresseur doux : enveloppe moyennée sur 10 ms, sans attaque ni relâche."""
+    envl = np.abs(det).max(1); k = int(0.01 * SR); envl = np.convolve(envl, np.ones(k) / k, 'same')
+    l = 20 * np.log10(envl + 1e-9); return np.where(l > thr, (thr + (l - thr) / ratio) - l, 0)
+def comp(x, thr=-14, ratio=1.8):
+    return x * db(comp_gain(x, thr, ratio))[:, None]
+def pcomp_gain(det, thr, ratio, att=0.003, rel=0.15, look=0.003):
+    """Gain (dB) du compresseur de crête : crête anticipée de look, attaque att, relâche rel."""
+    pk = -minimum_filter1d(-np.abs(det).max(1), size=2 * int(look * SR) + 1)
+    l = 20 * np.log10(pk + 1e-9); gt = np.where(l > thr, (thr + (l - thr) / ratio) - l, 0.0)
+    a_, r_ = np.exp(-1 / (att * SR)), np.exp(-1 / (rel * SR)); out = np.empty_like(gt); s_ = 0.0
+    for i, v in enumerate(gt):
+        s_ = a_ * s_ + (1 - a_) * v if v < s_ else r_ * s_ + (1 - r_) * v
+        out[i] = s_
+    return out
 mus_st = np.stack([mus, mus], 1)
+# Round 2 : la musique compressée seule avant la somme. Sans voix, la normalisation la remonte de ≈ 15 dB et ses
+# crêtes (−1,0 et −2,9 dBFS à 0,06 et 20,91 s) faisaient travailler le limiteur à 10–11 dB (36,8 % des blocs de 10 ms
+# au plafond) : il pompait. La vraie voix baissera le gain, pas le facteur de crête de la musique.
+# 1) compresseur doux (seuil −22, 2,5:1) ; 2) le premier, moyenné sur 10 ms, laisse passer les coups de la batterie
+# (encore +4,5 dB au-dessus du plafond après le gain, à 0,06 s) : second étage à détecteur de crête (attaque 3 ms,
+# relâche 150 ms, 4:1). Les deux détecteurs lisent la musique sans la courbe d'élan (le signal divisé par
+# l'automation de niveau) : ils réduisent les mêmes coups partout et la musique monte toujours de la marche 1 à la
+# chute (avec le signal brut, la chute retombait au niveau du calcul).
+_lv = db(PHONE['lvl'])[:, None]
+g_c = comp_gain(mus_st / _lv, thr=-22, ratio=2.5)
+g_p = pcomp_gain(mus_st * db(g_c)[:, None] / _lv, thr=MUS_THR, ratio=4)
+MUS_G = db(g_c + g_p)                       # gain linéaire appliqué à la musique (aussi à la référence sans arrêt)
+mus_st = mus_st * MUS_G[:, None]
+# même étage, plus rapide, sur le bus des bruitages : le pop des bulles, les débits et les virements (rôles ui et
+# chime, crête −10 à −13 dBFS) arrivaient à +4 dB après le gain de normalisation et faisaient réduire le limiteur
+# commun de 8 à 9 dB (16,79 · 19,53 · 7,66 · 10,08 s). Leur niveau moyen ne bouge presque pas, seule la pointe baisse.
+FX_GDB = pcomp_gain(fx, thr=FX_THR, ratio=3, att=0.001, rel=0.08, look=0.002)
+fx = fx * db(FX_GDB)[:, None]
 # voix : présence 2–5 kHz légèrement remontée
 vo = vo + bp(vo, 2000, 5000, 2) * (db(3) - 1)
 vo_st = np.stack([vo, vo], 1)
 vo_st = vo_st / (np.abs(vo_st).max() + 1e-9) * db(-3)
 mix = vo_st + mus_st + fx
-def comp(x, thr=-14, ratio=1.8):
-    envl = np.abs(x).max(1); k = int(0.01 * SR); envl = np.convolve(envl, np.ones(k) / k, 'same')
-    l = 20 * np.log10(envl + 1e-9); g = np.where(l > thr, (thr + (l - thr) / ratio) - l, 0)
-    return x * db(g)[:, None]
 mix = comp(mix)
 meter = pyln.Meter(SR)
 GR = np.ones(N)                            # réduction de gain cumulée du limiteur (pour le rapport)
-def limit(x, ceil_db=-4.0, look=0.004, rel=0.08, track=False):
+def limit(x, ceil_db=-4.0, look=0.004, rel=0.08, track=False, tp=False):
     # limiteur à anticipation : la réduction de gain commence 4 ms avant la crête et relâche en 80 ms
-    c = db(ceil_db); pk = np.abs(x).max(1)
+    # tp : détecteur de crête vraie (signal suréchantillonné 4×), le plafond est alors en dBTP
+    c = db(ceil_db)
+    if tp:
+        up = np.abs(librosa.resample(x.T, orig_sr=SR, target_sr=4 * SR)).max(0)
+        pk = np.maximum(np.abs(x).max(1), np.pad(up, (0, max(0, 4 * len(x) - len(up))))[:4 * len(x)].reshape(-1, 4).max(1))
+    else:
+        pk = np.abs(x).max(1)
     need = np.minimum(1.0, c / np.maximum(pk, 1e-9))
     la = int(look * SR); g = minimum_filter1d(need, size=2 * la + 1)
     r = np.exp(-1 / (rel * SR)); out = np.empty_like(g); s_ = 1.0
@@ -428,9 +480,16 @@ def limit(x, ceil_db=-4.0, look=0.004, rel=0.08, track=False):
     if track: GR[:len(out)] *= out
     return x * out[:, None]
 gain_total = 0.0
+# plafond du limiteur (round 2 : −5 dBFS → −4,2 dBTP). Le détecteur lit la crête vraie : avec un plafond en
+# échantillons, les crêtes inter-échantillons (≈ +1,4 dB) imposaient après la boucle une correction de 0,7 dB qui
+# ramenait le mix à −14,7 LUFS. La correction finale à −3,5 dBTP reste, en sécurité.
+CEIL = -4.2
 for _ in range(4):
     gl = -14 - meter.integrated_loudness(mix); mix *= db(gl); gain_total += gl
-    mix = limit(mix, -5.0, track=True)
+    mix = limit(mix, CEIL, track=True, tp=True)
+# blocs de 10 ms dont la crête touche le plafond (à 0,5 dB près) : le limiteur y travaille
+_b = int(0.01 * SR); _pk = np.abs(mix[:N // _b * _b]).max(1).reshape(-1, _b).max(1)
+near_ceil = 100 * (_pk > db(CEIL - 0.5)).mean()
 truepeak = lambda x: 20 * np.log10(np.abs(librosa.resample(x.T, orig_sr=SR, target_sr=4 * SR)).max())
 tp = truepeak(mix)
 if tp > -3.5: mix *= db(-3.5 - tp)
@@ -445,7 +504,7 @@ STEMS = [('voix', vo_st), ('musique', mus_st), ('bruitages', fx)]
 h = min(1.0, db(-1) / max(np.abs(x * g).max() for _, x in STEMS))
 for name, x in STEMS: sf.write(A('stems-mo13', f'{name}.wav'), x * g * h, SR, subtype='PCM_24')
 # version sans musique (voix + bruitages) pour juger le sound design nu
-nm = (vo_st + fx) * g; nm *= db(-14 - meter.integrated_loudness(nm)); nm = limit(nm, -5.0)
+nm = (vo_st + fx) * g; nm *= db(-14 - meter.integrated_loudness(nm)); nm = limit(nm, CEIL, tp=True)
 sf.write(A('stems-mo13', 'sans-musique.wav'), nm, SR, subtype='PCM_24')
 
 # ---------- mesures, relues sur les fichiers écrits ----------
@@ -467,10 +526,20 @@ if shutil.which('ffmpeg'):
         summ = eb[eb.rfind('Summary'):]
         rep[0] += (f' ; après AAC 256 k : {float(re.findall(r"I:\s+(-?[\d.]+) LUFS", summ)[0]):.1f} LUFS, '
                    f'true peak {float(re.findall(r"Peak:\s+(-?[\d.]+) dBFS", summ)[0]):.1f} dBTP (cible MP4 ≤ −1)')
-rep.append(f'gain de normalisation {gain_total:+.1f} dB ; limiteur (plafond −5 dBFS) : réduction max '
+rep.append(f'gain de normalisation {gain_total:+.1f} dB ; limiteur (plafond {CEIL:.1f} dBTP, crête vraie) : réduction max '
            + ', '.join(f'{20 * np.log10(GR[i]):.1f} dB à {i / SR:.2f} s' for i in
                        sorted({int(np.argmin(GR[j:j + SR // 2])) + j for j in range(0, N, SR // 2)}, key=lambda i: GR[i])[:4])
-           + f' ; {100 * (GR < db(-3)).mean():.1f} % du film à plus de 3 dB')
+           + f' ; {100 * (GR < db(-3)).mean():.1f} % du film à plus de 3 dB ; {near_ceil:.1f} % des blocs de 10 ms à moins de 0,5 dB du plafond'
+           + ' (cibles du round 2 : réduction max ≤ 6 dB, < 10 % du film à plus de 3 dB)')
+_mg = g_c + g_p; _act = _mg < -0.5
+rep.append(f'étages avant la somme : musique (doux −22 dB 2,5:1 + crête {MUS_THR:.0f} dB 4:1, 3/150 ms) réduction médiane '
+           f'{np.median(_mg):.1f} dB, 95e centile {np.percentile(_mg, 5):.1f}, max {_mg.min():.1f} dB à {np.argmin(_mg) / SR:.2f} s '
+           f'(premier coup, 0–0,2 s : {_mg[:int(0.2 * SR)].min():.1f} dB), active (> 0,5 dB) {100 * _act.mean():.0f} % '
+           f'du film ; bruitages (crête {FX_THR:.0f} dB 3:1, 1/80 ms) réduction max {FX_GDB.min():.1f} dB, active {100 * (FX_GDB < -0.5).mean():.0f} % du film')
+_w = lambda a_, b_: GR[int(a_ * SR):int(b_ * SR)]
+rep.append('limiteur sur les passages à écouter : ' + ' ; '.join(
+    f'{a_:.1f}–{b_:.1f} s max {20 * np.log10(_w(a_, b_).min()):.1f} dB, moyenne {20 * np.log10(_w(a_, b_)).mean():.1f} dB, '
+    f'{100 * (_w(a_, b_) < db(-3)).mean():.0f} % à plus de 3 dB' for a_, b_ in [(0, 2), (20.5, 21.6)]))
 rep.append(f'minutage : {"PROVISOIRE (voix " + str(VT.get("take")) + ", muette)" if not VO_ON else "voix " + str(VT.get("take"))} · '
            f'durée {DUR:.2f} s, boucle {LOOP:.2f} s'
            + (' · ATTENTION : vo-timing.json est plus récent que film-mo13/events.json (relancer CUT=mo13 node scripts/events.mjs)' if STALE else ''))
@@ -488,7 +557,7 @@ rep.append(f'attaque : 1re image {rms_db(mixw[:fr1]):.1f} dBFS RMS, 0–0,1 s {r
            f'premier temps de la mesure 13 entendu à {first_hit:.3f} s (visé {B13:.3f} s) ; 2 premières secondes '
            f'{lufs(mixw[:2 * SR]):.1f} LUFS contre {lufs(mixw[2 * SR:]):.1f} sur le reste (qa_video : écart ≤ 8)')
 # l'arrêt de bande : premier échantillon où la musique écrite quitte la même musique sans arrêt
-refw = np.stack([mus_ref, mus_ref], 1) * g
+refw = np.stack([mus_ref, mus_ref], 1) * MUS_G[:, None] * g     # même compression (identique avant l'arrêt)
 a_, b_ = int((T_STOP - 0.5) * SR), int((T_STOP + 0.4) * SR)
 res = np.abs(musw[a_:b_, 0] - refw[a_:b_, 0]); lvl_ref = np.sqrt((refw[a_:int(T_STOP * SR), 0] ** 2).mean())
 t_stop = (a_ + int(np.argmax(res > 0.01 * lvl_ref))) / SR
@@ -500,6 +569,17 @@ rep.append(f'arrêt de bande : {t_stop:.3f} s ; « 3 100 € » géant posé {T_
            f'(tolérance ±1 à {FPS} i/s) ; le compteur touche 3 100 à {T_BIG:.3f} s ; musique sous −60 dBFS à {t_sil:.3f} s, '
            f'silence jusqu\'au rembobinage ({REW[0]:.2f} s) ; « trois mille cent » dit {mark("b3100"):.2f}–{mark("b3100", True):.2f} s ; '
            f'arrêt sur le temps {int(round((bar_stop % 1) * 4)) + 1} de la mesure {13 + int(bar_stop)}')
+# la seule pause : après le coup du « 3 100 € », plus rien jusqu'à « Et tu attendais » (bruitages sous −40 dBFS)
+efx = np.sqrt(np.convolve((fxw ** 2).mean(1), np.ones(k10) / k10, 'same'))
+pz = np.arange(int(T_STOP * SR), int(E_['att'] * SR))
+quiet = np.concatenate([[False], efx[pz] < db(-40), [False]]).astype(int)
+ed = np.flatnonzero(np.diff(quiet))                  # débuts et fins des passages sous −40 dBFS
+runs = list(zip(ed[::2], ed[1::2]))
+i_q, i_n = max(runs, key=lambda r: r[1] - r[0]) if runs else (0, 0)   # le plus long silence de la pause
+t_fx, t_nx = pz[0] / SR + i_q / SR, pz[0] / SR + i_n / SR
+rep.append(f'la seule pause ({T_STOP:.2f}–{E_["att"]:.2f} s) : musique arrêtée ; bruitages (coup et note du « 3 100 € ») '
+           f'sous −40 dBFS de {t_fx:.2f} à {t_nx:.2f} s ({t_nx - t_fx:.2f} s de silence, avant le tracé de « Tu attendais ») ; '
+           f'mix {rms_db(mixw[int((T_STOP + 0.25) * SR):int(E_["att"] * SR)]):.1f} dBFS RMS de {T_STOP + 0.25:.2f} à {E_["att"]:.2f} s')
 # la reprise : attaque de la mesure 55, et la méthode sur la grille
 seg = musw[int((T_BACK - 0.05) * SR):int((T_BACK + 0.25) * SR), 0]
 tpl = m2[int((PRE - 0.002) * SR):int((PRE + 0.15) * SR)]
@@ -514,6 +594,12 @@ grid1 = lambda t: (t - OFF) - BEAT * round((t - OFF) / BEAT)
 rep.append('grille de l\'élan : ' + ', '.join(f'{nm_} {x:.2f} s ({grid1(x) * 1000:+.0f} ms)' for nm_, x in
            [('calcul replié', E_['out']), ('virement 1', V1), ('virement 2', V2), ('SEMAINE 8', T_T0), ('virement 3', V3), ('« Budget »', mark('budget') or V3)])
            + f' ; basse de retour à {T_BASS:.2f} s (bulle « 2 950 » {T_BUB:.2f} s)')
+# l'élan, marche par marche : la musique (piste, avant limiteur) et le mix
+ELAN = [(0, E_['out'], 'calcul'), (E_['out'] + 0.5, V1, 'marche 1'), (V1 + 0.3, V2, 'marche 2'), (V2 + 0.3, T_T0, 'marche 3'),
+        (V3 + 0.3, T_STOP, 'chute')]
+rep.append('élan (RMS musique / mix, dBFS) : ' + ' · '.join(
+    f'{nm_} {rms_db(musw[int(a_ * SR):int(b_ * SR)]):.1f} / {rms_db(mixw[int(a_ * SR):int(b_ * SR)]):.1f}' for a_, b_, nm_ in ELAN)
+    + ' (courbe de niveau : −1, −2,5, −1,5, −0,5, +0,5 → +1 dB)')
 tail = mixw[-int(0.1 * SR):]; head = mixw[:int(0.1 * SR)]
 last_beat = T_BACK + BEAT * np.floor((DUR - T_BACK) / BEAT)
 rep.append(f'boucle : 0,1 s avant la fin {rms_db(tail):.1f} dBFS → 0,1 s du début {rms_db(head):.1f} dBFS ; dernier temps de la '

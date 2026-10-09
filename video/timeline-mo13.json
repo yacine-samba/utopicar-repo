@@ -4,7 +4,7 @@
  "fps": 60,
  "bpm": 120,
  "size": [1080, 1920],
- "dur": 31.25,
+ "dur": 31.45,
  "poster": 0,
- "hooks": { "A": { "dur": 31.25, "poster": 0 }, "B": { "dur": 30.85, "poster": 0 } }
+ "hooks": { "A": { "dur": 31.45, "poster": 0 }, "B": { "dur": 30.85, "poster": 0 } }
 }

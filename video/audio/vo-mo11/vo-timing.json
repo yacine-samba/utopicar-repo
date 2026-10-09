@@ -1,5 +1,5 @@
 {
- "dur": 30.1,
+ "dur": 30.15,
  "take": "provisoire",
  "provisional": true,
  "lines": [
@@ -58,12 +58,6 @@
    "text": "Photo 1."
   },
   {
-   "key": "j4",
-   "t": 15.95,
-   "end": 16.5,
-   "text": "4 jours."
-  },
-  {
    "key": "c400",
    "t": 16.9,
    "end": 17.571,
@@ -82,21 +76,27 @@
    "text": "Ceux qui gagnent ne réparent pas tout."
   },
   {
+   "key": "pchocs",
+   "t": 23.3,
+   "end": 24.814,
+   "text": "Le pare-chocs, tu le laisses."
+  },
+  {
    "key": "ongle",
-   "t": 24.75,
-   "end": 25.757,
+   "t": 25.114,
+   "end": 26.121,
    "text": "L'ongle glisse sur la rayure ?"
   },
   {
    "key": "polish",
-   "t": 26.25,
-   "end": 27.257,
+   "t": 26.421,
+   "end": 27.428,
    "text": "15 euros de polish."
   },
   {
    "key": "proch",
-   "t": 28.4,
-   "end": 29.742,
+   "t": 28.428,
+   "end": 29.77,
    "text": "La prochaine fois que tu te dis…"
   }
  ],
@@ -270,18 +270,6 @@
    "w": "1."
   },
   {
-   "line": "j4",
-   "t": 15.95,
-   "end": 16.225,
-   "w": "4"
-  },
-  {
-   "line": "j4",
-   "t": 16.225,
-   "end": 16.5,
-   "w": "jours."
-  },
-  {
    "line": "c400",
    "t": 16.9,
    "end": 17.236,
@@ -372,99 +360,129 @@
    "w": "tout."
   },
   {
+   "line": "pchocs",
+   "t": 23.3,
+   "end": 23.468,
+   "w": "Le"
+  },
+  {
+   "line": "pchocs",
+   "t": 23.468,
+   "end": 23.803,
+   "w": "pare-chocs,"
+  },
+  {
+   "line": "pchocs",
+   "t": 24.143,
+   "end": 24.311,
+   "w": "tu"
+  },
+  {
+   "line": "pchocs",
+   "t": 24.311,
+   "end": 24.479,
+   "w": "le"
+  },
+  {
+   "line": "pchocs",
+   "t": 24.479,
+   "end": 24.814,
+   "w": "laisses."
+  },
+  {
    "line": "ongle",
-   "t": 24.75,
-   "end": 24.918,
+   "t": 25.114,
+   "end": 25.282,
    "w": "L'ongle"
   },
   {
    "line": "ongle",
-   "t": 24.918,
-   "end": 25.086,
+   "t": 25.282,
+   "end": 25.45,
    "w": "glisse"
   },
   {
    "line": "ongle",
-   "t": 25.086,
-   "end": 25.253,
+   "t": 25.45,
+   "end": 25.618,
    "w": "sur"
   },
   {
    "line": "ongle",
-   "t": 25.253,
-   "end": 25.421,
+   "t": 25.618,
+   "end": 25.786,
    "w": "la"
   },
   {
    "line": "ongle",
-   "t": 25.421,
-   "end": 25.757,
+   "t": 25.786,
+   "end": 26.121,
    "w": "rayure ?"
   },
   {
    "line": "polish",
-   "t": 26.25,
-   "end": 26.418,
+   "t": 26.421,
+   "end": 26.589,
    "w": "15"
   },
   {
    "line": "polish",
-   "t": 26.418,
-   "end": 26.753,
+   "t": 26.589,
+   "end": 26.925,
    "w": "euros"
   },
   {
    "line": "polish",
-   "t": 26.753,
-   "end": 26.921,
+   "t": 26.925,
+   "end": 27.092,
    "w": "de"
   },
   {
    "line": "polish",
-   "t": 26.921,
-   "end": 27.257,
+   "t": 27.092,
+   "end": 27.428,
    "w": "polish."
   },
   {
    "line": "proch",
-   "t": 28.4,
-   "end": 28.568,
+   "t": 28.428,
+   "end": 28.596,
    "w": "La"
   },
   {
    "line": "proch",
-   "t": 28.568,
-   "end": 28.903,
+   "t": 28.596,
+   "end": 28.931,
    "w": "prochaine"
   },
   {
    "line": "proch",
-   "t": 28.903,
-   "end": 29.071,
+   "t": 28.931,
+   "end": 29.099,
    "w": "fois"
   },
   {
    "line": "proch",
-   "t": 29.071,
-   "end": 29.239,
+   "t": 29.099,
+   "end": 29.267,
    "w": "que"
   },
   {
    "line": "proch",
-   "t": 29.239,
-   "end": 29.407,
+   "t": 29.267,
+   "end": 29.435,
    "w": "tu"
   },
   {
    "line": "proch",
-   "t": 29.407,
-   "end": 29.574,
+   "t": 29.435,
+   "end": 29.602,
    "w": "te"
   },
   {
    "line": "proch",
-   "t": 29.574,
-   "end": 29.742,
+   "t": 29.602,
+   "end": 29.77,
    "w": "dis…"
   }
  ],
@@ -583,18 +601,6 @@
    "end": 14.8,
    "w": "1."
   },
-  "quatre": {
-   "line": "j4",
-   "t": 15.95,
-   "end": 16.225,
-   "w": "4"
-  },
-  "jours": {
-   "line": "j4",
-   "t": 16.225,
-   "end": 16.5,
-   "w": "jours."
-  },
   "n400": {
    "line": "c400",
    "t": 16.9,
@@ -655,52 +661,64 @@
    "end": 22.492,
    "w": "tout."
   },
+  "pchocs": {
+   "line": "pchocs",
+   "t": 23.468,
+   "end": 23.803,
+   "w": "pare-chocs,"
+  },
+  "laisses": {
+   "line": "pchocs",
+   "t": 24.479,
+   "end": 24.814,
+   "w": "laisses."
+  },
   "ongle": {
    "line": "ongle",
-   "t": 24.75,
-   "end": 24.918,
+   "t": 25.114,
+   "end": 25.282,
    "w": "L'ongle"
   },
   "glisse": {
    "line": "ongle",
-   "t": 24.918,
-   "end": 25.086,
+   "t": 25.282,
+   "end": 25.45,
    "w": "glisse"
   },
   "rayure": {
    "line": "ongle",
-   "t": 25.421,
-   "end": 25.757,
+   "t": 25.786,
+   "end": 26.121,
    "w": "rayure ?"
   },
   "quinze": {
    "line": "polish",
-   "t": 26.25,
-   "end": 26.418,
+   "t": 26.421,
+   "end": 26.589,
    "w": "15"
   },
   "euros": {
    "line": "polish",
-   "t": 26.418,
-   "end": 26.753,
+   "t": 26.589,
+   "end": 26.925,
    "w": "euros"
   },
   "polish": {
    "line": "polish",
-   "t": 26.921,
-   "end": 27.257,
+   "t": 27.092,
+   "end": 27.428,
    "w": "polish."
   },
   "prochaine": {
    "line": "proch",
-   "t": 28.4,
-   "end": 28.568,
+   "t": 28.428,
+   "end": 28.596,
    "w": "La"
   },
   "dis": {
    "line": "proch",
-   "t": 29.574,
-   "end": 29.742,
+   "t": 29.602,
+   "end": 29.77,
    "w": "dis…"
   }
  },
@@ -712,7 +730,7 @@
   "entre_phrases": 0.3,
   "source": "aucune prise : durées estimées (scripts/vo-mo11.py --provisoire), débit mesuré sur les voix posées de MO9 et MO10"
  },
- "loop": 27.8,
+ "loop": 27.83,
  "hookB": {
   "t": 0.1,
   "end": 4.299,

@@ -50,25 +50,26 @@
     const euro = el('div', 'abs', parent, `font:700 ${efs}px Clash;line-height:${h}px;white-space:nowrap`); euro.textContent = '€';
     return { top, w, h, gap, n, lo, lab, labL, plate, ring, cells, euro, pad, efs };
   }
-  // vis[i] (0..1) par case ; build(i) = {draw, glass} ; k = opacité globale ; lit = anneau orange (0..1)
+  // vis[i] (0..1) par case ; build(i) = {draw, glass[, digit, euro]} (digit et euro : opacité des chiffres et du « € »,
+  // celle du verre par défaut) ; k = opacité globale ; lit = anneau orange (0..1)
   function paintPlateCounter(C, st, keys, vis, build, k, lit = 0, dk = 1) {
     const ew = C.efs * 0.62, nC = vis.reduce((a, b) => a + b, 0), totalW = nC * C.w + Math.max(0, nC - 1) * C.gap + 16 + ew;
     let cx = 540 - totalW / 2; const xs = [];
     for (let i = 0; i < C.n; i++) { xs.push(cx); cx += (C.w + C.gap) * vis[i]; }
     const left = 540 - totalW / 2 - C.pad, W = totalW + 2 * C.pad;
-    const g0 = build(C.n - 1).glass;
+    const b3 = build(C.n - 1), g0 = b3.glass, eu = b3.euro ?? g0;
     C.plate.style.left = `${f3(left)}px`; C.plate.style.width = `${f3(W)}px`; set(C.plate, g0 * k);
     C.ring.style.left = `${f3(left)}px`; C.ring.style.width = `${f3(W)}px`; set(C.ring, lit * k);
     C.cells.forEach((c, i) => {
-      const { draw: dr, glass: gl } = build(i), kk = vis[i];
+      const { draw: dr, glass: gl, digit: dg = gl } = build(i), kk = vis[i];
       for (const e of [c.c, c.o, c.d]) { e.style.transform = `translate(${f3(xs[i])}px,${C.top}px) scale(${f3(0.6 + 0.4 * kk)})`; e.style.transformOrigin = '0 50%'; }
       c.r.setAttribute('stroke-dashoffset', f3(600 * (1 - dr)));
       c.o.style.opacity = f3(sm(0, 0.08, dr) * (1 - 0.75 * gl) * kk * k);
       set(c.c, gl * kk * k);
       c.col.style.transform = `translateY(${f3(-(track(st, keys[C.n - 1 - i]) - C.lo) * C.h)}px)`;
-      set(c.d, gl * kk * kk * kk * k * dk);
+      set(c.d, dg * kk * kk * kk * k * dk);
     });
-    C.euro.style.transform = `translate(${f3(cx + 4)}px,${C.top}px)`; set(C.euro, g0 * k * dk);
+    C.euro.style.transform = `translate(${f3(cx + 4)}px,${C.top}px)`; set(C.euro, eu * k * dk);
     return { left, W, right: left + W };
   }
 
@@ -112,9 +113,12 @@
       set(c.d, sm(0, 0.12, p) * vv * k);
     });
     F.plate.style.left = `${f3(540 - tot / 2 - F.pad)}px`; F.plate.style.width = `${f3(tot + 2 * F.pad)}px`;
-    set(F.plate, k * clamp(tot / 200, 0, 1));
+    // toutes cases repliées, tot vaut encore gap − g (16 px) : la plaque vide ne s'allume pas (round 2 : pastille à 8 %
+    // sous « 1 500 » de 4,8 à 5,1 s)
+    set(F.plate, k * clamp((tot - (F.gap - F.g)) / 200, 0, 1));
   }
 
+  const STEP_LAB_FS = 56, STEP_LAB_Y = 74;          // inscription de la contremarche : taille et ligne de base sous le bord avant
   // ---------- marche de verre peint : dessus elliptique, contremarche qui s'efface, arête tracée à la lumière ----------
   function glassStep(parent, o) {
     const { X, Y, a = 440, b = 64, R = 170, id, label } = o;
@@ -144,7 +148,8 @@
     for (const e of [...glowP, edge]) { e.setAttribute('stroke-dasharray', `${f3(L)} ${f3(L)}`); e.setAttribute('stroke-dashoffset', f3(L)); }
     const pen = sv('g', {}, g); sv('circle', { r: 34, fill: `url(#pg${id})` }, pen); sv('circle', { r: 7, fill: '#fff' }, pen);
     const txt = sv('g', {}, g);
-    const w = label ? word(txt, label, '600 40px Clash', 40, 0, b + 58, { sw: 1.6 }) : null;
+    // l'inscription « achat → revente ✓ » : 56 px (round 1 : 40 px, ≈ 7 px de haut à 360 px au recul)
+    const w = label ? word(txt, label, `600 ${STEP_LAB_FS}px Clash`, STEP_LAB_FS, 0, b + STEP_LAB_Y, { sw: 1.8 }) : null;
     if (w) { const ck = w.items[w.items.length - 1]; if (ck && ck.ch === '✓') { ck.fill.setAttribute('fill', '#ffb38a'); } }
     return { s, g, X, Y, a, b, R, riser, sheen, top, lis, glow, glowP, edge, L, pen, txt, w };
   }
@@ -228,5 +233,5 @@
   // un mot déjà écrit : tout plein, aucun contour
   function fullWord(w, k = 1) { w.items.forEach((g) => { g.stroke.style.visibility = 'hidden'; g.fill.setAttribute('fill-opacity', f3(k)); g.fill.style.visibility = k < 0.002 ? 'hidden' : 'visible'; g.g.setAttribute('transform', ''); }); }
 
-  root.Kit13 = { writeWord, fullWord, blurCanvas, paintSeq, rollKeys2, plateCounter, paintPlateCounter, plateFlaps, paintPlateFlaps, glassStep, paperTag, ticket, fit, flat, silhouette, reflection };
+  root.Kit13 = { STEP_LAB_Y, writeWord, fullWord, blurCanvas, paintSeq, rollKeys2, plateCounter, paintPlateCounter, plateFlaps, paintPlateFlaps, glassStep, paperTag, ticket, fit, flat, silhouette, reflection };
 })(window);

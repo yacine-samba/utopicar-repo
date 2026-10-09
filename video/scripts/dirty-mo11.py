@@ -27,6 +27,8 @@ Vectoriels (viewBox = pixels du PNG, nets à tout grossissement, la caméra va j
                                 brun mat), puis en vectoriel le bord frotté, l'éclat et la fissure du rayon fendu
   clio3-enjoliveurs-neufs.svg   le reflet des enjoliveurs neufs (arc de lumière sur le bord, rien d'autre : la photo
                                 montre déjà des enjoliveurs gris argent propres, losanges effacés)
+  clio3-parechocs.png           (round 2) le coin avant gauche du bouclier frotté sur une bordure (lèvre basse,
+                                x 42 → 246) : jamais réparé, la 3e règle de la carte ; visible tout le film
 Copies pour le film : car-clio3.png, car-clio3-contour.js (window.CAR_CLIO3_CONTOUR), crédits dans CREDITS.tsv.
 """
 import shutil, sys
@@ -72,7 +74,8 @@ LAMP_SMALL = [(100, 526), (80, 560), (62, 600), (50, 632), (44, 664), (60, 690),
 HUBS = [(1256, 991, 67, 169, 10), (1750, 613, 22, 96, 4)]        # enjoliveurs : centre, demi-axes, rotation (°)
 ARCHES = [(1270, 760, 150, 120), (1745, 600, 70, 160)]           # passages de roue : projections de boue autour
 BELT = [(1395, 335), (1580, 334), (1700, 262)]                    # bas des vitres latérales : départ des coulures
-LAVE_QUAD = [(1400, 520), (1600, 482), (1600, 570), (1402, 628)]  # « LAVE-MOI » : haut-g, haut-d, bas-d, bas-g
+LAVE_QUAD = [(1375, 509), (1625, 461), (1625, 571), (1377, 646)]  # « LAVE-MOI » : haut-g, haut-d, bas-d, bas-g (× 1,25,
+                                                                  # round 2 : lisible à 200 px)
 
 
 def poly_mask(polys, blur=0.0):
@@ -142,7 +145,16 @@ fine = np.clip((blur_noise(1, 0.6) - 0.60) * 4, 0, 1) * (0.4 + 0.6 * blur_noise(
 spots = np.clip(streak * 0.8 + fine * 0.3, 0, 1)[..., None]
 out = np.clip(out * (1 - spots * 0.6) + mud * 0.75 * spots * 0.6, 0, 1)
 
-# « LAVE-MOI » au doigt : lettres tracées dans la poussière, la peinture propre réapparaît
+# « LAVE-MOI » au doigt : lettres tracées dans la poussière, la peinture propre réapparaît. Round 2 : la peinture
+# éclaircie (× 1,12 + 0,03, luminance 0,41) se confondait avec la poussière pâle du haut de la portière (0,37-0,58),
+# illisible à 200 px. Le doigt écrit donc dans une plaque de poussière épaisse et claire (≈ 0,64), et la peinture
+# frottée reste plus sombre que la photo (≈ 0,29) : l'écart de luminance passe d'environ 0,05 à 0,35.
+qm = cv2.dilate(poly_mask([LAVE_QUAD], 0), np.ones((31, 31), np.uint8))
+_rq = np.random.default_rng(1125)                                  # tirage à part : les calques suivants ne changent pas
+_nq = np.asarray(Image.fromarray((_rq.random((H // 8 + 2, W // 8 + 2)) * 255).astype(np.uint8)).resize((W, H), Image.BICUBIC)
+                 .filter(ImageFilter.GaussianBlur(4))).astype(np.float32) / 255
+thick = np.clip(cv2.GaussianBlur(qm, (0, 0), 16) * 1.15, 0, 1) * (1 - glass) * (1 - dark * 0.8) * (0.88 + 0.12 * _nq)
+out = out * (1 - 0.8 * thick[..., None]) + light * 0.8 * thick[..., None]
 def quad_pt(u, v):
     (x0, y0), (x1, y1), (x2, y2), (x3, y3) = LAVE_QUAD
     top = (x0 + (x1 - x0) * u, y0 + (y1 - y0) * u); bot = (x3 + (x2 - x3) * u, y3 + (y2 - y3) * u)
@@ -169,13 +181,13 @@ for c in TEXT:
             u = (ux + gx) / total; v = 0.08 + gy * 0.84
             px, py = quad_pt(u, v)
             pts.append((px + rng.normal(0, 0.7), py + rng.normal(0, 0.7)))
-        d.line(pts, fill=255, width=11, joint='curve')
-        for p in (pts[0], pts[-1]): d.ellipse([p[0] - 5.5, p[1] - 5.5, p[0] + 5.5, p[1] + 5.5], fill=255)
+        d.line(pts, fill=255, width=18, joint='curve')            # un doigt, pas une pointe (round 2 : 11 → 18 px)
+        for p in (pts[0], pts[-1]): d.ellipse([p[0] - 9, p[1] - 9, p[0] + 9, p[1] + 9], fill=255)
     ux += adv + GAP
 letters = np.asarray(lt.filter(ImageFilter.GaussianBlur(1.1))).astype(np.float32) / 255
 letters *= 0.82 + 0.18 * blur_noise(2, 1.0)                      # bord du doigt irrégulier, un peu de poussière reste
 L3 = letters[..., None]
-out = out * (1 - L3) + np.clip(rgb * 0.97, 0, 1) * L3
+out = out * (1 - L3) + np.clip(rgb * 0.86, 0, 1) * L3              # la peinture frottée par le doigt, sombre et nette
 poussiere = out
 save(poussiere, alpha, 'clio3-poussiere.png')
 
@@ -216,13 +228,21 @@ for cx, cy, rx, ry, ang in STAINS:
     k = 1 + 0.10 * np.sin(3 * th + ph[0]) + 0.06 * np.sin(5 * th + ph[1]) + 0.04 * np.sin(9 * th + ph[2])
     ca, sa = np.cos(np.radians(ang)), np.sin(np.radians(ang))
     pts = [(cx + rx * kk * np.cos(t) * ca - ry * kk * np.sin(t) * sa, cy + rx * kk * np.cos(t) * sa + ry * kk * np.sin(t) * ca) for t, kk in zip(th, k)]
-    df.polygon(pts, fill=200); dr.line(pts + [pts[0]], fill=255, width=6, joint='curve')
-stain = np.maximum(np.asarray(fill_m.filter(ImageFilter.GaussianBlur(6))).astype(np.float32),
-                   np.asarray(ring_m.filter(ImageFilter.GaussianBlur(3))).astype(np.float32)) / 255
-a_s = m * 0.85 * stain                                            # ≈ 65 % au cœur, le bord plus marqué
-c_s = np.array([0.706, 0.612, 0.478], np.float32)                 # #b49c7a
-A = a + a_s * (1 - a)                                             # la tache derrière, le voile devant
-col = (col * a[..., None] + c_s * (a_s * (1 - a))[..., None]) / np.maximum(A, 1e-6)[..., None]
+    df.polygon(pts, fill=235); dr.line(pts + [pts[0]], fill=255, width=10, joint='curve')
+# round 2 : à 360 px, des plaques beiges de 25 px ne se lisaient pas comme des taches sur un siège. Fond saturé
+# (#c49a5c, l'eau sale qui a séché dans le tissu), liseré sombre à part (#5c4128 à 90 %, la marque d'une auréole
+# séchée), voile du pare-brise éclairci sur les taches.
+fill = np.asarray(fill_m.filter(ImageFilter.GaussianBlur(6))).astype(np.float32) / 255
+ring = np.asarray(ring_m.filter(ImageFilter.GaussianBlur(3))).astype(np.float32) / 255
+stain = np.maximum(fill, ring)
+a = a * (1 - 0.75 * stain)                                        # voile plus léger devant les taches
+a_f, a_r = m * 0.95 * fill, m * 0.9 * ring             # mesuré à 360 px : R − B 54 avec 0,85 et un fond à 200
+c_s = np.array([0.769, 0.604, 0.361], np.float32)                 # #c49a5c
+c_r = np.array([0.361, 0.255, 0.157], np.float32)                 # #5c4128
+a_b = a_r + a_f * (1 - a_r)                                       # le liseré sur le fond de la tache, derrière la vitre
+col_b = (c_r * a_r[..., None] + c_s * (a_f * (1 - a_r))[..., None]) / np.maximum(a_b, 1e-6)[..., None]
+A = a + a_b * (1 - a)                                             # la tache derrière, le voile devant
+col = (col * a[..., None] + col_b * (a_b * (1 - a))[..., None]) / np.maximum(A, 1e-6)[..., None]
 a = A
 save(col, a, 'clio3-pare-brise.png')
 
@@ -367,6 +387,55 @@ for h in HUBS:
     body += f'<path d="{path(arc2)}" stroke="#ffffff" stroke-opacity=".45" stroke-width="{3 * max(s, .5):.1f}"/>'
 body += '</g>'
 (OUT / 'clio3-enjoliveurs-neufs.svg').write_text(svg(body, defs))
+
+# pare-chocs (round 2) : le coin avant gauche du bouclier frotté contre une bordure, sur la lèvre basse (x 40 → 250).
+# Le film ne le répare jamais : c'est la 3e règle de la carte (« Pare-chocs · 600 € » > 15 % de 3 300 €), on vend en
+# l'état. Visible tout le film, photo 1 comprise. Bords de la lèvre relevés colonne par colonne sur la photo (luminance
+# 70-150 entre la grille noire et l'ombre du dessous). Calque raster comme les autres (un dessin vectoriel se lisait
+# comme un éclair collé) : vernis abrasé blanchi, stries dans le sens du frottement, plastique noir à nu dans les
+# sillons et au coin. Tirage à part (graine 4711) : les autres calques ne changent pas.
+rp = np.random.default_rng(4711)
+LIP_X = [30, 50, 80, 110, 150, 200, 250, 300]
+LIP_T = [896, 904, 926, 950, 980, 1005, 1030, 1046]
+LIP_B = [984, 988, 998, 1014, 1036, 1054, 1070, 1086]
+X0, X1 = 30, 280
+lt_ = np.interp(XX, LIP_X, LIP_T); lb_ = np.interp(XX, LIP_X, LIP_B)
+v = (YY - lt_) / np.maximum(lb_ - lt_, 1)                         # 0 au haut de la lèvre, 1 en bas
+u = np.clip((XX - X0) / (X1 - X0), 0, 1)
+def nz(scale, sig): # bruit à graine propre
+    n = rp.random((H // scale + 2, W // scale + 2)).astype(np.float32)
+    im = Image.fromarray((n * 255).astype(np.uint8)).resize((W, H), Image.BICUBIC)
+    return np.asarray(im.filter(ImageFilter.GaussianBlur(sig))).astype(np.float32) / 255
+rough = nz(6, 3) - 0.5
+v_top = 0.06 + 0.46 * u ** 0.9 + 0.12 * rough                     # épais au coin, plus fin vers la plaque
+inside = np.clip((v - v_top) * 14, 0, 1) * np.clip((0.97 - v) * 14, 0, 1)
+inside *= np.clip((XX - X0) / 6, 0, 1) * np.clip((X1 + 30 * rough - XX) / 22, 0, 1)
+inside *= (XX < X1 + 40) * (XX > X0 - 5)
+# stries dans le sens de la lèvre (pente ≈ 0,47 au coin, 0,33 vers la plaque) : bruit fin étiré par un noyau ligne
+ang = np.degrees(np.arctan(0.42)); L_ = 41
+ker = np.zeros((L_, L_), np.float32); ker[L_ // 2, :] = 1
+ker = cv2.warpAffine(ker, cv2.getRotationMatrix2D((L_ // 2, L_ // 2), -ang, 1.0), (L_, L_)); ker /= ker.sum()
+sub = (slice(820, 1120), slice(0, 360))                           # le calcul seulement autour du coin
+fine = cv2.filter2D(rp.random((300, 360)).astype(np.float32), -1, ker)
+fine = (fine - fine.mean()) / (fine.std() + 1e-6)
+streak = np.zeros((H, W), np.float32); streak[sub] = fine
+dark_s = np.clip((streak - 0.6) * 1.4, 0, 1)                      # sillons : plastique noir
+lite_s = np.clip((-streak - 0.6) * 1.0, 0, 1)                     # stries claires : apprêt
+abr = inside * (0.75 + 0.25 * nz(3, 1.5))                        # vernis abrasé (mat, blanchi)
+base = np.clip(rgb * 0.4 + np.array([0.86, 0.85, 0.83], np.float32) * 0.6, 0, 1)
+colp = base * (1 - 0.85 * dark_s[..., None]) + np.array([0.08, 0.07, 0.06], np.float32) * 0.85 * dark_s[..., None]
+colp = colp * (1 - 0.7 * lite_s[..., None]) + np.array([0.95, 0.94, 0.92], np.float32) * 0.7 * lite_s[..., None]
+# entaille profonde au coin : plastique noir à nu, bord clair (vernis éclaté)
+GOUGE = [(33, 928), (58, 934), (92, 954), (128, 980), (156, 1000), (150, 1006), (118, 998), (82, 984), (52, 970), (35, 958)]
+gx, gy = zip(*(GOUGE + GOUGE[:1])); gt = np.r_[0, np.cumsum(np.hypot(np.diff(gx), np.diff(gy)))]
+gs = np.linspace(0, gt[-1], 90, endpoint=False)                   # bord déchiqueté : 90 points, ± 2,5 px
+g = poly_mask([[(float(np.interp(t_, gt, gx)) + rp.normal(0, 2.5), float(np.interp(t_, gt, gy)) + rp.normal(0, 2.5)) for t_ in gs]], 0.8)
+ge = np.clip(cv2.dilate(g, np.ones((7, 7), np.uint8)) - g, 0, 1) * (0.6 + 0.4 * nz(2, 1))   # vernis éclaté autour
+colp = colp * (1 - g[..., None]) + np.array([0.07, 0.06, 0.055], np.float32) * g[..., None]
+colp = colp * (1 - 0.8 * ge[..., None]) + np.array([0.93, 0.92, 0.9], np.float32) * 0.8 * ge[..., None]
+a_pc = np.clip(np.maximum(abr * 0.92, np.maximum(g, ge * 0.8)) , 0, 1) * (alpha > 0.5)
+a_pc = cv2.GaussianBlur(a_pc, (0, 0), 0.7)
+save(colp, a_pc, 'clio3-parechocs.png')
 print('ok', OUT)
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -391,10 +460,11 @@ if CHECK:
         for L in layers: bg.alpha_composite(L)
         return bg
     P = {n: Image.open(OUT / n).convert('RGBA') for n in ('clio3-poussiere.png', 'clio3-phares.png', 'clio3-pare-brise.png', 'clio3-vitres.png')}
+    PC = Image.open(OUT / 'clio3-parechocs.png').convert('RGBA')
     R, E, N = svg_png('clio3-rayure.svg'), svg_png('clio3-enjoliveurs.svg'), svg_png('clio3-enjoliveurs-neufs.svg')
-    sale = comp([P['clio3-poussiere.png'], P['clio3-phares.png'], P['clio3-pare-brise.png'], P['clio3-vitres.png'], R, E])
-    lavee = comp([P['clio3-phares.png'], P['clio3-pare-brise.png'], P['clio3-vitres.png'], R, E])
-    propre = comp([N])
+    sale = comp([P['clio3-poussiere.png'], PC, P['clio3-phares.png'], P['clio3-pare-brise.png'], P['clio3-vitres.png'], R, E])
+    lavee = comp([PC, P['clio3-phares.png'], P['clio3-pare-brise.png'], P['clio3-vitres.png'], R, E])
+    propre = comp([PC, N])
     for n, im in [('sale', sale), ('lavee', lavee), ('propre', propre)]: im.convert('RGB').save(CHECK / f'mo11-etat-{n}.jpg', quality=90)
     small = [im.convert('RGB').resize((200, int(200 * H / W)), Image.LANCZOS) for im in (sale, propre)]
     S = Image.new('RGB', (420, small[0].height + 20), (8, 7, 10)); S.paste(small[0], (5, 10)); S.paste(small[1], (215, 10))

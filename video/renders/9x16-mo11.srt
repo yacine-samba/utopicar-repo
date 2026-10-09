@@ -32,31 +32,31 @@ Et là, tu attends le soleil.
 Photo 1.
 
 9
-00:00:15,950 --> 00:00:16,750
-4 jours.
-
-10
 00:00:16,900 --> 00:00:17,821
 400 de plus.
 
-11
+10
 00:00:18,700 --> 00:00:20,292
 Ton samedi le mieux payé.
 
-12
+11
 00:00:21,150 --> 00:00:22,742
 Ceux qui gagnent ne
 réparent pas tout.
 
+12
+00:00:23,300 --> 00:00:25,064
+Le pare-chocs, tu le laisses.
+
 13
-00:00:24,750 --> 00:00:26,007
+00:00:25,114 --> 00:00:26,371
 L'ongle glisse sur la rayure ?
 
 14
-00:00:26,250 --> 00:00:27,507
+00:00:26,421 --> 00:00:27,678
 15 euros de polish.
 
 15
-00:00:28,400 --> 00:00:30,042
+00:00:28,428 --> 00:00:30,070
 La prochaine fois que tu te dis…
 

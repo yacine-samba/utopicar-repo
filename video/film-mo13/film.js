@@ -16,30 +16,50 @@
   // ---------- minutage : la voix ----------
   const VT = await (await fetch('../audio/vo-mo13/vo-timing.json')).json();
   const DUR = HB ? VT.hookB.dur : VT.dur, LOOP = HB ? VT.hookB.loop : VT.loop;
-  const FO = DUR - LOOP;                          // durée du repli vers l'image 0 (A : 0,9 s ; B : 0,5 s)
+  const FO = DUR - LOOP;                          // durée du repli vers l'image 0 (A : 1,1 s ; B : 0,5 s)
+  // Le repli en deux temps, sans fondu enchaîné (round 1 : carte, escalier et image 0 superposés à 30,6 s) : la carte
+  // file par le haut, l'escalier descend et s'éteint, le fond chaud aussi ; tout est parti à CLR. Ensuite seulement la rue,
+  // le calcul et la 206 reviennent, en avançant vers l'image 0.
+  const CLR = LOOP + (HB ? 0.4 : 0.5) * FO, CL = CLR - LOOP;
+  // round 2 : la rue revient un dixième plus tôt (CLX ; A : 30,80 s, B : 30,505 s) et les inscriptions de l'escalier
+  // s'éteignent dès le début du repli (TXO) : plus d'image presque noire avec leurs fantômes entre 30,8 et 30,95 s.
+  // L'escalier lui-même (verre, lueurs) reste jusqu'à CLR : sans lui, 30,75 s tombait à un écart-type de 3 (image vide)
+  const CLX = CLR - 0.09 * FO, TXO = [LOOP + 0.05 * FO, LOOP + 0.3 * FO];
   const M = (k) => VT.marks[k].t, ME = (k) => VT.marks[k].end;
   const MB = (k) => VT.hookB.marks[k].t, MBE = (k) => VT.hookB.marks[k].end;
   const LE = (k) => VT.lines.find((l) => l.key === k).end;          // fin d'une réplique
   const T = {};
   // l'ouverture (A : son calcul, puis la petite rouge d'en face ; B : le résultat d'abord)
+  // Une nouveauté visible toutes les 0,8 à 1 s avant 3 s (round 1 : rien de neuf à 360 px entre 0,9 et 2,85 s) :
+  // « 10 000 » s'allume (0,1 s), la plume repasse le « ? » sur « revente ? » (1,0 s), « 1 500 » s'allume et bat pendant
+  // que « 10 000 − » s'éteint (1,9 s), mise au point, étiquette et « 1 400 € » (2,3 → 2,95 s), contour (3,0 s).
+  // Round 2 : l'image devance la voix d'un temps (l'étiquette arrivait vierge à 3,0 s et cachait l'avant de la 206
+  // jusqu'à 4,13 s ; l'écart 1 400 < 1 500 ne se lisait qu'à 4,45 s). La voix confirme sur « mille quatre ».
   if (!HB) {
-    T.q = 0.2;                                   // la plume repasse le « ? »
+    T.q = M('revente') - 0.05;                   // la plume repasse le « ? », sur « revente ? »
     T.sh = M('b1500') - 0.2;                     // la lumière passe sur « 1 500 » dans le brouillon
     T.dix = M('dix') + 0.02;                     // puis sur « 10 000 », sur « Dix mille »
-    T.focus = M('petite') - 0.2;                 // mise au point sur la 206
+    T.focus = M('b1500') + 0.15;                 // mise au point sur la 206, juste après « 1 500 »
     T.contour = M('rouge') - 0.35;
-    T.tag = M('demande') + 0.04;                 // l'étiquette « À VENDRE · 1 400 € »
-    T.mention = M('demande') + 0.14;
-    T.trem = M('b1400') + 0.1;                   // « 8 500 € ? » tremble
+    T.tag = T.focus + 0.15;                      // l'étiquette arrive avec la mise au point (« À VENDRE »)
+    T.prix0 = T.tag + 0.12;                      // la plume y écrit aussitôt « 1 400 € » : écrit à 90 % vers 2,95 s
+    T.mention = T.prix0 + 0.1;                   // la mention arrive avec le premier prix de l'exemple
+    T.trem = M('b1400') + 0.1;                   // « 8 500 € ? » tremble, l'étiquette bat : la voix dit le prix
   } else {
     T.q = 99; T.sh = MB('b1500B') - 0.15; T.sh2 = MB('b3100B') - 0.1;
-    T.focus = MB('voituresB') - 0.1; T.contour = T.focus + 0.17; T.tag = MBE('b3100B') + 0.25; T.mention = -1; T.trem = 99;
+    T.focus = MB('voituresB') - 0.1; T.contour = T.focus + 0.17; T.tag = MBE('b3100B') + 0.25; T.prix0 = T.tag + 0.12; T.mention = -1; T.trem = 99;
   }
   T.out = ME('b1400') + 0.3;                     // le calcul se replie, « 1 500 » devient le compteur, la 206 monte sur la marche 1
-  T.flap1 = T.out + 0.02; T.hud = T.out + 0.05;
+  // les palettes MARCHE 1 et la mention attendent que « 1 500 » soit passé (round 1 : cinq calques superposés à 5,0 s)
+  // les cases se tracent quand les chiffres arrivent (round 2 : à + 0,05 s, un trait seul puis des équerres à gauche
+  // de « 1 500 » qui volait encore)
+  T.flap1 = T.out + 0.3; T.hud = T.out + 0.22;
   // marche 1 : le prix max, puis trois débits (le dernier est le gag)
   T.strike1 = M('gardes') + 0.08; T.pay1 = T.strike1 + 0.25; T.neu1 = T.pay1 + 0.32; T.res = M('cote') + 0.1; T.max1 = T.neu1 + 0.42;
   T.d1 = M('assurance') - 0.05; T.d2 = M('carte') - 0.05; T.gag = M('essence') - 0.05; T.toi = T.gag + 0.5;
+  // le tampon « toi aussi » claque quand le compteur touche 50 € (round 2 : à T.toi, il affichait encore 108 €) ; le
+  // rouleau, lui, part à T.toi
+  T.toiS = T.toi + 0.45;
   // vente 1, la caméra monte, marche 2
   T.sem3 = M('elle') - 0.45; T.vir1 = M('part') - 0.05; T.up1 = M('b1900') - 0.05; T.edge1 = M('b1900') + 0.15;
   T.leave1 = LE('part') + 0.33; T.rise1 = T.leave1 + 0.05; T.arr2 = T.leave1 + 0.25; T.brake2 = T.arr2 + 0.5;
@@ -56,7 +76,8 @@
   // la vente 3, la chute
   T.bub3 = M('budget') - 0.55; T.vir3 = M('budget') - 0.05; T.edge3 = T.vir3 + 0.12; T.up3 = M('budget') + 0.2;
   T.pull = T.up3 + 0.1; T.leave3 = T.vir3 + 0.6; T.big = ME('b3100') - 0.1; T.stop = T.big + 0.3;
-  T.att = M('et'); T.att2 = M('dixmille') - 0.1;
+  // « 10 000. » s'écrit dès « d'avoir » (pas de 0,03 s) : plein de ≈ 23,55 à 24,3 s (round 1 : 0,15 s seulement)
+  T.att = M('et'); T.att2 = M('davoir') - 0.05;
   // le rembobinage, la carte
   const REW = [LE('att') + 0.23, LE('att') + 1.53]; const ST_TO = 5.2;
   T.card = REW[1]; T.l1 = M('vente') + 0.06; T.l2 = T.l1 + 0.5; T.l3 = T.l1 + 1.0;
@@ -89,8 +110,13 @@
   el('div', 'abs', bgD, 'left:-80px;top:-100px;width:1240px;height:2200px;background:radial-gradient(48% 40% at 50% 50%,rgba(90,40,12,.22),rgba(8,7,10,.78) 72%,#08070a)');
   const glowD = el('div', 'glow', bgD, 'left:140px;top:560px;width:800px;height:820px;background:radial-gradient(closest-side,rgba(255,120,50,.30),transparent)');
   const bgA = el('div', 'L', stage);                                                                        // la rue d'en face, le soir
-  const rueCv = K.blurCanvas(bgA, 216, 384, 'left:-60px;top:-107px;width:1200px;height:2133px');
+  // la vidéo agrandie (× 1,9) et remontée : le trottoir éclairé (y ≈ 1 000 de la source) passe sous les roues de la 206
+  // (y = 1 404) ; round 1 : la 206 flottait au-dessus des lumières de la rue
+  const RUE = { l: -144, t: -480, w: 1368, h: 2432 };
+  const rueCv = K.blurCanvas(bgA, 216, 384, `left:${RUE.l}px;top:${RUE.t}px;width:${RUE.w}px;height:${RUE.h}px`);
   el('div', 'abs', bgA, 'left:0;top:0;width:1080px;height:1920px;background:linear-gradient(rgba(8,7,10,.62),rgba(8,7,10,.5) 45%,rgba(8,7,10,.38) 70%,rgba(8,7,10,.55))');
+  // le trottoir de devant, sombre, sous la ligne des roues
+  el('div', 'abs', bgA, 'left:0;top:1380px;width:1080px;height:540px;background:linear-gradient(rgba(8,7,10,0),rgba(8,7,10,.3) 20%,rgba(8,7,10,.7) 50%,#08070a 92%)');
   const glowA = el('div', 'glow', bgA, 'left:150px;top:520px;width:780px;height:640px;background:radial-gradient(closest-side,rgba(255,100,40,.42),transparent)');
 
   // ---------- le monde : l'escalier de verre et les trois voitures (caméra : translation verticale pure) ----------
@@ -103,7 +129,22 @@
   defs(steps[3].s, 'w');
   // voitures : boîte à l'échelle de la marche (206 : 700 px), même échelle réelle (repères : facteur_vs_206)
   const S206 = 700 / 1801;
-  const mkCar = (img, R, C, fac, k, opts = {}) => {
+  // étalonnage « soir » au chargement, pixel par pixel (l'alpha du détourage est gardé tel quel) : multiplication par
+  // #b89a8a à 35 %, puis reflet orange des lampadaires en « screen » sur le haut de la carrosserie (22 % → 0 à 75 %)
+  const nightCopy = (src, W, H) => {
+    const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+    x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, W, H);
+    const d = x.getImageData(0, 0, W, H), p = d.data, mul = [0xb8, 0x9a, 0x8a].map((v) => 0.65 + 0.35 * v / 255), org = [1, 0.55, 0.27];
+    for (let y = 0; y < H; y++) {
+      const u = y / H, a = u < 0.45 ? lerp(0.22, 0.08, u / 0.45) : Math.max(0, lerp(0.08, 0, (u - 0.45) / 0.3));
+      for (let i = y * W * 4, e = i + W * 4; i < e; i += 4) {
+        if (p[i + 3] === 0) continue;
+        for (let ch = 0; ch < 3; ch++) { const v = p[i + ch] / 255 * mul[ch]; p[i + ch] = Math.round(255 * (v + a * org[ch] * (1 - v))); }
+      }
+    }
+    x.putImageData(d, 0, 0); return c;
+  };
+  const mkCar =(img, R, C, fac, k, opts = {}) => {
     const s = S206 * fac, w = img.width * s, h = img.height * s;
     const fx = R.sol.avant.px[0] * s, fy = R.sol.avant.px[1] * s, rx = R.sol.arriere.px[0] * s, ry = R.sol.arriere.px[1] * s;
     const mid = [(fx + rx) / 2, (fy + ry) / 2];
@@ -113,9 +154,16 @@
     refl.setAttribute('style', `left:0;top:${f3(Math.max(fy, ry) - 6)}px;width:${f3(w)}px;height:${f3(h)}px;opacity:.13;-webkit-mask-image:linear-gradient(#000,transparent 34%)`);
     box.appendChild(refl);
     const shad = [[fx, fy, 170, 34], [rx, ry, 150, 28], [(fx + rx) / 2, (fy + ry) / 2 + 6, w * 0.62, 70]].map(([x, y, ww, hh]) => el('div', 'abs', box, `left:${f3(x - ww / 2)}px;top:${f3(y - hh / 2)}px;width:${f3(ww)}px;height:${f3(hh)}px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.78),transparent)`));
-    const blurI = opts.flou ? el('img', 'abs', box, `left:0;top:0;width:${f3(w)}px;height:${f3(h)}px`) : null; if (blurI) blurI.src = opts.flou.src;
+    // la 206 garée en face : une ombre de contact sous les roues (round 1 : sans elle, un autocollant)
+    const contact = k === 0 ? el('div', 'abs', box, `left:${f3((fx + rx) / 2 - w * 0.4)}px;top:${f3((fy + ry) / 2 - 19)}px;width:${f3(w * 0.8)}px;height:46px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.9),rgba(0,0,0,.5) 60%,transparent)`) : null;
+    // la 206 de la rue est étalonnée « soir » une fois au chargement (copie floue et copie nette) : ce n'est plus une photo
+    // de jour collée sur une rue de nuit (round 2) ; elle reprend sa couleur de jour en montant sur le verre
+    const blurI = opts.flou ? (opts.nuit ? nightCopy(opts.flou, opts.flou.width, opts.flou.height) : el('img', '', box)) : null;
+    if (blurI) { blurI.className = 'abs'; blurI.setAttribute('style', `left:0;top:0;width:${f3(w)}px;height:${f3(h)}px`); box.appendChild(blurI); if (!opts.nuit) blurI.src = opts.flou.src; }
     const im = document.createElement('canvas'); im.width = Math.round(w * 1.05); im.height = Math.round(h * 1.05); im.className = 'abs';
     { const x = im.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, im.width, im.height); }
+    const imN = opts.nuit ? nightCopy(im, im.width, im.height) : null;
+    if (imN) { imN.className = 'abs'; imN.setAttribute('style', `left:0;top:0;width:${f3(w)}px;height:${f3(h)}px`); box.appendChild(imN); }
     im.setAttribute('style', `left:0;top:0;width:${f3(w)}px;height:${f3(h)}px`); box.appendChild(im);
     const silC = K.silhouette(img, Math.round(w)); silC.className = 'abs'; silC.setAttribute('style', `left:0;top:0;width:${f3(w)}px;height:${f3(h)}px`); box.appendChild(silC);
     const csv = sv('svg', { width: w, height: h, viewBox: `0 0 ${C.w} ${C.h}`, style: 'position:absolute;left:0;top:0;overflow:visible' }, box); defs(csv, 'c' + k);
@@ -127,10 +175,10 @@
     const cPen = sv('g', {}, csv); sv('circle', { r: 34, fill: `url(#pgc${k})` }, cPen); sv('circle', { r: 7, fill: '#fff' }, cPen);
     const trails = [[0.55, 5], [0.68, 3], [0.8, 2]].map(([fy2, hh]) => el('div', 'trail', LW, `height:${hh}px`));
     const mir = [R.retro.px[0] * s, R.retro.px[1] * s];
-    return { img, s, w, h, box, refl, shad, blurI, im, silC, csv, cGlow, cGlowP, cLine, cPen, C, trails, mir, pose, front: [fx, fy], k };
+    return { img, s, w, h, box, refl, shad, contact, blurI, im, imN, silC, csv, cGlow, cGlowP, cLine, cPen, C, trails, mir, pose, front: [fx, fy], k };
   };
   const cars = [
-    mkCar(im206, window.CAR_206_MO13_REPERES, window.CAR_206_MO13_CONTOUR, 1, 0, { flou: im206f }),
+    mkCar(im206, window.CAR_206_MO13_REPERES, window.CAR_206_MO13_CONTOUR, 1, 0, { flou: im206f, nuit: true }),
     mkCar(imMeg, window.CAR_MEGANE2_REPERES, window.CAR_MEGANE2_CONTOUR, window.CAR_MEGANE2_REPERES.echelle.facteur_vs_206, 1),
     mkCar(imFie, window.CAR_FIESTA6_REPERES, window.CAR_FIESTA6_CONTOUR, window.CAR_FIESTA6_REPERES.echelle.facteur_vs_206, 2),
   ];
@@ -218,12 +266,16 @@
     el('div', '', b, 'font:700 48px Satoshi;line-height:1.2;white-space:nowrap').innerHTML = txt; return b; };
   const bub = [mkBubble('1 900 et je la prends.'), mkBubble('2 450 et je la prends.'), mkBubble('2 950 et je la prends.')];
   const vir = [mkN('Virement reçu', '1 900,00', 'cles', { sign: '+' }), mkN('Virement reçu', '2 450,00', 'contact', { sign: '+' }), mkN('Virement reçu', '2 950,00', 'cles', { sign: '+' })];
+  // le virement qui monte dans le compte passe sous le HUD (sous le verre des palettes) au lieu de s'imprimer sur
+  // leurs lettres (round 2) ; il arrive, lui, au-dessus de la bulle de l'acheteur (calque N)
+  const LV = el('div', 'L', stage);
   const mkT = (lines, total, seq) => { const w = el('div', 'abs', LN, 'width:780px;transform-origin:50% 0'); const n = K.ticket(w, lines, total); n.d.style.left = '0'; n.d.style.top = '0'; n.ls.forEach((l) => K.fit(l, 520)); return { w, n, seq }; };
   const tk = [mkT(['Assurance <b>40</b> · Vidange <b>55</b>', 'Carte grise · 7 CV <b>255</b>'], '350', 'moteur'),
     mkT(['Assurance <b>40</b> · 2 pneus <b>100</b>', 'Contre-visite <b>24</b> · Carte grise · 5 CV <b>186</b>'], '350', 'pneu')];
   const ann = mkN('Une affaire ?', '', null, { app: 'Annonce · maintenant' });
   ann.n.d.querySelector('.am').innerHTML = '1 600 €';
-  { const sil = K.silhouette(im206, 300, '#4a4048', '#1e1820'); const cx = ann.n.c.getContext('2d'); const g = cx.createLinearGradient(0, 0, 0, 276); g.addColorStop(0, '#2a2430'); g.addColorStop(1, '#141018'); cx.fillStyle = g; cx.fillRect(0, 0, 372, 276); cx.save(); cx.translate(372, 0); cx.scale(-1, 1); cx.drawImage(sil, 36, 70, 300, 300 * sil.height / sil.width); cx.restore(); }
+  // silhouette claire et liserée (round 1 : gris foncé sur fond foncé, invisible de 17,0 à 18,4 s)
+  { const sil = K.silhouette(im206, 300, '#8a7f86', '#5d535b', 'rgba(255,200,165,.95)'); const cx = ann.n.c.getContext('2d'); const g = cx.createLinearGradient(0, 0, 0, 276); g.addColorStop(0, '#2a2430'); g.addColorStop(1, '#141018'); cx.fillStyle = g; cx.fillRect(0, 0, 372, 276); cx.save(); cx.translate(372, 0); cx.scale(-1, 1); cx.drawImage(sil, 36, 70, 300, 300 * sil.height / sil.width); cx.restore(); }
   const une = el('div', 'stamp serif2', ann.w, 'left:470px;top:64px'); une.textContent = 'une à la fois';
   // « Toujours dispo ? » : une pile de notifications ; la plus récente devant, les anciennes passent derrière et ne montrent que leur bord
   const msgs = T.msg.map((_, i) => { const d = el('div', 'glass msg', LN, `left:${150 + [0, 46, 18, 64, 30][i]}px;top:0;font-size:44px;transform-origin:50% 0`); d.textContent = 'Toujours dispo ?'; return d; });
@@ -243,28 +295,31 @@
 
   // ---------- le calcul refait : une carte, quatre lignes ----------
   const LD = el('div', 'L', stage);
-  const card = el('div', 'glass card', LD, 'top:582px;height:846px'); el('div', 'sheen', card);
-  const svgD = sv('svg', { width: 860, height: 846, viewBox: '0 0 860 846', style: 'position:absolute;left:0;top:0;overflow:visible' }, card); defs(svgD, 'd');
+  // 820 px de large, centrée sur x = 540 (round 1 : 860 px, le bord à x ≈ 970 pour des textes ≤ 922) ; le reflet à 40 %
+  // (il traversait les lignes pendant que la carte se pose)
+  const CW = 820, CR = CW - 52;                                  // largeur, bord droit des textes
+  const card = el('div', 'glass card', LD, `top:582px;height:846px;left:${540 - CW / 2}px;width:${CW}px`); el('div', 'sheen', card, 'opacity:.4');
+  const svgD = sv('svg', { width: CW, height: 846, viewBox: `0 0 ${CW} 846`, style: 'position:absolute;left:0;top:0;overflow:visible' }, card); defs(svgD, 'd');
   const hd1 = word(svgD, 'budget − réserve =', '600 46px Clash', 46, 52, 96, { align: 'left', fill: 'rgba(246,239,231,.86)', sw: 1.4 });
   const hd2 = word(svgD, 'prix max', 'italic 500 60px Fraunces', 60, 52 + hd1.width + 14, 98, { align: 'left', italic: true, fill: 'url(#qgd)', strokeColor: '#ffb38a', sw: 1.4 });
-  const sub = el('div', 'abs', card, 'left:52px;top:122px;font:500 28px Satoshi;color:rgba(246,239,231,.66);white-space:nowrap'); sub.textContent = 'réserve = budget ÷ 5, arrondie à la centaine';
-  const rule = (y) => el('div', 'abs', card, `left:52px;top:${y}px;width:756px;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.28),rgba(255,255,255,.04));transform-origin:0 50%`);
+  const sub = el('div', 'abs', card, 'left:52px;top:118px;font:500 34px Satoshi;color:rgba(246,239,231,.7);white-space:nowrap'); sub.textContent = 'réserve = budget ÷ 5, arrondie à la centaine';
+  const rule = (y) => el('div', 'abs', card, `left:52px;top:${y}px;width:${CR - 52}px;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.28),rgba(255,255,255,.04));transform-origin:0 50%`);
   const rules = [rule(178), rule(566)];
   const LINES = [['1 500 − 300 =', '1 200', 'frais 250 ✓'], ['1 950 − 400 =', '1 550', 'frais 350 ✓'], ['2 500 − 500 =', '2 000', 'frais 350 ✓']];
   const lines = LINES.map(([l, r, f], i) => {
     const y = 262 + i * 118;
     const wl = word(svgD, l, '700 64px Clash', 64, 52, y, { align: 'left', sw: 1.6 });
-    const wr = word(svgD, r, '700 64px Clash', 64, 808, y, { align: 'right', fill: '#ffd2b8', sw: 1.6 });
-    const fr = el('div', 'abs', card, `left:0;width:808px;top:${y + 14}px;text-align:right;font:500 26px Satoshi;color:rgba(246,239,231,.62);white-space:nowrap`);
+    const wr = word(svgD, r, '700 64px Clash', 64, CR, y, { align: 'right', fill: '#ffd2b8', sw: 1.6 });
+    const fr = el('div', 'abs', card, `left:0;width:${CR}px;top:${y + 12}px;text-align:right;font:500 30px Satoshi;color:rgba(246,239,231,.68);white-space:nowrap`);
     fr.innerHTML = f.replace('✓', '<span style="color:#ff8a4c">✓</span>');
     return { wl, wr, fr };
   });
   const l4 = word(svgD, '3 100 − 600 =', '700 64px Clash', 64, 52, 650, { align: 'left', sw: 1.6 });
-  const resRow = el('div', 'abs', card, 'left:60px;top:676px;width:736px;display:flex;justify-content:space-between;align-items:baseline;white-space:nowrap;transform-origin:50% 60%');
-  // « prix max » et « 2 500 € » : au moins 40 px d'écart (à 76 / 116 px, ils se touchaient presque)
+  const resRow = el('div', 'abs', card, `left:52px;top:676px;width:${CR - 52}px;display:flex;justify-content:space-between;align-items:baseline;white-space:nowrap;transform-origin:50% 60%`);
+  // « prix max » et « 2 500 € » : au moins 40 px d'écart (à 76 / 116 px, ils se touchaient presque ; carte de 820 px : 102 px)
   const resMax = el('span', 'serif', resRow, 'font-size:72px;padding:.05em .14em .12em .3em;margin-left:-.3em'); resMax.textContent = 'prix max';
-  const resV = el('span', '', resRow, 'font:700 108px Clash;letter-spacing:-.02em'); resV.innerHTML = '2<i style="display:inline-block;width:.24em"></i>500 €';
-  const dM = el('div', 'abs', card, 'left:0;width:860px;top:806px;text-align:center;font:500 22px Satoshi;color:rgba(246,239,231,.5);white-space:nowrap'); dM.textContent = 'Exemple · prix moyens constatés';
+  const resV = el('span', '', resRow, 'font:700 102px Clash;letter-spacing:-.02em'); resV.innerHTML = '2<i style="display:inline-block;width:.24em"></i>500 €';
+  const dM = el('div', 'abs', card, `left:0;width:${CW}px;top:806px;text-align:center;font:500 22px Satoshi;color:rgba(246,239,231,.5);white-space:nowrap`); dM.textContent = 'Exemple · prix moyens constatés';
 
   const rewFx = el('div', 'L', stage, 'background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 6px);mix-blend-mode:screen');
   const flash = el('div', 'L', stage, 'background:radial-gradient(60% 45% at 50% 50%,#fff1e6,rgba(255,140,80,.6) 45%,transparent 75%);mix-blend-mode:screen');
@@ -279,7 +334,7 @@
   // ordre des couches : fond du monde, fond chaud, rue, monde, calcul, « 1 500 » qui monte, HUD, notifications, montants, voile, 3 100, carte
   stage.insertBefore(bgW, stage.firstChild); stage.insertBefore(bgD, bgW.nextSibling); stage.insertBefore(bgA, bgD.nextSibling);
   stage.insertBefore(LW, bgA.nextSibling); stage.insertBefore(LA, LW.nextSibling); stage.insertBefore(LC, LA.nextSibling);
-  stage.insertBefore(LH, LC.nextSibling); stage.insertBefore(LN, LH.nextSibling);
+  stage.insertBefore(LH, LC.nextSibling); stage.insertBefore(LN, LH.nextSibling); stage.insertBefore(LV, LH);
   stage.insertBefore(LX, LN.nextSibling); stage.insertBefore(dim, LX.nextSibling); stage.insertBefore(mention, dim.nextSibling); stage.insertBefore(L9, mention.nextSibling); stage.insertBefore(LD, L9.nextSibling);
 
   // ---------- caméras ----------
@@ -299,8 +354,11 @@
   const CAMR = { f: 0.95, z: 1 }, CAMP = { f: 0.5, z: 1 };
   const OV = { s: 0.56, x: 594, y: 860 + 300 / 0.56 };
   const RV = { s: 0.62, x: STEPX[3] - 50 / 0.62, y: STEPY[3] - (400 - 1310) / 0.62 };
+  // x : la caméra suit la marche en cours, centrée sur la voiture et son étiquette (round 1 : visée fixe sur x = 540, la
+  // 206 touchait le bord gauche et la Fiesta passait sous les boutons). Visées mesurées sur les images, voiture posée :
+  // 206 de x = 194 à 888, Mégane de 160 à 910, Fiesta de 146 à 935 (colonne 140 → 940 ; round 1 : 28 → 801 et 193 → 989).
   const camS = (st, tA) => ({
-    x: track(st, [[0, 540], [T.pull, OV.x, CAMP]]) + noise(11, tA * 0.3) * 5,
+    x: track(st, [[0, 540], [T.out, 370, { f: 0.7, z: 1 }], [T.rise1, 468, CAMR], [T.rise2, 591, CAMR], [T.pull, OV.x, CAMP]]) + noise(11, tA * 0.3) * 5,
     y: track(st, [[0, 1310], [T.rise1, 1010, CAMR], [T.rise2, 710, CAMR], [T.pull, OV.y, CAMP]]) + noise(12, tA * 0.28) * 7 - 14 * (S(st, T.out, { f: 0.3, z: 1 }) - S(st, T.pull, CAMP)),
     s: track(st, [[0, 1], [T.focus, 1.04, { f: 0.8, z: 1 }], [T.out, 1, { f: 0.7, z: 1 }], [T.pull, OV.s, CAMP]]) + 0.006 * noise(13, tA * 0.25)
       + 0.03 * (S(st, T.out + 0.6, { f: 0.14, z: 1 }) - S(st, T.rise1, CAMR)) + 0.03 * (S(st, T.rise1 + 0.6, { f: 0.2, z: 1 }) - S(st, T.rise2, CAMR))
@@ -321,17 +379,22 @@
   const win = (st, W) => Math.max(0, ...W.map(([a, b]) => sm(a, a + 0.15, st) * (1 - sm(b - 0.1, b + 0.05, st))));
   const shine = (stops, sx) => { [[sx - 260, 0], [sx - 60, 0.85], [sx + 60, 0.85], [sx + 260, 0]].forEach(([x, o], i) => { stops[i].setAttribute('offset', f3(clamp(x / 1080, 0, 1))); stops[i].setAttribute('stop-opacity', f3(o)); }); };
   const ink = (w, k) => K.fullWord(w, k);
+  // « cles » est tournée sur fond blanc : ramenée dans la charte (multiplication par un brun chaud), redessinée à chaque image
+  const warm = (cv) => { const x = cv.getContext('2d'); x.globalCompositeOperation = 'multiply'; x.fillStyle = '#9a8070'; x.fillRect(0, 0, cv.width, cv.height); x.globalCompositeOperation = 'source-over'; };
 
   // ---------- la frame t ----------
   function paint(t) {
     const st = story(t);
     const tA = t >= LOOP ? 0 : t;                          // l'ouverture revient dans son état de l'image 0
     const inRew = t >= REW[0];
-    const back = t >= LOOP ? sm(LOOP + 0.3 * FO, DUR - 0.06, t) : 0;    // retour vers l'image 0, une fois la carte partie
+    // retour vers l'image 0, une fois la carte et l'escalier partis (round 2 : à CLR − 0,04, image presque noire de
+    // 30,8 à 30,95 s avec les fantômes des inscriptions)
+    // départ franc, arrivée posée (pente nulle à DUR − 0,06 : l'image 0 revient exacte)
+    const back = t >= LOOP ? 1 - (1 - clamp((t - CLX) / (DUR - 0.06 - CLX), 0, 1)) ** 2 : 0;
     const out = t >= LOOP ? 0 : S(t, T.out, P.heavy);
-    const showA = t < LOOP ? 1 - sm(T.out, T.out + 0.3, t) : back;
+    const showA = t < LOOP ? 1 - sm(T.out, T.out + 0.18, t) : back;
     const cA = camA(tA);
-    if (t >= LOOP) { const u = sm(LOOP, DUR - 0.02, t); cA.z += 160 * (1 - u); cA.ry += -5 * (1 - u); cA.y += -40 * (1 - u); }
+    if (t >= LOOP) { const u = sm(CLR - 0.04, DUR - 0.02, t); cA.z += 160 * (1 - u); cA.ry += -5 * (1 - u); cA.y += -40 * (1 - u); }
 
     // fonds
     const street = t < LOOP ? 1 - sm(T.out + 0.05, T.out + 0.6, t) : back;
@@ -340,16 +403,16 @@
     if (street > 0.002) K.paintSeq(rueCv, IMG.rue, vt, 'blur(2px) brightness(.8) saturate(1.1)');
     const push = 1 + 0.04 * S(tA, T.focus, { f: 0.8, z: 1 }) * (t < LOOP ? 1 - S(t, T.out, { f: 0.7, z: 1 }) : 1);
     if (street > 0.002) rueCv.style.transform = `translate(${f3(noise(7, tA * 0.3) * 14)}px,${f3(noise(8, tA * 0.3) * 14)}px) scale(${f3(push)})`;
-    rueCv.style.transformOrigin = '540px 1400px';
+    rueCv.style.transformOrigin = `${540 - RUE.l}px ${1400 - RUE.t}px`;   // l'avance se fait autour des roues de la 206
     set(glowA, (0.45 + 0.4 * S(tA, 0.5, P.heavy)) * showA);
-    const world = t < LOOP ? sm(T.out, T.out + 0.5, t) : 1 - sm(LOOP, LOOP + 0.55 * FO, t);
+    const world = t < LOOP ? sm(T.out, T.out + 0.5, t) : 1 - sm(LOOP + 0.15 * CL, CLR, t);
     set(bgW, world);
     const coolK = sm(T.sem8 - 0.1, T.sem8 + 0.5, st) * (1 - sm(T.msg[0] - 0.1, T.msg[0] + 0.5, st));
     set(cool, coolK * 0.7); set(semCv, coolK * 0.3);
     if (coolK > 0.01) K.paintSeq(semCv, IMG.semaines, st - T.sem8 + 0.5, 'blur(2px) brightness(.42) saturate(.5)');
-    const dIn = sm(REW[1] - 0.35, REW[1] + 0.25, t) * (t < LOOP ? 1 : 1 - sm(LOOP + 0.1 * FO, LOOP + 0.78 * FO, t));
+    const dIn = sm(REW[1] - 0.35, REW[1] + 0.25, t) * (t < LOOP ? 1 : 1 - sm(LOOP + 0.15 * CL, CLR, t));
     set(bgD, dIn);
-    if (dIn > 0.01) K.paintSeq(calcCv, IMG.calc, t - REW[1] + 0.4, 'blur(3px) brightness(.5) saturate(.8) sepia(.55)');
+    if (dIn > 0.01) K.paintSeq(calcCv, IMG.calc, t - REW[1] + 0.4, 'blur(3px) brightness(.5) saturate(.8) sepia(.55) saturate(.3)');   // saturate(.3) : plus de tache verte sous la carte
     set(glowD, dIn * (0.3 + 0.35 * S(t, T.claque, P.heavy)));
 
     // le monde : caméra
@@ -358,15 +421,18 @@
     // n'est plus repeint à chaque image)
     if (t >= REW[1] - 0.25 && t < LOOP) { let w = S(t, REW[1] - 0.25, { f: 0.8, z: 1 }); if (w > 0.9999) w = 1; cw = { x: lerp(cw.x, RV.x, w), y: lerp(cw.y, RV.y, w), s: lerp(cw.s, RV.s, w) }; }
     if (t >= LOOP) {   // l'escalier se replie (il descend et rétrécit), puis la caméra revient sur la rue, quand plus rien ne s'y voit
-      const u = sm(LOOP, LOOP + 0.5 * FO, t), w = 1 - sm(LOOP + 0.51 * FO, LOOP + 0.62 * FO, t);
+      const u = sm(LOOP, CLR, t), w = 1 - sm(CLR, CLR + 0.1 * FO, t);
       const rv = { x: RV.x, y: RV.y - 260 * u, s: RV.s * (1 - 0.18 * u) };
       cw = { x: lerp(cw.x, rv.x, w), y: lerp(cw.y, rv.y, w), s: lerp(cw.s, rv.s, w) };
     }
     LW.style.transform = `translate(540px,1310px) scale(${f3(cw.s)}) translate(${f3(-cw.x)}px,${f3(-cw.y)}px)`;
     const W2S = (x, y) => [540 + (x - cw.x) * cw.s, 1310 + (y - cw.y) * cw.s];
-    const fold = t >= LOOP ? 1 - sm(LOOP, LOOP + 0.5 * FO, t) : 1;
+    const fold = t >= LOOP ? 1 - sm(LOOP + 0.1 * CL, CLR, t) : 1;
+    const txtK = t >= LOOP ? 1 - sm(TXO[0], TXO[1], t) : 1;     // inscriptions de l'escalier, éteintes en premier au repli
     const big = sm(T.big, T.big + 0.3, st);                 // « 3 100 € » plein écran (temps du récit : il se défait au rembobinage)
-    const dimK = big * (0.78 + 0.12 * sm(T.att - 0.1, T.att + 0.4, st));   // l'escalier s'efface un peu plus sous « Tu attendais d'avoir 10 000. »
+    // l'escalier s'efface presque sous « Tu attendais d'avoir 10 000. » (round 1 : la marche 2 se voyait au travers)
+    const dimK = big * (0.9 + 0.08 * sm(T.att - 0.1, T.att + 0.4, st));
+    const bigOn = st >= T.big ? 1 : 0;                      // le compteur devient « 3 100 € » d'une image à l'autre (pas de fondu)
 
     // marches : pâles quand elles attendent, allumées quand une voiture s'y pose, arête tracée à la vente
     const SV = [
@@ -394,10 +460,11 @@
       s.pen.setAttribute('transform', `translate(${f3(pt.x)},${f3(pt.y)})`);
       set(s.pen, sm(te - 0.02, te + 0.06, tt) * (1 - sm(te + 0.55, te + 0.8, tt)));
       // l'inscription s'écrit sur la contremarche, et s'efface avant de passer sous y = 1480
-      const [, iy] = W2S(s.X, s.Y + s.b + 58);
+      // écrite juste après l'arête (round 1 : à te + 0,42 s, pendant que la caméra montait, jamais lue) ; éteinte sous la chute
+      const [, iy] = W2S(s.X, s.Y + s.b + K.STEP_LAB_Y);
       const safe = 1 - sm(1440, 1474, iy);
-      if (s.w) { K.writeWord(s.w, tt, te + 0.42, 0.03, 12, safe); }
-      if (i === 3) { K.writeWord(ta4, t, T.claque + 0.05, 0.05, 16, t >= REW[1] ? 1 : 0); }
+      if (s.w) { K.writeWord(s.w, tt, te + 0.1, 0.02, 12, safe * (1 - big) * txtK); }
+      if (i === 3) { K.writeWord(ta4, t, T.claque + 0.05, 0.05, 16, t >= REW[1] ? txtK : 0); }
       set(glows[i], (i === 3 ? sm(T.step4, T.step4 + 0.4, t) * (t >= REW[1] ? 1 : 0) : v.lit * 0.85 * (1 - 0.6 * big) * (1 - inD)) * fold);
     });
 
@@ -418,15 +485,20 @@
       const dip = v.brake > 0 ? 1.4 * Math.sin(Math.PI * clamp((stc - v.brake + 0.15) / 0.6, 0, 1)) * (stc > v.brake - 0.15 ? 1 : 0) : 0;
       c.box.style.transform = `translate(${f3(x)}px,${f3(y)}px) scale(${f3(k)}) translate(${f3(c.front[0])}px,${f3(c.front[1])}px) rotate(${f3(-dip)}deg) translate(${f3(-c.front[0])}px,${f3(-c.front[1])}px)`;
       const onS = i === 0 ? 1 : sm(v.arr - 0.02, v.arr + 0.05, stc);
-      const vis = onS * (1 - sm(v.leave + 0.55, v.leave + 0.9, stc)) * (t >= LOOP ? (i === 0 ? sm(LOOP + 0.62 * FO, DUR - 0.06, t) : 0) : gone);
+      const vis = onS * (1 - sm(v.leave + 0.55, v.leave + 0.9, stc)) * (t >= LOOP ? (i === 0 ? sm(CLR + 0.06 * FO, DUR - 0.06, t) : 0) : gone);
       set(c.box, vis);
       // la 206 de l'image 0 est floue ; mise au point sur « la petite rouge »
       const foc = i === 0 ? (t >= LOOP ? 0 : S(st, T.focus, { f: 1.1, z: 1 })) : 1;
       if (c.blurI) set(c.blurI, (1 - foc) * (1 - sil));
-      set(c.im, foc * (1 - sil));
+      // copie « soir » dans la rue, couleur de jour sur le verre (passage pendant la montée, sous la copie de jour)
+      const night = c.imN ? (t >= LOOP ? 1 : 1 - sm(T.out + 0.05, T.out + 0.5, inRew ? Math.max(stc, 5.75) : stc)) : 0;
+      set(c.im, foc * (1 - sil) * (1 - night));
+      if (c.imN) set(c.imN, night > 0.002 ? foc * (1 - sil) : 0);
       set(c.silC, sil);
-      set(c.refl, (i === 0 ? sm(T.out + 0.2, T.out + 0.6, stc) * (t >= LOOP ? 0 : 1) : 1) * 0.13 * (1 - sil));
-      c.shad.forEach((e) => set(e, (i === 0 ? 0.55 + 0.45 * sm(T.out, T.out + 0.6, stc) : 1) * (1 - 0.5 * sil)));
+      // dans la rue, un reflet faible sur le trottoir mouillé (la 206 y est posée) ; sur le verre, celui de la marche
+      set(c.refl, (i === 0 ? 0.45 + 0.55 * sm(T.out + 0.2, T.out + 0.6, stc) * (t >= LOOP ? 0 : 1) : 1) * 0.13 * (1 - sil));
+      c.shad.forEach((e) => set(e, 1 - 0.5 * sil));
+      if (c.contact) set(c.contact, (1 - 0.4 * sm(T.out, T.out + 0.6, stc)) * (1 - 0.5 * sil));   // plus légère sur le verre
       const tc = i === 0 ? T.contour : v.brake - 0.1, cp = S(t >= LOOP ? 0 : st, tc, { f: i === 0 ? 0.75 : 1.0, z: 1 });
       for (const e of [...c.cGlowP, c.cLine]) e.setAttribute('stroke-dashoffset', f3(c.C.len * (1 - cp)));
       const cOn = sm(tc - 0.02, tc + 0.05, t >= LOOP ? 0 : st) * (1 - 0.6 * sm(tc + 0.9, tc + 1.6, st));
@@ -448,13 +520,15 @@
       g.hang.style.transform = `translate(${f3(ax)}px,${f3(ay)}px) rotate(${f3(th)}deg)`;
       const tagIn = i === 0 ? (t >= LOOP ? 0 : S(st, T.tag, P.card)) : 1;
       set(g.hang, vis * (i === 0 ? sm(T.tag - 0.02, T.tag + 0.06, t >= LOOP ? 0 : st) : 1) * (1 - sil * 0.65));
-      g.tag.style.transform = `translateY(${f3(-40 * (1 - tagIn))}px) scale(${f3(0.85 + 0.15 * tagIn)})`; g.tag.style.transformOrigin = '50% 0';
+      // l'étiquette de la 206 bat sur « mille quatre » (la voix confirme le prix déjà écrit)
+      const tPul = i === 0 && t < LOOP ? 0.06 * sm(T.trem, T.trem + 0.05, stc) * Math.exp(-6 * Math.max(0, stc - T.trem - 0.05)) : 0;
+      g.tag.style.transform = `translateY(${f3(-40 * (1 - tagIn))}px) scale(${f3(0.85 + 0.15 * tagIn + tPul)})`; g.tag.style.transformOrigin = '50% 0';
       g.fil.style.transform = `scaleY(${f3(tagIn)})`; g.fil.style.transformOrigin = '50% 0';
-      if (i === 0) {   // la plume écrit « 1 400 € » quand l'étiquette arrive
-        const wp = t >= LOOP ? 0 : clamp(S(stc, T.tag + 0.12, { f: 1.1, z: 1 }), 0, 1);
+      if (i === 0) {   // la plume écrit « 1 400 € » sur la voix (l'étiquette est arrivée vierge sur la mise au point)
+        const wp = t >= LOOP ? 0 : clamp(S(stc, T.prix0, { f: 1.5, z: 1 }), 0, 1);
         g.oldE.style.clipPath = wp > 0.999 ? '' : `inset(-10px ${f3((1 - wp) * 100)}% -10px -10px)`;
         g.pen2.setAttribute('transform', `translate(${f3(22 + g.ow * wp)},${f3(84)})`);
-        set(g.pen2, sm(T.tag + 0.1, T.tag + 0.16, stc) * (1 - sm(T.tag + 0.7, T.tag + 0.9, stc)) * (t >= LOOP ? 0 : 1));
+        set(g.pen2, sm(T.prix0 - 0.02, T.prix0 + 0.04, stc) * (1 - sm(T.prix0 + 0.5, T.prix0 + 0.65, stc)) * (t >= LOOP ? 0 : 1));
       }
       const sp = S(stc, v.strike, P.pen);
       g.stP.setAttribute('stroke-dashoffset', f3(260 * (1 - sp)));
@@ -469,7 +543,9 @@
       // le montant qui file du compteur vers l'étiquette
       const pay = [T.pay1, T.pay2, T.pay3][i], cpos = S(stc, pay, { f: 1.4, z: 1 });
       const [ex, ey] = W2S(ax - g.W / 2 + 120, ay + g.Lf + 82);
-      const [sx0, sy0] = [540, 372], cx0 = lerp(sx0, ex, 0.5) + 220, cy0 = lerp(sy0, ey, 0.5) - 60;
+      // départ sous les palettes, dont la plaque descend à y = 636 (round 2 : parti du compteur à y = 372, le montant
+      // passait sur « MARCHE 1 » et sur la mention ; à y = 640, il en touchait encore le bord)
+      const [sx0, sy0] = [540, 680], cx0 = lerp(sx0, ex, 0.5) + 220, cy0 = lerp(sy0, ey, 0.5) - 60;
       const bx = (1 - cpos) * (1 - cpos) * sx0 + 2 * (1 - cpos) * cpos * cx0 + cpos * cpos * ex, by = (1 - cpos) * (1 - cpos) * sy0 + 2 * (1 - cpos) * cpos * cy0 + cpos * cpos * ey;
       chips[i].style.transform = `translate(${f3(bx)}px,${f3(by)}px) translate(-50%,-50%) scale(${f3(1 - 0.35 * cpos)})`;
       set(chips[i], sm(pay - 0.02, pay + 0.06, stc) * (1 - sm(0.82, 0.97, cpos)) * (t >= LOOP ? 0 : 1));
@@ -485,7 +561,9 @@
     if (!HB) {
       ink(A.dr1, 1); ink(A.il, 1); ink(A.n85, 1); ink(A.eur, 1);
       const dk = sm(T.dix - 0.03, T.dix + 0.08, tA) * (1 - sm(T.dix + 0.45, T.dix + 0.9, tA));
-      A.dr1.items.forEach((g, i) => { if (i < 5) { g.fill.setAttribute('fill', dk > 0.01 ? `rgba(255,${f3(236 - 60 * dk)},${f3(220 - 110 * dk)},${f3(0.58 + 0.42 * dk)})` : 'rgba(246,239,231,.58)'); } });
+      // pendant « Tu en as 1 500 », « 10 000 − » s'éteint (0,58 → 0,35) : il ne reste que « 1 500 » qui s'allume
+      const dOff = sm(T.sh - 0.05, T.sh + 0.3, tA), a1 = 0.58 - 0.23 * dOff;
+      A.dr1.items.forEach((g, i) => { g.fill.setAttribute('fill', i < 5 && dk > 0.01 ? `rgba(255,${f3(236 - 60 * dk)},${f3(220 - 110 * dk)},${f3(a1 + 0.42 * dk)})` : `rgba(246,239,231,${f3(a1)})`); });
       const lk = S(tA, T.sh + 0.15, { f: 1.4, z: 1 });
       A.dr2.items.forEach((g) => g.fill.setAttribute('fill', `rgba(246,239,231,${f3(0.58 + 0.42 * lk)})`));
       A.lift = lk;
@@ -519,7 +597,7 @@
     A.mv.items.forEach((g) => {
       const isE = g.ch === '€', idx = isE ? 4 : gi++;
       const tx = isE ? cellX[4] + C.efs * 0.31 : cellX[idx] + C.w / 2, ty = 300 + C.h / 2 + 38;
-      const pul = HB ? 0 : 0.14 * Math.exp(-3 * Math.max(0, tA - T.sh - 0.15)) * S(tA, T.sh + 0.15, { f: 1.6, z: 1 }) * (1 - mvp);
+      const pul = HB ? 0 : 0.3 * Math.exp(-3 * Math.max(0, tA - T.sh - 0.15)) * S(tA, T.sh + 0.15, { f: 1.6, z: 1 }) * (1 - mvp);
       const sc = lerp(1, (isE ? C.efs : 112) / A.mvSize, mvp) * (1 + pul);
       g.stroke.style.visibility = 'hidden';
       g.g.setAttribute('transform', `translate(${f3(lerp(g.cx, tx, mvp))},${f3(lerp(g.base, ty, mvp))}) scale(${f3(sc)}) translate(${f3(-g.cx)},${f3(-g.base)})`);
@@ -527,13 +605,18 @@
 
     // HUD : compteur, réserve, palettes
     const cH = camH(t);
-    const hudOn = (t < LOOP ? 1 : 0) * (1 - big) * (t >= REW[1] - 0.3 ? 1 - sm(REW[1] - 0.3, REW[1] + 0.1, t) : 1);
+    const hudOn = (t < LOOP ? 1 : 0) * (1 - bigOn) * (t >= REW[1] - 0.3 ? 1 - sm(REW[1] - 0.3, REW[1] + 0.1, t) : 1);
     const lhK = hudOn * sm(T.out - 0.02, T.out + 0.02, t < LOOP ? t : 0);
     if (lhK > 0.002) LH.style.transform = tf(cH, 0);
     set(LH, lhK);
     const lit = sm(T.bump - 0.02, T.bump + 0.04, st) * (1 - sm(T.bump + 0.5, T.bump + 0.9, st));
-    const pc = K.paintPlateCounter(C, st, RK.keys, vis0, (i) => ({ draw: S(st, T.hud + i * 0.07, P.draw), glass: S(st, T.hud + 0.22 + i * 0.07, P.heavy) }), 1, lit, t >= LOOP ? 0 : swap);
-    C.labL.forEach((s, i) => { const p = S(st, T.hud + 0.2 + i * 0.045, P.rise); s.style.opacity = f3(p); s.style.transform = `translateY(${f3((1 - p) * 18)}px)`; });
+    // les cases se tracent puis se remplissent de verre derrière les chiffres, qui prennent le relais de « 1 500 » qui
+    // vole (swap) sans attendre le verre (round 2 : « 15 » plein et « 00 » pâles à 5,3 s) ; le rembobinage (récit
+    // ramené à 5,2 s) ne défait pas la construction
+    const stB = inRew && t < LOOP ? Math.max(st, T.hud + 1.2) : st;
+    const pc = K.paintPlateCounter(C, st, RK.keys, vis0, (i) => ({ draw: S(stB, T.hud + i * 0.07, P.draw), glass: S(stB, T.hud + 0.22 + i * 0.07, P.heavy), digit: 1,
+      euro: HB ? 1 : S(stB, T.hud + 0.22 + 3 * 0.07, P.heavy) }), 1, lit, t >= LOOP ? 0 : swap);
+    C.labL.forEach((s, i) => { const p = S(stB, T.hud + 0.2 + i * 0.045, P.rise); s.style.opacity = f3(p); s.style.transform = `translateY(${f3((1 - p) * 18)}px)`; });
     // « réserve » à droite du compteur, quand il ne reste que la réserve
     const rk = win(st, RESW), rcur = RESW.filter(([a]) => st >= a - 0.02).pop();
     resG.setAttribute('transform', `translate(${f3(pc.right + 24)},${f3(392)})`);
@@ -542,15 +625,19 @@
     const annUp = S(st, T.ann + 0.35, { f: 1.1, z: 1 }) * (1 - S(st, T.annOut, { f: 1.1, z: 1 }));   // l'annonce monte sur les palettes : elles s'effacent dessous
     K.paintPlateFlaps(F, flT, FEV, 1 - 0.85 * clamp(annUp, 0, 1), 0.04);
 
-    // mention : de l'étiquette (4,0 s) à la carte, qui a la sienne
-    const mOn = HB ? (t < REW[1] ? 1 : (t >= LOOP ? back : 0)) : sm(T.mention - 0.02, T.mention + 0.3, t) * (t < REW[1] ? 1 : 0);
-    set(mention, mOn * (t < REW[1] - 0.3 ? 1 : 1 - sm(REW[1] - 0.3, REW[1], t) + (HB && t >= LOOP ? 1 : 0)));
-    mention.style.transform = `translateY(${f3((1 - sm(T.mention, T.mention + 0.35, t)) * 14)}px)`;
+    // mention : de l'étiquette (2,65 s) à la carte, qui a la sienne
+    // elle s'écarte pendant que « 1 500 » monte à travers elle (T.out → + 0,6 s) ; elle passe le relais à celle de la carte
+    // quand la carte entre (round 1 : absente de 25,1 à 26,3 s ; round 2 : écrite deux fois de 25,5 à 25,7 s)
+    const mIn = HB ? 1 : sm(T.mention - 0.02, T.mention + 0.3, t);
+    const mHide = t < LOOP ? sm(T.out - 0.02, T.out + 0.06, t) * (1 - sm(T.out + 0.4, T.out + 0.6, t)) : 0;
+    const mOut = t < LOOP ? sm(REW[1] - 0.05, REW[1] + 0.05, t) : (HB ? 1 - back : 1);
+    set(mention, mIn * (1 - mHide) * (1 - mOut));
+    mention.style.transform = `translateY(${f3((HB ? 0 : (1 - sm(T.mention, T.mention + 0.35, t)) * 14) + 14 * mHide - 12 * (t < LOOP ? mOut : 0))}px)`;
 
     // N : notifications
     const nOn = t < LOOP ? 1 : 0;
-    if (nOn * (1 - big) > 0.002) LN.style.transform = tf(cH, 60);
-    set(LN, nOn * (1 - big));
+    if (nOn * (1 - big) > 0.002) { LN.style.transform = tf(cH, 60); LV.style.transform = LN.style.transform; }
+    set(LN, nOn * (1 - big)); set(LV, nOn * (1 - big));
     // débits de la marche 1 : deux s'empilent, puis le gag arrive seul (les deux autres partent dans le compteur)
     const away = S(st, T.gag - 0.08, P.push);
     D.forEach((d, i) => {
@@ -562,7 +649,7 @@
       K.flat(d.n.d, k > 0.05 || up > 0.05);
       if (d.w.style.visibility !== 'hidden') drawSeq(d.n.c, IMG[d.seq], Math.max(0, st - t0));
     });
-    { const ss = S(st, T.toi, P.stamp); set(toi, sm(T.toi - 0.02, T.toi + 0.04, st)); toi.style.transform = `rotate(-8deg) scale(${f3(lerp(1.8, 1, ss))})`; }
+    { const ss = S(st, T.toiS, P.stamp); set(toi, sm(T.toiS - 0.02, T.toiS + 0.04, st)); toi.style.transform = `rotate(-8deg) scale(${f3(lerp(1.8, 1, ss))})`; }
     // ventes : la bulle de l'acheteur, puis le virement (qui part dans le compteur quand il roule)
     const VB = [[T.sem3, T.vir1, T.up1], [T.sem7, T.vir2, T.up2], [T.bub3, T.vir3, T.up3]];
     VB.forEach(([tb, tv, tu], i) => {
@@ -574,8 +661,13 @@
       K.flat(b, k > 0.05);
       const va = S(st, tv, P.card);
       v.w.style.transform = `translate(${f3(150 + 1150 * (1 - va))}px,${f3(NY - 430 * lb)}px) scale(${f3(1 - 0.55 * lb)})`;
-      set(v.w, sm(tv - 0.06, tv, st) * (1 - sm(0.35, 0.8, lb)));
-      if (v.w.style.visibility !== 'hidden') drawSeq(v.n.c, IMG[v.seq], Math.max(0, st - tv));
+      // dès qu'il monte, il passe sous le HUD (calque V, sous la plaque des palettes) et s'éteint en chemin (round 2 :
+      // imprimé sur « SEMAINE 7 » ; la carte, à 24 px sous la plaque au repos, la touche dès lb ≈ 0,06). Le calque se
+      // déduit de lb à chaque image : aucun état.
+      // la bulle de l'acheteur, qui sort à gauche au même moment, change de calque avec lui (elle reste dessous)
+      { const tgt = lb > 0.002 ? LV : LN; for (const e of [b, v.w]) if (e.parentNode !== tgt) tgt.insertBefore(e, tgt === LN ? tk[0].w : null); }
+      set(v.w, sm(tv - 0.06, tv, st) * (1 - sm(0.1, 0.35, lb)));
+      if (v.w.style.visibility !== 'hidden') { drawSeq(v.n.c, IMG[v.seq], Math.max(0, st - tv)); if (v.seq === 'cles') warm(v.n.c); }
     });
     // tickets des marches 2 et 3 : une seule arrivée
     // le ticket reste jusqu'à l'arrivée de la bulle (marche 2) ou de l'annonce (marche 3), qui le chassent à gauche
@@ -606,27 +698,29 @@
 
     // la chute : le compteur se fond dans « 3 100 € »
     set(dim, dimK * (t < LOOP ? 1 : 0));
-    set(L9, big * (t < LOOP ? 1 : 0));
+    set(L9, bigOn * (t < LOOP ? 1 : 0));   // round 1 : compteur et « 3 100 € » superposés une image
     const s9 = S(st, T.big, { f: 1.3, z: 1 });
     big9.style.transform = `translateY(${f3(-330 * (1 - s9))}px) scale(${f3(0.42 + 0.58 * s9 + 0.018 * sm(T.big + 0.3, REW[0], st))})`;
-    if (big * (t < LOOP ? 1 : 0) > 0.002) L9.style.transform = `translateY(${f3(noise(15, t * 0.3) * 4)}px)`;
+    if (bigOn * (t < LOOP ? 1 : 0) > 0.002) L9.style.transform = `translateY(${f3(noise(15, t * 0.3) * 4)}px)`;
     set(glow9, 0.4 + 0.6 * S(st, T.big + 0.1, P.heavy));
-    const attK = 1 - sm(REW[0] - 0.05, REW[0] + 0.2, t);
-    K.writeWord(att1, t, T.att, 0.03, 18, attK); K.writeWord(att2, t, T.att2, 0.05, 22, attK);
+    // « 10 000. » tient pendant le début du rembobinage (le « 3 100 € » géant reste jusqu'à ≈ 24,5 s) : REW et le son ne bougent pas
+    const attK = 1 - sm(REW[0] + 0.2, REW[0] + 0.4, t);
+    K.writeWord(att1, t, T.att, 0.03, 18, attK); K.writeWord(att2, t, T.att2, 0.03, 22, attK);
 
     // le calcul refait : la carte
     const cF = camF(t);
-    const cOut = t >= LOOP ? S(t, LOOP, { f: 1.6, z: 1 }) : 0;
-    const [fdx, fdy] = driftF(t), ldK = (t >= REW[1] - 0.2 ? 1 : 0) * (1 - sm(LOOP + 0.05 * FO, LOOP + 0.34 * FO, t));
+    const cOut = t >= LOOP ? S(t, LOOP, { f: 2.6, z: 1 }) : 0;     // la carte file par le haut : hors de l'image en 0,2 s
+    const [fdx, fdy] = driftF(t), ldK = (t >= REW[1] - 0.2 ? 1 : 0) * (1 - sm(LOOP + 0.45 * CL, CLR - 0.01, t));
     // un calque caché dont la transformation change à chaque image se fait quand même repeindre : on ne l'écrit que visible
-    if (ldK > 0.002) LD.style.transform = `translate(${f3(fdx)}px,${f3(fdy)}px) ` + tf(cF, 0, `translateY(${f3(-520 * cOut)}px) scale(${f3(1 - 0.3 * cOut)})`);
+    if (ldK > 0.002) LD.style.transform = `translate(${f3(fdx)}px,${f3(fdy)}px) ` + tf(cF, 0, `translateY(${f3(-1700 * cOut)}px) scale(${f3(1 - 0.12 * cOut)})`);
     set(LD, ldK);
     const ci = S(t, T.card, P.card);
     card.style.transform = `perspective(1500px) translateY(${f3((1 - ci) * 260)}px) rotateX(${f3((1 - ci) * 26)}deg)`;
     set(card, sm(T.card - 0.02, T.card + 0.06, t));
-    K.writeWord(hd1, t, T.card + 0.15, 0.025, 16); K.writeWord(hd2, t, T.card + 0.55, 0.04, 16);
-    { const p = S(t, T.card + 0.75, P.rise); sub.style.opacity = f3(p); sub.style.transform = `translateY(${f3((1 - p) * 18)}px)`; }
-    rules.forEach((r, i) => { const p = S(t, [T.card + 0.6, T.l4 - 0.2][i], P.pen); r.style.transform = `scaleX(${f3(p)})`; });
+    // la carte n'entre jamais vide : le titre s'écrit dès qu'elle bouge (round 2 : ≈ 0,45 s de verre vide à 25,4 s)
+    K.writeWord(hd1, t, T.card + 0.02, 0.02, 16); K.writeWord(hd2, t, T.card + 0.38, 0.04, 16);
+    { const p = S(t, T.card + 0.5, P.rise); sub.style.opacity = f3(p); sub.style.transform = `translateY(${f3((1 - p) * 18)}px)`; }
+    rules.forEach((r, i) => { const p = S(t, [T.card + 0.42, T.l4 - 0.2][i], P.pen); r.style.transform = `scaleX(${f3(p)})`; });
     lines.forEach((l, i) => {
       const t0 = [T.l1, T.l2, T.l3][i];
       K.writeWord(l.wl, t, t0, 0.022, 14); K.writeWord(l.wr, t, t0 + 0.24, 0.04, 14);
@@ -634,13 +728,13 @@
     });
     K.writeWord(l4, t, T.l4, 0.03, 14);
     { const rs = S(t, T.claque, { f: 2.4, z: 1 }); set(resRow, sm(T.claque - 0.02, T.claque + 0.05, t)); resRow.style.transform = `translateY(${f3(-44 * (1 - rs))}px) scale(${f3(1.06 - 0.06 * rs)})`; }
-    set(dM, S(t, T.card + 0.9, P.rise));
+    { const p = S(t, T.card + 0.05, P.rise); set(dM, p); dM.style.transform = `translateY(${f3((1 - p) * 12)}px)`; }
 
     // effets
     set(rewFx, sm(REW[0], REW[0] + 0.15, t) * (1 - sm(REW[1] - 0.15, REW[1], t)) * 0.9);
     if (t >= REW[0] && t < REW[1]) rewFx.style.transform = `translateY(${f3((t * 900) % 6)}px)`;
     set(flash, 0.32 * sm(T.big, T.big + 0.08, st) * (1 - sm(T.big + 0.08, T.big + 0.5, st)) * (inRew ? 0 : 1) + 0.45 * sm(T.claque, T.claque + 0.07, t) * (1 - sm(T.claque + 0.07, T.claque + 0.5, t))
-      + 0.28 * sm(LOOP + 0.15 * FO, LOOP + 0.3 * FO, t) * (1 - sm(LOOP + 0.3 * FO, LOOP + 0.75 * FO, t)) + 0.3 * sm(T.out, T.out + 0.08, t) * (1 - sm(T.out + 0.08, T.out + 0.45, t)));
+      + 0.28 * sm(CLR - 0.15 * FO, CLR, t) * (1 - sm(CLR, CLR + 0.3 * FO, t)) + 0.3 * sm(T.out, T.out + 0.08, t) * (1 - sm(T.out + 0.08, T.out + 0.45, t)));
     // grain fixe (comme MO9) : le déplacer à chaque image coûtait ≈ 0,15 s par image au rendu (mesure du 9 octobre)
   }
 
@@ -653,7 +747,7 @@
   // glissements (≈ 1 150 px) : arrivées des débits, virements et tickets, montées dans le compteur, messages, départs à gauche
   [T.d1, T.d2, T.gag, T.vir1, T.tk2, T.vir2, T.tk3, T.vir3, T.up1, T.up2, T.up3, ...T.msg, T.gag - 0.08, T.sem3 - 0.28, T.sem7 - 0.1, T.ann - 0.1, T.bub3 - 0.2]
     .forEach((x) => { WIN.push([x - 0.03, x + 0.17, 0.6]); WIN.push([x - 0.03, x + 0.3, 0.45]); });
-  [T.pay1, T.pay2, T.pay3, T.toi, T.une, T.card].forEach((x) => WIN.push([x - 0.03, x + 0.28, 0.45]));
+  [T.pay1, T.pay2, T.pay3, T.toiS, T.une, T.card].forEach((x) => WIN.push([x - 0.03, x + 0.28, 0.45]));
   const fast = (t) => { const st = story(t); let s = 0; for (const [a, b, v] of WIN) { const u = a < REW[0] && t >= REW[1] ? -1 : (a < REW[0] ? st : t); if (u < 0) continue; s = Math.max(s, v * sm(a - 0.05, a + 0.05, u) * (1 - sm(b - 0.05, b + 0.05, u))); } return s; };
   window.shutter = (t) => Math.max(0.12, fast(t));
   window.samples = (t) => { const f = fast(t); return f > 0.55 ? 4 : f > 0.3 ? 2 : 1; };
@@ -661,7 +755,7 @@
   window.EVENTS = { ...T, hook: HB ? 'B' : 'A', rew: REW, stTo: ST_TO, loop: LOOP, dur: DUR,
     debits: [T.d1, T.d2, T.gag], tickets: [T.tk2, T.tk3], ventes: [T.vir1, T.vir2, T.vir3], bulles: [T.sem3, T.sem7, T.bub3], achats: [T.pay1, T.pay2, T.pay3],
     barres: [T.strike1, T.strike2, T.strike3], prix: [T.neu1, T.neu2, T.neu3], aretes: [T.edge1, T.edge2, T.edge3], departs: [T.leave1, T.leave2, T.leave3],
-    arrivees: [T.arr2, T.arr3], freins: [T.brake2, T.brake3], montees: [T.rise1, T.rise2], tampons: [T.toi, T.une], palettes: FEV.map((e) => e[0]),
+    arrivees: [T.arr2, T.arr3], freins: [T.brake2, T.brake3], montees: [T.rise1, T.rise2], tampons: [T.toiS, T.une], palettes: FEV.map((e) => e[0]),
     rouleaux: TV.slice(1), compte: VALS, lignes: [T.l1, T.l2, T.l3, T.l4] };
   window.seek = (t) => paint(t >= DUR ? t - DUR : t);
   paint(0);
