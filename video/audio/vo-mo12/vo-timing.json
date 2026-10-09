@@ -1,0 +1,927 @@
+{
+ "dur": 31.05,
+ "take": "provisoire",
+ "provisional": true,
+ "lines": [
+  {
+   "key": "h1",
+   "t": 0.1,
+   "end": 1.646,
+   "text": "11 heures, ton acheteur sonne."
+  },
+  {
+   "key": "h2",
+   "t": 1.946,
+   "end": 3.493,
+   "text": "11 heures 20, tu l'as vendue."
+  },
+  {
+   "key": "h3",
+   "t": 3.793,
+   "end": 4.72,
+   "text": "Ton beau-frère n'y croit pas."
+  },
+  {
+   "key": "pap",
+   "t": 5.52,
+   "end": 7.834,
+   "text": "Il demande les papiers : tu tends la pochette."
+  },
+  {
+   "key": "vir",
+   "t": 9.4,
+   "end": 10.586,
+   "text": "Tu attends le virement."
+  },
+  {
+   "key": "decl",
+   "t": 13.4,
+   "end": 15.545,
+   "text": "Déclaration de vente : 0 euro."
+  },
+  {
+   "key": "paye",
+   "t": 15.845,
+   "end": 16.862,
+   "text": "Ton beau-frère l'a payée."
+  },
+  {
+   "key": "min",
+   "t": 18.0,
+   "end": 18.55,
+   "text": "20 minutes."
+  },
+  {
+   "key": "cafe",
+   "t": 19.35,
+   "end": 20.536,
+   "text": "Ton café est encore chaud."
+  },
+  {
+   "key": "mardi",
+   "t": 22.05,
+   "end": 23.856,
+   "text": "Mardi, tu remplis la pochette."
+  },
+  {
+   "key": "ctrl",
+   "t": 24.156,
+   "end": 26.92,
+   "text": "Contrôle : 2 ans pour rouler, 6 mois pour vendre."
+  },
+  {
+   "key": "tien",
+   "t": 27.22,
+   "end": 29.196,
+   "text": "Le tien a 7 mois : tu le refais."
+  },
+  {
+   "key": "proch",
+   "t": 29.646,
+   "end": 30.832,
+   "text": "La prochaine fois que tu vends…"
+  }
+ ],
+ "words": [
+  {
+   "line": "h1",
+   "t": 0.1,
+   "end": 0.257,
+   "w": "11"
+  },
+  {
+   "line": "h1",
+   "t": 0.257,
+   "end": 0.413,
+   "w": "heures,"
+  },
+  {
+   "line": "h1",
+   "t": 0.863,
+   "end": 1.02,
+   "w": "ton"
+  },
+  {
+   "line": "h1",
+   "t": 1.02,
+   "end": 1.49,
+   "w": "acheteur"
+  },
+  {
+   "line": "h1",
+   "t": 1.49,
+   "end": 1.646,
+   "w": "sonne."
+  },
+  {
+   "line": "h2",
+   "t": 1.946,
+   "end": 2.103,
+   "w": "11"
+  },
+  {
+   "line": "h2",
+   "t": 2.103,
+   "end": 2.26,
+   "w": "heures"
+  },
+  {
+   "line": "h2",
+   "t": 2.26,
+   "end": 2.416,
+   "w": "20,"
+  },
+  {
+   "line": "h2",
+   "t": 2.866,
+   "end": 3.023,
+   "w": "tu"
+  },
+  {
+   "line": "h2",
+   "t": 3.023,
+   "end": 3.18,
+   "w": "l'as"
+  },
+  {
+   "line": "h2",
+   "t": 3.18,
+   "end": 3.493,
+   "w": "vendue."
+  },
+  {
+   "line": "h3",
+   "t": 3.793,
+   "end": 3.947,
+   "w": "Ton"
+  },
+  {
+   "line": "h3",
+   "t": 3.947,
+   "end": 4.256,
+   "w": "beau-frère"
+  },
+  {
+   "line": "h3",
+   "t": 4.256,
+   "end": 4.411,
+   "w": "n'y"
+  },
+  {
+   "line": "h3",
+   "t": 4.411,
+   "end": 4.565,
+   "w": "croit"
+  },
+  {
+   "line": "h3",
+   "t": 4.565,
+   "end": 4.72,
+   "w": "pas."
+  },
+  {
+   "line": "pap",
+   "t": 5.52,
+   "end": 5.689,
+   "w": "Il"
+  },
+  {
+   "line": "pap",
+   "t": 5.689,
+   "end": 6.028,
+   "w": "demande"
+  },
+  {
+   "line": "pap",
+   "t": 6.028,
+   "end": 6.198,
+   "w": "les"
+  },
+  {
+   "line": "pap",
+   "t": 6.198,
+   "end": 6.537,
+   "w": "papiers :"
+  },
+  {
+   "line": "pap",
+   "t": 6.987,
+   "end": 7.156,
+   "w": "tu"
+  },
+  {
+   "line": "pap",
+   "t": 7.156,
+   "end": 7.326,
+   "w": "tends"
+  },
+  {
+   "line": "pap",
+   "t": 7.326,
+   "end": 7.495,
+   "w": "la"
+  },
+  {
+   "line": "pap",
+   "t": 7.495,
+   "end": 7.834,
+   "w": "pochette."
+  },
+  {
+   "line": "vir",
+   "t": 9.4,
+   "end": 9.569,
+   "w": "Tu"
+  },
+  {
+   "line": "vir",
+   "t": 9.569,
+   "end": 9.908,
+   "w": "attends"
+  },
+  {
+   "line": "vir",
+   "t": 9.908,
+   "end": 10.078,
+   "w": "le"
+  },
+  {
+   "line": "vir",
+   "t": 10.078,
+   "end": 10.586,
+   "w": "virement."
+  },
+  {
+   "line": "decl",
+   "t": 13.4,
+   "end": 14.078,
+   "w": "Déclaration"
+  },
+  {
+   "line": "decl",
+   "t": 14.078,
+   "end": 14.247,
+   "w": "de"
+  },
+  {
+   "line": "decl",
+   "t": 14.247,
+   "end": 14.417,
+   "w": "vente :"
+  },
+  {
+   "line": "decl",
+   "t": 14.867,
+   "end": 15.206,
+   "w": "0"
+  },
+  {
+   "line": "decl",
+   "t": 15.206,
+   "end": 15.545,
+   "w": "euro."
+  },
+  {
+   "line": "paye",
+   "t": 15.845,
+   "end": 16.014,
+   "w": "Ton"
+  },
+  {
+   "line": "paye",
+   "t": 16.014,
+   "end": 16.353,
+   "w": "beau-frère"
+  },
+  {
+   "line": "paye",
+   "t": 16.353,
+   "end": 16.523,
+   "w": "l'a"
+  },
+  {
+   "line": "paye",
+   "t": 16.523,
+   "end": 16.862,
+   "w": "payée."
+  },
+  {
+   "line": "min",
+   "t": 18.0,
+   "end": 18.183,
+   "w": "20"
+  },
+  {
+   "line": "min",
+   "t": 18.183,
+   "end": 18.55,
+   "w": "minutes."
+  },
+  {
+   "line": "cafe",
+   "t": 19.35,
+   "end": 19.519,
+   "w": "Ton"
+  },
+  {
+   "line": "cafe",
+   "t": 19.519,
+   "end": 19.858,
+   "w": "café"
+  },
+  {
+   "line": "cafe",
+   "t": 19.858,
+   "end": 20.028,
+   "w": "est"
+  },
+  {
+   "line": "cafe",
+   "t": 20.028,
+   "end": 20.367,
+   "w": "encore"
+  },
+  {
+   "line": "cafe",
+   "t": 20.367,
+   "end": 20.536,
+   "w": "chaud."
+  },
+  {
+   "line": "mardi",
+   "t": 22.05,
+   "end": 22.389,
+   "w": "Mardi,"
+  },
+  {
+   "line": "mardi",
+   "t": 22.839,
+   "end": 23.008,
+   "w": "tu"
+  },
+  {
+   "line": "mardi",
+   "t": 23.008,
+   "end": 23.347,
+   "w": "remplis"
+  },
+  {
+   "line": "mardi",
+   "t": 23.347,
+   "end": 23.517,
+   "w": "la"
+  },
+  {
+   "line": "mardi",
+   "t": 23.517,
+   "end": 23.856,
+   "w": "pochette."
+  },
+  {
+   "line": "ctrl",
+   "t": 24.156,
+   "end": 24.495,
+   "w": "Contrôle :"
+  },
+  {
+   "line": "ctrl",
+   "t": 24.945,
+   "end": 25.114,
+   "w": "2"
+  },
+  {
+   "line": "ctrl",
+   "t": 25.114,
+   "end": 25.284,
+   "w": "ans"
+  },
+  {
+   "line": "ctrl",
+   "t": 25.284,
+   "end": 25.453,
+   "w": "pour"
+  },
+  {
+   "line": "ctrl",
+   "t": 25.453,
+   "end": 25.792,
+   "w": "rouler,"
+  },
+  {
+   "line": "ctrl",
+   "t": 26.242,
+   "end": 26.412,
+   "w": "6"
+  },
+  {
+   "line": "ctrl",
+   "t": 26.412,
+   "end": 26.581,
+   "w": "mois"
+  },
+  {
+   "line": "ctrl",
+   "t": 26.581,
+   "end": 26.751,
+   "w": "pour"
+  },
+  {
+   "line": "ctrl",
+   "t": 26.751,
+   "end": 26.92,
+   "w": "vendre."
+  },
+  {
+   "line": "tien",
+   "t": 27.22,
+   "end": 27.39,
+   "w": "Le"
+  },
+  {
+   "line": "tien",
+   "t": 27.39,
+   "end": 27.559,
+   "w": "tien"
+  },
+  {
+   "line": "tien",
+   "t": 27.559,
+   "end": 27.729,
+   "w": "a"
+  },
+  {
+   "line": "tien",
+   "t": 27.729,
+   "end": 27.898,
+   "w": "7"
+  },
+  {
+   "line": "tien",
+   "t": 27.898,
+   "end": 28.068,
+   "w": "mois :"
+  },
+  {
+   "line": "tien",
+   "t": 28.518,
+   "end": 28.687,
+   "w": "tu"
+  },
+  {
+   "line": "tien",
+   "t": 28.687,
+   "end": 28.857,
+   "w": "le"
+  },
+  {
+   "line": "tien",
+   "t": 28.857,
+   "end": 29.196,
+   "w": "refais."
+  },
+  {
+   "line": "proch",
+   "t": 29.646,
+   "end": 29.815,
+   "w": "La"
+  },
+  {
+   "line": "proch",
+   "t": 29.815,
+   "end": 30.154,
+   "w": "prochaine"
+  },
+  {
+   "line": "proch",
+   "t": 30.154,
+   "end": 30.324,
+   "w": "fois"
+  },
+  {
+   "line": "proch",
+   "t": 30.324,
+   "end": 30.493,
+   "w": "que"
+  },
+  {
+   "line": "proch",
+   "t": 30.493,
+   "end": 30.663,
+   "w": "tu"
+  },
+  {
+   "line": "proch",
+   "t": 30.663,
+   "end": 30.832,
+   "w": "vends…"
+  }
+ ],
+ "marks": {
+  "onze": {
+   "line": "h1",
+   "t": 0.1,
+   "end": 0.257,
+   "w": "11"
+  },
+  "acheteur": {
+   "line": "h1",
+   "t": 1.02,
+   "end": 1.49,
+   "w": "acheteur"
+  },
+  "sonne": {
+   "line": "h1",
+   "t": 1.49,
+   "end": 1.646,
+   "w": "sonne."
+  },
+  "onze2": {
+   "line": "h2",
+   "t": 1.946,
+   "end": 2.103,
+   "w": "11"
+  },
+  "vingt": {
+   "line": "h2",
+   "t": 2.26,
+   "end": 2.416,
+   "w": "20,"
+  },
+  "vendue": {
+   "line": "h2",
+   "t": 3.18,
+   "end": 3.493,
+   "w": "vendue."
+  },
+  "beaufrere": {
+   "line": "h3",
+   "t": 3.947,
+   "end": 4.256,
+   "w": "beau-frère"
+  },
+  "croit": {
+   "line": "h3",
+   "t": 4.411,
+   "end": 4.565,
+   "w": "croit"
+  },
+  "retour": {
+   "line": "h3",
+   "t": 4.565,
+   "end": 4.72,
+   "w": "pas."
+  },
+  "demande": {
+   "line": "pap",
+   "t": 5.689,
+   "end": 6.028,
+   "w": "demande"
+  },
+  "papiers": {
+   "line": "pap",
+   "t": 6.198,
+   "end": 6.537,
+   "w": "papiers :"
+  },
+  "tends": {
+   "line": "pap",
+   "t": 7.156,
+   "end": 7.326,
+   "w": "tends"
+  },
+  "pochette": {
+   "line": "pap",
+   "t": 7.495,
+   "end": 7.834,
+   "w": "pochette."
+  },
+  "attends": {
+   "line": "vir",
+   "t": 9.569,
+   "end": 9.908,
+   "w": "attends"
+  },
+  "virement": {
+   "line": "vir",
+   "t": 10.078,
+   "end": 10.586,
+   "w": "virement."
+  },
+  "declaration": {
+   "line": "decl",
+   "t": 13.4,
+   "end": 14.078,
+   "w": "Déclaration"
+  },
+  "vente": {
+   "line": "decl",
+   "t": 14.247,
+   "end": 14.417,
+   "w": "vente :"
+  },
+  "zero": {
+   "line": "decl",
+   "t": 14.867,
+   "end": 15.206,
+   "w": "0"
+  },
+  "euro": {
+   "line": "decl",
+   "t": 15.206,
+   "end": 15.545,
+   "w": "euro."
+  },
+  "gag": {
+   "line": "paye",
+   "t": 15.845,
+   "end": 16.014,
+   "w": "Ton"
+  },
+  "beaufrere2": {
+   "line": "paye",
+   "t": 16.014,
+   "end": 16.353,
+   "w": "beau-frère"
+  },
+  "payee": {
+   "line": "paye",
+   "t": 16.523,
+   "end": 16.862,
+   "w": "payée."
+  },
+  "vingt2": {
+   "line": "min",
+   "t": 18.0,
+   "end": 18.183,
+   "w": "20"
+  },
+  "minutes": {
+   "line": "min",
+   "t": 18.183,
+   "end": 18.55,
+   "w": "minutes."
+  },
+  "tasse": {
+   "line": "cafe",
+   "t": 19.35,
+   "end": 19.519,
+   "w": "Ton"
+  },
+  "cafe": {
+   "line": "cafe",
+   "t": 19.519,
+   "end": 19.858,
+   "w": "café"
+  },
+  "encore": {
+   "line": "cafe",
+   "t": 20.028,
+   "end": 20.367,
+   "w": "encore"
+  },
+  "chaud": {
+   "line": "cafe",
+   "t": 20.367,
+   "end": 20.536,
+   "w": "chaud."
+  },
+  "mardi": {
+   "line": "mardi",
+   "t": 22.05,
+   "end": 22.389,
+   "w": "Mardi,"
+  },
+  "remplis": {
+   "line": "mardi",
+   "t": 23.008,
+   "end": 23.347,
+   "w": "remplis"
+  },
+  "pochette2": {
+   "line": "mardi",
+   "t": 23.517,
+   "end": 23.856,
+   "w": "pochette."
+  },
+  "controle": {
+   "line": "ctrl",
+   "t": 24.156,
+   "end": 24.495,
+   "w": "Contrôle :"
+  },
+  "deuxans": {
+   "line": "ctrl",
+   "t": 24.945,
+   "end": 25.114,
+   "w": "2"
+  },
+  "rouler": {
+   "line": "ctrl",
+   "t": 25.453,
+   "end": 25.792,
+   "w": "rouler,"
+  },
+  "sixmois": {
+   "line": "ctrl",
+   "t": 26.242,
+   "end": 26.412,
+   "w": "6"
+  },
+  "vendre": {
+   "line": "ctrl",
+   "t": 26.751,
+   "end": 26.92,
+   "w": "vendre."
+  },
+  "letien": {
+   "line": "tien",
+   "t": 27.22,
+   "end": 27.39,
+   "w": "Le"
+  },
+  "tien": {
+   "line": "tien",
+   "t": 27.39,
+   "end": 27.559,
+   "w": "tien"
+  },
+  "sept": {
+   "line": "tien",
+   "t": 27.729,
+   "end": 27.898,
+   "w": "7"
+  },
+  "mois": {
+   "line": "tien",
+   "t": 27.898,
+   "end": 28.068,
+   "w": "mois :"
+  },
+  "tu": {
+   "line": "tien",
+   "t": 28.518,
+   "end": 28.687,
+   "w": "tu"
+  },
+  "refais": {
+   "line": "tien",
+   "t": 28.857,
+   "end": 29.196,
+   "w": "refais."
+  },
+  "prochaine": {
+   "line": "proch",
+   "t": 29.646,
+   "end": 29.815,
+   "w": "La"
+  },
+  "vends": {
+   "line": "proch",
+   "t": 30.663,
+   "end": 30.832,
+   "w": "vends…"
+  }
+ },
+ "estimate": {
+  "unite": "syllabes",
+  "debit": 5.9,
+  "pause_interne": 0.45,
+  "corr_ouverture": -0.09,
+  "plancher": 0.55,
+  "entre_phrases": 0.3,
+  "coupes": 0,
+  "source": "aucune prise : durées estimées par scripts/vo-mo12.py --provisoire (débit de Simon après accélération, mesuré sur les voix posées de MO9 et MO10)"
+ },
+ "loop": 29.45,
+ "hookB": {
+  "t": 0.1,
+  "end": 2.155,
+  "text": "20 minutes, tu la vends 2 700.",
+  "lines": [
+   {
+    "key": "hB",
+    "t": 0.1,
+    "end": 2.155,
+    "text": "20 minutes, tu la vends 2 700."
+   },
+   {
+    "key": "hB2",
+    "t": 3.793,
+    "end": 4.72,
+    "text": "Ton beau-frère n'y croit pas."
+   }
+  ],
+  "words": [
+   {
+    "line": "hB",
+    "t": 0.1,
+    "end": 0.26,
+    "w": "20"
+   },
+   {
+    "line": "hB",
+    "t": 0.26,
+    "end": 0.581,
+    "w": "minutes,"
+   },
+   {
+    "line": "hB",
+    "t": 1.031,
+    "end": 1.192,
+    "w": "tu"
+   },
+   {
+    "line": "hB",
+    "t": 1.192,
+    "end": 1.352,
+    "w": "la"
+   },
+   {
+    "line": "hB",
+    "t": 1.352,
+    "end": 1.513,
+    "w": "vends"
+   },
+   {
+    "line": "hB",
+    "t": 1.513,
+    "end": 2.155,
+    "w": "2 700."
+   },
+   {
+    "line": "hB2",
+    "t": 3.793,
+    "end": 3.947,
+    "w": "Ton"
+   },
+   {
+    "line": "hB2",
+    "t": 3.947,
+    "end": 4.256,
+    "w": "beau-frère"
+   },
+   {
+    "line": "hB2",
+    "t": 4.256,
+    "end": 4.411,
+    "w": "n'y"
+   },
+   {
+    "line": "hB2",
+    "t": 4.411,
+    "end": 4.565,
+    "w": "croit"
+   },
+   {
+    "line": "hB2",
+    "t": 4.565,
+    "end": 4.72,
+    "w": "pas."
+   }
+  ],
+  "marks": {
+   "vingtB": {
+    "line": "hB",
+    "t": 0.1,
+    "end": 0.26,
+    "w": "20"
+   },
+   "minutesB": {
+    "line": "hB",
+    "t": 0.26,
+    "end": 0.581,
+    "w": "minutes,"
+   },
+   "vendsB": {
+    "line": "hB",
+    "t": 1.352,
+    "end": 1.513,
+    "w": "vends"
+   },
+   "b2700": {
+    "line": "hB",
+    "t": 1.513,
+    "end": 2.155,
+    "w": "2 700."
+   },
+   "beaufrereB": {
+    "line": "hB2",
+    "t": 3.947,
+    "end": 4.256,
+    "w": "beau-frère"
+   },
+   "croitB": {
+    "line": "hB2",
+    "t": 4.411,
+    "end": 4.565,
+    "w": "croit"
+   },
+   "retourB": {
+    "line": "hB2",
+    "t": 4.565,
+    "end": 4.72,
+    "w": "pas."
+   }
+  }
+ }
+}

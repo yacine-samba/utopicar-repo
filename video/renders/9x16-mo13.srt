@@ -1,0 +1,55 @@
+1
+00:00:00,100 --> 00:00:01,616
+10 000 pour ta
+première revente ?
+
+2
+00:00:01,666 --> 00:00:02,843
+Tu en as 1 500.
+
+3
+00:00:02,893 --> 00:00:04,748
+La petite rouge d'en
+face demande 1 400.
+
+4
+00:00:05,000 --> 00:00:06,436
+Tu gardes 300 à côté.
+
+5
+00:00:06,750 --> 00:00:09,086
+Assurance, carte grise, essence.
+
+6
+00:00:10,400 --> 00:00:11,667
+Elle part à 1 900.
+
+7
+00:00:13,000 --> 00:00:14,436
+La première paie la deuxième.
+
+8
+00:00:16,600 --> 00:00:17,528
+Une affaire passe.
+
+9
+00:00:20,050 --> 00:00:21,597
+Budget : 3 100.
+
+10
+00:00:22,350 --> 00:00:24,125
+Et tu attendais d'avoir 10 000.
+
+11
+00:00:24,250 --> 00:00:26,364
+Ceux qui gagnent refont
+le calcul à chaque vente.
+
+12
+00:00:27,000 --> 00:00:29,056
+Ta quatrième : 2 500 max.
+
+13
+00:00:29,660 --> 00:00:31,250
+La prochaine fois que tu te dis…
+

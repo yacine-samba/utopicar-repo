@@ -31,23 +31,42 @@ Aucune annonce voisine n'est montrée (révision du 9 octobre) : les vignettes `
 Motorisation de l'exemple : 1.2 16V 75 ch essence, monte en **165/65 R15** ([Allopneus, Clio III](https://www.allopneus.com/vehicule/renault/clio/clio-iii)),
 donc des enjoliveurs de **15 pouces**. Rien ne le dit à l'écran (aucun modèle nommé).
 
-**Les états à fabriquer** (calques RGBA de la taille du PNG, posés sur la voiture propre) : `film-mo11/etats-clio3.py`
-→ `assets/photos-mo11/`, bruit à graine fixe, méthode de `scripts/dirty-mo9.py` et `scripts/polo-dirty-mo6.py`
-(copiée, pas importée). La rayure et les enjoliveurs sont **vectoriels** (SVG dans `film-mo11/`), dessinés à pleine
-résolution : la caméra grossit la photo jusqu'à 1,6 fois et un calque raster agrandi deviendrait flou. Coordonnées en
-pixels du PNG, relevées sur une grille de 100 px (à revérifier sur la grille avant de peindre) :
+**Les états de la voiture** (9 octobre 2026) : `python3 scripts/dirty-mo11.py` → `assets/photos-mo11/`
+(`--check <dossier>` : la voiture sale, lavée et propre sur fond #08070a, plein cadre et à 200 px de large). Bruit à
+graine fixe (`default_rng(11)`), même résultat à chaque lancement ; méthode de `scripts/dirty-mo9.py` et
+`scripts/polo-dirty-mo6.py`, copiée, pas importée. Les calques raster sont des PNG RGBA de la taille de la photo
+(1 809 × 1 232), à poser sur la voiture propre dans cet ordre, chacun effacé par sa ligne de partage ; la rayure et les
+enjoliveurs sont des SVG de même `viewBox` (pixels de la photo), nets à × 1,6. Zones mesurées sur l'alpha des calques :
 
-| Calque | Ce qu'il montre | Zone (x, y) | Coup |
+| Fichier | Ce qu'il montre | Zone (x, y, pixels de la photo) | Coup |
 |---|---|---|---|
-| `clio3-poussiere.png` | poussière brune en dégradé, plus dense sur le tiers bas et le bas de caisse ; coulures sombres sous les vitres ; vernis sans éclat ; « LAVE-MOI » tracé au doigt (lettres plus claires) sur la portière avant | toute la carrosserie ; coulures x 500 → 1 700, y 380 → 520 ; « LAVE-MOI » x ≈ 1 400 → 1 620, y ≈ 470 → 580 | hook : l'embout aspire une bande x 1 150 → 1 650, y ≈ 480 → 600 (le « LAVE-MOI » part avec) ; lavage : ligne de partage sur toute la voiture |
-| `clio3-pare-brise.png` | voile gris sur la face intérieure du pare-brise, sièges à peine visibles derrière | x 480 → 1 380, y 60 → 380 | sièges |
-| `clio3-vitres.png` | voile jaunâtre du tabac sur les vitres latérales | x 1 380 → 1 700, y 60 → 460 | odeur |
-| `clio3-phares.png` | voile jaune saturé, laiteux | grand phare x 680 → 1 110, y 545 → 815 ; petit phare x 40 → 160, y 480 → 700 | phares |
-| `rayure.svg` (vectoriel) | rayure claire et deux éraflures sur l'aile avant, au-dessus de la roue | x 1 150 → 1 360, y 560 → 700 | rayure ; revient au rembobinage ; l'ongle la traverse au verdict |
-| `enjoliveurs.svg` (vectoriel) | ancien : brun, poussière de frein, éraflures, un rayon fendu ; neuf : gris argent, propre, sans logo | roue avant x 1 100 → 1 340, y 780 → 1 180 ; roue arrière x 1 700 → 1 790, y 500 → 760 | enjoliveurs |
+| `car-clio3.png`, `car-clio3-contour.js` | la voiture propre et son contour de lumière (`window.CAR_CLIO3_CONTOUR`), copies de `assets/cars-libres/` | toute la photo | tout le film ; l'état « après » de chaque coup |
+| `clio3-poussiere.png` | la voiture entière, sale, **opaque sur la carrosserie** (elle remplace la propre tant que le lavage n'est pas passé) : voile de poussière beige mat en plaques, boue brune sur le tiers bas et autour des passages de roue, projections, coulures sombres sous les vitres latérales et sous les optiques, vernis sans éclat, « LAVE-MOI » tracé au doigt (la peinture réapparaît dans les lettres) | toute la carrosserie ; « LAVE-MOI » dans le quadrilatère (1 400, 520) (1 600, 482) (1 600, 570) (1 402, 628) ; coulures x 1 400 → 1 700 sous la ligne des vitres et x 60 → 1 090 sous les optiques | image 0 ; hook (l'embout aspire une bande x 1 150 → 1 650, y ≈ 480 → 600, « LAVE-MOI » part avec) ; lavage (ligne de partage sur toute la voiture) ; boucle |
+| `clio3-phares.png` | voile jaune saturé et laiteux, craquelé, reflets de l'optique gardés | x 38 → 1 123, y 448 → 825 (grand phare x 672 → 1 117, petit phare x 44 → 194) | phares |
+| `clio3-pare-brise.png` | voile gris sur la face intérieure du pare-brise, traces d'essuyage en arcs ; sièges devinables derrière | x 498 → 1 369, y 66 → 392 | sièges |
+| `clio3-vitres.png` | voile jaunâtre du tabac sur les vitres latérales, plus dense sur les bords et en haut | x 1 385 → 1 695, y 65 → 336 | odeur |
+| `clio3-rayure.svg` | rayure claire, effilée, interrompue deux fois (la clé a sauté), halo de vernis rayé, ombre fine sur le bord haut du sillon ; deux éraflures plus fines et quatre micro-rayures | trait principal de (1 165, 657) à (1 346, 592) ; le tout x 1 158 → 1 346, y 591 → 677 | rayure ; revient au rembobinage ; l'ongle la traverse au verdict |
+| `clio3-enjoliveurs.svg` | les enjoliveurs à l'achat : **la photo des enjoliveurs salie pixel par pixel** (PNG opaque intégré, à la résolution de la photo : rayons gardés, creux noircis par la poussière de frein, voile brun mat, plus dense vers le bord, bord roulé compris), puis en vectoriel le bord frotté, l'éclat manquant et la fissure du rayon fendu | avant : image x 1 179 → 1 333, y 820 → 1 162 (ellipse de centre (1 256, 991), demi-axes 67 × 169, 10°) ; arrière : x 1 723 → 1 777, y 513 → 713 | enjoliveurs ; reviennent au rembobinage |
+| `clio3-enjoliveurs-neufs.svg` | le reflet des neufs : un arc de lumière sur le bord, rien d'autre (la photo montre déjà des enjoliveurs gris argent propres, losanges effacés) | mêmes ellipses | enjoliveurs (après) |
+| `CREDITS.tsv` | crédits de la photo, écrits par le script | | |
+
+États composés (`--check`) : **sale** = propre + poussière + phares + pare-brise + vitres + rayure + enjoliveurs ;
+**lavée** (13:10, rembobinage, verdict) = propre + phares + pare-brise + vitres + rayure + enjoliveurs ; **propre** =
+propre + enjoliveurs neufs. Regardés le 9 octobre : à 200 px de large, « sale » se lit d'un coup d'œil (voile beige,
+boue en bas, phares jaunes) ; à × 1,6 la rayure se lit comme une rayure, l'enjoliveur sale garde ses rayons. Ce qui a
+changé ce jour-là : l'enjoliveur sale n'est plus une ellipse brune translucide (elle se lisait comme un enjoliveur
+doré), et la rayure n'est plus un trait d'épaisseur constante qui ondulait point par point. Planches :
+`renders/review/mo11-etats.jpg` (sale, lavée, propre), `mo11-etats-200px.png`, `mo11-etats-zoom.jpg` (enjoliveurs et
+rayure à × 2 et × 3).
 
 Aucun trait d'odeur, aucune pastille posée sur la voiture : l'odeur et les sièges passent par le voile des vitres et
 par la vidéo de la notification.
+
+**Crédits** : `assets/photos-mo11/CREDITS.tsv`. Licence relue sur la page File: le 9 octobre 2026 : « I, the copyright
+holder of this work, release this work into the public domain » (modèle PD-self), auteur M 93 (Matthias93), photo du
+27 mai 2009. Rien n'est dû. Les plans Mixkit (vidéo et sons) n'en demandent pas non plus.
+**Légende du post** : aucun crédit obligatoire. Par courtoisie, une ligne à la fin, sans nommer le modèle : « Photo de
+la voiture : M 93, domaine public (Wikimedia Commons), salie et retouchée pour l'exemple. »
 
 **La ligne de partage** (`lib/kit47-etats.js`, `etats.split`) : une ligne verticale de lumière traverse la zone du
 coup de gauche à droite en 0,7 s : 0,2 s jusqu'au milieu, arrêt de 0,3 s (moitié sale, moitié propre visibles
@@ -353,26 +372,77 @@ l'alignement retrouve tout le texte et la retranscription de la pose ne perd auc
 ## Les plans réels
 
 Mixkit, licence « Mixkit Stock Video Free License » (usage commercial libre, sans crédit obligatoire), comme MO5, MO6
-et MO9. Vidéos hors dépôt (`assets/stock/mo11/`), séquences dans `film-mo11/seq/` (hors dépôt). Les numéros se
-choisissent à l'étape 3 sur une planche de vignettes étiquetées (`motion-studio/scripts/mixkit.py search --sheet`) :
-la correspondance titre → numéro a déjà été fausse (MO5). Aucun visage, aucune plaque, aucun logo lisible.
+et MO9. Choisis le 9 octobre 2026 sur planches de vignettes étiquetées (`motion-studio/scripts/mixkit.py search
+--sheet`), puis regardés sur trois images au moins par plan : aucun visage, aucune plaque, aucun logo lisible.
+Vidéos hors dépôt dans `assets/stock/mo11/` ; séquences JPG 30 i/s, 720 px de large, hors dépôt, dans
+`film-mo11/seq/<clé>/NNN.jpg`, refaites par `python3 film-mo11/seq-mo11.py` (début, durée et recadrage de chaque plan
+y sont écrits ; `--check <dossier>` : planche de trois images par clé). Nombre d'images par clé : `film-mo11/seq.json`
+(à donner tel quel à `Kit47.loadSeqs('seq', SEQ)`, lecture en aller-retour par `drawSeq`).
 
 **Numéros exclus** (révision du 9 octobre : MO11 ne remonte aucun plan de MO9) : ceux de MO9, 241, 4716, 13260, 22168,
 31961, 34140, 36522, 42136, 45755, 47830, 49219 ; ceux de MO6, 47832, 24815, 12054 ; ceux que MO10 a ajoutés, 47585,
-33324, 38501, 22916.
+33324, 38501, 22916. Aucun n'est pris. Écartés en plus : **4915** (mains qui tapent sur un téléphone), que MO12 monte
+pour son virement, et les plans de la même série que le 47830 de MO9 où l'on voit une machine (47829, 47833, 47834).
 
-| Coup | Mots-clés Mixkit |
-|---|---|
-| lavage | `car wash pressure`, `washing car foam`, `pressure washer` |
-| phares | `headlight restoration`, `sanding headlight`, `headlight cleaning` |
-| sièges | `car seat shampoo`, `upholstery cleaning`, `fabric seat vacuum` |
-| gag | `coins in hand`, `coins on car floor`, `coins falling` |
-| odeur | `car air vent`, `car ventilation`, `cabin air filter` |
-| rayure | `polishing car paint by hand`, `microfiber car polish` |
-| enjoliveurs | `hubcap`, `car wheel cleaning`, `wheel cover` |
-| soleil bas | `sunset parking`, `golden hour street`, `sunset light` |
-| photo 1 | `smartphone photo car`, `taking picture phone` (mains seules) |
-| messages, vente | `phone in hand notification`, `car keys handover` |
+| Clé | Mixkit | Ce qu'on y voit | Extrait | Où |
+|---|---|---|---|---|
+| `lavage` | 26680 | vu de l'intérieur : le jet haute pression frappe la vitre, puis la mousse coule sur le verre ; portique rouge flou derrière | 0,0 → 4,5 s (135 images) | notification « Lavage · haute pression · − 8,00 € » |
+| `phares` | 24822 | une optique avant allumée, nette et claire, sur une carrosserie bleue (l'« après ») ; recadrée sur l'optique, ni calandre ni sigle | 0,7 → 4,7 s, recadrage 624 × 442 en (652, 118), 720 × 510 (120 images) | notification « Phares · kit + vernis · − 25,00 € » |
+| `sieges` | 45040 | la buse transparente d'un injecteur-extracteur glisse sur un tissu clair ; l'eau sale monte dans la buse | 0,3 → 4,8 s (135) | notification « Sièges · injecteur loué · − 30,00 € » |
+| `pieces` | 18263 | une main verse des pièces dans une paume ouverte, fond clair flou (pièces non lisibles à la taille de la carte) | 0,3 → 4,8 s (135) | carte « trouvé » : « Sous les sièges · 3,40 € · une frite » |
+| `odeur` | 15052 | un doigt tourne la molette de ventilation d'un tableau de bord (pictogramme de ventilateur, voyant orange) | 0,8 → 5,3 s (135) | notification « Odeur · filtre à charbon · − 15,00 € » |
+| `rayure` | 47831 | une main gantée passe un applicateur de polish sur une carrosserie sombre, bandes de lumière d'atelier | 0,3 → 4,8 s (135) | notification « Rayure · polish · − 15,00 € » |
+| `roue` | 17132 | une jante, des mains gantées, une clé à chocs sur les écrous ; l'emblème du cache-moyeu est flouté (suivi image par image) | 0,5 → 5,0 s (135) | notification « Enjoliveurs · jeu de 4 · − 20,00 € » ; aucun plan Mixkit ne montre un enjoliveur |
+| `soleil` | 20298 | soleil bas orange derrière des lampadaires, ligne d'arbres sombre | 5,0 → 10,0 s (150) | fond flou de l'attente (13:00 → 16:30) |
+| `photo` | 36800 | une main tient un téléphone à l'horizontale, fond d'intérieur flou ; **l'écran vert est devenu noir** pour recevoir la photo 1 | 1,0 → 5,5 s (136) | la photo 1 : le film peint la Clio dorée dans l'écran (voir plus bas) |
+| `messages` | 14669 | des mains écrivent sur un téléphone vu de profil, écran illisible, fond bleu flou | 0,5 → 5,0 s (135) | les deux messages sur la vignette de l'annonce (J+4) |
+| `cles` | 12877 | une main donne une clé dans une paume ouverte, manches de veste, fenêtre floue derrière | 0,2 → 4,7 s (136) | « Virement reçu · + 3 300,00 € » |
+
+**L'écran du téléphone** (`photo`). `film-mo11/photo-ecran.json` donne, pour chacune des 136 images, les quatre coins
+de l'écran en pixels de l'image 720 × 406 (haut-gauche, haut-droit, bas-droit, bas-gauche ; coins vifs, obtenus en
+prolongeant les côtés relevés sur le vert) et le rayon des coins arrondis (22 px). La paume passe devant le coin
+bas-gauche de l'écran : `film-mo11/seq/photo-masque/NNN.png` (hors dépôt, refait par le même script) est le masque
+doux de la part visible de l'écran (blanc, alpha = écran). Pour peindre la photo 1 : sur un canevas à part de
+720 × 406, dessiner la Clio dans le quadrilatère de l'image courante (homographie, ou deux triangles affines), puis
+`globalCompositeOperation = 'destination-in'` avec le masque de la même image, puis poser ce canevas sur l'image de la
+séquence avec la même mise à l'échelle que `drawSeq`. Essai fait le 9 octobre sur trois images : la Clio tient dans
+l'écran, la paume reste devant (`renders/review/mo11-seq-photo-essai.jpg`). Sans rien peindre, le plan montre un
+écran noir. Planche des onze clés : `renders/review/mo11-seq.jpg`.
+
+## Bruitages
+
+Banques : `audio/bank/mo5/` et `audio/bank/mo6/` d'abord (rôles repris de `scripts/audio-mo5.py`, `audio-mo6.py` et
+`audio-mo9.py`, qui lit `mo5` puis `mo6` ; il n'existe pas de banque `mo9`), puis `audio/bank/mo11/` pour les sons
+propres à cette histoire (Mixkit, licence libre, aperçus téléchargés le 9 octobre 2026 ; liste, durées et notes dans
+`audio/bank/mo11/SOURCES.tsv`). Un son principal à la fois ; les débits sur une note qui **monte** (méthode de MO9 :
+`2354` transposé de + 0 à + 5 demi-tons d'un coup à l'autre).
+
+| Moment (t provisoire) | Son | Banque | Rôle, réglage proposé |
+|---|---|---|---|
+| plume, écriture à la lumière (0,1 · 1,2 · 4,0 s) | 2589, 3005, 2369 | mo5 | `orn`, comme MO5 et MO9 |
+| hook : l'embout aspire la bande (2,75 → 3,7 s) | 2608 « Air zoom vacuum » puis 1465 « Vacuum swoosh transition » | mo5, mo11 | 2608 pour l'attaque (crête à 0,44 s dans le fichier), 1465 pour le balayage qui monte (la montée est entre 0,6 et 1,6 s dans le fichier), panoramique de gauche à droite avec l'embout |
+| « 2 ?00 » : le rouleau tourne (4,0 s) | 1054 | mo5 | `tick`, 0,4 s |
+| le calcul se replie, palettes SAMEDI · 13:00 (4,55 · 4,65 s) | 3120, 1119 | mo5 | `whoosh` ; une `tick` par palette |
+| lavage : jet pendant la ligne (5,8 → 6,5 s) | 3215 « Spray water or liquid » | mo11 | `tool`, 0,7 s, − 2 à − 3 demi-tons pour le corps d'un nettoyeur |
+| phares : ponçage court (6,8 → 7,5 s) | 850 « Wood polishing electrical tool » | mo11 | `tool`, 0,5 à 0,7 s pris après 2 s (partie stable) |
+| sièges : aspiration humide (7,8 → 8,5 s) | 1835 « Vacuum engine hum » | mo6 | `tool`, 0,7 s pris après 3 s (MO6 l'employait pour l'injecteur-extracteur) |
+| gag : quatre pièces qui tintent (9,0 s) | 3183 « Fluttering coin » (×4) ou 1993 « Clinking coins » | mo11 | 3183 (la pièce tombe vers 0,41 s dans le fichier, 0,25 s de son) en quatre départs à 0,07 s d'écart, transposés 0, + 2, + 6, + 7 (2 €, 1 €, 0,20 €, 0,20 € : la plus grosse sonne le plus grave), seul dans le mix ; 1993 en un seul départ si le temps manque |
+| odeur : la molette, puis le souffle (9,05 → 9,75 s) | 1832 « Stove extractor fan starting » | mo11 | clic à 0,14 s calé sur le doigt de la vidéo, souffle qui monte coupé à 0,7 s (le second clic est à 7,59 s) |
+| rayure : le polish passé à la main (9,8 → 10,5 s) | 3087 « Long broom or wipe sweep sound », puis le scintillement 2589 transposé + 7 | mo11, mo5 | `tool` court, choisi parce que le plan `rayure` montre un polish à la main ; la polisseuse 2646 (mo6) du brief reste possible |
+| enjoliveurs : le neuf se clipse (10,55 → 11,25 s) | 486 « Plastic CD cover close hard » | mo11 | `tool`, claquement à 0,35-0,43 s dans le fichier, posé à la fin de la ligne |
+| chaque débit (6,5 · 7,5 · 8,5 · 9,75 · 10,5 · 11,25 s) | 2354 (note), 1490 (arrivée) | mo5 | `ui`, transposé + 0 à + 5, le dernier le plus haut ; 1490 `whoosh` − 4 dB, 0,1 s avant |
+| le compteur roule sans se poser (6,5 → 11,7 s) | 1054 | mo5 | `tick` à chaque impulsion, gain bas |
+| le soleil baisse (11,9 → 13,9 s) | 2932 « Urban park and traffic » (extrait de 16 s) | mo11 | ambiance du soir à − 26 dB environ, oiseaux à 4-5,5 s et 10,5-11,5 s dans l'extrait ; aucune voix |
+| déclic de la photo 1 (14,5 s) | 1133 « Camera shutter click » | mo11 | `ui`, sec, sans réverbération |
+| palettes 16:30 → J+4 (14,9 → 15,6 s) | 1119 | mo5 | `tick` |
+| deux messages, bulle (15,3 · 15,7 · 16,2 s) | 2354, 2384 | mo5 | `ui`, transposés + 7 et + 9 ; aucun son de vibration de téléphone sur Mixkit (recherches « vibration », « vibrate », « phone », « smartphone », « cellphone », « buzz ») : la note seule, comme MO9 |
+| virement reçu (16,8 s) | 1490 puis 951 | mo5 | `whoosh` puis `chime` |
+| « + 400 € » géant (17,3 s) | 2909, 1107 | mo5 | `accent` puis `chime` transposé + 7 ; puis arrêt de bande sur la musique (18,0 s) |
+| rembobinage (20,4 → 21,1 s) | 1092 | mo5 | `accent`, 1,45 s, − 6 dB |
+| la carte, ses trois lignes, la barre du pare-chocs (21,1 → 23,9 s) | 3120, 2369 (×3, + 0, + 2, + 4), 3005 transposé − 3 | mo5 | comme MO9 |
+| l'ongle glisse sur la rayure (25,3 s) | 1898 « Cloth slide out » | mo11 | 0,3 à 0,4 s pris dans le glissement (0,65 → 1,5 s dans le fichier), passe-haut vers 2 kHz : un frottement doux, sans accroche |
+| « Polish · 15 € », « Carrossier · 300 € » barré (26,3 · 26,9 s) | 2384 ; 3005 transposé − 3 | mo5 | une note, puis une note grave sur la barre |
+| retour à l'image 0, la poussière revient (27,8 s) | 3120, 1465 à l'envers | mo5, mo11 | `whoosh` ; 1465 inversé, à − 20 dB environ, pour la poussière qui revient |
 
 ## Mesure de référence pour la fabrication
 
@@ -400,3 +470,67 @@ pendant que le compteur roule et que les notifications tombent).
 seconde de l'accumulation, (R début − R fin) / R début / durée, sur 5,8 → 11,7 s pour MO11 et 5,9 → 12,0 s pour MO5
 (même place dans le film ; comparer à MO9 sur 13,5 → 16,6 s n'aurait pas de sens, une courbe perd moins plus tard).
 On tranche une fois MO9 publiée et relevée.
+
+## Le film (étape 3, maquettage du 9 octobre 2026)
+
+`film-mo11/index.html` + `film-mo11/film.js`, sur `lib/kit47.js` (inchangé) et **`lib/kit47-etats.js`** (nouveau).
+Fonction pure du temps (`window.seek(t)`), ressorts fermés et `track()`, bruit à graine fixe, aucune transition CSS
+ni minuterie, `window.shutter` / `window.samples` pour le flou de bougé, `window.EVENTS` pour les bruitages
+(`CUT=mo11 node scripts/events.mjs` → `film-mo11/events.json`). `timeline-mo11.json` : 60 i/s, 120 BPM, 1080 × 1920,
+30,1 s, poster = image 0. Le film lit **tous** ses temps dans `audio/vo-mo11/vo-timing.json` (repères `marks` et
+`lines`) : quand la prise de Simon remplacera le minutage provisoire, chaque geste suivra son mot sans retouche du film.
+
+**Le module `lib/kit47-etats.js`** (réutilisable pour une autre voiture) :
+
+| Fonction | Ce qu'elle fait |
+|---|---|
+| `car(parent, { img, w, left, top, layers })` | la photo propre et ses calques pleine taille (PNG ou SVG), une ombre, la bande mouillée, le reflet rasant, un SVG aux pixels de la photo pour la ligne et les outils |
+| `prepSun(C, img)` | une fois : la photo étalonnée selon la luminance (hautes lumières dorées, ombres froides), le masque des zones claires, la silhouette floutée tirée du masque alpha |
+| `clip(C, calque, a, b, trou)` | le calque visible entre x = a et x = b (pixels de la photo), moins un trou polygonal (`clip-path` en règle pair-impair) |
+| `lineAt(t, o)`, `lineOn(t, o)`, `split(t, C, o)` | la ligne de partage : 0,2 s jusqu'au point d'arrêt `xm`, arrêt `hold`, 0,2 s jusqu'au bout ; ressorts critiques ; liseré orange, trait clair, poignée « ◂ ▸ » à épaisseur constante à l'écran |
+| `sun(C, k, { rake, rakeK })`, `wet(C, x, k)` | la lumière de 16 h 30 (k de 0 à 1) : étalonnage, ombre couchée qui s'allonge et tourne, reflet rasant masqué sur les zones claires ; la brillance mouillée derrière le lavage |
+
+Piège du kit : `Kit47.word()` lit la famille au troisième mot de la chaîne de police ; pour un mot en Fraunces
+italique, passer `'500 92px Fraunces'` avec `{ italic: true }`, jamais `'italic 500 92px Fraunces'` (le SVG tombe sur
+une police de secours). Les SVG des calques sont lus par `fetch` puis servis en Blob : les serveurs de `at.mjs`, `sheet.mjs` et `events.mjs`
+n'ont pas le type `image/svg+xml`.
+
+**Les instants clés** (minutage provisoire ; « mot » = repère de `vo-timing.json`) :
+
+| Temps du film | t (s) | Sur le mot / la règle |
+|---|---|---|
+| Image 0 : « 2 000 → 2 900 · telle quelle ? », Clio sale, « LAVE-MOI », contour entier | 0 | |
+| La plume rallume « 2 000 », descend la flèche, rallume « 2 900 », fait vaciller le « ? » | 0,15 · 1,55 · 1,87 · 2,64 | « achètes » − 0,12 · « revends » · « 2 900 » · fin de « 2 900 » |
+| L'embout aspire la bande du flanc, « LAVE-MOI » part | 2,99 → 3,71 | « aspirateur » |
+| « 2 ?00 », la fente réécrit « C'est donné. » | 3,97 | « donné » − 0,05 |
+| Le calcul devient le compteur (2 900 €), palettes SAMEDI · 13:00, repère 3 490 €, mention | 4,64 · 4,68 · 5,2 · 5,3 | « Samedi » |
+| Lavage · phares · sièges · odeur · rayure · enjoliveurs (début de ligne ; arrêt 0,2 s après) | 5,96 · 6,88 · 7,80 · 9,05 · 9,80 · 10,55 | fin de « heures » · entre deux · « sièges » − 0,33 · « L'odeur » − 0,2 · entre deux · « Les enjoliveurs » − 0,2 |
+| Débits (notification) ; impulsion au compteur 0,33 s après (une étincelle monte de la notification) | 6,68 · 7,60 · 8,52 · 9,77 · 10,52 · 11,27 | fin de chaque ligne |
+| Carte « trouvé » · « Sous les sièges · 3,40 € · une frite » | 8,83 | entre « sièges » et « L'odeur » |
+| Recul, compteur posé à 3 330 € | 11,33 → ≈ 12,2 | |
+| La lumière baisse ; « Soleil bas, dans ton dos. » ; « l'heure avant le coucher » | 11,90 → 13,90 · 12,60 · 13,20 | « Et là » − 0,3 · « Et là » + 0,4 · « soleil » − 0,35 |
+| Viseur · déclic · la photo part dans l'écran du téléphone (annonce 3 330 €) · J+4 | 13,84 · 14,52 · 14,78 · 14,92 | fin de « soleil » · « 1 » − 0,1 |
+| Messages · offre « 3 300 et je la prends. » · virement · « + 400 € » | 15,30 · 15,65 · 15,90 · 16,78 · 17,28 | « 4 jours » · « 400 » · « plus » |
+| « − 109,60 € de prépa » · la seule pause · « Ton samedi le mieux payé. » | 17,65 · 18,0 → 18,7 · 18,67 | « Ton samedi » |
+| Rembobinage jusqu'à 13:10 (lavée, phares jaunes, rayure, enjoliveurs bruns) | 20,40 → 21,10 | fin de « payé » + 0,36 |
+| Carte « Avant la photo 1 » · « Pas tout. » · trois lignes · ✗ | 21,10 · 22,12 · 22,51 / 23,01 / 23,51 · 23,93 | « Ceux » · « pas » · fin de « tout » |
+| Plongée sur l'aile · l'ongle traverse la rayure · verdict · « Polish · 15 € » (le polish efface la rayure) · « Carrossier · 300 € » barré | 24,45 · 24,96 · 25,82 · 26,29 · 26,89 | « L'ongle » − 0,3 · « glisse » · fin de « rayure ? » · « 15 » · « polish » |
+| Retour à l'image 0 : la carte se replie, la poussière revient en front inverse, le contour se retrace, le calcul se réécrit | 27,80 → 29,95 | boucle (`loop`) |
+
+**Mesures du maquettage** (9 octobre 2026) :
+
+- **Accumulation, 5,8 → 11,7 s** (`ref-motion.py`, images du film à 30 i/s sans flou de bougé, comparées aux films
+  livrés ramenés à 30 i/s ; analyse à 180 px) : **93 % d'images en mouvement, aucun plan figé** (MO9 78 % avec un
+  arrêt de 0,3 s, MO5 77 % avec un plan figé de 1,13 s ; à 60 i/s, MO9 et MO5 donnent 80 et 78 %, les chiffres de
+  référence). À-coups 0,115 (MO9 0,173, MO5 0,238). **Couches 0,62, sous l'objectif de 0,66** (MO9 0,67) : la caméra
+  porte la plus grande part du mouvement (panoramique 72 %, zoom 70 %). Planche : `renders/review/mo11-motion-accu.png`,
+  tableau : `renders/review/mo11-motion-accu.md`. À remesurer sur le rendu final, avec le flou de bougé.
+- **Boucle** : image 0 contre la dernière image (t = 1 805 / 60 s), pleine définition : **écart moyen 0,016 / 255**
+  (p99 1,0).
+- **Zones sûres**, mesurées sur le DOM toutes les 0,1 s (boîte à l'écran de chaque texte visible, découpée par ses
+  conteneurs) : aucun texte au repos hors de x 60 → 940, y 220 → 1 480. Restent des passages en mouvement : les
+  notifications qui entrent par la droite, les messages par la gauche, l'annonce par le bas, et trois images
+  (11,98 → 12,03 s) où la pile de débits, déjà sous 50 % d'opacité, descend sous 1 480 px en sortant.
+- **Image 0** à 200 px de large : `renders/review/mo11-image0.jpg` (« 2 000 → 2 900 », « telle quelle ? » et la Clio
+  sale se lisent ; « LAVE-MOI » se devine à peine à cette taille).
+- Aucune erreur `PAGEERR` (`at.mjs`, trois planches, `events.mjs`).

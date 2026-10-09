@@ -1,0 +1,46 @@
+1
+00:00:00,100 --> 00:00:01,446
+Tu pars avec 1 500.
+
+2
+00:00:01,496 --> 00:00:03,462
+Trois voitures plus tard :
+3 100.
+
+3
+00:00:05,000 --> 00:00:06,436
+Tu gardes 300 à côté.
+
+4
+00:00:06,750 --> 00:00:09,086
+Assurance, carte grise, essence.
+
+5
+00:00:10,400 --> 00:00:11,667
+Elle part à 1 900.
+
+6
+00:00:13,000 --> 00:00:14,436
+La première paie la deuxième.
+
+7
+00:00:16,600 --> 00:00:17,528
+Une affaire passe.
+
+8
+00:00:20,050 --> 00:00:21,597
+Budget : 3 100.
+
+9
+00:00:22,350 --> 00:00:24,125
+Et tu attendais d'avoir 10 000.
+
+10
+00:00:24,250 --> 00:00:26,364
+Ceux qui gagnent refont
+le calcul à chaque vente.
+
+11
+00:00:27,000 --> 00:00:29,106
+Ta quatrième : 2 500 max.
+

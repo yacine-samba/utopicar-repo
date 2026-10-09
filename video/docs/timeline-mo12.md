@@ -19,12 +19,30 @@ nommé à l'écran ni dans la voix ; dans l'exemple, c'est une 1.4i essence de 2
 
 | Photo | Auteur, licence | Fichiers |
 |---|---|---|
-| [Citroën C3 front.jpg](https://commons.wikimedia.org/wiki/File%3ACitro%C3%ABn_C3_front.jpg) | M 93, **domaine public** (aucun crédit obligatoire) | `assets/cars-libres/car-c3.png` (RGBA, rognée, 1757×1241), `assets/cars-libres/car-c3-contour.js` (`window.CAR_C3_CONTOUR`) |
+| [Citroën C3 front.jpg](https://commons.wikimedia.org/wiki/File%3ACitro%C3%ABn_C3_front.jpg) | M 93, **domaine public** (aucun crédit obligatoire) | `assets/photos-mo12/car-c3.png` (RGBA, rognée, 1757×1241), `car-c3-contour.js` (`window.CAR_C3_CONTOUR`), `car-c3-flou.png`, `car-c3-reperes.js` (`window.CAR_C3_REPERES`) |
 
 Déjà traitée par `scripts/cars-libres-twingo-c3.py` : double chevron de la calandre et des enjoliveurs effacés, texte
 du cadre de plaque effacé, plaque vierge, détourage BiRefNet, bords décontaminés, étalonnage de la charte. L'avant
-regarde à gauche : elle sort par la gauche. On la copie telle quelle dans `assets/photos-mo12/` (original :
-`assets/cars-libres/src/wm-c3.jpg`, hors dépôt ; crédits : `assets/cars-libres/CREDITS.tsv`).
+regarde à gauche : elle sort par la gauche. Revérifiée au zoom le 9 octobre sur fond #08070a : calandre lisse, plaque
+vierge, centres d'enjoliveurs sans chevrons (il reste l'anneau moulé de l'enjoliveur avant, sans logo), aucune
+personne, aucun texte. Original : `assets/cars-libres/src/wm-c3.jpg` (hors dépôt).
+
+**Ce que le film reçoit** (`python3 scripts/photos-mo12.py`, `--check <dossier>` pour les planches de contrôle) :
+
+| Fichier | Quoi | Pour |
+|---|---|---|
+| `car-c3.png`, `car-c3-contour.js` | copies telles quelles de `assets/cars-libres/` (contour : repère de 1000 px de large) | la C3 nette et son contour de lumière : image 0, sorties de 2,70 et 17,15 s, retour de 4,45 s, boucle |
+| `car-c3-flou.png` | la même, floutée (flou gaussien sur couleurs prémultipliées, pas de halo sombre), à demi-résolution (879×621, à afficher × 2) | « la C3 passe en décor flou » (papiers, chute, renversement) : un fondu entre la nette et la floue au lieu d'un `filter: blur()` CSS sur un PNG de 1757 px, qui coûte cher à chaque image (MO6 : ≈ 2 h de rendu) |
+| `car-c3-reperes.js` | `window.CAR_C3_REPERES`, en pixels du PNG et dans le repère du contour : pare-brise (quadrilatère haut-g, haut-d, bas-d, bas-g : (712, 75), (1325, 100), (1252, 445), (398, 345)) ; étiquette proposée dans ce plan, côté passager, au-dessus des balais ; point d'impact du tampon VENDUE (734, 204), au centre de l'étiquette ; bas des pneus (sol) : roue avant (1180, 1231), roue arrière (1650, 819) ; plaque vierge ; boîte englobante | poser l'étiquette « 2 700 € » en perspective (`matrix3d` calculée sur les quatre coins), viser le tampon, caler une ombre ou un trait de sol |
+
+L'étiquette proposée couvre 40 % de la largeur du pare-brise (une feuille A4 en couvrirait 23 %) : avec la voiture
+affichée à environ 950 px de large (× 0,54), elle fait environ 75 px de haut à l'écran (135 px dans le PNG), assez pour un
+« 2 700 € » de 48 px, lisible à 360 px. Aucun état de la voiture n'est fabriqué (ni sale, ni phares jaunis, ni rayure) : c'est une
+vente qui se passe bien, la C3 reste telle qu'elle est.
+
+**Crédits** : `assets/photos-mo12/CREDITS.tsv` (et `assets/cars-libres/CREDITS.tsv`). Domaine public : rien n'est dû.
+**Légende du post** : aucun crédit obligatoire, ni pour la photo ni pour Mixkit. Si l'on veut créditer par courtoisie,
+une ligne à la fin, sans nommer le modèle : « Photo de la voiture : M 93, domaine public (Wikimedia Commons). »
 
 ## Les règles de la pochette (vente entre particuliers)
 
@@ -204,40 +222,245 @@ C'est un exemple, annoncé comme tel.
 
 ## La voix
 
-Texte, méthode de comptage, minutage provisoire et texte exact pour ElevenLabs : `brief-mo12.md`, section « La voix ».
-Une seule génération (generations_count = 1), environ 570 crédits (556 caractères ; MO10 : 570 caractères pour
-580 crédits), quand l'utilisateur aura débloqué le compte. Rien n'est envoyé avant.
+**État au 9 octobre 2026 : provisoire.** ElevenLabs a bloqué le compte (« Unusual activity… Free Tier access has been
+disabled ») : aucune prise, aucun appel. `python3 scripts/vo-mo12.py --provisoire` a écrit
+`audio/vo-mo12/vo-timing.json` au format de MO9 (`dur`, `take`, `lines`, `words`, `marks`, `loop`), avec
+`"provisional": true`, `estimate` et `hookB` (répliques, mots et repères de l'ouverture B), et un `vo-placed.wav` muet
+de 31,05 s. Le film lit ces repères comme il lira ceux de la prise : chaque geste suit son mot.
+
+### Le texte à générer
+
+Une seule génération : Simon `mvhJVdVoTWVUtL4keT7W`, modèle `eleven_v3`, français, **generations_count 1**. 556
+caractères balises comprises (504 sans), soit environ 570 crédits (MO10 : 570 caractères pour 580 crédits). Avant
+d'envoyer, demander l'estimation, puis le solde : l'estimation de MO9 ne vérifiait pas le quota. Après un échec, on ne
+relance pas : on note l'erreur et on attend l'utilisateur. L'ouverture B se dit à la fin, après `[pause]`, dans la
+même génération (méthode de MO10). La prise se dépose en `audio/vo-mo12/takeA.mp3`.
+
+```
+Onze heures, ton acheteur sonne. Onze heures vingt, tu l'as vendue. [deadpan] Ton beau-frère n'y croit pas.
+Il demande les papiers : tu tends la pochette.
+Tu attends le virement.
+Déclaration de vente : zéro euro. [deadpan] Ton beau-frère l'a payée.
+Vingt minutes. [short pause] Ton café est encore chaud.
+Mardi, tu remplis la pochette.
+Contrôle : deux ans pour rouler, six mois pour vendre.
+Le tien a sept mois : tu le refais.
+La prochaine fois que tu vends…
+[pause]
+Vingt minutes, tu la vends deux mille sept cents. [deadpan] Ton beau-frère n'y croit pas.
+```
+
+Le script garde ce texte (`TEXTE`) et vérifie à chaque lancement que ses treize répliques et les deux de l'ouverture B
+le redisent mot pour mot, chiffres lus en lettres, et que chaque repère vise un mot de sa réplique. Si on change l'un
+sans l'autre, il s'arrête.
+
+### Le minutage provisoire
+
+Chaque réplique part à son ancre du brief, ou 0,3 s après la fin de la précédente si celle-ci déborde ; l'écart monte à
+0,8 s avant « Il demande » (le retour et l'essai) et avant « Vingt minutes », à 1,4 s avant « Déclaration » (l'attente
+muette) et avant « Mardi » (le rembobinage), à 0,6 s avant « Ton café » (la seule pause). Durée d'une réplique : ses
+syllabes dites (nombres lus en lettres, méthode du brief) divisées par 5,90 par seconde, plus 0,45 s par ponctuation
+interne, moins 0,09 s pour une réplique d'ouverture, 0,55 s au moins. Les mots s'y répartissent au prorata de leurs
+syllabes. Ces valeurs viennent des 25 répliques posées de MO9 et MO10, mesurées après accélération
+(`python3 scripts/vo-mo12.py --calibre`, 0,25 s d'écart type par réplique) ; sur leurs ouvertures (× 1,15), Simon
+parle 0,09 s plus vite que le modèle, l'écart que le brief avait noté.
+
+| Réplique (sous-titre) | Provisoire (s) | Brief (s) |
+|---|---|---|
+| 11 heures, ton acheteur sonne. | 0,10-1,65 | 0,10-1,55 |
+| 11 heures 20, tu l'as vendue. | 1,95-3,49 | 1,75-3,15 |
+| Ton beau-frère n'y croit pas. | 3,79-4,72 | 3,40-4,40 |
+| Il demande les papiers : tu tends la pochette. | 5,52-7,83 | 5,20-7,40 |
+| Tu attends le virement. | 9,40-10,59 | 9,40-10,60 |
+| Déclaration de vente : 0 euro. | 13,40-15,54 | 13,40-15,45 |
+| Ton beau-frère l'a payée. | 15,85-16,86 | 15,65-16,65 |
+| 20 minutes. | 18,00-18,55 | 18,00-18,75 |
+| Ton café est encore chaud. | 19,35-20,54 | 19,35-20,55 |
+| Mardi, tu remplis la pochette. | 22,05-23,86 | 22,05-23,80 |
+| Contrôle : 2 ans pour rouler, 6 mois pour vendre. | 24,16-26,92 | 24,00-26,45 |
+| Le tien a 7 mois : tu le refais. | 27,22-29,20 | 26,70-28,75 |
+| La prochaine fois que tu vends… | 29,65-30,83 | 29,20-30,55 |
+| *B :* 20 minutes, tu la vends 2 700. | 0,10-2,15 | 0,10-2,00 |
+| *B :* Ton beau-frère n'y croit pas. | 3,79-4,72 | 3,40-4,40 |
+
+Parole : 20,2 s pour 72 mots et 99 syllabes. La voix finit à 30,83 s ; la boucle part à 29,45 s, 0,2 s avant « La
+prochaine fois », quand la pochette se replie. Le film proposé dure **31,05 s** (plafond 31,5 s ; MO9 : 31,4 s) : il
+finit 0,2 s après « vends… », et « Onze » revient à 0,10 s, soit 0,3 s entre les phrases à la boucle. Aucune réplique
+ne chevauche la suivante, 0,3 s au moins les sépare. Avec ce modèle, chaque réplique d'ouverture dure 0,1 à 0,4 s de
+plus que dans le brief : « vingt » tombe à 2,26 s (brief : 2,15), « beau-frère » à 3,95 s (brief : 3,50).
+
+Les repères (`marks`, 44 en A, 7 en B), un par geste du film :
+- ouverture : `onze`, `acheteur`, `sonne`, `onze2`, `vingt`, `vendue`, `beaufrere`, `croit` ;
+- jour 1 (retour et essai, sans voix) : `retour`, sur « pas » ;
+- les coups : `demande`, `papiers`, `tends`, `pochette`, `attends`, `virement`, `declaration`, `vente`, `zero`,
+  `euro` ;
+- le gag : `gag` (« Ton », la notification se pose 0,15 s avant), `beaufrere2`, `payee` ;
+- le chiffre final : `vingt2`, `minutes` ; la chute : `tasse` (« Ton »), `cafe`, `encore`, `chaud` ;
+- la méthode : `mardi`, `remplis`, `pochette2`, `controle`, `deuxans`, `rouler`, `sixmois`, `vendre` ;
+- le verdict : `letien` (la carte du contrôle d'achat se pose), `tien`, `sept`, `mois` (le trait), `tu` (« refait le
+  6 oct. »), `refais` ;
+- la boucle : `prochaine`, `vends` ; ouverture B (`hookB.marks`) : `vingtB`, `minutesB`, `vendsB`, `b2700`,
+  `beaufrereB`, `croitB`, `retourB`.
+
+Sous-titres provisoires : `python3 scripts/srt-mo12.py` écrit `renders/9x16-mo12.srt` (13 cartons) et
+`renders/9x16-mo12-B.srt` (12), deux lignes de 32 caractères au plus, coupées après une ponctuation quand c'est
+possible.
+
+**Pourquoi pas 2,6 mots par seconde.** À 2,6 mots dits par seconde sans pause interne (`--provisoire --unite mots
+--debit 2.6 --pause-int 0 --essai`), la parole dure 27,7 s, la voix finit à 35,04 s et le film à 35,25 s, 3,75 s
+au-delà du plafond ; les trois coupes du brief n'en reprennent que 0,5 s (34,75 s). « Ton beau-frère » glisse de 3,40
+à 4,93 s, après la mesure à 3 s. Ce débit décrit un film entier, silences compris (MO5 : 65 mots pour 29,6 s, soit
+2,2 mots par seconde). Dans une réplique, Simon posé à × 1,15-1,2 dit 3,5 mots par seconde pauses internes comprises,
+4,9 hors pauses (MO9 et MO10). MO11 l'a écarté pour la même raison (`docs/timeline-mo11.md`).
+
+Si la prise est plus lente que le modèle (MO10 a dit « Ceux qui gagnent comptent en jours. » 0,56 s plus lentement),
+le film garde 0,45 s sous le plafond, puis les coupes de l'étape 4 ci-dessous.
+
+### Une fois la prise déposée
+
+Depuis `video/` :
+
+1. Déposer la génération en `audio/vo-mo12/takeA.mp3` (une seule prise, ouverture B comprise).
+2. `python3 scripts/vo-mo12.py takeA.mp3 --retenue`. Le script transcrit la prise (faster-whisper *medium*, en cache ;
+   *small* s'il manque) dans `words.json` et aligne le texte sur la transcription : chaque mot de whisper va au jeton
+   dont il partage le plus de lettres, un mot mal entendu à la réplique la plus proche dans le temps. Il recale les
+   bornes sur l'enveloppe à 20 ms, pose les répliques à × 1,15 (ouverture, chute, boucle) et × 1,2 (récit, méthode)
+   sur leurs ancres, écrit les repères, l'ouverture B (`vo-placed-B.wav`), `vo-placed.wav`, `vo-timing.json` (sans
+   `provisional`) et la durée dans `timeline-mo12.json` s'il existe. Il retranscrit ensuite la pose et liste les mots
+   qu'il n'y retrouve pas. Sur 2 cœurs (`WHISPER_THREADS`), compter 4 minutes.
+3. Écouter `vo-placed.wav` et `vo-placed-B.wav`, lire les lignes « ! » et « recalé sur l'enveloppe ». Un mot mal placé
+   se corrige dans `FIX` (`{indice: (début, fin)}`, temps de la prise), une réplique mal alignée dans `SPAN`
+   (`{clé: (premier indice, dernier)}`) ; relancer l'étape 2. La transcription reste en cache (`--retranscrire` la
+   refait).
+4. Si le film dépasse 31,5 s, relancer l'étape 2 avec `--coupes 1` (l'attente muette passe de 1,4 à 1,0 s), puis
+   `--coupes 2` (l'essai, de 0,8 à 0,6 s), puis `--coupes 3` (« Tu attends le virement. » retirée ; ses repères
+   restent, sans durée, à son ancre).
+5. `python3 scripts/srt-mo12.py` : sous-titres sur les vrais temps.
+6. `CUT=mo12 node scripts/events.mjs` : temps des événements du film (`film-mo12/events.json`), pour les bruitages.
+7. `python3 scripts/audio-mo12.py` : le mix, rapport dans `docs/mix_report-mo12.txt` ; l'ouverture B se mixe avec
+   `vo-placed-B.wav` (`HOOK=B`, comme `audio-mo10.py`).
+8. Rendu : `CUT=mo12 node scripts/render.mjs --draft` pour contrôler, puis le rendu final en morceaux comme MO9
+   (`CUT=mo12 MB=4 PARTS=4 PART=0..3 node scripts/render.mjs --all`, puis `--assemble`) quand trois épisodes ne se
+   partagent plus la machine ; `HOOK=B` pour l'ouverture B ; contrôle par `qa_video.py`.
+
+Essai du mode prise le 9 octobre, sur une prise de synthèse (espeak-ng, même texte, dossier d'essai désigné par
+`VO_DIR`) : malgré une transcription très dégradée (« Couteau » pour « Contrôle », « Retiens » pour « Le tien »),
+l'alignement pose les quinze répliques sur leurs mots ; la retranscription de la pose ne perd aucun mot ; `--coupes 3`
+retire la réplique 5 et garde ses repères.
 
 ## Les plans réels
 
-Mixkit, licence « Mixkit Stock Video Free License » (usage commercial libre, sans crédit obligatoire), comme MO5, MO9
-et MO10. Candidats repérés le 9 octobre 2026 sur une planche de vignettes
-(`mixkit.py search coffee steering-wheel signing documents smartphone door --sheet …`) ; chacun se regarde sur trois
-images avant usage (visage, logo de volant, texte lisible).
+Mixkit, licence « Mixkit Stock Video Free License » (usage commercial libre, modification permise, sans crédit
+obligatoire), comme MO5, MO9 et MO10. Chaque clip a été regardé le 9 octobre 2026 sur au moins trois images (planches
+de 4 à 12 images par clip, puis la séquence livrée au début, au milieu et à la fin) : aucun visage, aucun logo, aucune
+plaque, aucun texte lisible dans la fenêtre retenue. Vidéos hors dépôt (`assets/stock/mo12/`), séquences hors dépôt
+(`film-mo12/seq/<clé>/001.jpg…`, 30 i/s, 720 px de large, ignorées par `.gitignore`), nombre d'images par clé dans
+`film-mo12/seq.json`. À lire avec `Kit47.loadSeqs('seq', SEQ)` et `Kit47.drawSeq` (aller-retour : une séquence courte
+ne saute jamais).
 
-| Nom | Mixkit | Ce qu'on y voit | Où | À vérifier |
+| Clé | Mixkit | Fenêtre (s du clip) | Images | Ce qu'on y voit | Où (brief) | Contrôle |
+|---|---|---|---|---|---|---|
+| essai | 13976 | 11,30 → 14,80 | 105 | mains d'homme sur un volant gainé, route de jour, glissière, lauriers roses, pylônes | carte de l'essai, 4,95 → 5,75 s | le moyeu du volant reste hors champ (aucun logo) ; des voitures passent avant 11,3 s et après 14,8 s (plaque possible) : hors fenêtre |
+| ct2 | 13260 | 12,05 → 13,90, recadré à droite (x ≥ 410 sur 1280) | 56 | dessous d'une voiture sur un pont élévateur, roue, échappement, atelier clair aux murs de briques | carte « Contrôle · 6 oct. » (7,50 → 9,00 s) : **recommandé** (le plan de MO5, lisible en petit ; 1,9 s suffisent en aller-retour) | le mécanicien montre son visage de 0 à 11,5 s et dès 13,95 s : seule cette fenêtre, recadrée, est sans lui |
+| ct | 17133 | 6,50 → 11,00, ombres relevées (gamma 1,3) | 135 | dessous d'une voiture qui monte sur un pont, roue de secours, bras rouges du pont, atelier sombre | variante plus longue de la carte du contrôle | aucun visage (au fond, entre les bras du pont, des jambes floues), aucun texte |
+| phone | 4915 | 2,00 → 6,50 | 135 | deux mains qui tapent sur un téléphone, fond sombre, bord de table en bois | carte « Virement · en cours » (9,40 → 12,00 s) | écran flou : clavier deviné, illisible à 720 px, aucune interface ; MO11 utilise le même clip (« messages ») |
+| signe | 17416 | 1,60 → 6,00 | 132 | un stylo arrive et signe sur une ligne pointillée, gros plan, la signature bleue reste | carte de la cession, deux signatures (12,25 et 12,50 s) | le mot anglais « Signature » imprimé sous la ligne est effacé sur chaque image (`scripts/seq-mo12.py`), vérifié au zoom sur 9 images et par mesure sur les 132 |
+| signe2 | 241 | 4,00 → 8,50 | 135 | une main signe une feuille sur une table ronde en bois, téléphone éteint posé à côté | carte grise barrée (12,75 → 13,25 s) | cadré sous les épaules : aucun visage ; texte de la feuille illisible ; écran du téléphone noir |
+| cles | 34140 | 1,00 → 5,50 | 136 | une main tend un trousseau de deux clés, veste sombre, fond blanc | case 3 à 17,00 s | cadré sous le col : aucun visage ; tête de clé sans marque lisible |
+| cafe | 44956 | 1,00 → 5,50 | 135 | tasse blanche fumante sur sa soucoupe, lumière de jour, la vapeur monte nettement | la tasse de l'image 0 et de la chute (19,35 s), si le pictogramme ne suffit pas : **recommandé**, la vapeur porte « encore chaud » | tasse unie, liseré doré, aucun logo |
+| cafe2 | 808 | 1,00 → 5,50 | 135 | tasse grise et sa cuillère, lumière chaude rasante, fond sombre, vapeur à peine visible | variante sombre de la tasse | aucun logo |
+| jours | 38501 | 8,50 → 13,00, flouté (sigma 3 px à 720 px) | 135 | des jours cerclés puis barrés au feutre bleu sur un calendrier, le bout du feutre | fond flou du rembobinage (20,70 → 21,95 s) | calendrier en anglais (« December », « Mo Tu We ») : livré déjà flouté, ne jamais le montrer net |
+
+Écartés : 13260 hors de la fenêtre ci-dessus (visage du mécanicien ; MO5, MO9 et MO10 l'avaient pris dès 1,0 s) ;
+24723 (montre au poignet, écran du tableau de bord lisible ; 13976 suffit) ; 307 (signature à un bureau, doublon de
+241) ; 21813 (visage), 45923 (menton visible), 38492 (texte de contrat anglais lisible), 21812 (porte : plus utilisée).
+Recherche d'un pont sans personne : `mixkit.py search car-lift mechanic car-repair garage car-service` puis
+`car-mechanic car-workshop auto-repair tire-change car-inspection` (planches du 9 octobre) : 17133 est le seul plan de
+pont sans personne.
+
+```
+python3 ../.claude/skills/motion-studio/scripts/mixkit.py get 13976 13260 17133 4915 17416 241 34140 44956 808 38501 --out assets/stock/mo12
+python3 scripts/seq-mo12.py                   # toutes les clés → film-mo12/seq/ et film-mo12/seq.json
+python3 scripts/seq-mo12.py signe --check D   # une clé, et une planche début / milieu / fin dans D
+```
+
+`film-mo12/seq.json` : `{"essai": 105, "ct": 135, "ct2": 56, "phone": 135, "signe": 132, "signe2": 135, "cles": 136,
+"cafe": 135, "cafe2": 135, "jours": 135}`.
+
+## Bruitages
+
+Banques : `audio/bank/mo5/` (celle de MO5, reprise par MO9 avec `audio/bank/mo6/` : il n'existe pas de dossier
+`audio/bank/mo9/`) et `audio/bank/mo12/`, 14 sons Mixkit ajoutés le 9 octobre 2026 pour ce que l'histoire a en propre
+(licence « Mixkit Sound Effects Free License », usage commercial, sans crédit obligatoire ; fichiers d'aperçu
+`https://assets.mixkit.co/active_storage/sfx/<id>/<id>-preview.mp3`, comme les autres banques). Chaque son a été
+mesuré (durée utile, attaques, spectre) avant d'entrer dans la banque. Le moteur, la vibration du téléphone, le
+tic-tac et l'arrêt de bande se fabriquent comme dans `scripts/audio-mo5.py` et `scripts/audio-mo9.py`.
+
+**Les sons ajoutés** (`audio/bank/mo12/sfx-<id>.mp3`) :
+
+| Id | Titre Mixkit | Ce qu'on entend | Partie utile | Rôle (`ROLE` d'audio-mo9.py) |
 |---|---|---|---|---|
-| cafe | 808 | tasse fumante sur une table, lumière de jour | image 0 et chute (si la tasse dessinée ne suffit pas) | — |
-| essai | 13976 | mains sur un volant, route de jour | l'essai, 4,95 → 5,75 s | logo au centre du volant |
-| essai2 | 24723 | main qui tapote un volant, montre | l'essai (variante) | logo du volant, marque de la montre |
-| ct | 13260 | voiture sur un pont élévateur (MO5) | carte du contrôle | — |
-| phone | 4915 | mains qui tapent sur un téléphone | le virement | écran sans interface lisible |
-| signe | 17416 | stylo sur une ligne de signature, gros plan | cession signée | mot anglais « Signature » : flou ou recadrage |
-| signe2 | 241 | mains qui signent (MO5) | carte grise barrée | — |
-| cles | 34140 | main qui tend des clés (MO5, MO9) | les clés | — |
-| jours | 38501 | jours rayés sur un calendrier (MO10) | fond flou du rembobinage | — |
+| 113 | Modern classic door bell sound | la sonnette : « ding-dong » de maison, deux notes | 0,03 → 1,2 s (fondu) | chime |
+| 2356 | Dry pop up notification alert | la petite bulle du beau-frère, note sèche | 0,03 → 0,22 s | ui |
+| 1124 | Plastic bubble click | le tic de la bulle quand l'acheteur change de question | 0,11 s, un clic | tick |
+| 1530 | Paper slide | la pochette qui monte, papier qui glisse | 0,17 → 0,40 s | ui |
+| 1105 | Big paper page turn | le rabat de la pochette qui s'ouvre (et, à l'envers, qui se ferme) | 0,26 → 0,51 s | ui |
+| 2370 | Fast signing with a pen | les signatures : quatre gestes de stylo | 0,01-0,17 · 0,49-0,69 · 0,90-1,15 · 1,27-2,00 s | tool |
+| 2998 | Pen marker line | le trait orange qui barre (carte grise, contrôle d'achat) | 0,01 → 0,30 s | ui |
+| 931 | Service bell | la caisse du gag, la cloche | 0,01 → 1,0 s | chime |
+| 1939 | Coins handling | la caisse du gag, la monnaie (0,05 s après la cloche) | 0,04 → 0,40 s | orn |
+| 2182 | Wood hard hit | le coup sec du tampon (VENDUE, signé, PRÊTE), sous le papier de 2380 | 0,06 → 0,18 s | accent |
+| 1393 | Smartphone typing | les tapotements sur le téléphone (virement lancé) | attaques toutes les 0,1 à 0,25 s, 3,9 s | tool |
+| 2997 | Clear mouse clicks | le clic qui finit la déclaration | 0,21 s, un clic | ui |
+| 2835 | Stirring cutlery in ceramic plate | une cuillère contre la tasse (un seul tintement) | 1,05 → 1,30 s | orn |
+| 1564 | Car door slam | facultatif : la portière de l'acheteur avant le départ | 0,12 → 0,32 s | accent |
 
-Écartés : 21813 (visage), 45923 (menton visible), 38492 (texte de contrat anglais lisible), 21812 (porte : plus
-utilisée).
+Pas de caisse enregistreuse chez Mixkit (catégories `money`, `cash`, `coins`, `shop`, `bell` parcourues) : la cloche de
+comptoir et la monnaie, posées à 0,05 s l'une de l'autre, la font. Pas de son de tampon non plus : 2182 sous 2380 (MO9 jouait 2380 seul, à + 10 dB). 1530 et 2182 sont les mêmes
+fichiers que ceux de `audio/bank/mo8/`.
 
-```
-python3 ../.claude/skills/motion-studio/scripts/mixkit.py get 808 13976 24723 13260 4915 17416 241 34140 38501 --out assets/stock/mo12
-python3 ../.claude/skills/motion-studio/scripts/mixkit.py seq assets/stock/mo12/mixkit-<id>.mp4 film-mo12/seq/<nom> --start 1.0 --dur 4
-```
+**Repris des banques de MO5 et MO6** (rôles d'audio-mo5.py et audio-mo9.py) : 2354 (note de notification, une par
+carte, qui monte), 951 (virement reçu), 1490 et 1492 (souffles), 3120 (souffle, à l'envers pour le retour), 1054
+(rouleaux de l'horloge), 1384 et 1119 (petits tics, palettes), 2380 (papier du tampon), 2369 (écriture à la lumière),
+3005 (trait de lumière), 2589 (point de lumière, éclair), 2909 (impact), 1107 (note claire), 2384 (les chiffres
+claquent), 1092 (bande qui rembobine), 1063 (tic-tac), 1538 et 1566 (moteur : démarrage, puis départ), 1558 (clés),
+1554 (route, un passage de 0,8 s pour l'essai).
 
-Bruitages (banque `audio/bank/mo12/`, Mixkit) : sonnette, petite bulle, papier qui glisse et rabat de pochette, stylo
-sur papier, caisse enregistreuse (le gag), clés, plus les sons des banques MO5, MO6 et MO9 (vibration, rouleaux,
-tampon, notification, moteur, arrêt de bande, souffle inversé).
+**Où ils tombent** (temps provisoires du brief ; dans `audio-mo12.py`, chaque son s'attache à son repère de
+`film-mo12/events.json`, comme dans MO9) :
+
+| t (s) | Ce qui se passe | Son | Réglage |
+|---|---|---|---|
+| 0,10 | la bulle « Je suis devant. » vibre | vibration fabriquée (MO5 : 165 Hz hachés à 24 Hz, 0,25 s) | −15 dB, sous la voix |
+| 1,25 | « sonne » | 113 | chime, −2 dB, pan −0,2, 1,2 s avec fondu |
+| 2,15 | 11:00 → 11:20 | 1054 | tick, 0,45 s, +6 dB |
+| 2,50 | tampon VENDUE | 2182 + 2380 | accent −4 dB, priorité 1 ; 2380 tick +10 dB |
+| 2,70 | la C3 sort par la gauche | 1538 (régime qui monte, MO5) | engine, pan 0 → −0,85 en 0,5 s |
+| 3,50 | bulle du beau-frère | 2356 | ui, st −2, pan +0,4 |
+| 4,45 | retour court | 3120 à l'envers + 1054 | whoosh 0,5 s ; tick st −2 |
+| 4,95 | carte de l'essai, 11:01 → 11:09 | 1554 (0,8 s) + 1054 | whoosh −6 dB ; tick 0,8 s |
+| 6,50 · 7,00 | la pochette monte, le rabat s'ouvre | 1530 · 1105 | ui −4 dB · ui −2 dB |
+| 7,25 · 7,75 · 8,25 · 8,75 | la bulle change de question | 1124 | tick +6 dB, pan −0,2 |
+| 7,50 · 8,00 · 8,50 · 9,00 | une carte sort et répond | 2354 st 0, 2, 4, 5 (+ 2380 −6 dB) | ui, une note qui monte, un son principal à la fois |
+| 9,40 | les mains sur le téléphone | 1393 (1,2 s) | tool, pan +0,2 |
+| 10,60 → 12,00 | l'attente | 1063 | tick, discret (la basse sort de la musique) |
+| 12,00 | « Virement reçu » | vibration (deux fois) + 1490 + 951 | 951 chime priorité 1 |
+| 12,25 · 12,50 | deux signatures sur la cession | 2370 (0,01 → 0,17 s, puis 0,49 → 0,69 s) ; tampons « signé » 2182 à 12,40 et 12,65 | tool ; accent −10 dB |
+| 12,75 → 13,25 | carte grise barrée, « Vendu le… » écrit, signée | 2998 · 2369 · 2370 (0,90 → 1,15 s) | ui · orn · tool |
+| 13,50 · 14,85 | déclaration, « 0,00 € » s'allume | 2997 · 1107 st +2 | ui · chime −4 dB |
+| 15,00 | code de cession remis | 2354 st 7 | ui |
+| 15,50 | le gag, seul | 1490 (en avance) + 931 + 1939 à +0,05 s | chime priorité 1 ; orn |
+| 17,00 · 17,15 | les clés · la C3 démarre et part | 1558 · 1566 puis 1538 | tool · engine, pan 0 → −0,85 (portière 1564 facultative vers 17,05) |
+| 17,50 · 17,85 | 11:20 → « 20 min », arrêt de bande | 1054 + 2909 · musique (MO5) | tick · accent priorité 1 |
+| 18,00 → 19,35 | la seule pause | rien | silence |
+| 19,35 · 19,90 | la tasse revient · « encore chaud. » s'écrit | 2835 (un tintement) · 2369 | orn −3 dB · orn |
+| 20,70 → 21,95 | rembobinage, palettes « MAR 6 OCT » | 1092 + 1119 × 5 | accent −6 dB, 1,45 s ; tick |
+| 22,50 → 24,50 | cinq cartes entrent dans la pochette | 2369 st 0, 2, 4, 5, 7 (+ 2380 −6 dB) | orn, une note par carte, qui monte |
+| 24,60 · 25,80 | « 2 ans pour rouler » · « < 6 mois à sa carte grise » | 1107 st 0 · 1107 st 3 | chime −4 dB, note claire |
+| 25,00 | « Pochette : 78 € » | 2589 + 2384 | orn · ui |
+| 26,50 · 27,50 · 28,00 | contrôle d'achat posé · barré · « refait le 6 oct. » et l'éclair | 1490 · 2998 · 2369 + 2589 | whoosh −4 dB · ui · orn |
+| 28,50 · 28,75 | le rabat se ferme · tampon PRÊTE | 1105 à l'envers · 2182 + 2380 st +2 | ui · accent (répond à VENDUE) |
+| 29,00 | retour à l'image 0 | 3120 | whoosh 0,8 s |
 
 ## Ce qui a changé à la révision du 9 octobre
 

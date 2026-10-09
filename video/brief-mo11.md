@@ -76,7 +76,7 @@ l'odeur traitée à la source, les enjoliveurs à 20 €, le test de l'ongle et 
   verticale qui traverse `zone`, s'arrête `hold` = 0,3 s au milieu et repart, avec un liseré de lumière sur la ligne ;
   `etats.sun(t, { car, alpha, k })` étalonne la photo selon la luminance (hautes lumières dorées, ombres froides), tire
   l'ombre portée du masque alpha et fait courir un reflet rasant masqué sur les zones claires. Les calques sortent de
-  `film-mo11/etats-clio3.py` dans `assets/photos-mo11/` ; la rayure et les enjoliveurs sont dessinés en vectoriel, à
+  `scripts/dirty-mo11.py` dans `assets/photos-mo11/` ; la rayure et les enjoliveurs sont dessinés en vectoriel, à
   pleine résolution. **Mesures** : part des images en mouvement entre 5,8 et 11,7 s (`ref-motion.py`, référence
   mesurée le 9 octobre 2026 : MO5 78 % avec un plan figé de 1,13 s, MO9 80 %), objectif 85 % ou plus, aucun plan figé
   de plus de 0,3 s (pendant l'arrêt de la ligne, la caméra et le compteur bougent) ; image 0 lisible à 200 px.
@@ -439,7 +439,7 @@ sur leur fichier de sortie.
 | Étape | Ce qui est livré | Fichiers |
 |---|---|---|
 | 1. Brief | ce document | `brief-mo11.md` |
-| 2. Chiffres et voiture | sources datées, calques des états, image 0 à 200 px, image fixe du soleil bas | `docs/timeline-mo11.md`, `film-mo11/etats-clio3.py`, `assets/photos-mo11/` |
+| 2. Chiffres et voiture | sources datées, calques des états, image 0 à 200 px, image fixe du soleil bas | `docs/timeline-mo11.md`, `scripts/dirty-mo11.py`, `assets/photos-mo11/`, `film-mo11/seq-mo11.py` |
 | 3. Maquettage | le film animé sur `lib/kit47.js` (lecture seule) et `lib/kit47-etats.js` (nouveau), minutage provisoire, planches toutes les 0,1 s, instants choisis | `film-mo11/`, `timeline-mo11.json`, `CUT=mo11 node scripts/sheet.mjs`, `CUT=mo11 node scripts/at.mjs` |
 | 4. Voix | texte prêt ; génération unique quand ElevenLabs sera débloqué, puis pose et recalage | `scripts/vo-mo11.py`, `audio/vo-mo11/` |
 | 5. Animation, son, contrôle | bruitages, mix, `qa_video.py` sans FAIL, boucle mesurée, `ref-motion.py` sur l'accumulation, couverture, SRT | `scripts/audio-mo11.py`, `scripts/srt-mo11.py`, `docs/mix_report-mo11.txt`, `docs/review_log-mo11.md`, `renders/review/mo11-*` |

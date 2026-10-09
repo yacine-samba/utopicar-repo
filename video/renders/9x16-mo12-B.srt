@@ -1,0 +1,50 @@
+1
+00:00:00,100 --> 00:00:02,405
+20 minutes, tu la vends 2 700.
+
+2
+00:00:03,793 --> 00:00:04,970
+Ton beau-frère n'y croit pas.
+
+3
+00:00:05,520 --> 00:00:08,084
+Il demande les papiers :
+tu tends la pochette.
+
+4
+00:00:09,400 --> 00:00:10,836
+Tu attends le virement.
+
+5
+00:00:13,400 --> 00:00:15,795
+Déclaration de vente : 0 euro.
+
+6
+00:00:15,845 --> 00:00:17,112
+Ton beau-frère l'a payée.
+
+7
+00:00:18,000 --> 00:00:18,800
+20 minutes.
+
+8
+00:00:19,350 --> 00:00:20,786
+Ton café est encore chaud.
+
+9
+00:00:22,050 --> 00:00:24,106
+Mardi, tu remplis la pochette.
+
+10
+00:00:24,156 --> 00:00:27,170
+Contrôle : 2 ans pour rouler,
+6 mois pour vendre.
+
+11
+00:00:27,220 --> 00:00:29,446
+Le tien a 7 mois : tu le refais.
+
+12
+00:00:29,646 --> 00:00:31,050
+La prochaine fois que tu vends…
+

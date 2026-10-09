@@ -1,0 +1,863 @@
+{
+ "dur": 31.25,
+ "take": "provisoire",
+ "provisional": true,
+ "lines": [
+  {
+   "key": "h1",
+   "t": 0.1,
+   "end": 1.366,
+   "text": "10 000 pour ta première revente ?"
+  },
+  {
+   "key": "h2",
+   "t": 1.666,
+   "end": 2.593,
+   "text": "Tu en as 1 500."
+  },
+  {
+   "key": "h3",
+   "t": 2.893,
+   "end": 4.498,
+   "text": "La petite rouge d'en face demande 1 400."
+  },
+  {
+   "key": "res",
+   "t": 5.0,
+   "end": 6.186,
+   "text": "Tu gardes 300 à côté."
+  },
+  {
+   "key": "frais",
+   "t": 6.75,
+   "end": 8.836,
+   "text": "Assurance, carte grise, essence."
+  },
+  {
+   "key": "part",
+   "t": 10.4,
+   "end": 11.417,
+   "text": "Elle part à 1 900."
+  },
+  {
+   "key": "paie",
+   "t": 13.0,
+   "end": 14.186,
+   "text": "La première paie la deuxième."
+  },
+  {
+   "key": "affaire",
+   "t": 16.6,
+   "end": 17.278,
+   "text": "Une affaire passe."
+  },
+  {
+   "key": "budget",
+   "t": 20.05,
+   "end": 21.347,
+   "text": "Budget : 3 100."
+  },
+  {
+   "key": "att",
+   "t": 22.35,
+   "end": 23.875,
+   "text": "Et tu attendais d'avoir 10 000."
+  },
+  {
+   "key": "ceux",
+   "t": 24.25,
+   "end": 26.114,
+   "text": "Ceux qui gagnent refont le calcul à chaque vente."
+  },
+  {
+   "key": "quat",
+   "t": 27.0,
+   "end": 28.806,
+   "text": "Ta quatrième : 2 500 max."
+  },
+  {
+   "key": "proch",
+   "t": 29.66,
+   "end": 31.016,
+   "text": "La prochaine fois que tu te dis…"
+  }
+ ],
+ "words": [
+  {
+   "line": "h1",
+   "t": 0.1,
+   "end": 0.416,
+   "w": "10 000"
+  },
+  {
+   "line": "h1",
+   "t": 0.416,
+   "end": 0.575,
+   "w": "pour"
+  },
+  {
+   "line": "h1",
+   "t": 0.575,
+   "end": 0.733,
+   "w": "ta"
+  },
+  {
+   "line": "h1",
+   "t": 0.733,
+   "end": 1.049,
+   "w": "première"
+  },
+  {
+   "line": "h1",
+   "t": 1.049,
+   "end": 1.366,
+   "w": "revente ?"
+  },
+  {
+   "line": "h2",
+   "t": 1.666,
+   "end": 1.82,
+   "w": "Tu"
+  },
+  {
+   "line": "h2",
+   "t": 1.82,
+   "end": 1.975,
+   "w": "en"
+  },
+  {
+   "line": "h2",
+   "t": 1.975,
+   "end": 2.129,
+   "w": "as"
+  },
+  {
+   "line": "h2",
+   "t": 2.129,
+   "end": 2.593,
+   "w": "1 500."
+  },
+  {
+   "line": "h3",
+   "t": 2.893,
+   "end": 3.053,
+   "w": "La"
+  },
+  {
+   "line": "h3",
+   "t": 3.053,
+   "end": 3.374,
+   "w": "petite"
+  },
+  {
+   "line": "h3",
+   "t": 3.374,
+   "end": 3.535,
+   "w": "rouge"
+  },
+  {
+   "line": "h3",
+   "t": 3.535,
+   "end": 3.695,
+   "w": "d'en"
+  },
+  {
+   "line": "h3",
+   "t": 3.695,
+   "end": 3.856,
+   "w": "face"
+  },
+  {
+   "line": "h3",
+   "t": 3.856,
+   "end": 4.177,
+   "w": "demande"
+  },
+  {
+   "line": "h3",
+   "t": 4.177,
+   "end": 4.498,
+   "w": "1 400."
+  },
+  {
+   "line": "res",
+   "t": 5.0,
+   "end": 5.169,
+   "w": "Tu"
+  },
+  {
+   "line": "res",
+   "t": 5.169,
+   "end": 5.339,
+   "w": "gardes"
+  },
+  {
+   "line": "res",
+   "t": 5.339,
+   "end": 5.678,
+   "w": "300"
+  },
+  {
+   "line": "res",
+   "t": 5.678,
+   "end": 5.847,
+   "w": "à"
+  },
+  {
+   "line": "res",
+   "t": 5.847,
+   "end": 6.186,
+   "w": "côté."
+  },
+  {
+   "line": "frais",
+   "t": 6.75,
+   "end": 7.258,
+   "w": "Assurance,"
+  },
+  {
+   "line": "frais",
+   "t": 7.708,
+   "end": 7.878,
+   "w": "carte"
+  },
+  {
+   "line": "frais",
+   "t": 7.878,
+   "end": 8.047,
+   "w": "grise,"
+  },
+  {
+   "line": "frais",
+   "t": 8.497,
+   "end": 8.836,
+   "w": "essence."
+  },
+  {
+   "line": "part",
+   "t": 10.4,
+   "end": 10.569,
+   "w": "Elle"
+  },
+  {
+   "line": "part",
+   "t": 10.569,
+   "end": 10.739,
+   "w": "part"
+  },
+  {
+   "line": "part",
+   "t": 10.739,
+   "end": 10.908,
+   "w": "à"
+  },
+  {
+   "line": "part",
+   "t": 10.908,
+   "end": 11.417,
+   "w": "1 900."
+  },
+  {
+   "line": "paie",
+   "t": 13.0,
+   "end": 13.169,
+   "w": "La"
+  },
+  {
+   "line": "paie",
+   "t": 13.169,
+   "end": 13.508,
+   "w": "première"
+  },
+  {
+   "line": "paie",
+   "t": 13.508,
+   "end": 13.678,
+   "w": "paie"
+  },
+  {
+   "line": "paie",
+   "t": 13.678,
+   "end": 13.847,
+   "w": "la"
+  },
+  {
+   "line": "paie",
+   "t": 13.847,
+   "end": 14.186,
+   "w": "deuxième."
+  },
+  {
+   "line": "affaire",
+   "t": 16.6,
+   "end": 16.769,
+   "w": "Une"
+  },
+  {
+   "line": "affaire",
+   "t": 16.769,
+   "end": 17.108,
+   "w": "affaire"
+  },
+  {
+   "line": "affaire",
+   "t": 17.108,
+   "end": 17.278,
+   "w": "passe."
+  },
+  {
+   "line": "budget",
+   "t": 20.05,
+   "end": 20.389,
+   "w": "Budget :"
+  },
+  {
+   "line": "budget",
+   "t": 20.839,
+   "end": 21.347,
+   "w": "3 100."
+  },
+  {
+   "line": "att",
+   "t": 22.35,
+   "end": 22.519,
+   "w": "Et"
+  },
+  {
+   "line": "att",
+   "t": 22.519,
+   "end": 22.689,
+   "w": "tu"
+  },
+  {
+   "line": "att",
+   "t": 22.689,
+   "end": 23.197,
+   "w": "attendais"
+  },
+  {
+   "line": "att",
+   "t": 23.197,
+   "end": 23.536,
+   "w": "d'avoir"
+  },
+  {
+   "line": "att",
+   "t": 23.536,
+   "end": 23.875,
+   "w": "10 000."
+  },
+  {
+   "line": "ceux",
+   "t": 24.25,
+   "end": 24.419,
+   "w": "Ceux"
+  },
+  {
+   "line": "ceux",
+   "t": 24.419,
+   "end": 24.589,
+   "w": "qui"
+  },
+  {
+   "line": "ceux",
+   "t": 24.589,
+   "end": 24.758,
+   "w": "gagnent"
+  },
+  {
+   "line": "ceux",
+   "t": 24.758,
+   "end": 25.097,
+   "w": "refont"
+  },
+  {
+   "line": "ceux",
+   "t": 25.097,
+   "end": 25.267,
+   "w": "le"
+  },
+  {
+   "line": "ceux",
+   "t": 25.267,
+   "end": 25.606,
+   "w": "calcul"
+  },
+  {
+   "line": "ceux",
+   "t": 25.606,
+   "end": 25.775,
+   "w": "à"
+  },
+  {
+   "line": "ceux",
+   "t": 25.775,
+   "end": 25.945,
+   "w": "chaque"
+  },
+  {
+   "line": "ceux",
+   "t": 25.945,
+   "end": 26.114,
+   "w": "vente."
+  },
+  {
+   "line": "quat",
+   "t": 27.0,
+   "end": 27.169,
+   "w": "Ta"
+  },
+  {
+   "line": "quat",
+   "t": 27.169,
+   "end": 27.508,
+   "w": "quatrième :"
+  },
+  {
+   "line": "quat",
+   "t": 27.958,
+   "end": 28.636,
+   "w": "2 500"
+  },
+  {
+   "line": "quat",
+   "t": 28.636,
+   "end": 28.806,
+   "w": "max."
+  },
+  {
+   "line": "proch",
+   "t": 29.66,
+   "end": 29.829,
+   "w": "La"
+  },
+  {
+   "line": "proch",
+   "t": 29.829,
+   "end": 30.168,
+   "w": "prochaine"
+  },
+  {
+   "line": "proch",
+   "t": 30.168,
+   "end": 30.338,
+   "w": "fois"
+  },
+  {
+   "line": "proch",
+   "t": 30.338,
+   "end": 30.507,
+   "w": "que"
+  },
+  {
+   "line": "proch",
+   "t": 30.507,
+   "end": 30.677,
+   "w": "tu"
+  },
+  {
+   "line": "proch",
+   "t": 30.677,
+   "end": 30.846,
+   "w": "te"
+  },
+  {
+   "line": "proch",
+   "t": 30.846,
+   "end": 31.016,
+   "w": "dis…"
+  }
+ ],
+ "marks": {
+  "dix": {
+   "line": "h1",
+   "t": 0.1,
+   "end": 0.416,
+   "w": "10 000"
+  },
+  "revente": {
+   "line": "h1",
+   "t": 1.049,
+   "end": 1.366,
+   "w": "revente ?"
+  },
+  "tuenas": {
+   "line": "h2",
+   "t": 1.666,
+   "end": 1.82,
+   "w": "Tu"
+  },
+  "b1500": {
+   "line": "h2",
+   "t": 2.129,
+   "end": 2.593,
+   "w": "1 500."
+  },
+  "petite": {
+   "line": "h3",
+   "t": 3.053,
+   "end": 3.374,
+   "w": "petite"
+  },
+  "rouge": {
+   "line": "h3",
+   "t": 3.374,
+   "end": 3.535,
+   "w": "rouge"
+  },
+  "demande": {
+   "line": "h3",
+   "t": 3.856,
+   "end": 4.177,
+   "w": "demande"
+  },
+  "b1400": {
+   "line": "h3",
+   "t": 4.177,
+   "end": 4.498,
+   "w": "1 400."
+  },
+  "marche1": {
+   "line": "res",
+   "t": 5.0,
+   "end": 5.169,
+   "w": "Tu"
+  },
+  "gardes": {
+   "line": "res",
+   "t": 5.169,
+   "end": 5.339,
+   "w": "gardes"
+  },
+  "n300": {
+   "line": "res",
+   "t": 5.339,
+   "end": 5.678,
+   "w": "300"
+  },
+  "cote": {
+   "line": "res",
+   "t": 5.847,
+   "end": 6.186,
+   "w": "côté."
+  },
+  "assurance": {
+   "line": "frais",
+   "t": 6.75,
+   "end": 7.258,
+   "w": "Assurance,"
+  },
+  "carte": {
+   "line": "frais",
+   "t": 7.708,
+   "end": 7.878,
+   "w": "carte"
+  },
+  "grise": {
+   "line": "frais",
+   "t": 7.878,
+   "end": 8.047,
+   "w": "grise,"
+  },
+  "essence": {
+   "line": "frais",
+   "t": 8.497,
+   "end": 8.836,
+   "w": "essence."
+  },
+  "elle": {
+   "line": "part",
+   "t": 10.4,
+   "end": 10.569,
+   "w": "Elle"
+  },
+  "part": {
+   "line": "part",
+   "t": 10.569,
+   "end": 10.739,
+   "w": "part"
+  },
+  "b1900": {
+   "line": "part",
+   "t": 10.908,
+   "end": 11.417,
+   "w": "1 900."
+  },
+  "premiere": {
+   "line": "paie",
+   "t": 13.169,
+   "end": 13.508,
+   "w": "première"
+  },
+  "paie": {
+   "line": "paie",
+   "t": 13.508,
+   "end": 13.678,
+   "w": "paie"
+  },
+  "deuxieme": {
+   "line": "paie",
+   "t": 13.847,
+   "end": 14.186,
+   "w": "deuxième."
+  },
+  "une": {
+   "line": "affaire",
+   "t": 16.6,
+   "end": 16.769,
+   "w": "Une"
+  },
+  "affaire": {
+   "line": "affaire",
+   "t": 16.769,
+   "end": 17.108,
+   "w": "affaire"
+  },
+  "passe": {
+   "line": "affaire",
+   "t": 17.108,
+   "end": 17.278,
+   "w": "passe."
+  },
+  "budget": {
+   "line": "budget",
+   "t": 20.05,
+   "end": 20.389,
+   "w": "Budget :"
+  },
+  "b3100": {
+   "line": "budget",
+   "t": 20.839,
+   "end": 21.347,
+   "w": "3 100."
+  },
+  "et": {
+   "line": "att",
+   "t": 22.35,
+   "end": 22.519,
+   "w": "Et"
+  },
+  "attendais": {
+   "line": "att",
+   "t": 22.689,
+   "end": 23.197,
+   "w": "attendais"
+  },
+  "davoir": {
+   "line": "att",
+   "t": 23.197,
+   "end": 23.536,
+   "w": "d'avoir"
+  },
+  "dixmille": {
+   "line": "att",
+   "t": 23.536,
+   "end": 23.875,
+   "w": "10 000."
+  },
+  "ceux": {
+   "line": "ceux",
+   "t": 24.25,
+   "end": 24.419,
+   "w": "Ceux"
+  },
+  "gagnent": {
+   "line": "ceux",
+   "t": 24.589,
+   "end": 24.758,
+   "w": "gagnent"
+  },
+  "refont": {
+   "line": "ceux",
+   "t": 24.758,
+   "end": 25.097,
+   "w": "refont"
+  },
+  "calcul": {
+   "line": "ceux",
+   "t": 25.267,
+   "end": 25.606,
+   "w": "calcul"
+  },
+  "chaque": {
+   "line": "ceux",
+   "t": 25.775,
+   "end": 25.945,
+   "w": "chaque"
+  },
+  "vente": {
+   "line": "ceux",
+   "t": 25.945,
+   "end": 26.114,
+   "w": "vente."
+  },
+  "ta": {
+   "line": "quat",
+   "t": 27.0,
+   "end": 27.169,
+   "w": "Ta"
+  },
+  "quatrieme": {
+   "line": "quat",
+   "t": 27.169,
+   "end": 27.508,
+   "w": "quatrième :"
+  },
+  "b2500": {
+   "line": "quat",
+   "t": 27.958,
+   "end": 28.636,
+   "w": "2 500"
+  },
+  "max": {
+   "line": "quat",
+   "t": 28.636,
+   "end": 28.806,
+   "w": "max."
+  },
+  "prochaine": {
+   "line": "proch",
+   "t": 29.66,
+   "end": 29.829,
+   "w": "La"
+  },
+  "dis": {
+   "line": "proch",
+   "t": 30.846,
+   "end": 31.016,
+   "w": "dis…"
+  }
+ },
+ "estimate": {
+  "unite": "syllabes",
+  "debit": 5.9,
+  "pause_interne": 0.45,
+  "corr_ouverture": -0.09,
+  "plancher": 0.55,
+  "entre_phrases": 0.3,
+  "coupes": 0,
+  "source": "aucune prise : durées estimées par scripts/vo-mo13.py --provisoire (débit de Simon après accélération, mesuré sur les voix posées de MO9 et MO10)"
+ },
+ "loop": 30.35,
+ "hookB": {
+  "t": 0.1,
+  "end": 3.212,
+  "text": "Tu pars avec 1 500. Trois voitures plus tard : 3 100.",
+  "lines": [
+   {
+    "key": "hB1",
+    "t": 0.1,
+    "end": 1.196,
+    "text": "Tu pars avec 1 500."
+   },
+   {
+    "key": "hB2",
+    "t": 1.496,
+    "end": 3.212,
+    "text": "Trois voitures plus tard : 3 100."
+   }
+  ],
+  "words": [
+   {
+    "line": "hB1",
+    "t": 0.1,
+    "end": 0.257,
+    "w": "Tu"
+   },
+   {
+    "line": "hB1",
+    "t": 0.257,
+    "end": 0.413,
+    "w": "pars"
+   },
+   {
+    "line": "hB1",
+    "t": 0.413,
+    "end": 0.727,
+    "w": "avec"
+   },
+   {
+    "line": "hB1",
+    "t": 0.727,
+    "end": 1.196,
+    "w": "1 500."
+   },
+   {
+    "line": "hB2",
+    "t": 1.496,
+    "end": 1.655,
+    "w": "Trois"
+   },
+   {
+    "line": "hB2",
+    "t": 1.655,
+    "end": 1.971,
+    "w": "voitures"
+   },
+   {
+    "line": "hB2",
+    "t": 1.971,
+    "end": 2.129,
+    "w": "plus"
+   },
+   {
+    "line": "hB2",
+    "t": 2.129,
+    "end": 2.288,
+    "w": "tard :"
+   },
+   {
+    "line": "hB2",
+    "t": 2.738,
+    "end": 3.212,
+    "w": "3 100."
+   }
+  ],
+  "remplace": [
+   "h1",
+   "h2",
+   "h3",
+   "proch"
+  ],
+  "loop": 30.35,
+  "dur": 30.85,
+  "marks": {
+   "parsB": {
+    "line": "hB1",
+    "t": 0.257,
+    "end": 0.413,
+    "w": "pars"
+   },
+   "b1500B": {
+    "line": "hB1",
+    "t": 0.727,
+    "end": 1.196,
+    "w": "1 500."
+   },
+   "troisB": {
+    "line": "hB2",
+    "t": 1.496,
+    "end": 1.655,
+    "w": "Trois"
+   },
+   "voituresB": {
+    "line": "hB2",
+    "t": 1.655,
+    "end": 1.971,
+    "w": "voitures"
+   },
+   "tardB": {
+    "line": "hB2",
+    "t": 2.129,
+    "end": 2.288,
+    "w": "tard :"
+   },
+   "b3100B": {
+    "line": "hB2",
+    "t": 2.738,
+    "end": 3.212,
+    "w": "3 100."
+   }
+  }
+ }
+}
