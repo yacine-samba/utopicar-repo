@@ -41,16 +41,16 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
 /* nouveau dans MO12 : horloge (film-mo12/clock.js) */
 .ck-cell{position:absolute;left:0;top:0;transform-origin:50% 50%;backface-visibility:hidden}
 .ck-dot{position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#f6efe7 45%,#d9cfc5);box-shadow:0 0 14px rgba(255,170,120,.35)}
-.lab{position:absolute;left:0;width:1080px;text-align:center;font:700 30px Satoshi;letter-spacing:.32em;padding-left:.32em;color:#a59a90;white-space:nowrap}
+.lab{position:absolute;left:0;width:1080px;text-align:center;font:700 40px Satoshi;letter-spacing:.3em;padding-left:.3em;color:rgba(246,239,231,.85);white-space:nowrap}
 .lab .w{display:inline-block}
-.lab sup{font-size:19px;letter-spacing:.06em;vertical-align:0;position:relative;top:-11px;margin-right:.18em}
+.lab sup{font-size:25px;letter-spacing:.06em;vertical-align:0;position:relative;top:-14px;margin-right:.18em}
 /* cartes de document, badge, pochette (lib/kit47-pochette.js) */
 .kp-doc{position:absolute;left:0;top:0;transform-origin:50% 50%}
 .kp-doc .kp-bg{inset:0;border-radius:30px}
 .kp-badge{position:absolute;left:0;top:0;transform-origin:0 0}
 .kp-badge svg{position:absolute;left:0;top:0;overflow:visible}
 .kp-num{position:absolute;left:0;top:22px;width:100%;text-align:center;font:700 46px Clash;line-height:46px;font-variant-numeric:tabular-nums}
-.kp-unit{position:absolute;left:0;top:68px;width:100%;text-align:center;font:700 20px Satoshi;line-height:20px;color:rgba(246,239,231,.75);letter-spacing:.04em}
+.kp-unit{position:absolute;left:0;top:66px;width:100%;text-align:center;font:700 26px Satoshi;line-height:26px;color:rgba(246,239,231,.75);letter-spacing:.04em}
 .kp-name{position:absolute;left:0;top:0;font:700 48px Satoshi;line-height:48px;white-space:nowrap;transform-origin:0 0}
 .kp-value{position:absolute;left:0;top:0;font:700 64px Clash;line-height:64px;white-space:nowrap;transform-origin:0 0;font-variant-numeric:tabular-nums}
 .kp-value b{color:var(--o3);font-weight:700}
@@ -68,12 +68,12 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
 .kp-stamp{font-size:40px;padding:6px 26px 8px}
 /* bulles, étiquette, tasse */
 .bub{position:absolute;left:0;top:0;border-radius:34px 34px 34px 10px;transform-origin:0 100%}
-.bub .n{position:absolute;left:30px;top:15px;font:500 24px Satoshi;color:rgba(246,239,231,.68);white-space:nowrap}
-.bub .t{position:absolute;left:30px;top:47px;font:700 40px Satoshi;line-height:40px;white-space:nowrap}
+.bub .n{position:absolute;left:30px;top:10px;font:500 30px Satoshi;line-height:34px;color:rgba(246,239,231,.78);white-space:nowrap}
+.bub .t{position:absolute;left:30px;top:50px;font:700 40px Satoshi;line-height:40px;white-space:nowrap}
 .ripple{position:absolute;left:0;top:0;border-radius:34px 34px 34px 10px;border:3px solid rgba(255,179,138,.9);box-shadow:0 0 26px rgba(255,110,40,.55);transform-origin:50% 50%}
 .etiq{position:absolute;left:0;top:0;width:340px;height:160px;border-radius:12px;background:linear-gradient(#f6eee2,#e4d7c4);color:#1c140e;transform-origin:0 0;
   box-shadow:0 6px 16px rgba(0,0,0,.35),inset 0 -3px 0 rgba(0,0,0,.08);font:700 72px Clash;line-height:160px;text-align:center;white-space:nowrap;letter-spacing:-.01em}
-.etiq .stamp{left:50%;top:50%;font-size:58px;padding:2px 22px 6px;border-width:6px;border-radius:16px;color:#ff6a2a;border-color:#ff6a2a;background:rgba(255,240,228,.55);
+.etiq .stamp{left:50%;top:50%;font-size:92px;padding:0 26px 6px;border-width:8px;border-radius:18px;color:#ff6a2a;border-color:#ff6a2a;background:rgba(255,240,228,.92);
   text-shadow:none;box-shadow:0 0 0 2px rgba(255,106,42,.25)}
 .big20{font:700 280px Clash;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#f6efe7;white-space:nowrap;
   text-shadow:0 1px 0 #d8cfc6,0 2px 0 #bfb5ab,0 3px 0 #a79c92,0 4px 0 #8f8479,0 5px 0 #786d63,0 6px 0 #61574e,0 16px 30px rgba(0,0,0,.6)}
@@ -81,7 +81,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg0)}
 .tot{position:absolute;left:0;width:1080px;text-align:center;white-space:nowrap}
 .tot .a{font:700 46px Satoshi;display:inline-block}
 .tot .b{font:700 74px Clash;display:inline-block;margin-left:18px;background:linear-gradient(100deg,var(--o2),var(--o3));-webkit-background-clip:text;background-clip:text;color:transparent}
-.xl{position:absolute;left:0;top:0;font:700 36px Satoshi;line-height:36px;white-space:nowrap}
+.xl{position:absolute;left:0;top:0;font:700 44px Satoshi;line-height:44px;white-space:nowrap}
 .pill{position:absolute;padding:8px 20px;border-radius:999px;white-space:nowrap;font:700 30px Satoshi;background:rgba(8,7,10,.55);border:1.5px solid rgba(255,255,255,.25)}
 #grain{position:absolute;inset:-50%;pointer-events:none;opacity:.085;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}

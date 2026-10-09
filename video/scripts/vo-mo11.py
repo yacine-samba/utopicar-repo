@@ -75,7 +75,8 @@ TAIL = 0.35           # le film finit 0,35 s après « dis… » (MO9, MO10)
 # Repères du film : clé → (réplique, mot écrit sans accent ni ponctuation). film-mo11 lit leurs temps dans vo-timing.json.
 MARKS = dict(
     achete=('h1', 'lachetes'), b2000=('h1', '2000'), revends=('h2', 'revends'), b2900=('h2', '2900'),
-    ton=('asp', 'ton'), aspi=('asp', 'aspirateur'), donne=('asp', 'donne'),                      # l'embout ; « 2 ?00 »
+    ton=('asp', 'ton'), aspi=('asp', 'aspirateur'), trouve=('asp', 'trouve'), donne=('asp', 'donne'),   # l'embout ; la fente
+                                                                                                  # (« C'est donné. ») ; « 2 ?00 »
     samedi=('sam', 'samedi'), treize=('sam', '13'), heures=('sam', 'heures'),                     # jour 1 : compteur, palettes
     sieges=('sieg', 'sieges'), odeur=('odeur', 'lodeur'), enjo=('enjo', 'enjoliveurs'),          # les coups nommés
     etla=('soleil', 'et'), attends=('soleil', 'attends'), soleil=('soleil', 'soleil'),           # 13:00 → 16:30

@@ -399,6 +399,52 @@ Contrôles d'image à faire avant tout rendu final (brief, « Nouveau dans MO13 
 vignette de 200 px ; escalier à 13,0 et 15,6 s ; largeur d'encre du « 3 100 € » (≤ 760 px) à 21,5, 22,5 et 23,5 s ;
 carte complète à 29,0 s.
 
+### Après (9 octobre, film maquetté sur la voix provisoire)
+
+Deux mesures, MO13 et la copie de MO9 alternées. (1) Le temps mur de `render.mjs --range` (60 images pleine
+définition, une image seule retirée pour le démarrage), comme demandé ; la machine est partagée par trois épisodes
+(charge 3 à 12) et ce temps varie du simple au double d'un essai à l'autre. (2) Le temps CPU de tout l'arbre Chromium
+par image (utime + stime lus dans `/proc`, 10 images après une image de chauffe), moins sensible à la charge.
+
+| Passage | MO13 avant allègement | MO13 après | MO9 (avant) |
+|---|---|---|---|
+| Marche 2, MO13 13,0 → 13,98 s / MO9 14,0 → 14,98 s, temps mur | 3,63 s/image (charge ≈ 10) | **2,84 s/image** (charge 8,9) | 3,14 (charge ≈ 10) · 3,23 s/image (charge 12,1) |
+| idem, CPU | 4,5 à 4,8 s/image | 3,6 · 4,0 s/image | 3,1 · 3,4 s/image |
+| Ouverture, 1,0 s, CPU | | 3,0 · 3,1 s/image | 2,8 · 3,1 s/image |
+| Carte finale, MO13 28,5 s / MO9 28,0 s, temps mur | | 4,04 s/image (charge 11,1) | 4,32 s/image (charge 11,6) |
+| idem, CPU | 6,5 à 6,7 s/image (à 28,0 s) | 5,0 · 5,7 s/image | 5,4 · 5,4 s/image |
+| Captures du rendu final (MB = 4) | 4 530 | **3 716** | 3 504 |
+
+**Avant → après** : au temps mur, 3,14 → 2,84 s/image sur le passage chargé (MO9 → MO13). Le CPU dit plus juste :
+une image de MO13 coûte encore ≈ 15 % de plus que celle de MO9 sur ce passage (trois marches, une voiture, deux
+étiquettes, compteur, palettes, ticket), autant à l'ouverture (+ 4 %) et à la carte (≈ 0 %). MO13 lui-même a perdu
+≈ 20 % par image depuis sa première version, et 18 % de captures. Estimation du rendu final : ≈ 3 716 captures, soit
+≈ 6 % de plus que MO9 (3 504) pour un film plus chargé ; la durée réelle sera notée au journal (§ 5) au premier rendu.
+
+Ce qui coûtait, mesuré en coupant un effet à la fois (CPU par image, à 13 s sauf mention) :
+- **Le grain** : le premier bruit (gris, ≈ 75 niveaux d'écart type) était 2 à 3 fois plus fort que celui de MO9 et
+  coûtait ≈ 0,8 s ; le bruit de MO9 lui-même (feTurbulence, graine 9), tiré une fois dans un canvas, en coûte ≈ 0,5
+  (comme dans MO9).
+- **Les lueurs en flou SVG** (`feGaussianBlur`) sur les arêtes, les contours des voitures et les plumes, recalculées à
+  chaque image parce que la caméra bouge le monde : ≈ 0,6 s. Elles deviennent trois traits translucides et un halo en
+  dégradé radial.
+- **Le puits de lumière** (800 × 2 300 px en mode screen) : ≈ 0,3 s, peint dans le fond.
+- **Les ombres internes floues** des cases, des palettes et du verre : ≈ 0,3 s, remplacées par un dégradé.
+- **Les palettes en 3D** hors retournement : ≈ 0,2 s ; perspective seulement pendant qu'elles tournent.
+- **Un calque d'opacité par glyphe** (≈ 200 glyphes sur la carte, écrits par `Kit47.writeWord`) : ≈ 0,7 s à 28 s.
+  `Kit13.writeWord` écrit en `fill-opacity` / `stroke-opacity` et cache le contour pointillé une fois le glyphe écrit.
+- **La caméra de la carte** (orbite et poussée en profondeur) : la carte se repeignait en entier à chaque image, ≈ 2 s
+  à 28 s. Elle se pose (ressorts), puis glisse à l'écran ; l'escalier s'arrête derrière elle (parallaxe).
+- **Les calques cachés dont la transformation change** (calcul de l'ouverture, « 3 100 € », lignes du rembobinage,
+  HUD et notifications quand ils sont éteints) : ≈ 0,4 s ; leur transformation ne s'écrit plus que s'ils sont visibles.
+- **Le flou de bougé** : 4 sous-images seulement sur la partie rapide d'un geste, 2 sur sa fin et sur les gestes moyens,
+  aucune sur les bulles qui montent de 170 px.
+
+Ce qui ne coûtait pas (aucune différence mesurable) : les trois `backdrop-filter` (compteur, palettes, carte de devant),
+les ombres portées, les lueurs `.glow`, le monde rendu dans son propre calque. La règle du brief (verre par groupes,
+aucun flou CSS sur un grand calque) est appliquée, mais le gain vient d'ailleurs : de ce qui oblige Chromium à
+repeindre un grand calque à chaque image.
+
 ## 8. Le chronométrage de la voix
 
 La lecture à voix haute est remplacée par un chronomètre reproductible, étalonné sur Simon :
@@ -564,3 +610,64 @@ un dossier d'essai (`VO_DIR=…`, rien n'est écrit dans `audio/vo-mo13/`). Malg
 retrouve 95 % du texte et le script trouve les 15 répliques aux bons mots. La pose tourne et la piste B s'écrit.
 La retranscription retrouve tout sauf « ta » dans la réplique 1, que *medium* entendait déjà mal sur la prise espeak
 avant la pose.
+
+## 10. Le film (maquette sur la voix provisoire, 9 octobre)
+
+`film-mo13/index.html`, `film-mo13/film.js` (copie de `film-mo9/` adaptée, sur `lib/kit47.js`, lu et jamais modifié),
+`film-mo13/kit-mo13.js` (modules nouveaux : compteur et palettes sous une seule plaque de verre, marche de verre peint,
+étiquette en papier, ticket de frais, silhouettes, fonds flous en petit canvas). `timeline-mo13.json` : 60 i/s, 120 BPM,
+1080 × 1920, 31,25 s (B : 30,85 s), poster = image 0. Le film lit `audio/vo-mo13/vo-timing.json` au chargement et
+attache chaque geste à son mot (`marks`) ; `window.EVENTS` donne les temps des gestes (`CUT=mo13 node
+scripts/events.mjs` → `film-mo13/events.json`, 93 clés). Tous les temps ci-dessous bougeront avec la vraie prise.
+
+| t (s) | Geste | Mot |
+|---|---|---|
+| 0 | image 0 : « 10 000 − 1 500 », « Il te manque », « 8 500 € ? », rue du soir floue, 206 floue | |
+| 0,12 · 1,93 | la lumière passe sur « 10 000 », puis sur « 1 500 » | Dix · cinq cents |
+| 2,85 · 3,02 | mise au point sur la 206, son contour se trace | petite · rouge |
+| 3,90 · 4,00 · 4,28 | étiquette « À VENDRE · 1 400 € » écrite à la plume ; mention ; « 8 500 € ? » tremble | demande · mille quatre |
+| 4,80 | le calcul se replie, « 1 500 » devient le compteur COMPTE, MARCHE 1, la 206 monte sur la marche 1 | |
+| 5,25 · 5,50 · 5,82 · 5,95 | « 1 400 € » barré ; − 1 200 € file vers l'étiquette (1 500 → 300) ; « 1 200 € ✓ prix max » ; « réserve » | gardes · côté |
+| 6,70 · 7,66 · 8,45 · 8,95 | assurance − 40 ; carte grise − 152 ; le gag essence − 58 ; tampon « toi aussi », compte 50 | assurance · carte · essence |
+| 9,95 · 10,52 · 10,86 · 11,06 | SEMAINE 3 et la bulle ; virement + 1 900 ; compte 1 950 ; arête « 1 200 → 1 900 ✓ » | elle · part · mille neuf cents |
+| 11,75 · 12,00 · 12,50 | la 206 part, la caméra monte d'une marche, la Mégane entre et freine | |
+| 12,77 · 13,02 · 13,34 | « 1 800 € » barré ; − 1 550 € (compte 400) ; « 1 550 € ✓ » et le ticket − 350 (compte 50) | première · paie |
+| 14,04 · 14,49 · 14,74 | SEMAINE 7 et la bulle ; virement + 2 450 ; compte 2 500, la Mégane part | |
+| 14,98 · 15,48 · 15,73 · 15,88 | la Fiesta entre, freine ; « 2 300 € » barré ; − 2 000 € (compte 500) ; ticket − 350 (compte 150) | |
+| 16,45 · 16,72 · 17,02 | SEMAINE 8, 9, 10 ; la lumière refroidit | une |
+| 16,75 · 17,51 · 18,01 · 18,31 | l'annonce « 1 600 € · Une affaire ? » monte, bute sur 150 € ; tampon « une à la fois » ; elle repart | affaire · passe |
+| 18,61 → 19,31 | SEMAINE 11, cinq « Toujours dispo ? » en pile, SEMAINE 12 | |
+| 19,50 · 20,00 · 20,25 | bulle « 2 950 et je la prends. » ; virement + 2 950 ; compte 150 → 3 100, recul sur les quatre marches | Budget |
+| 21,25 → 22,35 | le compteur se fond dans « 3 100 € » géant ; la seule pause | trois mille cent |
+| 22,35 · 23,44 | « Tu attendais d'avoir *10 000.* » | Et tu attendais · dix mille |
+| 24,11 → 25,41 | rembobinage (silhouettes, compteur à l'envers jusqu'à 1 500) | Ceux qui gagnent… |
+| 25,41 · 26,0 · 26,5 · 27,0 | la carte ; une ligne par temps, frais réels dessous | vente |
+| 27,17 · 27,42 · 27,94 | la marche vide s'allume ; « 3 100 − 600 = » ; « *prix max* 2 500 € » claque, « Ta 4e » | quatrième · deux mille cinq cents |
+| 30,35 → 31,25 | la carte et l'escalier se replient, l'image 0 revient | La prochaine fois… |
+
+**Écarts au brief** :
+- Minutage : celui de la voix provisoire (modèle ajusté sur MO9 et MO10, § 9), pas les créneaux du brief ; tout est
+  0,1 à 0,6 s plus tôt que la timeline du brief à partir de 6 s (le gag à 8,45 s au lieu de 9,0 s, la vente 1 à 10,5 s,
+  la chute à 21,25 s, la carte à 25,4 s).
+- Image 0 : « Il te manque » à 120 px (brief ≈ 140) et « 8 500 € » à 176 px (brief ≈ 230) pour tenir l'encre de la
+  ligne « 8 500 € ? » sous 760 px, mesurée au seuil de luminance.
+- Le compteur s'appelle COMPTE (brief v2) ; la voix dit « Budget : trois mille cent » sur son dernier sommet.
+- Les tickets des marches 2 et 3 arrivent 0,32 et 0,15 s après l'achat (le brief : 0,5 s) pour rester posés ≈ 0,5 et
+  0,6 s : la voix provisoire serre les marches 2 et 3. Ils se lisent au deuxième passage, comme prévu.
+- SEMAINE 10 tombe pendant que l'annonce couvre les palettes (elles s'effacent dessous) ; on la voit à 17,1 s et quand
+  l'annonce repart (18,4 s), SEMAINE 11 suit à 18,6 s.
+- La marche quittée reste à l'écran sous y = 1 480 (décor, à 55 %) : deux marches à l'écran à 13,0 et 15,6 s, comme
+  le demandait le brief ; son inscription s'efface avant de passer la barre.
+- Le puits de lumière du fond est fixe (peint dans le fond, § 7) ; la caméra du monde, elle, ne s'arrête jamais.
+
+**Contrôles du 9 octobre** (avant le son) : instants clés `renders/review/mo13-at.jpg` et `mo13-at2.jpg`, planches
+`mo13-planche-0.1s-{0-10,10-20,20-31.25}.jpg` regardées ; corrigés : palettes (le nombre tombait 0,28 s après le mot
+et défilait par des lettres ou de faux chiffres, « SEMAINE A », « SEMAINE 4 »), annonce en verre devant les palettes
+(lettres floues derrière le verre : fond opaque quand elle monte), tickets posés 0,2 et 0,3 s (0,5 et 0,6 s
+maintenant), pile des « Toujours dispo ? » qui se chevauchaient texte sur texte (pile de notifications, les anciennes
+ne montrent que leur bord), tampon « toi aussi » posé sur le « € », écart « prix max » / « 2 500 € », marche quittée
+invisible, escalier trop visible derrière « 10 000. » (voile porté de 0,78 à 0,90 pendant la phrase). Zones sûres mesurées dans le DOM toutes les 0,1 s : seuls dépassent des éléments en train d'entrer ou de
+sortir (notifications, bulles, voiture qui part, « ? » qui tremble à 940 px). Boucle : écart moyen image 0 / dernière
+image 0,012 / 255 (max 3) ; avant la correction de l'arrondi du temps de la vidéo de rue, 0,374 / 255 (max 37). Aucune
+erreur PAGEERR (A et B). Ouverture B (`?hook=B`) regardée à 0 · 1,2 · 2,5 · 3,6 · 4,6 · 5,5 · 21,6 · 28,6 · 30 · 30,5 ·
+30,7 · 30,83 s.

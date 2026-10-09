@@ -505,6 +505,12 @@
    "end": 3.688,
    "w": "aspirateur"
   },
+  "trouve": {
+   "line": "asp",
+   "t": 3.688,
+   "end": 3.856,
+   "w": "trouve"
+  },
   "donne": {
    "line": "asp",
    "t": 4.023,

@@ -16,8 +16,8 @@ ligne de partage) :
                          pas passé. Salissure exagérée exprès : la peinture grise (luminance 102 / 255) ne ferait que
                          foncer sous une poussière réaliste, et il faut lire « sale » à 200 px.
   clio3-phares.png       voile jaune saturé et laiteux sur les deux optiques
-  clio3-pare-brise.png   voile gris sur la face intérieure du pare-brise, traces d'essuyage ; les sièges restent
-                         devinables derrière
+  clio3-pare-brise.png   voile gris sur la face intérieure du pare-brise (≈ 40 %), traces d'essuyage ; derrière, trois
+                         auréoles claires sur le dossier passager (le coup « Les sièges »)
   clio3-vitres.png       voile jaunâtre du tabac sur les vitres latérales, plus dense sur les bords
 Vectoriels (viewBox = pixels du PNG, nets à tout grossissement, la caméra va jusqu'à × 1,6) :
   clio3-rayure.svg              rayure claire, effilée et interrompue, et deux éraflures sur l'aile avant, au-dessus de
@@ -200,8 +200,30 @@ for _ in range(16):                                               # arcs laissé
     a0 = rng.uniform(0, 360)
     d.arc([cx - r, cy - r * 0.6, cx + r, cy + r * 0.6], a0, a0 + rng.uniform(80, 200), fill=int(rng.uniform(90, 180)), width=int(rng.uniform(6, 14)))
 wipe = np.asarray(wipe.filter(ImageFilter.GaussianBlur(5))).astype(np.float32) / 255
-a = m * np.clip(0.50 + 0.18 * blur_noise(16, 12) + 0.22 * wipe, 0, 0.85)
+# voile ramené vers 40 % (round 1) : on doit voir les sièges derrière, et leurs auréoles
+a = m * np.clip(0.30 + 0.14 * blur_noise(16, 12) + 0.20 * wipe, 0, 0.70)
 col = np.broadcast_to(np.array([0.66, 0.65, 0.62], np.float32), (H, W, 3)) * (0.92 + 0.08 * blur_noise(4, 2)[..., None])
+# 3b. auréoles claires sur le dossier passager, derrière la vitre (x 1 060-1 230, y 160-290) : le coup « Les sièges »
+#     montre des sièges tachés, pas une vitre. Tirage à part (graine 311) : la suite des calques ne change pas.
+rs = np.random.default_rng(311)
+# deux auréoles coupées en deux par l'arrêt de la ligne (x = 1 140), au-dessus et au-dessous de sa poignée (y 204-254),
+# une troisième entière du côté encore sale
+STAINS = [(1150, 164, 54, 36, -10), (1134, 298, 56, 36, 6), (1215, 236, 40, 30, 12)]   # centre, demi-axes, rotation (°)
+fill_m = Image.new('L', (W, H), 0); ring_m = Image.new('L', (W, H), 0)
+df, dr = ImageDraw.Draw(fill_m), ImageDraw.Draw(ring_m)
+for cx, cy, rx, ry, ang in STAINS:
+    th = np.linspace(0, 2 * np.pi, 72, endpoint=False); ph = rs.uniform(0, 2 * np.pi, 3)
+    k = 1 + 0.10 * np.sin(3 * th + ph[0]) + 0.06 * np.sin(5 * th + ph[1]) + 0.04 * np.sin(9 * th + ph[2])
+    ca, sa = np.cos(np.radians(ang)), np.sin(np.radians(ang))
+    pts = [(cx + rx * kk * np.cos(t) * ca - ry * kk * np.sin(t) * sa, cy + rx * kk * np.cos(t) * sa + ry * kk * np.sin(t) * ca) for t, kk in zip(th, k)]
+    df.polygon(pts, fill=200); dr.line(pts + [pts[0]], fill=255, width=6, joint='curve')
+stain = np.maximum(np.asarray(fill_m.filter(ImageFilter.GaussianBlur(6))).astype(np.float32),
+                   np.asarray(ring_m.filter(ImageFilter.GaussianBlur(3))).astype(np.float32)) / 255
+a_s = m * 0.85 * stain                                            # ≈ 65 % au cœur, le bord plus marqué
+c_s = np.array([0.706, 0.612, 0.478], np.float32)                 # #b49c7a
+A = a + a_s * (1 - a)                                             # la tache derrière, le voile devant
+col = (col * a[..., None] + c_s * (a_s * (1 - a))[..., None]) / np.maximum(A, 1e-6)[..., None]
+a = A
 save(col, a, 'clio3-pare-brise.png')
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -268,12 +290,12 @@ def scratch_layers(x0, y0, x1, y1, wmax, segs=((0, 1),), bow=0.0, wav=0.5, core=
     shad = scratch(x0, y0, x1, y1, wmax * 1.25, segs, bow, wav)
     rng.bit_generator.state = st
     mid = scratch(x0, y0, x1, y1, wmax, segs, bow, wav)
-    return (poly_svg(halo, '#e9e2d6', '.22') + poly_svg(shad, '#231d19', '.18', 0.0, -0.8)   # sillon : bord haut dans l'ombre
+    return (poly_svg(halo, '#e9e2d6', '.40') + poly_svg(shad, '#231d19', '.35', 0.0, -0.8)   # sillon : bord haut dans l'ombre
             + poly_svg(mid, '#fbf8f2', core))
 
-body = (scratch_layers(1165, 657, 1346, 592, 2.2, segs=((0, 0.41), (0.44, 0.82), (0.85, 1.0)), bow=0.012, wav=0.45)
-        + scratch_layers(1192, 676, 1292, 641, 1.15, segs=((0, 0.62), (0.66, 1.0)), bow=0.01, wav=0.3, core=.8)
-        + scratch_layers(1218, 641, 1302, 613, 0.7, bow=-0.01, wav=0.25, core=.7)
+body = (scratch_layers(1165, 657, 1346, 592, 5.0, segs=((0, 0.41), (0.44, 0.82), (0.85, 1.0)), bow=0.012, wav=0.45)
+        + scratch_layers(1192, 676, 1292, 641, 2.6, segs=((0, 0.62), (0.66, 1.0)), bow=0.01, wav=0.3, core=.8)
+        + scratch_layers(1218, 641, 1302, 613, 1.6, bow=-0.01, wav=0.25, core=.7)
         + ''.join(scratch_layers(x, y, x + dx, y - dx * 0.36, 0.5, wav=0.1, core=.6)
                   for x, y, dx in [(1158, 668, 14), (1172, 662, 9), (1330, 604, 12), (1250, 660, 10)]))
 (OUT / 'clio3-rayure.svg').write_text(svg(body))
@@ -299,12 +321,12 @@ def hub_texture(h):
     Ls = sub.mean(-1, keepdims=True)
     n1, n2, n3 = (blur_noise(6, 3)[y0:y1, x0:x1], blur_noise(2, 0.8)[y0:y1, x0:x1], blur_noise(14, 8)[y0:y1, x0:x1])
     col = sub * 0.3 + Ls * 0.7                                    # gris terne, sans reflet métallique
-    col = 0.05 + col * 0.66
+    col = 0.03 + col * 0.45                                       # plus sombre que le neuf, même lavé (round 1)
     col = np.where(col > 0.46, 0.46 + (col - 0.46) * 0.35, col)    # hautes lumières écrasées : plus d'éclat
-    col = col * np.array([1.05, 0.93, 0.78], np.float32)           # voile brun
+    col = col * np.array([1.10, 0.85, 0.60], np.float32)           # voile brun
     rec = np.clip((0.30 - Ls[..., 0]) / 0.18, 0, 1)[..., None]     # creux entre les rayons : poussière de frein noire
     col = col * (1 - 0.65 * rec) + np.array([0.10, 0.075, 0.055], np.float32) * 0.65 * rec
-    d = (0.50 * np.clip((r - 0.50) / 0.42, 0, 1) * (0.55 + 0.7 * n1) * (0.75 + 0.25 * (np.sin(th) > 0)))[..., None]
+    d = (0.85 * np.clip((r - 0.50) / 0.42, 0, 1) * (0.55 + 0.7 * n1) * (0.75 + 0.25 * (np.sin(th) > 0)))[..., None]
     col = col * (1 - d) + np.array([0.21, 0.15, 0.10], np.float32) * d   # poussière de frein, plus dense au bord
     blot = np.clip((n3 - 0.55) * 3.0, 0, 1)[..., None] * 0.35       # taches plus sombres, en plaques
     col = col * (1 - blot) + np.array([0.16, 0.12, 0.08], np.float32) * blot

@@ -92,8 +92,8 @@ pour être enregistrée » (4,3 % d'enregistrements chez @inrisformations) porte
 - **Fabrication** : `lib/kit47-pochette.js` (cartes de document, badge de validité à anneau, pochette, bandeaux) et
   `film-mo12/clock.js` (l'horloge à rouleaux qui roule vers l'avant, avec deux-points, centrée sur 540), sans toucher
   `lib/kit47.js`. Mesures : au plus 3 cartes et l'horloge visibles à la fois ; noms en Satoshi 48 px au moins,
-  valeurs en Clash 64 px au moins, 4 mots au plus par carte ; test `--phone` à 8,9, 14,6 et 25,5 s ; centre de
-  l'encre de l'horloge à 540 ± 4 px ; aucune carte sous y = 1480 ; temps entre ce brief et le premier maquettage
+  valeurs en Clash 64 px au moins, 4 mots au plus par carte ; test `--phone` à 8,9, 14,6 et 25,5 s ; centre des
+  cases de l'horloge à 540 ± 4 px (round 2 : l'encre se décale de 2 à 3 px à 360 selon les « 1 », étroits) ; aucune carte sous y = 1480 ; temps entre ce brief et le premier maquettage
   complet.
 - **Constantes notées** : photo libre (domaine public), pas une voiture de l'utilisateur ; film d'environ 30,7 s
   (MO5 : 29,6 s ; MO9 : 31,4 s ; plafond 31,5 s) ; ouverture de 4,4 s (MO5 : 4,2 s ; MO9 : 4,6 s).
@@ -439,7 +439,7 @@ Clash 40 px, 13 px à 360, dans un anneau de 110 px qui se vide), de la même fa
 | 24,6 | 2 ans pour rouler | ligne grise du bandeau du contrôle |
 | 25,0 | Pochette : 78 € | trait de total |
 | 25,8 | < 6 mois à sa carte grise | ligne orange du bandeau du contrôle |
-| 26,5 | Contrôle d'achat · 10 mars | carte au-dessus de la pochette ; ligne : bon jusqu'au 9 sept. |
+| 26,5 | Contrôle d'achat · 10 mars | carte au-dessus de la pochette ; ligne : « vendre ≤ 9 sept. » (round 2 : « jusqu'au 9 sept. » se lisait comme la fin de validité) |
 | 27,5 | (trait orange) | barre la carte du contrôle d'achat |
 | 28,0 | refait le 6 oct. · 78 € | écrit à la lumière, « refait » en Fraunces |
 | 28,75 | PRÊTE | tampon sur le rabat |
@@ -524,7 +524,7 @@ n'en a plus besoin). Commandes : `docs/timeline-mo12.md`, section « Les plans r
   deux courbes animées par un bruit à graine fixe. Présente à l'image 0, à la chute et à la dernière image.
 - **Contrôles** : planches toutes les 0,1 s (`CUT=mo12 node scripts/sheet.mjs <début> <fin>`) ; horloge
   (`CUT=mo12 node scripts/at.mjs 2.3,2.5,5.4,9.0,17.3 renders/review/mo12-at-horloge.jpg` : les chiffres roulent vers
-  l'avant, centre de l'encre à 540 ± 4 px) ; instants choisis
+  l'avant, centre des cases à 540 ± 4 px) ; instants choisis
   (`CUT=mo12 node scripts/at.mjs 0,2.6,3.7,8.9,12.1,15.7,18.3,19.9 renders/review/mo12-at.jpg`) ; la liste
   (`CUT=mo12 node scripts/at.mjs 25.2,26.0,26.8,27.6,28.3 renders/review/mo12-at-liste.jpg` : cinq bandeaux et le total
   lisibles, rien devant) ; test téléphone (`CUT=mo12 node scripts/render.mjs --phone` → `renders/phone-mo12.png`, à

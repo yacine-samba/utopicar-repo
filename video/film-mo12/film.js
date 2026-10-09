@@ -25,8 +25,9 @@
     sonne: M('sonne') - 0.03,             // elle pulse sur « sonne »
     roll: M('vingt') - 0.04,              // 11:00 → 11:20 sur « vingt »
     stamp: M('vingt') + 0.32,             // VENDUE frappe l'étiquette (avant la mesure à 3 s)
-    go: M('vingt') + 0.55,                // la C3 sort par la gauche
-    bf: M('beaufrere') - 0.06,            // bulle du beau-frère
+    go: M('vendue') + 0.05,               // la C3 garde VENDUE à l'arrêt 0,65 s, puis sort par la gauche sur « vendue »
+    bf: M('beaufrere') - 0.28,            // bulle du beau-frère : elle entre par la droite pendant que la C3 sort à gauche
+    croit: M('croit'),                    // « il n'y croit pas » : sa bulle tremble (comme le gag)
     blur: M('papiers') + 0.05,            // la caméra plonge, la C3 passe en décor flou
     poch: M('tends') - 0.15,              // la pochette monte (« tu tends la pochette »)
     rabat: M('pochette') - 0.05,          // le rabat s'ouvre
@@ -36,21 +37,23 @@
     gag: M('gag') - 0.15,                 // la notification du gag se pose 0,15 s avant « Ton beau-frère »
     cles: ME('payee') + 0.12,
     roll20: M('vingt2') - 0.5, big: M('vingt2') - 0.3,
-    tasse: M('tasse'), chaud: M('encore') - 0.08,
+    tasse: M('tasse'), chaud: M('encore') - 0.25,   // « encore chaud. » complet et immobile 0,5 s avant le rembobinage
     mardi: M('mardi'), l2: M('deuxans') - 0.05, total: M('rouler') - 0.1, l6: M('sixmois') - 0.05,
-    achat: M('letien') - 0.12, vide: M('sept') - 0.05, strike: M('mois'), refait: M('tu') - 0.05,
+    achat: M('letien') - 0.12, vide: M('sept') - 0.05, strike: M('mois'), refait: ME('mois') + 0.1,   // « refait le 6 oct. · 78 € » juste après « sept mois : » (complet vers 28,7 s)
   };
   const R1 = [ME('retour') + 0.04, ME('retour') + 0.54];   // retour court (grammaire du rembobinage)
   T.essai = R1[1]; T.essaiOut = M('papiers') - 0.02;
   T.recu = M('declaration') - 1.4;                           // « Virement reçu » sur la mesure, 1,4 s avant « Déclaration »
   T.sig = [T.recu + 0.25, T.recu + 0.5]; T.cg = T.recu + 0.75; T.cgW = T.cg + 0.18; T.cgS = T.cg + 0.95;
   T.go2 = T.cles + 0.17;
-  T.q = [0, 1, 2, 3].map((i) => T.rabat + 0.3 + 0.45 * i);  // la bulle pose une question par temps
-  T.c = T.q.map((x) => x + 0.22);                             // la carte sort de la pochette et répond
-  const REW = [ME('chaud') + 0.15, M('mardi') - 0.1];       // grand rembobinage jusqu'au mardi d'avant
+  // la bulle pose une question par temps ; la carte qui répond sort de la pochette 0,1 s avant : son texte est plein à
+  // T.q + 0,155 s, la question à T.q + 0,16 s, et chaque paire reste ensemble jusqu'à la question suivante (T.q + 0,40 s)
+  T.q = [0, 1, 2, 3].map((i) => T.rabat + 0.42 + 0.45 * i);
+  T.c = T.q.map((x) => x - 0.1);
+  const REW = [ME('chaud') + 0.3, M('mardi') - 0.1];        // grand rembobinage jusqu'au mardi d'avant (1,1 s)
   T.flaps = REW[1] - 0.5; T.pochM = REW[1] - 0.15;
   T.m = [0, 1, 2, 3, 4].map((i) => T.mardi + 0.45 + 0.5 * i); // cinq cartes entrent dans la pochette, une par temps
-  T.eclair = T.refait + 0.3; T.close = ME('refais') - 0.25; T.pret = ME('refais') - 0.02;
+  T.eclair = M('tu') + 0.25; T.close = ME('refais') - 0.25; T.pret = ME('refais') - 0.02;
 
   // l'horloge : une minute par geste (scénario chiffré du brief)
   const ESS = Array.from({ length: 9 }, (_, i) => T.essai + 0.1 + i * (T.essaiOut - T.essai - 0.15) / 8);
@@ -91,8 +94,8 @@
   const cam0 = (t) => ({
     rx: track(t, [[0, 3], [T.blur - 0.25, 6.5, CS], [T.big - 0.25, 2.5, CF], [REW[1] - 0.3, 7, CS], [T.m[0], 4, CL]]),
     ry: track(t, [[0, -4], [0.02, 0.5, { f: 0.3, z: 1 }], [T.go, -4.5, CS], [T.bf, 1.5, CS], [R1[0] + 0.2, -1, CF], [T.blur, -3, CL], [T.phone, 2.5, CL], [T.gag, -1.5, CS], [T.big - 0.25, 0, CF], [REW[1] - 0.3, -6, CS], [T.m[1], 4, CL]]),
-    z: track(t, [[0, 0], [0.02, 130, { f: 0.28, z: 1 }], [R1[0], 10, CF], [T.essai, 40, CS], [T.blur, 120, { f: 0.35, z: 1 }], [T.phone, 80, CL], [T.big - 0.25, 0, CF], [REW[0], -90, CF], [REW[1] - 0.2, -50, CS], [T.m[0], 40, CL]]),
-    x: track(t, [[0, 0], [0.02, 14, { f: 0.3, z: 1 }], [T.go, -28, CS], [T.bf, 22, CS], [R1[0], 0, CF], [T.phone, 14, CL], [T.gag, -10, CS], [T.big - 0.25, 0, CF], [T.m[1], -12, CL]]),
+    z: track(t, [[0, 0], [0.02, 130, { f: 0.28, z: 1 }], [R1[0], 10, CF], [T.essai, 40, CS], [T.blur, 120, { f: 0.35, z: 1 }], [T.phone, 80, CL], [T.wait, 120, CS], [T.recu + 0.05, 75, CS], [T.big - 0.25, 0, CF], [REW[0], -90, CF], [REW[1] - 0.2, -50, CS], [T.m[0], 40, CL]]),
+    x: track(t, [[0, 0], [0.02, 24, { f: 0.3, z: 1 }], [T.go, -28, CS], [T.bf, 22, CS], [R1[0], 0, CF], [T.phone, 14, CL], [T.gag, -10, CS], [T.big - 0.25, 0, CF], [T.m[1], -12, CL]]),
     y: track(t, [[0, 0], [T.blur - 0.1, 150, { f: 0.35, z: 1 }], [T.phone, 200, CL], [T.big - 0.25, 0, CF], [REW[1] - 0.2, 30, CS], [T.m[0], 70, CL]]),
   });
   const C0 = cam0(0);
@@ -151,13 +154,14 @@
     { t: T.c[1], from: 'p', d: KP.doc(LC, { name: 'Situation adm.', value: '0 €', ring: { num: '15', unit: 'j' } }), rem: 11 / 15 },
     { t: T.c[2], from: 'p', d: KP.doc(LC, { name: 'Cession', value: '× 2', ring: { num: '15', unit: 'j' }, thumb: 'right' }), seq: 'signe', rem: 1, fx: 0.62, fy: 0.55 },
     { t: T.c[3], from: 'p', d: KP.doc(LC, { name: 'Carte grise', value: 'à barrer', ring: { num: '1', unit: 'mois' } }), rem: 1 },
-    { t: T.phone, from: 'r', d: KP.doc(LC, { name: 'Virement', value: 'en cours', thumb: 'left', name2: 'Virement reçu', value2: '<b>+ 2 700,00 €</b>', sub2: 'sur ton compte' }), seq: 'phone', fx: 0.5, fy: 0.42 },
+    { t: T.phone, from: 'r', d: KP.doc(LC, { name: 'Virement', value: 'en cours', thumb: 'left', name2: 'Virement reçu', value2: '<b>+ 2 700,00 €</b>' }), seq: 'phone', fx: 0.5, fy: 0.42 },
     { t: T.decl, from: 'p', d: KP.doc(LC, { name: 'Déclaration de cession', value: '0,00 €', ring: { num: '15', unit: 'j' } }), rem: 1 },
     { t: T.code, from: 'r', d: KP.doc(LC, { name: 'Code de cession', value: 'remis', ring: { num: '15', unit: 'j' } }), rem: 1 },
     { t: T.gag, from: 'r', gag: true },
     { t: T.cles, from: 'r', cles: true },
   ];
   const ST = SD.map((s) => s.t);
+  SD.forEach((s) => { if (s.d && s.d.badge) s.d.badgeT = [...s.d.badge.r.querySelectorAll('.kp-num,.kp-unit')]; });
   const [dCtrl, , dCes, dCg, dVir, dDecl] = SD.map((s) => s.d);
   // le virement : un cercle de lumière se trace pendant l'attente
   const virRing = KP.badge(dVir.root, { size: 110 });
@@ -171,19 +175,25 @@
   const cgW = word(dCg.fx, 'Vendu le 10/10/2026 · 11 h 16', '700 34px Satoshi', 34, 168, 140, { align: 'left', strokeColor: '#ffd9c2', sw: 1.6 });
   const cgSig = KP.stroke(dCg.fx, 'M0 30 C10 4 20 30 28 14 C36 0 40 30 52 22 C62 16 66 28 80 18', { w: 4, gw: 12 });
   for (const e of [cgSig.g, cgSig.l]) e.setAttribute('transform', 'translate(648,96)');
-  // le gag : une notification plus petite, de travers, qui tremble
-  const gagW = el('div', 'abs', LC, 'width:780px;height:184px;transform-origin:50% 50%');
-  const gagN = notif(gagW, "Site qui imite l'officiel", '49,90', { app: 'ton beau-frère' }); gagN.d.style.left = '0'; gagN.d.style.top = '0';
+  // le gag : seul (les autres cartes passent en retrait), plus haut que les cartes, de travers, qui tremble ;
+  // 760 px de large comme les cartes (rotation et tremblement compris : de 147 à 933, dans la colonne)
+  const GAG = { w: 760, h: 212 };
+  const gagW = el('div', 'abs', LC, `width:${GAG.w}px;height:${GAG.h}px;transform-origin:50% 50%`);
+  const gagN = notif(gagW, "Site qui imite l'officiel", '49,90', { app: 'ton beau-frère' });
+  Object.assign(gagN.d.style, { left: '0', top: '0', width: `${GAG.w}px`, height: `${GAG.h}px` });
   gagN.c.getContext('2d').drawImage(coins, 0, 0, 372, 276);
-  gagN.d.querySelector('.am').innerHTML = `<b>−</b>${KP.clash(' 49,90 €')}`;
-  const gagApp = gagN.d.querySelector('.app'); gagApp.style.font = '700 32px Satoshi'; gagApp.style.color = '#ffb38a'; gagN.d.querySelector('.ti').style.font = '700 40px Satoshi';
+  const gagAm = gagN.d.querySelector('.am'); gagAm.innerHTML = `<b>−</b>${KP.clash(' 49,90 €')}`; gagAm.style.font = '700 64px Clash'; gagAm.style.lineHeight = '66px';
+  const gagApp = gagN.d.querySelector('.app'); Object.assign(gagApp.style, { font: '700 40px Satoshi', lineHeight: '42px', color: '#ffb38a', marginBottom: '4px' });
+  Object.assign(gagN.d.querySelector('.ti').style, { font: '700 46px Satoshi', lineHeight: '52px' });
   SD[7].el = gagW;
   // les clés
   const clesW = el('div', 'glass', LC, 'width:760px;height:170px;border-radius:30px;transform-origin:50% 50%');
-  const clesCv = el('canvas', 'abs', clesW, 'width:760px;height:170px'); clesCv.width = 760; clesCv.height = 170;
+  const clesCv = el('canvas', 'abs', clesW, 'width:760px;height:170px;filter:brightness(.68) saturate(.85)'); clesCv.width = 760; clesCv.height = 170;
   SD[8].el = clesW;
-  // chemin des cartes : case 1 (y 630), case 2 (820), case 3 (1010), puis bandeaux de la pochette (1216, 1312)
-  const PY = [630, 820, 1010, 1216, 1312, 1332];
+  // chemin des cartes : case 1 (y 652, 20 px sous la bulle), case 2 (838), case 3 (1024 → 1194, au-dessus de la pochette),
+  // puis bandeaux de la pochette (1216, 1312)
+  // (round 2 : le bandeau qui sort, de 1312 à 1380, s'enfonce derrière la face de la pochette avant que le suivant le couvre)
+  const PY = [652, 838, 1024, 1216, 1312, 1380];
 
   // ---------- B : la bulle de l'acheteur, la bulle du beau-frère, la tasse ----------
   const LB = el('div', 'L', stage);
@@ -193,10 +203,10 @@
   el('div', 'n', bub).textContent = 'Acheteur';
   const QT = ['Je suis devant.', 'Le contrôle ?', 'Pas de gage ?', 'La cession ?', 'La carte grise ?'];
   const qEl = QT.map((s) => { const e = el('div', 't', bub); e.textContent = s; return e; });
-  const QW = QT.map((s) => Math.max(KP.textW('700 40px Satoshi', s), KP.textW('500 24px Satoshi', 'Acheteur')) + 64);
+  const QW = QT.map((s) => Math.max(KP.textW('700 40px Satoshi', s), KP.textW('500 30px Satoshi', 'Acheteur')) + 64);
   const QK = [[0, QW[0]], ...T.q.map((x, i) => [x, QW[i + 1], P.flip])];
   const bfW = KP.textW('700 40px Satoshi', '20 min ? ') + KP.textW('italic 500 46px Fraunces', 'Impossible.') + 70;
-  const bf = el('div', 'glass bub', LB, `width:${f3(bfW)}px;height:${BUB.h}px;border-radius:34px 34px 10px 34px;transform-origin:100% 100%`); el('div', 'sheen', bf);
+  const bf = el('div', 'glass bub', LB, `width:${f3(bfW)}px;height:${BUB.h}px;border-radius:34px 34px 10px 34px;transform-origin:50% 50%`); el('div', 'sheen', bf);
   el('div', 'n', bf).textContent = 'Beau-frère';
   el('div', 't', bf).innerHTML = '20 min ? <span class="serif" style="font-size:46px;font-weight:500">Impossible.</span>';
   // la tasse au trait de lumière (même épaisseur que le contour de la voiture), deux volutes à graine fixe, périodiques
@@ -225,8 +235,9 @@
 
   // ---------- M : mardi 6 octobre, la pochette se remplit ----------
   const LMb = el('div', 'L', stage), LMc = el('div', 'L', stage), LMf = el('div', 'L', stage);
-  const PM = KP.folder(LMb, LMf, { flapH: 110 });
-  const POM = { x: 140, y: 630, w: 800, h: 780 };
+  const PM = KP.folder(LMb, LMf, { flapH: 72 });                 // le rabat fermé ne couvre plus la ligne du contrôle
+  const POM = { x: 150, y: 630, w: 780, h: 780 };
+  const MY0 = 686;                                              // premier bandeau, sous le rabat fermé (630 → 702)
   const MD = [
     { name: 'Contrôle', value: '78 €', ring: { num: '6', unit: 'mois' } },
     { name: 'Situation adm.', value: '0 €', ring: { num: '15', unit: 'j' } },
@@ -234,18 +245,18 @@
     { name: 'Carte grise', value: 'à barrer', ring: { num: '1', unit: 'mois' } },
     { name: 'Déclaration · ANTS', value: '0 €', ring: { num: '15', unit: 'j' } },
   ].map((s) => KP.doc(LMc, { ...s, wb: 740 }));
-  const xl2 = el('div', 'xl', MD[0].root, 'color:rgba(246,239,231,.7)'); xl2.textContent = '2 ans pour rouler';
+  const xl2 = el('div', 'xl', MD[0].root, 'color:rgba(246,239,231,.85)'); xl2.textContent = '2 ans pour rouler';
   const xl6 = el('div', 'xl', MD[0].root, 'color:#ffb38a'); xl6.textContent = '< 6 mois à sa carte grise';
   const mSvg = sv('svg', { width: 1080, height: 1920, viewBox: '0 0 1080 1920', style: 'position:absolute;left:0;top:0;overflow:visible' }, LMc);
   const totBar = KP.stroke(mSvg, 'M190 0 L890 0', { w: 5, gw: 14 });
   const tot = el('div', 'tot', LMc); const totA = el('span', 'a', tot); totA.textContent = 'Pochette :'; const totB = el('span', 'b', tot); totB.innerHTML = KP.clash('78 €');
   // le verdict : le contrôle reçu à l'achat (10 mars) n'est plus bon pour vendre
   const ach = KP.doc(LMc, { name: "Contrôle d'achat", value: '10 mars', ring: { num: '6', unit: 'mois' }, h: 250 });
-  const achSub = el('div', 'kp-sub', ach.root, 'font:500 32px Satoshi;line-height:32px'); achSub.textContent = "bon jusqu'au 9 sept.";
+  const achSub = el('div', 'kp-sub', ach.root, 'font:700 38px Satoshi;line-height:38px;color:rgba(246,239,231,.85)'); achSub.textContent = 'vendre ≤ 9 sept.';   // 10 mars → 9 sept. : six mois pour vendre avec ce contrôle
   const achStrike = KP.stroke(ach.fx, 'M150 128 C320 108 540 84 742 52', { w: 7, color: '#ff8a4c', glow: '#ff5a1f', gw: 18 });
   defs(ach.fx, 'ach');
   const achW1 = word(ach.fx, 'refait', '500 54px Fraunces', 54, 168, 222, { align: 'left', italic: true, fill: 'url(#qgach)', strokeColor: '#ffb38a', sw: 1.6 });
-  const achW2 = word(ach.fx, 'le 6 oct. · 78 €', '700 40px Satoshi', 40, 168 + achW1.width + 16, 222, { align: 'left', strokeColor: '#ffd9c2', sw: 1.6 });
+  const achW2 = word(ach.fx, 'le 6 oct. · 78 €', '700 48px Satoshi', 48, 168 + achW1.width + 16, 222, { align: 'left', strokeColor: '#ffd9c2', sw: 1.6 });
   const eclair = KP.stroke(mSvg, 'M300 0 L322 24 L296 36 L318 70', { w: 5, gw: 16 });
 
   // ---------- chute : tout s'éteint, « 20 min » géant, la tasse revient ----------
@@ -277,9 +288,9 @@
     const st = story(t), hk = hook(t), c = cam(t);
     const cW = part(c, 1, 1, 1, 1), cB = part(c, 0.6, 0.4, 0.5, 0.5), cU = part(c, 0.45, 0.22, 0.25, 0.08), cH = part(c, 0.3, 0.1, 0.15, 0.04);
     // présence des éléments de l'image 0 (horloge, libellé, bulle, tasse) : ils cèdent la place au mardi, puis reviennent
-    const pOut = sm(T.flaps, T.flaps + 0.35, t), pIn = eo(LOOP + 0.35, DUR - 0.08, t);
+    const pOut = sm(T.flaps, T.flaps + 0.35, t), pIn = eo(LOOP + 0.45, DUR - 0.08, t);
     const pres = t < LOOP ? 1 - pOut : pIn;
-    const mIn = sm(REW[1] - 0.35, REW[1] + 0.3, t) * (t < LOOP ? 1 : 1 - eo(LOOP, LOOP + 1.1, t));    // le mardi
+    const mIn = sm(REW[1] - 0.35, REW[1] + 0.3, t) * (t < LOOP ? 1 : 1 - eo(LOOP + 0.36, LOOP + 1.15, t));    // le mardi ; la C3 revient sur un fond vide
     const big0 = sm(T.big, T.big + 0.25, st) * (1 - sm(REW[0] - 0.05, REW[0] + 0.2, t));               // « 20 min » : tout s'éteint
     const rew = sm(REW[0], REW[0] + 0.12, t) * (1 - sm(REW[1] - 0.12, REW[1], t)) + sm(R1[0], R1[0] + 0.06, t) * (1 - sm(R1[1] - 0.06, R1[1], t));
 
@@ -327,16 +338,30 @@
     }
     // l'attente : tout se met en retrait autour du virement
     const focus = sm(T.wait - 0.25, T.wait + 0.2, st) * (1 - sm(T.recu - 0.1, T.recu + 0.2, st));
+    // le gag arrive seul : la pile passe en retrait jusqu'à l'extinction de « 20 min » (la seconde sortie de la C3 se voit
+    // derrière) ; le gag grandit, puis rentre dans le rang quand les clés arrivent, et reste plein jusqu'à l'extinction
+    const gagF = sm(T.gag + 0.1, T.gag + 0.3, st) * (1 - sm(T.cles - 0.1, T.cles + 0.1, st));
+    const pileF = sm(T.gag + 0.1, T.gag + 0.3, st);
     SD.forEach((s, i) => {
-      const a = S(st, s.t, P.card), k = KP.depth(st, ST, i), on = sm(s.t - 0.02, s.t + 0.06, st) * (1 - clamp(k - 4, 0, 1)) * (s.d === dVir ? 1 : 1 - 0.5 * focus);
+      const dimF = s.cles || s.gag ? 0 : pileF;
+      const a = S(st, s.t, P.card), k = KP.depth(st, ST, i), on = sm(s.t - 0.02, s.t + 0.06, st) * (1 - sm(4.0, 4.3, k)) * (s.d === dVir ? 1 : 1 - 0.75 * focus) * (1 - 0.72 * dimF);
       const bk = clamp(k - 2, 0, 1), y = KP.along(PY, k) + (s.from === 'p' ? (1 - a) * 600 : 0), x = (s.from === 'r' ? 1150 * (1 - a) : 0) + 160;
-      const b = s.from === 'p' ? Math.max(1 - a, bk) : bk, sc = 1 - 0.05 * clamp(k - 4, 0, 1);
+      const b = s.from === 'p' ? Math.max(1 - a, bk) : bk, sc = (1 - 0.05 * clamp(k - 4, 0, 1)) * (1 - 0.04 * dimF);
       if (s.d) {
         const remK = s.rem == null ? null : [lerp(1, s.rem, S(st, s.t + 0.35, { f: 1.2, z: 1 })) * S(st, s.t + 0.02, P.draw), sm(s.t, s.t + 0.05, st) * (1 - sm(s.t + 0.65, s.t + 0.85, st))];
         const sw = s.d === dVir ? S(st, T.recu, { f: 2.2, z: 1 }) : 0;
         const shk = s.d === dVir ? bump(st, T.recu, 0.32) * Math.sin((st - T.recu) * 110) * 7 : 0;
-        KP.paintDoc(s.d, { x: x + shk, y, b, k: on, sc, ring: remK, swap: sw, lit: s.d === dDecl ? 0.85 * sm(T.zero, T.zero + 0.12, st) : 0 });
+        KP.paintDoc(s.d, { x: x + shk, y, b, k: on, sc, ring: remK, swap: sw, lit: s.d === dDecl ? sm(T.zero, T.zero + 0.12, st) : 0 });
         clipX(s.d.root, x, x + 760 - 20 * b);
+        // une carte qui sort de la pochette : son texte n'entre qu'une fois la carte sortie (jamais lu à travers le verre des autres)
+        if (s.from === 'p') { const tk = sm(0.75, 0.97, a); for (const e of [s.d.name.e, s.d.value.e]) e.style.opacity = f3(+e.style.opacity * tk); }
+        // la carte se replie en bandeau en passant le liseré de la pochette (k de 2 à 3) : son texte sort au début du
+        // repli et revient une fois le bandeau rangé (règle du conteneur qui se transforme, comme au mardi)
+        s.fold = sm(2.02, 2.2, k) * (1 - sm(2.8, 2.98, k));
+        if (s.fold > 0.001) for (const e of [s.d.name.e, s.d.value.e, s.d.name2 && s.d.name2.e, s.d.value2 && s.d.value2.e]) if (e) e.style.opacity = f3(+e.style.opacity * (1 - s.fold));
+        if (s.d.badgeT) for (const e of s.d.badgeT) e.style.opacity = f3(1 - (s.fold || 0));   // « 6 », « mois » de l'anneau aussi
+        // « 0,00 € » : appui d'échelle 1,12 → 1 sur « 0 » (ressort amorti, sans dépassement)
+        if (s.d === dDecl) { const zp = sm(T.zero - 0.06, T.zero + 0.02, st) * (1 - S(st, T.zero + 0.02, { f: 2.4, z: 1 })); if (zp > 0.001) s.d.value.e.style.transform += ` scale(${f3(1 + 0.12 * zp)})`; }
         // la carte qui sort de la pochette monte derrière les autres (verre dépoli devant), puis passe au premier plan
         s.d.root.style.zIndex = s.from === 'p' && a < 0.97 ? 1 : 100 - Math.round(10 * k);
         s.b = b;
@@ -348,24 +373,27 @@
         set(el2, on);
         if (el2.style.visibility !== 'hidden') {
           el2.style.zIndex = 100 - Math.round(10 * k);
-          el2.style.transform = gg ? `translate(${f3(x - 160 + 150 + jx)}px,${f3(y - 7)}px) rotate(${f3(rot)}deg) scale(.9)` : `translate(${f3(x)}px,${f3(y)}px)`;
-          if (gg) clipX(el2, x - 160 + 540 - 351 + jx, x - 160 + 540 + 351 + jx + 8, 0.9); else clipX(el2, x, x + 760);
-          if (s.cles) drawCrop(clesCv, IMG.cles, st - s.t + 0.4, 0.42, 0.62, 1.15);
+          const gsc = gg ? (0.92 + 0.08 * gagF) * (1 - 0.04 * dimF) : 1, gy = y - (GAG.h - 170) / 2 - 20 * gagF;   // posé 20 px plus haut : la carte du dessous reste à découvert
+          el2.style.transform = gg ? `translate(${f3(x + jx)}px,${f3(gy)}px) rotate(${f3(rot)}deg) scale(${f3(gsc)})` : `translate(${f3(x)}px,${f3(y)}px) scale(${f3(sc)})`;
+          if (gg) clipX(el2, x + jx + GAG.w * (1 - gsc) / 2, x + jx + GAG.w * (1 + gsc) / 2 + 8, gsc); else clipX(el2, x, x + 760);
+          if (s.cles) drawCrop(clesCv, IMG.cles, st - s.t + 0.4, 0.5, 0.45, 2.2);   // cadré sur l'anneau et les clés
         }
       }
     });
     // le virement : le cercle de lumière se trace pendant l'attente, se ferme sur « Virement reçu »
     const vr = sm(T.wait - 0.3, T.wait + 0.1, st) * (1 - sm(T.recu + 0.15, T.recu + 0.4, st));
-    set(virRing.r, vr); virRing.r.style.transform = `translate(622px,30px) scale(${f3(1 + 0.25 * sm(T.recu, T.recu + 0.4, st))})`;
+    set(virRing.r, vr); virRing.r.style.transformOrigin = '50% 50%';
+    virRing.r.style.transform = `translate(593px,30px) scale(${f3(1.6 * (1 + 0.2 * sm(T.recu, T.recu + 0.4, st)))})`;
     KP.paintBadge(virRing, Math.min(1, 0.08 + 0.8 * clamp((st - T.wait) / (T.recu - T.wait), 0, 1) + 0.12 * S(st, T.recu - 0.05, P.snappy || { f: 3, z: 1 })), sm(T.wait - 0.2, T.wait, st) * (1 - sm(T.recu, T.recu + 0.15, st)));
     // la cession : deux signatures, deux tampons
-    const cb = SD[2].b || 0;
-    sigs.forEach((g, i) => KP.paintStroke(g, S(st, T.sig[i] - 0.12, { f: 1.6, z: 1 }), 1 - 0.6 * cb));
-    signed.forEach((s, i) => { const p = S(st, T.sig[i] + 0.12, P.stamp); set(s, sm(T.sig[i] + 0.1, T.sig[i] + 0.16, st) * (1 - cb)); s.style.transform = `translateY(${f3(-70 * cb)}px) rotate(-8deg) scale(${f3(lerp(1.8, 1, p) * (1 - 0.4 * cb))})`; });
+    const cb = SD[2].b || 0, cf = 1 - (SD[2].fold || 0);
+    sigs.forEach((g, i) => KP.paintStroke(g, S(st, T.sig[i] - 0.12, { f: 1.6, z: 1 }), (1 - 0.6 * cb) * cf));
+    signed.forEach((s, i) => { const p = S(st, T.sig[i] + 0.12, P.stamp); set(s, sm(T.sig[i] + 0.1, T.sig[i] + 0.16, st) * (1 - cb) * cf); s.style.transform = `translateY(${f3(-70 * cb)}px) rotate(-8deg) scale(${f3(lerp(1.8, 1, p) * (1 - 0.4 * cb))})`; });
     // la carte grise : barrée, mention écrite, signée
     KP.paintStroke(cgStrike, S(st, T.cg, P.pen));
-    writeWord(cgW, st, T.cgW, 0.022, 14, 1 - 0.85 * clamp(KP.depth(st, ST, 3) - 2, 0, 1));
-    KP.paintStroke(cgSig, S(st, T.cgS, { f: 1.6, z: 1 }), 1 - clamp(KP.depth(st, ST, 3) - 2, 0, 1));
+    const cgK = 1 - sm(2.02, 2.2, KP.depth(st, ST, 3));             // « Vendu le… » et la signature sortent au début du repli
+    writeWord(cgW, st, T.cgW, 0.022, 14, cgK);
+    KP.paintStroke(cgSig, S(st, T.cgS, { f: 1.6, z: 1 }), cgK);
     const vOut = sm(T.cgW - 0.1, T.cgW + 0.1, st);
     dCg.value.e.style.opacity = f3(+dCg.value.e.style.opacity * (1 - vOut)); dCg.value.e.style.transform += ` translateY(${f3(-24 * vOut)}px)`;
 
@@ -377,7 +405,7 @@
     const bw = track(st, QK), bPres = pres * (1 - sm(T.phone - 0.05, T.phone + 0.2, st));
     set(bub, bPres);
     bub.style.width = `${f3(bw)}px`;
-    bub.style.transform = `translate(${f3(BUB.x + shake)}px,${f3(BUB.y - 70 * bOut + 40 * (1 - pres))}px) scale(${f3((1 + 0.05 * pulse) * (1 - 0.12 * bOut) * (0.92 + 0.08 * pres))})`;
+    bub.style.transform = `translate(${f3(BUB.x + shake)}px,${f3(BUB.y - 70 * bOut + 40 * (1 - pres))}px) scale(${f3((1 + 0.1 * pulse) * (1 - 0.12 * bOut) * (0.92 + 0.08 * pres))})`;
     const qPop = Math.max(...T.q.map((x) => bump(st, x, 0.22)));
     if (qPop > 0) bub.style.transform += ` scale(${f3(1 + 0.04 * qPop)})`;
     qEl.forEach((e, j) => {
@@ -387,34 +415,39 @@
     });
     const rp = clamp((hk - T.sonne) / 0.5, 0, 1);
     set(ripple, (rp > 0 && rp < 1 ? 0.9 * (1 - rp) : 0) * bPres); ripple.style.width = `${f3(bw)}px`;
-    ripple.style.transform = `translate(${f3(BUB.x)}px,${BUB.y}px) scale(${f3(1 + 0.22 * rp)})`;
+    ripple.style.transform = `translate(${f3(BUB.x)}px,${BUB.y}px) scale(${f3(1 + 0.5 * rp)})`;
     const bfa = S(hk, T.bf, P.card);
     set(bf, sm(T.bf - 0.02, T.bf + 0.06, hk));
-    bf.style.transform = `translate(${f3(900 - bfW + 380 * (1 - bfa))}px,650px) rotate(${f3(-4 - 6 * (1 - bfa))}deg)`;
-    clipX(bf, 900 - bfW + 380 * (1 - bfa), 900 + 380 * (1 - bfa) + 10);
-    const cOut = S(st, T.phone - 0.02, P.push);
-    paintCup(cupA, { x: 700 + 120 * cOut, y: 542 + 30 * (1 - pres) - 40 * cOut, sc: 0.86 * (1 - 0.2 * cOut) * (0.9 + 0.1 * pres), k: pres * (1 - sm(T.phone, T.phone + 0.25, st)), t });
+    const btr = bump(t, T.croit, 0.32), bjx = noise(24, t * 11) * 8 * btr;   // temps du film : le tremblement ne rejoue pas au retour court
+    const BFS = 1.35, bfX = 540 - bfW / 2 + 380 * (1 - bfa) + bjx;
+    bf.style.transform = `translate(${f3(bfX)}px,900px) rotate(${f3(-4 - 6 * (1 - bfa) + noise(23, t * 9) * 2.2 * btr)}deg) scale(${BFS})`;
+    clipX(bf, bfX + bfW * (1 - BFS) / 2, bfX + bfW * (1 + BFS) / 2 + 10, BFS);
+    const cOut = S(st, T.c[0] - 0.15, P.push);
+    paintCup(cupA, { x: 700 + 120 * cOut, y: 542 + 30 * (1 - pres) - 40 * cOut, sc: 0.86 * (1 - 0.2 * cOut) * (0.9 + 0.1 * pres), k: pres * (1 - sm(T.c[0] - 0.1, T.c[0] + 0.15, st)), t });
 
     // M : mardi, la pochette se remplit
-    const mOut = t < LOOP ? 0 : S(t, LOOP - 0.02, P.push), mK = sm(REW[1] - 0.3, REW[1] - 0.1, t) * (1 - sm(LOOP + 0.04, LOOP + 0.42, t));
+    const mOut = t < LOOP ? 0 : S(t, LOOP - 0.02, P.push), mK = sm(REW[1] - 0.3, REW[1] - 0.1, t) * (1 - sm(LOOP + 0.22, LOOP + 0.36, t));   // il monte et rapetisse d'abord, puis disparaît
     const cM = part(c, 0.5, 0.3, 0.3, 0.1);
     for (const L of [LMb, LMc, LMf]) { L.style.transform = tf(cM, `translateY(${f3(-240 * mOut)}px) scale(${f3(1 - 0.4 * mOut)})`); set(L, mK); }
     if (mK > 0.002) {
       const ma = S(t, T.pochM, P.card);
       KP.paintFolder(PM, { x: POM.x, y: lerp(1500, POM.y, ma), w: POM.w, h: POM.h, k: sm(T.pochM - 0.02, T.pochM + 0.1, t), open: 1 - S(t, T.close, { f: 1.5, z: 0.85 }),
         stamp: S(t, T.pret, P.stamp), stampK: sm(T.pret - 0.02, T.pret + 0.05, t) });
-      const g2 = S(t, T.l2, P.card), g6 = S(t, T.l6, P.card), grow = 46 * g2 + 46 * g6;
+      const g2 = S(t, T.l2, P.card), g6 = S(t, T.l6, P.card), grow = 52 * g2 + 52 * g6;
       MD.forEach((d, i) => {
         const t0 = T.m[i] - 0.12, a = S(t, t0, P.card), dr = S(t, T.m[i] + 0.36, P.card);
-        const yb = 656 + i * 102 + (i ? grow : 0);
+        const yb = MY0 + i * 102 + (i ? grow : 0);
         const mx = lerp(160 + 1150 * (1 - a), 160, dr); clipX(d.root, mx, mx + 760 - 10 * dr);
         KP.paintDoc(d, { x: mx, y: lerp(400, yb, dr), b: dr, k: sm(t0 - 0.02, t0 + 0.06, t), hx: i ? 0 : grow * dr,
           ring: [S(t, t0 + 0.05, P.draw), sm(t0 + 0.04, t0 + 0.1, t) * (1 - sm(t0 + 0.5, t0 + 0.7, t))] });
+        // la carte se replie en bandeau en tombant sur les autres : son texte sort au début du repli, revient à la fin
+        const dk = 1 - sm(0.02, 0.22, dr) * (1 - sm(0.72, 0.95, dr));
+        if (dk < 0.999) for (const e of [d.name.e, d.value.e]) e.style.opacity = f3(+e.style.opacity * dk);
       });
       // les deux lignes du contrôle : deux ans pour rouler, moins de six mois à la carte grise de l'acheteur
       set(xl2, g2); xl2.style.transform = `translate(104px,${f3(94 + 10 * (1 - g2))}px)`;
-      set(xl6, g6); xl6.style.transform = `translate(104px,${f3(140 + 10 * (1 - g6))}px)`;
-      const yTot = 656 + 4 * 102 + 90 + 92 + 20;
+      set(xl6, g6); xl6.style.transform = `translate(104px,${f3(146 + 10 * (1 - g6))}px)`;
+      const yTot = MY0 + 4 * 102 + 90 + 104 + 20;
       KP.paintStroke(totBar, S(t, T.total, P.pen)); totBar.l.parentNode && [totBar.g, totBar.l].forEach((e) => e.setAttribute('transform', `translate(0,${yTot})`));
       const ta = S(t, T.total + 0.12, P.rise), tb = S(t, T.total + 0.3, { f: 2.4, z: 0.85 });
       tot.style.top = `${yTot + 16}px`; set(tot, ta); totA.style.transform = `translateY(${f3(22 * (1 - ta))}px)`;
@@ -423,9 +456,9 @@
       const aa = S(t, T.achat, P.card);
       clipX(ach.root, 160 + 1150 * (1 - aa), 920 + 1150 * (1 - aa));
       KP.paintDoc(ach, { x: 160 + 1150 * (1 - aa), y: 340, k: sm(T.achat - 0.02, T.achat + 0.06, t), ring: [S(t, T.achat + 0.04, P.draw) * (1 - S(t, T.vide, { f: 0.9, z: 1 })), sm(T.achat, T.achat + 0.06, t) * (1 - sm(T.vide + 0.7, T.vide + 0.9, t))] });
-      achSub.style.transform = `translate(${f3(168 + 256 + 26)}px,108px)`;
+      achSub.style.transform = `translate(${f3(168 + 256 + 24)}px,106px)`;
       KP.paintStroke(achStrike, S(t, T.strike, P.pen));
-      writeWord(achW1, t, T.refait, 0.045, 18); writeWord(achW2, t, T.refait + 0.22, 0.03, 18);
+      writeWord(achW1, t, T.refait, 0.045, 18); writeWord(achW2, t, T.refait + 0.22, 0.018, 18);
       KP.paintStroke(eclair, S(t, T.eclair, { f: 2.2, z: 1 }), 1 - sm(T.eclair + 0.5, T.eclair + 0.8, t));
       [eclair.g, eclair.l].forEach((e) => e.setAttribute('transform', 'translate(0,590)'));
     }
@@ -436,13 +469,13 @@
     LH.style.transform = tf(cH);
     const labK = (t < LOOP ? 1 - pOut : 1) * (1 - 0.78 * big0);
     LW.forEach((w, i) => {
-      const r = t < LOOP ? 1 : eo(LOOP + 0.3 + 0.07 * i, LOOP + 0.75 + 0.07 * i, t);
+      const r = t < LOOP ? 1 : eo(LOOP + 0.38 + 0.07 * i, LOOP + 0.83 + 0.07 * i, t);
       set(w, labK * r); w.style.transform = `translateY(${f3(18 * (1 - r) - 14 * (t < LOOP ? pOut : 0))}px)`;
     });
     const idx = t < R1[1] ? [track(hk, KH[0]), track(hk, KH[1])] : [track(st, KV[0]), track(st, KV[1])];
     idx[1] += 0.3 * Math.abs(Math.sin(Math.PI * 1.5 * (st - T.wait))) * sm(T.wait, T.wait + 0.15, st) * (1 - sm(T.recu - 0.2, T.recu - 0.02, st));   // la colonne hésite entre 4 et 5
     const mg = sm(T.big - 0.02, T.big + 0.16, st), hg = sm(T.big - 0.05, T.big + 0.22, st);
-    const cfOut = (i) => sm(T.flaps + 0.05 * i, T.flaps + 0.3 + 0.05 * i, t), cfIn = (i) => eo(LOOP + 0.2 + 0.07 * i, LOOP + 0.85 + 0.07 * i, t);
+    const cfOut = (i) => sm(T.flaps + 0.05 * i, T.flaps + 0.3 + 0.05 * i, t), cfIn = (i) => eo(LOOP + 0.3 + 0.07 * i, LOOP + 0.95 + 0.07 * i, t);   // après le départ du mardi (LOOP + 0,36)
     CK.paintClock(CKC, idx, {
       k: 1, colonK: (1 - hg) * (t < LOOP ? 1 - cfOut(1.5) : cfIn(1.5)), colonDx: -70 * hg, blink: 0.5 + 0.5 * Math.cos(2 * Math.PI * Math.round(DUR) * t / DUR),
       cell: (i) => {
@@ -452,7 +485,7 @@
     });
     // palettes « MAR 6 OCT » : elles prennent la place de l'horloge, puis se réduisent en libellé
     const fShrink = S(t, T.mardi - 0.05, P.heavy);
-    FLG.style.transform = `translateY(${f3(-121 * fShrink)}px) scale(${f3(1 - 0.66 * fShrink)})`;
+    FLG.style.transform = `translateY(${f3(-111 * fShrink)}px) scale(${f3(1 - 0.5 * fShrink)})`;   // lettres de 42 px (14 px à 360)
     FL.forEach((f, i) => {
       const p = S(t, T.flaps + 0.08 + i * 0.05, P.flip), q = t < LOOP ? 0 : eo(LOOP + 0.02 * i, LOOP + 0.3 + 0.02 * i, t);
       f.s.textContent = p < 0.72 ? 'ARTVQMEZ'[(Math.floor(p * 9) + i * 3) % 8] : f.c;
@@ -473,7 +506,7 @@
     const cupK = sm(T.tasse - 0.02, T.tasse + 0.06, t) * (1 - tOut);
     set(LT, cupK);
     paintCup(cupB, { x: 540 - 64 * 1.55, y: 868 - 30 * tOut + 16 * (1 - S(t, T.tasse, P.rise)), sc: 1.55 * (1 - 0.15 * tOut), k: 1, draw: S(t, T.tasse, { f: 1.3, z: 1 }), steam: sm(T.tasse + 0.3, T.tasse + 0.8, t), t });
-    writeWord(wChaud, t, T.chaud, 0.04);
+    writeWord(wChaud, t, T.chaud, 0.025);
 
     // effets
     set(mention, 1);

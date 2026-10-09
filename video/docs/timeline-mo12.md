@@ -440,7 +440,7 @@ claquent), 1092 (bande qui rembobine), 1063 (tic-tac), 1538 et 1566 (moteur : d�
 | 4,45 | retour court | 3120 à l'envers + 1054 | whoosh 0,5 s ; tick st −2 |
 | 4,95 | carte de l'essai, 11:01 → 11:09 | 1554 (0,8 s) + 1054 | whoosh −6 dB ; tick 0,8 s |
 | 6,50 · 7,00 | la pochette monte, le rabat s'ouvre | 1530 · 1105 | ui −4 dB · ui −2 dB |
-| 7,25 · 7,75 · 8,25 · 8,75 | la bulle change de question | 1124 | tick +6 dB, pan −0,2 |
+| ~~7,25 · 7,75 · 8,25 · 8,75~~ | la bulle change de question : **retiré au round 2** (la carte sort 0,1 s avant sa question, sa note porte la paire) | ~~1124~~ | — |
 | 7,50 · 8,00 · 8,50 · 9,00 | une carte sort et répond | 2354 st 0, 2, 4, 5 (+ 2380 −6 dB) | ui, une note qui monte, un son principal à la fois |
 | 9,40 | les mains sur le téléphone | 1393 (1,2 s) | tool, pan +0,2 |
 | 10,60 → 12,00 | l'attente | 1063 | tick, discret (la basse sort de la musique) |

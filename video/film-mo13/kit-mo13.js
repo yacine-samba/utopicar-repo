@@ -90,7 +90,8 @@
     let x = 0; const xs = []; let tot = 0; const vis = [];
     F.cells.forEach((c, i) => {
       const keys = [[0, 0]]; let prev = '', last = null;
-      ev.forEach((e, j) => { const ch = S0[j][i]; const ts = e[0] + i * step; if (ch !== prev) { keys.push([ts, ch ? 1 : 0, P.heavy]); if (t >= ts) last = { ts, ch, from: prev }; prev = ch; } });
+      // le nombre tombe à l'heure de l'événement (sans attendre la vague du mot) : « SEMAINE 8 → 11 » suit la voix
+      ev.forEach((e, j) => { const ch = S0[j][i]; const ts = e[0] + (c.num ? i - F.nW : i) * step; if (ch !== prev) { keys.push([ts, ch ? 1 : 0, P.heavy]); if (t >= ts) last = { ts, ch, from: prev }; prev = ch; } });
       vis[i] = clamp(track(t, keys), 0, 1.2);
       c.last = last;
     });
@@ -101,10 +102,13 @@
       if (i === F.nW) x += F.gap;
       xs[i] = x; x += (F.w + F.g) * vis[i];
       const L = c.last; let ch = '', p = 1;
-      if (L) { p = S(t, L.ts, P.flip); ch = p < 0.72 ? (L.ch || L.from ? SCR[(Math.floor(p * 9) + i * 3) % SCR.length] : '') : (L.ch || L.from); }
+      // les lettres défilent pendant le retournement ; un chiffre, lui, se déplie directement (un chiffre de passage se lirait comme une autre semaine)
+      if (L) { p = S(t, L.ts, P.flip); ch = c.num ? (L.ch || L.from) : p < 0.72 ? (L.ch || L.from ? SCR[(Math.floor(p * 9) + i * 3) % SCR.length] : '') : (L.ch || L.from); }
       c.s.textContent = ch;
       const vv = clamp(vis[i], 0, 1);
-      c.d.style.transform = `translateX(${f3(xs[i])}px) perspective(700px) rotateX(${f3((1 - clamp(p, 0, 1.05)) * 92)}deg) scale(${f3(0.7 + 0.3 * vv)})`;
+      // perspective seulement pendant le retournement : une case posée reste un calque 2D (moins cher à composer)
+      const rx = (1 - clamp(p, 0, 1.05)) * 92;
+      c.d.style.transform = Math.abs(rx) < 0.05 ? `translateX(${f3(xs[i])}px) scale(${f3(0.7 + 0.3 * vv)})` : `translateX(${f3(xs[i])}px) perspective(700px) rotateX(${f3(rx)}deg) scale(${f3(0.7 + 0.3 * vv)})`;
       set(c.d, sm(0, 0.12, p) * vv * k);
     });
     F.plate.style.left = `${f3(540 - tot / 2 - F.pad)}px`; F.plate.style.width = `${f3(tot + 2 * F.pad)}px`;
@@ -123,7 +127,8 @@
     sv('stop', { offset: 0, 'stop-color': '#ffd9c2', 'stop-opacity': 0.30 }, gRis); sv('stop', { offset: 0.12, 'stop-color': '#fff', 'stop-opacity': 0.12 }, gRis); sv('stop', { offset: 0.45, 'stop-color': '#fff', 'stop-opacity': 0.05 }, gRis); sv('stop', { offset: 1, 'stop-color': '#fff', 'stop-opacity': 0 }, gRis);
     const gSh = sv('linearGradient', { id: 'ss' + id, x1: 0, y1: 0, x2: 1, y2: 0 }, d);
     sv('stop', { offset: 0, 'stop-color': '#fff', 'stop-opacity': 0 }, gSh); sv('stop', { offset: 0.42, 'stop-color': '#fff', 'stop-opacity': 0 }, gSh); sv('stop', { offset: 0.5, 'stop-color': '#fff', 'stop-opacity': 0.22 }, gSh); sv('stop', { offset: 0.58, 'stop-color': '#fff', 'stop-opacity': 0 }, gSh); sv('stop', { offset: 1, 'stop-color': '#fff', 'stop-opacity': 0 }, gSh);
-    const soft = sv('filter', { id: 'sf' + id, x: '-10%', y: '-60%', width: '120%', height: '220%' }, d); sv('feGaussianBlur', { stdDeviation: 7 }, soft);
+    // lueur sans filtre SVG (le flou gaussien se recalculait à chaque image : la caméra bouge le monde) : traits larges translucides, halo en dégradé radial
+    const pg = sv('radialGradient', { id: 'pg' + id }, d); sv('stop', { offset: 0, 'stop-color': '#ff7a3a', 'stop-opacity': 0.75 }, pg); sv('stop', { offset: 0.45, 'stop-color': '#ff7a3a', 'stop-opacity': 0.35 }, pg); sv('stop', { offset: 1, 'stop-color': '#ff7a3a', 'stop-opacity': 0 }, pg);
     const g = sv('g', { transform: `translate(${a + PADX},${b + PADY})` }, s);
     const ris = `M${-a} 0 A${a} ${b} 0 0 0 ${a} 0 L${a} ${R} A${a} ${b} 0 0 1 ${-a} ${R} Z`;
     const riser = sv('path', { d: ris, fill: `url(#sr${id})` }, g);
@@ -132,15 +137,16 @@
     sv('ellipse', { cx: 0, cy: 3, rx: a - 18, ry: b - 9, fill: 'none', stroke: 'rgba(255,255,255,.12)', 'stroke-width': 1.2 }, g);
     const edgeD = `M${-a} 0 A${a} ${b} 0 0 0 ${a} 0`;
     const lis = sv('path', { d: edgeD, fill: 'none', stroke: 'rgba(255,236,224,.55)', 'stroke-width': 2.2 }, g);
-    const glow = sv('path', { d: edgeD, fill: 'none', stroke: '#ff7a3a', 'stroke-width': 13, filter: `url(#sf${id})`, 'stroke-linecap': 'round' }, g);
+    const glow = sv('g', {}, g);
+    const glowP = [[30, 0.12], [17, 0.22], [9, 0.4]].map(([w, o]) => sv('path', { d: edgeD, fill: 'none', stroke: '#ff7a3a', 'stroke-width': w, 'stroke-opacity': o, 'stroke-linecap': 'round' }, glow));
     const edge = sv('path', { d: edgeD, fill: 'none', stroke: '#ffe8d8', 'stroke-width': 4, 'stroke-linecap': 'round' }, g);
     const L = edge.getTotalLength();
-    for (const e of [glow, edge]) { e.setAttribute('stroke-dasharray', `${f3(L)} ${f3(L)}`); e.setAttribute('stroke-dashoffset', f3(L)); }
-    const pen = sv('g', {}, g); sv('circle', { r: 26, fill: '#ff7a3a', opacity: 0.6, filter: `url(#sf${id})` }, pen); sv('circle', { r: 7, fill: '#fff' }, pen);
+    for (const e of [...glowP, edge]) { e.setAttribute('stroke-dasharray', `${f3(L)} ${f3(L)}`); e.setAttribute('stroke-dashoffset', f3(L)); }
+    const pen = sv('g', {}, g); sv('circle', { r: 34, fill: `url(#pg${id})` }, pen); sv('circle', { r: 7, fill: '#fff' }, pen);
     const txt = sv('g', {}, g);
     const w = label ? word(txt, label, '600 40px Clash', 40, 0, b + 58, { sw: 1.6 }) : null;
     if (w) { const ck = w.items[w.items.length - 1]; if (ck && ck.ch === '✓') { ck.fill.setAttribute('fill', '#ffb38a'); } }
-    return { s, g, X, Y, a, b, R, riser, sheen, top, lis, glow, edge, L, pen, txt, w };
+    return { s, g, X, Y, a, b, R, riser, sheen, top, lis, glow, glowP, edge, L, pen, txt, w };
   }
 
   // ---------- étiquette en papier, suspendue au rétroviseur par un fil ----------
@@ -197,5 +203,30 @@
     x.filter = `blur(${blur}px)`; x.translate(0, c.height); x.scale(1, -1); x.drawImage(img, 0, 0, c.width, c.height); return c;
   }
 
-  root.Kit13 = { blurCanvas, paintSeq, rollKeys2, plateCounter, paintPlateCounter, plateFlaps, paintPlateFlaps, glassStep, paperTag, ticket, fit, flat, silhouette, reflection };
+  // ---------- écriture à la lumière, sans calque d'opacité ----------
+  // Même rendu que Kit47.writeWord, mais en fill-opacity / stroke-opacity : l'attribut opacity ouvrait un calque par
+  // glyphe (≈ 200 glyphes sur la carte). Une fois le glyphe écrit, le contour pointillé se cache et le léger liseré
+  // restant (15 %) passe sur le glyphe lui-même (paint-order : contour sous le remplissage, comme avant).
+  function prep(g) {
+    if (g._p) return; g._p = 1;
+    for (const a of ['stroke', 'stroke-width']) g.fill.setAttribute(a, g.stroke.getAttribute(a));
+    g.fill.setAttribute('stroke-linejoin', 'round'); g.fill.setAttribute('paint-order', 'stroke'); g.fill.setAttribute('stroke-opacity', '0');
+  }
+  function writeWord(w, t, t0, step = 0.05, dy = 26, k = 1) {
+    w.items.forEach((g, i) => {
+      prep(g);
+      const ts = t0 + i * step, dr = S(t, ts, P.draw), fi = S(t, ts + 0.16, P.rise);
+      const so = sm(ts - 0.01, ts + 0.04, t) * (1 - 0.85 * fi) * k, done = fi >= 0.999 && dr >= 0.999;
+      g.stroke.setAttribute('stroke-dashoffset', f3(g.L * (1 - dr)));
+      g.stroke.setAttribute('stroke-opacity', f3(so));
+      g.stroke.style.visibility = done || so < 0.002 ? 'hidden' : 'visible';
+      g.fill.setAttribute('fill-opacity', f3(fi * k)); g.fill.setAttribute('stroke-opacity', done ? f3(so) : '0');
+      g.fill.style.visibility = fi * k < 0.002 ? 'hidden' : 'visible';
+      g.g.setAttribute('transform', `translate(0,${f3((1 - fi) * dy)})`);
+    });
+  }
+  // un mot déjà écrit : tout plein, aucun contour
+  function fullWord(w, k = 1) { w.items.forEach((g) => { g.stroke.style.visibility = 'hidden'; g.fill.setAttribute('fill-opacity', f3(k)); g.fill.style.visibility = k < 0.002 ? 'hidden' : 'visible'; g.g.setAttribute('transform', ''); }); }
+
+  root.Kit13 = { writeWord, fullWord, blurCanvas, paintSeq, rollKeys2, plateCounter, paintPlateCounter, plateFlaps, paintPlateFlaps, glassStep, paperTag, ticket, fit, flat, silhouette, reflection };
 })(window);
