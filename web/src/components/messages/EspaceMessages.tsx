@@ -1,4 +1,5 @@
 "use client";
+import { useConfirmation } from "../espace/Confirmation";
 /* Messages Leboncoin (option de Benef Pro). En haut : « Paramètres » (compte Leboncoin, réglages par défaut) et
    « Nouvelle campagne » (fenêtre : recherche simplifiée avec photos, enregistrée dans l'historique de la Recherche,
    validation des annonces trouvées, puis le message). En bas : le suivi des campagnes. L'envoi est fait par la fonction « messages ». */
@@ -341,7 +342,7 @@ function NouvelleCampagne({ defauts, compteOk, onParametres, onCree }: { defauts
           </fieldset>
           <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Kilométrage max.</span>
-            <input inputMode="numeric" value={f.kmMax} onChange={maj("kmMax")} placeholder="150000" className={inputCls} />
+            <input inputMode="numeric" value={f.kmMax} onChange={maj("kmMax")} placeholder="ex. 150 000" className={inputCls} />
           </label>
           <label className="grid gap-1.5 text-sm">
             <span className="text-ink-2">Vendeurs</span>
@@ -457,6 +458,7 @@ function OptionRefus({ on, onClick }: { on: boolean; onClick: () => void }) {
 /* ---------------------------------------------------------------- suivi */
 
 function SuiviCampagne({ c, envois, compteOk, onMaj, onAnnuler }: { c: Campagne; envois: EnvoiLbc[]; compteOk: boolean; onMaj: (x: Campagne | null) => void; onAnnuler: (e: EnvoiLbc) => void }) {
+  const { confirmer, element: confirmation } = useConfirmation();
   const [edition, setEdition] = useState(false);
   const [message, setMessage] = useState(c.message);
   const [refus, setRefus] = useState(c.ignorer_refus);
@@ -480,7 +482,7 @@ function SuiviCampagne({ c, envois, compteOk, onMaj, onAnnuler }: { c: Campagne;
     onMaj(data as Campagne);
   }
   async function supprimer() {
-    if (!confirm(`Supprimer la campagne « ${c.nom} » ? Les messages déjà envoyés restent comptés.`)) return;
+    if (!(await confirmer({ titre: `Supprimer la campagne « ${c.nom} » ?`, texte: "Les messages déjà envoyés restent comptés.", action: "Supprimer la campagne" }))) return;
     const { error } = await supabaseNavigateur().from("lbc_campagnes").delete().eq("id", c.id);
     if (!error) onMaj(null);
   }
@@ -542,6 +544,7 @@ function SuiviCampagne({ c, envois, compteOk, onMaj, onAnnuler }: { c: Campagne;
           </ul>
         </details>
       )}
+      {confirmation}
     </article>
   );
 }
@@ -582,6 +585,7 @@ function ReglagesDefaut({ defauts, uid, reglages, onMaj, etat }: { defauts: Defa
 
 /** Compte Leboncoin : la double authentification doit être désactivée avant tout. Mot de passe chiffré dès l'enregistrement. */
 function CompteLeboncoin({ compte, onFait }: { compte: CompteLbc | null; onFait: () => void }) {
+  const { confirmer, element: confirmation } = useConfirmation();
   const [edition, setEdition] = useState(!compte);
   const [sans2fa, setSans2fa] = useState(!!compte);
   const [email, setEmail] = useState(compte?.email ?? "");
@@ -604,7 +608,7 @@ function CompteLeboncoin({ compte, onFait }: { compte: CompteLbc | null; onFait:
     onFait();
   }
   async function oublier() {
-    if (!confirm("Effacer votre compte Leboncoin d'Utopicar ? Les campagnes s'arrêtent et les messages en attente sont annulés.")) return;
+    if (!(await confirmer({ titre: "Effacer votre compte Leboncoin d'Utopicar ?", texte: "Les campagnes s'arrêtent et les messages en attente sont annulés.", action: "Effacer le compte" }))) return;
     const { error } = await supabaseNavigateur().rpc("lbc_oublier");
     setEtat(error ? error.message : "Compte effacé.");
     if (!error) onFait();
@@ -667,6 +671,7 @@ function CompteLeboncoin({ compte, onFait }: { compte: CompteLbc | null; onFait:
         </form>
       )}
       {etat && <p role="status" className="text-sm text-ink-2">{etat}</p>}
+      {confirmation}
     </section>
   );
 }

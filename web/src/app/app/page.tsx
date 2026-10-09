@@ -51,12 +51,13 @@ function Tuile({ l, v, sous, alerte, lien }: { l: string; v: string; sous?: Reac
   );
 }
 
-/** En-tête des tableaux de bord Benef : l'analyse n'est qu'un petit bouton (elle tourne en arrière-plan). */
+/** En-tête des tableaux de bord Benef : l'analyse n'est qu'un petit bouton (elle tourne en arrière-plan).
+    Masqué sur grand écran : le menu latéral a déjà le même bouton. */
 function EnTeteTableau({ c, texte }: { c: Compte; texte: string }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <Bonjour c={c} texte={texte} />
-      <div className="w-fit">
+      <div className="w-fit lg:hidden">
         <BoutonAnalyser className="min-h-10 gap-2 whitespace-nowrap px-4 py-2 text-sm" icone="size-4" />
       </div>
     </div>

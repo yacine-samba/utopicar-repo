@@ -23,7 +23,7 @@ export default async function Page() {
             <h1 className="font-display text-3xl font-semibold">Mes analyses</h1>
             <p className="mt-1 text-ink-3">{Number.isFinite(c.offre.historique) ? c.offre.historique === 1 ? "Votre dernière analyse." : `Vos ${c.offre.historique} dernières analyses.` : "Toutes vos analyses."}</p>
           </div>
-          <Link href="/app/analyser" className="btn btn-o btn-sm">
+          <Link href="/app/analyser" className="btn btn-o btn-sm lg:hidden">
             Analyser une annonce
           </Link>
         </div>
@@ -47,7 +47,7 @@ export default async function Page() {
           <h1 className="font-display text-3xl font-semibold">Rapports</h1>
           <p className="mt-1 text-ink-3">{Number.isFinite(c.offre.historique) ? `Vos ${c.offre.historique} derniers rapports.` : "Tous vos rapports."}</p>
         </div>
-        <Link href="/app/analyser" className="btn btn-o btn-sm">
+        <Link href="/app/analyser" className="btn btn-o btn-sm lg:hidden">
           Analyser une annonce
         </Link>
       </div>

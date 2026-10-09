@@ -1,4 +1,5 @@
 "use client";
+import { useConfirmation } from "../espace/Confirmation";
 /* eslint-disable @next/next/no-img-element -- photos d'annonces */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,7 @@ const badgeTon = (v: string | null) =>
 const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")} €`);
 
 export function ListeRapports({ rapports, comparateur, vide = "Aucun rapport pour le moment.", choixVue = true }: { rapports: LigneRapport[]; comparateur: boolean; vide?: string; choixVue?: boolean }) {
+  const { confirmer, element: confirmation } = useConfirmation();
   const router = useRouter();
   const [sel, setSel] = useState<string[]>([]);
   const [msg, setMsg] = useState("");
@@ -24,7 +26,7 @@ export function ListeRapports({ rapports, comparateur, vide = "Aucun rapport pou
   if (!rapports.length) return <p className="carte p-6 text-ink-3">{vide}</p>;
 
   const supprimer = async (r: LigneRapport) => {
-    if (!confirm(`Supprimer le rapport « ${titreVehicule(r.titre)} » ?`)) return;
+    if (!(await confirmer({ titre: `Supprimer le rapport « ${titreVehicule(r.titre)} » ?`, texte: "Le rapport ne pourra pas être retrouvé.", action: "Supprimer le rapport" }))) return;
     const { error } = await supabaseNavigateur().from("rapports").delete().eq("id", r.id);
     if (error) setMsg("Suppression impossible.");
     else router.refresh();
@@ -142,6 +144,7 @@ export function ListeRapports({ rapports, comparateur, vide = "Aucun rapport pou
         </div>
       )}
       {msg && <p role="alert" className="text-sm text-warn">{msg}</p>}
+      {confirmation}
     </div>
   );
 }

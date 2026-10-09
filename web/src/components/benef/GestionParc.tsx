@@ -1,4 +1,5 @@
 "use client";
+import { useConfirmation } from "../espace/Confirmation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,6 +13,7 @@ import { Carrousel } from "../analyse/Photos";
 const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")}\u00a0€`);
 
 export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
+  const { confirmer, element: confirmation } = useConfirmation();
   const router = useRouter();
   const [edition, setEdition] = useState<string | null>(null);
   const [filtre, setFiltre] = useState<"stock" | "tous" | "vendus">("stock");
@@ -82,7 +84,7 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
                             aria-label={`Supprimer ${v.titre}`}
                             className="btn btn-sm"
                             onClick={async () => {
-                              if (!confirm(`Supprimer « ${v.titre} » du parc ?`)) return;
+                              if (!(await confirmer({ titre: `Supprimer « ${v.titre} » du parc ?`, texte: "La fiche, ses frais et ses notes sont effacés.", action: "Supprimer" }))) return;
                               await supabaseNavigateur().from("parc").delete().eq("id", v.id);
                               router.refresh();
                             }}
@@ -139,6 +141,7 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
           })}
         </ul>
       )}
+      {confirmation}
     </div>
   );
 }
