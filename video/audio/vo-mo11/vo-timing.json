@@ -1,0 +1,715 @@
+{
+ "dur": 30.1,
+ "take": "provisoire",
+ "provisional": true,
+ "lines": [
+  {
+   "key": "h1",
+   "t": 0.1,
+   "end": 1.107,
+   "text": "Tu l'achètes 2 000,"
+  },
+  {
+   "key": "h2",
+   "t": 1.257,
+   "end": 2.599,
+   "text": "tu la revends 2 900."
+  },
+  {
+   "key": "asp",
+   "t": 2.849,
+   "end": 4.359,
+   "text": "Ton aspirateur trouve ça donné."
+  },
+  {
+   "key": "sam",
+   "t": 4.659,
+   "end": 6.006,
+   "text": "Samedi, 13 heures."
+  },
+  {
+   "key": "sieg",
+   "t": 7.95,
+   "end": 8.5,
+   "text": "Les sièges."
+  },
+  {
+   "key": "odeur",
+   "t": 9.25,
+   "end": 9.8,
+   "text": "L'odeur."
+  },
+  {
+   "key": "enjo",
+   "t": 10.75,
+   "end": 11.589,
+   "text": "Les enjoliveurs."
+  },
+  {
+   "key": "soleil",
+   "t": 12.2,
+   "end": 13.882,
+   "text": "Et là, tu attends le soleil."
+  },
+  {
+   "key": "photo",
+   "t": 14.25,
+   "end": 14.8,
+   "text": "Photo 1."
+  },
+  {
+   "key": "j4",
+   "t": 15.95,
+   "end": 16.5,
+   "text": "4 jours."
+  },
+  {
+   "key": "c400",
+   "t": 16.9,
+   "end": 17.571,
+   "text": "400 de plus."
+  },
+  {
+   "key": "paye",
+   "t": 18.7,
+   "end": 20.042,
+   "text": "Ton samedi le mieux payé."
+  },
+  {
+   "key": "ceux",
+   "t": 21.15,
+   "end": 22.492,
+   "text": "Ceux qui gagnent ne réparent pas tout."
+  },
+  {
+   "key": "ongle",
+   "t": 24.75,
+   "end": 25.757,
+   "text": "L'ongle glisse sur la rayure ?"
+  },
+  {
+   "key": "polish",
+   "t": 26.25,
+   "end": 27.257,
+   "text": "15 euros de polish."
+  },
+  {
+   "key": "proch",
+   "t": 28.4,
+   "end": 29.742,
+   "text": "La prochaine fois que tu te dis…"
+  }
+ ],
+ "words": [
+  {
+   "line": "h1",
+   "t": 0.1,
+   "end": 0.268,
+   "w": "Tu"
+  },
+  {
+   "line": "h1",
+   "t": 0.268,
+   "end": 0.603,
+   "w": "l'achètes"
+  },
+  {
+   "line": "h1",
+   "t": 0.603,
+   "end": 1.107,
+   "w": "2 000,"
+  },
+  {
+   "line": "h2",
+   "t": 1.257,
+   "end": 1.424,
+   "w": "tu"
+  },
+  {
+   "line": "h2",
+   "t": 1.424,
+   "end": 1.592,
+   "w": "la"
+  },
+  {
+   "line": "h2",
+   "t": 1.592,
+   "end": 1.928,
+   "w": "revends"
+  },
+  {
+   "line": "h2",
+   "t": 1.928,
+   "end": 2.599,
+   "w": "2 900."
+  },
+  {
+   "line": "asp",
+   "t": 2.849,
+   "end": 3.017,
+   "w": "Ton"
+  },
+  {
+   "line": "asp",
+   "t": 3.017,
+   "end": 3.688,
+   "w": "aspirateur"
+  },
+  {
+   "line": "asp",
+   "t": 3.688,
+   "end": 3.856,
+   "w": "trouve"
+  },
+  {
+   "line": "asp",
+   "t": 3.856,
+   "end": 4.023,
+   "w": "ça"
+  },
+  {
+   "line": "asp",
+   "t": 4.023,
+   "end": 4.359,
+   "w": "donné."
+  },
+  {
+   "line": "sam",
+   "t": 4.659,
+   "end": 5.162,
+   "w": "Samedi,"
+  },
+  {
+   "line": "sam",
+   "t": 5.502,
+   "end": 5.67,
+   "w": "13"
+  },
+  {
+   "line": "sam",
+   "t": 5.67,
+   "end": 6.006,
+   "w": "heures."
+  },
+  {
+   "line": "sieg",
+   "t": 7.95,
+   "end": 8.133,
+   "w": "Les"
+  },
+  {
+   "line": "sieg",
+   "t": 8.133,
+   "end": 8.5,
+   "w": "sièges."
+  },
+  {
+   "line": "odeur",
+   "t": 9.25,
+   "end": 9.8,
+   "w": "L'odeur."
+  },
+  {
+   "line": "enjo",
+   "t": 10.75,
+   "end": 10.918,
+   "w": "Les"
+  },
+  {
+   "line": "enjo",
+   "t": 10.918,
+   "end": 11.589,
+   "w": "enjoliveurs."
+  },
+  {
+   "line": "soleil",
+   "t": 12.2,
+   "end": 12.368,
+   "w": "Et"
+  },
+  {
+   "line": "soleil",
+   "t": 12.368,
+   "end": 12.536,
+   "w": "là,"
+  },
+  {
+   "line": "soleil",
+   "t": 12.876,
+   "end": 13.043,
+   "w": "tu"
+  },
+  {
+   "line": "soleil",
+   "t": 13.043,
+   "end": 13.379,
+   "w": "attends"
+  },
+  {
+   "line": "soleil",
+   "t": 13.379,
+   "end": 13.547,
+   "w": "le"
+  },
+  {
+   "line": "soleil",
+   "t": 13.547,
+   "end": 13.882,
+   "w": "soleil."
+  },
+  {
+   "line": "photo",
+   "t": 14.25,
+   "end": 14.617,
+   "w": "Photo"
+  },
+  {
+   "line": "photo",
+   "t": 14.617,
+   "end": 14.8,
+   "w": "1."
+  },
+  {
+   "line": "j4",
+   "t": 15.95,
+   "end": 16.225,
+   "w": "4"
+  },
+  {
+   "line": "j4",
+   "t": 16.225,
+   "end": 16.5,
+   "w": "jours."
+  },
+  {
+   "line": "c400",
+   "t": 16.9,
+   "end": 17.236,
+   "w": "400"
+  },
+  {
+   "line": "c400",
+   "t": 17.236,
+   "end": 17.403,
+   "w": "de"
+  },
+  {
+   "line": "c400",
+   "t": 17.403,
+   "end": 17.571,
+   "w": "plus."
+  },
+  {
+   "line": "paye",
+   "t": 18.7,
+   "end": 18.868,
+   "w": "Ton"
+  },
+  {
+   "line": "paye",
+   "t": 18.868,
+   "end": 19.371,
+   "w": "samedi"
+  },
+  {
+   "line": "paye",
+   "t": 19.371,
+   "end": 19.539,
+   "w": "le"
+  },
+  {
+   "line": "paye",
+   "t": 19.539,
+   "end": 19.707,
+   "w": "mieux"
+  },
+  {
+   "line": "paye",
+   "t": 19.707,
+   "end": 20.042,
+   "w": "payé."
+  },
+  {
+   "line": "ceux",
+   "t": 21.15,
+   "end": 21.318,
+   "w": "Ceux"
+  },
+  {
+   "line": "ceux",
+   "t": 21.318,
+   "end": 21.486,
+   "w": "qui"
+  },
+  {
+   "line": "ceux",
+   "t": 21.486,
+   "end": 21.653,
+   "w": "gagnent"
+  },
+  {
+   "line": "ceux",
+   "t": 21.653,
+   "end": 21.821,
+   "w": "ne"
+  },
+  {
+   "line": "ceux",
+   "t": 21.821,
+   "end": 22.157,
+   "w": "réparent"
+  },
+  {
+   "line": "ceux",
+   "t": 22.157,
+   "end": 22.324,
+   "w": "pas"
+  },
+  {
+   "line": "ceux",
+   "t": 22.324,
+   "end": 22.492,
+   "w": "tout."
+  },
+  {
+   "line": "ongle",
+   "t": 24.75,
+   "end": 24.918,
+   "w": "L'ongle"
+  },
+  {
+   "line": "ongle",
+   "t": 24.918,
+   "end": 25.086,
+   "w": "glisse"
+  },
+  {
+   "line": "ongle",
+   "t": 25.086,
+   "end": 25.253,
+   "w": "sur"
+  },
+  {
+   "line": "ongle",
+   "t": 25.253,
+   "end": 25.421,
+   "w": "la"
+  },
+  {
+   "line": "ongle",
+   "t": 25.421,
+   "end": 25.757,
+   "w": "rayure ?"
+  },
+  {
+   "line": "polish",
+   "t": 26.25,
+   "end": 26.418,
+   "w": "15"
+  },
+  {
+   "line": "polish",
+   "t": 26.418,
+   "end": 26.753,
+   "w": "euros"
+  },
+  {
+   "line": "polish",
+   "t": 26.753,
+   "end": 26.921,
+   "w": "de"
+  },
+  {
+   "line": "polish",
+   "t": 26.921,
+   "end": 27.257,
+   "w": "polish."
+  },
+  {
+   "line": "proch",
+   "t": 28.4,
+   "end": 28.568,
+   "w": "La"
+  },
+  {
+   "line": "proch",
+   "t": 28.568,
+   "end": 28.903,
+   "w": "prochaine"
+  },
+  {
+   "line": "proch",
+   "t": 28.903,
+   "end": 29.071,
+   "w": "fois"
+  },
+  {
+   "line": "proch",
+   "t": 29.071,
+   "end": 29.239,
+   "w": "que"
+  },
+  {
+   "line": "proch",
+   "t": 29.239,
+   "end": 29.407,
+   "w": "tu"
+  },
+  {
+   "line": "proch",
+   "t": 29.407,
+   "end": 29.574,
+   "w": "te"
+  },
+  {
+   "line": "proch",
+   "t": 29.574,
+   "end": 29.742,
+   "w": "dis…"
+  }
+ ],
+ "marks": {
+  "achete": {
+   "line": "h1",
+   "t": 0.268,
+   "end": 0.603,
+   "w": "l'achètes"
+  },
+  "b2000": {
+   "line": "h1",
+   "t": 0.603,
+   "end": 1.107,
+   "w": "2 000,"
+  },
+  "revends": {
+   "line": "h2",
+   "t": 1.592,
+   "end": 1.928,
+   "w": "revends"
+  },
+  "b2900": {
+   "line": "h2",
+   "t": 1.928,
+   "end": 2.599,
+   "w": "2 900."
+  },
+  "ton": {
+   "line": "asp",
+   "t": 2.849,
+   "end": 3.017,
+   "w": "Ton"
+  },
+  "aspi": {
+   "line": "asp",
+   "t": 3.017,
+   "end": 3.688,
+   "w": "aspirateur"
+  },
+  "donne": {
+   "line": "asp",
+   "t": 4.023,
+   "end": 4.359,
+   "w": "donné."
+  },
+  "samedi": {
+   "line": "sam",
+   "t": 4.659,
+   "end": 5.162,
+   "w": "Samedi,"
+  },
+  "treize": {
+   "line": "sam",
+   "t": 5.502,
+   "end": 5.67,
+   "w": "13"
+  },
+  "heures": {
+   "line": "sam",
+   "t": 5.67,
+   "end": 6.006,
+   "w": "heures."
+  },
+  "sieges": {
+   "line": "sieg",
+   "t": 8.133,
+   "end": 8.5,
+   "w": "sièges."
+  },
+  "odeur": {
+   "line": "odeur",
+   "t": 9.25,
+   "end": 9.8,
+   "w": "L'odeur."
+  },
+  "enjo": {
+   "line": "enjo",
+   "t": 10.918,
+   "end": 11.589,
+   "w": "enjoliveurs."
+  },
+  "etla": {
+   "line": "soleil",
+   "t": 12.2,
+   "end": 12.368,
+   "w": "Et"
+  },
+  "attends": {
+   "line": "soleil",
+   "t": 13.043,
+   "end": 13.379,
+   "w": "attends"
+  },
+  "soleil": {
+   "line": "soleil",
+   "t": 13.547,
+   "end": 13.882,
+   "w": "soleil."
+  },
+  "photo": {
+   "line": "photo",
+   "t": 14.25,
+   "end": 14.617,
+   "w": "Photo"
+  },
+  "un": {
+   "line": "photo",
+   "t": 14.617,
+   "end": 14.8,
+   "w": "1."
+  },
+  "quatre": {
+   "line": "j4",
+   "t": 15.95,
+   "end": 16.225,
+   "w": "4"
+  },
+  "jours": {
+   "line": "j4",
+   "t": 16.225,
+   "end": 16.5,
+   "w": "jours."
+  },
+  "n400": {
+   "line": "c400",
+   "t": 16.9,
+   "end": 17.236,
+   "w": "400"
+  },
+  "plus": {
+   "line": "c400",
+   "t": 17.403,
+   "end": 17.571,
+   "w": "plus."
+  },
+  "ton2": {
+   "line": "paye",
+   "t": 18.7,
+   "end": 18.868,
+   "w": "Ton"
+  },
+  "samedi2": {
+   "line": "paye",
+   "t": 18.868,
+   "end": 19.371,
+   "w": "samedi"
+  },
+  "mieux": {
+   "line": "paye",
+   "t": 19.539,
+   "end": 19.707,
+   "w": "mieux"
+  },
+  "paye": {
+   "line": "paye",
+   "t": 19.707,
+   "end": 20.042,
+   "w": "payé."
+  },
+  "ceux": {
+   "line": "ceux",
+   "t": 21.15,
+   "end": 21.318,
+   "w": "Ceux"
+  },
+  "gagnent": {
+   "line": "ceux",
+   "t": 21.486,
+   "end": 21.653,
+   "w": "gagnent"
+  },
+  "pas": {
+   "line": "ceux",
+   "t": 22.157,
+   "end": 22.324,
+   "w": "pas"
+  },
+  "tout": {
+   "line": "ceux",
+   "t": 22.324,
+   "end": 22.492,
+   "w": "tout."
+  },
+  "ongle": {
+   "line": "ongle",
+   "t": 24.75,
+   "end": 24.918,
+   "w": "L'ongle"
+  },
+  "glisse": {
+   "line": "ongle",
+   "t": 24.918,
+   "end": 25.086,
+   "w": "glisse"
+  },
+  "rayure": {
+   "line": "ongle",
+   "t": 25.421,
+   "end": 25.757,
+   "w": "rayure ?"
+  },
+  "quinze": {
+   "line": "polish",
+   "t": 26.25,
+   "end": 26.418,
+   "w": "15"
+  },
+  "euros": {
+   "line": "polish",
+   "t": 26.418,
+   "end": 26.753,
+   "w": "euros"
+  },
+  "polish": {
+   "line": "polish",
+   "t": 26.921,
+   "end": 27.257,
+   "w": "polish."
+  },
+  "prochaine": {
+   "line": "proch",
+   "t": 28.4,
+   "end": 28.568,
+   "w": "La"
+  },
+  "dis": {
+   "line": "proch",
+   "t": 29.574,
+   "end": 29.742,
+   "w": "dis…"
+  }
+ },
+ "estimate": {
+  "unite": "syllabes",
+  "debit": 5.96,
+  "pause_interne": 0.34,
+  "plancher": 0.55,
+  "entre_phrases": 0.3,
+  "source": "aucune prise : durées estimées (scripts/vo-mo11.py --provisoire), débit mesuré sur les voix posées de MO9 et MO10"
+ },
+ "loop": 27.8,
+ "hookB": {
+  "t": 0.1,
+  "end": 4.299,
+  "text": "La revendre sale t'économise un après-midi. Et ça peut te coûter 400 euros."
+ }
+}
