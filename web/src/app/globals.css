@@ -31,6 +31,11 @@
 :root {
   color-scheme: dark;
 }
+/* Barres de défilement internes (onglets, listes) fines et aux couleurs du thème, au lieu de la barre claire du système. */
+#contenu * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-2) transparent;
+}
 
 html {
   scroll-behavior: smooth;
@@ -86,6 +91,17 @@ body {
 }
 .cadre-site[data-theme="clair"] .carte {
   box-shadow: 0 1px 2px rgb(28 22 18 / 0.04), 0 12px 32px -20px rgb(28 22 18 / 0.18);
+}
+
+/* Listes déroulantes natives : le fond des champs est translucide, et Windows peignait alors la liste ouverte
+   en gris clair sous un texte clair (illisible). Les options prennent un fond plein aux couleurs du thème. */
+select option,
+select optgroup {
+  background-color: var(--color-bg1);
+  color: var(--color-ink);
+}
+select option:disabled {
+  color: var(--color-ink-3);
 }
 
 ::selection {

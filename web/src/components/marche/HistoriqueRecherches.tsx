@@ -75,8 +75,8 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes, photos =
         {vues.length ? (
           <ul className="grid gap-3">
             {vues.map((r) => (
-              <li key={r.id} className="carte grid gap-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center">
-                <Vignettes urls={photos[r.nom] ?? []} nom={r.nom} />
+              <li key={r.id} className="carte grid gap-x-4 gap-y-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
+                <Vignettes urls={photos[r.nom] ?? []} />
                 <div className="grid min-w-0 gap-1">
                   <p className="flex flex-wrap items-center gap-2">
                     <b className="font-semibold">{r.nom}</b>
@@ -90,7 +90,7 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes, photos =
                     {r.meilleure && <span className="text-ink-3"> · meilleure : {eur(r.meilleure.prix)} ({r.meilleure.pct} % sous la cote)</span>}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2 sm:justify-end">
+                <div className="flex flex-wrap items-center gap-2 sm:col-start-2">
                   <Link href={`/app/recherche?r=${r.id}`} className="btn btn-o btn-sm">Ouvrir</Link>
                   <button type="button" onClick={() => basculer(r)} aria-pressed={r.active} className="btn btn-sm">{r.active ? "Désactiver" : "Activer"}</button>
                   {alertes && <InterrupteurAlerte r={r} actif={!!(r.alerte_id && etatsAlertes[r.alerte_id])} cat={cat} />}
@@ -104,7 +104,7 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes, photos =
             ))}
           </ul>
         ) : (
-          <p className="carte p-5 text-ink-2">{filtre ? "Aucune recherche ne correspond." : "Aucune recherche pour l'instant : lancez-en une depuis « Annonces du marché »."}</p>
+          <p className="carte p-5 text-ink-2">{filtre ? "Aucune recherche ne correspond." : "Aucune recherche pour l'instant : lancez-en une depuis l’onglet « Chercher »."}</p>
         )}
       </section>
 
@@ -139,7 +139,7 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes, photos =
 }
 
 /** Les photos des annonces trouvées par la recherche (vignettes Leboncoin), pour reconnaître la voiture d'un coup d'œil. */
-function Vignettes({ urls, nom }: { urls: string[]; nom: string }) {
+function Vignettes({ urls }: { urls: string[] }) {
   if (!urls.length)
     return (
       <span className="hidden h-20 w-28 place-items-center rounded-xl border border-dashed border-line-2 text-ink-3 sm:grid" aria-hidden="true">
@@ -147,10 +147,10 @@ function Vignettes({ urls, nom }: { urls: string[]; nom: string }) {
       </span>
     );
   return (
-    <span className="flex gap-1.5" aria-label={`Photos des annonces trouvées : ${nom}`}>
-      {urls.slice(0, 4).map((u, i) => (
+    <span className="flex gap-1.5" aria-hidden="true">
+      {urls.slice(0, 3).map((u, i) => (
         // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
-        <img key={u} src={u} alt="" loading="lazy" referrerPolicy="no-referrer" className={cx("h-20 w-28 rounded-xl border border-line object-cover", i > 1 && "max-sm:hidden")} />
+        <img key={u} src={u} alt="" loading="lazy" referrerPolicy="no-referrer" className={cx("h-20 w-28 rounded-xl border border-line object-cover", i > 1 && "max-xl:hidden")} />
       ))}
     </span>
   );

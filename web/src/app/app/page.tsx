@@ -5,7 +5,7 @@ import { debutPeriode, type Compte } from "@/lib/compte";
 import { familleEspace, nomFormule, type Icone } from "@/lib/espace";
 import { BENEF, GUIDE, OFFRES, prixTxt } from "@/lib/offres";
 import { supabaseServeur } from "@/lib/supabase/serveur";
-import { EN_STOCK, joursStock, margeReelle, STATUTS_PARC, statsParc, type Vehicule } from "@/lib/parc";
+import { EN_STOCK, joursStock, margePrevue, margeReelle, STATUTS_PARC, statsParc, type Vehicule } from "@/lib/parc";
 import { ListeRapports } from "@/components/benef/ListeRapports";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { AnalyseRapide } from "@/components/espace/AnalyseRapide";
@@ -51,12 +51,13 @@ function Tuile({ l, v, sous, alerte, lien }: { l: string; v: string; sous?: Reac
   );
 }
 
-/** En-tête des tableaux de bord Benef : l'analyse n'est qu'un petit bouton (elle tourne en arrière-plan). */
+/** En-tête des tableaux de bord Benef : l'analyse n'est qu'un petit bouton (elle tourne en arrière-plan).
+    Masqué sur grand écran : le menu latéral a déjà le même bouton. */
 function EnTeteTableau({ c, texte }: { c: Compte; texte: string }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <Bonjour c={c} texte={texte} />
-      <div className="w-fit">
+      <div className="w-fit lg:hidden">
         <BoutonAnalyser className="min-h-10 gap-2 whitespace-nowrap px-4 py-2 text-sm" icone="size-4" />
       </div>
     </div>
@@ -141,11 +142,12 @@ async function TableauComplet({ c }: { c: Compte }) {
   const st = statsParc(parc);
   const vivants = parc.filter((v) => v.statut !== "abandonne");
   const stock = vivants.filter((v) => EN_STOCK.includes(v.statut));
-  // marge prévue du stock : celle du rapport d'analyse lié, frais du parc déduits au-delà des frais estimés
+  // marge prévue du stock : la même que la page Parc (prix conseillé − prix d'achat réel − frais) ;
+  // à défaut, celle du rapport d'analyse lié (calculée sur le prix demandé, pas sur le prix payé)
   const liens = stock.map((v) => v.rapport_id).filter((x): x is string => !!x);
   const { data: rapLies } = liens.length ? await sb.from("rapports").select("id, marge").in("id", liens) : { data: [] as { id: string; marge: number | null }[] };
   const margeLiee = new Map((rapLies ?? []).map((r) => [r.id, r.marge]));
-  const prevues = stock.map((v) => ({ v, m: v.rapport_id ? (margeLiee.get(v.rapport_id) ?? null) : null })).filter((x) => x.m != null);
+  const prevues = stock.map((v) => ({ v, m: margePrevue(v) ?? (v.rapport_id ? (margeLiee.get(v.rapport_id) ?? null) : null) })).filter((x) => x.m != null);
   const attente = prevues.reduce((s, x) => s + (x.m ?? 0), 0);
   const go = (mois ?? []).filter((r) => r.verdict?.startsWith("GO"));
   const n = (mois ?? []).length;
@@ -206,7 +208,7 @@ async function TableauComplet({ c }: { c: Compte }) {
           <Kpi l="Marge réalisée" v={eur(st.margeTotale)} s={`${st.vendus} vente${st.vendus > 1 ? "s" : ""}`} ton={st.margeTotale < 0 ? "bad" : st.margeTotale > 0 ? "ok" : undefined} />
           <Kpi l="Marge moyenne" v={eur(st.margeMoyenne)} s="par voiture vendue" ton={st.margeMoyenne != null && st.margeMoyenne < 750 ? "warn" : undefined} />
           <Kpi l="Rotation moyenne" v={st.rotation != null ? `${st.rotation} j` : "—"} s="de l'achat à la vente" />
-          <Kpi l="Marge en attente" v={eur(prevues.length ? attente : null)} s={prevues.length ? `${prevues.length} voiture(s) du stock` : "liez le stock à ses rapports"} />
+          <Kpi l="Marge en attente" v={eur(prevues.length ? attente : null)} s={prevues.length ? `${prevues.length} voiture(s) du stock` : "indiquez le prix conseillé dans le parc"} ton={prevues.length && attente < 0 ? "bad" : undefined} />
         </div>
       </section>
 

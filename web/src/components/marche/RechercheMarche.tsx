@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { FILTRES_VIDES, quandRecherche, resumeFiltres, type FiltresRecherche, type Recherche } from "@/lib/recherches";
@@ -7,7 +6,6 @@ import { cleFavori } from "@/lib/favoris";
 import { BoutonFavori } from "../espace/BoutonFavori";
 import { BoutonAnalyserAnnonce } from "../espace/BoutonAnalyserAnnonce";
 import { useNotification } from "../espace/Notification";
-import { Ico } from "../espace/Icones";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque, CoteAnnonce } from "@/lib/vehicules/types";
 import { motorisationsTypes } from "@/lib/vehicules/phases";
@@ -282,7 +280,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   }, [suivie?.cle]);
 
   const rechercheCourante = (courant && liste.find((x) => x.id === courant)) || res?.recherche || null;
-  const avance = !!(f.version || f.phase || f.carrosserie || f.moteur || f.energie || f.boite || f.vendeur || f.anneeMax || f.prixMin || f.mots || f.exclure || f.sousCote || f.tri !== "ecart" || !f.fiables);
+  const avance = !!(f.version || f.phase || f.carrosserie || f.moteur || f.chMin || f.chMax || f.vendeur || f.mots || f.exclure || f.sousCote);
   const filtresCaches = !(plusFiltres || avance);
   const lienLbc = lienRechercheLeboncoin(marqueCat, modeleCat, genCat, f);
 
@@ -310,9 +308,6 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
           <button type="button" onClick={nouvelle} aria-current={courant === null ? "true" : undefined} className={cx("shrink-0 rounded-2xl border border-dashed px-4 py-2 text-sm", courant === null ? "border-o/60 text-ink" : "border-line-2 text-ink-2 hover:text-ink")}>
             + Nouvelle recherche
           </button>
-          <Link href="/app/recherche?vue=historique" className="flex shrink-0 items-center gap-2 rounded-2xl border border-line-2 px-4 py-2 text-sm text-ink-2 hover:border-o/30 hover:text-ink">
-            <Ico nom="historique" className="size-4" /> Historique
-          </Link>
         </div>
         {anciennes.length > 0 && (
           <p className="flex flex-wrap items-center gap-2 text-xs text-ink-3">
@@ -347,10 +342,14 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
           }}
           idPrefixe="rm"
         />
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Prix max. (€)</span>
-          <input inputMode="numeric" value={f.prixMax} onChange={maj("prixMax")} placeholder="ex. 9 000" className={inputCls} />
-        </label>
+        {/* Les critères vont par paires min / max sur une même ligne : prix, kilométrage, année. */}
+        <fieldset className="grid gap-1.5 text-sm">
+          <legend className="mb-1.5 text-ink-2">Prix (€)</legend>
+          <div className="grid grid-cols-2 gap-3">
+            <input inputMode="numeric" value={f.prixMin} onChange={maj("prixMin")} placeholder="min." aria-label="Prix minimum en euros" className={inputCls} />
+            <input inputMode="numeric" value={f.prixMax} onChange={maj("prixMax")} placeholder="max. ex. 9 000" aria-label="Prix maximum en euros" className={inputCls} />
+          </div>
+        </fieldset>
         <fieldset className="grid gap-1.5 text-sm">
           <legend className="mb-1.5 text-ink-2">Kilométrage</legend>
           <div className="grid grid-cols-2 gap-3">
@@ -358,27 +357,42 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
             <input inputMode="numeric" value={f.kmMax} onChange={maj("kmMax")} placeholder="max. ex. 150000" aria-label="Kilométrage maximum" className={inputCls} />
           </div>
         </fieldset>
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Année min.</span>
-          <input inputMode="numeric" value={f.anneeMin} onChange={maj("anneeMin")} placeholder="2010" className={inputCls} />
-        </label>
+        <fieldset className="grid gap-1.5 text-sm">
+          <legend className="mb-1.5 text-ink-2">Année</legend>
+          <div className="grid grid-cols-2 gap-3">
+            <input inputMode="numeric" value={f.anneeMin} onChange={maj("anneeMin")} placeholder="min. ex. 2010" aria-label="Année minimum" className={inputCls} />
+            <input inputMode="numeric" value={f.anneeMax} onChange={maj("anneeMax")} placeholder="max." aria-label="Année maximum" className={inputCls} />
+          </div>
+        </fieldset>
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Départements</span>
           <input value={f.dep ?? ""} onChange={maj("dep")} placeholder="Toute la France, ou ex. 76, 27" className={inputCls} />
         </label>
-        <fieldset className="grid gap-1.5 text-sm">
-          <legend className="mb-1.5 text-ink-2">Puissance (ch, réelle)</legend>
-          <div className="grid grid-cols-2 gap-3">
-            <input inputMode="numeric" value={f.chMin} onChange={maj("chMin")} placeholder="min. ex. 110" aria-label="Puissance minimum en chevaux" className={inputCls} />
-            <input inputMode="numeric" value={f.chMax} onChange={maj("chMax")} placeholder="max." aria-label="Puissance maximum en chevaux" className={inputCls} />
-          </div>
-        </fieldset>
-        {!avance && (
-          <button type="button" onClick={() => setPlusFiltres((v) => !v)} aria-expanded={plusFiltres} aria-controls="rm-plus" className="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-o2 underline-offset-4 hover:underline sm:col-span-2 lg:col-span-3">
-            {plusFiltres ? "Moins de filtres" : "Plus de filtres"} <span aria-hidden="true">{plusFiltres ? "▴" : "▾"}</span>
-            <span className="font-normal text-ink-3">version, motorisation, puissance, énergie, boîte, vendeur, sous la cote…</span>
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Énergie</span>
+          <select value={f.energie} onChange={maj("energie")} className={inputCls}>
+            <option value="">Toutes</option>
+            <option value="essence">Essence</option>
+            <option value="diesel">Diesel</option>
+            <option value="hybride">Hybride</option>
+            <option value="electrique">Électrique</option>
+            <option value="gpl">GPL</option>
+          </select>
+        </label>
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Boîte</span>
+          <select value={f.boite} onChange={maj("boite")} className={inputCls}>
+            <option value="">Toutes</option>
+            <option value="manuelle">Manuelle</option>
+            <option value="auto">Automatique</option>
+          </select>
+        </label>
+        <div className="sm:col-span-2 lg:col-span-3">
+          <button type="button" onClick={() => setPlusFiltres((v) => !v)} aria-expanded={!filtresCaches} aria-controls="rm-plus" disabled={avance} className="flex flex-wrap items-center gap-x-2 text-left text-sm font-medium text-o2 underline-offset-4 enabled:hover:underline disabled:cursor-default">
+            {avance ? "Filtres avancés" : plusFiltres ? "Moins de filtres" : "Plus de filtres"} <span aria-hidden="true">{filtresCaches ? "▾" : "▴"}</span>
+            <span className="font-normal text-ink-3">{avance ? "au moins un est utilisé : ils restent affichés" : "version, phase, motorisation, puissance, vendeur, sous la cote, mots-clés"}</span>
           </button>
-        )}
+        </div>
         <div id="rm-plus" className={filtresCaches ? "hidden" : "contents"}>
         {genCat?.v ? (
           <label className="grid gap-1.5 text-sm">
@@ -425,25 +439,13 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
             ))}
           </datalist>
         </label>
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Énergie</span>
-          <select value={f.energie} onChange={maj("energie")} className={inputCls}>
-            <option value="">Toutes</option>
-            <option value="essence">Essence</option>
-            <option value="diesel">Diesel</option>
-            <option value="hybride">Hybride</option>
-            <option value="electrique">Électrique</option>
-            <option value="gpl">GPL</option>
-          </select>
-        </label>
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Boîte</span>
-          <select value={f.boite} onChange={maj("boite")} className={inputCls}>
-            <option value="">Toutes</option>
-            <option value="manuelle">Manuelle</option>
-            <option value="auto">Automatique</option>
-          </select>
-        </label>
+        <fieldset className="grid gap-1.5 text-sm">
+          <legend className="mb-1.5 text-ink-2">Puissance (ch, réelle)</legend>
+          <div className="grid grid-cols-2 gap-3">
+            <input inputMode="numeric" value={f.chMin} onChange={maj("chMin")} placeholder="min. ex. 110" aria-label="Puissance minimum en chevaux" className={inputCls} />
+            <input inputMode="numeric" value={f.chMax} onChange={maj("chMax")} placeholder="max." aria-label="Puissance maximum en chevaux" className={inputCls} />
+          </div>
+        </fieldset>
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Vendeur</span>
           <select value={f.vendeur} onChange={maj("vendeur")} className={inputCls}>
@@ -452,41 +454,34 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
             <option value="pro">Professionnels</option>
           </select>
         </label>
-        <div className="grid grid-cols-2 gap-3">
-          <label className="grid gap-1.5 text-sm">
-            <span className="text-ink-2">Année max.</span>
-            <input inputMode="numeric" value={f.anneeMax} onChange={maj("anneeMax")} placeholder="2016" className={inputCls} />
-          </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className="text-ink-2">Prix min. (€)</span>
-            <input inputMode="numeric" value={f.prixMin} onChange={maj("prixMin")} className={inputCls} />
-          </label>
-        </div>
         <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Moteur, finition, mots-clés</span>
+          <span className="text-ink-2">Sous la cote d&apos;au moins (%)</span>
+          <input inputMode="numeric" value={f.sousCote} onChange={maj("sousCote")} placeholder="ex. 10" className={inputCls} />
+        </label>
+        <label className="grid gap-1.5 text-sm">
+          <span className="text-ink-2">Finition, mots-clés</span>
           <input value={f.mots} onChange={maj("mots")} placeholder="ex. 1.2 tce, intens" className={inputCls} />
         </label>
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Exclure les mots</span>
           <input value={f.exclure} onChange={maj("exclure")} placeholder="ex. société, utilitaire" className={inputCls} />
         </label>
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Sous la cote d&apos;au moins (%)</span>
-          <input inputMode="numeric" value={f.sousCote} onChange={maj("sousCote")} placeholder="ex. 10" className={inputCls} />
-        </label>
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Trier par</span>
-          <select value={f.tri} onChange={maj("tri")} className={inputCls}>
-            <option value="ecart">Les plus sous la cote</option>
-            <option value="prix">Prix croissant</option>
-            <option value="km">Kilométrage croissant</option>
-            <option value="annee">Les plus récentes</option>
-            <option value="recent">Vues en dernier</option>
-          </select>
-        </label>
-        <label className="flex items-center gap-2 self-end pb-2.5 text-sm text-ink-2">
-          <input type="checkbox" checked={f.fiables} onChange={maj("fiables")} className="size-4 accent-[#ff5a1f]" /> Masquer les pièges (pour pièces, moteur HS, prix suspects…)
-        </label>
+        </div>
+        {/* Tri et pièges règlent l'affichage des résultats : à part, juste au-dessus du bouton. */}
+        <div className="grid gap-4 border-t border-line pt-4 sm:col-span-2 sm:grid-cols-2 lg:col-span-3 lg:grid-cols-3">
+          <label className="grid gap-1.5 text-sm">
+            <span className="text-ink-2">Trier par</span>
+            <select value={f.tri} onChange={maj("tri")} className={inputCls}>
+              <option value="ecart">Les plus sous la cote</option>
+              <option value="prix">Prix croissant</option>
+              <option value="km">Kilométrage croissant</option>
+              <option value="annee">Les plus récentes</option>
+              <option value="recent">Vues en dernier</option>
+            </select>
+          </label>
+          <label className="flex items-center gap-2.5 self-end pb-2.5 text-sm text-ink-2 lg:col-span-2">
+            <input type="checkbox" checked={f.fiables} onChange={maj("fiables")} className="size-5 shrink-0 accent-[#ff5a1f]" /> Masquer les pièges (pour pièces, moteur HS, prix suspects…)
+          </label>
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-3">
           <button type="submit" disabled={charge} className="btn btn-o btn-sm">
@@ -616,7 +611,7 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
         // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
         <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-28 w-40 rounded-xl border border-line object-cover max-sm:h-44 max-sm:w-full" />
       ) : (
-        <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">photo bientôt</span>
+        <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">Sans photo</span>
       )}
       <div className="min-w-0">
         <p className="truncate font-medium">{a.titre || "Annonce"}</p>

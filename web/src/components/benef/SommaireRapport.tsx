@@ -69,9 +69,14 @@ function Grille({ entrees, actif, onChoix, compacte }: { entrees: EntreeSommaire
     et l'interrupteur « Détail profond » (vue pro par défaut : l'essentiel pour décider). */
 export function BarreSections({ entrees, actif, profond, onProfond }: { entrees: EntreeSommaire[]; actif: string; profond: boolean; onProfond: (v: boolean) => void }) {
   const liste = useRef<HTMLOListElement>(null);
-  // la section lue reste visible dans la barre (défilement horizontal sur téléphone)
+  // la section lue reste visible dans la barre (défilement horizontal sur téléphone). Pas de scrollIntoView :
+  // il faisait aussi défiler la page jusqu'à la barre, et le rapport sautait de 700 px à l'ouverture.
   useEffect(() => {
-    liste.current?.querySelector<HTMLElement>('[aria-current="location"]')?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    const l = liste.current;
+    const el = l?.querySelector<HTMLElement>('[aria-current="location"]');
+    if (!l || !el) return;
+    const gauche = el.getBoundingClientRect().left - l.getBoundingClientRect().left + l.scrollLeft;
+    if (gauche < l.scrollLeft || gauche + el.offsetWidth > l.scrollLeft + l.clientWidth) l.scrollTo({ left: Math.max(0, gauche - 12) });
   }, [actif]);
   return (
     <nav aria-label="Sections du rapport" className="sticky top-16 z-30 -mx-1 grid gap-2 rounded-2xl border border-line-2 bg-bg0/95 px-3 py-2.5 shadow-[0_12px_30px_-18px_rgb(0_0_0/0.9)] backdrop-blur-md lg:top-2">

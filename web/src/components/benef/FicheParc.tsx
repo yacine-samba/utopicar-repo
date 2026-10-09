@@ -92,7 +92,7 @@ export function FicheParc({ v, onFini }: { v: Partial<Vehicule>; onFini: () => v
           <input value={f.finition} onChange={maj("finition")} placeholder="ex. 1.5 dCi 90 Business" className={inputCls} />
         </Champ>
         <Champ l="Immatriculation">
-          <input value={f.immat} onChange={maj("immat")} placeholder="AB-123-CD" className={cx(inputCls, "uppercase")} />
+          <input value={f.immat} onChange={maj("immat")} placeholder="ex. AB-123-CD" className={cx(inputCls, "uppercase")} />
         </Champ>
         <Champ l="Année">
           <input value={f.annee} onChange={maj("annee")} inputMode="numeric" className={inputCls} />
