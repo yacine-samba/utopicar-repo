@@ -3,6 +3,8 @@ import { compteCourant } from "@/lib/compte";
 import { Logo } from "./Logo";
 import { LienNav } from "./LienNav";
 import { MenuMobile } from "./MenuMobile";
+import { BoutonTheme } from "./BoutonTheme";
+import { themeSite } from "@/lib/theme";
 
 // Deux entrées seulement : l'outil (bouton orange) et l'espace se trouvent à droite.
 const LIENS = [
@@ -11,7 +13,7 @@ const LIENS = [
 ];
 
 export async function EnTete() {
-  const compte = await compteCourant();
+  const [compte, theme] = await Promise.all([compteCourant(), themeSite()]);
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg0/80 backdrop-blur-md">
       <div className="wrap relative flex h-[68px] items-center gap-4">
@@ -26,6 +28,7 @@ export async function EnTete() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-2">
+          <BoutonTheme initial={theme} className="max-md:hidden" />
           {compte ? (
             <Link href="/app" className="btn btn-o btn-sm whitespace-nowrap">
               Mon espace
@@ -40,7 +43,7 @@ export async function EnTete() {
               </Link>
             </>
           )}
-          <MenuMobile liens={LIENS} compte={compte ? { href: "/app", label: "Mon espace" } : { href: "/connexion", label: "Se connecter" }} />
+          <MenuMobile theme={theme} liens={LIENS} compte={compte ? { href: "/app", label: "Mon espace" } : { href: "/connexion", label: "Se connecter" }} />
         </div>
       </div>
     </header>

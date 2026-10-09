@@ -180,16 +180,16 @@ export default async function Accueil() {
                   </linearGradient>
                 </defs>
                 {[160, 100, 40].map((y) => (
-                  <line key={y} x1="0" x2="600" y1={y} y2={y} stroke="rgb(244 241 236 / .08)" />
+                  <line key={y} x1="0" x2="600" y1={y} y2={y} className="stroke-line" />
                 ))}
                 <path d="M0 160 C60 158 110 150 160 120 S250 30 300 34 S400 110 450 140 S560 158 600 160 Z" fill="url(#aire)" />
-                <path d="M0 160 C60 158 110 150 160 120 S250 30 300 34 S400 110 450 140 S560 158 600 160" fill="none" stroke="#ff8a4c" strokeWidth="2.5" />
-                <line x1="300" x2="300" y1="30" y2="170" stroke="rgb(244 241 236 / .35)" strokeDasharray="4 5" />
-                <text x="306" y="24" fill="#f4f1ec" fontSize="14" className="max-sm:text-[22px]">Cote 6 950 €</text>
+                <path d="M0 160 C60 158 110 150 160 120 S250 30 300 34 S400 110 450 140 S560 158 600 160" fill="none" className="stroke-o2" strokeWidth="2.5" />
+                <line x1="300" x2="300" y1="30" y2="170" className="stroke-ink-3" strokeDasharray="4 5" />
+                <text x="306" y="24" fontSize="14" className="fill-ink max-sm:text-[22px]">Cote 6 950 €</text>
                 <circle cx="408" cy="118" r="7" fill="#ff5a1f" />
-                <text x="420" y="112" fill="#ff8a4c" fontSize="14" className="max-sm:text-[22px]">Annonce 7 400 €</text>
-                <text x="4" y="194" fill="rgb(244 241 236 / .62)" fontSize="13" className="max-sm:text-[20px]">5 000 €</text>
-                <text x="596" y="194" textAnchor="end" fill="rgb(244 241 236 / .62)" fontSize="13" className="max-sm:text-[20px]">9 000 €</text>
+                <text x="420" y="112" fontSize="14" className="fill-o2 max-sm:text-[22px]">Annonce 7 400 €</text>
+                <text x="4" y="194" fontSize="13" className="fill-ink-3 max-sm:text-[20px]">5 000 €</text>
+                <text x="596" y="194" textAnchor="end" fontSize="13" className="fill-ink-3 max-sm:text-[20px]">9 000 €</text>
               </svg>
             </article>
             <article className="carte apparait p-6 md:col-span-2" style={{ "--i": 1 } as React.CSSProperties}>
@@ -309,7 +309,7 @@ export default async function Accueil() {
                 <span className="font-display text-sm font-semibold text-o2">Étape {i + 1}</span>
                 <h3 className="mt-2 font-display text-xl font-semibold">{e.t}</h3>
                 <p className="mt-2 text-ink-2">{e.d}</p>
-                <div className="mt-5 rounded-2xl border border-line bg-black/25 p-4 text-sm" aria-hidden="true">
+                <div className="mt-5 rounded-2xl border border-line bg-creux p-4 text-sm" aria-hidden="true">
                   {e.v}
                 </div>
               </li>

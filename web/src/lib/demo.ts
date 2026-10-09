@@ -67,4 +67,4 @@ export const EXEMPLES: Record<string, Exemple> = {
 export const CLES_EXEMPLES = Object.keys(EXEMPLES);
 export const euros = (v: number) => (v < 0 ? "−\u00a0" : "") + Math.abs(Math.round(v)).toLocaleString("fr-FR") + "\u00a0€";
 export const TON_EXEMPLE = { ok: "text-ok border-ok/40 bg-ok/10", warn: "text-warn border-warn/40 bg-warn/10", bad: "text-bad border-bad/40 bg-bad/10" };
-export const ANNEAU_EXEMPLE = { ok: "#3ecb7f", warn: "#ffc53d", bad: "#ff7a7a" };
+export const ANNEAU_EXEMPLE = { ok: "var(--color-ok)", warn: "var(--color-warn)", bad: "var(--color-bad)" };

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { EnTete } from "@/components/site/EnTete";
 import { Pied } from "@/components/site/Pied";
+import { CadreSite } from "@/components/site/CadreSite";
 
 export default function Introuvable() {
   return (
-    <>
+    <CadreSite>
       <EnTete />
       <main id="contenu" tabIndex={-1} className="outline-none">
         <div className="wrap py-24 text-center">
@@ -22,6 +23,6 @@ export default function Introuvable() {
         </div>
       </main>
       <Pied />
-    </>
+    </CadreSite>
   );
 }

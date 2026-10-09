@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-/* Charte utopicar.fr : fond sombre chaud, orange, Clash Display + Satoshi + Instrument Serif. */
+/* Charte utopicar.fr : orange, Clash Display + Satoshi + Instrument Serif. Site public clair par défaut (sombre au choix),
+   espace connecté sombre. Les couleurs sont des variables : le thème clair les redéfinit dans le cadre du site (#site). */
 @theme {
   --color-bg0: #0b0a09;
   --color-bg1: #17100b;
@@ -17,6 +18,9 @@
   --color-ok: #3ecb7f;
   --color-warn: #ffc53d;
   --color-bad: #ff7a7a;
+  /* creux : encart en retrait (message, visuels d'étapes) ; champ : fond des champs de saisie */
+  --color-creux: rgb(0 0 0 / 0.25);
+  --color-champ: rgb(0 0 0 / 0.3);
   --font-display: var(--font-clash), "Clash Display", var(--font-satoshi), system-ui, sans-serif;
   --font-body: var(--font-satoshi), "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: var(--font-instrument), "Instrument Serif", Georgia, serif;
@@ -45,6 +49,43 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* ---------- Thème clair du site public (cadre #site, voir CadreSite) ----------
+   Contrastes vérifiés sur le fond #f7f2ea : texte secondaire et orange de texte au-dessus de 4,5:1. */
+.cadre-site {
+  min-height: 100dvh;
+  color: var(--color-ink);
+}
+.cadre-site[data-theme="clair"] {
+  color-scheme: light;
+  --color-bg0: #f7f2ea;
+  --color-bg1: #efe7dc;
+  --color-ink: #1c1612;
+  --color-ink-2: rgb(28 22 18 / 0.8);
+  --color-ink-3: rgb(28 22 18 / 0.66);
+  --color-line: rgb(28 22 18 / 0.1);
+  --color-line-2: rgb(28 22 18 / 0.2);
+  --color-glass: rgb(28 22 18 / 0.04);
+  --color-panel: rgb(255 255 255 / 0.72);
+  --color-o2: #c2410c;
+  --color-o3: #e0571a;
+  --color-ok: #137036;
+  --color-warn: #8a5306;
+  --color-bad: #c81e1e;
+  --color-creux: rgb(28 22 18 / 0.05);
+  --color-champ: #ffffff;
+  background-color: var(--color-bg0);
+  background-image:
+    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(255 90 31 / 0.1), transparent 70%),
+    linear-gradient(160deg, #fbf8f3, var(--color-bg1) 60%, #fbf8f3);
+}
+.cadre-site[data-theme="clair"] .btn-o:hover {
+  background: #ff7040;
+  border-color: #ff7040;
+}
+.cadre-site[data-theme="clair"] .carte {
+  box-shadow: 0 1px 2px rgb(28 22 18 / 0.04), 0 12px 32px -20px rgb(28 22 18 / 0.18);
 }
 
 ::selection {
