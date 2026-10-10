@@ -104,14 +104,14 @@ export function PreuveAnimee({ carte = CARTE_ACCUEIL }: { carte?: CarteAnalyse }
           </div>
 
           {/* 3. le verdict, et pourquoi ; à droite, le chiffre qui compte pour la page */}
-          <div className="pas flex items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-[#160904]" style={d(1.9)}>
+          <div className="pas flex items-center justify-between gap-3 rounded-2xl border border-line bg-bg0 px-4 py-3 text-ink shadow-lg" style={d(1.9)}>
             <span className="grid gap-1">
               <span className="w-fit rounded-full bg-[#3ecb7f] px-2.5 py-0.5 text-sm font-bold text-[#04140a]">✓ {carte.verdict}</span>
-              <span className="text-xs font-medium text-[#137036]">{e(carte.marche - carte.prix)} sous le marché</span>
+              <span className="text-xs font-medium text-ok">{e(carte.marche - carte.prix)} sous le marché</span>
             </span>
             <span className="text-right">
-              <span className="block text-xs font-medium text-[#160904]/60">{carte.droite.l}</span>
-              <span className={`num font-display text-[32px] font-semibold leading-none ${carte.droite.ton === "ok" ? "text-[#137036]" : ""}`}>{carte.droite.v}</span>
+              <span className="block text-xs font-medium text-ink-3">{carte.droite.l}</span>
+              <span className={`num font-display text-[32px] font-semibold leading-none ${carte.droite.ton === "ok" ? "text-ok" : ""}`}>{carte.droite.v}</span>
             </span>
           </div>
         </div>
