@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- photos des annonces de démonstration, servies en local et compressées */
 import type { CSSProperties } from "react";
-import { EXEMPLES, type Exemple } from "@/lib/demo";
+import { EXEMPLES, srcSetDemo, type Exemple } from "@/lib/demo";
 
 /* Trois vraies annonces, trois verdicts différents : l'outil sait aussi dire non. Une photo, deux barres
    (le marché, l'annonce), un verdict en couleur et en mots, une raison courte. Les barres se remplissent à l'écran. */
@@ -35,7 +35,7 @@ export function TroisVerdicts() {
           <li key={x.titre} className="attend w-[78%] shrink-0 snap-start md:w-auto">
             <article className="carte scene flex h-full flex-col overflow-hidden">
               <div className="relative aspect-[16/10] overflow-hidden">
-                <img src={x.photos[0]} alt="" loading="lazy" className="size-full object-cover" />
+                <img src={x.photos[0]} srcSet={srcSetDemo(x.photos[0])} sizes="(max-width: 768px) 78vw, 330px" alt="" loading="lazy" decoding="async" className="size-full object-cover" />
                 <span className={`pas absolute left-3 top-3 rounded-full px-3 py-1 text-sm font-bold shadow ${t.pill}`} style={d(0.5 + i * 0.15)}>
                   {t.signe} {x.verdict}
                 </span>

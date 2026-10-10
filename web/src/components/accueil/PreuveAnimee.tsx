@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { EXEMPLES } from "@/lib/demo";
+import { EXEMPLES, srcSetDemo } from "@/lib/demo";
 
 /* L'outil en action sur une vraie annonce, lisible sans explication :
    1. un balayage passe sur la photo (« Analyse… »), puis « 174 Clio comparées » ;
@@ -25,7 +25,7 @@ export function PreuveAnimee() {
       </figcaption>
       <div className="scene relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 shadow-[0_40px_100px_-40px_rgb(255_90_31/0.6)]" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element -- photo de l'annonce, servie en local et déjà compressée */}
-        <img src={ex.photos[1]} alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
+        <img src={ex.photos[1]} srcSet={srcSetDemo(ex.photos[1])} sizes="(max-width: 480px) 92vw, 420px" alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.4)_0%,transparent_26%,transparent_38%,rgb(0_0_0/0.9)_100%)]" />
 
         {/* 1. le balayage d'analyse */}

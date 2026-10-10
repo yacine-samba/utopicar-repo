@@ -3,7 +3,7 @@ import { Logo } from "./Logo";
 import { BoutonAnimations } from "./BoutonAnimations";
 
 const COLONNES = [
-  { titre: "Utopicar", liens: [["/analyse", "Analyser une annonce"], ["/moteur", "Moteurs à éviter"], ["/tarifs", "Tarifs"], ["/guide", "Guides"], ["/app", "Mon espace"]] },
+  { titre: "Utopicar", liens: [["/analyse", "Analyser une annonce"], ["/fiabilite", "Occasions fiables"], ["/moteur", "Moteurs à éviter"], ["/tarifs", "Tarifs"], ["/guide", "Guides"], ["/app", "Mon espace"]] },
   { titre: "Benef", liens: [["/benef", "Découvrir Benef"], ["/tarifs#benef", "Formules Benef"], ["/guide?guide=premiere-revente", "Guide de la première revente"]] },
   { titre: "Informations", liens: [["/legal#mentions", "Mentions légales"], ["/legal#confidentialite", "Confidentialité"], ["/legal#conditions", "Conditions"], ["/legal#vente", "Conditions de vente"], ["/legal#accessibilite", "Accessibilité"], ["/legal#contact", "Contact"]] },
 ];

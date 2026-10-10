@@ -73,7 +73,7 @@ export async function Bento() {
         </p>
       </Case>
 
-      {/* 3. fiable ou à fuir */}
+      {/* 3. fiable ou à fuir (lien vers les fiches fiabilité, publiques) */}
       <Case className="lg:col-span-2" titre="Fiable ou à fuir" i={2}>
         <ul className="flex flex-wrap gap-2 text-sm">
           {(
@@ -90,6 +90,9 @@ export async function Bento() {
             </li>
           ))}
         </ul>
+        <Link href="/fiabilite" className="mt-auto text-sm font-medium text-o2 underline underline-offset-4">
+          Les occasions fiables →
+        </Link>
       </Case>
 
       {/* 4. le message au vendeur, déjà rédigé */}

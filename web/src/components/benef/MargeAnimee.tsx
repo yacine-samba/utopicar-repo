@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { EXEMPLES } from "@/lib/demo";
+import { EXEMPLES, srcSetDemo } from "@/lib/demo";
 
 /* La marge en une image : le prix de revente est une seule barre, qui se découpe sous les yeux en
    achat (orange), frais (jaune) et ce qui reste, la marge (vert). Puis le verdict GO, « à acheter ».
@@ -25,7 +25,7 @@ export function MargeAnimee() {
       </figcaption>
       <div className="scene relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 shadow-[0_40px_100px_-40px_rgb(255_90_31/0.6)]" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element -- photo d'annonce, servie en local et déjà compressée */}
-        <img src={EXEMPLES.yaris.photos[1]} alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
+        <img src={EXEMPLES.yaris.photos[1]} srcSet={srcSetDemo(EXEMPLES.yaris.photos[1])} sizes="(max-width: 480px) 92vw, 420px" alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.35)_0%,transparent_25%,transparent_36%,rgb(0_0_0/0.9)_100%)]" />
 
         <div className="balayage pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(255_90_31/0.28))] shadow-[0_6px_24px_rgb(255_90_31/0.55)]" style={d(0.05)} />
