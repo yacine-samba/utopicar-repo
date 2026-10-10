@@ -105,9 +105,11 @@ Crédits dépensés (coût réel facturé, v3 ≈ 1,15 crédit par caractère) :
 voix finale ≈ 2 450 (corps 2 × 1 058, ouvertures 2 × 85 + 2 × 82). Total ≈ 4 120.
 
 ## 7 bis. Voix retenue (10 oct. 2026)
-**eleven_v3**, corps-2 + ouvertures A1 / B2, posée par `scripts/vo-master60.py` (silences ramenés à des respirations,
-× 1,08) : 56,9 s avec A, 56,2 s avec B. Écoute : `audio/vo-master60/ecoute-voix-A-v3.mp3` (« plus humain » pour
-l'utilisateur). Essai eleven_v4 (corps 145 Hz contre 124 Hz en v3) jugé « trop aigu » ; gardé dans `audio/vo-master60/v4/`.
+**eleven_v4** (« en v4 », « plus humain »), corps-2 + ouvertures sans `[excited]` (`hookA-calme-2`, `hookB-calme-2`),
+posée par `scripts/vo-master60.py` sans accélération : 55,0 s avec A, 54,5 s avec B. Hauteur : ouverture A 137 Hz,
+B 125 Hz, corps 144 Hz (avec `[excited]`, les ouvertures montaient à 206–216 Hz : « trop aiguë »).
+Variante plus grave (−2 demi-tons, formants préservés) : `ecoute-voix-*-v4-grave.mp3` (corps 129 Hz), `PITCH=-2`.
+Écoute : `audio/vo-master60/ecoute-voix-A-v4.mp3`. La v3 reste disponible (`VERSION=v3`, `ecoute-voix-*-v3.mp3`).
 Crédits : ElevenLabs a affiché 0 crédit pour les prises v4 (à vérifier sur le compte).
 
 ## 8. Premières prises des ouvertures (10 oct. 2026, remplacées)

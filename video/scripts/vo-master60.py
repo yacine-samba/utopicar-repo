@@ -1,8 +1,10 @@
 """master60 : pose de la voix de Simon.
 
-Version retenue (utilisateur, 10 oct. : « plus humain ») : eleven_v3, prises `v2/corps-2`, `v2/hookA-1`, `v2/hookB-2`,
-× 1,08. Essai eleven_v4 (`v4/corps-2`, `v4/hookA-2`, `v4/hookB-1`, VERSION=v4) : « trop aiguë » ; les ouvertures v4 sans
-[excited] (`v4/hook*-calme-*`) descendent à 110–136 Hz mais ne sont pas utilisées.
+Version retenue (utilisateur, 10 oct. : « en v4 », « plus humain ») : eleven_v4, prises `v4/corps-2` (corps-1 dit
+« Digne » au lieu de « Ding ») et ouvertures sans [excited] `v4/hookA-calme-2`, `v4/hookB-calme-2` : les ouvertures avec
+[excited] montaient à 206–216 Hz contre 145 Hz pour le corps (« trop aiguë ») ; sans la balise, 134 et 115 Hz.
+PITCH=-2 donne une variante plus grave (rubberband, formants préservés).
+Version précédente : eleven_v3, `v2/corps-2`, `v2/hookA-1`, `v2/hookB-2`, × 1,08 (VERSION=v3).
 
 Les prises eleven_v3 laissent de longs silences (28 s sur 74 s). On garde chaque morceau de parole tel quel et on
 ramène les silences à une respiration (0,26 s), sauf les silences voulus : avant « Non. » (le gag) et avant les
@@ -14,12 +16,12 @@ usage : python3 scripts/vo-master60.py            (depuis video/)
 import json, subprocess, sys, os
 import numpy as np, soundfile as sf, librosa, av
 
-VERSION = os.environ.get('VERSION', 'v3')
-PRISES = {'v4': ('audio/vo-master60/v4', 'corps-2', 'hookA-2', 'hookB-1', 1.0),
+VERSION = os.environ.get('VERSION', 'v4')
+PRISES = {'v4': ('audio/vo-master60/v4', 'corps-2', 'hookA-calme-2', 'hookB-calme-2', 1.0),
           'v3': ('audio/vo-master60/v2', 'corps-2', 'hookA-1', 'hookB-2', 1.08)}
 D, CORPS, HA, HB, SPEED = PRISES[VERSION]
 # transposition en demi-tons : la v4 sort plus aiguë que la v3 (corps 146 Hz contre 124) ; « trop aiguë » (utilisateur)
-PITCH = float(os.environ.get('PITCH', '-2' if VERSION == 'v4' else '0'))
+PITCH = float(os.environ.get('PITCH', '0'))
 OUT = 'audio/vo-master60'
 SR = 44100
 RESPI = 0.26        # silence courant après pose (respiration)
