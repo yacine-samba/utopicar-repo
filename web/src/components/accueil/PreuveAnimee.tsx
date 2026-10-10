@@ -95,7 +95,7 @@ export function PreuveAnimee({ carte = CARTE_ACCUEIL }: { carte?: CarteAnalyse }
             <div className="grid grid-cols-[4.5rem_1fr_4.2rem] items-center gap-2.5">
               <span className="text-white/75">Annonce</span>
               <span className="relative h-2.5 rounded-full bg-white/10">
-                <span className="jauge absolute inset-y-0 left-0 rounded-full bg-o" style={{ width: pc(carte.prix), ...d(1.3) }} />
+                <span className="jauge absolute inset-y-0 left-0 rounded-l-full bg-o" style={{ width: pc(carte.prix), ...d(1.3) }} />
                 {/* l'écart : ce que l'annonce coûte de moins que le marché */}
                 <span className="pas absolute inset-y-0 right-0 rounded-r-full bg-[repeating-linear-gradient(135deg,#3ecb7f_0_3px,transparent_3px_6px)]" style={{ left: pc(carte.prix), ...d(1.6) }} />
               </span>
