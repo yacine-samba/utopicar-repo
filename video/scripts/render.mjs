@@ -21,9 +21,10 @@ const CUT = process.env.CUT ? '-' + process.env.CUT : '';   // CUT=launch → ti
 // Déclinaisons (films qui les gèrent) : FMT=vertical|square|desktop, LANG=fr|en…, HOOK=A|B.
 // Le film reçoit ?fmt=&lang=&hook= et doit recomposer sa mise en page (pas un recadrage).
 const FMT = process.env.FMT || '', LANG = process.env.LANG_V || process.env.VLANG || '', HOOK = process.env.HOOK || '';
+const THEME = process.env.THEME || '';   // films qui le gèrent (master60) : THEME=blanc → ?theme=blanc, fichiers suffixés -blanc
 const SIZE = { vertical: [1080, 1920], square: [1080, 1080], desktop: [1920, 1080] }[FMT || 'vertical'];
 const TAG = { vertical: '9x16', square: '1x1', desktop: '16x9' }[FMT || 'vertical'];
-const VAR = (HOOK ? '-' + HOOK : '') + (LANG ? '-' + LANG : '');
+const VAR = (HOOK ? '-' + HOOK : '') + (LANG ? '-' + LANG : '') + (THEME ? '-' + THEME : '');
 const TL = JSON.parse(fs.readFileSync(path.join(ROOT, `timeline${CUT}.json`), 'utf8'));
 // films dont la durée dépend de l'ouverture (timeline.hooks[HOOK].dur, ex. MO3) ; poster propre à l'ouverture
 if (TL.hooks && HOOK && TL.hooks[HOOK]) { TL.dur = TL.hooks[HOOK].dur; if (TL.hooks[HOOK].poster != null) TL.poster = TL.hooks[HOOK].poster; }
@@ -47,7 +48,7 @@ const browser = await chromium.launch({ args: ['--force-color-profile=srgb', '--
 const page = await browser.newPage({ viewport: { width: SIZE[0], height: SIZE[1] }, deviceScaleFactor: scale });
 page.on('pageerror', e => console.error('PAGEERR', e.message));
 page.on('console', m => { if (m.type() === 'error') console.error('CONSOLE', m.text()); });
-await page.goto(`${base}/film${CUT}/index.html?render=1${FMT ? '&fmt=' + FMT : ''}${LANG ? '&lang=' + LANG : ''}${HOOK ? '&hook=' + HOOK : ''}`);
+await page.goto(`${base}/film${CUT}/index.html?render=1${FMT ? '&fmt=' + FMT : ''}${LANG ? '&lang=' + LANG : ''}${HOOK ? '&hook=' + HOOK : ''}${THEME ? '&theme=' + THEME : ''}`);
 await page.waitForFunction(() => window.filmReady === true, null, { timeout: 60000 });
 
 const cdp = await page.context().newCDPSession(page);

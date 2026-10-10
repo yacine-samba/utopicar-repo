@@ -7,6 +7,8 @@
   const { el, show, text, typeText, cursor, moveCursor, bump } = Kit;
   const Q = new URLSearchParams(location.search);
   const FMT = Q.get('fmt') || 'vertical', HOOK = (Q.get('hook') || 'A').toUpperCase();
+  const BLANC = ['blanc', 'clair'].includes(Q.get('theme'));      // version blanche : fond et pages publiques clairs, cartes de l'app sombres
+  if (BLANC) document.documentElement.dataset.theme = 'blanc';
   const V = FMT !== 'desktop';
   const W = V ? 1080 : 1920, H = V ? 1920 : 1080;
   const L = (v, d) => (V ? v : d);
@@ -27,16 +29,19 @@
   const load = (src) => new Promise((r) => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(i); i.src = src; });
   const UI = {};
   for (const n of ['fiche-208', 'merc-rapporte', 'merc-argent', 'merc-verdict', 'merc-historique', 'offre-starter', 'offre-pro', 'bouton-essai',
-    'tb-entete', 'tb-marche-annonce-1', 'tb-marges', 'tb-chiffre-1']) UI[n] = await load(`ui/${n}.png`);
-  const LOGO = await load('../assets/brand/official/utopicar-logo-horizontal-fond-sombre.svg');
+    'tb-entete', 'tb-marche-annonce-1', 'tb-marges', 'tb-chiffre-1']) UI[n] = await load(`${BLANC ? 'ui-blanc' : 'ui'}/${n}.png`);
+  const LOGO = await load(`../assets/brand/official/utopicar-logo-horizontal-fond-${BLANC ? 'clair' : 'sombre'}.svg`);
 
   // ---------- décor : fond chaud, lueur orange lente, grain ----------
-  const glow = el('div', 'glow', stage, { width: '1400px', height: '1400px', background: 'radial-gradient(closest-side,rgba(255,90,31,.20),rgba(255,90,31,0))' });
+  const glow = el('div', 'glow', stage, { width: '1400px', height: '1400px', mixBlendMode: BLANC ? 'multiply' : 'screen',
+    background: BLANC ? 'radial-gradient(closest-side,rgba(255,138,76,.07),rgba(255,138,76,0))' : 'radial-gradient(closest-side,rgba(255,90,31,.20),rgba(255,90,31,0))' });
   const world = el('div', 'world', stage, { width: W + 'px', height: H + 'px', transformOrigin: '0 0' });   // origine 0,0 : la caméra pousse autour du point visé
   // voile sombre derrière la bande des titres (MO6) : les cartes passent dessous quand la caméra pousse
+  const VC = BLANC ? '251,249,245' : '11,10,9';
   const veil = el('div', 'abs', stage, { width: W + 'px', height: H + 'px', pointerEvents: 'none', background: V
-    ? 'linear-gradient(180deg,rgba(11,10,9,.94) 0,rgba(11,10,9,.86) 470px,rgba(11,10,9,0) 640px)'
-    : 'linear-gradient(90deg,rgba(11,10,9,.94) 0,rgba(11,10,9,.84) 820px,rgba(11,10,9,0) 1020px)' });
+    ? (BLANC ? `linear-gradient(180deg,rgba(${VC},.98) 0,rgba(${VC},.96) 440px,rgba(${VC},0) 530px)`
+      : `linear-gradient(180deg,rgba(${VC},.94) 0,rgba(${VC},.88) 470px,rgba(${VC},0) 640px)`)
+    : `linear-gradient(90deg,rgba(${VC},.94) 0,rgba(${VC},.86) 820px,rgba(${VC},0) 1020px)` });
   const over = el('div', 'abs', stage, { width: W + 'px', height: H + 'px' });     // titres, mentions : hors caméra (zones sûres)
   el('div', '', stage).id = 'vign';
   const grain = el('div', '', stage); grain.id = 'grain';
@@ -162,11 +167,11 @@
     'Messages', 'Tableur marges', 'Cote Captur', 'Banque', 'Annonce Polo', 'Calendrier'];
   const tabs = TABN.map((s) => { const e = el('div', 'tab', world); e.textContent = s; return e; });
 
-  const DW = L(820, 600), DK = DW / 1074, DH = 2215 * DK;            // densité de la capture : px film par px image
-  const tbHead = cut('tb-entete', { x: 0, y: 0, w: 1074, h: 2215 }, DW);
+  const DW = L(820, 600), DK = DW / 1074, DH = 2640 * DK;            // densité de la capture : px film par px image
+  const tbHead = cut('tb-entete', { x: 0, y: 0, w: 1074, h: 2640 }, DW);   // en-tête + 3 premières décisions
   const dY = (y) => -DH / 2 + y * DK;                                  // y image → y monde (capture centrée sur 0,0)
   const t308 = title([['La 308', ''], ['dort.', 'it']]);
-  const cur = cursor(world, true);
+  const cur = cursor(world, !BLANC);
   const tbMk = cut('tb-marche-annonce-1', { x: 0, y: 500, w: 840, h: 760 }, L(700, 520));   // sans la vignette photo vide
   const notif = el('div', 'notif', world);
   notif.innerHTML = '<div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a1310" stroke-width="2.4" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><div><div class="t">Audi A3 Sportback · −18 % sous la cote</div><div class="s">Nouvelle annonce de « Audi A3 » · à analyser avant les autres</div></div>';
@@ -213,8 +218,8 @@
     hist: [M('attends') - 0.15, 0, 0, 1.0],
     chaos: [M('quinze') - 0.1, 0, 0, 1.0], chaos2: [M('onglets'), 0, 0, 0.94],
     // « Hop ! » : le haut du tableau de bord ; « ce matin » : on descend sur Votre journée ; « la 308 » : zoom sur la 1re décision
-    dash: [M('hop'), 0, L(-196, -139), 1.0, { f: 1.6, z: 0.9 }], jour: [M('tableau') + 0.3, 0, L(520, 380), 1.0, { f: 0.8, z: 1 }],
-    a1: [M('n308') - 0.15, 0, dY(1600), L(1.1, 1.15)],
+    dash: [M('hop'), 0, L(-358, -257), 1.0, { f: 1.6, z: 0.9 }], jour: [M('tableau') + 0.3, 0, L(334, 326), 1.0, { f: 0.8, z: 1 }],
+    a1: [M('n308') - 0.15, 0, L(dY(1740), dY(1600)), L(1.1, 1.15)],      // la fenêtre rognée commence à « Votre journée », sous le titre
     mk: [M('a3') - 0.15, 0, 0, 1.0], marg: [M('marge') - 0.15, 0, 0, 1.0],
     deb: [M('debutes') - 0.15, 0, 0, 1.0], pro: [M('parc') - 0.15, 0, 0, 1.0], cta: [M('essaie') - 0.3, 0, 0, 1.04],
     fin: [M('chiffres') - 0.2, 0, 0, 1.0],
@@ -295,7 +300,10 @@
     chaos(calc, M('calculette') - 0.1, L({ x: 205, y: 130, r: 7 }, { x: 240, y: 40, r: 7 }));
     tabs.forEach((e, i) => chaos(e, M('calculette') + 0.35 + i * 0.075, { x: L(-248, -600) + (i % 4) * L(150, 300) + ((i * 53) % 40), y: L(-560, -380) + Math.floor(i / 4) * 92 + ((i * 29) % 30), r: ((i * 7) % 9) - 4 }));
 
-    life(tbHead, t, hop - 0.02, M('a3') - 0.25, { x: 0, y: 0 }, { s: -0.7, b: 10 }, { y: -100, b: 10 }, { f: 2.0, z: 0.9 });
+    // « La 308 » : le haut du panneau (bonjour, bouton) se rogne jusqu'à « Votre journée » ; le contenu ne bouge pas
+    const pr8 = spring(t - (M('n308') - 0.25), 'default'), rog = 1215 * DK * pr8, rogB = 425 * DK * pr8;   // bas : après la 2e décision
+    tbHead.style.height = (DH - rog - rogB).toFixed(2) + 'px'; tbHead.firstChild.style.top = (-rog).toFixed(2) + 'px';
+    life(tbHead, t, hop - 0.02, M('a3') - 0.25, { x: 0, y: (rog - rogB) / 2 }, { s: -0.7, b: 10 }, { y: -100, b: 10 }, { f: 2.0, z: 0.9 });
     writeTitle(t308, t, M('n308') - 0.05, M('a3') - 0.3, TT);
     // le curseur appuie sur « Ajuster le prix → » de la 1re décision (coordonnées de la capture)
     moveCursor(cur, t, [[M('n308'), L(360, 380), dY(1900)], [M('baisse') - 0.45, -DW / 2 + 412 * DK, dY(1690)]], [M('baisse') + 0.05], M('n308'), M('a3') - 0.2);
