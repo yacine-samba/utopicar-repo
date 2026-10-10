@@ -41,7 +41,7 @@ export function OutilsBenef() {
               <h3 className="mt-1 font-display text-2xl font-semibold">Marge nette et verdict</h3>
             </div>
             <span className="pas grid justify-items-center rounded-xl border-2 border-ok px-3 py-1 text-ok" style={d(1.1)} aria-hidden="true">
-              <span className="font-display text-2xl font-bold leading-none tracking-wider">GO</span>
+              <span className="respire font-display text-2xl font-bold leading-none tracking-wider">GO</span>
               <span className="text-[10px] font-semibold uppercase tracking-wide">à acheter</span>
             </span>
           </div>
@@ -122,6 +122,10 @@ export function OutilsBenef() {
         <ol className="relative grid w-full grid-cols-5">
           <span className="absolute left-[10%] right-[10%] top-2 h-0.5 bg-line-2">
             <span className="jauge absolute inset-y-0 left-0 w-3/4 bg-o" style={d(0.3)} />
+            {/* une voiture qui avance d'étape en étape */}
+            <span className="trajet absolute inset-0" aria-hidden="true">
+              <span className="absolute -top-[3px] left-0 -ml-1 size-2 rounded-full bg-o shadow-[0_0_0_4px_rgb(255_90_31/0.25)]" />
+            </span>
           </span>
           {["Repérée", "Achetée", "Prête", "En vente", "Vendue"].map((l, i) => (
             <li key={l} className="relative grid justify-items-center gap-2 text-center">
@@ -134,12 +138,12 @@ export function OutilsBenef() {
 
       {/* 5. l'action, dans sa propre case : retour au champ d'essai */}
       <li className="vue lg:col-span-3">
-        <Link href="#essai" className="group flex h-full min-h-44 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(255_90_31/0.9)]">
+        <Link href="#essai" className="reflet group flex h-full min-h-44 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(255_90_31/0.9)]">
           <span className="font-display text-2xl font-semibold leading-tight">Combien vous rapporterait votre prochaine voiture ?</span>
           <span className="flex items-center justify-between font-semibold">
             Chiffrer une annonce
             <span className="grid size-11 place-items-center rounded-full bg-[#160904] text-o transition group-hover:translate-x-1" aria-hidden="true">
-              →
+              <span className="pousse">→</span>
             </span>
           </span>
         </Link>

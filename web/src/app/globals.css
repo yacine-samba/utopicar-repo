@@ -499,3 +499,115 @@ select option:disabled {
     color: #111;
   }
 }
+
+/* Micro-animations des bentos : chaque case anime SA donnée (surlignage, frappe, trajet, respiration, reflet).
+   Transform, opacité et background seulement ; mises en pause par le bouton (data-calme) et coupées avec les animations réduites. */
+.scene .surligne {
+  background-color: transparent;
+  color: inherit;
+  background-image: linear-gradient(rgb(255 122 122 / 0.32), rgb(255 122 122 / 0.32));
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  animation: surligne 0.6s var(--ease-doux) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes surligne {
+  to {
+    background-size: 100% 100%;
+  }
+}
+.frappe i {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: frappe 1s ease-in-out infinite;
+}
+.frappe i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.frappe i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes frappe {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+.pousse {
+  animation: pousse 1.6s var(--ease-doux) infinite;
+}
+@keyframes pousse {
+  50% {
+    transform: translateX(4px);
+  }
+}
+.respire {
+  animation: respire 2.6s ease-in-out infinite;
+  animation-delay: 2s;
+}
+@keyframes respire {
+  50% {
+    transform: scale(1.06);
+  }
+}
+.reflet {
+  position: relative;
+  overflow: hidden;
+}
+.reflet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.35) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: reflet 4s ease-in-out infinite 1.5s;
+  pointer-events: none;
+}
+@keyframes reflet {
+  30%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+/* point qui parcourt une ligne : le conteneur fait la largeur de la ligne et glisse de toute sa largeur */
+.trajet {
+  animation: trajet 4.5s var(--ease-doux) infinite 1.5s;
+  opacity: 0;
+}
+@keyframes trajet {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  10%,
+  80% {
+    opacity: 1;
+  }
+  85%,
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+:root[data-anim] .attend:not(.vu) .scene .surligne {
+  animation-play-state: paused;
+}
+:root[data-calme] .scene .surligne {
+  background-size: 100% 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .frappe,
+  .trajet,
+  .reflet::after {
+    display: none;
+  }
+}

@@ -65,8 +65,8 @@ export async function Bento() {
       <Case className="lg:col-span-2" titre="Les mots qui coûtent" i={1}>
         <p className="leading-relaxed text-ink-2">
           « Très bon état,{" "}
-          <mark className="pas rounded bg-bad/20 px-1 text-ink" style={d(0.3)}>embrayage à prévoir</mark>,{" "}
-          <mark className="pas rounded bg-bad/20 px-1 text-ink" style={d(0.55)}>pneus à changer</mark>. »
+          <mark className="surligne rounded px-1 text-ink" style={d(0.3)}>embrayage à prévoir</mark>,{" "}
+          <mark className="surligne rounded px-1 text-ink" style={d(0.55)}>pneus à changer</mark>. »
         </p>
         <p className="pas mt-auto text-sm font-semibold text-bad" style={d(0.8)}>
           + 650 à 1 250 € à prévoir
@@ -97,9 +97,17 @@ export async function Bento() {
 
       {/* 4. le message au vendeur, déjà rédigé */}
       <Case className="lg:col-span-2" titre="Le message au vendeur" i={0}>
-        <p className="pas rounded-2xl rounded-bl-md bg-glass px-4 py-3 text-sm text-ink-2" style={d(0.3)}>
-          {ex.message}
-        </p>
+        {/* « en train d'écrire… », puis la bulle */}
+        <div className="grid">
+          <span className="passe frappe col-start-1 row-start-1 flex w-fit gap-1 self-start rounded-2xl rounded-bl-md bg-glass px-4 py-3 text-ink-3" style={d(0.1)} aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <p className="pas col-start-1 row-start-1 rounded-2xl rounded-bl-md bg-glass px-4 py-3 text-sm text-ink-2" style={d(1.15)}>
+            {ex.message}
+          </p>
+        </div>
         <p className="pas mt-auto text-sm text-ink-3" style={d(0.6)}>
           Rédigé pour vous, à copier en un clic.
         </p>
@@ -124,12 +132,12 @@ export async function Bento() {
 
       {/* 6. l'action, dans sa propre case */}
       <li className="vue lg:col-span-2" style={{ "--i": 2 } as CSSProperties}>
-        <Link href="#essai" className="group flex h-full min-h-40 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(255_90_31/0.9)]">
+        <Link href="#essai" className="reflet group flex h-full min-h-40 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(255_90_31/0.9)]">
           <span className="font-display text-2xl font-semibold leading-tight">Et votre annonce, elle vaut quoi ?</span>
           <span className="flex items-center justify-between font-semibold">
             Analyser en 10 secondes
             <span className="grid size-11 place-items-center rounded-full bg-[#160904] text-o transition group-hover:translate-x-1" aria-hidden="true">
-              →
+              <span className="pousse">→</span>
             </span>
           </span>
         </Link>
