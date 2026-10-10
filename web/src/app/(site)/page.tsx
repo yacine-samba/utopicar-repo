@@ -3,7 +3,8 @@ import { Rotateur } from "@/components/accueil/Rotateur";
 import { Defile } from "@/components/site/Defile";
 import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
-import { PreuveAnimee } from "@/components/accueil/PreuveAnimee";
+import { CARTE_ACCUEIL } from "@/components/accueil/PreuveAnimee";
+import { CarteHero } from "@/components/accueil/CarteHero";
 import { TroisTemps } from "@/components/accueil/TroisTemps";
 import { TroisVerdicts } from "@/components/accueil/TroisVerdicts";
 import { CoteEnDirect } from "@/components/accueil/CoteEnDirect";
@@ -68,7 +69,7 @@ export default async function Accueil() {
               ))}
             </ul>
           </div>
-          <PreuveAnimee />
+          <CarteHero defaut={CARTE_ACCUEIL} />
         </div>
       </section>
 
