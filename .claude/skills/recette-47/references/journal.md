@@ -14,6 +14,9 @@ demander à l'utilisateur, capture d'écran à l'appui.
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | MO5 « 47 € » | début oct. 2026, TikTok (date, heure, légende à noter) | aucune : référence | ? | **> 6 000** (8 oct.) | ? | ? | ? | ? | ? | ? | ? | référence de la série |
 | MO9 « 974 € » | à publier (livré le 8 oct. 2026) ; 31,4 s, ouverture A, Controlled Drop, Clio IV en photo libre | le sens de l'histoire (la marge tient) | ? | ? | ? | ? | ? | ? | ? | ? | ? | ? |
+| MO11 « La préparation » | à publier (livré le 10 oct. 2026) ; 30,6 s, Clio III en photo libre, voix Simon | l'accumulation : préparations visibles qui font monter le prix au lieu de débits | ? | ? | ? | ? | ? | ? | ? | ? | ? | ? |
+| MO12 « La pochette » | à publier (livré le 10 oct. 2026) ; 30,8 s, C3 en photo libre, voix Simon | l'ouverture : une scène (11 h → 11 h 20) au lieu du calcul (É4) | ? | ? | ? | ? | ? | ? | ? | ? | ? | ? |
+| MO13 « Avec 1 500 € » | à publier (livré le 10 oct. 2026) ; 31,45 s, 206, Mégane II, Fiesta VI en photos libres, voix Simon | l'échelle du récit : trois reventes enchaînées, compteur COMPTE qui grandit | ? | ? | ? | ? | ? | ? | ? | ? | ? | ? |
 
 Points de comparaison plus anciens (carrousels, même compte) : « 3 règles » environ 1 000 vues, les 29 autres 200 à
 300 (`video/docs/analyse_perf_carrousels.md`). MO6 « Ce qui se voit, ce qui se cache » et MO8 « Les 5 moteurs » : à
@@ -109,6 +112,7 @@ Journal de fabrication (une ligne par épisode : ce qui a été amélioré, avan
 | 8 oct. 2026 | test du skill par un agent neuf | Il a écrit seul un brief d'épisode complet ; ses dix questions ont précisé le skill (questionnaire sauté pour la série, numérotation MO, voiture et musique hors variables, chute négative, documents officiels en carte de verre) | appliqué |
 | 8 oct. 2026 | MO10, utilisateur | « Une seule génération » ElevenLabs : une prise (generations_count = 1, 580 crédits, estimation faite avant), l'ouverture B dite à la fin du même texte après une pause. Voix calée sur la prise B de MO8 (même voix, même modèle, même ton). Une réplique de trop se coupe au montage (« Jour un. » retiré pour tenir 32,6 s) plutôt que de régénérer | méthode |
 | 8 oct. 2026 | MO10, étape 4 | faster-whisper *medium* relit le texte exact mais place parfois un mot 0,8 s trop tard (« Bénéfice ») : recaler les bornes sur l'enveloppe à 20 ms avant de poser les répliques ; retranscrire la pose pour vérifier qu'aucun mot n'est coupé | méthode |
+| 10 oct. 2026 | MO11-MO13, fabrication | Trois épisodes « envie » fabriqués en parallèle sur kit47 ; voix provisoire estimée sur le débit mesuré de Simon (5,9 syllabes/s, ±0,25 s par réplique) pendant le blocage ElevenLabs, puis vraie prise posée sans retoucher le film (gestes lus dans vo-timing.json). Sur la vraie voix, compresser la voix seule avant la somme (MO12 : 85 coupes du limiteur > 6 dB → 4). Un seul Chromium par film : 3 rendus 540p en parallèle sur 4 cœurs ≈ 7 s par image | méthode |
 
 ## 7. Versions de la recette
 
