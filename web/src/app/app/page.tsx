@@ -7,18 +7,20 @@ import { debutPeriode, type Compte } from "@/lib/compte";
 import { familleEspace, nomFormule, type Icone } from "@/lib/espace";
 import { BENEF, GUIDE, OFFRES, prixTxt } from "@/lib/offres";
 import { supabaseServeur } from "@/lib/supabase/serveur";
-import { EN_STOCK, joursStock, margePrevue, margeReelle, STATUTS_PARC, statsParc, type Vehicule } from "@/lib/parc";
+import { EN_STOCK, joursStock, margePrevue, margeReelle, statsParc, type Vehicule } from "@/lib/parc";
 import { ListeRapports } from "@/components/benef/ListeRapports";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { AnalyseRapide } from "@/components/espace/AnalyseRapide";
 import { ProjetAchat } from "@/components/espace/ProjetAchat";
 import { GraphMarges, type BarreMarge } from "@/components/benef/GraphMarges";
-import { Ico } from "@/components/espace/Icones";
 import { BoutonRechercher, RechercheRapide } from "@/components/espace/RechercheRapide";
 import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
 import { phraseAccueil } from "@/lib/orientation";
 import { CartePremiersPas } from "@/components/espace/PremiersPasCompte";
+import { titreVehicule } from "@/lib/titre";
+import { estPiege } from "@/lib/vehicules/pieges";
+import { Affaires, AgeStock, Chiffre, EnTeteTableau as EnTeteComplet, EtapesParc, eur, Journee, Marche, Outil, TitreSection, type Action, type EtapeParc, type Opportunite } from "@/components/espace/Tableau";
 
 /** Téléphone : deux boutons qui ouvrent une fenêtre, au lieu des grands blocs « collez le lien » et « rechercher ». */
 function ActionsMobile({ recherche }: { recherche: boolean }) {
@@ -36,7 +38,6 @@ async function dernieresRecherches() {
   return (data ?? []) as Recherche[];
 }
 
-const eur = (v: number | null) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 
 function Tuile({ l, v, sous, alerte, lien }: { l: string; v: string; sous?: React.ReactNode; alerte?: boolean; lien?: { href: string; l: string } }) {
   return (
@@ -136,17 +137,21 @@ async function TableauParticulier({ c }: { c: Compte }) {
   );
 }
 
-/** Tableau de bord complet (Benef Pro et illimité) : celui de l'outil Garage. */
+/** Tableau de bord complet (Benef Pro et illimité). Il répond d'abord à « que faire aujourd'hui ? »,
+    puis montre l'argent (marges, capital), le marché frais, le parc par étapes et par âge, et les outils. */
 async function TableauComplet({ c }: { c: Compte }) {
   const sb = await supabaseServeur();
   const debut = debutPeriode(c.offre);
   const semaine = new Date(ilYa(7)).toISOString();
-  const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, recherches] = await Promise.all([
+  const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, recherches, { data: frais }] = await Promise.all([
     sb.from("rapports").select("id, marge, verdict").eq("mode", "benef").gte("created_at", debut).limit(2000),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").gte("created_at", semaine).in("verdict", VERDICTS_FAVORABLES).order("marge", { ascending: false, nullsFirst: false }).limit(6),
     sb.from("parc").select("*").limit(1000),
     c.offre.recherche ? dernieresRecherches() : Promise.resolve(null),
+    c.offre.recherche
+      ? sb.from("annonces_trouvees").select("cle, titre, prix, annee, km, lieu, url, photo, cote, recherche, premiere_le").gte("premiere_le", new Date(ilYa(7)).toISOString()).order("premiere_le", { ascending: false }).limit(600)
+      : Promise.resolve({ data: [] }),
   ]);
   const parc = (parcBrut ?? []) as Vehicule[];
   const st = statsParc(parc);
@@ -162,24 +167,64 @@ async function TableauComplet({ c }: { c: Compte }) {
   const go = (mois ?? []).filter((r) => estFavorable(r.verdict));
   const n = (mois ?? []).length;
 
-  const alertes: { v: Vehicule; lvl: "bad" | "warn"; txt: string }[] = [];
-  vivants.forEach((v) => {
+  // marge réalisée le mois dernier, pour la comparaison (heure de Paris approchée par le serveur)
+  const auj = new Date();
+  const debutMois = new Date(auj.getFullYear(), auj.getMonth(), 1);
+  const debutPrec = new Date(auj.getFullYear(), auj.getMonth() - 1, 1);
+  const margePrec = vivants
+    .filter((v) => v.statut === "vendu" && v.date_vente && new Date(v.date_vente) >= debutPrec && new Date(v.date_vente) < debutMois)
+    .reduce((s, v) => s + (margeReelle(v) ?? 0), 0);
+  const nomPrec = debutPrec.toLocaleDateString("fr-FR", { month: "long" });
+
+  // le marché des 7 derniers jours : nouvelles annonces de ses recherches entre 10 et 45 % sous la cote (au-delà : souvent un piège)
+  type Trouvee = { cle: string; titre: string; prix: number | null; annee: number | null; km: number | null; lieu: string | null; url: string | null; photo: string | null; cote: { P: number | null; pct: number | null } | null; recherche: string | null };
+  const opportunites: Opportunite[] = ((frais ?? []) as Trouvee[])
+    .filter((a) => a.cote?.pct != null && a.cote.pct >= 0.1 && a.cote.pct <= 0.45 && a.prix && !estPiege(a.titre))
+    .sort((a, b) => (b.cote?.pct ?? 0) - (a.cote?.pct ?? 0))
+    .slice(0, 8)
+    .map((a) => ({ cle: a.cle, titre: a.titre, prix: a.prix, cote: a.cote?.P ?? null, pct: a.cote!.pct!, annee: a.annee, km: a.km, lieu: a.lieu, url: a.url, photo: a.photo, recherche: a.recherche }));
+
+  // Votre journée : les décisions du jour, la plus urgente d'abord (rouge seulement pour ce qui doit être corrigé maintenant)
+  const actions: (Action & { rang: number })[] = [];
+  for (const v of vivants) {
     const j = joursStock(v);
+    const photo = v.photos?.[0] ?? null;
+    const titre = `${v.immat ? `${v.immat} · ` : ""}${titreVehicule(v.titre)}`;
+    const fiche = { href: `/app/parc/${v.id}`, l: "Ouvrir la fiche" };
+    if (EN_STOCK.includes(v.statut) && j != null && j > 60) actions.push({ rang: 0, ton: "bad", etiquette: `${j} jours en stock`, titre, raison: "Le capital dort : baissez le prix ou changez l'annonce aujourd'hui.", lien: { ...fiche, l: "Ajuster le prix" }, photo });
+    else if (EN_STOCK.includes(v.statut) && j != null && j > 45) actions.push({ rang: 1, ton: "warn", etiquette: `${j} jours en stock`, titre, raison: "Au-delà de 45 jours, la marge fond : refaites les photos ou ajustez le prix.", lien: { ...fiche, l: "Revoir l'annonce" }, photo });
+    if (EN_STOCK.includes(v.statut) && v.prix_achat == null) actions.push({ rang: 1, ton: "warn", etiquette: "Prix d'achat manquant", titre, raison: "Sans lui, la marge et le capital sont faux.", lien: { ...fiche, l: "Compléter" }, photo });
     const m = margeReelle(v);
-    if (EN_STOCK.includes(v.statut) && j != null && j > 60) alertes.push({ v, lvl: "bad", txt: `En stock depuis ${j} jours : baissez le prix ou changez d'annonce, le capital dort.` });
-    else if (EN_STOCK.includes(v.statut) && j != null && j > 45) alertes.push({ v, lvl: "warn", txt: `En stock depuis ${j} jours : au-delà de 45 jours, la marge fond.` });
-    if (EN_STOCK.includes(v.statut) && v.prix_achat == null) alertes.push({ v, lvl: "warn", txt: "Prix d'achat manquant : la marge et le capital sont faux." });
-    if (v.statut === "vendu" && m != null && m < 0) alertes.push({ v, lvl: "bad", txt: `Vendue à perte : ${Math.round(m).toLocaleString("fr-FR")} €.` });
+    if (v.statut === "vendu" && m != null && m < 0) actions.push({ rang: 2, ton: "warn", etiquette: "Vendue à perte", titre, raison: `${eur(m)} : notez ce qui a coûté pour la prochaine fois.`, lien: fiche, photo });
     if (v.statut === "repere") {
       const age = joursDepuis(v.created_at);
-      if (age > 7) alertes.push({ v, lvl: "warn", txt: `Repérée il y a ${age} jours : achetez ou abandonnez pour garder un parc à jour.` });
+      if (age > 7) actions.push({ rang: 3, ton: "warn", etiquette: `Repérée il y a ${age} jours`, titre, raison: "Achetez-la ou abandonnez-la pour garder un parc à jour.", lien: { ...fiche, l: "Décider" }, photo });
     }
-  });
-  alertes.sort((a, b) => (a.lvl === "bad" ? 0 : 1) - (b.lvl === "bad" ? 0 : 1));
+  }
+  const dansParc = new Set(parc.map((v) => v.rapport_id).filter(Boolean));
+  const goLibres = (semaineGo ?? []).filter((r) => !dansParc.has(r.id));
+  if (goLibres[0]) {
+    const r = goLibres[0];
+    actions.push({ rang: 4, ton: "o", etiquette: `Affaire GO · ${eur(r.marge, true)}`, titre: titreVehicule(r.titre), raison: "Analysée cette semaine, pas encore dans le parc : contactez le vendeur.", lien: { href: `/app/rapports/${r.id}`, l: "Voir le rapport" }, photo: r.photos?.[0] ?? null });
+  }
+  if (opportunites[0]) {
+    const o = opportunites[0];
+    actions.push({ rang: 5, ton: "o", etiquette: `−${Math.round(o.pct * 100)} % sous la cote`, titre: o.titre, raison: `Nouvelle annonce${o.recherche ? ` de « ${o.recherche} »` : ""} : à analyser avant les autres.`, lien: { href: "#tb-marche", l: "Voir le marché" }, photo: o.photo });
+  }
+  actions.sort((a, b) => a.rang - b.rang);
 
-  const comptes = (["repere", "achete", "preparation", "en_vente", "vendu"] as const).map((s) => [s, vivants.filter((v) => v.statut === s).length] as const);
-  const total = comptes.reduce((s, [, k]) => s + k, 0);
-  const TONS: Record<string, string> = { repere: "bg-ink-3/40", achete: "bg-o3/70", preparation: "bg-warn/80", en_vente: "bg-o", vendu: "bg-ok" };
+  const ETAPES = [
+    ["repere", "Repérées", "bg-ink-3"],
+    ["achete", "Achetées", "bg-o3"],
+    ["preparation", "En préparation", "bg-warn"],
+    ["en_vente", "En vente", "bg-o"],
+    ["vendu", "Vendues", "bg-ok"],
+  ] as const;
+  const etapes: EtapeParc[] = ETAPES.map(([s, l, ton]) => {
+    const vs = vivants.filter((v) => v.statut === s);
+    return { cle: s, l, ton, n: vs.length, photos: vs.map((v) => v.photos?.[0]).filter((p): p is string => !!p) };
+  });
+  const total = etapes.reduce((s, e) => s + e.n, 0);
 
   const barres: BarreMarge[] = [
     ...vivants.filter((v) => v.statut === "vendu").map((v) => ({ v, m: margeReelle(v) })).filter((x) => x.m != null)
@@ -187,46 +232,99 @@ async function TableauComplet({ c }: { c: Compte }) {
     ...prevues.map(({ v, m }) => ({ id: v.id, nom: v.titre, marge: m!, prevue: true })),
   ].slice(0, 12);
 
+  const resume = [
+    semaineGo?.length ? `${semaineGo.length} affaire${semaineGo.length > 1 ? "s" : ""} GO cette semaine` : "Aucune affaire GO cette semaine",
+    opportunites.length ? `${opportunites.length} annonce${opportunites.length > 1 ? "s" : ""} sous la cote cette semaine` : `${st.enStock} voiture${st.enStock > 1 ? "s" : ""} en stock`,
+    c.illimite ? `${c.utilisees} analyse${c.utilisees > 1 ? "s" : ""} ce mois` : `${c.restantes} analyse${c.restantes > 1 ? "s" : ""} restante${c.restantes > 1 ? "s" : ""}`,
+  ];
 
   return (
-    <div className="grid gap-8">
-      <EnTeteTableau c={c} texte={`${nomFormule(c)} · votre parc, vos marges et le marché.`} />
+    <div className="grid gap-10">
+      <EnTeteComplet
+        prenom={c.prenom}
+        sous="Collez une annonce : marge nette, prix d'offre et plafond en une minute."
+        resume={resume}
+        action={
+          <>
+            <div className="hidden sm:block">
+              <AnalyseRapide compact />
+            </div>
+            <div className="sm:hidden">
+              <BoutonAnalyser className="w-full justify-center" />
+            </div>
+          </>
+        }
+        journee={<Journee actions={actions.slice(0, 4)} />}
+      />
       <CartePremiersPas c={c} />
       <Suivies />
 
-      <section aria-labelledby="tb-pipe" className="carte grid gap-5 p-5">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 id="tb-pipe" className="font-display text-lg font-semibold">Parc automobile</h2>
-          <span className="flex items-baseline gap-4 text-sm">
-            <span className="text-ink-3">{total} véhicule{total > 1 ? "s" : ""} suivi{total > 1 ? "s" : ""}</span>
-            <Link href="/app/parc" className="text-o2 underline-offset-4 hover:underline">Gérer le parc</Link>
-          </span>
-        </div>
-        <div className="flex h-8 overflow-hidden rounded-xl" role="img" aria-label={comptes.map(([s, k]) => `${STATUTS_PARC[s]} : ${k}`).join(", ")}>
-          {total ? comptes.filter(([, k]) => k).map(([s, k]) => (
-            <span key={s} className={`grid place-items-center text-xs font-semibold text-bg0 ${TONS[s]}`} style={{ flex: k }}>{k}</span>
-          )) : <span className="grid flex-1 place-items-center bg-glass text-xs text-ink-3">Aucun véhicule</span>}
-        </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3">
-          {comptes.map(([s, k]) => (
-            <span key={s} className="flex items-center gap-1.5"><span className={`size-2.5 rounded-full ${TONS[s]}`} aria-hidden="true" />{STATUTS_PARC[s]} <b className="num text-ink-2">{k}</b></span>
-          ))}
-        </div>
-        <h3 className="sr-only">Chiffres clés</h3>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
-          <Kpi l="En stock" v={String(st.enStock)} s={`${vivants.filter((v) => v.statut === "repere").length} repérée(s)`} />
-          <Kpi l="Capital immobilisé" v={eur(st.capital)} s="achats et frais engagés" />
-          <Kpi l="Marge réalisée" v={eur(st.margeTotale)} s={`${st.vendus} vente${st.vendus > 1 ? "s" : ""}`} ton={st.margeTotale < 0 ? "bad" : st.margeTotale > 0 ? "ok" : undefined} />
-          <Kpi l="Marge moyenne" v={eur(st.margeMoyenne)} s="par voiture vendue" ton={st.margeMoyenne != null && st.margeMoyenne < 750 ? "warn" : undefined} />
-          <Kpi l="Rotation moyenne" v={st.rotation != null ? `${st.rotation} j` : "—"} s="de l'achat à la vente" />
-          <Kpi l="Marge en attente" v={eur(prevues.length ? attente : null)} s={prevues.length ? `${prevues.length} voiture(s) du stock` : "indiquez le prix conseillé dans le parc"} ton={prevues.length && attente < 0 ? "bad" : undefined} />
+      <section aria-labelledby="tb-chiffres">
+        <h2 id="tb-chiffres" className="sr-only">Chiffres clés</h2>
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+          <Chiffre i={0} fort icone="rentabilite" l="Marge réalisée ce mois" v={eur(st.margeMois)} ton={st.margeMois < 0 ? "bad" : undefined}
+            delta={margePrec || st.margeMois ? { v: st.margeMois - margePrec, l: `par rapport à ${nomPrec}` } : null}
+            s={<>Au total : <b className="num text-ink-2">{eur(st.margeTotale)}</b> sur {st.vendus} vente{st.vendus > 1 ? "s" : ""}</>} />
+          <Chiffre i={1} icone="parc" l="Marge en attente" v={eur(prevues.length ? attente : null, true)} ton={!prevues.length ? undefined : attente < 0 ? "bad" : "ok"}
+            s={prevues.length ? `Sur ${prevues.length} voiture${prevues.length > 1 ? "s" : ""} du stock, au prix conseillé` : "Indiquez le prix conseillé dans le parc"} />
+          <Chiffre i={2} icone="credits" l="Capital immobilisé" v={eur(st.capital)} s={`${st.enStock} voiture${st.enStock > 1 ? "s" : ""} en stock, achats et frais`} />
+          <Chiffre i={3} icone="historique" l="Rotation moyenne" v={st.rotation != null ? `${st.rotation} j` : "—"} ton={st.rotation != null && st.rotation > 45 ? "warn" : undefined}
+            s={st.margeMoyenne != null ? <>De l&apos;achat à la vente · marge moyenne <b className="num text-ink-2">{eur(st.margeMoyenne)}</b></> : "De l'achat à la vente, sur les voitures vendues"} />
         </div>
       </section>
 
-      <section aria-labelledby="tb-marges" className="carte grid gap-4 p-5">
-        <h2 id="tb-marges" className="font-display text-lg font-semibold">Marge par voiture</h2>
-        <GraphMarges barres={barres} />
+      {opportunites.length > 0 && (
+        <section aria-labelledby="tb-marche" id="tb-marche" className="scroll-mt-24">
+          <TitreSection id="tb-marche-t" aside="trouvées par vos recherches ces 7 derniers jours" lien={{ href: "/app/recherche?vue=annonces", l: "Toutes les annonces" }}>
+            Le marché, en ce moment
+          </TitreSection>
+          <Marche annonces={opportunites} />
+        </section>
+      )}
+
+      <section aria-labelledby="tb-parc" className="carte grid gap-6 p-5 sm:p-6">
+        <TitreSection id="tb-parc" aside={`${total} voiture${total > 1 ? "s" : ""} suivie${total > 1 ? "s" : ""}`} lien={{ href: "/app/parc", l: "Gérer le parc" }}>
+          Votre parc
+        </TitreSection>
+        <EtapesParc etapes={etapes} lien="/app/parc" />
+        <div className="grid gap-3 border-t border-line pt-5">
+          <h3 className="font-display font-semibold">Âge du stock</h3>
+          <AgeStock voitures={stock.map((v) => ({ id: v.id, titre: v.titre, jours: joursStock(v), photo: v.photos?.[0] ?? null }))} />
+        </div>
       </section>
+
+      <section aria-labelledby="tb-best">
+        <TitreSection id="tb-best" lien={{ href: "/app/rapports", l: "Tous les rapports" }}>Les meilleures affaires de la semaine</TitreSection>
+        {semaineGo?.length ? (
+          <Affaires affaires={semaineGo.slice(0, 3)} />
+        ) : (
+          <p className="carte p-6 text-ink-2">Rien au-dessus de votre seuil cette semaine. Cherchez sous la cote dans la recherche, ou analysez une annonce.</p>
+        )}
+      </section>
+
+      <div className="grid gap-10 lg:grid-cols-2">
+        <section aria-labelledby="tb-marges" className="carte grid content-start gap-4 p-5 sm:p-6">
+          <h2 id="tb-marges" className="font-display text-xl font-semibold tracking-tight">Marge par voiture</h2>
+          <GraphMarges barres={barres} />
+        </section>
+        <section aria-labelledby="tb-analyses" className="carte grid content-start gap-4 p-5 sm:p-6">
+          <h2 id="tb-analyses" className="font-display text-xl font-semibold tracking-tight">Analyses du mois</h2>
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-5">
+            {[
+              ["Analyses", c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`, c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`],
+              ["Affaires GO", String(go.length), `sur ${n} annonce${n > 1 ? "s" : ""}`],
+              ["Marge moyenne des GO", eur(go.length ? go.reduce((s, r) => s + (r.marge ?? 0), 0) / go.length : null), "estimée avant achat"],
+              ["Taux de GO", n ? `${Math.round((go.length / n) * 100)} %` : "—", "des annonces analysées"],
+            ].map(([l, v, s]) => (
+              <div key={l} className="min-w-0">
+                <dt className="text-sm text-ink-3">{l}</dt>
+                <dd className="num mt-1 font-display text-2xl font-semibold">{v}</dd>
+                <dd className="text-xs text-ink-3">{s}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </div>
 
       {recherches && (
         <>
@@ -300,28 +398,21 @@ async function TableauComplet({ c }: { c: Compte }) {
       </section>
 
       <section aria-labelledby="tb-outils">
-        <h2 id="tb-outils" className="mb-3 font-display text-lg font-semibold">Outils</h2>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <TitreSection id="tb-outils">Vos outils</TitreSection>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {([
             ["/app/recherche", "recherche", "Recherche", "Le marché par génération, sous la cote, avec alertes e-mail"],
             c.illimite ? ["/app/cote", "cote", "Cote du marché", "Coller un relevé, placer une voiture"] : ["/app/estimation", "estimation", "Estimer une cote", "Vos critères, notre base d'annonces"],
             ["/app/messages", "messages", "Messages Leboncoin", c.messages ? "Premier message automatique, boîte de réception" : "Option de Benef Pro"],
-          ] as [string, Icone, string, string][]).map(([href, ico, l, d]) => (
-            <Link key={href} href={href} className="carte grid gap-2 p-4 transition hover:border-o/40">
-              <Ico nom={ico} className="size-5 text-o2" />
-              <span className="font-medium">{l}</span>
-              <span className="text-xs text-ink-3">{d}</span>
-            </Link>
+          ] as [string, Icone, string, string][]).map(([href, ico, l, d], i) => (
+            <Outil key={href} i={i} href={href} icone={ico} l={l} d={d} />
           ))}
         </div>
       </section>
 
       <section aria-labelledby="tb-derniers">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 id="tb-derniers" className="font-display text-lg font-semibold">Derniers rapports</h2>
-          <Link href="/app/rapports" className="text-sm text-o2 underline-offset-4 hover:underline">Tous les rapports</Link>
-        </div>
-        <ListeRapports rapports={derniers ?? []} comparateur={false} choixVue={false} vide="Aucun rapport pour le moment : cliquez sur « Analyser une annonce »." />
+        <TitreSection id="tb-derniers" lien={{ href: "/app/rapports", l: "Tous les rapports" }}>Derniers rapports</TitreSection>
+        <ListeRapports rapports={derniers ?? []} comparateur={false} choixVue={false} vide="Aucun rapport pour le moment : collez le lien d'une annonce en haut de la page." />
       </section>
     </div>
   );
@@ -330,16 +421,6 @@ async function TableauComplet({ c }: { c: Compte }) {
 /* Hors des composants : l'heure courante n'est lue qu'au rendu serveur de la page. */
 const ilYa = (jours: number) => Date.now() - jours * 86400000;
 const joursDepuis = (d: string) => Math.round((Date.now() - new Date(d).getTime()) / 86400000);
-
-function Kpi({ l, v, s, ton }: { l: string; v: string; s?: string; ton?: "ok" | "warn" | "bad" }) {
-  return (
-    <div className="carte p-4">
-      <p className="text-xs text-ink-3">{l}</p>
-      <p className={`num mt-1 font-display text-2xl font-semibold ${ton === "ok" ? "text-ok" : ton === "warn" ? "text-warn" : ton === "bad" ? "text-bad" : ""}`}>{v}</p>
-      {s && <p className="mt-0.5 text-xs text-ink-3">{s}</p>}
-    </div>
-  );
-}
 
 async function TableauBenef({ c }: { c: Compte }) {
   const sb = await supabaseServeur();
