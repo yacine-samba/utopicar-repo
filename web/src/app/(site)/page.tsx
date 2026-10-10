@@ -1,387 +1,181 @@
 import Link from "next/link";
 import { Rotateur } from "@/components/accueil/Rotateur";
-import { Demo } from "@/components/accueil/Demo";
 import { Defile } from "@/components/site/Defile";
 import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
+import { PreuveAnimee } from "@/components/accueil/PreuveAnimee";
+import { TroisTemps } from "@/components/accueil/TroisTemps";
+import { TroisVerdicts } from "@/components/accueil/TroisVerdicts";
+import { CoteEnDirect } from "@/components/accueil/CoteEnDirect";
+import { Bento } from "@/components/accueil/Bento";
+import { ChiffresMarche } from "@/components/site/ChiffresMarche";
+import { BarreEssai } from "@/components/site/BarreEssai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { JsonLdFaq } from "@/components/site/JsonLd";
-import { dateTxt, listeCotes, nb } from "@/lib/cotes-publiques";
-import { CartesOffres } from "@/components/site/CartesOffres";
-import { Symbole } from "@/components/site/Logo";
-import { compteCourant } from "@/lib/compte";
+import { GainsAbonnement } from "@/components/site/GainsAbonnement";
 import { PARTICULIERS } from "@/lib/offres";
+
+/* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
+   Une seule action (coller une annonce), la preuve visible tout de suite (vraie annonce, verdict joué en 2 s), de vrais chiffres,
+   presque pas de texte. Ordre : essai et preuve → chiffres → 3 vrais verdicts → ce qui est vérifié → pièges → cote en direct
+   → prix → questions → appel final. */
+
+/** Des vrais libellés de l'outil (lib/analyse/defauts.ts, 38 règles), parmi les plus parlants. */
+const PIEGES = ["Joint de culasse signalé", "Moteur à refaire", "Distribution à faire", "Embrayage à changer", "Kilométrage non garanti", "Boîte de vitesses à revoir", "Turbo à changer", "Voyant allumé", "Fuite d'huile", "Fumée à l'échappement", "Problème de papiers", "Rouille", "Choc de carrosserie", "Vendue en l'état"];
 
 const MODELES = ["Renault Clio IV", "Peugeot 208", "Toyota Yaris", "Dacia Sandero", "VW Polo V", "Citroën C3", "Ford Fiesta", "Opel Corsa", "Hyundai i20", "Suzuki Swift", "Renault Twingo", "Seat Ibiza", "Kia Rio", "Skoda Fabia"];
 
-/** Les trois étapes, chacune avec un petit visuel concret (ce que la personne voit vraiment à cette étape). */
-const ETAPES: { t: string; d: string; v: React.ReactNode }[] = [
-  {
-    t: "Vous collez l'annonce",
-    d: "Le lien Leboncoin suffit. Sur un autre site, le texte de la page.",
-    v: (
-      <div className="flex items-center gap-2">
-        <span className="min-w-0 flex-1 truncate rounded-full border border-line-2 bg-glass px-3 py-1.5 text-ink-3">https://www.leboncoin.fr/ad/voitures/2817…</span>
-        <span className="shrink-0 rounded-full bg-o px-3 py-1.5 font-display text-xs font-semibold text-[#160904]">Analyser</span>
-      </div>
-    ),
-  },
-  {
-    t: "Utopicar vérifie",
-    d: "La cote sur les annonces comparables, 38 défauts dans le texte, le moteur, les papiers.",
-    v: (
-      <ul className="grid gap-1.5">
-        {[["ok", "Cote : 7 550 € (174 Clio comparables)"], ["warn", "Choc de carrosserie : 150 à 700 €"], ["ok", "Moteur 0.9 TCe : réputé fiable"], ["neutre", "CT de moins de 6 mois : à demander"]].map(([ton, t]) => (
-          <li key={t} className="flex items-center gap-2">
-            <span className={`grid size-4 shrink-0 place-items-center rounded-full text-[9px] ${ton === "ok" ? "bg-ok/20 text-ok" : ton === "warn" ? "bg-warn/20 text-warn" : "bg-glass text-ink-3"}`}>{ton === "ok" ? "✓" : ton === "warn" ? "!" : "?"}</span>
-            <span className="text-ink-2">{t}</span>
-          </li>
-        ))}
-      </ul>
-    ),
-  },
-  {
-    t: "Vous savez quoi faire",
-    d: "Un verdict, le prix à proposer, les questions à poser et ce qu'il faut contrôler sur place.",
-    v: (
-      <div className="grid gap-2">
-        <span className="w-fit rounded-full border border-ok/40 bg-ok/10 px-3 py-1 font-semibold text-ok">Bon prix</span>
-        <p className="text-ink-2">
-          Proposez <b className="num text-ink">6 250 €</b> · Demandez le CT et les factures avant de vous déplacer.
-        </p>
-      </div>
-    ),
-  },
-];
-
-/** La FAQ en texte brut, pour les données structurées (Google affiche les questions sous le résultat). */
-const FAQ_TEXTE = [
-  { q: "L'analyse est-elle vraiment gratuite ?", r: "Oui, la première analyse est offerte, sans carte bancaire : il suffit de créer un compte. Ensuite, la formule Essentiel coûte 4,99 € par mois sans engagement, ou des crédits à l'unité dès 2,99 € l'analyse." },
-  { q: "Ça marche sur quelles voitures ?", r: "Sur les annonces de voitures particulières de Leboncoin, La Centrale ou AutoScout24. La cote est la plus précise sur les modèles courants ; sur un modèle rare, l'outil prévient que l'estimation est moins sûre." },
-  { q: "Est-ce que ça remplace un garagiste ?", r: "Non. L'outil évite les mauvais déplacements et donne un prix de départ ; il sépare ce qui est écrit dans l'annonce de ce qui reste à vérifier sur place. Pour une voiture chère ou un doute mécanique, il conseille une inspection." },
-  { q: "Je colle le lien, ou tout le texte ?", r: "Sur Leboncoin, le lien suffit : l'annonce et ses photos sont récupérées. Sur les autres sites, copiez la page entière et collez-la." },
-  { q: "Ça marche aussi sur une annonce de professionnel ?", r: "Oui. L'outil lit le type de vendeur et en tient compte : garantie du professionnel, vente en l'état du particulier, prix à proposer et questions adaptés." },
-  { q: "Combien de temps dure une analyse ?", r: "L'aperçu s'affiche en 2 secondes. Le rapport complet, photos lues et questions rédigées, prend environ une minute." },
-  { q: "Comment résilier ?", r: "En deux clics depuis votre compte, à tout moment. L'accès reste ouvert jusqu'à la fin du mois déjà payé." },
-  { q: "Que faites-vous de mes informations ?", r: "Votre email sert à votre compte, vos analyses restent privées. Pas de revente de données, pas de publicité." },
+/** Les questions qui bloquent l'essai, et seulement elles (le texte brut sert aussi aux données structurées). */
+const FAQ: { cat: string; q: string; r: string }[] = [
+  { cat: "Prix", q: "C'est vraiment gratuit ?", r: "Oui. L'aperçu est immédiat sans compte, et la première analyse complète est offerte, sans carte bancaire. Ensuite : 4,99 € par mois sans engagement, ou 2,99 € l'analyse à l'unité." },
+  { cat: "Annonces", q: "Ça marche sur quelles annonces ?", r: "Leboncoin (le lien suffit), La Centrale et AutoScout24 (collez le texte de la page). Voitures particulières, vendeurs particuliers ou professionnels." },
+  { cat: "Fiabilité", q: "Ça remplace un garagiste ?", r: "Non : ça vous évite les mauvais déplacements et vous donne un prix de départ. Pour une voiture chère ou un doute mécanique, l'outil conseille une inspection." },
+  { cat: "Délai", q: "Combien de temps ça prend ?", r: "L'aperçu (cote, défauts, moteur) s'affiche en 2 secondes. Le rapport complet, photos lues et questions rédigées, en une minute environ." },
+  { cat: "Données", q: "Que faites-vous de mes informations ?", r: "Votre e-mail sert à votre compte, vos analyses restent privées. Pas de revente de données, pas de publicité." },
 ];
 
 const Coche = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true" className="text-ok">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true" className="shrink-0 text-ok">
     <path d="m5 12 5 5L20 7" />
   </svg>
 );
 
 export default async function Accueil() {
-  const [compte, fournisseurs, cotes] = await Promise.all([compteCourant(), fournisseursActifs(), listeCotes()]);
-  // vrais chiffres de la base du marché (rien d'arrondi à la hausse) : annonces relevées et modèles cotés
-  const annonces = cotes.reduce((s, c) => s + c.n, 0);
-  const releve = dateTxt(cotes.map((c) => c.maj).filter((d): d is string => !!d).sort().pop() ?? null);
+  const fournisseurs = await fournisseursActifs();
   return (
     <>
-      {/* ---------------- héros : le champ d'essai est le produit ---------------- */}
-      <section className="relative overflow-hidden pb-16 pt-14 text-center sm:pt-20">
+      {/* ---------------- héros : le champ d'essai à gauche, la preuve qui se joue à droite ---------------- */}
+      <section className="relative overflow-hidden pb-12 pt-10 sm:pt-16">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_80%_55%_at_50%_0,#000_25%,transparent_78%)]" aria-hidden="true" />
-        <div className="wrap">
-          <span className="kicker arrivee">Pour acheter une occasion ou la revendre</span>
-          <h1 className="arrivee mx-auto mt-6 max-w-[17ch] font-display text-[clamp(38px,7vw,78px)] font-semibold leading-[1.02] tracking-[-0.03em]" style={{ "--i": 1 } as React.CSSProperties}>
-            Voyez en 10 secondes si une occasion est <Rotateur mots={["une vraie affaire", "une arnaque", "à négocier", "au bon prix"]} />
-          </h1>
-          <p className="arrivee mx-auto mt-6 max-w-2xl text-lg text-ink-2 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
-            Collez une annonce Leboncoin, La Centrale ou AutoScout24. Utopicar estime sa cote, repère les défauts qui coûtent cher et vous dit quoi faire.
-          </p>
-          <div className="arrivee mt-9" style={{ "--i": 3 } as React.CSSProperties}>
-            <Essai fournisseurs={fournisseurs} depuis="hero" />
+        <div className="wrap grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
+          <div className="text-center lg:text-left lg:[&_p.justify-center]:justify-start">
+            <h1 className="arrivee mx-auto max-w-[17ch] font-display text-[clamp(36px,5.6vw,62px)] font-semibold leading-[1.02] tracking-[-0.03em] lg:mx-0">
+              Voyez en 10 secondes si une occasion est <Rotateur mots={["une vraie affaire", "une arnaque", "à négocier", "au bon prix"]} />
+            </h1>
+            <div className="mt-6">
+              <TroisTemps etapes={[["lien", "Collez l'annonce"], ["balance", "Comparée au marché"], ["verdict", "Verdict et prix"]]} />
+            </div>
+            <div className="arrivee mt-7" style={{ "--i": 2 } as React.CSSProperties}>
+              <Essai fournisseurs={fournisseurs} depuis="hero" />
+            </div>
+            <ul className="arrivee mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-2 lg:justify-start" style={{ "--i": 3 } as React.CSSProperties}>
+              {["Gratuit", "Sans compte", "Sans carte"].map((t) => (
+                <li key={t} className="flex items-center gap-1.5">
+                  <Coche />
+                  {t}
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="arrivee mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-2" style={{ "--i": 4 } as React.CSSProperties}>
-            <li className="flex items-center gap-2">
-              <Coche />
-              Première analyse offerte
-            </li>
-            <li className="flex items-center gap-2">
-              <Coche />
-              Sans carte bancaire
-            </li>
-            <li className="flex items-center gap-2">
-              <Coche />
-              Résultat en langage clair
-            </li>
-          </ul>
+          <PreuveAnimee />
         </div>
       </section>
 
+      {/* ---------------- vrais chiffres ---------------- */}
+      <ChiffresMarche />
       <Defile items={MODELES} label="Modèles analysés" />
-      {annonces > 0 && (
-        <section aria-label="La base du marché" className="wrap py-6">
-          <dl className="grid gap-3 text-center sm:grid-cols-3">
-            {(
-              [
-                [nb(annonces), "annonces Leboncoin relevées", releve ? `dernier relevé le ${releve}` : "en ligne"],
-                [String(cotes.length), "modèles cotés génération par génération", null],
-                ["38", "défauts recherchés dans chaque annonce", "embrayage, distribution, chocs, papiers…"],
-              ] as [string, string, string | null][]
-            ).map(([v, l, s], i) => (
-              <div key={l} className="flex flex-col rounded-2xl border border-line px-4 py-4">
-                {/* le chiffre d'abord à l'écran, l'intitulé d'abord pour les lecteurs d'écran (dt avant dd) */}
-                <dt className="order-2 text-sm text-ink-2">{l}</dt>
-                <dd className="num order-1 font-display text-3xl font-semibold text-ink">{v}</dd>
-                <dd className="order-3 mt-0.5 text-xs text-ink-3">
-                  {i === 1 ? (
-                    <Link href="/cote" className="text-o2 underline underline-offset-4">
-                      voir les cotes par modèle
-                    </Link>
-                  ) : (
-                    s
-                  )}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-      )}
 
-      {/* ---------------- démo ---------------- */}
-      <section id="demo" className="scroll-mt-24 py-24">
+      {/* ---------------- trois vraies annonces, trois verdicts : l'outil sait aussi dire non ---------------- */}
+      <section className="py-16">
+        <div className="wrap">
+          <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
+            <h2 className="h-sec">
+              3 annonces, <span className="it">3 verdicts</span>
+            </h2>
+            <Link href="#essai" className="inline-flex min-h-6 items-center text-sm font-medium text-o2 underline underline-offset-4">
+              Essayez la vôtre ↑
+            </Link>
+          </div>
+          <div className="mx-auto max-w-5xl">
+            <TroisVerdicts />
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- ce qui est vérifié, en bento : la vraie cote en case d'ancrage, une idée par case, l'action à part ---------------- */}
+      <section className="py-16">
+        <div className="wrap">
+          <h2 className="h-sec mx-auto mb-10 max-w-2xl text-center">
+            Ce qu&apos;on vérifie <span className="it">à votre place</span>
+          </h2>
+          <div className="mx-auto max-w-5xl">
+            <Bento />
+          </div>
+          <p className="mt-6 text-center text-ink-2">
+            Achat-revente ?{" "}
+            <Link href="/benef" className="font-medium text-o2 underline underline-offset-4">
+              Benef calcule votre marge →
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* ---------------- les pièges repérés dans le texte des annonces ---------------- */}
+      <section aria-labelledby="pieges" className="py-10">
+        <h2 id="pieges" className="wrap mb-4 text-center font-display text-xl font-semibold">
+          Les pièges qu&apos;on repère <span className="text-ink-3">(38 au total)</span>
+        </h2>
+        <Defile items={PIEGES} label="Exemples de pièges repérés" inverse />
+      </section>
+
+      {/* ---------------- la cote en direct : vrais prix médians de la base ---------------- */}
+      <section className="py-16">
+        <div className="wrap">
+          <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
+            <h2 className="h-sec">
+              La cote <span className="it">en direct</span>
+            </h2>
+          </div>
+          <div className="mx-auto max-w-5xl">
+            <CoteEnDirect />
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- formules ---------------- */}
+      <section id="formules" className="scroll-mt-24 py-16">
         <div className="wrap">
           <div className="apparait mx-auto mb-10 max-w-2xl text-center">
-            <span className="kicker">Démonstration</span>
-            <h2 className="h-sec mt-5">
-              Regardez l&apos;outil analyser <span className="it">une vraie annonce</span>
+            <h2 className="h-sec">
+              Pourquoi s&apos;abonner ? <span className="it">Ça se rembourse</span>
             </h2>
-            <p className="mt-4 text-lg text-ink-2">À gauche, l&apos;annonce telle qu&apos;elle est sur Leboncoin. À droite, ce qu&apos;Utopicar vous dit en 10 secondes : le prix du marché, les défauts, le moteur, le prix à proposer.</p>
+            <p className="mt-3 text-lg text-ink-2">La première analyse est offerte, sans carte. Voici ce que la suite vous rapporte.</p>
           </div>
-          <Demo />
+          <GainsAbonnement famille="particulier" ids={PARTICULIERS} credits lien="/tarifs" />
         </div>
       </section>
 
-      {/* ---------------- ce qui est vérifié ---------------- */}
-      <section className="py-20">
+      {/* ---------------- questions ---------------- */}
+      <section id="faq" className="scroll-mt-24 py-16">
         <div className="wrap">
-          <div className="apparait mx-auto mb-12 max-w-2xl text-center">
-            <span className="kicker">Ce que l&apos;outil vérifie</span>
-            <h2 className="h-sec mt-5">
-              Ce qu&apos;Utopicar vérifie <span className="it">à votre place</span>
-            </h2>
-            <p className="mt-4 text-lg text-ink-2">Le prix du marché, les défauts, le moteur, le coût réel : ce qu&apos;un acheteur averti vérifie avant d&apos;acheter, fait en 10 secondes.</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-6">
-            <article className="carte apparait p-6 md:col-span-4">
-              <p className="text-sm font-medium text-o2">Cote du marché</p>
-              <h3 className="mt-2 font-display text-2xl font-semibold">Le prix de l&apos;annonce, face au marché</h3>
-              <p className="mt-2 text-ink-2">Même modèle, même moteur, même âge, même kilométrage. Vous voyez tout de suite si le prix est au-dessus ou en dessous.</p>
-              <Link href="/cote" className="mt-2 inline-block text-sm font-medium text-o2 underline underline-offset-4">
-                Voir les cotes par modèle
-              </Link>
-              <svg viewBox="0 0 600 200" className="mt-5 w-full" role="img" aria-label="Exemple : la cote est à 6 950 €, l'annonce à 7 400 €, au-dessus du marché.">
-                <defs>
-                  <linearGradient id="aire" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0" stopColor="#ff5a1f" stopOpacity=".45" />
-                    <stop offset="1" stopColor="#ff5a1f" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                {[160, 100, 40].map((y) => (
-                  <line key={y} x1="0" x2="600" y1={y} y2={y} className="stroke-line" />
-                ))}
-                <path d="M0 160 C60 158 110 150 160 120 S250 30 300 34 S400 110 450 140 S560 158 600 160 Z" fill="url(#aire)" />
-                <path d="M0 160 C60 158 110 150 160 120 S250 30 300 34 S400 110 450 140 S560 158 600 160" fill="none" className="stroke-o2" strokeWidth="2.5" />
-                <line x1="300" x2="300" y1="30" y2="170" className="stroke-ink-3" strokeDasharray="4 5" />
-                <text x="306" y="24" fontSize="14" className="fill-ink max-sm:text-[22px]">Cote 6 950 €</text>
-                <circle cx="408" cy="118" r="7" fill="#ff5a1f" />
-                <text x="420" y="112" fontSize="14" className="fill-o2 max-sm:text-[22px]">Annonce 7 400 €</text>
-                <text x="4" y="194" fontSize="13" className="fill-ink-3 max-sm:text-[20px]">5 000 €</text>
-                <text x="596" y="194" textAnchor="end" fontSize="13" className="fill-ink-3 max-sm:text-[20px]">9 000 €</text>
-              </svg>
-            </article>
-            <article className="carte apparait p-6 md:col-span-2" style={{ "--i": 1 } as React.CSSProperties}>
-              <p className="text-sm font-medium text-o2">Défauts dans le texte</p>
-              <h3 className="mt-2 font-display text-2xl font-semibold">Les mots qui coûtent cher</h3>
-              <p className="mt-4 text-lg leading-relaxed text-ink-2">
-                « Très bon état, <mark className="rounded bg-bad/20 px-1 text-ink">petit bruit embrayage</mark>, <mark className="rounded bg-bad/20 px-1 text-ink">pneus à prévoir</mark>, <mark className="rounded bg-bad/20 px-1 text-ink">prix ferme</mark>. »
-              </p>
-            </article>
-            <article className="carte apparait p-6 md:col-span-2">
-              <p className="text-sm font-medium text-o2">Moteurs et boîtes</p>
-              <h3 className="mt-2 font-display text-2xl font-semibold">Fiable ou à fuir</h3>
-              <ul className="mt-4 flex flex-wrap gap-2 text-sm">
-                {[
-                  ["1.5 dCi", true],
-                  ["1.33 VVT-i", true],
-                  ["1.2 PureTech", false],
-                  ["EDC", false],
-                  ["DSG7", false],
-                  ["1.6 TDI", true],
-                ].map(([m, ok]) => (
-                  <li key={m as string} className={`rounded-full border px-3 py-1 ${ok ? "border-ok/40 bg-ok/10 text-ok" : "border-bad/40 bg-bad/10 text-bad"}`}>
-                    {ok ? "✓" : "✕"} {m}
-                    <span className="sr-only">{ok ? " : fiable" : " : à éviter"}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
-            <article className="carte apparait p-6 md:col-span-2" style={{ "--i": 1 } as React.CSSProperties}>
-              <p className="text-sm font-medium text-o2">Coût réel</p>
-              <h3 className="mt-2 font-display text-2xl font-semibold">Ce que la voiture va vraiment coûter</h3>
-              <p className="mt-2 text-ink-2">Prix, carte grise, trajet, contrôle technique et petites réparations : un seul total, sans surprise.</p>
-            </article>
-            <article className="carte apparait p-6 md:col-span-2" style={{ "--i": 2 } as React.CSSProperties}>
-              <p className="text-sm font-medium text-o2">Avant de vous déplacer</p>
-              <h3 className="mt-2 font-display text-2xl font-semibold">Quoi demander, quoi vérifier</h3>
-              <ul className="mt-3 grid gap-2 text-ink-2">
-                <li className="flex justify-between gap-2">
-                  CT de moins de 6 mois <b className="text-ok">OK</b>
-                </li>
-                <li className="flex justify-between gap-2">
-                  Carnet d&apos;entretien <b className="text-warn">À demander</b>
-                </li>
-                <li className="flex justify-between gap-2">
-                  Rapport HistoVec <b className="text-warn">À demander</b>
-                </li>
-              </ul>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------- deux parcours ---------------- */}
-      <section className="py-20">
-        <div className="wrap">
-          <div className="apparait mx-auto mb-12 max-w-2xl text-center">
-            <span className="kicker">Deux façons de l&apos;utiliser</span>
-            <h2 className="h-sec mt-5">
-              Vous achetez pour vous, <span className="it">ou pour revendre</span>
-            </h2>
-            <p className="mt-4 text-lg text-ink-2">Dans les deux cas, ça commence pareil : vous collez une annonce. Ce qui change, c&apos;est ce qu&apos;Utopicar vous rend.</p>
-          </div>
-          <div className="grid gap-5 md:grid-cols-2">
-            <article className="carte apparait flex flex-col p-7">
-              <h3 className="font-display text-2xl font-semibold">Vous cherchez votre prochaine voiture</h3>
-              <p className="mt-2 text-ink-2">Pas besoin de vous y connaître. Utopicar vous explique simplement ce que vaut l&apos;annonce, ce qu&apos;elle va vous coûter et ce qu&apos;il faut vérifier.</p>
-              <ul className="mt-5 grid flex-1 content-start gap-2.5 text-ink-2">
-                {["Un verdict clair : bonne affaire, prix correct ou à éviter", "Le coût réel d'achat, frais compris", "Que vérifier, comment négocier, faut-il y aller seul"].map((t) => (
-                  <li key={t} className="flex gap-2.5">
-                    <Coche />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-              <Link href="#essai" className="btn btn-o mt-7 w-fit">
-                Coller une annonce <span aria-hidden="true">→</span>
-              </Link>
-            </article>
-            <article className="carte apparait flex flex-col p-7" style={{ "--i": 1 } as React.CSSProperties}>
-              <h3 className="font-display text-2xl font-semibold">
-                Vous faites de l&apos;achat-revente <small className="ml-1 text-base font-medium text-o2">Benef</small>
-              </h3>
-              <p className="mt-2 text-ink-2">Pour ceux qui se lancent comme pour les professionnels : chaque annonce est chiffrée avant de vous déplacer.</p>
-              <ul className="mt-5 grid flex-1 content-start gap-2.5 text-ink-2">
-                {["Marge nette, prix d'offre et prix à ne pas dépasser", "Historique des rapports et tableau de bord", "Gestion du parc pour les professionnels"].map((t) => (
-                  <li key={t} className="flex gap-2.5">
-                    <Coche />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Link href="/benef#essai" className="btn btn-o w-fit">
-                  Chiffrer une annonce
-                </Link>
-                <Link href="/benef" className="btn w-fit">
-                  Découvrir Benef
-                </Link>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------- comment ça marche ---------------- */}
-      <section className="py-20">
-        <div className="wrap">
-          <div className="apparait mx-auto mb-12 max-w-2xl text-center">
-            <span className="kicker">Comment ça marche</span>
-            <h2 className="h-sec mt-5">
-              Vous collez l&apos;annonce, <span className="it">Utopicar fait le reste</span>
-            </h2>
-          </div>
-          <ol className="grid gap-5 md:grid-cols-3">
-            {ETAPES.map((e, i) => (
-              <li key={e.t} className="carte apparait flex flex-col p-6" style={{ "--i": i } as React.CSSProperties}>
-                <span className="font-display text-sm font-semibold text-o2">Étape {i + 1}</span>
-                <h3 className="mt-2 font-display text-xl font-semibold">{e.t}</h3>
-                <p className="mt-2 text-ink-2">{e.d}</p>
-                <div className="mt-5 rounded-2xl border border-line bg-creux p-4 text-sm" aria-hidden="true">
-                  {e.v}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* ---------------- formules particuliers ---------------- */}
-      <section id="formules" className="scroll-mt-24 py-20">
-        <div className="wrap">
-          <div className="apparait mx-auto mb-12 max-w-2xl text-center">
-            <span className="kicker">Formules</span>
-            <h2 className="h-sec mt-5">
-              Commencez gratuitement, <span className="it">sans carte bancaire</span>
-            </h2>
-            <p className="mt-4 text-lg text-ink-2">
-              Vous faites de l&apos;achat-revente ? Les formules Benef sont <Link href="/tarifs#benef" className="text-o2 underline underline-offset-4">sur la page Tarifs</Link>.
-            </p>
-          </div>
-          <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} credits />
-        </div>
-      </section>
-
-      {/* ---------------- FAQ ---------------- */}
-      <section id="faq" className="scroll-mt-24 py-20">
-        <div className="wrap">
-          <div className="apparait mx-auto mb-12 max-w-2xl text-center">
-            <span className="kicker">Questions fréquentes</span>
-            <h2 className="h-sec mt-5">
-              Les réponses à <span className="it">vos questions</span>
-            </h2>
-          </div>
-          <Faq
-            questions={[
-              { cat: "Prix", q: "L'analyse est-elle vraiment gratuite ?", r: <p>Oui, la première analyse est offerte, sans carte bancaire : il suffit de créer un compte. Pour analyser plusieurs annonces, la formule Essentiel coûte 4,99 € par mois, sans engagement. Sans abonnement, vous pouvez aussi acheter des crédits à l&apos;unité, dès 2,99 € l&apos;analyse.</p> },
-              { cat: "Annonces", q: "Ça marche sur quelles voitures ?", r: <p>Sur les annonces de voitures particulières de Leboncoin, La Centrale ou AutoScout24 : il suffit de copier le texte de la page. La cote est la plus précise sur les modèles courants. Sur un modèle rare, l&apos;outil vous prévient que l&apos;estimation est moins sûre.</p> },
-              { cat: "Fiabilité", q: "Est-ce que ça remplace un garagiste ?", r: <p>Non. L&apos;outil vous évite les mauvais déplacements et vous donne un prix de départ. Il sépare ce qui est écrit dans l&apos;annonce de ce qui reste à vérifier sur place, et vous dit quoi regarder. Pour une voiture chère ou un doute mécanique, il vous conseille de la faire inspecter.</p> },
-              { cat: "Lien ou texte", q: "Je colle le lien, ou tout le texte ?", r: <p>Sur Leboncoin, le lien suffit : l&apos;annonce et ses photos sont récupérées toutes seules. Sur les autres sites, copiez la page entière (Ctrl+A, Ctrl+C) et collez-la : le titre, le prix, le kilométrage et la description sont lus dans le texte.</p> },
-              { cat: "Vendeurs", q: "Ça marche aussi sur une annonce de professionnel ?", r: <p>Oui. L&apos;outil lit le type de vendeur et en tient compte : un professionnel vend plus cher mais doit une garantie, un particulier vend « en l&apos;état ». Le prix à proposer et les questions à poser changent en conséquence.</p> },
-              { cat: "Délai", q: "Combien de temps dure une analyse ?", r: <p>L&apos;aperçu (cote, défauts lus dans le texte, moteur) s&apos;affiche en 2 secondes. Le rapport complet, qui lit aussi les photos et rédige les questions au vendeur, prend environ une minute.</p> },
-              { cat: "Abonnement", q: "Comment résilier ?", r: <p>En deux clics depuis votre compte, à tout moment. Vous gardez l&apos;accès jusqu&apos;à la fin du mois déjà payé.</p> },
-              { cat: "Données", q: "Que faites-vous de mes informations ?", r: <p>Votre email sert à votre compte, vos analyses restent privées. Pas de revente de données, pas de publicité. Détails dans la <Link href="/legal#confidentialite" className="text-o2 underline underline-offset-4">politique de confidentialité</Link>.</p> },
-            ]}
-          />
+          <h2 className="apparait h-sec mx-auto mb-10 max-w-2xl text-center">Vos questions</h2>
+          <Faq questions={FAQ.map((f) => ({ cat: f.cat, q: f.q, r: <p>{f.r}</p> }))} />
         </div>
       </section>
 
       {/* ---------------- appel final ---------------- */}
-      <section className="py-16 text-center">
+      <section id="appel-final" className="py-16 text-center">
         <div className="wrap">
-          <div className="carte apparait mx-auto max-w-3xl px-6 py-14">
-            <Symbole className="mx-auto h-10 w-auto" />
-            <h2 className="h-sec mt-6">
+          <div className="carte apparait mx-auto max-w-3xl px-6 py-12">
+            <h2 className="h-sec">
               Votre prochaine voiture, <span className="it">au bon prix</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Première analyse offerte, résultat en quelques secondes.</p>
-            <Link href="#essai" className="btn btn-o mt-8">
+            <Link href="#essai" className="btn btn-o mt-7">
               Analyser une annonce <span aria-hidden="true">→</span>
             </Link>
-            <p className="mx-auto mt-10 flex w-fit items-center gap-3 text-left text-sm text-ink-3">
+            <p className="mx-auto mt-8 flex w-fit items-center gap-3 text-left text-sm text-ink-3">
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-o/15 font-display text-o2" aria-hidden="true">
                 Y
               </span>
               <span>
-                Derrière l&apos;outil : <b className="text-ink">Yacine</b>, qui l&apos;utilise pour ses propres achats-reventes.
+                Par <b className="text-ink">Yacine</b>, qui l&apos;utilise pour ses achats-reventes.
               </span>
             </p>
           </div>
         </div>
       </section>
-      <JsonLdFaq questions={FAQ_TEXTE} />
+      <BarreEssai />
+      <JsonLdFaq questions={FAQ.map(({ q, r }) => ({ q, r }))} />
     </>
   );
 }

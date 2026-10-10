@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import { Apparitions } from "@/components/site/Apparitions";
+import { BoutonAnimations } from "@/components/site/BoutonAnimations";
 import { Typographie } from "@/components/site/Typographie";
 import "./globals.css";
 
@@ -44,9 +45,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className={`${serif.variable} ${clash.variable} ${satoshi.variable}`}>
       <body>
-        <a href="#contenu" className="sr-only-focusable fixed left-3 top-3 z-50 inline-flex min-h-11 items-center rounded-full bg-o px-4 py-2 font-semibold text-[#160904]">
-          Aller au contenu
-        </a>
+        {/* bloc d'évitement : les deux premiers arrêts du clavier, invisibles jusqu'au focus */}
+        <div className="evitement">
+          <a href="#contenu" className="inline-flex min-h-11 items-center rounded-full bg-o px-4 py-2 font-semibold text-[#160904]">
+            Aller au contenu
+          </a>
+          <BoutonAnimations className="inline-flex min-h-11 items-center rounded-full border border-line-2 bg-bg0 px-4 py-2 font-semibold text-ink" />
+        </div>
         {children}
         <Apparitions />
         <Typographie />

@@ -7,7 +7,11 @@ import { OngletsTarifs } from "@/components/site/OngletsTarifs";
 import { compteCourant } from "@/lib/compte";
 import { BENEF, GUIDE, PARTICULIERS } from "@/lib/offres";
 
-export const metadata: Metadata = { title: "Tarifs", description: "Formules Utopicar pour les particuliers et formules Benef pour l'achat-revente. Sans engagement." };
+export const metadata: Metadata = {
+  title: "Tarifs : analyse d'annonce de voiture d'occasion, première offerte",
+  description: "Première analyse offerte sans carte bancaire, puis 4,99 € par mois ou 2,99 € l'analyse. Formules Benef pour l'achat-revente dès 14,99 € par mois. Sans engagement.",
+  alternates: { canonical: "/tarifs" },
+};
 
 export default async function Tarifs({ searchParams }: { searchParams: Promise<{ paiement?: string }> }) {
   const { paiement } = await searchParams;

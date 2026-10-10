@@ -16,8 +16,9 @@ export async function EnTete() {
   const [compte, theme] = await Promise.all([compteCourant(), themeSite()]);
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg0/80 backdrop-blur-md">
-      <div className="wrap relative flex h-[68px] items-center gap-4">
-        <Link href="/" className="no-underline" aria-label="Utopicar, accueil">
+      <div className="wrap relative flex h-[68px] items-center gap-4 max-[359px]:gap-2">
+        {/* sous 360 px, le nom à côté du logo se cache (le lien garde son nom) : le bouton d'action garde sa place, même texte agrandi */}
+        <Link href="/" className="no-underline max-[359px]:[&_span.font-display]:sr-only" aria-label="Utopicar, accueil">
           <Logo />
         </Link>
         <nav aria-label="Principal" className="ml-4 hidden items-center gap-1 md:flex">

@@ -32,7 +32,7 @@ const ERREURS_IMPORT: Record<string, string> = {
   apify: "Lecture de l'annonce impossible pour le moment : collez le texte de la page.",
 };
 
-export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: { fournisseurs: Fournisseur[]; depuis: "hero" | "benef" | "cote"; familleInitiale?: Famille | null; retour?: string }) {
+export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: { fournisseurs: Fournisseur[]; depuis: "hero" | "benef" | "cote" | "fiabilite"; familleInitiale?: Famille | null; retour?: string }) {
   const router = useRouter();
   const id = useId();
   const champ = useRef<HTMLTextAreaElement>(null);

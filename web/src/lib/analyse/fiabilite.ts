@@ -107,3 +107,21 @@ export function fiabilite(a: { texte: string; annee: number | null; km: number |
   if (a.km && a.km > e.km) why.push(`${a.km.toLocaleString("fr-FR")} km, au-delà de ${e.km.toLocaleString("fr-FR")} km`);
   return { k: why.length ? "limite" : "fiable", ...base, pourquoi: why.length ? why : [e.pourquoi] };
 }
+
+/** Les modèles fiables de la liste, pour les pages publiques « Fiabilité » (aucun prix : seulement la liste fixe de l'outil). */
+export type ModeleFiable = { slug: string; nom: string; marque: string; ans: [number, number]; km: number; en: string[]; bons: string; aEviter: string[]; pourquoi: string; verif: string };
+const slugModele = (nom: string) =>
+  flatA(nom).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+export const MODELES_FIABLES: ModeleFiable[] = FIABLES.map((f) => ({
+  slug: slugModele(f.nom),
+  nom: f.nom,
+  marque: f.nom.split(" ")[0],
+  ans: f.ans,
+  km: f.km,
+  en: f.en,
+  bons: f.bons,
+  aEviter: f.ev.map(([, why]) => why),
+  pourquoi: f.pourquoi,
+  verif: f.verif,
+}));
+export const modeleFiable = (slug: string) => MODELES_FIABLES.find((m) => m.slug === slug) ?? null;
