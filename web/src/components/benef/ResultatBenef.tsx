@@ -4,13 +4,14 @@ import { useState } from "react";
 import { eur, type Analyse, type ParamsPro } from "@/lib/analyse/couts";
 import { Champ, Panneau, Pastille, cx, inputCls } from "../ui";
 import { Bilan, useBilan } from "../analyse/Bilan";
+import { SuiteRapport } from "../analyse/SuiteRapport";
 
 export const numOrNull = (s: string) => {
   const v = Number(s.replace(/[\s\u00a0€]/g, "").replace(",", "."));
   return s.trim() !== "" && Number.isFinite(v) ? v : null;
 };
 
-export function ResultatBenef({ a, prixInit = "", onNouvelle, actions }: { a: Analyse; reg?: ParamsPro; prixInit?: string; onNouvelle?: () => void; actions?: React.ReactNode }) {
+export function ResultatBenef({ a, prixInit = "", onNouvelle, actions, id }: { a: Analyse; reg?: ParamsPro; prixInit?: string; onNouvelle?: () => void; actions?: React.ReactNode; id?: string | null }) {
   const [prix, setPrix] = useState(prixInit);
   const [dist, setDist] = useState("");
   const b = useBilan(a, { prix: numOrNull(prix), distance: numOrNull(dist) });
@@ -22,7 +23,8 @@ export function ResultatBenef({ a, prixInit = "", onNouvelle, actions }: { a: An
       {a.demo && <span className="text-sm text-warn">Mode démonstration : rien n&apos;est enregistré.</span>}
       {a.regles && <p className="text-sm text-ink-3">Analyse faite avec les règles et la cote de l&apos;outil : les photos n&apos;ont pas été examinées.</p>}
       {a.iaErreur && <p className="text-sm text-warn">{a.iaErreur} Sans cote du marché, la marge ne peut pas être calculée.</p>}
-      <Bilan a={a} b={b} lien={a.lien} />
+      <Bilan a={a} b={b} lien={a.lien} rapportId={id ?? a.rapportId ?? null} />
+      {(id ?? a.rapportId) && <SuiteRapport a={a} id={(id ?? a.rapportId)!} />}
 
       <Panneau titre="Simuler">
         <div className="grid grid-cols-2 gap-3 sm:max-w-md">

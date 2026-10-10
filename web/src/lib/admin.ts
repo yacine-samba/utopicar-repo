@@ -275,3 +275,21 @@ export async function envoyerGuideLead(id: string, guide: GuideId) {
   await sb.from("landing_leads").update({ email_envoye: true, envoi_tentatives: (l.envoi_tentatives ?? 0) + 1, dernier_envoi: new Date().toISOString() }).eq("id", l.id);
   return l.email as string;
 }
+
+/** Justesse de l'analyse (fonction SQL justesse_analyse) : vitesse de vente selon la position face à la cote,
+    couverture de la cote, verdicts, retours « ce chiffre est faux ». null si la fonction n'est pas encore en base. */
+export type Justesse = {
+  tranches: { t: number; l: string; annonces: number; disparues: number; jours_median: number | null; pct_15j: number | null }[] | null;
+  rapports: { total: number; trente_jours: number; sans_cote: number; avec_bilan: number };
+  verdicts: Record<string, number>;
+  retours: { champ: string; outil: string | null; juste: string | null; commentaire: string | null; le: string; rapport: string | null }[];
+  prix_vus: number;
+};
+export async function justesseAnalyse(): Promise<Justesse | null> {
+  const { data, error } = await supabaseService().rpc("justesse_analyse");
+  if (error) {
+    console.error("justesse_analyse", error.message);
+    return null;
+  }
+  return data as Justesse;
+}

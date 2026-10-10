@@ -121,7 +121,7 @@ export function bilan(a0: Analyse, p: ProfilAnalyse, o: { prix?: number | null; 
     gage: !!dr?.gageOuOpposition || pieges.has("admin"),
     compteur: !!dr?.compteurSuspect || pieges.has("compteur"),
     bloquant: !!dr?.defautBloquant || ["culasse", "moteur", "nonroulant", "surchauffe", "districasse"].some((k) => pieges.has(k)),
-    sinistre: !!dr?.sinistreGrave,
+    sinistre: !!dr?.sinistreGrave || f.defauts.some((d) => d.k === "sinistre"),
     prixHT: !!dr?.prixHT,
   };
 
@@ -133,7 +133,7 @@ export function bilan(a0: Analyse, p: ProfilAnalyse, o: { prix?: number | null; 
   // faiblesse de distribution (courroie, chaîne) déjà traitée d'après l'annonce : la moitié de la pénalité
   const distriRefaite = neuf.includes("distribution") || f.distribution?.statut === "faite";
   if (mo) {
-    const traite = (mo.avis === "eviter" || mo.avis === "fragile") && distriRefaite && /courroie|chaîne/.test(mo.detail);
+    const traite = (mo.avis === "eviter" || mo.avis === "fragile") && distriRefaite && /courroie|chaîne/i.test(mo.detail);
     sf += { robuste: 14, correct: 2, fragile: -14, eviter: -28 }[mo.avis] / (traite ? 2 : 1);
     fr.push({ t: `${mo.nom} : ${mo.avis === "robuste" ? "moteur réputé robuste" : mo.avis === "correct" ? "pas de défaut majeur connu" : min1(mo.detail)}${traite ? " ; distribution annoncée refaite" : ""}`, s: mo.avis === "robuste" ? 1 : mo.avis === "correct" ? 0 : -1 });
   }

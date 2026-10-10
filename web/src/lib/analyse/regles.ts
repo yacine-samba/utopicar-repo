@@ -29,7 +29,8 @@ export function marcheDepuisCote(c: Cote): Ia["marche"] {
   };
 }
 
-const VISITE = [
+/** Points de contrôle de toute visite (mode visite, analyse sans IA). */
+export const VISITE = [
   "Démarrer moteur froid : pas de fumée, pas de bruit de chaîne ou de claquement",
   "Aucun voyant allumé au tableau de bord une fois le moteur lancé",
   "Embrayage : il ne patine pas en 3e à bas régime, il ne broute pas",

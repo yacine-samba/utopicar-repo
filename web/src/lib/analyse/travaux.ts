@@ -53,7 +53,8 @@ export function travauxProbables(a: Analyse, connus: Connu[]): BudgetTravaux {
     if (d.cat === "info") continue;
     P.push({ cle: d.k, libelle: d.l, min: d.min, max: d.max, proba: 1, source: d.src === "visite" || d.src === "vendeur" ? d.src : "annonce", nc: d.nc || d.cat === "piege", piege: d.cat === "piege", extrait: d.extrait });
   }
-  if (f.ct?.statut === "contre-visite") P.push({ cle: "ct_cv", libelle: "Contre-visite au contrôle technique", min: 100, max: 800, proba: 1, source: "annonce", nc: true, extrait: f.ct.extrait });
+  // contre-visite sans le détail des défaillances (le PV lu les ajoute une par une)
+  if (f.ct?.statut === "contre-visite" && !f.defauts.some((d) => /^ct\d/.test(d.k))) P.push({ cle: "ct_cv", libelle: "Contre-visite au contrôle technique", min: 100, max: 800, proba: 1, source: "annonce", nc: true, extrait: f.ct.extrait });
   if (f.distribution?.statut === "à faire" && !P.some((p) => p.cle === "distri"))
     P.push({ cle: "distri", libelle: "Distribution à faire", min: r50(450 * coef), max: r50(850 * coef), proba: 1, source: "annonce", nc: false, extrait: f.distribution.extrait });
 
@@ -97,7 +98,9 @@ export function travauxProbables(a: Analyse, connus: Connu[]): BudgetTravaux {
     // le risque grandit avec le kilométrage, et un entretien prouvé le réduit
     const usure = km == null ? 1 : km >= 150000 ? 1.3 : km < 60000 ? 0.6 : 1;
     const preuve = f.carnet || f.factures ? 0.75 : 1;
-    const proba = Math.min(0.6, p0 * usure * preuve * (c.avis === "eviter" ? 1.2 : 1));
+    // faiblesse de distribution (courroie, chaîne) déjà traitée d'après l'annonce ou le vendeur : risque divisé par trois
+    const traite = /courroie|chaîne/i.test(c.detail) && (neuf.has("distribution") || f.distribution?.statut === "faite") ? 0.33 : 1;
+    const proba = Math.min(0.6, p0 * usure * preuve * traite * (c.avis === "eviter" ? 1.2 : 1));
     P.push({ cle: `k_${c.id}`, libelle: `${c.nom} : ${c.detail.charAt(0).toLowerCase()}${c.detail.slice(1).replace(/\.$/, "")}`, min, max, proba, source: "moteur", nc: false, pourquoi: c.avis === "correct" ? `point faible fréquent de ${c.type === "boite" ? "cette boîte" : "ce moteur"}` : `réputation de ${c.type === "boite" ? "la boîte" : "ce moteur"} : ${c.avis === "eviter" ? "à éviter" : "fragile"}` });
   }
 

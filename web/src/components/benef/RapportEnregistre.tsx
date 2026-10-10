@@ -10,10 +10,12 @@ export function RapportEnregistre({ a, id, titre, parc, parcId = null }: { a: An
   const { profil } = useProfilAnalyse();
   const reg = { ...paramsPro(profil), ville: profil.ville || a.ville || "Paris" };
   // Rapport au format de l'outil Garage : affichage complet (réduit selon la formule).
-  if (a.rapport) return <RapportComplet a={a} r={a.rapport} reg={reg} offre={a.offre ?? "pro"} id={id} parc={parc && !parcId} lien={a.lien} parcId={parcId} />;
+  // postes de travaux recalculés quand la réponse du vendeur ou la visite changent le rapport
+  if (a.rapport) return <RapportComplet key={(a.complements ?? []).map((c) => c.le).join("|")} a={a} r={a.rapport} reg={reg} offre={a.offre ?? "pro"} id={id} parc={parc && !parcId} lien={a.lien} parcId={parcId} />;
   return (
     <ResultatBenef
       a={a}
+      id={id}
       actions={
         <>
           <button type="button" onClick={() => print()} className="btn">

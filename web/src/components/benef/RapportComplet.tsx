@@ -21,6 +21,7 @@ import { AjouterParc } from "./AjouterParc";
 import { AnalysePhotos } from "@/components/analyse/AnalysePhotos";
 import { BarreSections, BoutonSections, useSectionActive, type EntreeSommaire } from "./SommaireRapport";
 import { Bilan, useBilan } from "@/components/analyse/Bilan";
+import { SuiteRapport } from "@/components/analyse/SuiteRapport";
 import { useProfilAnalyse } from "@/components/analyse/ProfilAnalyse";
 
 type Poste = { categorie: string; libelle: string; montant: number };
@@ -262,7 +263,9 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
           </ul>
         </header>
 
-        <Bilan a={a} b={b} lien={lien} />
+        <Bilan a={a} b={b} lien={lien} rapportId={id ?? a.rapportId ?? null} />
+
+        {(id ?? a.rapportId) && <SuiteRapport a={a} id={(id ?? a.rapportId)!} />}
 
         <BarreSections entrees={sommaire} actif={actif} profond={mode.profond} onProfond={(profond) => setMode({ profond })} />
 

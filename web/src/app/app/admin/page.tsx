@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { compteCourant } from "@/lib/compte";
-import { donneesAdmin } from "@/lib/admin";
+import { donneesAdmin, justesseAnalyse } from "@/lib/admin";
+import { JustesseAnalyse } from "@/components/admin/Justesse";
 import { OFFRES } from "@/lib/offres";
 import { GUIDES } from "@/lib/guides";
 import { Administration } from "@/components/admin/Administration";
@@ -32,7 +33,7 @@ export default async function Page() {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY)
     return <p className="carte p-6 text-warn">Ajoutez SUPABASE_SERVICE_ROLE_KEY dans Vercel pour ouvrir l&apos;administration.</p>;
 
-  const { comptes, inscrits, journal } = await donneesAdmin();
+  const [{ comptes, inscrits, journal }, justesse] = await Promise.all([donneesAdmin(), justesseAnalyse().catch(() => null)]);
   const payants = comptes.filter((x) => !x.illimite && !x.offerte && OFFRES[x.formule].prix > 0).length;
   const offerts = comptes.filter((x) => x.offerte && x.offerte.id !== "gratuit").length;
   const ouverts = inscrits.filter((x) => x.ouvert).length;
@@ -49,6 +50,7 @@ export default async function Page() {
         <Kpi l="Inscrits au guide" v={inscrits.length} s={`${recents(inscrits, 1)} aujourd'hui · ${recents(inscrits, 7)} en 7 jours`} />
         <Kpi l="Guides ouverts" v={inscrits.length ? `${Math.round((ouverts / inscrits.length) * 100)} %` : "—"} s={`${ouverts} sur ${inscrits.length}`} />
       </div>
+      <JustesseAnalyse j={justesse} />
       <Administration comptes={comptes} inscrits={inscrits} journal={journal} moi={c.id} guides={GUIDES.map(({ id, titre, pour }) => ({ id, titre, pour }))} />
     </div>
   );

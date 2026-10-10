@@ -7,12 +7,16 @@ import { OutilBenef } from "@/components/benef/OutilBenef";
 import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { DemandeProfil } from "@/components/analyse/ProfilAnalyse";
+import { lienPartage } from "@/lib/analyse/import";
 
 export const metadata: Metadata = { title: "Analyser une annonce" };
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string }> }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string }> }) {
   const c = await compteBenef("/app/analyser");
-  const { lien } = await searchParams;
+  const sp = await searchParams;
+  // ?lien= (tableau de bord) ou partage depuis une appli (url, texte, titre : voir le manifest)
+  const lien = sp.lien ?? lienPartage(sp.url, sp.texte, sp.titre) ?? undefined;
+  const partageIllisible = !sp.lien && !lien && !!(sp.url || sp.texte);
   const o = c.offre;
 
   if (familleEspace(c) === "benef") {
@@ -49,6 +53,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
       entete={
         <div className="grid gap-2">
           <h1 className="font-display text-[clamp(28px,5vw,40px)] font-semibold leading-tight tracking-tight">Analyser une annonce</h1>
+          {partageIllisible && <p role="status" className="rounded-2xl border border-warn/40 bg-warn/10 p-3 text-sm text-warn">Le partage ne contenait pas de lien d&apos;annonce Leboncoin, La Centrale ou AutoScout24. Copiez le lien de l&apos;annonce et collez-le ci-dessous.</p>}
           <p className="text-ink-2">
             Collez le lien Leboncoin : l&apos;annonce et ses photos se remplissent toutes seules et l&apos;analyse démarre. Pour un autre site, collez le texte de l&apos;annonce.
           </p>

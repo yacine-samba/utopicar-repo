@@ -12,7 +12,8 @@ type Ctx = { profil: ProfilAnalyse; enregistrer: (p: ProfilAnalyse) => Promise<b
 const Contexte = createContext<Ctx>({ profil: profilParDefaut("particulier"), enregistrer: async () => false, ouvrir: () => {}, actif: false });
 export const useProfilAnalyse = () => useContext(Contexte);
 
-export function ProfilAnalyseFournisseur({ initial, children }: { initial: ProfilAnalyse; children: ReactNode }) {
+/** `lecture` : rapport partagé, profil de l'auteur, sans modification possible. */
+export function ProfilAnalyseFournisseur({ initial, children, lecture = false }: { initial: ProfilAnalyse; children: ReactNode; lecture?: boolean }) {
   const router = useRouter();
   const [profil, setProfil] = useState(initial);
   const [ouvert, setOuvert] = useState(false);
@@ -26,7 +27,7 @@ export function ProfilAnalyseFournisseur({ initial, children }: { initial: Profi
     [router],
   );
   return (
-    <Contexte.Provider value={{ profil, enregistrer, ouvrir: () => setOuvert(true), actif: true }}>
+    <Contexte.Provider value={{ profil, enregistrer, ouvrir: () => setOuvert(true), actif: !lecture }}>
       {children}
       {ouvert && <Questionnaire initial={profil} onFermer={() => setOuvert(false)} onValider={async (p) => (await enregistrer(p), setOuvert(false))} />}
     </Contexte.Provider>

@@ -13,6 +13,7 @@ import type { Detail } from "@/lib/offres";
 import { cx } from "@/lib/cx";
 import { Copier } from "../ui";
 import { PuceProfil, useProfilAnalyse } from "./ProfilAnalyse";
+import { RetourChiffre } from "./RetourChiffre";
 
 const eur = (v: number | null | undefined) => (v == null || !isFinite(v) ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 const signe = (v: number | null) => (v == null ? "—" : v >= 0 ? `+${eur(v)}` : `−${eur(-v)}`);
@@ -46,7 +47,7 @@ function Anneau({ v, ton }: { v: number | null; ton: TonVerdict }) {
   );
 }
 
-function CartePilier({ p }: { p: Pilier }) {
+function CartePilier({ p, rapportId }: { p: Pilier; rapportId?: string | null }) {
   return (
     <details className="group rounded-2xl border border-line bg-black/20 p-4 open:bg-black/30">
       <summary className="grid cursor-pointer list-none gap-1.5">
@@ -73,6 +74,7 @@ function CartePilier({ p }: { p: Pilier }) {
           ))}
         </ul>
       )}
+      {rapportId && <RetourChiffre rapportId={rapportId} champ={p.cle} valeur={`${p.question} ${p.reponse}`} className="mt-3" />}
     </details>
   );
 }
@@ -139,8 +141,8 @@ function Bloc({ titre, aside, children }: { titre: string; aside?: ReactNode; ch
 }
 
 /** Bilan complet. `detail` (formules particulier) : « simple » montre les deux premières questions sans le message. */
-export function Bilan({ a, b, detail = "complet", lien, argent }: { a: Analyse; b: BilanT; detail?: Detail; lien?: string | null; /** Bloc d'argent propre à l'écran (remplace celui du bilan). */ argent?: ReactNode }) {
-  const { profil } = useProfilAnalyse();
+export function Bilan({ a, b, detail = "complet", lien, argent, rapportId }: { a: Analyse; b: BilanT; detail?: Detail; lien?: string | null; /** Bloc d'argent propre à l'écran (remplace celui du bilan). */ argent?: ReactNode; /** Rapport enregistré : retours « ce chiffre est faux », réponses du vendeur. */ rapportId?: string | null }) {
+  const { profil, actif } = useProfilAnalyse();
   const simple = detail === "simple";
   // sans IA, le message de l'outil (il pose la question qui compte pour ce moteur) ; avec l'IA, le sien
   const message = (!a.regles && a.ia?.messageVendeur) || b.message;
@@ -232,7 +234,7 @@ export function Bilan({ a, b, detail = "complet", lien, argent }: { a: Analyse; 
       {/* Les quatre questions */}
       <div className="grid gap-3 sm:grid-cols-2">
         {b.piliers.map((p) => (
-          <CartePilier key={p.cle} p={p} />
+          <CartePilier key={p.cle} p={p} rapportId={actif ? rapportId : null} />
         ))}
       </div>
 

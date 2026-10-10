@@ -4,6 +4,7 @@
 import type { Analyse } from "./couts";
 import type { Defaut } from "./defauts";
 import type { Faits } from "./texte";
+import type { LectureDocuments } from "./ia";
 
 export type Constat = { libelle: string; montant: number };
 export type Complement = {
@@ -61,4 +62,41 @@ export function compteurIncoherent(a: Analyse): string | null {
   const dernier = tri[tri.length - 1];
   if (km != null && dernier.km > km + 2000) return `Un document indique ${dernier.km.toLocaleString("fr-FR")} km, plus que les ${km.toLocaleString("fr-FR")} km de l'annonce.`;
   return null;
+}
+
+const dateFr = (d?: string) => (d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d.split("-").reverse().join("/") : d || "");
+
+/** Faits tirés des documents lus par l'IA (CT, factures, HistoVec) : rangés comme ceux d'une annonce. */
+export function faitsDocuments(d: LectureDocuments): NonNullable<Complement["faits"]> {
+  const out: NonNullable<Complement["faits"]> = { recents: [], defauts: [], kmReleves: [] };
+  if (d.ct?.resultat) {
+    const defs = d.ct.defaillances ?? [];
+    const statut = /contre|defav|défav/i.test(d.ct.resultat) ? "contre-visite" : defs.some((x) => /majeure|critique/i.test(x.niveau)) ? "contre-visite" : defs.length ? "ok" : "vierge";
+    out.ct = { statut, dateTxt: dateFr(d.ct.date), moinsDe: null, extrait: `PV de contrôle technique${d.ct.date ? ` du ${dateFr(d.ct.date)}` : ""}` };
+    defs.forEach((x, i) => {
+      if (!x.libelle) return;
+      const grave = /majeure|critique/i.test(x.niveau);
+      out.defauts!.push({ k: `ct${i}`, l: `CT : ${x.libelle}`, cat: grave ? "lourd" : "levier", min: Math.max(0, x.coutMin ?? 0), max: Math.max(0, x.coutMax ?? x.coutMin ?? 0), nc: !(x.coutMax && x.coutMax > 0), extrait: x.niveau, src: "vendeur" });
+    });
+    if (d.ct.km) out.kmReleves!.push({ km: d.ct.km, date: d.ct.date, source: "CT" });
+  }
+  if (d.distribution?.faite) {
+    out.distribution = { statut: "faite", km: d.distribution.km ?? null, dateTxt: dateFr(d.distribution.date), extrait: "facture de distribution" };
+    out.recents!.push("distribution");
+  }
+  if (d.factures) out.factures = true;
+  if (d.carnet) out.carnet = true;
+  if (d.titulaires && d.titulaires > 0) out.proprietaires = d.titulaires;
+  if (d.gage) out.gage = true;
+  if (d.sinistre) {
+    out.sinistre = true;
+    out.defauts!.push({ k: "sinistre", l: "Sinistre déclaré (procédure VE ou VEI)", cat: "lourd", min: 0, max: 0, nc: true, extrait: "HistoVec", src: "vendeur" });
+  }
+  for (const k of d.kmReleves ?? []) if (k.km > 0) out.kmReleves!.push({ km: k.km, date: k.date, source: k.source || "document" });
+  for (const p of d.pieces ?? []) {
+    const n = p.toLowerCase();
+    const cle = /embray/.test(n) ? "embrayage" : /pneu/.test(n) ? "pneus" : /frein|plaquette|disque/.test(n) ? "freins" : /batter/.test(n) ? "batterie" : /amorti/.test(n) ? "amortisseurs" : /turbo/.test(n) ? "turbo" : /distri|courroie/.test(n) ? "distribution" : /vidange|revision|révision/.test(n) ? "vidange" : null;
+    if (cle && !out.recents!.includes(cle)) out.recents!.push(cle);
+  }
+  return out;
 }

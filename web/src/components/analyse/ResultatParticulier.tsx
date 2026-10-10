@@ -8,6 +8,7 @@ import { AnalysePhotos } from "./AnalysePhotos";
 import { Fourchette } from "./Fourchette";
 import { Bilan, useBilan } from "./Bilan";
 import { useProfilAnalyse } from "./ProfilAnalyse";
+import { SuiteRapport } from "./SuiteRapport";
 
 const TEXTE: Record<Ton, string> = { ok: "text-ok", warn: "text-warn", bad: "text-bad", o: "text-o2", neutre: "text-ink" };
 const ACCOMP: Record<string, { ton: Ton; icone: string }> = {
@@ -35,7 +36,7 @@ function Verrou({ titre, texte, offre }: { titre: string; texte: string; offre: 
   );
 }
 
-export function ResultatParticulier({ a, onNouvelle }: { a: Analyse; onNouvelle?: () => void }) {
+export function ResultatParticulier({ a, onNouvelle, id }: { a: Analyse; onNouvelle?: () => void; /** Rapport enregistré. */ id?: string | null }) {
   const { profil } = useProfilAnalyse();
   const { tarifCV, kmCost } = profil;
   const [km, setKm] = useState("");
@@ -60,6 +61,7 @@ export function ResultatParticulier({ a, onNouvelle }: { a: Analyse; onNouvelle?
         b={b}
         detail={detail}
         lien={a.lien}
+        rapportId={id ?? a.rapportId ?? null}
         argent={
       <Panneau titre="Ce qu'elle va vraiment vous coûter">
         <div className="mb-4 flex items-baseline justify-between gap-4">
@@ -112,6 +114,8 @@ export function ResultatParticulier({ a, onNouvelle }: { a: Analyse; onNouvelle?
       </Panneau>
         }
       />
+
+      {(id ?? a.rapportId) && <SuiteRapport a={a} id={(id ?? a.rapportId)!} />}
 
       {plus && (ia?.photos.fournies || (a.vignettes ?? []).length > 0) && (
         <Panneau titre="Ce que montrent les photos">

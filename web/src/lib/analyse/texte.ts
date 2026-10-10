@@ -264,3 +264,9 @@ const SIGNAUX: [string, RegExp][] = [
 function signauxDesc(t: string): string[] {
   return SIGNAUX.filter(([, re]) => re.test(t)).map(([k]) => k);
 }
+
+/** Faits d'un texte libre (réponse du vendeur, compte rendu collé) : CT, distribution, entretien, pièces refaites, défauts. */
+export function faitsDuTexte(texte: string) {
+  const f = descFacts(texte);
+  return { ct: f.ct, distribution: f.distribution, proprietaires: f.proprietaires, carnet: f.carnet, factures: f.factures, importe: f.importe, recents: f.recents ?? [], defauts: f.defauts ?? [] };
+}
