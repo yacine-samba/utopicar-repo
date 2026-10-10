@@ -10,6 +10,7 @@ import { depuisDataUrl, type PhotoLocale } from "@/lib/photos-analyse";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { useNotification } from "./Notification";
+import { useProfilAnalyse } from "../analyse/ProfilAnalyse";
 
 type EnCours = { id: number; lien: string; etape: "import" | "analyse" };
 type Ctx = { lancer: (lien: string) => Promise<string | null>; actif: boolean; enCours: EnCours[] };
@@ -24,21 +25,14 @@ const ERREURS: Record<string, string> = {
   quota: "Vous n'avez plus d'analyse disponible ce mois-ci.",
 };
 
-/** Ville de départ et de revente : celle des réglages Benef si elle existe, sinon celle du compte. */
-function villeReglages(defaut: string) {
-  try {
-    const r = JSON.parse(localStorage.getItem("utp-pro") || "null");
-    return typeof r?.ville === "string" && r.ville ? r.ville : defaut;
-  } catch {
-    return defaut;
-  }
-}
 
 const rien = () => () => {};
 
 export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif }: { children: ReactNode; mode: "particulier" | "benef"; maxPhotos: number; ville: string; actif: boolean }) {
   const router = useRouter();
   const { notifier, element } = useNotification();
+  // ville de départ et de revente : celle du profil d'analyse, sinon celle du compte
+  const villeProfil = useProfilAnalyse().profil.ville || ville;
   const [enCours, setEnCours] = useState<EnCours[]>([]);
   const monte = useSyncExternalStore(rien, () => true, () => false);
 
@@ -75,7 +69,7 @@ export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif }: { ch
           body: JSON.stringify({
             mode,
             texte,
-            ville: villeReglages(ville),
+            ville: villeProfil,
             photos: photos.map((p) => ({ media_type: "image/jpeg", data: p.data })),
             photosLiens: (Array.isArray(j.liens) ? j.liens : []).filter((u: string) => /^https:\/\//.test(u)).slice(0, 30),
             lienAnnonce: j.url,
@@ -99,7 +93,7 @@ export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif }: { ch
       }
       return null;
     },
-    [maxPhotos, mode, notifier, router, ville],
+    [maxPhotos, mode, notifier, router, villeProfil],
   );
 
   return (

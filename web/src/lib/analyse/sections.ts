@@ -15,8 +15,9 @@ export const SECTIONS_PAR_OFFRE: Partial<Record<OffreId, Section[]>> = {
   croissance: ["annonce", "alertes", "etat", "nego", "prix", "km", "controles", "papiers", "moteur", "photos", "travaux", "decision", "documents"],
   starter: ["annonce", "alertes", "etat", "nego", "prix", "controles", "decision", "documents"],
 };
-/** Vue pro (par défaut) : l'essentiel pour décider, entre la synthèse et le détail. Le reste s'ouvre avec « Détail profond ». */
-export const SECTIONS_PRO: Section[] = ["alertes", "etat", "prix", "nego", "travaux", "decision", "documents"];
+/** Vue par défaut, sous le bilan (qui donne déjà verdict, prix et travaux) : ce qui sert pour agir. Le reste, dont les papiers
+    (CT, HistoVec) qu'on n'a pas avant le premier contact, s'ouvre avec « Détail profond ». */
+export const SECTIONS_PRO: Section[] = ["alertes", "etat", "nego", "travaux", "documents"];
 export const sectionsDe = (o: OffreId) => SECTIONS_PAR_OFFRE[o] ?? SECTIONS_PAR_OFFRE.starter!;
 /** Formule la plus basse qui ouvre une section (pour le cadenas). */
 export const ouvertePar = (s: Section): OffreId => (SECTIONS_PAR_OFFRE.starter!.includes(s) ? "starter" : SECTIONS_PAR_OFFRE.croissance!.includes(s) ? "croissance" : "pro");

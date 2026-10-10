@@ -1,12 +1,14 @@
 "use client";
-/* Rapport complet de l'espace Benef, au format de l'outil Garage : en-tête, verdict, 14 sections, calcul du deal.
+/* Rapport complet de l'espace Benef : en-tête, bilan (verdict, note, quatre questions, argent, travaux), puis les sections
+   de détail au format de l'outil Garage et le calcul du deal à côté, tous deux tirés du bilan.
    Illimité et Pro voient tout ; les formules plus basses voient une version réduite (sections sous cadenas). */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { Analyse, ParamsPro } from "@/lib/analyse/couts";
 import { eur } from "@/lib/analyse/couts";
-import { calculDeal, postesDepart, type Poste } from "@/lib/analyse/deal";
+import { probaTexte, type SourcePoste } from "@/lib/analyse/travaux";
+import { bilan as calculBilan } from "@/lib/analyse/bilan";
 import { CHECKS, } from "@/lib/analyse/garage";
 import { ouvertePar, SECTIONS, SECTIONS_PRO, sectionsDe, type Section } from "@/lib/analyse/sections";
 import type { Rapport } from "@/lib/analyse/rapport";
@@ -18,10 +20,14 @@ import { PiecesDossier } from "./PiecesDossier";
 import { AjouterParc } from "./AjouterParc";
 import { AnalysePhotos } from "@/components/analyse/AnalysePhotos";
 import { BarreSections, BoutonSections, useSectionActive, type EntreeSommaire } from "./SommaireRapport";
+import { Bilan, useBilan } from "@/components/analyse/Bilan";
+import { useProfilAnalyse } from "@/components/analyse/ProfilAnalyse";
+
+type Poste = { categorie: string; libelle: string; montant: number };
+const CATEGORIE: Record<SourcePoste, string> = { annonce: "petite mécanique", photos: "cosmétique", ia: "petite mécanique", entretien: "consommables", moteur: "remise en confiance" };
 
 const e = (v: number | null | undefined) => (v == null || !isFinite(v) ? "—" : eur(v));
 const km = (v: number | null | undefined) => (v == null ? null : `${Math.round(v).toLocaleString("fr-FR")} km`);
-const TON_VERDICT: Record<string, string> = { GO: "bg-ok text-[#06140c]", "GO SI NÉGOCIÉ": "bg-o text-[#160904]", "GO EN MANDAT UNIQUEMENT": "bg-o2 text-[#160904]", "À SURVEILLER": "bg-warn text-[#1a1300]", "NO GO": "bg-bad text-[#1a0606]" };
 const STATUT_CTRL: Record<string, { i: string; c: string }> = { ok: { i: "✓", c: "text-ok border-ok/40" }, attention: { i: "!", c: "text-warn border-warn/40" }, probleme: { i: "✕", c: "text-bad border-bad/40" }, inconnu: { i: "?", c: "text-ink-3 border-line-2" } };
 const TON_DIT: Record<string, string> = { "prouvé": "border-ok/40 text-ok", "annoncé": "border-o/40 text-o2", "non mentionné": "border-line-2 text-ink-3", contradictoire: "border-bad/40 text-bad" };
 const CATEGORIES = ["cosmétique", "consommables", "remise en confiance", "petite mécanique", "non estimable sans inspection"];
@@ -147,15 +153,30 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
   const montre = (s: Section) => mode.profond || SECTIONS_PRO.includes(s);
   const v = r.vehicule ?? {};
   const m = r.marche ?? {};
-  const [postes, setPostes] = useState<Poste[]>(() => postesDepart(a, r));
-  const [prudence, setPrudence] = useState(30);
+  const { profil } = useProfilAnalyse();
+  // postes de départ : le budget travaux du bilan (sûrs à leur coût moyen, probables à leur coût pondéré), modifiables
+  const [postes, setPostes] = useState<Poste[]>(() =>
+    calculBilan(a, profil).travaux.postes.filter((p) => !p.piege).map((p) => ({ categorie: p.nc ? "non estimable sans inspection" : CATEGORIE[p.source], libelle: p.proba < 1 ? `${p.libelle} (${probaTexte(p.proba)})` : p.libelle, montant: p.nc ? 0 : Math.round(((p.min + p.max) / 2) * Math.min(1, p.proba) / 10) * 10 })),
+  );
+  const [prudence, setPrudence] = useState(() => ({ debutant: 30, habitue: 20, pro: 10 })[profil.experience]);
   const [prixTest, setPrixTest] = useState("");
   const [supp, setSupp] = useState(0);
-  const remise = Math.round(postes.reduce((s, p) => s + (p.montant || 0), 0) * (1 + prudence / 100));
+  const travaux = Math.round(postes.reduce((s, p) => s + (p.montant || 0), 0));
+  const remise = Math.round(travaux * (1 + prudence / 100));
   const prix = Number(prixTest.replace(/\s/g, "")) || null;
-  const D = useMemo(() => calculDeal(a, r, reg, prix, remise), [a, r, reg, prix, remise]);
+  const b = useBilan(a, { prix, travaux, remise });
+  const g = b.argent;
+  const plafondOk = g.plafond != null && g.plafond > 0 ? g.plafond : null;
   const remplir = (t?: string) =>
-    (t ?? "").replace(/\{OFFRE\}/g, D.offre != null ? eur(D.offre) : "votre offre").replace(/\{CIBLE\}/g, D.cible != null ? eur(D.cible) : "votre prix cible").replace(/\{PLAFOND\}/g, D.plafond != null && D.plafond > 0 ? eur(D.plafond) : "votre plafond");
+    (t ?? "").replace(/\{OFFRE\}/g, g.offre != null ? eur(g.offre) : "votre offre").replace(/\{CIBLE\}/g, g.cible != null ? eur(g.cible) : "votre prix cible").replace(/\{PLAFOND\}/g, plafondOk != null ? eur(plafondOk) : "votre plafond");
+  const lignes = [
+    { l: g.retenu ? `${g.retenu.l} (${g.retenu.delai})` : "Revente", d: a.cote ? `Cote de l'outil sur ${a.cote.n} annonces` : g.retenu?.revente != null ? `Cote estimée, confiance ${m.confiance || "faible"}` : "Cote manquante", v: g.retenu?.revente ?? null, tete: true },
+    { l: prix != null ? "Votre prix" : "Prix demandé", d: "", v: g.prix != null ? -g.prix : null },
+    { l: "Travaux", d: `Postes ci-dessous, prudence ${prudence} % comprise`, v: -g.travauxRetenus },
+    { l: "Carte grise", d: profil.negociant ? "Négociant : déclaration d'achat" : "", v: g.cg == null ? null : -g.cg },
+    { l: "Trajet", d: g.dist != null ? `${Math.round(g.dist).toLocaleString("fr-FR")} km × 2 × ${profil.kmCost.toLocaleString("fr-FR")} €` : "Distance inconnue", v: g.trajet == null ? null : -g.trajet },
+    { l: "Frais par voiture", d: "CT, nettoyage, photos, annonce", v: -g.fraisFixes },
+  ];
   const ng = r.negociation ?? {};
   const msg1 = ng.message1 || r.messageVendeur || a.ia?.messageVendeur || "";
   const titre = [v.marque, v.modele].filter(Boolean).join(" ") || a.faits.titre || "Annonce";
@@ -169,7 +190,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
     v.energie || a.faits.energie,
     v.boite || a.faits.boite,
     v.localisation,
-    v.distanceKm != null ? `${km(v.distanceKm)} de ${reg.ville || "Paris"}` : null,
+    v.distanceKm != null ? `${km(v.distanceKm)} de ${profil.ville || reg.ville || "Paris"}` : null,
     v.enLigneDepuisJours != null ? `en ligne depuis ${v.enLigneDepuisJours} j` : null,
     v.vendeur && v.vendeur !== "inconnu" ? v.vendeur : null,
     v.premiereImmat ? `1re MEC ${v.premiereImmat}` : null,
@@ -193,7 +214,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
     annonce: { resume: (r.annonceDecortiquee ?? []).length ? `${(r.annonceDecortiquee ?? []).length} points lus` : "Points lus" },
     alertes: { resume: nbAlertes ? `${nbAlertes} alerte${nbAlertes > 1 ? "s" : ""}` : "Aucune alerte", ton: nbAlertes ? "warn" : "ok" },
     etat: { resume: r.etatPhotos?.score != null ? `Note ${r.etatPhotos.score} / 100` : nbDefauts ? `${nbDefauts} défaut${nbDefauts > 1 ? "s" : ""}` : "Aucun défaut" },
-    nego: { resume: D.offre != null && D.plafond != null && D.plafond > 0 ? `Offre ${e(D.offre)}` : "Messages prêts" },
+    nego: { resume: g.offre != null && plafondOk != null ? `Offre ${e(g.offre)}` : "Messages prêts" },
     prix: { resume: m.realiste ? `Cote ${e(m.realiste)}` : "Cote du marché" },
     km: { resume: (r.kmReleves ?? []).length > 1 ? `${(r.kmReleves ?? []).length} relevés` : "Un seul relevé", ton: (r.kmReleves ?? []).length > 1 ? null : "warn" },
     controles: { resume: `${compte("ok")} OK sur 13`, ton: compte("probleme") ? "bad" : compte("attention") ? "warn" : "ok" },
@@ -203,7 +224,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
     travaux: { resume: remise ? e(remise) : "Aucun poste" },
     deal: { resume: r.structure?.choix ? r.structure.choix[0].toUpperCase() + r.structure.choix.slice(1) : "Structure conseillée" },
     risques: { resume: nbRisques ? `${nbRisques} point${nbRisques > 1 ? "s" : ""}` : "Aucun relevé" },
-    decision: { resume: r.decision?.action ? r.decision.action[0].toUpperCase() + r.decision.action.slice(1) : D.verdict, ton: r.decision?.action === "abandonne" ? "bad" : r.decision?.action === "attends" ? "warn" : r.decision?.action ? "ok" : null },
+    decision: { resume: r.decision?.action ? r.decision.action[0].toUpperCase() + r.decision.action.slice(1) : b.libelle, ton: r.decision?.action === "abandonne" ? "bad" : r.decision?.action === "attends" ? "warn" : r.decision?.action ? "ok" : null },
     documents: { resume: "CT, HistoVec, carte grise…" },
   };
   const sommaire: EntreeSommaire[] = SECTIONS.filter(([k]) => montre(k)).map(([k, l]) => ({ id: k, label: l, ...resumes[k], verrou: ok.has(k) ? null : `Benef ${OFFRES[ouvertePar(k)].nom}` }));
@@ -226,8 +247,6 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
         <header className="carte grid gap-4 p-5 sm:p-6">
           <div className="flex flex-wrap items-center gap-2">
             {v.immat && <span className="rounded-md border border-line-2 bg-white/90 px-2 py-0.5 font-mono text-sm font-bold text-[#0b0a09]">{v.immat}</span>}
-            {r.vraiZeroEuro != null && ok.has("deal") && mode.profond && <span className={cx("rounded-full border px-2.5 py-0.5 text-xs", r.vraiZeroEuro ? "border-ok/40 text-ok" : "border-warn/40 text-warn")}>{r.vraiZeroEuro ? "Vrai 0 € possible" : "Pas un vrai 0 €"}</span>}
-            {r.conclusionAnnonce && <span className="rounded-full border border-line-2 px-2.5 py-0.5 text-xs text-ink-2">{r.conclusionAnnonce}</span>}
           </div>
           <div>
             <h1 className="font-display text-[clamp(26px,4vw,36px)] font-semibold leading-tight">{titre}</h1>
@@ -241,24 +260,9 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
               </li>
             ))}
           </ul>
-          {/* Verdict */}
-          <div className="grid gap-4 rounded-2xl border border-line-2 bg-bg0/50 p-4 sm:grid-cols-[auto_1fr] sm:items-center">
-            <div className="flex items-center gap-3">
-              <div className="grid size-16 place-items-center rounded-2xl bg-glass text-center">
-                <span className="num font-display text-2xl font-semibold leading-none">{D.note}</span>
-                <span className="text-[11px] text-ink-3">/ 100</span>
-              </div>
-              <span className={cx("rounded-full px-3 py-1.5 text-sm font-bold", TON_VERDICT[D.verdict])}>{D.verdict}</span>
-            </div>
-            <div className="grid gap-1">
-              <p className="text-[15px]">{r.resume || r.justificationScore}</p>
-              <p className="text-sm text-ink-2">
-                Prix à ne pas dépasser : <b className="num text-ink">{D.plafond != null && D.plafond > 0 ? e(D.plafond) : "aucun prix ne laisse votre seuil"}</b>
-                {D.cap && <span className="text-warn"> · note plafonnée : {D.cap.why}</span>}
-              </p>
-            </div>
-          </div>
         </header>
+
+        <Bilan a={a} b={b} lien={lien} />
 
         <BarreSections entrees={sommaire} actif={actif} profond={mode.profond} onProfond={(profond) => setMode({ profond })} />
 
@@ -280,10 +284,10 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
         <Bloc id="alertes" masque={!montre("alertes")} titre="Ce qui doit vous alerter">
           <div className="grid gap-4">
             <Liste items={[...(r.alertes ?? []), ...a.faits.defauts.filter((d) => d.cat === "piege").map((d) => d.l)]} vide="Aucune alerte dans le dossier." />
-            {D.caps.length > 0 && (
+            {b.limites.length > 0 && (
               <div>
-                <p className="mb-1.5 text-sm font-semibold">Plafonds de note</p>
-                <Liste items={D.caps.map((c) => `Note limitée à ${c.v} : ${c.why}`)} />
+                <p className="mb-1.5 text-sm font-semibold">Ce qui limite la note</p>
+                <Liste items={b.limites.map((x) => x.charAt(0).toUpperCase() + x.slice(1))} />
               </div>
             )}
             {(r.aVerifier ?? []).length > 0 && (
@@ -330,9 +334,9 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
             </li>
             <li className="grid gap-3">
               <h3 className="font-display font-semibold">4. Votre offre</h3>
-              {D.plafond != null && D.plafond > 0 ? (
+              {plafondOk != null ? (
                 <div className="grid grid-cols-3 gap-2">
-                  {[["Ouverture", D.offre], ["Objectif", D.cible], ["Plafond", D.plafond]].map(([l, x]) => (
+                  {[["Ouverture", g.offre], ["Objectif", g.cible], ["Plafond", plafondOk]].map(([l, x]) => (
                     <div key={l as string} className="rounded-xl border border-line p-3">
                       <p className="text-xs text-ink-3">{l}</p>
                       <p className="num font-display text-lg font-semibold">{e(x as number | null)}</p>
@@ -340,7 +344,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-warn">Aucun prix ne vous laisse votre seuil de {e(D.seuil)} : n&apos;achetez pas, proposez un mandat ou passez.</p>
+                <p className="text-sm text-warn">Aucun prix ne vous laisse votre minimum de {e(g.seuil)} : n&apos;achetez pas, proposez un mandat ou passez.</p>
               )}
               <Script texte={remplir(ng.annonceOffre)} label="Copier l'annonce de l'offre" />
               {ng.contreOffre && <p className="text-sm"><span className="text-ink-3">S&apos;il refuse :</span> {remplir(ng.contreOffre)}</p>}
@@ -354,9 +358,9 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
             <GraphePrix
               bande={a.cote ? [a.cote.p25, a.cote.p75] : null}
               points={[
-                { l: "Prix demandé", v: D.prix, c: "bg-ink" },
+                { l: "Prix demandé", v: g.prix, c: "bg-ink" },
                 { l: "Cote réaliste", v: m.realiste ?? null, c: "bg-ok" },
-                { l: "Plafond", v: D.plafond != null && D.plafond > 0 ? D.plafond : null, c: "bg-o" },
+                { l: "Plafond", v: plafondOk, c: "bg-o" },
                 { l: "Estimation Leboncoin", v: a.faits.estimSite ? Math.round((a.faits.estimSite.min + a.faits.estimSite.max) / 2) : null, c: "bg-o3" },
               ]}
             />
@@ -368,7 +372,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
                 </div>
               ))}
             </div>
-            {D.position && <p className={cx("text-sm", D.position.cls === "ok" ? "text-ok" : D.position.cls === "bad" ? "text-bad" : "text-ink-2")}>{D.position.t}</p>}
+            {b.piliers[2]?.score != null && <p className={cx("text-sm", (g.ecartPct ?? 0) > 0.03 ? "text-ok" : (g.ecartPct ?? 0) < -0.03 ? "text-bad" : "text-ink-2")}>{b.piliers[2].reponse} : {b.piliers[2].sous}</p>}
             <p className="text-sm text-ink-3">
               {a.cote ? `Médiane des ${a.cote.n} annonces comparables : ${e(a.cote.mediane)}. ` : "Pas assez d'annonces comparables : la cote vient de l'IA. "}
               {a.faits.estimSite ? `Estimation Leboncoin : ${e(a.faits.estimSite.min)} à ${e(a.faits.estimSite.max)}. ` : ""}
@@ -514,7 +518,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
               <label className="flex items-center gap-2 text-sm">
                 Marge de prudence
                 <select value={prudence} onChange={(ev) => setPrudence(Number(ev.target.value))} className={cx(inputCls, "w-auto")}>
-                  {[[0, "0 % (devis ferme)"], [15, "15 %"], [30, "30 % (conseillé)"], [50, "50 % (inconnu)"]].map(([v2, l]) => (
+                  {[[0, "0 % (devis ferme)"], [10, "10 %"], [20, "20 %"], [30, "30 % (prudent)"], [50, "50 % (inconnu)"]].map(([v2, l]) => (
                     <option key={v2} value={v2}>
                       {l}
                     </option>
@@ -567,7 +571,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
           </div>
         </Bloc>
 
-        <Bloc id="decision" masque={!montre("decision")} titre="Décision">
+        <Bloc id="decision" masque={!montre("decision")} titre="Avis détaillé de l'analyse IA" note="Lecture de l'IA, à croiser avec le bilan en haut du rapport, calculé avec votre profil.">
           <div className="grid gap-3">
             <span className={cx("w-fit rounded-full px-3 py-1 text-sm font-bold capitalize", r.decision?.action === "abandonne" ? "bg-bad text-[#1a0606]" : r.decision?.action === "attends" ? "bg-warn text-[#1a1300]" : "bg-ok text-[#06140c]")}>{r.decision?.action || "—"}</span>
             {r.decision?.pourquoi && <p className="text-[15px]">{r.decision.pourquoi}</p>}
@@ -589,7 +593,6 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
                 })}
               </ul>
             )}
-            {ok.has("deal") && mode.profond && r.zeroEuroCommentaire && <p className="text-sm text-ink-2"><b>Compatibilité 0 € :</b> {r.zeroEuroCommentaire}</p>}
             {id && (
               <div>
                 <button type="button" onClick={supprimer} className="btn btn-sm border-bad/50 text-bad">
@@ -614,7 +617,7 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
           {version && <p className="text-sm text-ink-3">{version}</p>}
         </div>
         <ul className="grid gap-2 text-sm">
-          {D.lignes.map((l) => (
+          {lignes.map((l) => (
             <li key={l.l} className={cx("flex items-baseline justify-between gap-3", l.tete && "border-b border-line pb-2")}>
               <span>
                 {l.l}
@@ -626,15 +629,15 @@ export function RapportComplet({ a, r, reg, offre, id, parc, lien, parcId = null
         </ul>
         <div className="flex items-baseline justify-between border-t border-line pt-3">
           <span className="font-semibold">Ce qui reste</span>
-          <span className={cx("num font-display text-2xl font-semibold", D.gain == null ? "" : D.gain >= D.seuil ? "text-ok" : D.gain >= 0 ? "text-warn" : "text-bad")}>{e(D.gain)}</span>
+          <span className={cx("num font-display text-2xl font-semibold", g.marge == null ? "" : g.marge >= g.seuil ? "text-ok" : g.marge >= 0 ? "text-warn" : "text-bad")}>{e(g.marge)}</span>
         </div>
-        <p className="text-xs text-ink-3">Seuil de marge : {e(D.seuil)}. {D.gain != null ? (D.gain >= D.seuil ? "Au-dessus du seuil." : "Sous le seuil.") : ""}</p>
+        <p className="text-xs text-ink-3">Votre minimum : {e(g.seuil)}. {g.marge != null ? (g.marge >= g.seuil ? "Au-dessus." : "En dessous.") : ""} {plafondOk != null ? `Prix maximum : ${e(plafondOk)}.` : ""}</p>
         <label className="grid gap-1.5 text-sm">
           Si vous l&apos;avez à (€)
-          <input inputMode="numeric" value={prixTest} onChange={(ev) => setPrixTest(ev.target.value)} placeholder={D.prix != null ? String(D.prix) : ""} className={inputCls} />
+          <input inputMode="numeric" value={prixTest} onChange={(ev) => setPrixTest(ev.target.value)} placeholder={g.prix != null ? String(g.prix) : ""} className={inputCls} />
         </label>
         <div className="grid gap-2">
-          {parc && id && <AjouterParc rapportId={id} titre={titre} prix={D.prix} />}
+          {parc && id && <AjouterParc rapportId={id} titre={titre} prix={g.prix} />}
           {msg1 && <Copier texte={msg1} label="Copier le 1er message" />}
           {lien && (
             <a href={lien} target="_blank" rel="noopener noreferrer" className="btn btn-sm">

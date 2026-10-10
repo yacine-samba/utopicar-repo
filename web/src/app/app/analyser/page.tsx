@@ -6,6 +6,7 @@ import { BENEF } from "@/lib/offres";
 import { OutilBenef } from "@/components/benef/OutilBenef";
 import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
 import { CartesOffres } from "@/components/site/CartesOffres";
+import { DemandeProfil } from "@/components/analyse/ProfilAnalyse";
 
 export const metadata: Metadata = { title: "Analyser une annonce" };
 
@@ -32,6 +33,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
   }
 
   return (
+    <>
+    <DemandeProfil />
     <OutilAnalyse
       ville={c.ville}
       maxPhotos={o.photos}
@@ -60,5 +63,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
         </div>
       }
     />
+    </>
   );
 }

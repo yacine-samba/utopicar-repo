@@ -87,6 +87,8 @@ export type Faits = {
   carnet?: boolean;
   factures?: boolean;
   importe?: boolean;
+  /** Pièces et entretiens annoncés comme neufs ou refaits récemment (« embrayage neuf », « pneus récents »). */
+  recents?: string[];
   defauts: Defaut[];
   /** Description très courte : on ne peut pas juger l'état sur le texte. */
   descCourte: boolean;
@@ -212,6 +214,36 @@ function descFacts(txt: string): Partial<Faits> {
   if (/\bfactures?\b/.test(t)) out.factures = true;
   if (/\b(import|importe|immatricule a l'?etranger|plaque etrangere)\b/.test(t) && !NEG.test(t.slice(0, t.search(/\bimport/)).slice(-16))) out.importe = true;
 
+  out.recents = recentsDesc(t);
   out.defauts = defautsDesc(s);
+  return out;
+}
+
+/** Pièces annoncées neuves ou refaites : la clé et son nom lisible. */
+const PIECES: [RegExp, string][] = [
+  [/embrayage|kit d'?embrayage/, "embrayage"],
+  [/distribution|courroie|kit de distri\w*/, "distribution"],
+  [/pneus?|pneumatiques?/, "pneus"],
+  [/freins?|plaquettes?|disques?/, "freins"],
+  [/batterie/, "batterie"],
+  [/amortisseurs?/, "amortisseurs"],
+  [/vidange|revision|entretien/, "vidange"],
+  [/turbo/, "turbo"],
+  [/injecteurs?/, "injecteurs"],
+  [/pompe a eau/, "pompe à eau"],
+  [/climatisation|clim/, "climatisation"],
+  [/volant moteur/, "volant moteur"],
+];
+const NEUF = "(neu(f|fs|ve|ves)|refaite?s?|change(e|es|s)?|remplace(e|es|s)?|recente?s?|faite?s?|nouvelle?s?|nouveaux)";
+
+function recentsDesc(t: string): string[] {
+  const out: string[] = [];
+  for (const [re, nom] of PIECES) {
+    const avant = new RegExp(`\\b(${re.source})\\b[^.;!?\\n]{0,22}?\\b${NEUF}\\b`);
+    const apres = new RegExp(`\\b${NEUF}\\s+(${re.source})\\b`);
+    const m = t.match(avant) ?? t.match(apres);
+    // « distribution à faire », « pneus à changer » : pas neuf
+    if (m && !/\b(a faire|a prevoir|a changer|a refaire|pas faite?|non faite?|jamais)\b/.test(m[0])) out.push(nom);
+  }
   return out;
 }

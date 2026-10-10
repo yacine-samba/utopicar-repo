@@ -1,21 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { coutParticulier, DEFAUTS_PART, eur, type Analyse, type Niveau } from "@/lib/analyse/couts";
+import { coutParticulier, eur, type Analyse } from "@/lib/analyse/couts";
 import { OFFRES, PACKS, prixTxt } from "@/lib/offres";
-import { Copier, Panneau, Pastille, cx, inputCls, type Ton } from "../ui";
+import { Panneau, Pastille, cx, inputCls, type Ton } from "../ui";
 import { AnalysePhotos } from "./AnalysePhotos";
 import { Fourchette } from "./Fourchette";
+import { Bilan, useBilan } from "./Bilan";
+import { useProfilAnalyse } from "./ProfilAnalyse";
 
-const VERDICTS: Record<Niveau, { l: string; ton: Ton; phrase: string }> = {
-  bon: { l: "Bon prix", ton: "ok", phrase: "Elle coûte moins cher que les voitures comparables." },
-  correct: { l: "Prix juste", ton: "ok", phrase: "Elle est au prix des voitures comparables : vous ne payez pas trop cher." },
-  cher: { l: "Trop cher", ton: "warn", phrase: "Elle coûte plus cher que les voitures comparables." },
-  prudence: { l: "À faire vérifier avant d'acheter", ton: "warn", phrase: "Elle peut être un bon achat, mais l'annonce laisse craindre des frais importants. Faites-la contrôler par un garage avant de payer." },
-  eviter: { l: "Nous vous la déconseillons", ton: "bad", phrase: "L'annonce signale un problème grave : réparer coûterait trop cher par rapport au prix." },
-  inconnu: { l: "Prix à confirmer", ton: "neutre", phrase: "Pas assez d'annonces comparables pour juger le prix : comparez avec deux ou trois annonces du même modèle." },
-};
-const FOND: Record<Ton, string> = { ok: "from-ok/20 border-ok/40", warn: "from-warn/20 border-warn/40", bad: "from-bad/20 border-bad/40", o: "from-o/20 border-o/40", neutre: "from-glass border-line-2" };
 const TEXTE: Record<Ton, string> = { ok: "text-ok", warn: "text-warn", bad: "text-bad", o: "text-o2", neutre: "text-ink" };
 const ACCOMP: Record<string, { ton: Ton; icone: string }> = {
   "vous pouvez y aller seul": { ton: "ok", icone: "✓" },
@@ -42,7 +35,9 @@ function Verrou({ titre, texte, offre }: { titre: string; texte: string; offre: 
   );
 }
 
-export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost = DEFAUTS_PART.kmCost, onNouvelle }: { a: Analyse; tarifCV?: number; kmCost?: number; onNouvelle?: () => void }) {
+export function ResultatParticulier({ a, onNouvelle }: { a: Analyse; onNouvelle?: () => void }) {
+  const { profil } = useProfilAnalyse();
+  const { tarifCV, kmCost } = profil;
   const [km, setKm] = useState("");
   const [cochees, setCochees] = useState<string[]>([]);
   const detail = a.detail ?? "simple";
@@ -50,70 +45,22 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
   const complet = detail === "complet";
   const kmSaisi = km.trim() === "" ? null : Number(km.replace(/\s/g, ""));
   const c = coutParticulier(a, { kmCost, tarifCV, ville: "" }, kmSaisi != null && Number.isFinite(kmSaisi) ? kmSaisi : null);
-  // Verdict particulier : seulement le prix face au marché (très bonne, bonne ou moyenne affaire). Les risques sont des alertes à part.
-  const realiste = a.ia?.marche.realiste ?? null;
-  const part = realiste && c.ecart != null ? c.ecart / realiste : null;
-  // Verdict en langage courant : ce que vaut le prix, puis ce qu'on vous conseille de faire.
-  const affaire =
-    part == null
-      ? { ...VERDICTS.inconnu, conseil: "Demandez au vendeur le contrôle technique et les factures avant de vous déplacer." }
-      : part > 0.08
-        ? { l: "Très bon prix", ton: "ok" as Ton, phrase: `Elle coûte environ ${eur(c.ecart!)} de moins que les voitures comparables, petites réparations comprises.`, conseil: "Si l'état se confirme pendant la visite, c'est une belle occasion : contactez le vendeur sans tarder." }
-        : part >= -0.03
-          ? { l: part > 0.02 ? "Bon prix" : "Prix juste", ton: "ok" as Ton, phrase: part > 0.02 ? `Elle coûte environ ${eur(c.ecart!)} de moins que les voitures comparables.` : "Elle est au prix des voitures comparables : vous ne payez pas trop cher.", conseil: "Vous pouvez y aller : vérifiez simplement les points ci-dessous pendant la visite." }
-          : part >= -0.1
-            ? { l: "Un peu cher", ton: "warn" as Ton, phrase: `Elle coûte environ ${eur(-c.ecart!)} de plus que les voitures comparables.`, conseil: "Négociez : la plupart des vendeurs acceptent de baisser un peu leur prix." }
-            : { l: "Trop cher", ton: "warn" as Ton, phrase: `Elle coûte environ ${eur(-c.ecart!)} de plus que les voitures comparables.`, conseil: "Proposez nettement moins, ou comparez avec d'autres annonces du même modèle avant de vous déplacer." };
-  const v = affaire;
-  const risque = c.niveau === "eviter" ? VERDICTS.eviter : c.niveau === "prudence" ? VERDICTS.prudence : null;
+  const b = useBilan(a, { distance: kmSaisi != null && Number.isFinite(kmSaisi) ? kmSaisi : null });
   const ia = a.ia;
-  const veh = ia?.vehicule;
-  const titre = [veh?.marque, veh?.modele, veh?.version].filter(Boolean).join(" ") || a.faits.titre || "Votre annonce";
-  const kmVeh = veh?.km ?? a.faits.km;
-  const infos = [veh?.annee ?? a.faits.annee, kmVeh != null ? `${kmVeh.toLocaleString("fr-FR")} km` : null, veh?.energie || a.faits.energie, veh?.localisation || a.faits.ville].filter(Boolean);
-
-  const phrasePrix = v.phrase;
-
-  // À vérifier : du plus grave au moins grave.
-  const verifs: { t: string; ton: Ton }[] = [];
-  c.pieges.forEach((p) => verifs.push({ t: p.l, ton: "bad" }));
-  if (a.fiab.k === "eviter") verifs.push({ t: `Moteur ou boîte réputé fragile : ${a.fiab.pourquoi[0].split(" : ")[0]}`, ton: "warn" });
-  c.gros.forEach((p) => verifs.push({ t: `${p.l}${p.nc ? "" : ` (${eur(p.min)} à ${eur(p.max)})`}`, ton: "warn" }));
-  if (!a.faits.ct || a.faits.ct.statut === "à faire" || a.faits.ct.statut === "mentionné") verifs.push({ t: "Demandez le contrôle technique de moins de 6 mois : c'est au vendeur de le fournir.", ton: "neutre" });
-  ia?.alertes.forEach((t) => verifs.push({ t, ton: "neutre" }));
-  const nbVerifs = complet ? 6 : plus ? 4 : 3;
-  const questions = (ia?.questions ?? []).slice(0, complet ? 5 : 3);
   const acc = ia?.accompagnement ? ACCOMP[ia.accompagnement.recommandation] ?? { ton: "warn" as Ton, icone: "!" } : null;
 
   return (
     <div className="grid gap-5">
       {a.demo && <p className="rounded-2xl border border-warn/40 bg-warn/10 p-3 text-sm text-warn">Mode démonstration : comptes non configurés, rien n&apos;est enregistré.</p>}
 
-      <section className={cx("rounded-3xl border bg-gradient-to-b to-panel p-6 sm:p-8", FOND[v.ton])} aria-labelledby="verdict">
-        <p className="text-sm text-ink-2">{titre}</p>
-        {infos.length > 0 && <p className="text-sm text-ink-3">{infos.join(" · ")}</p>}
-        <h1 id="verdict" className={cx("mt-3 font-display text-[clamp(34px,7vw,56px)] font-semibold leading-none tracking-tight", TEXTE[v.ton])}>
-          {v.l}
-        </h1>
-        <p className="mt-3 max-w-xl text-lg text-ink">{phrasePrix}</p>
-        {!risque && <p className="mt-2 max-w-xl text-ink-2"><b className="text-ink">Notre conseil :</b> {v.conseil}</p>}
-        {realiste != null && <p className="mt-1 text-ink-2">Prix du marché pour cette voiture : environ {eur(realiste)}.</p>}
-        {c.prix != null && a.cote && a.cote.n >= 5 && <Fourchette prix={c.prix} p25={a.cote.p25} p75={a.cote.p75} />}
-        {risque && (
-          <p className={cx("mt-4 rounded-2xl border px-4 py-3", risque.ton === "bad" ? "border-bad/40 bg-bad/10 text-bad" : "border-warn/40 bg-warn/10 text-warn")}>
-            <b>{risque.l}.</b> {risque.phrase}
-          </p>
-        )}
-        {plus && c.proposer != null && c.prix != null && c.proposer < c.prix && c.niveau !== "eviter" && (
-          <p className="mt-4 inline-flex flex-wrap items-baseline gap-2 rounded-2xl border border-line-2 bg-black/25 px-4 py-2">
-            <span className="text-ink-2">Prix raisonnable à proposer</span>
-            <b className="num font-display text-xl">{eur(c.proposer)}</b>
-          </p>
-        )}
-        {a.regles && <p className="mt-4 text-sm text-ink-3">Analyse faite avec les règles et la cote de l&apos;outil : les photos n&apos;ont pas été examinées.</p>}
-        {a.iaErreur && <p className="mt-4 text-sm text-warn">{a.iaErreur} Le coût et les points à vérifier restent calculés.</p>}
-      </section>
-
+      {a.regles && <p className="text-sm text-ink-3">Analyse faite avec les règles et la cote de l&apos;outil : les photos n&apos;ont pas été examinées.</p>}
+      {a.iaErreur && <p className="text-sm text-warn">{a.iaErreur} Le coût et les points à vérifier restent calculés.</p>}
+      <Bilan
+        a={a}
+        b={b}
+        detail={detail}
+        lien={a.lien}
+        argent={
       <Panneau titre="Ce qu'elle va vraiment vous coûter">
         <div className="mb-4 flex items-baseline justify-between gap-4">
           <span className="text-ink-2">Coût réel d&apos;achat</span>
@@ -122,6 +69,11 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
             {c.total != null ? eur(c.total) : "—"}
           </b>
         </div>
+        {c.prix != null && a.cote && a.cote.n >= 5 && (
+          <div className="mb-4">
+            <Fourchette prix={c.prix} p25={a.cote.p25} p75={a.cote.p75} />
+          </div>
+        )}
         <BarreFrais lignes={c.lignes} />
         <ul className="divide-y divide-line">
           {c.lignes.map((l) => (
@@ -141,8 +93,25 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
             km
           </span>
         </label>
-        {c.gros.length > 0 && <p className="mt-3 text-sm text-warn">Des gros travaux sont possibles et ne sont pas comptés ici : voir « À vérifier ».</p>}
+        <div className="mt-4 grid gap-2 border-t border-line pt-4 sm:grid-cols-2">
+          <p className="flex items-baseline justify-between gap-3 text-sm sm:block">
+            <span className="text-ink-3">Ensuite, chaque mois </span>
+            <b className="num">{b.argent.mensuel != null ? `≈ ${eur(b.argent.mensuel)}` : "—"}</b>
+            <span className="block text-xs text-ink-3">perte de valeur, entretien et travaux probables ; hors carburant et assurance</span>
+          </p>
+          {plus && b.argent.proposer != null && b.argent.prix != null && b.argent.proposer < b.argent.prix && b.verdict !== "eviter" && (
+            <p className="flex items-baseline justify-between gap-3 text-sm sm:block">
+              <span className="text-ink-3">Prix raisonnable à proposer </span>
+              <b className="num text-o2">{eur(b.argent.proposer)}</b>
+              <span className="block text-xs text-ink-3">{eur(b.argent.prix - b.argent.proposer)} sous le prix affiché, travaux probables déduits</span>
+            </p>
+          )}
+        </div>
+        {b.argent.budgetDepasse ? <p className="mt-3 text-sm text-warn">{eur(b.argent.budgetDepasse)} au-dessus de votre budget.</p> : null}
+        {c.gros.length > 0 && <p className="mt-3 text-sm text-warn">Les gros travaux possibles ne sont pas comptés dans le coût d&apos;achat : voir « Travaux à prévoir ».</p>}
       </Panneau>
+        }
+      />
 
       {plus && (ia?.photos.fournies || (a.vignettes ?? []).length > 0) && (
         <Panneau titre="Ce que montrent les photos">
@@ -153,19 +122,6 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
         <p className="rounded-2xl border border-line p-4 text-sm text-ink-3">
           Aucune photo examinée. À la prochaine analyse, ajoutez les photos de l&apos;annonce : l&apos;IA repère les chocs, la rouille, les pneus usés, une teinte différente et lit le compteur.
         </p>
-      )}
-
-      {verifs.length > 0 && (
-        <Panneau titre="À vérifier avant d'acheter">
-          <ul className="grid gap-2.5">
-            {verifs.slice(0, nbVerifs).map((x, i) => (
-              <li key={i} className="flex gap-3">
-                <span className={cx("mt-2 size-2 shrink-0 rounded-full", x.ton === "bad" ? "bg-bad" : x.ton === "warn" ? "bg-warn" : "bg-ink-3")} aria-hidden="true" />
-                <span>{x.t}</span>
-              </li>
-            ))}
-          </ul>
-        </Panneau>
       )}
 
       {acc && ia?.accompagnement && (
@@ -231,25 +187,6 @@ export function ResultatParticulier({ a, tarifCV = DEFAUTS_PART.tarifCV, kmCost 
                 ))}
               </ul>
             </>
-          )}
-        </Panneau>
-      )}
-
-      {plus && questions.length > 0 && (
-        <Panneau titre="Questions à poser au vendeur" aside={<Copier texte={questions.join("\n")} label="Tout copier" />}>
-          <ol className="grid list-decimal gap-2 pl-5 marker:text-o2">
-            {questions.map((q) => (
-              <li key={q}>{q}</li>
-            ))}
-          </ol>
-          {ia?.messageVendeur && (
-            <div className="mt-5">
-              <div className="mb-1 flex items-center justify-between gap-2">
-                <h3 className="text-sm text-ink-3">Premier message, prêt à envoyer</h3>
-                <Copier texte={ia.messageVendeur} />
-              </div>
-              <p className="rounded-xl border border-line bg-black/25 p-3 text-ink-2">{ia.messageVendeur}</p>
-            </div>
           )}
         </Panneau>
       )}

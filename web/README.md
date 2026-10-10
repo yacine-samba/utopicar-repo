@@ -67,11 +67,12 @@ Supabase n'envoie plus aucun email. La fonction **`compte`** (`../supabase/funct
 
 ## Comment l'analyse est faite
 
-1. Règles fixes, sans IA (`src/lib/analyse/`) : lecture de l'annonce, 38 défauts chiffrés, moteurs et boîtes à éviter, coûts.
+0. **Profil d'analyse** (`profil.ts`, `profils.reglages.analyse`) : 4 questions à la première analyse (objectif, expérience, travaux acceptés, bénéfice et délai de revente ou kilométrage), modifiables dans Profil › Mon profil d'analyse. Il règle les priorités de la note, jamais l'éligibilité d'une voiture. Détail : `../docs/analyse-2027.md`.
+1. Règles fixes, sans IA (`src/lib/analyse/`) : lecture de l'annonce, 38 défauts chiffrés, pièces annoncées refaites, réputation des moteurs, boîtes et batteries toutes gammes (`connaissances.ts`), coûts.
 2. **Cote du marché par l'outil, sans IA** (`cote.ts`, fonction SQL `cote_marche`) : annonces comparables réellement en ligne (table `marche_annonces`, environ 11 000 annonces Leboncoin relevées : même modèle, ±2 ans, même énergie, kilométrage proche), prix ramenés à l'année et au kilométrage de la voiture. Dès 5 annonces trouvées, cette cote remplace l'estimation de l'IA (fourchette, prix réaliste, revente rapide). Pour l'enrichir : ajouter des relevés dans `marche_annonces`.
 3. API Claude côté serveur (`ia.ts`) : version, cote du marché, distance, photos, entretien à prévoir, négociation, contrôle sur place, synthèse.
    Un seul modèle pour toutes les formules : **Claude Haiku 4.5**, le moins cher (environ 0,03 € par analyse, photos comprises). L'IA s'appuie sur les paramètres de l'outil (étape 1) et ne les remplace jamais ; elle complète ce que les règles ne lisent pas (cote du marché, photos, questions et messages à copier). `ANTHROPIC_MODEL` permet d'en changer sans toucher au code. Chaque appel écrit dans les journaux Vercel le modèle et le nombre de jetons, pour suivre le coût réel.
-4. Calculs d'argent par l'outil (`couts.ts`) : marge, plafond et offre pour Benef ; coût réel pour les particuliers.
+4. **Bilan par l'outil** (`bilan.ts`, `travaux.ts`) : quatre réponses (Fiable ? Des travaux ? Bon prix ? Ça rapporte ou Combien par mois ?), note sur 100 pondérée selon le profil, verdict (Très bonne affaire, Bonne affaire, À négocier, À creuser, À éviter), confiance de l'analyse, questions au vendeur et premier message. Budget travaux sur 12 mois avec probabilités ; bénéfice en trois scénarios de revente ; perte de valeur mesurée sur les annonces du modèle (`projection.ts`). Recalculé dans le navigateur avec le profil courant : changer son profil met à jour tous les rapports.
 
 Une analyse n'est décomptée que si elle aboutit. La copie de l'extension Chrome (texte et photos) est reconnue au collage.
 

@@ -7,6 +7,7 @@ import type { OffreId } from "../offres";
 import type { Cote } from "./cote";
 import { consigneGarage } from "./garage";
 import { lireRapport, versIa, type Rapport } from "./rapport";
+import type { ProfilAnalyse } from "./profil";
 
 export type Photo = { media_type: "image/jpeg" | "image/png" | "image/webp"; data: string };
 
@@ -31,15 +32,16 @@ function faitsLignes(f: Faits, fiab: Fiabilite): string[] {
   f.defauts.forEach((d) =>
     L.push(`Défaut déjà lu et compté par l'outil : ${d.l}${d.cat === "piege" ? " (RÉDHIBITOIRE)" : d.nc ? " (non chiffrable)" : `, ${d.min} à ${d.max} €`} (« ${d.extrait} »)`),
   );
-  if (fiab.k === "eviter") L.push(`Moteur ou boîte à éviter selon l'outil : ${fiab.pourquoi.join(" ; ")}`);
-  else if (fiab.modele) L.push(`Modèle de la liste fiable de l'outil : ${fiab.modele} (bons moteurs : ${fiab.bonsMoteurs})`);
+  if (f.recents?.length) L.push(`Annoncé neuf ou refait : ${f.recents.join(", ")}`);
+  (fiab.connus ?? []).forEach((c) => L.push(`Réputation (${c.type}) selon l'outil : ${c.nom}, ${c.avis === "eviter" ? "à éviter" : c.avis} : ${c.detail}`));
+  if (fiab.modele && fiab.k !== "eviter") L.push(`Modèle de la liste fiable de l'outil : ${fiab.modele} (bons moteurs : ${fiab.bonsMoteurs})`);
   return L;
 }
 
 export class IaIndisponible extends Error {}
 
 /** Analyse complète au format de l'outil Garage : rapport complet + vue simplifiée pour les écrans particulier. */
-export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilite; ville: string; photos: Photo[]; offre: OffreId; cote: Cote | null; margeMin: number }): Promise<{ ia: Ia; rapport: Rapport }> {
+export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilite; profil: ProfilAnalyse; photos: Photo[]; offre: OffreId; cote: Cote | null }): Promise<{ ia: Ia; rapport: Rapport }> {
   if (!process.env.ANTHROPIC_API_KEY) throw new IaIndisponible("ANTHROPIC_API_KEY manquante");
   // Clé créée hors d'un espace de travail Anthropic : l'API demande l'identifiant de l'espace (ANTHROPIC_WORKSPACE_ID, wrkspc_…).
   const espace = process.env.ANTHROPIC_BASE_URL ? undefined : process.env.ANTHROPIC_WORKSPACE_ID;
@@ -47,8 +49,7 @@ export async function analyseIA(p: { texte: string; faits: Faits; fiab: Fiabilit
   const client = new Anthropic({ maxRetries: 4, ...(espace ? { defaultHeaders: { "anthropic-workspace-id": espace } } : {}) });
   const c = p.cote;
   const consigne = consigneGarage({
-    ville: p.ville || "Paris",
-    margeMin: p.margeMin,
+    profil: p.profil,
     nbPhotos: p.photos.length,
     faits: faitsLignes(p.faits, p.fiab),
     cote: c ? `ANNONCES COMPARABLES ACTUELLEMENT EN LIGNE, relevées par l'outil : ${c.n} annonces du même modèle (±2 ans, même énergie, kilométrage proche), prix ramenés à cette année et ce kilométrage : médiane ${c.mediane} €, moitié centrale ${c.p25} à ${c.p75} €.` : null,

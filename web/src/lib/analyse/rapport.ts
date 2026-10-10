@@ -23,7 +23,7 @@ export type Rapport = {
   histovec?: { fourni?: boolean; premiereImmatFrance?: Txt; nbTitulaires?: number | null; dernierChangementTitulaire?: Txt; sinistres?: Txt; gage?: Txt; opposition?: Txt; vol?: Txt; usage?: Txt; commentaire?: Txt };
   ctAnalyse?: { fourni?: boolean; date?: Txt; resultat?: Txt; kmAuCT?: number | null; defaillances?: { libelle?: Txt; niveau?: Txt; cout?: number }[]; commentaire?: Txt };
   entretienAnalyse?: { suivi?: Txt; interventions?: { date?: Txt; km?: number | null; travaux?: Txt }[]; aPrevoir?: { libelle?: Txt; echeance?: Txt; cout?: number }[]; commentaire?: Txt };
-  fiabilite?: { moteur?: Txt; note?: number; problemesConnus?: { libelle?: Txt; gravite?: Txt; aVerifier?: Txt }[]; rappels?: Liste };
+  fiabilite?: { moteur?: Txt; note?: number; problemesConnus?: { libelle?: Txt; gravite?: Txt; aVerifier?: Txt; question?: Txt }[]; rappels?: Liste };
   pointsForts?: Liste; aVerifier?: Liste; signauxAnnonce?: Liste; coherencePrix?: Txt;
   visuel?: { visible?: Liste; probable?: Liste; nonVerifiable?: Liste };
   remiseEnEtat?: { minimum?: number; realisteMin?: number; realisteMax?: number; prudent?: number; confiance?: Txt; postes?: { categorie?: Txt; libelle?: Txt; montant?: number }[] };
@@ -36,6 +36,8 @@ export type Rapport = {
   };
   negociation?: { message1?: Txt; relance?: Txt; appel?: Liste; argumentaire?: { argument?: Txt; montant?: number; source?: Txt }[]; annonceOffre?: Txt; contreOffre?: Txt; sortie?: Txt };
   messageVendeur?: Txt; scriptStructure?: Txt; questions?: Liste; leviersNegociation?: Liste; inspection?: Liste; conditionSortie?: Txt; prochaineAction?: Txt;
+  /** Termes techniques du rapport, expliqués simplement. */
+  lexique?: { terme?: Txt; sens?: Txt }[];
   risquesCaches?: { administratif?: Liste; mecanique?: Liste; commercial?: Liste; negociation?: Liste; revente?: Liste };
   decision?: { action?: Txt; pourquoi?: Txt; conditions?: Txt };
 };

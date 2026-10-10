@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { estFavorable, VERDICTS_FAVORABLES } from "@/lib/analyse/verdicts";
 import { titreVehicule } from "@/lib/titre";
 import { compteBenef } from "@/lib/benef";
 import { debutPeriode, type Compte } from "@/lib/compte";
@@ -134,7 +135,7 @@ async function TableauComplet({ c }: { c: Compte }) {
   const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, recherches] = await Promise.all([
     sb.from("rapports").select("id, marge, verdict").eq("mode", "benef").gte("created_at", debut).limit(2000),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
-    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").gte("created_at", semaine).like("verdict", "GO%").order("marge", { ascending: false, nullsFirst: false }).limit(6),
+    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").gte("created_at", semaine).in("verdict", VERDICTS_FAVORABLES).order("marge", { ascending: false, nullsFirst: false }).limit(6),
     sb.from("parc").select("*").limit(1000),
     c.offre.recherche ? dernieresRecherches() : Promise.resolve(null),
   ]);
@@ -149,7 +150,7 @@ async function TableauComplet({ c }: { c: Compte }) {
   const margeLiee = new Map((rapLies ?? []).map((r) => [r.id, r.marge]));
   const prevues = stock.map((v) => ({ v, m: margePrevue(v) ?? (v.rapport_id ? (margeLiee.get(v.rapport_id) ?? null) : null) })).filter((x) => x.m != null);
   const attente = prevues.reduce((s, x) => s + (x.m ?? 0), 0);
-  const go = (mois ?? []).filter((r) => r.verdict?.startsWith("GO"));
+  const go = (mois ?? []).filter((r) => estFavorable(r.verdict));
   const n = (mois ?? []).length;
 
   const alertes: { v: Vehicule; lvl: "bad" | "warn"; txt: string }[] = [];
@@ -282,8 +283,8 @@ async function TableauComplet({ c }: { c: Compte }) {
         <h2 id="tb-analyses" className="mb-3 font-display text-lg font-semibold">Analyses du mois</h2>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Kpi l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} s={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} ton={!c.illimite && c.restantes <= 3 ? "warn" : undefined} />
-          <Kpi l="Affaires GO repérées" v={String(go.length)} s={`sur ${n} annonce${n > 1 ? "s" : ""}`} />
-          <Kpi l="Marge moyenne des GO" v={eur(go.length ? go.reduce((s, r) => s + (r.marge ?? 0), 0) / go.length : null)} s="estimée avant achat" />
+          <Kpi l="Bonnes affaires repérées" v={String(go.length)} s={`sur ${n} annonce${n > 1 ? "s" : ""}`} />
+          <Kpi l="Marge moyenne des bonnes affaires" v={eur(go.length ? go.reduce((s, r) => s + (r.marge ?? 0), 0) / go.length : null)} s="estimée avant achat" />
           <Kpi l="Marge réalisée ce mois" v={eur(st.margeMois)} s="voitures vendues ce mois" />
         </div>
       </section>
@@ -337,7 +338,7 @@ async function TableauBenef({ c }: { c: Compte }) {
     sb.from("rapports").select("id, titre, marge, verdict, prix").eq("mode", "benef").gte("created_at", debut).limit(1000),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
   ]);
-  const go = (mois ?? []).filter((r) => r.verdict?.startsWith("GO"));
+  const go = (mois ?? []).filter((r) => estFavorable(r.verdict));
   const marges = go.map((r) => r.marge).filter((x): x is number => x != null);
   const meilleure = [...(mois ?? [])].filter((r) => r.marge != null).sort((a, b) => (b.marge ?? 0) - (a.marge ?? 0))[0];
   const complet = c.offre.tableauDeBord === "complet";
@@ -357,8 +358,8 @@ async function TableauBenef({ c }: { c: Compte }) {
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Tuile l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} sous={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} alerte={!c.illimite && c.restantes <= 3} />
-          <Tuile l="Affaires GO repérées" v={String(go.length)} sous={`sur ${n} annonce${n > 1 ? "s" : ""} analysée${n > 1 ? "s" : ""}`} />
-          <Tuile l="Marge moyenne des GO" v={eur(marges.length ? marges.reduce((s, x) => s + x, 0) / marges.length : null)} sous="estimée avant achat" />
+          <Tuile l="Bonnes affaires repérées" v={String(go.length)} sous={`sur ${n} annonce${n > 1 ? "s" : ""} analysée${n > 1 ? "s" : ""}`} />
+          <Tuile l="Marge moyenne des bonnes affaires" v={eur(marges.length ? marges.reduce((s, x) => s + x, 0) / marges.length : null)} sous="estimée avant achat" />
           <Tuile l="Meilleure affaire" v={eur(meilleure?.marge ?? null)} sous={meilleure?.titre ?? "aucune ce mois"} />
         </div>
       </section>

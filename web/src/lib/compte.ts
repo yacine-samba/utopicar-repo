@@ -4,6 +4,7 @@ import { comptesActifs } from "./supabase/config";
 import { supabaseServeur } from "./supabase/serveur";
 import { guidesOuverts, type GuideId } from "./guides";
 import { ILLIMITE, NIVEAU_CREDIT, OFFRES, offre, STATUTS_ACTIFS, type Famille, type Offre } from "./offres";
+import { lireProfilAnalyse, type ProfilAnalyse } from "./analyse/profil";
 
 export type Abonnement = { offre: string; statut: string; periode_fin: string | null; annule_fin_periode: boolean };
 
@@ -37,6 +38,8 @@ export type Compte = {
   favoris: boolean;
   /** Option « Messages Leboncoin » (Benef Pro, en plus de la formule). */
   messages: boolean;
+  /** Profil d'analyse (objectif, expérience, travaux acceptés, seuil de bénéfice…) : questionnaire de la première analyse. */
+  profilAnalyse: ProfilAnalyse;
 };
 
 /** Début de la période de quota : le mois civil en cours, ou depuis toujours pour la formule gratuite. */
@@ -95,5 +98,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     restantes: restantesFormule + solde,
     favoris: (profil?.reglages as { favoris?: boolean } | null)?.favoris === true,
     messages: messages === true,
+    // sans questionnaire : le profil de l'espace affiché (Benef si la formule ou l'usage l'est)
+    profilAnalyse: lireProfilAnalyse((profil?.reglages as { analyse?: unknown } | null)?.analyse, illimite ? ((profil?.famille as Famille) ?? "benef") : o.prix > 0 || offerte ? o.famille : ((profil?.famille as Famille) ?? "particulier"), profil?.ville ?? ""),
   };
 });
