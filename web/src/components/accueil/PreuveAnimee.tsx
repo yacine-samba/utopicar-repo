@@ -1,90 +1,63 @@
 import type { CSSProperties } from "react";
+import { EXEMPLES } from "@/lib/demo";
 
-/* Ce que l'outil répond, joué en 2 secondes : l'annonce se place face au marché, les contrôles tombent, le verdict sort.
-   CSS seul (classes « scene », « pas », « jauge », « curseur » dans globals.css), aucune image, aucun script.
-   Exemple réel de démonstration, signalé comme tel. Les lecteurs d'écran lisent un résumé en une phrase. */
+/* L'outil en action, sans paragraphe : la vraie photo de l'annonce, et par-dessus, en 2 secondes, son prix qui se place
+   face au marché puis le verdict. Une douzaine de mots en tout. CSS seul (classes « scene » de globals.css).
+   Données : la vraie annonce Clio IV de la démonstration (relevée le 3 octobre 2026). */
 
 const d = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
-// échelle de la jauge : 5 000 € à 9 000 €
-const pos = (eur: number) => `${((eur - 5000) / 4000) * 100}%`;
+const ex = EXEMPLES.clio;
+const COTE = ex.lignes[0].v ?? 7550;
+const PROPOSER = ex.lignes[3].v ?? 6250;
+// échelle de la jauge : 5 500 € à 8 500 €
+const pos = (eur: number) => `${((eur - 5500) / 3000) * 100}%`;
+const e = (v: number) => `${v.toLocaleString("fr-FR").replace(/ /g, " ")} €`;
+const ecart = Math.round(((COTE - ex.prix) / COTE) * 100);
 
 export function PreuveAnimee() {
   return (
-    <figure className="apparait mx-auto w-full max-w-md text-left">
+    <figure className="arrivee attend mx-auto w-full max-w-[420px]" style={{ "--i": 2 } as CSSProperties}>
       <figcaption className="sr-only">
-        Exemple d&apos;analyse : une Renault Clio IV à 7 400 €, au-dessus de la cote de 6 950 €. Moteur fiable, choc de carrosserie de 150 à 700 €, contrôle technique à
-        demander. Verdict : à négocier, proposez 6 250 €.
+        Exemple réel : une {ex.titre} à {e(ex.prix)}, {ecart} % sous la cote de {e(COTE)}. Moteur fiable. Verdict : {ex.verdict.toLowerCase()}, proposez {e(PROPOSER)}.
       </figcaption>
-      <div className="scene carte relative overflow-hidden p-5 shadow-[0_30px_80px_-40px_rgb(255_90_31/0.55)] sm:p-6" aria-hidden="true">
-        <div className="flex items-center justify-between gap-3">
-          <span className="rounded-full border border-line-2 px-2.5 py-0.5 text-xs text-ink-3">Exemple d&apos;analyse</span>
-          <span className="flex items-center gap-1.5 text-xs text-ink-3">
-            <span className="size-1.5 rounded-full bg-ok" /> 2 s
-          </span>
+      <div className="scene relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 shadow-[0_40px_100px_-40px_rgb(255_90_31/0.6)]" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element -- photo de l'annonce, servie en local et déjà compressée */}
+        <img src={ex.photos[1]} alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.35)_0%,transparent_28%,transparent_42%,rgb(0_0_0/0.88)_100%)]" />
+
+        {/* l'annonce telle qu'elle est en ligne */}
+        <div className="pas absolute left-4 top-4 rounded-2xl border border-white/20 bg-black/45 px-3.5 py-2 text-white backdrop-blur-md" style={d(0.1)}>
+          <span className="block text-[11px] uppercase tracking-wider text-white/70">Leboncoin</span>
+          <span className="num font-display text-2xl font-semibold leading-none">{e(ex.prix)}</span>
+        </div>
+        <div className="pas absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-[#3ecb7f] px-3 py-1.5 text-sm font-bold text-[#04140a]" style={d(1.35)}>
+          ✓ Moteur fiable
         </div>
 
-        {/* l'annonce */}
-        <div className="pas mt-4 flex items-center gap-3" style={d(0.05)}>
-          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-glass">
-            <svg viewBox="0 0 24 24" className="size-6 text-ink-2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 16.5V12l2-5h12l2 5v4.5M4 16.5h16M4 16.5V19h3v-2.5M17 16.5V19h3v-2.5M7.5 13.5h.01M16.5 13.5h.01" />
-            </svg>
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block truncate font-medium">Renault Clio IV 0.9 TCe</span>
-            <span className="block text-sm text-ink-3">2016 · 98 000 km · Leboncoin</span>
-          </span>
-          <span className="num font-display text-xl font-semibold">7 400 €</span>
-        </div>
-
-        {/* face au marché */}
-        <div className="mt-5">
-          <div className="flex justify-between text-xs text-ink-3">
-            <span>Prix du marché</span>
-            <span className="num">174 Clio comparables</span>
+        <div className="absolute inset-x-4 bottom-4 grid gap-3 text-white">
+          {/* le prix face au marché */}
+          <div className="pas rounded-2xl border border-white/15 bg-black/45 px-4 pb-3 pt-7 backdrop-blur-md" style={d(0.35)}>
+            <div className="relative h-2 rounded-full bg-white/15">
+              <span className="jauge absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(90deg,#3ecb7f,rgb(62_203_127/0.25))]" style={{ width: pos(COTE), ...d(0.45) }} />
+              <span className="absolute -top-[22px] text-xs font-semibold text-white/85" style={{ left: pos(COTE), marginLeft: "-30px" }}>
+                cote
+              </span>
+              <span className="absolute -top-1 h-4 w-0.5 rounded bg-white" style={{ left: pos(COTE) }} />
+              <span className="curseur absolute -top-[6px] size-5 rounded-full border-[3px] border-white bg-o shadow-[0_0_0_6px_rgb(255_90_31/0.3)]" style={{ left: pos(ex.prix), marginLeft: "-10px", ...d(0.75), "--depart": "-120px" } as CSSProperties} />
+            </div>
+            <p className="pas mt-2 text-sm font-semibold text-[#7ee2ab]" style={d(1.15)}>
+              −{ecart} % sous le marché
+            </p>
           </div>
-          <div className="relative mt-7 h-2.5 rounded-full bg-glass">
-            <span className="jauge absolute inset-y-0 rounded-full bg-ok/45" style={{ left: pos(6600), width: `calc(${pos(7300)} - ${pos(6600)})`, ...d(0.35) }} />
-            {/* cote */}
-            <span className="pas absolute -top-6 text-xs font-medium text-ok" style={{ left: pos(6950), marginLeft: "-34px", ...d(0.55) }}>
-              cote 6 950 €
+
+          {/* le verdict */}
+          <div className="pas flex items-end justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-[#160904]" style={d(1.7)}>
+            <span className="rounded-full bg-[#3ecb7f] px-3 py-1 text-sm font-bold text-[#04140a]">{ex.verdict}</span>
+            <span className="text-right">
+              <span className="block text-xs font-medium text-[#160904]/60">Proposez</span>
+              <span className="num font-display text-[34px] font-semibold leading-none">{e(PROPOSER)}</span>
             </span>
-            <span className="pas absolute -top-1 h-[18px] w-0.5 rounded bg-ok" style={{ left: pos(6950), ...d(0.55) }} />
-            {/* l'annonce glisse jusqu'à son prix */}
-            <span className="curseur absolute -top-[5px] size-5 rounded-full border-[3px] border-bg1 bg-o shadow" style={{ left: pos(7400), marginLeft: "-10px", ...d(0.7), "--depart": "90px" } as CSSProperties} />
           </div>
-          <div className="mt-1.5 flex justify-between text-[11px] text-ink-3">
-            <span className="num">5 000 €</span>
-            <span className="pas font-medium text-o2" style={d(1.3)}>
-              450 € au-dessus
-            </span>
-            <span className="num">9 000 €</span>
-          </div>
-        </div>
-
-        {/* les contrôles */}
-        <ul className="mt-5 grid gap-2 text-sm">
-          {(
-            [
-              ["ok", "✓", "Moteur 0.9 TCe : réputé fiable", 1.1],
-              ["warn", "!", "Choc de carrosserie : 150 à 700 €", 1.3],
-              ["neutre", "?", "CT de moins de 6 mois : à demander", 1.5],
-            ] as const
-          ).map(([ton, s, t, delai]) => (
-            <li key={t} className="pas flex items-center gap-2.5" style={d(delai)}>
-              <span className={`grid size-5 shrink-0 place-items-center rounded-full text-[11px] font-bold ${ton === "ok" ? "bg-ok/20 text-ok" : ton === "warn" ? "bg-warn/20 text-warn" : "bg-glass text-ink-3"}`}>{s}</span>
-              <span className="text-ink-2">{t}</span>
-            </li>
-          ))}
-        </ul>
-
-        {/* le verdict */}
-        <div className="pas mt-5 flex items-center justify-between gap-3 rounded-2xl border border-o/40 bg-o/10 px-4 py-3" style={d(1.8)}>
-          <span>
-            <span className="block text-xs font-semibold uppercase tracking-wide text-o2">À négocier</span>
-            <span className="text-sm text-ink-2">Proposez</span>
-          </span>
-          <span className="num font-display text-3xl font-semibold">6 250 €</span>
         </div>
       </div>
     </figure>

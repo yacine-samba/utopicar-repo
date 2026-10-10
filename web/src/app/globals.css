@@ -297,8 +297,28 @@ select option:disabled {
 }
 :root[data-anim] .apparait:not(.vu) .scene .pas,
 :root[data-anim] .apparait:not(.vu) .scene .jauge,
-:root[data-anim] .apparait:not(.vu) .scene .curseur {
+:root[data-anim] .apparait:not(.vu) .scene .curseur,
+:root[data-anim] .attend:not(.vu) .scene .pas,
+:root[data-anim] .attend:not(.vu) .scene .jauge,
+:root[data-anim] .attend:not(.vu) .scene .curseur {
   animation-play-state: paused;
+}
+/* Apparition pilotée par le défilement, en CSS natif (Chrome, Edge, Safari 26) : l'élément suit le doigt, sans script.
+   Ailleurs (Firefox) ou avec les animations réduites, il est simplement visible. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root:not([data-calme]) .vue {
+      animation: surgit-vue linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 28%;
+    }
+  }
+}
+@keyframes surgit-vue {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+  }
 }
 @keyframes surgit {
   from {

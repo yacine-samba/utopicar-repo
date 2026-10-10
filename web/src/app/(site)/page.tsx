@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Rotateur } from "@/components/accueil/Rotateur";
-import { Demo } from "@/components/accueil/Demo";
 import { Defile } from "@/components/site/Defile";
 import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
@@ -9,13 +8,12 @@ import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { JsonLdFaq } from "@/components/site/JsonLd";
-import { CartesOffres } from "@/components/site/CartesOffres";
-import { compteCourant } from "@/lib/compte";
+import { PrixCompact } from "@/components/site/PrixCompact";
 import { PARTICULIERS } from "@/lib/offres";
 
 /* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
-   Une seule action (coller une annonce), la preuve visible tout de suite (scène animée de 2 s), de vrais chiffres,
-   peu de texte. Ordre : essai → preuve → chiffres → démo → ce qui est vérifié → prix → questions → appel final. */
+   Une seule action (coller une annonce), la preuve visible tout de suite (vraie annonce, verdict joué en 2 s), de vrais chiffres,
+   presque pas de texte. Ordre : essai et preuve → chiffres → ce qui est vérifié → prix → questions → appel final. */
 
 const MODELES = ["Renault Clio IV", "Peugeot 208", "Toyota Yaris", "Dacia Sandero", "VW Polo V", "Citroën C3", "Ford Fiesta", "Opel Corsa", "Hyundai i20", "Suzuki Swift", "Renault Twingo", "Seat Ibiza", "Kia Rio", "Skoda Fabia"];
 
@@ -35,7 +33,7 @@ const Coche = () => (
 );
 
 export default async function Accueil() {
-  const [compte, fournisseurs] = await Promise.all([compteCourant(), fournisseursActifs()]);
+  const fournisseurs = await fournisseursActifs();
   return (
     <>
       {/* ---------------- héros : le champ d'essai à gauche, la preuve qui se joue à droite ---------------- */}
@@ -47,13 +45,13 @@ export default async function Accueil() {
               Voyez en 10 secondes si une occasion est <Rotateur mots={["une vraie affaire", "une arnaque", "à négocier", "au bon prix"]} />
             </h1>
             <p className="arrivee mx-auto mt-5 max-w-xl text-lg text-ink-2 sm:text-xl lg:mx-0" style={{ "--i": 1 } as React.CSSProperties}>
-              Collez l&apos;annonce. Cote, défauts, prix à proposer : <b className="font-semibold text-ink">la réponse en 10 secondes.</b>
+              Cote, défauts, prix à proposer. <b className="font-semibold text-ink">En 10 secondes.</b>
             </p>
             <div className="arrivee mt-7" style={{ "--i": 2 } as React.CSSProperties}>
               <Essai fournisseurs={fournisseurs} depuis="hero" />
             </div>
             <ul className="arrivee mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-2 lg:justify-start" style={{ "--i": 3 } as React.CSSProperties}>
-              {["Aperçu sans compte", "1re analyse offerte", "Sans carte bancaire"].map((t) => (
+              {["Gratuit", "Sans compte", "Sans carte"].map((t) => (
                 <li key={t} className="flex items-center gap-1.5">
                   <Coche />
                   {t}
@@ -69,19 +67,6 @@ export default async function Accueil() {
       <ChiffresMarche />
       <Defile items={MODELES} label="Modèles analysés" />
 
-      {/* ---------------- démo : une vraie annonce, analysée ---------------- */}
-      <section id="demo" className="scroll-mt-24 py-20">
-        <div className="wrap">
-          <div className="apparait mx-auto mb-10 max-w-2xl text-center">
-            <h2 className="h-sec">
-              Une vraie annonce, <span className="it">analysée</span>
-            </h2>
-            <p className="mt-3 text-lg text-ink-2">À gauche ce que dit le vendeur. À droite ce qu&apos;Utopicar en pense.</p>
-          </div>
-          <Demo />
-        </div>
-      </section>
-
       {/* ---------------- ce qui est vérifié : 4 cartes visuelles, une ligne chacune ---------------- */}
       <section className="py-16">
         <div className="wrap">
@@ -89,8 +74,8 @@ export default async function Accueil() {
             Ce qu&apos;on vérifie <span className="it">à votre place</span>
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            <article className="carte apparait p-6">
-              <h3 className="font-display text-xl font-semibold">Le prix face au marché</h3>
+            <article className="carte vue p-6">
+              <h3 className="font-display text-xl font-semibold">Prix vs marché</h3>
               <div className="mt-6" aria-hidden="true">
                 <div className="relative h-2.5 rounded-full bg-glass">
                   <span className="absolute inset-y-0 left-[38%] w-[20%] rounded-full bg-ok/45" />
@@ -106,14 +91,14 @@ export default async function Accueil() {
                 Voir les cotes par modèle
               </Link>
             </article>
-            <article className="carte apparait p-6" style={{ "--i": 1 } as React.CSSProperties}>
-              <h3 className="font-display text-xl font-semibold">Les mots qui coûtent cher</h3>
+            <article className="carte vue p-6" style={{ "--i": 1 } as React.CSSProperties}>
+              <h3 className="font-display text-xl font-semibold">Les mots qui coûtent</h3>
               <p className="mt-4 leading-relaxed text-ink-2">
                 « Très bon état, <mark className="rounded bg-bad/20 px-1 text-ink">petit bruit embrayage</mark>, <mark className="rounded bg-bad/20 px-1 text-ink">pneus à prévoir</mark>. »
               </p>
             </article>
-            <article className="carte apparait p-6">
-              <h3 className="font-display text-xl font-semibold">Moteur fiable ou à fuir</h3>
+            <article className="carte vue p-6">
+              <h3 className="font-display text-xl font-semibold">Fiable ou à fuir</h3>
               <ul className="mt-4 flex flex-wrap gap-2 text-sm">
                 {(
                   [
@@ -130,8 +115,8 @@ export default async function Accueil() {
                 ))}
               </ul>
             </article>
-            <article className="carte apparait p-6" style={{ "--i": 1 } as React.CSSProperties}>
-              <h3 className="font-display text-xl font-semibold">Quoi demander avant d&apos;y aller</h3>
+            <article className="carte vue p-6" style={{ "--i": 1 } as React.CSSProperties}>
+              <h3 className="font-display text-xl font-semibold">Avant d&apos;y aller</h3>
               <ul className="mt-4 grid gap-1.5 text-sm text-ink-2">
                 <li className="flex justify-between gap-2">CT de moins de 6 mois <b className="text-ok">OK</b></li>
                 <li className="flex justify-between gap-2">Carnet d&apos;entretien <b className="text-warn">À demander</b></li>
@@ -140,9 +125,9 @@ export default async function Accueil() {
             </article>
           </div>
           <p className="apparait mt-6 text-center text-ink-2">
-            Vous faites de l&apos;achat-revente ?{" "}
+            Achat-revente ?{" "}
             <Link href="/benef" className="font-medium text-o2 underline underline-offset-4">
-              Benef chiffre votre marge nette →
+              Benef calcule votre marge →
             </Link>
           </p>
         </div>
@@ -154,7 +139,7 @@ export default async function Accueil() {
           <h2 className="apparait h-sec mx-auto mb-10 max-w-2xl text-center">
             Gratuit pour commencer, <span className="it">sans carte</span>
           </h2>
-          <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} credits />
+          <PrixCompact ids={PARTICULIERS} credits lien="/tarifs" />
         </div>
       </section>
 
@@ -173,7 +158,6 @@ export default async function Accueil() {
             <h2 className="h-sec">
               Votre prochaine voiture, <span className="it">au bon prix</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">10 secondes. Gratuit. Sans carte.</p>
             <Link href="#essai" className="btn btn-o mt-7">
               Analyser une annonce <span aria-hidden="true">→</span>
             </Link>
@@ -182,7 +166,7 @@ export default async function Accueil() {
                 Y
               </span>
               <span>
-                Derrière l&apos;outil : <b className="text-ink">Yacine</b>, qui l&apos;utilise pour ses propres achats-reventes.
+                Par <b className="text-ink">Yacine</b>, qui l&apos;utilise pour ses achats-reventes.
               </span>
             </p>
           </div>

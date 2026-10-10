@@ -3,13 +3,12 @@ import Link from "next/link";
 import { Calculateur } from "@/components/benef/Calculateur";
 import { Peurs } from "@/components/benef/Peurs";
 import { MargeAnimee } from "@/components/benef/MargeAnimee";
-import { CartesOffres } from "@/components/site/CartesOffres";
+import { PrixCompact } from "@/components/site/PrixCompact";
 import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
-import { compteCourant } from "@/lib/compte";
 import { BENEF, GUIDE } from "@/lib/offres";
 
 export const metadata: Metadata = {
@@ -20,13 +19,13 @@ export const metadata: Metadata = {
 /* Page Benef pensée pour la conversion : d'abord essayer (coller une annonce, voir la marge), ensuite seulement les formules.
    Peu de texte, une preuve animée de 2 s, le calculateur à manipuler, puis les réponses aux peurs du débutant. */
 
-const CHAPITRES = ["Les vrais chiffres, avant de rêver", "Le cadre légal, dès le départ", "Commencer sans argent : le mandat de vente", "Quelles voitures viser", "Les moteurs et les boîtes à fuir"];
+const CHAPITRES = ["Les vrais chiffres, avant de rêver", "Commencer sans argent : le mandat de vente", "Les moteurs et les boîtes à fuir"];
 
 const OUTILS: [string, string, string][] = [
-  ["M4 20h16M6 16l4-5 3 3 5-7M15 7h3v3", "Marge nette et verdict", "GO ou NO GO, prix d'offre et plafond"],
-  ["M4 5h16v11H8l-4 4V5Zm4 5h8M8 8h5", "Message et négociation", "Premier message, questions, arguments chiffrés"],
-  ["M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm7 0v5h5M9 13h6M9 17h6", "Historique et tableau de bord", "Chaque rapport gardé, vos marges du mois"],
-  ["M4 16.5V12l2-5h12l2 5v4.5M4 16.5h16M4 16.5V19h3v-2.5M17 16.5V19h3v-2.5", "Gestion du parc", "Achat, frais, vente : la marge réelle (Pro)"],
+  ["M4 20h16M6 16l4-5 3 3 5-7M15 7h3v3", "Marge et verdict", "GO ou NO GO"],
+  ["M4 5h16v11H8l-4 4V5Zm4 5h8M8 8h5", "Négociation", "Message et arguments prêts"],
+  ["M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm7 0v5h5M9 13h6M9 17h6", "Tableau de bord", "Vos marges du mois"],
+  ["M4 16.5V12l2-5h12l2 5v4.5M4 16.5h16M4 16.5V19h3v-2.5M17 16.5V19h3v-2.5", "Parc", "La marge réelle (Pro)"],
 ];
 
 const Coche = () => (
@@ -36,7 +35,7 @@ const Coche = () => (
 );
 
 export default async function Benef() {
-  const [compte, fournisseurs] = await Promise.all([compteCourant(), fournisseursActifs()]);
+  const fournisseurs = await fournisseursActifs();
   return (
     <>
       {/* ---------------- héros : chiffrer une annonce tout de suite, la marge qui se calcule à côté ---------------- */}
@@ -48,13 +47,13 @@ export default async function Benef() {
               Achetez, revendez, <span className="it">gardez la marge</span>
             </h1>
             <p className="arrivee mx-auto mt-5 max-w-xl text-lg text-ink-2 sm:text-xl lg:mx-0" style={{ "--i": 2 } as React.CSSProperties}>
-              Collez une annonce : <b className="font-semibold text-ink">marge nette, prix d&apos;offre et plafond</b>, avant de vous déplacer.
+              Marge nette, prix d&apos;offre, plafond. <b className="font-semibold text-ink">Avant d&apos;appeler.</b>
             </p>
             <div className="arrivee mt-7" style={{ "--i": 3 } as React.CSSProperties}>
               <Essai fournisseurs={fournisseurs} depuis="benef" familleInitiale="benef" />
             </div>
             <ul className="arrivee mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-2 lg:justify-start" style={{ "--i": 4 } as React.CSSProperties}>
-              {["Aperçu sans compte", "Sans carte bancaire", "Sans engagement"].map((t) => (
+              {["Gratuit", "Sans compte", "Sans engagement"].map((t) => (
                 <li key={t} className="flex items-center gap-1.5">
                   <Coche />
                   {t}
@@ -75,7 +74,7 @@ export default async function Benef() {
             <h2 className="h-sec">
               Combien vous reste&#8209;t&#8209;il <span className="it">vraiment ?</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Bougez les curseurs. Un embrayage oublié, et la marge disparaît.</p>
+            <p className="mt-3 text-lg text-ink-2">Bougez les curseurs.</p>
           </div>
           <Calculateur />
         </div>
@@ -99,7 +98,7 @@ export default async function Benef() {
           </h2>
           <ul className="grid gap-3 sm:grid-cols-2">
             {OUTILS.map(([icone, t, d], i) => (
-              <li key={t} className="carte apparait flex items-center gap-4 p-5" style={{ "--i": i % 2 } as React.CSSProperties}>
+              <li key={t} className="carte vue flex items-center gap-4 p-5" style={{ "--i": i % 2 } as React.CSSProperties}>
                 <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-o/12 text-o2" aria-hidden="true">
                   <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d={icone} />
@@ -122,9 +121,9 @@ export default async function Benef() {
             <h2 className="h-sec">
               Du premier achat <span className="it">au stock géré</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Sans engagement. Le guide « Votre première revente » est inclus.</p>
+            <p className="mt-3 text-lg text-ink-2">Sans engagement. Guide inclus.</p>
           </div>
-          <CartesOffres ids={BENEF} actuelle={compte?.offre.id} />
+          <PrixCompact ids={BENEF} lien="/tarifs#benef" />
         </div>
       </section>
 
@@ -148,7 +147,7 @@ export default async function Benef() {
                 {i < 2 ? <span className="text-xs font-medium text-ok">Offert</span> : <span className="text-xs text-ink-3">Inclus</span>}
               </li>
             ))}
-            <li className="px-4 py-3 text-sm text-ink-3">… et 11 autres, jusqu&apos;à votre plan sur 30 jours.</li>
+            <li className="px-4 py-3 text-sm text-ink-3">+ 13 chapitres</li>
           </ol>
         </div>
       </section>
@@ -178,7 +177,6 @@ export default async function Benef() {
             <h2 className="h-sec">
               Votre prochaine marge, <span className="it">chiffrée avant d&apos;appeler</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Aperçu immédiat. Sans carte. Sans engagement.</p>
             <Link href="#essai" className="btn btn-o mt-7">
               Chiffrer une annonce <span aria-hidden="true">→</span>
             </Link>
