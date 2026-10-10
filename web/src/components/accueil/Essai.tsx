@@ -15,6 +15,7 @@ import { Patience } from "../analyse/Patience";
 import { InscriptionInline } from "../compte/InscriptionInline";
 import type { Fournisseur } from "../compte/ConnexionSociale";
 import { CarteApercu, type Contenu } from "./CarteApercu";
+import { origineDepuisExtension } from "@/lib/analyse/import";
 import { carteDepuisApercu, carteDepuisExemple, type CarteAnalyse } from "./PreuveAnimee";
 import { EVT_CARTE } from "./CarteHero";
 
@@ -154,7 +155,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     requestAnimationFrame(() => titreCarte.current?.focus({ preventScroll: true }));
   }
 
-  async function apercu(t: string, og: Origine | null, source: "texte" | "lien") {
+  async function apercu(t: string, og: Origine | null, source: "texte" | "lien", photo: string | null = null) {
     setTexte(t);
     setOrigine(og);
     ouvrirCarte(null);
@@ -174,7 +175,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       }
       setContenu({ type: "apercu", a });
       setFini(true);
-      montrer(carteDepuisApercu(a, og?.liens.find((u) => u.startsWith("https://")) ?? null));
+      montrer(carteDepuisApercu(a, photo ?? og?.liens.find((u) => u.startsWith("http")) ?? null));
       track("apercu_vu", { source, cote: !!a.cote });
     } catch {
       setEtat("vide");
@@ -203,7 +204,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
         return;
       }
       const t = texteDepuisImport(j);
-      await apercu(t, { lien: j.url, liens: Array.isArray(j.liens) ? j.liens : [], vendeur: j.vendeur ?? null }, "lien");
+      await apercu(t, { lien: j.url, liens: Array.isArray(j.liens) ? j.liens : [], vendeur: j.vendeur ?? null }, "lien", Array.isArray(j.photos) && typeof j.photos[0] === "string" ? j.photos[0] : null);
     } catch {
       setEtat("vide");
       setErreur("Connexion impossible. Vérifiez votre réseau et réessayez.");
@@ -221,7 +222,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     if (lienImportable(v)) return void importer(v);
     if (/^https?:\/\//i.test(v)) return setErreur(ERREURS_IMPORT.lien);
     if (v.length < 30) return setErreur("Collez le texte complet de l'annonce : titre, prix, kilométrage et description.");
-    void apercu(v, null, "texte");
+    void apercu(v, null, "texte", origineDepuisExtension(v)?.liens[0] ?? null);
   }
 
   function exemple(cle: string) {
