@@ -15,7 +15,9 @@ import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
 import { phraseAccueil } from "@/lib/orientation";
 import { CartePremiersPas } from "@/components/espace/PremiersPasCompte";
-import { Affaires, AlertesParc, Chiffre, EnTeteTableau as EnTeteComplet, EtapesParc, eur, Outil, TitreSection, type EtapeParc } from "@/components/espace/Tableau";
+import { titreVehicule } from "@/lib/titre";
+import { estPiege } from "@/lib/vehicules/pieges";
+import { Affaires, AgeStock, Chiffre, EnTeteTableau as EnTeteComplet, EtapesParc, eur, Journee, Marche, Outil, TitreSection, type Action, type EtapeParc, type Opportunite } from "@/components/espace/Tableau";
 
 /** Téléphone : deux boutons qui ouvrent une fenêtre, au lieu des grands blocs « collez le lien » et « rechercher ». */
 function ActionsMobile({ recherche }: { recherche: boolean }) {
@@ -124,17 +126,21 @@ async function TableauParticulier({ c }: { c: Compte }) {
   );
 }
 
-/** Tableau de bord complet (Benef Pro et illimité) : celui de l'outil Garage. */
+/** Tableau de bord complet (Benef Pro et illimité). Il répond d'abord à « que faire aujourd'hui ? »,
+    puis montre l'argent (marges, capital), le marché frais, le parc par étapes et par âge, et les outils. */
 async function TableauComplet({ c }: { c: Compte }) {
   const sb = await supabaseServeur();
   const debut = debutPeriode(c.offre);
   const semaine = new Date(ilYa(7)).toISOString();
-  const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, recherches] = await Promise.all([
+  const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, recherches, { data: frais }] = await Promise.all([
     sb.from("rapports").select("id, marge, verdict").eq("mode", "benef").gte("created_at", debut).limit(2000),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").gte("created_at", semaine).like("verdict", "GO%").order("marge", { ascending: false, nullsFirst: false }).limit(6),
     sb.from("parc").select("*").limit(1000),
     c.offre.recherche ? dernieresRecherches() : Promise.resolve(null),
+    c.offre.recherche
+      ? sb.from("annonces_trouvees").select("cle, titre, prix, annee, km, lieu, url, photo, cote, recherche, premiere_le").gte("premiere_le", new Date(ilYa(7)).toISOString()).order("premiere_le", { ascending: false }).limit(600)
+      : Promise.resolve({ data: [] }),
   ]);
   const parc = (parcBrut ?? []) as Vehicule[];
   const st = statsParc(parc);
@@ -150,20 +156,51 @@ async function TableauComplet({ c }: { c: Compte }) {
   const go = (mois ?? []).filter((r) => r.verdict?.startsWith("GO"));
   const n = (mois ?? []).length;
 
-  const alertes: { v: Vehicule; lvl: "bad" | "warn"; txt: string }[] = [];
-  vivants.forEach((v) => {
+  // marge réalisée le mois dernier, pour la comparaison (heure de Paris approchée par le serveur)
+  const auj = new Date();
+  const debutMois = new Date(auj.getFullYear(), auj.getMonth(), 1);
+  const debutPrec = new Date(auj.getFullYear(), auj.getMonth() - 1, 1);
+  const margePrec = vivants
+    .filter((v) => v.statut === "vendu" && v.date_vente && new Date(v.date_vente) >= debutPrec && new Date(v.date_vente) < debutMois)
+    .reduce((s, v) => s + (margeReelle(v) ?? 0), 0);
+  const nomPrec = debutPrec.toLocaleDateString("fr-FR", { month: "long" });
+
+  // le marché des 7 derniers jours : nouvelles annonces de ses recherches entre 10 et 45 % sous la cote (au-delà : souvent un piège)
+  type Trouvee = { cle: string; titre: string; prix: number | null; annee: number | null; km: number | null; lieu: string | null; url: string | null; photo: string | null; cote: { P: number | null; pct: number | null } | null; recherche: string | null };
+  const opportunites: Opportunite[] = ((frais ?? []) as Trouvee[])
+    .filter((a) => a.cote?.pct != null && a.cote.pct >= 0.1 && a.cote.pct <= 0.45 && a.prix && !estPiege(a.titre))
+    .sort((a, b) => (b.cote?.pct ?? 0) - (a.cote?.pct ?? 0))
+    .slice(0, 8)
+    .map((a) => ({ cle: a.cle, titre: a.titre, prix: a.prix, cote: a.cote?.P ?? null, pct: a.cote!.pct!, annee: a.annee, km: a.km, lieu: a.lieu, url: a.url, photo: a.photo, recherche: a.recherche }));
+
+  // Votre journée : les décisions du jour, la plus urgente d'abord (rouge seulement pour ce qui doit être corrigé maintenant)
+  const actions: (Action & { rang: number })[] = [];
+  for (const v of vivants) {
     const j = joursStock(v);
+    const photo = v.photos?.[0] ?? null;
+    const titre = `${v.immat ? `${v.immat} · ` : ""}${titreVehicule(v.titre)}`;
+    const fiche = { href: `/app/parc/${v.id}`, l: "Ouvrir la fiche" };
+    if (EN_STOCK.includes(v.statut) && j != null && j > 60) actions.push({ rang: 0, ton: "bad", etiquette: `${j} jours en stock`, titre, raison: "Le capital dort : baissez le prix ou changez l'annonce aujourd'hui.", lien: { ...fiche, l: "Ajuster le prix" }, photo });
+    else if (EN_STOCK.includes(v.statut) && j != null && j > 45) actions.push({ rang: 1, ton: "warn", etiquette: `${j} jours en stock`, titre, raison: "Au-delà de 45 jours, la marge fond : refaites les photos ou ajustez le prix.", lien: { ...fiche, l: "Revoir l'annonce" }, photo });
+    if (EN_STOCK.includes(v.statut) && v.prix_achat == null) actions.push({ rang: 1, ton: "warn", etiquette: "Prix d'achat manquant", titre, raison: "Sans lui, la marge et le capital sont faux.", lien: { ...fiche, l: "Compléter" }, photo });
     const m = margeReelle(v);
-    if (EN_STOCK.includes(v.statut) && j != null && j > 60) alertes.push({ v, lvl: "bad", txt: `En stock depuis ${j} jours : baissez le prix ou changez d'annonce, le capital dort.` });
-    else if (EN_STOCK.includes(v.statut) && j != null && j > 45) alertes.push({ v, lvl: "warn", txt: `En stock depuis ${j} jours : au-delà de 45 jours, la marge fond.` });
-    if (EN_STOCK.includes(v.statut) && v.prix_achat == null) alertes.push({ v, lvl: "warn", txt: "Prix d'achat manquant : la marge et le capital sont faux." });
-    if (v.statut === "vendu" && m != null && m < 0) alertes.push({ v, lvl: "bad", txt: `Vendue à perte : ${Math.round(m).toLocaleString("fr-FR")} €.` });
+    if (v.statut === "vendu" && m != null && m < 0) actions.push({ rang: 2, ton: "warn", etiquette: "Vendue à perte", titre, raison: `${eur(m)} : notez ce qui a coûté pour la prochaine fois.`, lien: fiche, photo });
     if (v.statut === "repere") {
       const age = joursDepuis(v.created_at);
-      if (age > 7) alertes.push({ v, lvl: "warn", txt: `Repérée il y a ${age} jours : achetez ou abandonnez pour garder un parc à jour.` });
+      if (age > 7) actions.push({ rang: 3, ton: "warn", etiquette: `Repérée il y a ${age} jours`, titre, raison: "Achetez-la ou abandonnez-la pour garder un parc à jour.", lien: { ...fiche, l: "Décider" }, photo });
     }
-  });
-  alertes.sort((a, b) => (a.lvl === "bad" ? 0 : 1) - (b.lvl === "bad" ? 0 : 1));
+  }
+  const dansParc = new Set(parc.map((v) => v.rapport_id).filter(Boolean));
+  const goLibres = (semaineGo ?? []).filter((r) => !dansParc.has(r.id));
+  if (goLibres[0]) {
+    const r = goLibres[0];
+    actions.push({ rang: 4, ton: "o", etiquette: `Affaire GO · ${eur(r.marge, true)}`, titre: titreVehicule(r.titre), raison: "Analysée cette semaine, pas encore dans le parc : contactez le vendeur.", lien: { href: `/app/rapports/${r.id}`, l: "Voir le rapport" }, photo: r.photos?.[0] ?? null });
+  }
+  if (opportunites[0]) {
+    const o = opportunites[0];
+    actions.push({ rang: 5, ton: "o", etiquette: `−${Math.round(o.pct * 100)} % sous la cote`, titre: o.titre, raison: `Nouvelle annonce${o.recherche ? ` de « ${o.recherche} »` : ""} : à analyser avant les autres.`, lien: { href: "#tb-marche", l: "Voir le marché" }, photo: o.photo });
+  }
+  actions.sort((a, b) => a.rang - b.rang);
 
   const ETAPES = [
     ["repere", "Repérées", "bg-ink-3"],
@@ -184,11 +221,9 @@ async function TableauComplet({ c }: { c: Compte }) {
     ...prevues.map(({ v, m }) => ({ id: v.id, nom: v.titre, marge: m!, prevue: true })),
   ].slice(0, 12);
 
-  // « En bref » : les trois choses à savoir en arrivant, en mots simples
-  const critiques = alertes.filter((a) => a.lvl === "bad").length;
   const resume = [
     semaineGo?.length ? `${semaineGo.length} affaire${semaineGo.length > 1 ? "s" : ""} GO cette semaine` : "Aucune affaire GO cette semaine",
-    alertes.length ? `${alertes.length} point${alertes.length > 1 ? "s" : ""} à surveiller${critiques ? `, dont ${critiques} critique${critiques > 1 ? "s" : ""}` : ""}` : "Parc à jour",
+    opportunites.length ? `${opportunites.length} annonce${opportunites.length > 1 ? "s" : ""} sous la cote cette semaine` : `${st.enStock} voiture${st.enStock > 1 ? "s" : ""} en stock`,
     c.illimite ? `${c.utilisees} analyse${c.utilisees > 1 ? "s" : ""} ce mois` : `${c.restantes} analyse${c.restantes > 1 ? "s" : ""} restante${c.restantes > 1 ? "s" : ""}`,
   ];
 
@@ -208,50 +243,52 @@ async function TableauComplet({ c }: { c: Compte }) {
             </div>
           </>
         }
+        journee={<Journee actions={actions.slice(0, 4)} />}
       />
       <CartePremiersPas c={c} />
 
       <section aria-labelledby="tb-chiffres">
         <h2 id="tb-chiffres" className="sr-only">Chiffres clés</h2>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
           <Chiffre i={0} fort icone="rentabilite" l="Marge réalisée ce mois" v={eur(st.margeMois)} ton={st.margeMois < 0 ? "bad" : undefined}
+            delta={margePrec || st.margeMois ? { v: st.margeMois - margePrec, l: `par rapport à ${nomPrec}` } : null}
             s={<>Au total : <b className="num text-ink-2">{eur(st.margeTotale)}</b> sur {st.vendus} vente{st.vendus > 1 ? "s" : ""}</>} />
           <Chiffre i={1} icone="parc" l="Marge en attente" v={eur(prevues.length ? attente : null, true)} ton={!prevues.length ? undefined : attente < 0 ? "bad" : "ok"}
-            s={prevues.length ? `${prevues.length} voiture${prevues.length > 1 ? "s" : ""} du stock` : "Indiquez le prix conseillé dans le parc"} />
+            s={prevues.length ? `Sur ${prevues.length} voiture${prevues.length > 1 ? "s" : ""} du stock, au prix conseillé` : "Indiquez le prix conseillé dans le parc"} />
           <Chiffre i={2} icone="credits" l="Capital immobilisé" v={eur(st.capital)} s={`${st.enStock} voiture${st.enStock > 1 ? "s" : ""} en stock, achats et frais`} />
           <Chiffre i={3} icone="historique" l="Rotation moyenne" v={st.rotation != null ? `${st.rotation} j` : "—"} ton={st.rotation != null && st.rotation > 45 ? "warn" : undefined}
-            s={st.margeMoyenne != null ? <>De l&apos;achat à la vente · marge moyenne <b className="num text-ink-2">{eur(st.margeMoyenne)}</b></> : "De l'achat à la vente"} />
+            s={st.margeMoyenne != null ? <>De l&apos;achat à la vente · marge moyenne <b className="num text-ink-2">{eur(st.margeMoyenne)}</b></> : "De l'achat à la vente, sur les voitures vendues"} />
         </div>
       </section>
 
-      <section aria-labelledby="tb-parc">
+      {opportunites.length > 0 && (
+        <section aria-labelledby="tb-marche" id="tb-marche" className="scroll-mt-24">
+          <TitreSection id="tb-marche-t" aside="trouvées par vos recherches ces 7 derniers jours" lien={{ href: "/app/recherche?vue=annonces", l: "Toutes les annonces" }}>
+            Le marché, en ce moment
+          </TitreSection>
+          <Marche annonces={opportunites} />
+        </section>
+      )}
+
+      <section aria-labelledby="tb-parc" className="carte grid gap-6 p-5 sm:p-6">
         <TitreSection id="tb-parc" aside={`${total} voiture${total > 1 ? "s" : ""} suivie${total > 1 ? "s" : ""}`} lien={{ href: "/app/parc", l: "Gérer le parc" }}>
           Votre parc
         </TitreSection>
         <EtapesParc etapes={etapes} lien="/app/parc" />
+        <div className="grid gap-3 border-t border-line pt-5">
+          <h3 className="font-display font-semibold">Âge du stock</h3>
+          <AgeStock voitures={stock.map((v) => ({ id: v.id, titre: v.titre, jours: joursStock(v), photo: v.photos?.[0] ?? null }))} />
+        </div>
       </section>
 
-      <div className="grid gap-10 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-        <section aria-labelledby="tb-best">
-          <TitreSection id="tb-best" lien={{ href: "/app/rapports", l: "Tous les rapports" }}>Les meilleures affaires de la semaine</TitreSection>
-          {semaineGo?.length ? (
-            <Affaires affaires={semaineGo.slice(0, 3)} />
-          ) : (
-            <p className="carte p-6 text-ink-2">Rien au-dessus de votre seuil cette semaine. Cherchez sous la cote dans la recherche, ou analysez une annonce.</p>
-          )}
-        </section>
-        <section aria-labelledby="tb-alertes">
-          <TitreSection id="tb-alertes" aside={alertes.length ? `${alertes.length} au total` : undefined}>À surveiller</TitreSection>
-          {alertes.length ? (
-            <AlertesParc alertes={alertes.slice(0, 5).map((a) => ({ href: `/app/parc/${a.v.id}`, titre: `${a.v.immat ? `${a.v.immat} · ` : ""}${a.v.titre}`, txt: a.txt, lvl: a.lvl }))} />
-          ) : (
-            <p className="carte flex items-center gap-3 p-5 text-sm text-ink-2">
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ok/15 text-ok" aria-hidden="true">✓</span>
-              Rien à signaler : durées de stock, prix d&apos;achat et marges sont dans les clous.
-            </p>
-          )}
-        </section>
-      </div>
+      <section aria-labelledby="tb-best">
+        <TitreSection id="tb-best" lien={{ href: "/app/rapports", l: "Tous les rapports" }}>Les meilleures affaires de la semaine</TitreSection>
+        {semaineGo?.length ? (
+          <Affaires affaires={semaineGo.slice(0, 3)} />
+        ) : (
+          <p className="carte p-6 text-ink-2">Rien au-dessus de votre seuil cette semaine. Cherchez sous la cote dans la recherche, ou analysez une annonce.</p>
+        )}
+      </section>
 
       <div className="grid gap-10 lg:grid-cols-2">
         <section aria-labelledby="tb-marges" className="carte grid content-start gap-4 p-5 sm:p-6">
