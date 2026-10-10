@@ -46,27 +46,27 @@ et **B1** (le marchand se reconnaît dans le volume, sans qu'on lui fasse la le�
 sur la même image : la vraie annonce de la 208 à 7 190 €, et « Celle-là… tu l'achètes ? ».
 Image 0 des deux ouvertures : la carte de l'annonce déjà pleine, le texte d'ouverture lisible, son à la frame 0.
 
-## 4. Script minuté (≈ 145 mots dits, 60 s)
+## 4. Script minuté (≈ 140 mots dits, 60 s ; minutage final calé sur la prise)
 
 | t (s) | Voix (Simon) | Écran (≤ 6 mots) | Image | Son |
 |---|---|---|---|---|
-| 0–3 (A) | Ta première voiture à revendre… tu peux la payer deux fois. | « Payée deux fois ? » | Vraie annonce 208 (photo, 7 190 €, 2016 · 116 789 km) pleine image dès la frame 0, la caméra glisse | attaque groove + voix à 0 s |
-| 0–3 (B) | T'es marchand ? Cinquante annonces à trier ce matin. | « 50 annonces ce matin. » | Mur de 50 vraies cartes d'annonces qui défilent ; la 208 sort du mur et vient au centre | idem, petits clics de cartes |
-| 3–5 | Celle-là… tu l'achètes ? | « Tu l'achètes ? » | Surligneur sur 7 190 € | un temps de silence musical |
-| 5–10 | Je colle l'annonce. **Ah. Non.** Mille six cent cinquante euros de travaux. L'annonce a oublié de le dire. | « 01 · Avant d'acheter » puis « N'achète pas à ce prix. » | Le lien glisse dans le vrai champ ; le bouton Analyser devient chargement puis verdict « Déconseillée » ; la carte vire au rouge ; ticket : 7 190 € + 1 650 € = 8 840 € (cote 5 950 €) | **la musique s'arrête net sur « Ah. »**, impact grave, reprise basse seule sur « Mille… » |
-| 10–14 | C'est UTOPICAR. Tu colles l'annonce, tu sais ce qu'il te restera, frais déduits. | « Ta marge, *frais déduits.* » | Logo ; les trois étapes du site s'allument : Colle l'annonce → Frais déduits → Ta marge nette | groove complet |
-| 14–21 | Et cette Mercedes ? Ton prix max : seize mille cinq cents. Attends… elle est en vente trois fois ? *(petit rire)* Ah ouais. | « − 2 700 € à ce prix » → « Ton prix max : 16 500 € » → « 3 annonces. 3 prix. » | Vraie analyse : Mercedes Classe A 180d AMG Line, 2018, 96 000 km, 19 990 € (photo sans plaque ni logo). « Ça rapporte ? − 2 700 € » en rouge ; le compteur descend 19 990 → 16 500 (prix max) ; puis la vraie alerte de l'outil : la même voiture dans 2 autres annonces, trois étiquettes 17 990 · 19 990 · 21 990 € | pop sur le prix max, petite montée, « tic » par étiquette |
-| 20–24,5 | Et avec quinze voitures en stock ? *(soupir)* Le carnet, la calculette, quatorze onglets… | « 02 · Après l'achat » | Gag : un carnet griffonné, une calculette, des onglets de navigateur qui s'empilent (génériques, aucun logo) … puis tout se range d'un coup dans une seule page | empilement qui accélère, puis « snap » net |
-| 24,5–36 | Ton tableau de bord te dit quoi faire ce matin. La 308 dort depuis soixante-trois jours ? Baisse le prix. Une A3 sort sous la cote ? Tu as l'alerte. Et ta vraie marge, voiture par voiture. | « Votre journée » · « 63 jours en stock » · « − 18 % sous la cote » · « Ta marge, voiture par voiture. » | Vrai tableau de bord (données démo) : la carte « Votre journée » et sa ligne « 63 jours en stock · Ajuster le prix » ; la carte Marché « −18 % sous la cote » ; le graphique des marges dont les barres poussent, compteurs de KPI | un accent par ligne, sur les temps |
-| 36–44 | Tu débutes ? Starter. Une seule voiture bien achetée te paie trois ans d'abonnement. Tu gères un parc ? Pro. | « Starter 14,99 € » · « + 670 € = 44 mois » · « Pro 79 € » | Les deux vraies cartes de formules ; sous Starter, la marge d'une voiture bien achetée remplit une jauge de 44 mois d'abonnement | montée |
-| 44–49 | Essaie trois jours, sans carte bancaire. Lien en bio. | « 3 jours offerts » · « Lien en bio → » | Bouton orange cliqué par le curseur ; « Sans carte bancaire » coché | clic, accent |
-| 49–55 | Ta prochaine marge, chiffrée avant d'appeler. UTOPICAR. | « Ta prochaine marge, *chiffrée avant d'appeler.* » | Titre en deux tons, le logo se pose | accord |
+| 0–3 (A) | Ta première voiture à revendre ? Tu peux la payer… deux fois. | « Payée deux fois ? » | Vraie annonce 208 (photo, 7 190 €, 2016 · 116 789 km) pleine image dès la frame 0, la caméra glisse | attaque groove + voix à 0 s |
+| 0–3 (B) | T'es marchand ? Cinquante annonces ce matin… *pfff*. | « 50 annonces ce matin. » | Mur de 50 vraies cartes d'annonces qui défilent ; la 208 sort du mur et vient au centre | idem, petits clics de cartes |
+| 3–5 | Celle-là… *hmm*… tu l'achètes ? | « Tu l'achètes ? » | Surligneur sur 7 190 € | un temps de silence musical |
+| 5–10 | Je colle l'annonce. **Ah. Non.** *(rire)* Mille six cent cinquante euros de travaux… que le vendeur a oubliés. Bizarre. | « 01 · Avant d'acheter » puis « N'achète pas à ce prix. » | Le lien glisse dans le vrai champ ; le bouton Analyser devient chargement puis verdict « Déconseillée » ; la carte vire au rouge ; ticket : 7 190 € + 1 650 € = 8 840 € (cote 5 950 €) | **la musique s'arrête net sur « Ah. »**, impact grave, reprise basse seule sur « Mille… » |
+| 10–14 | UTOPICAR : tu colles l'annonce… et *bam*, ce qu'il te reste, frais déduits. | « Ta marge, *frais déduits.* » | Logo ; les trois étapes du site s'allument : Colle l'annonce → Frais déduits → Ta marge nette | groove complet |
+| 14–21 | Cette Mercedes ? Prix max : seize mille cinq. Attends… elle est en vente trois fois ? *(rire)* Ah ouais ! | « − 2 700 € à ce prix » → « Ton prix max : 16 500 € » → « 3 annonces. 3 prix. » | Vraie analyse : Mercedes Classe A 180d AMG Line, 2018, 96 000 km, 19 990 € (photo sans plaque ni logo). « Ça rapporte ? − 2 700 € » en rouge ; le compteur descend 19 990 → 16 500 (prix max) ; puis la vraie alerte de l'outil : la même voiture dans 2 autres annonces, trois étiquettes 17 990 · 19 990 · 21 990 € | pop sur le prix max, petite montée, « tic » par étiquette |
+| 20–24,5 | Quinze voitures en stock ? *(soupir)* *Pfff*… carnet, calculette, quatorze onglets… | « 02 · Après l'achat » | Gag : un carnet griffonné, une calculette, des onglets de navigateur qui s'empilent (génériques, aucun logo) … puis tout se range d'un coup dans une seule page | empilement qui accélère, puis « snap » net |
+| 24,5–36 | *Hop !* Tu ouvres ton tableau de bord, tu sais quoi faire ce matin. La 308 dort depuis soixante-trois jours ? Baisse le prix. Une A3 sous la cote ? *Ding !* T'as l'alerte. Et ta vraie marge, voiture par voiture. | « Votre journée » · « 63 jours en stock » · « − 18 % sous la cote » · « Ta marge, voiture par voiture. » | Vrai tableau de bord (données démo) : la carte « Votre journée » et sa ligne « 63 jours en stock · Ajuster le prix » ; la carte Marché « −18 % sous la cote » ; le graphique des marges dont les barres poussent, compteurs de KPI | un accent par ligne, sur les temps |
+| 36–44 | Tu débutes ? Starter. Avec une seule voiture bien achetée, tu paies trois ans. Tu gères un parc ? Pro. | « Starter 14,99 € » · « + 670 € = 44 mois » · « Pro 79 € » | Les deux vraies cartes de formules ; sous Starter, la marge d'une voiture bien achetée remplit une jauge de 44 mois d'abonnement | montée |
+| 44–49 | Essaie trois jours, sans carte bancaire. Lien en bio ! | « 3 jours offerts » · « Lien en bio → » | Bouton orange cliqué par le curseur ; « Sans carte bancaire » coché | clic, accent |
+| 49–55 | Tu chiffres ta prochaine marge avant d'appeler. UTOPICAR. | « Ta prochaine marge, *avant d'appeler.* » | Titre en deux tons, le logo se pose | accord |
 | 55–60 | — | Logo + « 3 jours offerts · Lien en bio » | Carton final ≤ 5 s, mention des données | fin nette |
 
 16:9 : « Lien en bio » devient « utopicar.fr » (voix : « sur utopicar point fr »).
 
 ## 5. Humour et satisfaction
-- **Humour** : « Ah. Non. » avec la musique qui s'arrête net ; « Attends… elle est en vente trois fois ? » ; « L'annonce a oublié de le dire. » ; le soupir sur la pile
+- **Humour** : « Ah. Non. » avec la musique qui s'arrête net ; « Attends… elle est en vente trois fois ? » ; « … que le vendeur a oubliés. Bizarre. » ; le soupir sur la pile
   d'onglets ; « La 308 dort depuis soixante-trois jours » (la phrase vient de l'app : « Le capital dort »).
 - **Satisfaction** : le bouton qui devient chargement puis verdict, sans coupe ; le compteur 19 990 → 16 500 ; les trois étiquettes de la même voiture qui tombent ; la pile
   d'onglets qui se range d'un coup en une page ; les barres de marge qui poussent ; la jauge « 44 mois » qui se remplit.
@@ -79,29 +79,32 @@ Image 0 des deux ouvertures : la carte de l'annonce déjà pleine, le texte d'ou
 | 63 jours en stock, − 18 % sous la cote, marges par voiture | **données de démonstration** (mention à l'écran), règles réelles de l'app (> 60 j : « Le capital dort », marché 10–45 % sous la cote) |
 | Starter 14,99 €/mois, Pro 79 €/mois | `web/src/lib/offres.ts` |
 | + 670 € = 44 mois de Starter | calculateur du site (voiture achetée 5 000 €, 630 € de frais, revendue 6 300 €), affiché comme exemple calculé |
-| 3 jours offerts sans carte | **à confirmer** (brief) ; sinon « Ta première analyse est offerte » |
+| 3 jours offerts sans carte | confirmé par l'utilisateur le 10 oct. 2026 (offre active à la diffusion) |
 
 ## 7. Voix
-Personnage : Simon a revendu une cinquantaine de voitures. Il montre l'app à un pote, sur son téléphone, avec le
-sourire. Pince-sans-rire, jamais donneur de leçon : il réagit à ce que l'écran montre.
+Personnage : Simon a revendu une cinquantaine de voitures. Il montre l'app à un pote, sur son téléphone. Retour de
+l'utilisateur (10 oct.) : « plus dynamique, plus jeune, des temps de pause, des onomatopées ». Essai sur les 25
+premières secondes (`audio/vo-master60/essai-simon-dyn*.mp3`) validé dans sa version resserrée (silences
+ramenés à 0,3–0,6 s, × 1,08). Texte raccourci de 20 % pour tenir 60 s, puis passé au Stop Slop (41/50) : un humain
+fait l'action (« le vendeur a oubliés », « tu ouvres ton tableau de bord », « tu chiffres ta prochaine marge »).
 Texte envoyé à eleven_v3 (balises jouées, pas lues ; « 308 » écrit « trois cent huit ») :
-> Celle-là… [curious] tu l'achètes ? [short pause] Je colle l'annonce. [pause] [surprised] Ah. [short pause] [amused]
-> Non. Mille six cent cinquante euros de travaux. [chuckles] L'annonce a oublié de le dire. [pause] C'est UTOPICAR. Tu
-> colles l'annonce, tu sais ce qu'il te restera, frais déduits. [pause] Et cette Mercedes ? [short pause] Ton prix max : seize mille cinq
-> cents. [pause] [surprised] Attends… elle est en vente trois fois ? [laughs softly] Ah ouais. [pause] Et avec quinze voitures en stock ?
-> [sighs] Le carnet, la calculette, quatorze onglets… [pause] Ton tableau de bord te dit quoi faire ce matin. La trois
-> cent huit dort depuis soixante-trois jours ? Baisse le prix. Une A3 sort sous la cote ? Tu as l'alerte. Et ta vraie
-> marge, voiture par voiture. [pause] Tu débutes ? Starter. Une seule voiture bien achetée te paie trois ans
-> d'abonnement. Tu gères un parc ? Pro. [pause] [excited] Essaie trois jours, sans carte bancaire. Lien en bio. [pause]
-> Ta prochaine marge, chiffrée avant d'appeler. UTOPICAR.
+> Celle-là… [curious] hmm… tu l'achètes ? [short pause] Je colle l'annonce. [pause] [surprised] Ah. [short pause] Non.
+> [laughs] Mille six cent cinquante euros de travaux… que le vendeur a oubliés. [sarcastic] Bizarre. [pause] [excited]
+> UTOPICAR : tu colles l'annonce… et bam, ce qu'il te reste, frais déduits. [pause] Cette Mercedes ? [short pause] Prix
+> max : seize mille cinq. [pause] Attends… [surprised] elle est en vente trois fois ? [laughs] Ah ouais ! [pause] Quinze
+> voitures en stock ? [sighs] Pfff… carnet, calculette, quatorze onglets… [pause] [excited] Hop ! Tu ouvres ton tableau
+> de bord, tu sais quoi faire ce matin. La trois cent huit dort depuis soixante-trois jours ? Baisse le prix. Une A3 sous
+> la cote ? Ding ! T'as l'alerte. Et ta vraie marge, voiture par voiture. [pause] Tu débutes ? Starter. Avec une seule
+> voiture bien achetée, tu paies trois ans. [short pause] Tu gères un parc ? Pro. [pause] [excited] Essaie trois jours,
+> sans carte bancaire. Lien en bio ! [pause] Tu chiffres ta prochaine marge avant d'appeler. [short pause] UTOPICAR.
 
-Ouvertures, générées à part : « [amused] Ta première voiture à revendre… tu peux la payer deux fois. » et
-« [curious] T'es marchand ? Cinquante annonces à trier ce matin. »
+Ouvertures : « [excited] Ta première voiture à revendre ? [short pause] Tu peux la payer… deux fois. » et
+« [excited] T'es marchand ? [short pause] Cinquante annonces ce matin… [sighs] pfff. »
 
-Coût estimé (ElevenLabs, `estimate_only`) : corps ≈ 1 956 crédits pour 2 prises ; ouvertures ≈ 300 crédits pour 2 prises
-chacune. **Total ≈ 2 250 crédits.** Choix de la prise sur mesures (débit, prononciation de UTOPICAR, pauses), puis écoute.
+Crédits dépensés (coût réel facturé, v3 ≈ 1,15 crédit par caractère) : premières ouvertures 260, casting 710, essai 703,
+voix finale ≈ 2 450 (corps 2 × 1 058, ouvertures 2 × 85 + 2 × 82). Total ≈ 4 120.
 
-## 8. Prises des ouvertures (10 oct. 2026)
+## 8. Premières prises des ouvertures (10 oct. 2026, remplacées)
 Générées (eleven_v3, Simon, 2 prises chacune, ≈ 260 crédits), transcrites par faster-whisper *medium* : texte exact,
 aucune balise prononcée. Choix sur mesure : **A1** (3,18 s) et **B2** (2,80 s), les deux seules sous 3,2 s.
 Fichiers : `audio/vo-master60/hookA-1.mp3`, `hookA-2.mp3`, `hookB-1.mp3`, `hookB-2.mp3`.
