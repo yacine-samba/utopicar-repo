@@ -3,10 +3,10 @@ import { EXEMPLES } from "@/lib/demo";
 
 /* La marge en une image : le prix de revente est une seule barre, qui se découpe sous les yeux en
    achat (orange), frais (jaune) et ce qui reste, la marge (vert). Puis le verdict GO, « à acheter ».
-   Mêmes chiffres que le premier scénario du calculateur (Clio IV bien achetée). CSS seul (classes « scene » de globals.css). */
+   Une autre voiture que l'accueil (Clio) : une Yaris III, moteur fiable, achetée sous le marché et revendue à sa cote (8 350 €). CSS seul (classes « scene » de globals.css). */
 
 const d = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
-const REVENTE = 6300, ACHAT = 5000, FRAIS = 630;
+const REVENTE = 8300, ACHAT = 6900, FRAIS = 550;
 const MARGE = REVENTE - ACHAT - FRAIS;
 const pc = (eur: number) => `${(eur / REVENTE) * 100}%`;
 const e = (v: number) => `${v.toLocaleString("fr-FR").replace(/ /g, " ")} €`;
@@ -21,11 +21,11 @@ export function MargeAnimee() {
   return (
     <figure className="arrivee attend mx-auto w-full max-w-[420px]" style={{ "--i": 2 } as CSSProperties}>
       <figcaption className="sr-only">
-        Exemple : une Clio IV revendue {e(REVENTE)}, achetée {e(ACHAT)}, avec {e(FRAIS)} de frais. Il reste {e(MARGE)} de marge nette. Verdict : GO, à acheter.
+        Exemple : une Toyota Yaris III revendue {e(REVENTE)}, achetée {e(ACHAT)}, avec {e(FRAIS)} de frais. Il reste {e(MARGE)} de marge nette. Verdict : GO, à acheter.
       </figcaption>
       <div className="scene relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 shadow-[0_40px_100px_-40px_rgb(255_90_31/0.6)]" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element -- photo d'annonce, servie en local et déjà compressée */}
-        <img src={EXEMPLES.clio.photos[1]} alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
+        <img src={EXEMPLES.yaris.photos[1]} alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.35)_0%,transparent_25%,transparent_36%,rgb(0_0_0/0.9)_100%)]" />
 
         <div className="balayage pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(255_90_31/0.28))] shadow-[0_6px_24px_rgb(255_90_31/0.55)]" style={d(0.05)} />
@@ -35,7 +35,7 @@ export function MargeAnimee() {
               <span className="size-1.5 animate-pulse rounded-full bg-o" /> Calcul…
             </span>
             <span className="pas col-start-1 row-start-1 whitespace-nowrap" style={d(1.2)}>
-              Clio IV · bien achetée
+              Yaris III · bien achetée
             </span>
           </span>
         </div>

@@ -1,20 +1,16 @@
 import type { MetadataRoute } from "next";
-import { listeCotes, slugCote } from "@/lib/cotes-publiques";
 import { MOTEURS } from "@/lib/moteurs";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.utopicar.fr";
 
-/** Pages indexables : le site et une page de cote par modèle relevé (mise à jour avec les relevés Leboncoin).
+/** Pages indexables du site. Les cotes détaillées (/cote) sont réservées aux abonnés : elles n'y figurent pas.
     /inscription et /connexion sont en noindex : elles n'y figurent pas. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const maj = new Date();
-  const cotes = await listeCotes();
   return [
     { url: `${SITE}/`, lastModified: maj, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE}/analyse`, lastModified: maj, changeFrequency: "monthly", priority: 0.9 },
     { url: `${SITE}/benef`, lastModified: maj, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${SITE}/cote`, lastModified: maj, changeFrequency: "daily", priority: 0.8 },
-    ...cotes.map((c) => ({ url: `${SITE}/cote/${slugCote(c.nom)}`, lastModified: c.maj ? new Date(c.maj) : maj, changeFrequency: "daily" as const, priority: 0.7 })),
     { url: `${SITE}/moteur`, lastModified: maj, changeFrequency: "monthly", priority: 0.7 },
     ...MOTEURS.map((m) => ({ url: `${SITE}/moteur/${m.slug}`, lastModified: maj, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${SITE}/tarifs`, lastModified: maj, changeFrequency: "monthly", priority: 0.8 },

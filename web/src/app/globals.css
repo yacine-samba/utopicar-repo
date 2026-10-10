@@ -320,6 +320,21 @@ select option:disabled {
     transform: translateY(28px) scale(0.96);
   }
 }
+/* Barres verticales qui montent (histogrammes du bento). */
+.scene .monte {
+  animation: monte 0.7s var(--ease-doux) both;
+  animation-delay: var(--d, 0s);
+  transform-origin: bottom center;
+}
+:root[data-anim] .attend:not(.vu) .scene .monte {
+  animation-play-state: paused;
+}
+@keyframes monte {
+  from {
+    transform: scaleY(0);
+  }
+}
+
 /* Balayage d'analyse sur la photo, et étiquettes qui passent (« Analyse… » puis le résultat) : transform et opacité seulement. */
 .scene .balayage {
   animation: balaye 1.15s var(--ease-doux) both;

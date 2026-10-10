@@ -7,6 +7,9 @@ import { ILLIMITE, NIVEAU_CREDIT, OFFRES, offre, STATUTS_ACTIFS, type Famille, t
 
 export type Abonnement = { offre: string; statut: string; periode_fin: string | null; annule_fin_periode: boolean };
 
+/** Les cotes détaillées (pages /cote) sont une création d'Utopicar : réservées aux formules payantes et à l'accès illimité. */
+export const accesCotes = (c: Compte | null) => !!c && (c.illimite || c.offre.prix > 0);
+
 export type Compte = {
   id: string;
   /** Formule attribuée à la main dans Supabase (profils.formule_offerte), prioritaire sur Stripe. */

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MOTEURS, moteurParSlug } from "@/lib/moteurs";
-import { eur, libelle, listeCotes, marqueDe, slugCote } from "@/lib/cotes-publiques";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { Essai } from "@/components/accueil/Essai";
 import { Faq } from "@/components/site/Faq";
@@ -27,9 +26,8 @@ export default async function PageMoteur({ params }: Params) {
   const { slug } = await params;
   const m = moteurParSlug(slug);
   if (!m) notFound();
-  const [cotes, fournisseurs] = await Promise.all([listeCotes(), fournisseursActifs()]);
+  const fournisseurs = await fournisseursActifs();
   // cotes des marques concernées (toutes pour les boîtes, qui existent partout)
-  const liees = cotes.filter((c) => !m.marques.length || m.marques.includes(marqueDe(c.base)));
   const faq = [
     { q: `Quel est le problème du ${m.nom} ?`, r: m.probleme.join(" ") },
     { q: `Quelles années du ${m.nom} sont concernées ?`, r: m.annees },
@@ -126,22 +124,6 @@ export default async function PageMoteur({ params }: Params) {
         </div>
       </section>
 
-      {liees.length > 0 && (
-        <nav aria-labelledby="m-cotes" className="mt-16">
-          <h2 id="m-cotes" className="font-display text-xl font-semibold">
-            La cote des modèles {m.marques.length ? "de ces marques" : "relevés"}
-          </h2>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {liees.map((c) => (
-              <li key={c.cle}>
-                <Link href={`/cote/${slugCote(c.nom)}`} className="inline-flex min-h-11 items-center rounded-full border border-line-2 px-4 text-sm text-ink-2 transition hover:border-o/50 hover:text-ink">
-                  {libelle(c.nom)} <span className="num ml-2 text-ink-3">{eur(c.mediane)}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
 
       <section aria-labelledby="m-faq" className="mt-16">
         <h2 id="m-faq" className="mb-6 text-center font-display text-2xl font-semibold">

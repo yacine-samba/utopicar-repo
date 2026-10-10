@@ -7,6 +7,7 @@ import { PreuveAnimee } from "@/components/accueil/PreuveAnimee";
 import { TroisTemps } from "@/components/accueil/TroisTemps";
 import { TroisVerdicts } from "@/components/accueil/TroisVerdicts";
 import { CoteEnDirect } from "@/components/accueil/CoteEnDirect";
+import { Bento } from "@/components/accueil/Bento";
 import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
@@ -91,71 +92,16 @@ export default async function Accueil() {
         </div>
       </section>
 
-      {/* ---------------- ce qui est vérifié : 4 cartes visuelles, une ligne chacune ---------------- */}
+      {/* ---------------- ce qui est vérifié, en bento : la vraie cote en case d'ancrage, une idée par case, l'action à part ---------------- */}
       <section className="py-16">
         <div className="wrap">
-          <h2 className="apparait h-sec mx-auto mb-10 max-w-2xl text-center">
+          <h2 className="h-sec mx-auto mb-10 max-w-2xl text-center">
             Ce qu&apos;on vérifie <span className="it">à votre place</span>
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <article className="carte vue p-6">
-              <h3 className="font-display text-xl font-semibold">Prix vs marché</h3>
-              {/* même lecture que l'en-tête : le marché en entier, l'annonce par-dessus, le surplus hachuré en rouge */}
-              <div className="mt-5 grid gap-2.5 text-sm" aria-hidden="true">
-                <div className="grid grid-cols-[4.2rem_1fr_4.4rem] items-center gap-2.5">
-                  <span className="text-ink-3">Marché</span>
-                  <span className="h-2.5 rounded-full bg-ink-3/50" style={{ width: "94%" }} />
-                  <b className="num text-right">6 950 €</b>
-                </div>
-                <div className="grid grid-cols-[4.2rem_1fr_4.4rem] items-center gap-2.5">
-                  <span className="text-ink-3">Annonce</span>
-                  <span className="flex h-2.5">
-                    <span className="rounded-l-full bg-o" style={{ width: "94%" }} />
-                    <span className="rounded-r-full bg-[repeating-linear-gradient(135deg,var(--color-bad)_0_3px,transparent_3px_6px)]" style={{ width: "6%" }} />
-                  </span>
-                  <b className="num text-right text-bad">7 400 €</b>
-                </div>
-                <p className="text-xs font-semibold text-bad">450 € au-dessus du marché</p>
-              </div>
-              <p className="sr-only">Exemple : cote 6 950 €, annonce à 7 400 €, au-dessus du marché.</p>
-              <Link href="/cote" className="mt-4 inline-block text-sm font-medium text-o2 underline underline-offset-4">
-                Voir les cotes par modèle
-              </Link>
-            </article>
-            <article className="carte vue p-6" style={{ "--i": 1 } as React.CSSProperties}>
-              <h3 className="font-display text-xl font-semibold">Les mots qui coûtent</h3>
-              <p className="mt-4 leading-relaxed text-ink-2">
-                « Très bon état, <mark className="rounded bg-bad/20 px-1 text-ink">petit bruit embrayage</mark>, <mark className="rounded bg-bad/20 px-1 text-ink">pneus à prévoir</mark>. »
-              </p>
-            </article>
-            <article className="carte vue p-6">
-              <h3 className="font-display text-xl font-semibold">Fiable ou à fuir</h3>
-              <ul className="mt-4 flex flex-wrap gap-2 text-sm">
-                {(
-                  [
-                    ["1.5 dCi", true],
-                    ["1.33 VVT-i", true],
-                    ["1.2 PureTech", false],
-                    ["DSG7", false],
-                  ] as const
-                ).map(([m, ok]) => (
-                  <li key={m} className={`rounded-full border px-3 py-1 ${ok ? "border-ok/40 bg-ok/10 text-ok" : "border-bad/40 bg-bad/10 text-bad"}`}>
-                    {ok ? "✓" : "✕"} {m}
-                    <span className="sr-only">{ok ? " : fiable" : " : à éviter"}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
-            <article className="carte vue p-6" style={{ "--i": 1 } as React.CSSProperties}>
-              <h3 className="font-display text-xl font-semibold">Avant d&apos;y aller</h3>
-              <ul className="mt-4 grid gap-1.5 text-sm text-ink-2">
-                <li className="flex justify-between gap-2">CT de moins de 6 mois <b className="text-ok">OK</b></li>
-                <li className="flex justify-between gap-2">Carnet d&apos;entretien <b className="text-warn">À demander</b></li>
-                <li className="flex justify-between gap-2">Rapport HistoVec <b className="text-warn">À demander</b></li>
-              </ul>
-            </article>
+          <div className="mx-auto max-w-5xl">
+            <Bento />
           </div>
-          <p className="apparait mt-6 text-center text-ink-2">
+          <p className="mt-6 text-center text-ink-2">
             Achat-revente ?{" "}
             <Link href="/benef" className="font-medium text-o2 underline underline-offset-4">
               Benef calcule votre marge →
@@ -179,9 +125,6 @@ export default async function Accueil() {
             <h2 className="h-sec">
               La cote <span className="it">en direct</span>
             </h2>
-            <Link href="/cote" className="text-sm font-medium text-o2 underline underline-offset-4">
-              Toutes les cotes →
-            </Link>
           </div>
           <div className="mx-auto max-w-5xl">
             <CoteEnDirect />
