@@ -6,7 +6,7 @@ Brief : `brief-master60.md`. Français seulement, voix de Simon incarné, 60 s, 
 - **Qui** : le débutant qui achète sa première voiture à revendre, et le marchand qui a déjà du stock.
 - **Douleur** : une annonce qui a l'air bien cache des travaux ; un stock qui dort mange la marge.
 - **Promesse** : avant d'acheter, tu sais ce qu'il te restera, frais déduits ; après, le tableau de bord te dit quoi faire.
-- **Preuve** : deux vraies annonces analysées (208 déconseillée, Clio au bon prix), le vrai tableau de bord.
+- **Preuve** : deux vraies annonces analysées (208 déconseillée, Mercedes Classe A 2017 à 12 990 €), le vrai tableau de bord.
 - **Action** : « Essaie trois jours, sans carte bancaire. Lien en bio. »
 
 ## 2. Ce qu'on reprend des références (grammaire, pas contenu)
@@ -55,10 +55,10 @@ Image 0 des deux ouvertures : la carte de l'annonce déjà pleine, le texte d'ou
 | 3–5 | Celle-là… tu l'achètes ? | « Tu l'achètes ? » | Surligneur sur 7 190 € | un temps de silence musical |
 | 5–10 | Je colle l'annonce. **Ah. Non.** Mille six cent cinquante euros de travaux. L'annonce a oublié de le dire. | « 01 · Avant d'acheter » puis « N'achète pas à ce prix. » | Le lien glisse dans le vrai champ ; le bouton Analyser devient chargement puis verdict « Déconseillée » ; la carte vire au rouge ; ticket : 7 190 € + 1 650 € = 8 840 € (cote 5 950 €) | **la musique s'arrête net sur « Ah. »**, impact grave, reprise basse seule sur « Mille… » |
 | 10–14 | C'est UTOPICAR. Tu colles l'annonce, tu sais ce qu'il te restera, frais déduits. | « Ta marge, *frais déduits.* » | Logo ; les trois étapes du site s'allument : Colle l'annonce → Frais déduits → Ta marge nette | groove complet |
-| 14–20 | Et celle-là ? Bon prix. Et ton offre : quatre cent cinquante euros de moins. *(petit rire)* Ah ouais. | « Bon prix » puis « − 450 € » | Vraie annonce Clio IV 6 700 € ; verdict vert « Bon prix » ; la ligne « Prix à proposer 6 250 € » surlignée ; compteur qui roule 6 700 → 6 250 | pop sur le verdict, petite montée |
+| 14–20 | Et celle-là ? **[verdict de l'outil]**. Ton offre : **[écart]** de moins. *(petit rire)* Ah ouais. | « [verdict en clair] » puis « − [écart] € » | Vraie annonce Mercedes Classe A 2017, 138 000 km, 12 990 € (photo recadrée : ni logo du vendeur, ni filigrane, ni plaque) ; verdict de l'outil ; la ligne « Prix d'offre » surlignée ; compteur qui roule 12 990 → [offre] | pop sur le verdict, petite montée |
 | 20–24,5 | Et avec quinze voitures en stock ? *(soupir)* Le carnet, la calculette, quatorze onglets… | « 02 · Après l'achat » | Gag : un carnet griffonné, une calculette, des onglets de navigateur qui s'empilent (génériques, aucun logo) … puis tout se range d'un coup dans une seule page | empilement qui accélère, puis « snap » net |
-| 24,5–36 | Ton tableau de bord te dit quoi faire ce matin. La 308 dort depuis soixante-trois jours ? Baisse le prix. Une Clio sort sous la cote ? Tu as l'alerte. Et ta vraie marge, voiture par voiture. | « Votre journée » · « 63 jours en stock » · « − 18 % sous la cote » · « Ta marge, voiture par voiture. » | Vrai tableau de bord (données démo) : la carte « Votre journée » et sa ligne « 63 jours en stock · Ajuster le prix » ; la carte Marché « −18 % sous la cote » ; le graphique des marges dont les barres poussent, compteurs de KPI | un accent par ligne, sur les temps |
-| 36–44 | Tu débutes ? Starter. Une seule voiture bien achetée te paie trois ans d'abonnement. Tu gères un parc ? Pro. | « Starter 14,99 € » · « + 670 € = 44 mois » · « Pro 79 € » | Les deux vraies cartes de formules ; sous Starter, la marge d'une Clio bien achetée remplit une jauge de 44 mois d'abonnement | montée |
+| 24,5–36 | Ton tableau de bord te dit quoi faire ce matin. La 308 dort depuis soixante-trois jours ? Baisse le prix. Une A3 sort sous la cote ? Tu as l'alerte. Et ta vraie marge, voiture par voiture. | « Votre journée » · « 63 jours en stock » · « − 18 % sous la cote » · « Ta marge, voiture par voiture. » | Vrai tableau de bord (données démo) : la carte « Votre journée » et sa ligne « 63 jours en stock · Ajuster le prix » ; la carte Marché « −18 % sous la cote » ; le graphique des marges dont les barres poussent, compteurs de KPI | un accent par ligne, sur les temps |
+| 36–44 | Tu débutes ? Starter. Une seule voiture bien achetée te paie trois ans d'abonnement. Tu gères un parc ? Pro. | « Starter 14,99 € » · « + 670 € = 44 mois » · « Pro 79 € » | Les deux vraies cartes de formules ; sous Starter, la marge d'une voiture bien achetée remplit une jauge de 44 mois d'abonnement | montée |
 | 44–49 | Essaie trois jours, sans carte bancaire. Lien en bio. | « 3 jours offerts » · « Lien en bio → » | Bouton orange cliqué par le curseur ; « Sans carte bancaire » coché | clic, accent |
 | 49–55 | Ta prochaine marge, chiffrée avant d'appeler. UTOPICAR. | « Ta prochaine marge, *chiffrée avant d'appeler.* » | Titre en deux tons, le logo se pose | accord |
 | 55–60 | — | Logo + « 3 jours offerts · Lien en bio » | Carton final ≤ 5 s, mention des données | fin nette |
@@ -68,17 +68,17 @@ Image 0 des deux ouvertures : la carte de l'annonce déjà pleine, le texte d'ou
 ## 5. Humour et satisfaction
 - **Humour** : « Ah. Non. » avec la musique qui s'arrête net ; « L'annonce a oublié de le dire. » ; le soupir sur la pile
   d'onglets ; « La 308 dort depuis soixante-trois jours » (la phrase vient de l'app : « Le capital dort »).
-- **Satisfaction** : le bouton qui devient chargement puis verdict, sans coupe ; le compteur 6 700 → 6 250 ; la pile
+- **Satisfaction** : le bouton qui devient chargement puis verdict, sans coupe ; le compteur 12 990 → prix d'offre ; la pile
   d'onglets qui se range d'un coup en une page ; les barres de marge qui poussent ; la jauge « 44 mois » qui se remplit.
 
 ## 6. Chiffres dits ou montrés, et leur source
 | Chiffre | Source |
 |---|---|
 | 208 à 7 190 €, + 1 650 € de travaux, prix réel 8 840 €, cote 5 950 €, « Déconseillée » | vraie annonce du 3 oct. 2026 analysée par l'outil (`web/src/lib/demo.ts`) |
-| Clio IV à 6 700 €, « Bon prix », prix à proposer 6 250 € (− 450 €) | idem |
+| Mercedes Classe A 2017, 138 000 km, 12 990 € : verdict, marge nette, prix d'offre, plafond | **en attente** : rapport Benef de l'app sur l'annonce fournie (leboncoin 3260794761), lu dans la base |
 | 63 jours en stock, − 18 % sous la cote, marges par voiture | **données de démonstration** (mention à l'écran), règles réelles de l'app (> 60 j : « Le capital dort », marché 10–45 % sous la cote) |
 | Starter 14,99 €/mois, Pro 79 €/mois | `web/src/lib/offres.ts` |
-| + 670 € = 44 mois de Starter | calculateur du site (Clio achetée 5 000 €, 630 € de frais, revendue 6 300 €), affiché comme exemple calculé |
+| + 670 € = 44 mois de Starter | calculateur du site (voiture achetée 5 000 €, 630 € de frais, revendue 6 300 €), affiché comme exemple calculé |
 | 3 jours offerts sans carte | **à confirmer** (brief) ; sinon « Ta première analyse est offerte » |
 
 ## 7. Voix
@@ -87,10 +87,10 @@ sourire. Pince-sans-rire, jamais donneur de leçon : il réagit à ce que l'écr
 Texte envoyé à eleven_v3 (balises jouées, pas lues ; « 308 » écrit « trois cent huit ») :
 > Celle-là… [curious] tu l'achètes ? [short pause] Je colle l'annonce. [pause] [surprised] Ah. [short pause] [amused]
 > Non. Mille six cent cinquante euros de travaux. [chuckles] L'annonce a oublié de le dire. [pause] C'est UTOPICAR. Tu
-> colles l'annonce, tu sais ce qu'il te restera, frais déduits. [pause] Et celle-là ? [short pause] Bon prix. Et ton
-> offre : quatre cent cinquante euros de moins. [laughs softly] Ah ouais. [pause] Et avec quinze voitures en stock ?
+> colles l'annonce, tu sais ce qu'il te restera, frais déduits. [pause] Et celle-là ? [short pause] [verdict]. Et ton
+> offre : [écart] de moins. [laughs softly] Ah ouais. [pause] Et avec quinze voitures en stock ?
 > [sighs] Le carnet, la calculette, quatorze onglets… [pause] Ton tableau de bord te dit quoi faire ce matin. La trois
-> cent huit dort depuis soixante-trois jours ? Baisse le prix. Une Clio sort sous la cote ? Tu as l'alerte. Et ta vraie
+> cent huit dort depuis soixante-trois jours ? Baisse le prix. Une A3 sort sous la cote ? Tu as l'alerte. Et ta vraie
 > marge, voiture par voiture. [pause] Tu débutes ? Starter. Une seule voiture bien achetée te paie trois ans
 > d'abonnement. Tu gères un parc ? Pro. [pause] [excited] Essaie trois jours, sans carte bancaire. Lien en bio. [pause]
 > Ta prochaine marge, chiffrée avant d'appeler. UTOPICAR.
