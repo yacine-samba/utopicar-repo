@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Calculateur } from "@/components/benef/Calculateur";
 import { Peurs } from "@/components/benef/Peurs";
-import { MargeAnimee } from "@/components/benef/MargeAnimee";
+import { CARTE_BENEF, PreuveAnimee } from "@/components/accueil/PreuveAnimee";
 import { OutilsBenef } from "@/components/benef/OutilsBenef";
 import { TroisTemps } from "@/components/accueil/TroisTemps";
 import { PrixCompact } from "@/components/site/PrixCompact";
@@ -56,7 +56,7 @@ export default async function Benef() {
               ))}
             </ul>
           </div>
-          <MargeAnimee />
+          <PreuveAnimee carte={CARTE_BENEF} />
         </div>
       </section>
 
