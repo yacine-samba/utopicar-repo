@@ -4,6 +4,7 @@ import { comptesActifs } from "./supabase/config";
 import { supabaseServeur } from "./supabase/serveur";
 import { guidesOuverts, type GuideId } from "./guides";
 import { ILLIMITE, NIVEAU_CREDIT, OFFRES, offre, STATUTS_ACTIFS, type Famille, type Offre } from "./offres";
+import { lireProfilAnalyse, type ProfilAnalyse } from "./analyse/profil";
 
 export type Abonnement = { offre: string; statut: string; periode_fin: string | null; annule_fin_periode: boolean };
 
@@ -37,6 +38,8 @@ export type Compte = {
   favoris: boolean;
   /** Option « Messages Leboncoin » (Benef Pro, en plus de la formule). */
   messages: boolean;
+  /** Profil d'analyse (objectif, expérience, travaux acceptés, seuil de bénéfice…) : questionnaire de la première analyse. */
+  profilAnalyse: ProfilAnalyse;
 };
 
 /** Début de la période de quota : le mois civil en cours, ou depuis toujours pour la formule gratuite. */
@@ -53,7 +56,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
   const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }, { data: messages }, { data: droitsAdmin }] = await Promise.all([
     sb.from("profils").select("prenom, nom, famille, ville, formule_offerte, offerte_jusqu_au, illimite, reglages").eq("id", user.id).maybeSingle(),
     sb.from("abonnements").select("offre, statut, periode_fin, annule_fin_periode").eq("user_id", user.id).maybeSingle(),
-    sb.from("achats").select("produit").eq("user_id", user.id),
+    sb.from("achats").select("produit, stripe_session_id").eq("user_id", user.id),
     sb.rpc("mes_credits"),
     sb.from("credits").select("id", { count: "exact", head: true }).eq("user_id", user.id).gt("delta", 0),
     sb.rpc("option_active", { p_uid: user.id, p_option: "messages" }),
@@ -72,7 +75,9 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
   // Formule Découverte avec des crédits achetés : historique comme Essentiel, et les analyses payées par crédit ont son niveau.
   if (!illimite && o.prix === 0 && (achatsCredits ?? 0) > 0) o = { ...o, historique: OFFRES.essentiel.historique };
   if (!illimite && o.prix === 0 && restantesFormule <= 0 && solde > 0) o = { ...o, detail: NIVEAU_CREDIT.detail, photos: Math.max(o.photos, NIVEAU_CREDIT.photos) };
-  const guides = guidesOuverts(illimite, o.id, (achats ?? []).map((a) => a.produit));
+  // les quatre guides (« guide ») seulement après un vrai paiement Stripe ; les guides offerts un par un sont « guide:<id> »
+  const produits = (achats ?? []).filter((a) => a.produit !== "guide" || !!a.stripe_session_id).map((a) => a.produit);
+  const guides = guidesOuverts(illimite, o.id, produits);
   return {
     id: user.id,
     offerte: offerte && !illimite ? { jusquAu: profil?.offerte_jusqu_au ?? null } : null,
@@ -93,5 +98,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     restantes: restantesFormule + solde,
     favoris: (profil?.reglages as { favoris?: boolean } | null)?.favoris === true,
     messages: messages === true,
+    // sans questionnaire : le profil de l'espace affiché (Benef si la formule ou l'usage l'est)
+    profilAnalyse: lireProfilAnalyse((profil?.reglages as { analyse?: unknown } | null)?.analyse, illimite ? ((profil?.famille as Famille) ?? "benef") : o.prix > 0 || offerte ? o.famille : ((profil?.famille as Famille) ?? "particulier"), profil?.ville ?? ""),
   };
 });

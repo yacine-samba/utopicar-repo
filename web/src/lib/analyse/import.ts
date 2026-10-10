@@ -141,3 +141,17 @@ export function photosDepuisExtension(brut: string): string[] {
     return [];
   }
 }
+
+/** Lien d'annonce importable trouvé dans ce qu'une appli partage (lien seul, ou texte « Regarde cette annonce : https://… »). */
+export function lienPartage(...morceaux: (string | null | undefined)[]): string | null {
+  for (const m of morceaux) {
+    if (!m) continue;
+    const direct = lienImportable(m);
+    if (direct) return direct;
+    for (const u of m.match(/https?:\/\/[^\s"'<>]+/g) ?? []) {
+      const l = lienImportable(u.replace(/[.,;)]+$/, ""));
+      if (l) return l;
+    }
+  }
+  return null;
+}

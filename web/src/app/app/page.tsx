@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { AnnoncesSuivies, type LigneSuivi } from "@/components/analyse/Suivi";
+import { estFavorable, VERDICTS_FAVORABLES } from "@/lib/analyse/verdicts";
+import { titreVehicule } from "@/lib/titre";
 import { compteBenef } from "@/lib/benef";
 import { debutPeriode, type Compte } from "@/lib/compte";
 import { familleEspace, nomFormule, type Icone } from "@/lib/espace";
@@ -75,6 +78,13 @@ async function Bonjour({ c, texte }: { c: Compte; texte: string }) {
   );
 }
 
+/** Annonces suivies, prix à jour d'après la base du marché ; rien si la fonction n'est pas encore en base. */
+async function Suivies() {
+  const { data, error } = await (await supabaseServeur()).rpc("suivis_verifier");
+  if (error || !Array.isArray(data) || !data.length) return null;
+  return <AnnoncesSuivies initiales={data as LigneSuivi[]} />;
+}
+
 async function TableauParticulier({ c }: { c: Compte }) {
   const o = c.offre;
   const { data } = await (await supabaseServeur())
@@ -91,6 +101,7 @@ async function TableauParticulier({ c }: { c: Compte }) {
       <div className="hidden sm:block">
         <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle va vraiment vous coûter et ce qu'il faut vérifier." />
       </div>
+      <Suivies />
       <ProjetAchat lignes={data ?? []} />
       <div className="grid gap-4 sm:grid-cols-3">
         <Tuile
@@ -135,7 +146,7 @@ async function TableauComplet({ c }: { c: Compte }) {
   const [{ data: mois }, { data: derniers }, { data: semaineGo }, { data: parcBrut }, recherches, { data: frais }] = await Promise.all([
     sb.from("rapports").select("id, marge, verdict").eq("mode", "benef").gte("created_at", debut).limit(2000),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
-    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").gte("created_at", semaine).like("verdict", "GO%").order("marge", { ascending: false, nullsFirst: false }).limit(6),
+    sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").gte("created_at", semaine).in("verdict", VERDICTS_FAVORABLES).order("marge", { ascending: false, nullsFirst: false }).limit(6),
     sb.from("parc").select("*").limit(1000),
     c.offre.recherche ? dernieresRecherches() : Promise.resolve(null),
     c.offre.recherche
@@ -153,7 +164,7 @@ async function TableauComplet({ c }: { c: Compte }) {
   const margeLiee = new Map((rapLies ?? []).map((r) => [r.id, r.marge]));
   const prevues = stock.map((v) => ({ v, m: margePrevue(v) ?? (v.rapport_id ? (margeLiee.get(v.rapport_id) ?? null) : null) })).filter((x) => x.m != null);
   const attente = prevues.reduce((s, x) => s + (x.m ?? 0), 0);
-  const go = (mois ?? []).filter((r) => r.verdict?.startsWith("GO"));
+  const go = (mois ?? []).filter((r) => estFavorable(r.verdict));
   const n = (mois ?? []).length;
 
   // marge réalisée le mois dernier, pour la comparaison (heure de Paris approchée par le serveur)
@@ -246,6 +257,7 @@ async function TableauComplet({ c }: { c: Compte }) {
         journee={<Journee actions={actions.slice(0, 4)} />}
       />
       <CartePremiersPas c={c} />
+      <Suivies />
 
       <section aria-labelledby="tb-chiffres">
         <h2 id="tb-chiffres" className="sr-only">Chiffres clés</h2>
@@ -325,6 +337,66 @@ async function TableauComplet({ c }: { c: Compte }) {
         </>
       )}
 
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section aria-labelledby="tb-best" className="grid content-start gap-3">
+          <div className="flex items-baseline justify-between gap-3">
+            <h2 id="tb-best" className="font-display text-lg font-semibold">Les meilleures affaires de la semaine</h2>
+            <Link href="/app/rapports" className="shrink-0 whitespace-nowrap text-sm text-o2 underline-offset-4 hover:underline">Rapports</Link>
+          </div>
+          {semaineGo?.length ? (
+            <ul className="grid gap-2">
+              {semaineGo.map((r) => (
+                <li key={r.id}>
+                  <Link href={`/app/rapports/${r.id}`} className="carte flex items-center justify-between gap-3 p-3 transition hover:border-o/40">
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium">{titreVehicule(r.titre)}</span>
+                      <span className="text-xs text-ink-3">{r.verdict} · prix {eur(r.prix)}{r.note != null ? ` · ${r.note}/100` : ""}</span>
+                    </span>
+                    <b className={`num shrink-0 ${(r.marge ?? 0) >= 0 ? "text-ok" : "text-bad"}`}>{r.marge != null ? `${r.marge >= 0 ? "+" : ""}${eur(r.marge)}` : "—"}</b>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="carte p-5 text-sm text-ink-2">Rien au-dessus de votre seuil cette semaine. Cherchez sous la cote dans la recherche, ou analysez une annonce.</p>
+          )}
+        </section>
+
+        <section aria-labelledby="tb-alertes" className="grid content-start gap-3">
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 id="tb-alertes" className="font-display text-lg font-semibold">À surveiller dans le parc</h2>
+            <span className="text-sm text-ink-3">{alertes.length ? `${alertes.filter((a) => a.lvl === "bad").length} critique(s), ${alertes.length} au total` : ""}</span>
+          </div>
+          {alertes.length ? (
+            <ul className="grid gap-2">
+              {alertes.slice(0, 6).map((a, i) => (
+                <li key={i}>
+                  <Link href={`/app/parc/${a.v.id}`} className={`carte flex gap-3 p-3 text-sm transition hover:border-o/40 ${a.lvl === "bad" ? "border-bad/35" : "border-warn/30"}`}>
+                    <span className={`w-1 shrink-0 rounded-full ${a.lvl === "bad" ? "bg-bad" : "bg-warn"}`} aria-hidden="true" />
+                    <span>
+                      <b className="block font-medium">{a.v.immat ? `${a.v.immat} · ` : ""}{a.v.titre}</b>
+                      <span className="text-ink-2">{a.txt}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="carte p-5 text-sm text-ink-2">Aucune alerte : durées de stock, prix d&apos;achat et marges sont dans les clous.</p>
+          )}
+        </section>
+      </div>
+
+      <section aria-labelledby="tb-analyses">
+        <h2 id="tb-analyses" className="mb-3 font-display text-lg font-semibold">Analyses du mois</h2>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <Kpi l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} s={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} ton={!c.illimite && c.restantes <= 3 ? "warn" : undefined} />
+          <Kpi l="Bonnes affaires repérées" v={String(go.length)} s={`sur ${n} annonce${n > 1 ? "s" : ""}`} />
+          <Kpi l="Marge moyenne des bonnes affaires" v={eur(go.length ? go.reduce((s, r) => s + (r.marge ?? 0), 0) / go.length : null)} s="estimée avant achat" />
+          <Kpi l="Marge réalisée ce mois" v={eur(st.margeMois)} s="voitures vendues ce mois" />
+        </div>
+      </section>
+
       <section aria-labelledby="tb-outils">
         <TitreSection id="tb-outils">Vos outils</TitreSection>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -357,7 +429,7 @@ async function TableauBenef({ c }: { c: Compte }) {
     sb.from("rapports").select("id, titre, marge, verdict, prix").eq("mode", "benef").gte("created_at", debut).limit(1000),
     sb.from("rapports").select("id, titre, created_at, prix, verdict, marge, note, photos, lien").eq("mode", "benef").order("created_at", { ascending: false }).limit(5),
   ]);
-  const go = (mois ?? []).filter((r) => r.verdict?.startsWith("GO"));
+  const go = (mois ?? []).filter((r) => estFavorable(r.verdict));
   const marges = go.map((r) => r.marge).filter((x): x is number => x != null);
   const meilleure = [...(mois ?? [])].filter((r) => r.marge != null).sort((a, b) => (b.marge ?? 0) - (a.marge ?? 0))[0];
   const complet = c.offre.tableauDeBord === "complet";
@@ -369,6 +441,7 @@ async function TableauBenef({ c }: { c: Compte }) {
     <div className="grid gap-8">
       <EnTeteTableau c={c} texte={`${nomFormule(c)} · vos chiffres du mois, depuis le 1er.`} />
       <CartePremiersPas c={c} />
+      <Suivies />
       {recherches && <RechercheRapide recentes={recherches} />}
 
       <section aria-labelledby="tb-analyses">
@@ -377,8 +450,8 @@ async function TableauBenef({ c }: { c: Compte }) {
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Tuile l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} sous={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} alerte={!c.illimite && c.restantes <= 3} />
-          <Tuile l="Affaires GO repérées" v={String(go.length)} sous={`sur ${n} annonce${n > 1 ? "s" : ""} analysée${n > 1 ? "s" : ""}`} />
-          <Tuile l="Marge moyenne des GO" v={eur(marges.length ? marges.reduce((s, x) => s + x, 0) / marges.length : null)} sous="estimée avant achat" />
+          <Tuile l="Bonnes affaires repérées" v={String(go.length)} sous={`sur ${n} annonce${n > 1 ? "s" : ""} analysée${n > 1 ? "s" : ""}`} />
+          <Tuile l="Marge moyenne des bonnes affaires" v={eur(marges.length ? marges.reduce((s, x) => s + x, 0) / marges.length : null)} sous="estimée avant achat" />
           <Tuile l="Meilleure affaire" v={eur(meilleure?.marge ?? null)} sous={meilleure?.titre ?? "aucune ce mois"} />
         </div>
       </section>

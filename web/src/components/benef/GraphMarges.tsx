@@ -1,15 +1,13 @@
 "use client";
 import Link from "next/link";
-import { DEFAUTS_PRO, type ParamsPro } from "@/lib/analyse/couts";
 import { cx } from "@/lib/cx";
-import { useReglages } from "../ui";
+import { useProfilAnalyse } from "../analyse/ProfilAnalyse";
 
-/* Marges par voiture (vendues, puis prévues en clair) face au seuil de marge réglé dans le menu, comme l'outil Garage. */
+/* Marges par voiture (vendues, puis prévues en clair) face au bénéfice minimum du profil d'analyse, comme l'outil Garage. */
 export type BarreMarge = { id: string; nom: string; marge: number; prevue: boolean };
 
 export function GraphMarges({ barres }: { barres: BarreMarge[] }) {
-  const [reg] = useReglages<ParamsPro>("utp-pro", DEFAUTS_PRO);
-  const seuil = reg.margeMin;
+  const seuil = useProfilAnalyse().profil.margeMin;
   if (!barres.length) return <p className="text-sm text-ink-3">Renseignez prix d&apos;achat, frais et prix de vente dans le parc pour voir les marges.</p>;
   const lo = Math.min(0, ...barres.map((b) => b.marge));
   const hi = Math.max(seuil, ...barres.map((b) => b.marge)) * 1.08;
