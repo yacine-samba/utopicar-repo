@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import { FicheAnnonce, type FicheData } from "@/components/espace/FicheAnnonce";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { cx, inputCls } from "@/lib/cx";
 import { BoutonFavori } from "../espace/BoutonFavori";
@@ -23,6 +24,7 @@ const jour = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "nume
 export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: AnnonceTrouvee[]; noms: NomsCatalogue; favoris: string[] }) {
   const [liste, setListe] = useState(annonces);
   const [favs] = useState(() => new Set(favoris));
+  const [fi, setFi] = useState<number | null>(null);
   const [marque, setMarque] = useState("");
   const [modele, setModele] = useState("");
   const [gen, setGen] = useState("");
@@ -108,11 +110,11 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
       <p className="text-sm text-ink-3" role="status">{vues.length} annonce{vues.length > 1 ? "s" : ""}{vues.length !== liste.length ? ` sur ${liste.length}` : ""}</p>
       {vues.length ? (
         <ul className="grid gap-2">
-          {vues.slice(0, vus).map((a) => {
+          {vues.slice(0, vus).map((a, i) => {
             const c = a.cote;
             const bon = c?.pct != null && c.pct >= 0.05, cher = c?.pct != null && c.pct <= -0.05;
             return (
-              <li key={a.cle} className="carte grid gap-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center">
+              <li key={a.cle} className="carte relative grid gap-3 p-4 transition hover:border-o/40 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center">
                 {a.photo ? (
                   // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
                   <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-28 w-40 rounded-xl border border-line object-cover max-sm:h-44 max-sm:w-full" />
@@ -120,7 +122,9 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
                   <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">Sans photo</span>
                 )}
                 <div className="min-w-0">
-                  <p className="truncate font-medium">{a.titre}</p>
+                  <p className="truncate font-medium">
+                    <button type="button" onClick={() => setFi(i)} className="max-w-full truncate text-left after:absolute after:inset-0 after:content-['']" aria-label={`Voir la fiche : ${a.titre}`}>{a.titre}</button>
+                  </p>
                   <p className="mt-0.5 text-sm text-ink-3">
                     {[a.annee, a.km != null ? `${a.km.toLocaleString("fr-FR")} km` : null, a.moteur, a.ch ? `${a.ch} ch` : null, a.energie, a.boite, a.version ?? a.gen_label].filter(Boolean).join(" · ")}
                   </p>
@@ -138,7 +142,7 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
                       {c.ecart >= 0 ? `${eur(c.ecart)} sous` : `${eur(-c.ecart)} au-dessus`} <span className="font-normal text-ink-3">({Math.round(Math.abs(c.pct ?? 0) * 100)} %)</span>
                     </p>
                   ) : <span />}
-                  <div className="mt-2 flex items-center gap-2 sm:justify-end">
+                  <div className="relative z-10 mt-2 flex items-center gap-2 sm:justify-end">
                     <BoutonFavori
                       compact
                       initial={favs.has(a.cle)}
@@ -146,7 +150,6 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
                       f={{ cle: a.cle, titre: a.titre, prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: a.photo ?? null, source: "recherche", cote: c ?? null }}
                     />
                     <BoutonAnalyserAnnonce url={a.url} />
-                    {a.url && <a href={a.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Ouvrir</a>}
                     <button type="button" onClick={() => retirer(a)} className="grid size-9 place-items-center rounded-full border border-line-2 text-ink-3 hover:text-ink" aria-label={`Retirer ${a.titre} de la liste (elle reste dans la cote)`} title="Retirer de la liste (reste dans la cote)">
                       ✕
                     </button>
@@ -159,6 +162,11 @@ export function AnnoncesTrouvees({ annonces, noms, favoris }: { annonces: Annonc
       ) : (
         <p className="carte p-5 text-ink-2">{liste.length ? "Aucune annonce ne correspond à ces filtres." : "Aucune annonce pour l'instant : elles s'ajoutent ici à chaque recherche."}</p>
       )}
+      <FicheAnnonce
+        fiches={vues.slice(0, vus).map((a): FicheData => ({ id: a.cle, titre: a.titre, prix: a.prix, annee: a.annee, km: a.km, ch: a.ch, energie: a.energie, boite: a.boite, moteur: a.moteur, version: a.version ?? a.gen_label, lieu: a.lieu, pro: a.pro, photo: a.photo ?? null, url: a.url, marque: a.marque, cote: a.cote, alerte: null }))}
+        index={fi}
+        onIndex={setFi}
+      />
       {vues.length > vus && (
         <button type="button" onClick={() => setVus((v) => v + PAGE)} className="btn btn-sm justify-self-center">
           Voir {Math.min(PAGE, vues.length - vus)} de plus
