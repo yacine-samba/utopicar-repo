@@ -8,18 +8,18 @@ arrêt de bande : départ 17.222 s, « + 400 € » à 17.222 s → écart +0 ms
 la seule pause : musique 17.52 → 20.36 s à -231 dBFS crête ; reprise à 21.19 s
 son dès 0 s : RMS 0–0,1 s -19.6 dBFS, 0–0,5 s -16.8 dBFS ; 2 premières s -13.9 LUFS contre -14.6 sur le reste
 bruitages placés : 88 · retirés pour collision : 5 2369@2.66, 1832@9.20, 1490@9.27, 1490@10.02, 1490@10.77
-téléphone : 34 % de l'énergie sous 150 Hz, 9.6 % entre 1 et 5 kHz
+téléphone : 34 % de l'énergie sous 150 Hz, 9.7 % entre 1 et 5 kHz
 RMS ouverture   0.00 →  4.77 s  -17.1 dBFS
 RMS six coups   5.59 → 11.30 s  -18.3 dBFS
-RMS soleil     11.93 → 14.25 s  -18.0 dBFS
-RMS vente      14.25 → 17.22 s  -17.9 dBFS
-RMS + 400 €    17.22 → 17.72 s  -15.9 dBFS
+RMS soleil     11.93 → 14.52 s  -17.7 dBFS
+RMS vente      14.52 → 17.22 s  -18.3 dBFS
+RMS + 400 €    17.22 → 17.72 s  -16.0 dBFS
 RMS pause      17.72 → 18.85 s  -30.2 dBFS
 RMS samedi     18.85 → 20.36 s  -15.7 dBFS
 RMS méthode    21.19 → 28.12 s  -17.1 dBFS
 RMS boucle     28.12 → 30.60 s  -17.5 dBFS
-voix au-dessus de la musique / des bruitages, par réplique (dB) : h1 18/35, h2 20/34, asp 19/19, sam 18/23, sieg 18/15, odeur 20/22, enjo 19/21, soleil 18/15, photo 18/19, c400 22/9, paye seule/32, ceux 19/23, pchocs 17/28, ongle 19/24, polish 14/20, proch 17/25
-  musique : minimum 14.1 dB, médiane 18.5 dB ; bruitages : minimum 9.1 dB, médiane 22.5 dB (visé : ≥ 7 dB)
+voix au-dessus de la musique / des bruitages, par réplique (dB) : h1 18/35, h2 20/34, asp 19/19, sam 18/23, sieg 18/15, odeur 20/22, enjo 19/21, soleil 18/14, photo 19/22, c400 22/9, paye seule/32, ceux 19/23, pchocs 17/28, ongle 19/24, polish 14/20, proch 17/25
+  musique : minimum 14.1 dB, médiane 18.6 dB ; bruitages : minimum 9.1 dB, médiane 22.6 dB (visé : ≥ 7 dB)
 repérage (t, son, rôle, priorité) :
     0.17   2589  orn    p2  la plume rallume « 2 000 »
     1.38   2589  orn    p3  … descend la flèche
@@ -75,13 +75,13 @@ repérage (t, son, rôle, priorité) :
    13.45   1119  tick   p3  l'horloge accélère
    13.61   1119  tick   p3  l'horloge accélère
    13.74   2589  orn    p3  le viseur se referme
-   14.25   1133  ui     p1  déclic de la photo 1 (sec)
-   14.41   1490  whoosh p2  la photo part dans l'écran du téléphone
-   14.81   1119  tick   p3  palettes J+4
-   14.87   1119  tick   p3  palettes J+4
-   14.93   1119  tick   p3  palettes J+4
-   14.99   1119  tick   p3  palettes J+4
-   15.26   2354  ui     p2  « Belle photo. Toujours dispo ? »
+   14.52   1133  ui     p1  déclic de la photo 1 (sec)
+   14.68   1490  whoosh p2  la photo part dans l'écran du téléphone
+   15.02   1119  tick   p3  palettes J+4
+   15.08   1119  tick   p3  palettes J+4
+   15.14   1119  tick   p3  palettes J+4
+   15.20   1119  tick   p3  palettes J+4
+   15.34   2354  ui     p2  « Belle photo. Toujours dispo ? »
    15.67   2384  ui     p2  « Je passe demain ? »
    15.92   2354  ui     p1  « 3 300 et je la prends. »
    16.12   2589  orn    p3  « 3 300 » part de la bulle vers le compteur (round 3)

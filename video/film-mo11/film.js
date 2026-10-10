@@ -25,14 +25,21 @@
     lav: ME('heures') - 0.05,                                                  // le lavage part quand « treize heures » finit
     si: M('sieges') - 0.33, od: M('odeur') - 0.2, en: LT('enjo').t - 0.2,      // l'arrêt de la ligne tombe sur le mot
     sun0: M('etla') - 0.3, sun1: ME('soleil') + 0.02, sbas: M('etla') + 0.4, heure: M('soleil') - 0.35,
-    vf: ME('soleil') - 0.04, lab1: M('photo') - 0.06, click: M('un') - 0.1,
-    ann: M('un') + 0.16, j4: M('un') + 0.3, msg1: ME('un') + 0.5, msg2: M('n400') - 1.25,   // « Quatre jours. » retiré
+    vf: ME('soleil') - 0.04, lab1: M('photo') - 0.06, click: Math.max(M('un') - 0.1, M('photo') + 0.27),
+    msg1: ME('un') + 0.5, msg2: M('n400') - 1.25,                       // « Quatre jours. » retiré
     bubble: M('n400') - 1.0, credit: M('n400') - 0.12,                                         // (round 2) : J+4 le dit
     big: M('plus') - 0.12, prepa: M('plus') + 0.25,
     pay1: M('ton2') - 0.03, pay2: M('mieux') - 0.2,
     ceux: M('ceux') - 0.04, pas: M('pas') - 0.04,
     nail: M('glisse') + 0.04, verd: ME('rayure') + 0.06, pol: M('quinze') + 0.04, carr: M('polish') - 0.03,
   };
+  // passe finale (voix de Simon) : « Photo » et « 1 » ne sont plus qu'à 0,1 s l'un de l'autre. Le déclic attend
+  // 0,27 s après « Photo » (il tombe dans « 1, ») et l'annonce garde ses 0,26 s après lui : l'étiquette « Photo 1 · trois
+  // quarts avant » reste lisible 0,4 s au lieu de 0,25. « l'heure avant le coucher » entrait avec « Soleil bas, » :
+  // elle reprend ses 0,32 s de retard sur lui (sur « soleil »). Les palettes de J+4 (T.j4 + 0,16 → + 0,34) finissent
+  // plus de 0,12 s avant « Belle photo… » : sinon audio-mo11.py retire trois de leurs quatre tics pour collision.
+  T.ann = T.click + 0.26; T.j4 = T.click + 0.34; T.msg1 = Math.max(T.msg1, T.j4 + 0.48);
+  T.heure = Math.max(T.heure, T.sbas + 0.6);
   T.ph = (T.lav + T.si) / 2; T.ra = (T.od + T.en) / 2;
   T.gag = (T.si + 0.7 + T.od) / 2 + 0.05;
   T.l = [ME('tout') + 0.02, ME('tout') + 0.52, ME('tout') + 1.02];
@@ -425,16 +432,24 @@
   // ---------- le renversement : la carte « Avant la photo 1 », puis l'ongle et le verdict ----------
   const LC = el('div', 'L', stage);
   const fit = (parts, max) => { let k = 1; const w = () => parts.reduce((s, [txt, font, size]) => s + (mcv.font = font.replace('SZ', size * k), mcv.measureText(txt).width), 0); while (w() > max) k -= 0.02; return k; };
+  // passe finale, lisibilité à 360 px : dans les notifications, la ligne de l'app passe de 22 à 26 px (7 → 9 px au
+  // téléphone) et le titre de 34 à 40 px au plus, réduit d'un seul facteur pour que le plus long tienne dans 500 px
+  const kN = Math.min(...[...COUPS.map((c) => c.ti), 'Virement reçu'].map((x) => fit([[x, '700 SZpx Satoshi', 40]], 500)));
+  for (const d of [...debs.map((x) => x.n.d), credit.d]) {
+    const ap = d.querySelector('.app'), ti = d.querySelector('.ti'), am = d.querySelector('.am');
+    ap.style.cssText = 'font-size:26px;line-height:1.15;margin-bottom:2px;color:rgba(246,239,231,.8)';
+    ti.style.cssText = `font-size:${f3(40 * kN)}px;line-height:1.15`; am.style.lineHeight = '1.05';
+  }
   const ARW = '<svg width="46" height="26" viewBox="0 0 46 26" style="display:inline-block;vertical-align:middle;margin:0 14px 6px"><path d="M2 13 H40 M29 3 L42 13 L29 23" stroke="#ffb38a" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const cardW = el('div', 'abs', LC, 'left:0;top:0;width:1080px;height:1920px;transform-origin:540px 300px');
-  const card = el('div', 'glass card', cardW, 'left:140px;top:300px;width:800px;height:470px'); el('div', 'sheen', card);
+  const card = el('div', 'glass card', cardW, 'left:150px;top:300px;width:780px;height:470px'); el('div', 'sheen', card);
   const kT = fit([['Avant la photo 1', '700 SZpx Satoshi', 46], ['Pas tout.', 'italic 500 SZpx Fraunces', 66]], 640);
   const cT = el('div', 'abs', cardW, `left:140px;top:334px;width:800px;text-align:center;white-space:nowrap;font:700 ${f3(46 * kT)}px Satoshi`);
   const cT1 = el('span', '', cT, 'display:inline-block'); cT1.textContent = 'Avant la photo 1';
   const cT2 = el('span', 'serif', cT, `display:inline-block;font-size:${f3(66 * kT)}px;margin-left:14px`); cT2.textContent = 'Pas tout.';
   const rule = el('div', 'abs', cardW, 'left:200px;top:428px;width:680px;height:2px;background:linear-gradient(90deg,transparent,rgba(255,179,138,.6),transparent);transform-origin:50% 50%');
   const LINES = [['Ça se voit', 'tu le fais'], ['Travaux > 15 % du prix', "en l'état"], ['Ici : 500 € max ·', 'Pare-chocs · 600 €']];
-  const kL = Math.min(...LINES.map(([a, b], i) => fit([[a, '700 SZpx Satoshi', 40], [b, (i < 2 ? 'italic 500 SZpx Fraunces' : '700 SZpx Satoshi'), i < 2 ? 54 : 40], ['→→', '700 SZpx Satoshi', 40]], 700)));
+  const kL = Math.min(...LINES.map(([a, b], i) => fit([[a, '700 SZpx Satoshi', 40], [b, (i < 2 ? 'italic 500 SZpx Fraunces' : '700 SZpx Satoshi'), i < 2 ? 54 : 40], ['→→', '700 SZpx Satoshi', 40]], 720)));
   const lines = LINES.map(([a, b], i) => {
     const r = el('div', 'abs', cardW, `left:140px;top:${452 + i * 100}px;width:800px;text-align:center;white-space:nowrap;font:700 ${f3(40 * kL)}px Satoshi;line-height:76px`);
     const s1 = el('span', '', r, 'display:inline-block'); s1.innerHTML = i < 2 ? a + ARW : a;
@@ -457,7 +472,7 @@
   const pSw = el('div', 'abs', pPol, 'left:0;top:0;width:100%;height:100%;border-radius:999px;mix-blend-mode:screen');   // le lustre passe
   const pcL = sv('path', { d: 'M4 24 C 120 8, 260 30, 396 12', stroke: '#ff5a1f', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round', 'stroke-dasharray': '420 420', 'stroke-dashoffset': 420 }, pcSvg);
 
-  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:1430px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55)'); mention.textContent = 'Exemple · prix moyens constatés';
+  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:1428px;text-align:center;font:500 28px Satoshi;color:rgba(246,239,231,.66)'); mention.textContent = 'Exemple · prix moyens constatés';
   const rewFx = el('div', 'L', stage, 'background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 6px);mix-blend-mode:screen');
   const flash = el('div', 'L', stage, 'background:radial-gradient(60% 45% at 50% 52%,#fff1e6,rgba(255,140,80,.6) 45%,transparent 75%);mix-blend-mode:screen');
   const grain = el('div', '', stage); grain.id = 'grain'; el('div', '', stage).id = 'vign';
@@ -813,7 +828,7 @@
     const cdr = sm(T.card, T.card + 0.8, t);                                       // dérive lente : la carte ne se fige pas
     // parallaxe : la carte tourne en sens inverse de l'orbite (− 0,5 ×) et monte de 12 px à chaque règle (la voiture, 6)
     const cRy = -0.5 * (c.ry - 1) * cIn * (1 - cmp), cNy = -12 * lineNudge(t) * (1 - cmp);
-    cardW.style.transform = `translateY(${f3((1 - cIn) * 240 - 64 * cmp + 90 * cOut + cNy - 10 * cdr * (1 - cmp) * noise(31, t * 0.35))}px) perspective(1500px) rotateX(${f3((1 - cIn) * 24 + 1.6 * cdr * noise(32, t * 0.3))}deg) rotateY(${f3(cRy + 2.2 * cdr * noise(33, t * 0.27))}deg) scale(${f3((0.94 + 0.06 * cIn) * (1 - 0.12 * cmp) * (1 - 0.45 * cOut) * (1 + 0.012 * cdr * (1 - cmp)))})`;
+    cardW.style.transform = `translateY(${f3((1 - cIn) * 240 - 64 * cmp + 90 * cOut + cNy - 10 * cdr * (1 - cmp) * noise(31, t * 0.35))}px) perspective(1500px) rotateX(${f3((1 - cIn) * 24 + 1.6 * cdr * noise(32, t * 0.3))}deg) rotateY(${f3(cRy + 2.2 * cdr * noise(33, t * 0.27))}deg) scale(${f3((0.94 + 0.06 * cIn) * (1 - 0.04 * cmp) * (1 - 0.45 * cOut) * (1 + 0.012 * cdr * (1 - cmp)))})`;
     const tt1 = S(t, T.ceux + 0.1, P.rise), tt2 = S(t, T.pas, P.rise);
     cT1.style.opacity = f3(tt1); cT1.style.transform = `translate(${f3(hT2 * (1 - tt2))}px,${f3((1 - tt1) * 22)}px)`;
     cT2.style.opacity = f3(tt2); cT2.style.transform = `translate(${f3(hT2 * (1 - tt2))}px,${f3((1 - tt2) * 26)}px)`; cT2.style.filter = `blur(${f3((1 - tt2) * 6)}px)`;   // round 3 : glisse avec cT1

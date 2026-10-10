@@ -24,9 +24,9 @@
     shake: M('onze'),                     // la bulle « Je suis devant. » vibre
     sonne: M('sonne') - 0.03,             // elle pulse sur « sonne »
     roll: M('vingt') - 0.04,              // 11:00 → 11:20 sur « vingt »
-    stamp: M('vingt') + 0.32,             // VENDUE frappe l'étiquette (avant la mesure à 3 s)
-    go: M('vendue') + 0.05,               // la C3 garde VENDUE à l'arrêt 0,65 s, puis sort par la gauche sur « vendue »
-    bf: M('beaufrere') - 0.28,            // bulle du beau-frère : elle entre par la droite pendant que la C3 sort à gauche
+    stamp: M('vendue') - 0.08,            // VENDUE frappe l'étiquette sur « vendu » (2,64 s, avant la mesure à 3 s ; voix réelle)
+    go: ME('vendue') + 0.05,              // la C3 garde VENDUE à l'arrêt 0,45 s, puis sort par la gauche une fois « vendu. » dit
+    bf: Math.max(M('beaufrere') - 0.28, ME('vendue') + 0.43),   // bulle du beau-frère : elle entre par la droite quand la C3 a presque quitté l'image (3,48 s)
     croit: M('croit'),                    // « il n'y croit pas » : sa bulle tremble (comme le gag)
     ask: M('demande') - 0.05,             // la bulle : « Les papiers ? » (« Il demande les papiers »)
     blur: M('papiers') + 0.05,            // la caméra plonge, la C3 passe en décor flou
@@ -53,8 +53,11 @@
   T.c = T.q.map((x) => x - 0.1);
   const REW = [ME('chaud') + 0.3, M('mardi') - 0.1];        // grand rembobinage jusqu'au mardi d'avant (1,1 s)
   T.flaps = REW[1] - 0.5; T.pochM = REW[1] - 0.15;
-  T.m = [0, 1, 2, 3, 4].map((i) => T.mardi + 0.45 + 0.5 * i); // cinq cartes entrent dans la pochette, une par temps
-  T.l2 = Math.max(T.l2, T.m[4] + 0.36 + 0.3);                 // la liste grandit une fois la 5e carte posée (25,16 s)
+  // cinq cartes entrent dans la pochette, une par temps (la grille de la reprise part de T.m[0] − 0,5 : audio-mo12.py) ;
+  // voix réelle : la première entre sur « Mardi » (0,22 s après au lieu de 0,45) pour que la 5e soit posée vers « deux ans »
+  // (pas plus serré : à 0,45 s, la note d'une carte tombe à 0,09 s du « rangée » de la précédente, que le mix retire)
+  T.m = [0, 1, 2, 3, 4].map((i) => T.mardi + 0.22 + 0.5 * i);
+  T.l2 = Math.max(T.l2, T.m[4] + 0.36 + 0.3);                 // la liste grandit une fois la 5e carte posée (25,06 s)
   T.eclair = M('tu') + 0.25;   // « tu le refais » : le bandeau « Contrôle · 78 € » pulse et s'allume (nom gardé pour le son)
   T.close = ME('refais') - 0.25; T.pret = ME('refais') - 0.02;
 
@@ -202,7 +205,7 @@
 
   // ---------- B : la bulle de l'acheteur, la bulle du beau-frère, la tasse ----------
   const LB = el('div', 'L', stage);
-  const BUB = { x: 250, y: 528, h: 104 };
+  const BUB = { x: 215, y: 528, h: 104, s: 1.22 };   // échelle 1,22 : « Je suis devant. » à 16 px sur un écran de 360 px
   const ripple = el('div', 'ripple', LB, `height:${BUB.h}px`);
   const bub = el('div', 'glass bub', LB, `height:${BUB.h}px`); el('div', 'sheen', bub);
   el('div', 'n', bub).textContent = 'Acheteur';
@@ -213,8 +216,8 @@
   const QK = [[0, QW[0]], ...QIN.slice(1).map((x, i) => [x, QW[i + 1], P.flip])];
   const bfW = KP.textW('700 40px Satoshi', '20 min ? ') + KP.textW('italic 500 46px Fraunces', 'Impossible.') + 70;
   const bf = el('div', 'glass bub', LB, `width:${f3(bfW)}px;height:${BUB.h}px;border-radius:34px 34px 10px 34px;transform-origin:50% 50%`); el('div', 'sheen', bf);
-  el('div', 'n', bf).textContent = 'Beau-frère';
-  el('div', 't', bf).innerHTML = '20 min ? <span class="serif" style="font-size:46px;font-weight:500">Impossible.</span>';
+  const bfN = el('div', 'n', bf); bfN.textContent = 'Beau-frère';
+  const bfT = el('div', 't', bf); bfT.innerHTML = '20 min ? <span class="serif" style="font-size:46px;font-weight:500">Impossible.</span>';
   // la tasse au trait de lumière (même épaisseur que le contour de la voiture), deux volutes à graine fixe, périodiques
   function cup(parent, id) {
     const s = sv('svg', { width: 200, height: 240, viewBox: '-40 -80 200 240', style: 'position:absolute;left:0;top:0;overflow:visible;transform-origin:0 0' }, parent);
@@ -287,7 +290,7 @@
   const svgT = sv('svg', { width: 1080, height: 1920, viewBox: '0 0 1080 1920', style: 'position:absolute;left:0;top:0;overflow:visible' }, LT); defs(svgT, 't');
   const wChaud = word(svgT, 'encore chaud.', '500 100px Fraunces', 100, 540, 1218, { italic: true, fill: 'url(#qgt)', strokeColor: '#ffb38a', sw: 1.8 });
 
-  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:1432px;text-align:center;font:500 26px Satoshi;color:rgba(246,239,231,.55);white-space:nowrap'); mention.textContent = 'Exemple · prix moyens constatés';
+  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:1428px;text-align:center;font:500 32px Satoshi;color:rgba(246,239,231,.72);white-space:nowrap'); mention.textContent = 'Exemple · prix moyens constatés';
   const rewFx = el('div', 'L', stage, 'background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 6px);mix-blend-mode:screen');
   const flash = el('div', 'L', stage, 'background:radial-gradient(60% 45% at 50% 50%,#fff1e6,rgba(255,140,80,.6) 45%,transparent 75%);mix-blend-mode:screen');
   el('div', '', stage).id = 'grain'; el('div', '', stage).id = 'vign';
@@ -370,6 +373,9 @@
         // une carte qui sort de la pochette : son texte n'entre qu'une fois la carte sortie et passée devant (a ≥ 0,95 : jamais
         // lu à travers le verre des autres, ni coupé par la carte qui descend d'une case, round 3)
         if (s.from === 'p') { const tk = sm(0.95, 1, a); for (const e of [s.d.name.e, s.d.value.e]) e.style.opacity = f3(+e.style.opacity * tk); }
+        // une carte qui glisse depuis la droite : son texte n'entre qu'une fois sorti du masque de x = 920 (plus de « en cour »
+        // coupé à 9,7 s) ; il glisse avec la carte
+        if (s.from === 'r') { const tk = sm(0.75, 0.92, a); for (const e of [s.d.name.e, s.d.value.e]) e.style.opacity = f3(+e.style.opacity * tk); }
         // la carte se replie en bandeau en passant le liseré de la pochette (k de 2 à 3) : son texte sort au début du
         // repli et revient une fois le bandeau rangé (règle du conteneur qui se transforme, comme au mardi)
         s.fold = sm(2.02, 2.2, k) * (1 - sm(2.8, 2.98, k));
@@ -420,7 +426,7 @@
     const bw = track(st, QK), bPres = pres * (1 - sm(T.phone - 0.05, T.phone + 0.2, st));
     set(bub, bPres);
     bub.style.width = `${f3(bw)}px`;
-    bub.style.transform = `translate(${f3(BUB.x + shake)}px,${f3(BUB.y - 70 * bOut + 40 * (1 - pres))}px) scale(${f3((1 + 0.1 * pulse) * (1 - 0.12 * bOut) * (0.92 + 0.08 * pres))})`;
+    bub.style.transform = `translate(${f3(BUB.x + shake)}px,${f3(BUB.y - 70 * bOut + 40 * (1 - pres))}px) scale(${f3(BUB.s * (1 + 0.1 * pulse) * (1 - 0.12 * bOut) * (0.92 + 0.08 * pres))})`;
     const qPop = Math.max(...QIN.slice(1).map((x) => bump(st, x, 0.22)));
     if (qPop > 0) bub.style.transform += ` scale(${f3(1 + 0.04 * qPop)})`;
     qEl.forEach((e, j) => {
@@ -430,15 +436,16 @@
     });
     const rp = clamp((hk - T.sonne) / 0.5, 0, 1);
     set(ripple, (rp > 0 && rp < 1 ? 0.9 * (1 - rp) : 0) * bPres); ripple.style.width = `${f3(bw)}px`;
-    ripple.style.transform = `translate(${f3(BUB.x)}px,${BUB.y}px) scale(${f3(1 + 0.5 * rp)})`;
+    ripple.style.transform = `translate(${f3(BUB.x + bw * (BUB.s - 1) / 2)}px,${f3(BUB.y - BUB.h * (BUB.s - 1) / 2)}px) scale(${f3(BUB.s * (1 + 0.5 * rp))})`;
     const bfa = S(hk, T.bf, P.card);
     set(bf, sm(T.bf - 0.02, T.bf + 0.06, hk));
     const btr = bump(t, T.croit, 0.32), bjx = noise(24, t * 11) * 8 * btr;   // temps du film : le tremblement ne rejoue pas au retour court
     const BFS = 1.35, bfX = 540 - bfW / 2 + 380 * (1 - bfa) + bjx;
     bf.style.transform = `translate(${f3(bfX)}px,900px) rotate(${f3(-4 - 6 * (1 - bfa) + noise(23, t * 9) * 2.2 * btr)}deg) scale(${BFS})`;
     clipX(bf, bfX + bfW * (1 - BFS) / 2, bfX + bfW * (1 + BFS) / 2 + 10, BFS);
+    { const k = f3(sm(0.72, 0.9, bfa)); bfN.style.opacity = k; bfT.style.opacity = k; }   // texte entier une fois sorti du masque (jamais « Impossib »)
     const cOut = S(st, T.c[0] - 0.15, P.push);
-    paintCup(cupA, { x: 700 + 120 * cOut, y: 542 + 30 * (1 - pres) - 40 * cOut, sc: 0.86 * (1 - 0.2 * cOut) * (0.9 + 0.1 * pres), k: pres * (1 - sm(T.c[0] - 0.1, T.c[0] + 0.15, st)), t });
+    paintCup(cupA, { x: 745 + 120 * cOut, y: 542 + 30 * (1 - pres) - 40 * cOut, sc: 0.86 * (1 - 0.2 * cOut) * (0.9 + 0.1 * pres), k: pres * (1 - sm(T.c[0] - 0.1, T.c[0] + 0.15, st)), t });
 
     // M : mardi, la pochette se remplit
     const mOut = t < LOOP ? 0 : S(t, LOOP - 0.02, P.push), mK = sm(REW[1] - 0.3, REW[1] - 0.1, t) * (1 - sm(LOOP + 0.22, LOOP + 0.36, t));   // il monte et rapetisse d'abord, puis disparaît
@@ -457,7 +464,8 @@
           ring: [S(t, t0 + 0.05, P.draw), sm(t0 + 0.04, t0 + 0.1, t) * (1 - sm(t0 + 0.5, t0 + 0.7, t))] });
         // la carte se replie en bandeau en tombant sur les autres : son texte sort au début du repli et ne revient qu'à la
         // fin de la chute (dr ≥ 0,9 : moins de 35 px au-dessus de sa place, jamais sur le texte du bandeau d'au-dessus)
-        const dk = 1 - sm(0.02, 0.22, dr) * (1 - sm(0.9, 1, dr));
+        // et à l'entrée par la droite, il n'apparaît qu'une fois sorti du masque de x = 920 (plus de « Situation adr » coupé)
+        const dk = (1 - sm(0.02, 0.22, dr) * (1 - sm(0.9, 1, dr))) * sm(0.75, 0.92, a);
         if (dk < 0.999) for (const e of [d.name.e, d.value.e]) e.style.opacity = f3(+e.style.opacity * dk);
         // « Contrôle : » (pendant que la carte grise entre en haut), puis « tu le refais » : le bandeau du contrôle pulse,
         // « 6 mois » grossit

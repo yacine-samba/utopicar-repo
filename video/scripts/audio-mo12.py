@@ -399,6 +399,10 @@ if not VO_ON:
 mus_st = np.stack([mus, mus], 1)
 # voix : présence 2–5 kHz légèrement remontée
 vo = vo + bp(vo, 2000, 5000, 2) * (db(3) - 1)
+# voix réelle de Simon : crêtes de consonnes 12 à 15 dB au-dessus du corps de la phrase ; un compresseur de crête sur la
+# voix seule (4:1 au-dessus de −21 dB sous la crête, 2 ms / 80 ms) évite que le limiteur général ne travaille tout le film
+_vpk = np.abs(vo).max() + 1e-9
+VO_GDB = pcomp_gain(vo / _vpk * db(-3), thr=-24, ratio=4, att=0.002, rel=0.08, look=0.003); vo = vo * db(VO_GDB)
 vo_st = np.stack([vo, vo], 1)
 vo_st = vo_st / (np.abs(vo_st).max() + 1e-9) * db(-3)
 mix = vo_st + mus_st + fx

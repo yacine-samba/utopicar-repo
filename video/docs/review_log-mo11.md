@@ -865,3 +865,35 @@ Au repos, rien ne bouge.
 - **« Soleil bas, »** : entre 0,28 s plus tard (12,88 s, sur « tu attends ») et descend de 22 px à sa place au lieu de
   monter de 24. Le toit passe 10 px sous la ligne au repos : en montant, le texte entrait dessus. Recadrages pleine
   définition de 12,94 à 13,4 s : il ne le touche plus.
+
+## Passe finale (voix réelle) (10 octobre 2026)
+
+Prise de Simon (`takeA.mp3`, 30,6 s, boucle à 28,12 s). Contrôle aux 14 instants des repères (`mo11-final-at.jpg`,
+`renders/phone-mo11.png`, 360 px), puis `mo11-final-at2.jpg` et `-at3.jpg` après correction.
+
+| hook | lisibilite | zones_sures | mouvement | variete | marque | voix | son | recette |
+|---|---|---|---|---|---|---|---|---|
+| 8 | 8 | 8 | 7 | 8 | 8 | 8 | 7 | 8 |
+
+Corrections (`film-mo11/film.js` seul) :
+
+- **« Photo 1 »** : la voix ne laisse que 0,1 s entre « Photo » et « 1 ». Le déclic tombait à 14,25 s et l'annonce
+  couvrait l'étiquette dès 14,45 s (lisible 0,25 s). Déclic à `max(un − 0,1, photo + 0,27)` = 14,52 s (dans « 1, »),
+  annonce à déclic + 0,26 (14,78), J+4 à déclic + 0,34. L'étiquette se lit de 14,25 à 14,7 s.
+- **« Belle photo… »** passe à `max(fin de « 1 » + 0,5, J+4 + 0,48)` = 15,34 s : les quatre tics de J+4 restent dans le
+  mix (à 15,26 s, trois étaient retirés pour collision).
+- **« l'heure avant le coucher »** entrait avec « Soleil bas, » (12,85 s) : elle reprend ses 0,32 s de retard (13,23 s,
+  sur « soleil »).
+- **Lisibilité à 360 px** : dans les notifications, la ligne « Compte courant · maintenant » passe de 22 à 26 px
+  (opacité 0,7 → 0,8) et le titre de 34 à 40 px. Les lignes de la carte « Avant la photo 1 » passent de 36,8 à
+  38,4 px, et la carte ne se replie plus que de 4 % pendant le verdict (12 % avant) : 12,3 px au téléphone à 26,9 s,
+  contre 10,8. La mention passe de 26 à 28 px, opacité 0,55 → 0,66.
+- **Zones sûres** : le verre de la carte va de 150 à 930 (140 → 940 avant ; en tournant, il passait 940 de 10 px).
+  Les cartes au repos sont centrées sur x = 540 (notifications 150 → 930, carte 164 → 913 à 26,9 s), le ✗ reste dans
+  le verre (x ≈ 912).
+- `events.mjs` puis `audio-mo11.py` relancés : −14,5 LUFS, −4,0 dBTP avant AAC, 5 retraits pour collision (comme avant
+  la passe). Boucle : 30,583 s contre l'image 0, 0,01 / 255 (270 px).
+
+Reste : le mix de la prise réelle n'a que 9,7 % de son énergie entre 1 et 5 kHz (25,4 % avec la voix provisoire) :
+voix à écouter sur un haut-parleur de téléphone. Mouvement de 16,2 à 16,7 s non remesuré. Le passage de 14,45 à 15,45 s
+(annonce, J+4, messages) et l'entrée du virement sortent encore par les côtés en mouvement, comme accepté au round 3.

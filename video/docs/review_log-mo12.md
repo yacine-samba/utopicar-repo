@@ -729,3 +729,36 @@ recadrages à la définition native, et le test téléphone refait (`renders/pho
 - Son : tout le réglage (rôles, étages de crête) ne vaut que sans voix ; à remesurer et à écouter avec la vraie prise.
 - Planches à 0,1 s et notes : pas refaites.
 - Montage 540p du film entier et `qa_video.py` dessus : à refaire (environ 3 h de rendu à la charge actuelle).
+
+## Passe finale (voix réelle, 10 octobre 2026)
+
+| hook | lisibilite | zones_sures | mouvement | variete | marque | voix | son | recette |
+|---|---|---|---|---|---|---|---|---|
+| 8 | 8 | 9 | 7 | 7 | 8 | 8 | 6 | 8 |
+
+Planches regardées : `renders/review/mo12-final-at.jpg` (14 instants, avant les corrections), `mo12-final-b` à `-f.jpg`,
+`renders/phone-mo12.png` (10 instants à 360 px). Aucune erreur `PAGEERR` ni `CONSOLE`. Boucle : écart moyen 0,17 sur 255
+entre 0 et 30,79 s.
+
+**Corrections** (`film-mo12/film.js`, plus une ligne de `film-mo12/index.html`)
+- *Hook décalé par la vraie voix* : VENDUE frappait à 2,42 s, avant « vendu » (2,72 s), et la C3 repartait 0,35 s plus tard.
+  `stamp = M('vendue') − 0,08` (2,64 s), `go = ME('vendue') + 0,05` (3,10 s) : VENDUE reste à l'arrêt de 2,64 à 3,10 s.
+  La bulle du beau-frère attend que la C3 ait presque quitté l'image (`bf` = 3,48 s, posée sur « beau-frère »).
+- *Mardi* : la 5e carte n'était posée qu'à 25,0 s, « 2 ans pour rouler » entrait vers 25,45 s (« deux ans » : 24,78 s).
+  `T.m = mardi + 0,22 + 0,5 i` (la première carte entre sur « Mardi ») : la liste grandit à 25,06 s, la ligne se lit à
+  25,25 s. Toujours une carte par temps : un essai à 0,45 s faisait retirer quatre « rangée » par la règle de collision.
+- *Lisibilité à 360 px* : bulle de l'acheteur à l'échelle 1,22 (« Je suis devant. » et les questions à 16 px, « Acheteur »
+  à 12 px), `BUB.x` 215 et tasse à x = 745 pour garder le groupe centré (219 → 845) ; mention en 32 px et opacité 0,72
+  (10,7 px) ; unité des anneaux en 28 px, opacité 0,92 (`.kp-unit`).
+- *Textes coupés par le masque de x = 920* (« en cour » à 9,7 s, « Situation adr » à 22,95 s, « Impossib » à 3,6 s) :
+  le texte d'une carte ou d'une bulle qui entre par la droite n'apparaît qu'une fois sorti du masque, en glissant avec elle.
+- Régénérés : `film-mo12/events.json`, `audio/mix-mo12.wav`, `docs/mix_report-mo12.txt` (65 bruitages, aucun retiré,
+  cartes du mardi sur les temps).
+
+**Ce qui reste**
+- Son (pas modifié, pas écouté) : −14,8 LUFS, −4,0 dBTP avant AAC ; normalisation + 11,2 dB, limiteur à plus de 3 dB sur
+  36 % du film et 85 coups à plus de 6 dB, comme dans le mix livré avec la voix. Les étages de crête de `audio-mo12.py`
+  ont été réglés sans voix : à reprendre (et à écouter) avant la livraison.
+- « 2 ans pour rouler » arrive 0,45 s après « deux ans » ; au mardi, la carte qui tombe passe encore 0,1 s sur la liste.
+- Variété (7,8 → 17 s) et ouverture (rien de neuf avant les rouleaux de 2,06 s) : inchangées.
+- Montage 1080p, `qa_video.py` et planches à 0,1 s : pas refaits.
