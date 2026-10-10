@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Calculateur } from "@/components/benef/Calculateur";
 import { Peurs } from "@/components/benef/Peurs";
 import { MargeAnimee } from "@/components/benef/MargeAnimee";
+import { TroisTemps } from "@/components/accueil/TroisTemps";
 import { PrixCompact } from "@/components/site/PrixCompact";
 import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
@@ -46,9 +47,9 @@ export default async function Benef() {
             <h1 className="arrivee mx-auto mt-5 max-w-[16ch] font-display text-[clamp(36px,5.6vw,64px)] font-semibold leading-[1.03] tracking-[-0.03em] lg:mx-0" style={{ "--i": 1 } as React.CSSProperties}>
               Achetez, revendez, <span className="it">gardez la marge</span>
             </h1>
-            <p className="arrivee mx-auto mt-5 max-w-xl text-lg text-ink-2 sm:text-xl lg:mx-0" style={{ "--i": 2 } as React.CSSProperties}>
-              Marge nette, prix d&apos;offre, plafond. <b className="font-semibold text-ink">Avant d&apos;appeler.</b>
-            </p>
+            <div className="mt-6">
+              <TroisTemps etapes={[["lien", "Collez l'annonce"], ["balance", "Frais déduits"], ["verdict", "Votre marge nette"]]} />
+            </div>
             <div className="arrivee mt-7" style={{ "--i": 3 } as React.CSSProperties}>
               <Essai fournisseurs={fournisseurs} depuis="benef" familleInitiale="benef" />
             </div>

@@ -320,6 +320,48 @@ select option:disabled {
     transform: translateY(28px) scale(0.96);
   }
 }
+/* Balayage d'analyse sur la photo, et étiquettes qui passent (« Analyse… » puis le résultat) : transform et opacité seulement. */
+.scene .balayage {
+  animation: balaye 1.15s var(--ease-doux) both;
+  animation-delay: var(--d, 0s);
+}
+.scene .passe {
+  animation: passe 1.2s linear both;
+  animation-delay: var(--d, 0s);
+}
+:root[data-anim] .attend:not(.vu) .scene .balayage,
+:root[data-anim] .attend:not(.vu) .scene .passe {
+  animation-play-state: paused;
+}
+:root[data-calme] .scene .balayage,
+:root[data-calme] .scene .passe {
+  display: none;
+}
+@keyframes balaye {
+  from {
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(260%);
+    opacity: 0;
+  }
+}
+@keyframes passe {
+  0% {
+    opacity: 0;
+  }
+  12%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 @keyframes surgit {
   from {
     opacity: 0;

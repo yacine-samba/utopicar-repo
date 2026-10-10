@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { EXEMPLES } from "@/lib/demo";
 
 /* La marge, sans paragraphe : une vraie photo, et par-dessus, en 2 secondes, revente − achat − frais = la marge, en très grand.
-   Mêmes chiffres que le premier scénario du calculateur. CSS seul (classes « scene » de globals.css). */
+   Mêmes chiffres que le premier scénario du calculateur. CSS seul (classes « scene », « balayage », « passe » de globals.css). */
 
 const d = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
 const REVENTE = 6300, ACHAT = 5000, FRAIS = 630;
@@ -21,8 +21,21 @@ export function MargeAnimee() {
         <img src={EXEMPLES.yaris.photos[0]} alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.3)_0%,transparent_25%,transparent_35%,rgb(0_0_0/0.9)_100%)]" />
 
-        <div className="pas absolute right-4 top-4 rotate-0 rounded-xl border-2 border-[#3ecb7f] bg-black/40 px-3 py-1 font-display text-2xl font-bold tracking-wider text-[#3ecb7f] backdrop-blur-md" style={d(1.6)}>
-          GO
+        {/* le calcul passe sur la photo, puis le verdict : GO = à acheter */}
+        <div className="balayage pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(255_90_31/0.28))] shadow-[0_6px_24px_rgb(255_90_31/0.55)]" style={d(0.1)} />
+        <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/50 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-md">
+          <span className="grid">
+            <span className="passe col-start-1 row-start-1 flex items-center gap-1.5" style={d(0.05)}>
+              <span className="size-1.5 animate-pulse rounded-full bg-o" /> Calcul…
+            </span>
+            <span className="pas col-start-1 row-start-1 whitespace-nowrap" style={d(1.15)}>
+              Frais réels déduits
+            </span>
+          </span>
+        </div>
+        <div className="pas absolute right-4 top-4 grid justify-items-center rounded-xl border-2 border-[#3ecb7f] bg-black/45 px-3 py-1 text-[#3ecb7f] backdrop-blur-md" style={d(1.6)}>
+          <span className="font-display text-2xl font-bold leading-none tracking-wider">GO</span>
+          <span className="text-[10px] font-semibold uppercase tracking-wide">à acheter</span>
         </div>
 
         <div className="absolute inset-x-4 bottom-4 grid gap-3 text-white">

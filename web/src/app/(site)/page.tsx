@@ -4,6 +4,7 @@ import { Defile } from "@/components/site/Defile";
 import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
 import { PreuveAnimee } from "@/components/accueil/PreuveAnimee";
+import { TroisTemps } from "@/components/accueil/TroisTemps";
 import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
@@ -44,9 +45,9 @@ export default async function Accueil() {
             <h1 className="arrivee mx-auto max-w-[17ch] font-display text-[clamp(36px,5.6vw,62px)] font-semibold leading-[1.02] tracking-[-0.03em] lg:mx-0">
               Voyez en 10 secondes si une occasion est <Rotateur mots={["une vraie affaire", "une arnaque", "à négocier", "au bon prix"]} />
             </h1>
-            <p className="arrivee mx-auto mt-5 max-w-xl text-lg text-ink-2 sm:text-xl lg:mx-0" style={{ "--i": 1 } as React.CSSProperties}>
-              Cote, défauts, prix à proposer. <b className="font-semibold text-ink">En 10 secondes.</b>
-            </p>
+            <div className="mt-6">
+              <TroisTemps etapes={[["lien", "Collez l'annonce"], ["balance", "Comparée au marché"], ["verdict", "Verdict et prix"]]} />
+            </div>
             <div className="arrivee mt-7" style={{ "--i": 2 } as React.CSSProperties}>
               <Essai fournisseurs={fournisseurs} depuis="hero" />
             </div>
