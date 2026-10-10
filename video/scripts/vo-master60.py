@@ -1,4 +1,8 @@
-"""master60 : pose de la voix de Simon (prise corps-2 + ouvertures A1 / B2).
+"""master60 : pose de la voix de Simon.
+
+Version retenue : eleven_v4 (demande de l'utilisateur, 10 oct.), prises `v4/corps-2`, `v4/hookA-2`, `v4/hookB-1`
+(corps-1 : « Digne » au lieu de « Ding » ; ouvertures choisies au plus près de la hauteur du corps).
+Version précédente, eleven_v3 : `v2/corps-2`, `v2/hookA-1`, `v2/hookB-2` (VERSION=v3).
 
 Les prises eleven_v3 laissent de longs silences (28 s sur 74 s). On garde chaque morceau de parole tel quel et on
 ramène les silences à une respiration (0,26 s), sauf les silences voulus : avant « Non. » (le gag) et avant les
@@ -10,10 +14,12 @@ usage : python3 scripts/vo-master60.py            (depuis video/)
 import json, subprocess, sys, os
 import numpy as np, soundfile as sf, librosa, av
 
-D = 'audio/vo-master60/v2'
+VERSION = os.environ.get('VERSION', 'v4')
+PRISES = {'v4': ('audio/vo-master60/v4', 'corps-2', 'hookA-2', 'hookB-1', 1.0),
+          'v3': ('audio/vo-master60/v2', 'corps-2', 'hookA-1', 'hookB-2', 1.08)}
+D, CORPS, HA, HB, SPEED = PRISES[VERSION]
 OUT = 'audio/vo-master60'
 SR = 44100
-SPEED = 1.08
 RESPI = 0.26        # silence courant après pose (respiration)
 LONGS = {           # mot qui SUIT le silence → durée voulue (s)
     'Non': 0.65, 'UTOPICAR': 0.45, 'Cette': 0.5, 'Quinze': 0.45, 'Hop': 0.45, 'Tu débutes': 0.45, 'Essaie': 0.5, 'Tu chiffres': 0.5,
@@ -66,13 +72,15 @@ def pose(f, ws):
     return tmp
 
 def accel(src, dst):
+    if SPEED == 1.0:
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-ar', str(SR), dst], check=True); os.remove(src); return
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-af', f'atempo={SPEED}', '-ar', str(SR), dst], check=True)
     os.remove(src)
 
 if __name__ == '__main__':
-    W = {k: words(f'{D}/{k}.mp3') for k in ('corps-2', 'hookA-1', 'hookB-2')}
-    corps = pose(f'{D}/corps-2.mp3', W['corps-2'])
-    for h, nom in (('hookA-1', 'A'), ('hookB-2', 'B')):
+    W = {k: words(f'{D}/{k}.mp3') for k in (CORPS, HA, HB)}
+    corps = pose(f'{D}/{CORPS}.mp3', W[CORPS])
+    for h, nom in ((HA, 'A'), (HB, 'B')):
         hk = pose(f'{D}/{h}.mp3', W[h])
         a, _ = librosa.load(hk, sr=SR); c, _ = librosa.load(corps, sr=SR); os.remove(hk)
         tmp = f'{OUT}/vo-placed-{nom}.tmp.wav'
@@ -80,4 +88,4 @@ if __name__ == '__main__':
         accel(tmp, f'{OUT}/vo-placed-{nom}.wav')
         print(nom, round(sf.info(f'{OUT}/vo-placed-{nom}.wav').duration, 2), 's')
     os.remove(corps)
-    json.dump(W, open(f'{OUT}/words-prises.json', 'w'), ensure_ascii=False, indent=1)
+    json.dump(W, open(f'{OUT}/words-prises-{VERSION}.json', 'w'), ensure_ascii=False, indent=1)
