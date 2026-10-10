@@ -626,3 +626,106 @@ Le son n'a pas été écouté. La voix est estimée : la vraie prise de Simon d�
 bulle pendant « Il demande les papiers » et du limiteur. Le hook B n'a pas d'image propre à juger (même film). Le
 montage 540p n'a pas été regardé en lecture continue : ses images ont été comparées aux planches (zones sûres,
 3,25 à 3,45 s).
+
+### Corrections appliquées après la critique du round 3 (10 octobre 2026)
+
+Fichiers modifiés : `film-mo12/film.js`, `film-mo12/index.html` (classe `.kp-dur`), `lib/kit47-pochette.js` (durée écrite
+dans le bandeau, remise à zéro de `lit`), `scripts/audio-mo12.py`, `brief-mo12.md` et `docs/timeline-mo12.md`
+(bandeaux, bulle « Les papiers ? », fin de l'éclair). Régénérés : `film-mo12/events.json` (nouveaux repères `ask`
+5,639 et `ctl` 24,116 ; `l2` 24,895 → 25,16 ; `l6` 26,192 → 26,022), `audio/mix-mo12.wav`, `audio/stems-mo12/`,
+`docs/mix_report-mo12.txt`, `renders/phone-mo12.png`, six images pleine définition dans `renders/stills-mo12/` (0 ·
+13,75 · 20,98 · 25,5 · 28,9 · 31,033 s). Les repères de la voix n'ont pas bougé : `vo-mo12.py` n'a pas été relancé.
+Aucun appel ElevenLabs. `lib/kit47.js`, `film-mo9/`, `film-mo10/` et leurs scripts n'ont pas été touchés.
+
+**Vérifié sur des images regardées** : `renders/review/mo12-r3-fix-a.jpg` (rembobinage et liste, 24 instants),
+`mo12-r3-fix-b.jpg` et `mo12-r3-fix-c.jpg` (rembobinage, bulle, cartes qui sortent de la pochette, verdict), les deux
+planches demandées par la critique, `mo12-r3-regle.jpg` (24,9 → 26,4 s) et `mo12-r3-rew.jpg` (20,8 → 21,1 s), des
+recadrages à la définition native, et le test téléphone refait (`renders/phone-mo12.png`, 15 instants à 360 px : 0 ·
+2,9 · 5,9 · 8,45 · 13,75 · 16,4 · 20,9 · 21,04 · 24,0 · 24,16 · 25,5 · 26,9 · 28,9 · 29,3 · 31,033 s). Les planches à
+0,1 s n'ont pas été refaites.
+
+**Les 3 problèmes graves**
+1. *Les durées de la pochette.* Dans un bandeau, l'anneau cède la place à sa durée écrite : `doc()` crée `D.dur` quand la
+   spécification a `dur` (Clash 700 38 px, orange clair, 12,7 px à 360) ; `paintDoc()` la fait entrer entre `b = 0,85` et
+   `1` (glissement de 16 px et échelle 0,86 → 1, pas seulement l'opacité) pendant que l'anneau rapetisse de 30 % et
+   sort. Les noms partent de x = 184 (`durX`), les deux lignes du contrôle aussi. `MD` : `6 mois`, `15 j`, `15 j`,
+   `1 mois`, `15 j`. Sur `phone-mo12.png` (25,5 · 26,9 · 28,9 · 29,3 s), les cinq durées se lisent, unité comprise ;
+   « Déclaration · ANTS » finit loin de « 0 € », « Carte grise » loin de « à barrer ». Les cartes de la scène (7,8 →
+   17 s) gardent leur anneau, lisible en grand ; leurs bandeaux, dans la pochette de la scène, gardent l'anneau réduit
+   (ils passent : la liste à garder est celle du mardi).
+2. *La règle du contrôle.* `T.l2 = max(M('deuxans') − 0,05, T.m[4] + 0,66)` = 25,16 s : la liste grandit une fois la
+   cinquième carte posée. Les deux lignes entrent quand le bandeau a fait la place (`sm(0.85, 1, g)`, montée de 14 px).
+   Le texte d'une carte qui tombe revient à `sm(0.9, 1, dr)`, à moins de 35 px de sa place. **En plus de la critique** :
+   comme la ligne entre 0,2 s après le début de l'agrandissement, `T.l6` passe à `M('sixmois') − 0,22` (26,02 s) pour que
+   « < 6 mois à sa carte grise » se pose sur « six mois » (26,24 s), et les deux notes claires suivent le texte
+   (`l2 + 0,2` = 25,36 s, `l6 + 0,2` = 26,22 s). La note « carte 5 rangée », que la note de « 2 ans » faisait retirer
+   pour collision, revient. Vérifié sur `mo12-r3-regle.jpg` : 24,9 (la déclaration au-dessus de la liste), 25,0 (la
+   carte qui tombe, sans texte, passe sur « Cession » : 0,1 s), 25,1 (elle finit sa chute, son texte à demi allumé sur
+   sa propre ligne, sous « Carte grise »), 25,2 (liste propre), 25,3 (le bandeau grandit, sans texte), 26,2 (« 2 ans
+   pour rouler » seul, le bandeau grandit encore), 26,3 et 26,4 (les deux lignes). Aucun texte sur un autre.
+3. *Le rembobinage.* Le « 20 » revient en deux temps, comme à l'aller. `back` : ressort critique `{ f: 3.4, z: 1 }` lancé
+   à `REW[0] − 0,06` (20,776 s), ramené à 1 à 96 % : il se pose à 21,011 s (`BKL`, calculé une fois). Le chiffre
+   rapetisse vers la case des minutes (`s20 × (1 − back)`), « min » sort en premier ; son calque reprend peu à peu la
+   caméra de l'horloge et perd son lent zoom, pour se poser dans la case ; le centre visé passe de 686 à 698 (milieu des
+   deux cases des minutes, 630 et 766), ce qui vaut aussi pour l'aller. Le chiffre sort entre `back` 0,97 et 1, les
+   cases reviennent entre 0,96 et 1. Le voile ne se lève qu'après la pose, de 21,011 à 21,171 s (temps du film) :
+   pendant le rembobinage, `on20` et `st20` figent les facteurs pris sur le temps du récit, qui coupaient tout vers
+   20,97 s quand ce temps repasse sous « 20 min ». La tasse garde sa sortie. Vérifié sur `mo12-r3-rew.jpg`,
+   `fix-b` et `fix-c` : de 20,80 à 20,92 s, le 20 monte et rapetisse seul, la tasse et « encore chaud. » sortent vers
+   le haut ; à 20,98 s, il se pose dans l'horloge (deux images de recouvrement avec les cases : le « 20 » géant est plus
+   serré que les deux cases, environ 30 px d'écart par chiffre) ; à 21,04 s, « 11:19 » seul sur le voile ; à 21,10 s, la
+   scène réapparaît sous l'horloge (11:18) et se rembobine. Aucune image ne superpose deux scènes. L'horloge ne
+   montre « 20 » que deux images avant de redescendre (le temps du récit repasse 11:20 à 21,03 s).
+
+**Les autres points**
+4. *Son* (sans voix, comme le dit la critique). Rôles `accent`, `ui` et `chime` baissés de 4 dB ; étages de crête copiés
+   de `audio-mo13.py` : sur la musique, compresseur doux (−28 dBFS avant normalisation, 2,5:1, moyenné sur 10 ms) puis
+   détecteur de crête (−22 dBFS, 4:1, attaque 3 ms, relâche 150 ms), qui lisent la musique sans sa courbe d'élan ; sur
+   les bruitages, détecteur de crête (−24 dBFS, 3:1, 1 ms / 80 ms). Les trois ne jouent que tant que la voix est muette.
+   Musique − 3 dB pendant 0,4 s au retour de la basse (12,20 s). Résultat : réduction du limiteur au plus 5,7 dB
+   (3,51 s), **2,8 % du film à plus de 3 dB** (19,6 % au mix précédent, 22 % mesuré par la critique), **aucun coup à
+   plus de 6 dB** (17 mesurés par la critique) ; les étages prennent 1,2 dB à la musique en médiane, 5,1 dB au 95e centile, 8,8 dB au plus aux
+   bruitages. Mix à −14,1 LUFS, −4,1 dBTP avant AAC. Les contrastes du mix tiennent : premier temps (0,19 → 0,29 s)
+   + 2,1 dB au-dessus des 0,15 premières secondes (+ 2,7 sans les étages), retour de la basse + 6,2 dB (+ 6,5). Deux
+   effets de bord : le rapport donne « premier temps à 0,002 s » (la mesure prend le premier échantillon au-dessus de
+   la moitié de la crête des 0,5 premières secondes ; l'étage aplatit le coup de 0,2 s, la grille n'a pas bougé), et
+   l'attente se creuse un peu moins (grave − 9,4 dB et niveau − 5,9 dB, contre − 11,0 et − 7,0). Une ligne du rapport
+   donne maintenant le travail des étages et le nombre de coups à plus de 6 dB. Rien n'a été écouté.
+5. *Textes transitoires de la scène.* Le texte d'une carte qui sort de la pochette entre à `sm(0.95, 1, a)` et la carte
+   passe au premier plan à `a ≥ 0,95` (avant : texte dès 0,75, premier plan à 0,97). Vérifié : à 8,40 s, la carte
+   « Situation adm. » monte derrière « Contrôle » sans texte ; à 8,45 s, elle passe devant et son texte entre ; à
+   13,70 s, la déclaration est encore derrière le virement, sans texte (« 0,00 € » n'est plus coupé) ; à 13,75 s, elle
+   est pleine. Le texte de la carte est plein vers `T.q + 0,18 s`, la question à `T.q + 0,16 s`.
+7. *L'éclair* est retiré. Sur « refais » (`T.eclair` = 28,77 s), le bandeau « Contrôle » pulse (échelle 1,03, « 6 mois »
+   1,2) et son « 78 € » s'allume en orange jusqu'au départ du mardi : il désigne le contrôle refait. Le son garde son
+   repère. Vu à 28,8 · 28,9 · 29,1 · 29,3 s, et à 360 px (28,9 · 29,3 s).
+9. *La bulle* dit « Les papiers ? » de 5,64 s (`M('demande') − 0,05`) à 7,87 s, avec le même changement de largeur que
+   les autres questions. Vue à 5,9 · 6,5 · 7,3 s et à 360 px (5,9 s). Au rembobinage, elle repasse à « Je suis devant. »
+   avant la fin (temps du récit 5,2 s) : l'image 0 ne change pas.
+11. *« Contrôle : »* : le bandeau du contrôle pulse 0,36 s à partir de 24,116 s (`T.ctl`), « 6 mois » grossit. Vu à
+    24,16 s (planche et 360 px).
+- **Correction du contrat de rendu, en plus de la critique** : `paintDoc` ne rendait pas la couleur d'origine quand `lit`
+  revenait à 0 ; la couleur dépendait de la dernière image peinte (au rembobinage, « 0,00 € » restait orange). Elle est
+  maintenant remise à zéro : l'image ne dépend que de t.
+
+**Mesures après corrections**
+- Boucle : écart moyen 0,095 sur 255 entre `t00.000` et `t31.033` (inchangé : le début et la fin n'ont pas bougé).
+- Aucune erreur `PAGEERR` ni `CONSOLE` (`at.mjs`, `render.mjs --at` et `--phone`, `events.mjs`).
+- Montage 540p : **pas refait en entier.** Le rendu `--draft` lancé à 12 h 52 tournait à 6 s par image (trois Chromium
+  se partageaient les 4 cœurs) et s'est arrêté à la limite d'une heure, à 9,78 s ; `ffmpeg -y` avait déjà effacé le
+  montage du round 2. Le morceau est rangé dans `renders/review/mo12-r3-draft-partiel-0-9.8s.mp4` : `qa_video.py`
+  (`renders/review/qa-mo12-r3-partiel/`) n'y trouve aucun FAIL (−14,2 LUFS et −4,1 dBTP sur ces 9,8 s, le même WARN de
+  marge gauche : la C3 qui sort, de 3,25 à 3,50 s). `renders/draft-mo12-9x16.mp4` n'existe plus.
+
+**Ce qui reste**
+- 6. Au mardi, la carte qui tombe passe sur la liste (24,0 s : un bandeau vide sur « Contrôle » et « Situation adm. »,
+  0,1 à 0,15 s) et chaque carte reste sans texte environ 0,2 s pendant son repli. Inchangé, comme la critique l'admet.
+- 8. Ouverture : rien de neuf n'entre de 0 à 2,22 s, et l'image 0 revient immobile de 30,2 à 31,05 s. À revoir avec la
+  vraie prise de Simon.
+- 10. Variété : de 7,8 à 17 s, la même forme revient neuf fois ; de 13,8 à 14,85 s, seule la caméra bouge. Pas touché.
+- 12. Les rouleaux de 2,22 s : pas touchés. La sonnette (rôle `chime`) est 4 dB plus bas sans voix, donc les rouleaux
+  ressortent d'autant ; pas remesuré dans les aigus, pas écouté.
+- Au rembobinage, deux images de recouvrement entre le « 20 » géant et les cases de l'horloge (20,98 s), comme à l'aller.
+- Son : tout le réglage (rôles, étages de crête) ne vaut que sans voix ; à remesurer et à écouter avec la vraie prise.
+- Planches à 0,1 s et notes : pas refaites.
+- Montage 540p du film entier et `qa_video.py` dessus : à refaire (environ 3 h de rendu à la charge actuelle).
