@@ -3,8 +3,20 @@
  "style": "MO13 « Avec 1 500 € » : ≈ 31,3 s, voix Simon (minutage provisoire), trois reventes enchaînées sur un escalier de verre, le compteur COMPTE suit l'argent du compte (1 500 → 3 100 €), puis budget − réserve = prix max appliqué quatre fois",
  "fps": 60,
  "bpm": 120,
- "size": [1080, 1920],
+ "size": [
+  1080,
+  1920
+ ],
  "dur": 31.45,
  "poster": 0,
- "hooks": { "A": { "dur": 31.45, "poster": 0 }, "B": { "dur": 30.85, "poster": 0 } }
+ "hooks": {
+  "A": {
+   "dur": 31.45,
+   "poster": 0
+  },
+  "B": {
+   "dur": 30.85,
+   "poster": 0
+  }
+ }
 }

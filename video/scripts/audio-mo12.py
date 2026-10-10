@@ -33,7 +33,7 @@ VT = json.load(open(A('vo-mo12', 'vo-timing.json')))
 EV = json.load(open(os.path.join(ROOT, 'film-mo12', 'events.json')))
 # events.json doit venir du même minutage que la voix (sinon : relancer CUT=mo12 node scripts/events.mjs)
 for k in ('dur', 'loop', 'provisional'):
-    if EV.get(k) != VT.get(k):
+    if (bool(EV.get(k)) != bool(VT.get(k))) if k == 'provisional' else (EV.get(k) != VT.get(k)):
         raise SystemExit(f'film-mo12/events.json périmé ({k} : film {EV.get(k)} ≠ voix {VT.get(k)}) : '
                          'relancer « CUT=mo12 node scripts/events.mjs » après la pose de la voix')
 DUR = VT['dur']

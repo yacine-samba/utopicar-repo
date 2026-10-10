@@ -1,114 +1,116 @@
-MO11 A · mix : -14.2 LUFS intégrés, true peak -3.8 dBTP (avant AAC)
-voix : PROVISOIRE — piste muette : ducking, écart voix/musique et niveau final à refaire avec la prise
-musique : Controlled Drop à 124.0 BPM ramené à 120 (× 0.9677) ; chute de la mesure 13 à -0.717 s, reprise (mesure 55) à 21.180 s
-  mesures remplacées (sortie ← passage) : 3 (5.28 s) ← 8, 4 (7.28 s) ← 8, 7 (13.28 s) ← 1, 9 (17.28 s) ← 8
-  « + 400 € » : 9.0 mesures après la chute (premier temps) ; attaque de la musique la plus forte à ± 0,1 s : -2 ms (-0.1 image)
-  attaque mesurée de la reprise : 21.177 s (visée 21.180, -3 ms (-0.2 image))
-arrêt de bande : départ 17.283 s, « + 400 € » à 17.283 s → écart +0 ms (+0.0 image) ; musique −6 dB à +94 ms (+5.6 image), −20 dB à +170 ms (+10.2 image), muette (−50 dB) à +214 ms (+12.9 image)
-la seule pause : musique 17.58 → 20.40 s à -211 dBFS crête ; reprise à 21.18 s
-son dès 0 s : RMS 0–0,1 s -15.7 dBFS, 0–0,5 s -16.4 dBFS ; 2 premières s -15.7 LUFS contre -14.1 sur le reste
-bruitages placés : 88 · retirés pour collision : 5 2369@2.64, 1054@9.86, 1490@10.83, 1119@15.20, 1119@15.26
-téléphone : 36 % de l'énergie sous 150 Hz, 20.4 % entre 1 et 5 kHz
-RMS ouverture   0.00 →  4.79 s  -17.7 dBFS
-RMS six coups   5.96 → 11.36 s  -17.1 dBFS
-RMS soleil     11.90 → 14.52 s  -17.1 dBFS
-RMS vente      14.52 → 17.28 s  -16.7 dBFS
-RMS + 400 €    17.28 → 17.78 s  -13.8 dBFS
-RMS pause      17.78 → 18.67 s  -29.3 dBFS
-RMS samedi     18.67 → 20.40 s  -33.2 dBFS
-RMS méthode    21.18 → 27.83 s  -17.2 dBFS
-RMS boucle     27.83 → 30.15 s  -16.8 dBFS
+MO11 A · mix : -14.5 LUFS intégrés, true peak -4.0 dBTP (avant AAC)
+voix : prise posée
+musique : Controlled Drop à 124.0 BPM ramené à 120 (× 0.9677) ; chute de la mesure 13 à -0.778 s, reprise (mesure 55) à 21.190 s
+  mesures remplacées (sortie ← passage) : 3 (5.22 s) ← 8, 4 (7.22 s) ← 8, 7 (13.22 s) ← 1, 9 (17.22 s) ← 8
+  « + 400 € » : 9.0 mesures après la chute (premier temps) ; attaque de la musique la plus forte à ± 0,1 s : +1 ms (+0.1 image)
+  attaque mesurée de la reprise : 21.168 s (visée 21.190, -22 ms (-1.3 image))
+arrêt de bande : départ 17.222 s, « + 400 € » à 17.222 s → écart +0 ms (+0.0 image) ; musique −6 dB à -92 ms (-5.5 image), −20 dB à +125 ms (+7.5 image), muette (−50 dB) à +210 ms (+12.6 image)
+la seule pause : musique 17.52 → 20.36 s à -231 dBFS crête ; reprise à 21.19 s
+son dès 0 s : RMS 0–0,1 s -19.6 dBFS, 0–0,5 s -16.8 dBFS ; 2 premières s -13.9 LUFS contre -14.6 sur le reste
+bruitages placés : 88 · retirés pour collision : 5 2369@2.66, 1832@9.20, 1490@9.27, 1490@10.02, 1490@10.77
+téléphone : 34 % de l'énergie sous 150 Hz, 9.6 % entre 1 et 5 kHz
+RMS ouverture   0.00 →  4.77 s  -17.1 dBFS
+RMS six coups   5.59 → 11.30 s  -18.3 dBFS
+RMS soleil     11.93 → 14.25 s  -18.0 dBFS
+RMS vente      14.25 → 17.22 s  -17.9 dBFS
+RMS + 400 €    17.22 → 17.72 s  -15.9 dBFS
+RMS pause      17.72 → 18.85 s  -30.2 dBFS
+RMS samedi     18.85 → 20.36 s  -15.7 dBFS
+RMS méthode    21.19 → 28.12 s  -17.1 dBFS
+RMS boucle     28.12 → 30.60 s  -17.5 dBFS
+voix au-dessus de la musique / des bruitages, par réplique (dB) : h1 18/35, h2 20/34, asp 19/19, sam 18/23, sieg 18/15, odeur 20/22, enjo 19/21, soleil 18/15, photo 18/19, c400 22/9, paye seule/32, ceux 19/23, pchocs 17/28, ongle 19/24, polish 14/20, proch 17/25
+  musique : minimum 14.1 dB, médiane 18.5 dB ; bruitages : minimum 9.1 dB, médiane 22.5 dB (visé : ≥ 7 dB)
 repérage (t, son, rôle, priorité) :
-    0.15   2589  orn    p2  la plume rallume « 2 000 »
-    1.55   2589  orn    p3  … descend la flèche
-    1.87   3005  orn    p2  « 2 900 » se rallume
-    2.64   2369  orn    p3  RETIRÉ le « ? » vacille
-    2.69   2608  whoosh p2  la plume plonge et devient l'embout (crête sur l'aspiration)
-    2.99   1465  tool   p2  l'embout aspire la bande, de l'aile à la portière
-    3.78   3005  orn    p2  la fente efface « telle quelle ? », « C'est donné. » s'écrit
-    3.97   1054  tick   p2  « 2 ?00 » : le rouleau tourne
-    4.71   3120  whoosh p2  le calcul se replie en compteur
-    4.95   1119  tick   p3  palettes SAMEDI · 13:00
-    5.02   1119  tick   p3  palettes SAMEDI · 13:00
-    5.09   1119  tick   p3  palettes SAMEDI · 13:00
-    5.16   1119  tick   p3  palettes SAMEDI · 13:00
-    5.23   1119  tick   p3  palettes SAMEDI · 13:00
-    5.96   3215  tool   p2  lavage : le jet suit la ligne
-    6.08   1490  whoosh p3  la notification arrive (elle part 0,2 s avant son débit)
-    6.28   2354  ui     p1  débit 1 (note + 0) : la carte se pose, pendant l'arrêt de la ligne
-    6.61   1054  tick   p3  impulsion : le compteur roule
-    6.88    850  tool   p2  phares : ponçage court (round 3 : au départ de la ligne, le débit du lavage tombe 0,6 s avant)
-    7.08   1490  whoosh p3  la notification arrive (elle part 0,2 s avant son débit)
-    7.28   2354  ui     p1  débit 2 (note + 1) : la carte se pose, pendant l'arrêt de la ligne
-    7.61   1054  tick   p3  impulsion : le compteur roule
-    7.80   1835  tool   p2  sièges : aspiration humide
-    8.08   1490  whoosh p3  la notification arrive (elle part 0,2 s avant son débit)
-    8.28   2354  ui     p1  débit 3 (note + 2) : la carte se pose, pendant l'arrêt de la ligne
-    8.61   1054  tick   p3  impulsion : le compteur roule
-    8.83   3183  coin   p1  une pièce
-    8.90   3183  coin   p1  une pièce
-    8.97   3183  coin   p1  une pièce
-    9.04   3183  coin   p1  une pièce
-    9.18   1832  tool   p2  odeur : la molette, puis le souffle (après les pièces)
-    9.33   1490  whoosh p3  la notification arrive (elle part 0,2 s avant son débit)
-    9.53   2354  ui     p1  débit 4 (note + 3) : la carte se pose, pendant l'arrêt de la ligne
-    9.86   1054  tick   p3  RETIRÉ impulsion : le compteur roule
-    9.93   3087  tool   p2  rayure : le polish passé à la main
-   10.08   1490  whoosh p3  la notification arrive (elle part 0,2 s avant son débit)
-   10.28   2354  ui     p1  débit 5 (note + 4) : la carte se pose, pendant l'arrêt de la ligne
-   10.42   2589  orn    p3  … la rayure disparaît, scintillement (round 3 : 0,12 s après la fin de l'arrêt, où tombe le débit)
-   10.61   1054  tick   p3  impulsion : le compteur roule
+    0.17   2589  orn    p2  la plume rallume « 2 000 »
+    1.38   2589  orn    p3  … descend la flèche
+    1.60   3005  orn    p2  « 2 900 » se rallume
+    2.66   2369  orn    p3  RETIRÉ le « ? » vacille
+    2.71   2608  whoosh p2  la plume plonge et devient l'embout (crête sur l'aspiration)
+    3.01   1465  tool   p2  l'embout aspire la bande, de l'aile à la portière
+    3.53   3005  orn    p2  la fente efface « telle quelle ? », « C'est donné. » s'écrit
+    3.72   1054  tick   p2  « 2 ?00 » : le rouleau tourne
+    4.69   3120  whoosh p2  le calcul se replie en compteur
+    4.93   1119  tick   p3  palettes SAMEDI · 13:00
+    5.00   1119  tick   p3  palettes SAMEDI · 13:00
+    5.07   1119  tick   p3  palettes SAMEDI · 13:00
+    5.14   1119  tick   p3  palettes SAMEDI · 13:00
+    5.21   1119  tick   p3  palettes SAMEDI · 13:00
+    5.59   3215  tool   p2  lavage : le jet suit la ligne
+    5.77   1490  whoosh p3  la notification arrive (elle part 0,2 s avant son débit)
+    5.97   2354  ui     p1  débit 1 (note + 0) : la carte se pose, pendant l'arrêt de la ligne
+    6.30   1054  tick   p3  impulsion : le compteur roule
+    6.74    850  tool   p2  phares : ponçage court (round 3 : au départ de la ligne, le débit du lavage tombe 0,6 s avant)
+    7.02   1490  whoosh p3  la notification arrive (elle part 0,2 s avant son débit)
+    7.22   2354  ui     p1  débit 2 (note + 1) : la carte se pose, pendant l'arrêt de la ligne
+    7.55   1054  tick   p3  impulsion : le compteur roule
+    7.88   1835  tool   p2  sièges : aspiration humide
+    8.02   1490  whoosh p3  la notification arrive (elle part 0,2 s avant son débit)
+    8.22   2354  ui     p1  débit 3 (note + 2) : la carte se pose, pendant l'arrêt de la ligne
+    8.55   1054  tick   p3  impulsion : le compteur roule
+    8.87   3183  coin   p1  une pièce
+    8.94   3183  coin   p1  une pièce
+    9.01   3183  coin   p1  une pièce
+    9.08   3183  coin   p1  une pièce
+    9.20   1832  tool   p2  RETIRÉ odeur : la molette, puis le souffle (après les pièces)
+    9.27   1490  whoosh p3  RETIRÉ la notification arrive (elle part 0,2 s avant son débit)
+    9.47   2354  ui     p1  débit 4 (note + 3) : la carte se pose, pendant l'arrêt de la ligne
+    9.80   1054  tick   p3  impulsion : le compteur roule
+    9.94   3087  tool   p2  rayure : le polish passé à la main
+   10.02   1490  whoosh p3  RETIRÉ la notification arrive (elle part 0,2 s avant son débit)
+   10.22   2354  ui     p1  débit 5 (note + 4) : la carte se pose, pendant l'arrêt de la ligne
+   10.43   2589  orn    p3  … la rayure disparaît, scintillement (round 3 : 0,12 s après la fin de l'arrêt, où tombe le débit)
+   10.55   1054  tick   p3  impulsion : le compteur roule
    10.75    486  tool   p2  enjoliveurs : le neuf se clipse à l'arrêt de la ligne
-   10.83   1490  whoosh p3  RETIRÉ la notification arrive (elle part 0,2 s avant son débit)
-   11.03   2354  ui     p1  débit 6 (note + 5) : la carte se pose, pendant l'arrêt de la ligne
-   11.36   1054  tick   p3  impulsion : le compteur roule
-   11.65   1490  whoosh p3  la pile de débits sort
-   11.80   1492  whoosh p2  la lumière tombe
-   11.98   2384  ui     p2  le compteur se pose à 3 330 €
-   12.43   1119  tick   p3  l'horloge accélère
-   12.72   1119  tick   p3  l'horloge accélère
-   12.96   1119  tick   p3  l'horloge accélère
-   13.17   1119  tick   p3  l'horloge accélère
-   13.36   1119  tick   p3  l'horloge accélère
-   13.54   1119  tick   p3  l'horloge accélère
-   13.70   1119  tick   p3  l'horloge accélère
-   13.84   2589  orn    p3  le viseur se referme
-   14.52   1133  ui     p1  déclic de la photo 1 (sec)
-   14.68   1490  whoosh p2  la photo part dans l'écran du téléphone
-   15.08   1119  tick   p3  palettes J+4
-   15.14   1119  tick   p3  palettes J+4
-   15.20   1119  tick   p3  RETIRÉ palettes J+4
-   15.26   1119  tick   p3  RETIRÉ palettes J+4
-   15.30   2354  ui     p2  « Belle photo. Toujours dispo ? »
-   15.65   2384  ui     p2  « Je passe demain ? »
-   15.90   2354  ui     p1  « 3 300 et je la prends. »
-   16.10   2589  orn    p3  « 3 300 » part de la bulle vers le compteur (round 3)
-   16.37   1054  tick   p3  impulsion : le compteur roule de 3 330 à 3 300 € (round 3 ; pas de son de pose : il tomberait sur le virement)
-   16.66   1490  whoosh p2  virement reçu
-   16.82    951  chime  p1  … + 3 300,00 € (traîne coupée : « Quatre cents de plus » passe devant)
-   17.28   2909  accent p1  « + 400 € » (le premier coup seul : le second, à 0,75 s dans le fichier, romprait la pause)
-   17.34   1107  chime  p1  « + 400 € », carillon
-   17.65   2354  ui     p2  « − 109,60 € de prépa » : une note basse, seule
-   18.67   2369  orn    p2  « Ton samedi le mieux payé. » s'écrit
-   19.34   2589  orn    p3  … « le mieux payé »
-   20.40   1092  accent p1  rembobinage
-   21.02   3120  whoosh p2  carte « Avant la photo 1 »
+   10.77   1490  whoosh p3  RETIRÉ la notification arrive (elle part 0,2 s avant son débit)
+   10.97   2354  ui     p1  débit 6 (note + 5) : la carte se pose, pendant l'arrêt de la ligne
+   11.30   1054  tick   p3  impulsion : le compteur roule
+   11.59   1490  whoosh p3  la pile de débits sort
+   11.83   1492  whoosh p2  la lumière tombe
+   11.92   2384  ui     p2  le compteur se pose à 3 330 €
+   12.42   1119  tick   p3  l'horloge accélère
+   12.69   1119  tick   p3  l'horloge accélère
+   12.91   1119  tick   p3  l'horloge accélère
+   13.11   1119  tick   p3  l'horloge accélère
+   13.29   1119  tick   p3  l'horloge accélère
+   13.45   1119  tick   p3  l'horloge accélère
+   13.61   1119  tick   p3  l'horloge accélère
+   13.74   2589  orn    p3  le viseur se referme
+   14.25   1133  ui     p1  déclic de la photo 1 (sec)
+   14.41   1490  whoosh p2  la photo part dans l'écran du téléphone
+   14.81   1119  tick   p3  palettes J+4
+   14.87   1119  tick   p3  palettes J+4
+   14.93   1119  tick   p3  palettes J+4
+   14.99   1119  tick   p3  palettes J+4
+   15.26   2354  ui     p2  « Belle photo. Toujours dispo ? »
+   15.67   2384  ui     p2  « Je passe demain ? »
+   15.92   2354  ui     p1  « 3 300 et je la prends. »
+   16.12   2589  orn    p3  « 3 300 » part de la bulle vers le compteur (round 3)
+   16.39   1054  tick   p3  impulsion : le compteur roule de 3 330 à 3 300 € (round 3 ; pas de son de pose : il tomberait sur le virement)
+   16.68   1490  whoosh p2  virement reçu
+   16.84    951  chime  p1  … + 3 300,00 € (traîne coupée : « Quatre cents de plus » passe devant)
+   17.22   2909  accent p1  « + 400 € » (le premier coup seul : le second, à 0,75 s dans le fichier, romprait la pause)
+   17.28   1107  chime  p1  « + 400 € », carillon
+   17.59   2354  ui     p2  « − 109,60 € de prépa » : une note basse, seule
+   18.85   2369  orn    p2  « Ton samedi le mieux payé. » s'écrit
+   19.20   2589  orn    p3  … « le mieux payé »
+   20.36   1092  accent p1  rembobinage
+   21.03   3120  whoosh p2  carte « Avant la photo 1 »
    22.12   3005  orn    p2  « Pas tout. » s'écrit
-   22.51   2369  orn    p2  règle 1
-   23.01   2369  orn    p2  règle 2
-   23.39   2589  orn    p2  la plume entoure l'éraflure du pare-chocs (round 3 : au départ de la plume ; la règle 3, 0,12 s après, passe en p3)
-   23.51   2369  orn    p3  règle 3
-   24.23   3005  orn    p2  « tu le laisses » : la lumière barre « Pare-chocs · 600 € » et le bouclier
-   24.71   1492  whoosh p2  plongée sur l'aile
-   25.32   1898  tool   p2  l'ongle glisse sur la rayure
-   25.52   2589  orn    p3  … petit scintillement
-   26.18   2369  orn    p2  « L'ongle glisse ? Tu lustres. »
-   26.46   2384  ui     p2  « Polish · 15 € »
-   26.60   3087  tool   p3  … le polish efface la rayure
-   27.06   3005  orn    p2  « Carrossier · 300 € » barré
-   27.28   2384  ui     p3  … note grave
-   27.75   3120  whoosh p2  retour au cadre de l'image 0
-   28.13   1465  tool   p3  la poussière revient
-   28.25   3005  orn    p3  le calcul se réécrit
-   28.38   2589  orn    p3  le contour se retrace
-   29.03   3005  orn    p3  le calcul se réécrit
+   22.55   2369  orn    p2  règle 1
+   23.05   2369  orn    p2  règle 2
+   23.43   2589  orn    p2  la plume entoure l'éraflure du pare-chocs (round 3 : au départ de la plume ; la règle 3, 0,12 s après, passe en p3)
+   23.55   2369  orn    p3  règle 3
+   24.11   3005  orn    p2  « tu le laisses » : la lumière barre « Pare-chocs · 600 € » et le bouclier
+   24.61   1492  whoosh p2  plongée sur l'aile
+   25.38   1898  tool   p2  l'ongle glisse sur la rayure
+   25.57   2589  orn    p3  … petit scintillement
+   26.29   2369  orn    p2  « L'ongle glisse ? Tu lustres. »
+   26.65   2384  ui     p2  « Polish · 15 € »
+   26.79   3087  tool   p3  … le polish efface la rayure
+   27.29   3005  orn    p2  « Carrossier · 300 € » barré
+   27.51   2384  ui     p3  … note grave
+   28.04   3120  whoosh p2  retour au cadre de l'image 0
+   28.42   1465  tool   p3  la poussière revient
+   28.54   3005  orn    p3  le calcul se réécrit
+   28.67   2589  orn    p3  le contour se retrace
+   29.32   3005  orn    p3  le calcul se réécrit
