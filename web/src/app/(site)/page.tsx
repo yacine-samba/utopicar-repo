@@ -12,7 +12,7 @@ import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { JsonLdFaq } from "@/components/site/JsonLd";
-import { PrixCompact } from "@/components/site/PrixCompact";
+import { GainsAbonnement } from "@/components/site/GainsAbonnement";
 import { PARTICULIERS } from "@/lib/offres";
 
 /* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
@@ -135,10 +135,13 @@ export default async function Accueil() {
       {/* ---------------- formules ---------------- */}
       <section id="formules" className="scroll-mt-24 py-16">
         <div className="wrap">
-          <h2 className="apparait h-sec mx-auto mb-10 max-w-2xl text-center">
-            Gratuit pour commencer, <span className="it">sans carte</span>
-          </h2>
-          <PrixCompact ids={PARTICULIERS} credits lien="/tarifs" />
+          <div className="apparait mx-auto mb-10 max-w-2xl text-center">
+            <h2 className="h-sec">
+              Pourquoi s&apos;abonner ? <span className="it">Ça se rembourse</span>
+            </h2>
+            <p className="mt-3 text-lg text-ink-2">La première analyse est offerte, sans carte. Voici ce que la suite vous rapporte.</p>
+          </div>
+          <GainsAbonnement famille="particulier" ids={PARTICULIERS} credits lien="/tarifs" />
         </div>
       </section>
 

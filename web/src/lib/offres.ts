@@ -47,7 +47,7 @@ export const OFFRES: Record<OffreId, Offre> = {
     accroche: "Pour comparer plusieurs annonces", pour: "Vous hésitez entre plusieurs voitures.",
     analyses: 10, parMois: true, photos: 3, detail: "detail", historique: 30, tableauDeBord: "aucun",
     parc: false, recherche: false, comparateur: false, guide: false, lookup: "utp_essentiel_mois",
-    points: ["10 analyses par mois", "Prix raisonnable à proposer", "Questions à poser au vendeur", "Prix du marché détaillé et fiabilité du moteur", "Analyse de 3 photos par annonce", "Historique de vos analyses"],
+    points: ["10 analyses par mois", "Prix raisonnable à proposer", "Questions à poser au vendeur", "Prix du marché détaillé et fiabilité du moteur", "Analyse de 3 photos par annonce", "Historique de vos analyses", "La cote détaillée de chaque modèle"],
     miseEnAvant: true,
   },
   serenite: {
@@ -62,7 +62,7 @@ export const OFFRES: Record<OffreId, Offre> = {
     accroche: "Pour vos premières voitures", pour: "Vous vous lancez dans l'achat-revente.",
     analyses: 30, parMois: true, photos: 3, detail: "complet", historique: 20, tableauDeBord: "simple",
     parc: false, recherche: false, comparateur: false, guide: true, lookup: "utp_starter_mois",
-    points: ["30 analyses de véhicule par mois", "Marge nette, prix d'offre et plafond", "Historique de vos 20 derniers rapports", "Tableau de bord", "Le guide « Votre première revente » inclus"],
+    points: ["30 analyses de véhicule par mois", "Marge nette, prix d'offre et plafond", "Historique de vos 20 derniers rapports", "Tableau de bord", "La cote détaillée de chaque modèle", "Le guide « Votre première revente » inclus"],
   },
   croissance: {
     id: "croissance", famille: "benef", nom: "Croissance", prix: 29,

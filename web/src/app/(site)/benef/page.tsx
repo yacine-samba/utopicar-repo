@@ -5,7 +5,7 @@ import { Peurs } from "@/components/benef/Peurs";
 import { CARTE_BENEF, PreuveAnimee } from "@/components/accueil/PreuveAnimee";
 import { OutilsBenef } from "@/components/benef/OutilsBenef";
 import { TroisTemps } from "@/components/accueil/TroisTemps";
-import { PrixCompact } from "@/components/site/PrixCompact";
+import { GainsAbonnement } from "@/components/site/GainsAbonnement";
 import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { Faq } from "@/components/site/Faq";
@@ -100,11 +100,11 @@ export default async function Benef() {
         <div className="wrap">
           <div className="apparait mx-auto mb-10 max-w-2xl text-center">
             <h2 className="h-sec">
-              Du premier achat <span className="it">au stock géré</span>
+              Pourquoi s&apos;abonner ? <span className="it">Une voiture suffit</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Le guide de la première revente est inclus.</p>
+            <p className="mt-3 text-lg text-ink-2">Une seule bonne affaire paie l&apos;abonnement. Une seule erreur évitée aussi.</p>
           </div>
-          <PrixCompact ids={BENEF} lien="/tarifs#benef" />
+          <GainsAbonnement famille="benef" ids={BENEF} lien="/tarifs#benef" />
         </div>
       </section>
 
