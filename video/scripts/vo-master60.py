@@ -22,6 +22,7 @@ PRISES = {'v4': ('audio/vo-master60/v4', 'corps-2', 'hookA-calme-2', 'hookB-calm
 D, CORPS, HA, HB, SPEED = PRISES[VERSION]
 # transposition en demi-tons : la v4 sort plus aiguë que la v3 (corps 146 Hz contre 124) ; « trop aiguë » (utilisateur)
 PITCH = float(os.environ.get('PITCH', '0'))
+T_CORPS = 4.20   # début du corps dans le film (s), identique pour A et B
 OUT = 'audio/vo-master60'
 SR = 44100
 RESPI = 0.26        # silence courant après pose (respiration)
@@ -89,8 +90,10 @@ if __name__ == '__main__':
     for h, nom in ((HA, 'A'), (HB, 'B')):
         hk = pose(f'{D}/{h}.mp3', W[h])
         a, _ = librosa.load(hk, sr=SR); c, _ = librosa.load(corps, sr=SR); os.remove(hk)
+        # le corps commence au même instant dans les deux ouvertures (même film après le raccord)
         tmp = f'{OUT}/vo-placed-{nom}.tmp.wav'
-        sf.write(tmp, np.concatenate([a, np.zeros(int(0.30 * SR)), c]), SR)
+        pad = max(0.12, T_CORPS / SPEED - len(a) / SR)
+        sf.write(tmp, np.concatenate([a[:int(min(len(a) / SR, T_CORPS / SPEED - 0.12) * SR)], np.zeros(int(pad * SR)), c]), SR)
         accel(tmp, f'{OUT}/vo-placed-{nom}.wav')
         print(nom, round(sf.info(f'{OUT}/vo-placed-{nom}.wav').duration, 2), 's')
     os.remove(corps)
