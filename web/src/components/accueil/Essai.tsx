@@ -20,7 +20,7 @@ import { carteDepuisApercu, carteDepuisExemple, type CarteAnalyse } from "./Preu
 import { EVT_CARTE } from "./CarteHero";
 
 /** Prévient la carte de l'en-tête (CarteHero) : elle montre l'annonce scannée, ou revient à l'exemple. */
-const montrer = (c: CarteAnalyse | null) => dispatchEvent(new CustomEvent(EVT_CARTE, { detail: c }));
+const montrer = (c: CarteAnalyse | null | "charge") => dispatchEvent(new CustomEvent(EVT_CARTE, { detail: c }));
 
 /* Le hero devient le produit : un champ, un vrai aperçu en 2 secondes sans compte, et l'inscription dans la même carte
    quand la personne veut le rapport complet. Trois exemples pour ceux qui n'ont pas d'annonce sous la main. */
@@ -159,10 +159,12 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     setTexte(t);
     setOrigine(og);
     ouvrirCarte(null);
+    montrer("charge");
     try {
       const r = await fetch("/api/analyse/apercu", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texte: t }) });
       if (r.status === 429) {
         setEtat("vide");
+        montrer(null);
         setErreur(ERREURS_IMPORT.trop);
         track("apercu_limite");
         return;
@@ -170,6 +172,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       const a = r.ok ? ((await r.json()) as Apercu) : null;
       if (!a) {
         setEtat("vide");
+        montrer(null);
         setErreur("L'aperçu n'a pas abouti. Vérifiez que le texte contient bien le titre, le prix et la description.");
         return;
       }
@@ -179,6 +182,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       track("apercu_vu", { source, cote: !!a.cote });
     } catch {
       setEtat("vide");
+      montrer(null);
       setErreur("Connexion impossible. Vérifiez votre réseau et réessayez.");
     }
   }
@@ -188,6 +192,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     if (!SUPABASE_URL) return setErreur(ERREURS_IMPORT.config);
     setEtat("lecture");
     setErreur(null);
+    montrer("charge");
     try {
       const { data } = await supabaseNavigateur().auth.getSession();
       const jeton = data.session?.access_token;
@@ -199,6 +204,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       const j = await r.json().catch(() => null);
       if (!r.ok || !j?.ok) {
         setEtat("vide");
+        montrer(null);
         setErreur(ERREURS_IMPORT[j?.erreur as string] ?? ERREURS_IMPORT.apify);
         if (j?.erreur === "trop") track("apercu_limite");
         return;
@@ -207,6 +213,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       await apercu(t, { lien: j.url, liens: Array.isArray(j.liens) ? j.liens : [], vendeur: j.vendeur ?? null }, "lien", Array.isArray(j.photos) && typeof j.photos[0] === "string" ? j.photos[0] : null);
     } catch {
       setEtat("vide");
+      montrer(null);
       setErreur("Connexion impossible. Vérifiez votre réseau et réessayez.");
     }
   }
