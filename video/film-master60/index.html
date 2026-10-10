@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>master60 · UTOPICAR, la pub d'une minute</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:Instrument;font-style:italic;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+/* couleurs du site (web/src/app/globals.css, thème sombre de l'espace connecté) */
+:root{--bg0:#0b0a09;--bg1:#17100b;--ink:#f4f1ec;--ink2:rgba(244,241,236,.72);--ink3:rgba(244,241,236,.5);--line:rgba(244,241,236,.1);
+  --panel:rgba(22,16,12,.72);--o:#ff5a1f;--o2:#ff8a4c;--o3:#ffb38a;--ok:#3ecb7f;--warn:#ffc53d;--bad:#ff7a7a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow:hidden;background:var(--bg0)}
+#stage{position:absolute;inset:0;overflow:hidden;color:var(--ink);font-family:Satoshi;-webkit-font-smoothing:antialiased;
+  background:linear-gradient(160deg,var(--bg0),var(--bg1) 60%,var(--bg0))}
+.abs{position:absolute;left:0;top:0}
+.world{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.glow{position:absolute;border-radius:50%;pointer-events:none;mix-blend-mode:screen}
+img.ui{position:absolute;left:0;top:0;display:block;user-select:none}
+.card{position:absolute;left:0;top:0;border-radius:44px;overflow:hidden;box-shadow:0 50px 90px rgba(0,0,0,.55),0 0 0 1.5px rgba(244,241,236,.08)}
+.shadow{filter:drop-shadow(0 40px 60px rgba(0,0,0,.5))}
+/* titres en deux tons, comme le site : Clash + Instrument Serif italique */
+.txt{position:absolute;left:0;top:0;white-space:nowrap;font:600 96px/1.04 Clash;letter-spacing:-.02em;text-align:center}
+.txt .ln{display:block}
+.txt .wd{display:inline-block;margin-right:.22em}
+.txt .wd:last-child{margin-right:0}
+.txt .ch{display:inline-block}
+.txt .it{font-family:Instrument;font-style:italic;font-weight:400;letter-spacing:0;color:var(--o2)}
+.txt .bad{color:var(--bad)}.txt .ok{color:var(--ok)}
+.left .txt,.txt.left{text-align:left}
+.pill{position:absolute;left:0;top:0;padding:14px 28px;border-radius:999px;white-space:nowrap;font:700 30px Satoshi;
+  background:var(--panel);border:1.5px solid var(--line);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.pill b{color:var(--o2);font-weight:700}
+.mention{position:absolute;left:0;top:0;font:500 24px Satoshi;color:var(--ink2);white-space:nowrap;letter-spacing:.01em;padding:8px 18px;border-radius:999px;background:rgba(11,10,9,.72)}
+.tag{position:absolute;left:0;top:0;padding:14px 24px;border-radius:22px;font:600 44px Clash;white-space:nowrap;background:#1d1611;
+  border:2px solid rgba(255,138,76,.55);box-shadow:0 24px 50px rgba(0,0,0,.5);font-variant-numeric:tabular-nums}
+.tag small{display:block;font:500 22px Satoshi;color:var(--ink3);margin-top:2px}
+/* mur d'annonces (ouverture B) : vraies annonces de la base du marché, présentées sans aucune interface de plateforme */
+.ann{position:absolute;left:0;top:0;width:300px;height:176px;border-radius:26px;padding:20px 24px;background:var(--panel);
+  border:1.5px solid var(--line);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.ann .m{font:700 26px Satoshi;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ann .i{font:500 20px Satoshi;color:var(--ink3);margin-top:4px;white-space:nowrap}
+.ann .p{font:600 40px Clash;margin-top:18px;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* fiche d'annonce de la 208 (photo réelle nettoyée) */
+.lst{position:absolute;left:0;top:0;width:820px;border-radius:48px;overflow:hidden;background:#15100c;border:1.5px solid var(--line);
+  box-shadow:0 60px 100px rgba(0,0,0,.6)}
+.lst img{display:block;width:100%;height:auto}
+.lst .b{padding:30px 40px 36px}
+.lst .m{font:600 50px Clash;letter-spacing:-.01em;white-space:nowrap}
+.lst .i{font:500 30px Satoshi;color:var(--ink3);margin-top:8px;white-space:nowrap}
+.lst .p{position:relative;display:inline-block;font:600 104px/1 Clash;margin-top:22px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mark{position:absolute;left:-10px;right:-10px;bottom:4px;height:30px;border-radius:8px;background:rgba(255,90,31,.55);transform-origin:0 50%;z-index:-1}
+/* cadre qui entoure la ligne chiffrée qui compte (fiche 208) */
+.ring{position:absolute;left:0;top:0;border:5px solid var(--o);border-radius:24px;transform-origin:50% 50%}
+/* bouton « Analyser » (style btn-o du site) qui devient chargement */
+.btn{position:absolute;left:0;top:0;height:112px;border-radius:999px;background:var(--o);color:#1a1310;font:600 44px Clash;
+  display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;box-shadow:0 20px 50px rgba(255,90,31,.35)}
+.spin{position:absolute;width:56px;height:56px;border-radius:50%;border:7px solid rgba(26,19,16,.25);border-top-color:#1a1310}
+.chip{position:absolute;left:0;top:0;padding:16px 26px;border-radius:20px;background:#211a14;border:1.5px solid var(--line);font:500 28px Satoshi;color:var(--ink2);white-space:nowrap}
+.stamp{position:absolute;left:0;top:0;padding:12px 30px 14px;border:5px solid var(--bad);border-radius:18px;font:600 58px Clash;color:var(--bad);
+  white-space:nowrap;background:rgba(11,10,9,.6);letter-spacing:.01em}
+/* étapes du site (page Benef : « Collez l'annonce → Frais déduits → Votre marge nette ») */
+.step{position:absolute;left:0;top:0;display:flex;align-items:center;gap:16px;padding:20px 30px;border-radius:26px;background:var(--panel);
+  border:1.5px solid var(--line);font:700 34px Satoshi;white-space:nowrap}
+.step i{font-style:normal;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--o);color:#1a1310;font:600 26px Clash}
+/* le chaos d'avant (carnet, calculette, onglets) : objets génériques, sans marque */
+.note{position:absolute;left:0;top:0;width:520px;height:620px;border-radius:14px;background:#f3ead9;color:#2b2420;padding:56px 46px;
+  background-image:repeating-linear-gradient(transparent 0 58px,rgba(70,90,160,.25) 58px 60px);box-shadow:0 40px 80px rgba(0,0,0,.55);font:500 38px/60px 'Instrument';font-style:italic}
+.note s{color:#a63a2a}
+.calc{position:absolute;left:0;top:0;width:330px;height:480px;border-radius:36px;background:#2a2622;box-shadow:0 40px 80px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.08);padding:30px}
+.calc .ecran{height:110px;border-radius:16px;background:#9fb59a;color:#1b2418;font:600 60px Clash;text-align:right;padding:18px 20px}
+.calc .k{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+.calc .k span{height:56px;border-radius:14px;background:#3b3631}
+.calc .k span.o{background:var(--o)}
+.tab{position:absolute;left:0;top:0;width:330px;height:76px;border-radius:22px 22px 0 0;background:#2b241e;border:1.5px solid rgba(244,241,236,.12);border-bottom:0;
+  padding:20px 26px;font:500 26px Satoshi;color:var(--ink2);white-space:nowrap;overflow:hidden;box-shadow:0 -6px 24px rgba(0,0,0,.35)}
+.tab::before{content:"";display:inline-block;width:20px;height:20px;border-radius:6px;background:rgba(244,241,236,.25);margin-right:14px;vertical-align:-3px}
+/* notification « ding » */
+.notif{position:absolute;left:0;top:0;width:820px;padding:26px 30px;border-radius:34px;display:flex;gap:24px;align-items:center;
+  background:rgba(40,30,22,.86);border:1.5px solid rgba(244,241,236,.14);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.notif .ic{flex:none;width:78px;height:78px;border-radius:20px;background:var(--o);display:flex;align-items:center;justify-content:center}
+.notif .t{font:700 32px Satoshi}.notif .s{font:500 26px Satoshi;color:var(--ink2);margin-top:4px}
+/* jauge « 44 mois » */
+.gauge{position:absolute;left:0;top:0;width:820px;padding:30px 36px;border-radius:34px;background:var(--panel);border:1.5px solid var(--line)}
+.gauge .h{display:flex;justify-content:space-between;align-items:baseline;font:600 46px Clash;white-space:nowrap}
+.gauge .h b{color:var(--ok);font-weight:600}
+.gauge .bar{height:30px;border-radius:999px;background:rgba(244,241,236,.08);margin-top:22px;overflow:hidden}
+.gauge .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--o),var(--o2));transform-origin:0 50%}
+.gauge .s{font:500 24px Satoshi;color:var(--ink3);margin-top:16px;white-space:nowrap}
+.check{position:absolute;left:0;top:0;display:flex;align-items:center;gap:18px;font:700 40px Satoshi;white-space:nowrap}
+.check i{width:54px;height:54px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center;color:#0b0a09;font:900 30px Satoshi;font-style:normal}
+#grain{position:absolute;inset:-50%;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+#vign{position:absolute;inset:0;pointer-events:none;background:radial-gradient(90% 70% at 50% 45%,transparent 55%,rgba(0,0,0,.6))}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../lib/motion.js"></script>
+<script src="../lib/kit.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
