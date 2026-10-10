@@ -3,9 +3,9 @@ import { EXEMPLES } from "@/lib/demo";
 
 /* L'outil en action sur une vraie annonce, lisible sans explication :
    1. un balayage passe sur la photo (« Analyse… »), puis « 174 Clio comparées » ;
-   2. une jauge « moins cher → plus cher » : le prix du marché d'un côté, le prix demandé glisse à sa place ;
+   2. deux barres côte à côte, le prix du marché puis celui de l'annonce, l'écart entre les deux hachuré en vert ;
    3. le verdict dit pourquoi (850 € sous le marché) et le prix à proposer.
-   CSS seul (classes « scene », « balayage », « passe », « pas », « curseur » de globals.css).
+   CSS seul (classes « scene », « balayage », « passe », « pas », « jauge » de globals.css).
    Données : la vraie annonce Clio IV de la démonstration (relevée le 3 octobre 2026). */
 
 const d = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
@@ -13,8 +13,8 @@ const ex = EXEMPLES.clio;
 const COTE = ex.lignes[0].v ?? 7550;
 const PROPOSER = ex.lignes[3].v ?? 6250;
 const COMPAREES = Number(/(\d+)/.exec(ex.lignes[0].s)?.[1] ?? 174);
-// échelle de la jauge : 5 500 € à 8 500 €
-const pos = (eur: number) => `${((eur - 5500) / 3000) * 100}%`;
+// les barres : le prix du marché fait toute la largeur
+const pc = (eur: number) => `${(Math.min(eur, COTE) / COTE) * 100}%`;
 const e = (v: number) => `${v.toLocaleString("fr-FR").replace(/ /g, " ")} €`;
 
 export function PreuveAnimee() {
@@ -43,25 +43,23 @@ export function PreuveAnimee() {
         </div>
 
         <div className="absolute inset-x-4 bottom-4 grid gap-3 text-white">
-          {/* 2. le prix face au marché, avec des repères écrits en clair */}
-          <div className="pas rounded-2xl border border-white/15 bg-black/50 px-4 pb-3 pt-3 backdrop-blur-md" style={d(1.0)}>
-            <div className="relative h-11">
-              {/* prix demandé : l'étiquette suit le point */}
-              <span className="curseur absolute top-0 grid w-[88px] justify-items-center" style={{ left: pos(ex.prix), marginLeft: "-44px", ...d(1.25), "--depart": "-110px" } as CSSProperties}>
-                <span className="num rounded-md bg-o px-1.5 py-0.5 text-xs font-bold text-[#160904]">{e(ex.prix)}</span>
-                <span className="mt-0.5 h-0 w-0 border-x-[5px] border-t-[6px] border-x-transparent border-t-o" />
+          {/* 2. le prix face au marché : deux barres côte à côte, l'écart entre les deux en vert */}
+          <div className="pas grid gap-2.5 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm backdrop-blur-md" style={d(1.0)}>
+            <div className="grid grid-cols-[4.5rem_1fr_4.2rem] items-center gap-2.5">
+              <span className="text-white/75">Marché</span>
+              <span className="relative h-2.5 rounded-full bg-white/10">
+                <span className="jauge absolute inset-0 rounded-full bg-white/80" style={d(1.1)} />
               </span>
-              <div className="absolute inset-x-0 bottom-1 h-2 rounded-full bg-[linear-gradient(90deg,#3ecb7f,#ffc53d_55%,#ff7a7a)] opacity-90" />
-              {/* prix du marché */}
-              <span className="absolute bottom-0 h-4 w-[3px] rounded bg-white shadow" style={{ left: pos(COTE), marginLeft: "-1.5px" }} />
+              <b className="num text-right">{e(COTE)}</b>
             </div>
-            <div className="relative mt-1 flex h-4 justify-between text-[11px] text-white/65">
-              <span>moins cher</span>
-              {/* l'étiquette du marché sous son repère */}
-              <span className="absolute w-24 text-center font-medium text-white" style={{ left: pos(COTE), marginLeft: "-48px" }}>
-                marché <b className="num">{e(COTE)}</b>
+            <div className="grid grid-cols-[4.5rem_1fr_4.2rem] items-center gap-2.5">
+              <span className="text-white/75">Annonce</span>
+              <span className="relative h-2.5 rounded-full bg-white/10">
+                <span className="jauge absolute inset-y-0 left-0 rounded-full bg-o" style={{ width: pc(ex.prix), ...d(1.3) }} />
+                {/* l'écart : ce que l'annonce coûte de moins que le marché */}
+                <span className="pas absolute inset-y-0 right-0 rounded-r-full bg-[repeating-linear-gradient(135deg,#3ecb7f_0_3px,transparent_3px_6px)]" style={{ left: pc(ex.prix), ...d(1.6) }} />
               </span>
-              <span>plus cher</span>
+              <b className="num text-right text-o3">{e(ex.prix)}</b>
             </div>
           </div>
 

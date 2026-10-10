@@ -18,7 +18,6 @@ export function Peurs() {
         return (
           <li key={p.q} className={`carte flex flex-col p-6 transition ${o ? "border-o/50" : ""}`}>
             <h3 className="font-display text-xl font-semibold">{p.q}</h3>
-            <p className="mt-2 text-ink-2">{p.d}</p>
             <div id={`${base}-${i}`} hidden={!o} className="mt-4 rounded-2xl border border-ok/30 bg-ok/10 p-4">
               <b className="text-ok">{p.t}</b>
               <p className="mt-1 text-sm text-ink-2">{p.r}</p>

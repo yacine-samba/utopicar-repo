@@ -5,6 +5,8 @@ import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
 import { PreuveAnimee } from "@/components/accueil/PreuveAnimee";
 import { TroisTemps } from "@/components/accueil/TroisTemps";
+import { TroisVerdicts } from "@/components/accueil/TroisVerdicts";
+import { CoteEnDirect } from "@/components/accueil/CoteEnDirect";
 import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
@@ -14,7 +16,11 @@ import { PARTICULIERS } from "@/lib/offres";
 
 /* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
    Une seule action (coller une annonce), la preuve visible tout de suite (vraie annonce, verdict joué en 2 s), de vrais chiffres,
-   presque pas de texte. Ordre : essai et preuve → chiffres → ce qui est vérifié → prix → questions → appel final. */
+   presque pas de texte. Ordre : essai et preuve → chiffres → 3 vrais verdicts → ce qui est vérifié → pièges → cote en direct
+   → prix → questions → appel final. */
+
+/** Des vrais libellés de l'outil (lib/analyse/defauts.ts, 38 règles), parmi les plus parlants. */
+const PIEGES = ["Joint de culasse signalé", "Moteur à refaire", "Distribution à faire", "Embrayage à changer", "Kilométrage non garanti", "Boîte de vitesses à revoir", "Turbo à changer", "Voyant allumé", "Fuite d'huile", "Fumée à l'échappement", "Problème de papiers", "Rouille", "Choc de carrosserie", "Vendue en l'état"];
 
 const MODELES = ["Renault Clio IV", "Peugeot 208", "Toyota Yaris", "Dacia Sandero", "VW Polo V", "Citroën C3", "Ford Fiesta", "Opel Corsa", "Hyundai i20", "Suzuki Swift", "Renault Twingo", "Seat Ibiza", "Kia Rio", "Skoda Fabia"];
 
@@ -68,6 +74,23 @@ export default async function Accueil() {
       <ChiffresMarche />
       <Defile items={MODELES} label="Modèles analysés" />
 
+      {/* ---------------- trois vraies annonces, trois verdicts : l'outil sait aussi dire non ---------------- */}
+      <section className="py-16">
+        <div className="wrap">
+          <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
+            <h2 className="h-sec">
+              3 annonces, <span className="it">3 verdicts</span>
+            </h2>
+            <Link href="#essai" className="text-sm font-medium text-o2 underline underline-offset-4">
+              Essayez la vôtre ↑
+            </Link>
+          </div>
+          <div className="mx-auto max-w-5xl">
+            <TroisVerdicts />
+          </div>
+        </div>
+      </section>
+
       {/* ---------------- ce qui est vérifié : 4 cartes visuelles, une ligne chacune ---------------- */}
       <section className="py-16">
         <div className="wrap">
@@ -77,15 +100,22 @@ export default async function Accueil() {
           <div className="grid gap-4 sm:grid-cols-2">
             <article className="carte vue p-6">
               <h3 className="font-display text-xl font-semibold">Prix vs marché</h3>
-              <div className="mt-6" aria-hidden="true">
-                <div className="relative h-2.5 rounded-full bg-glass">
-                  <span className="absolute inset-y-0 left-[38%] w-[20%] rounded-full bg-ok/45" />
-                  <span className="absolute -top-[5px] left-[60%] -ml-2.5 size-5 rounded-full border-[3px] border-bg1 bg-o" />
+              {/* même lecture que l'en-tête : le marché en entier, l'annonce par-dessus, le surplus hachuré en rouge */}
+              <div className="mt-5 grid gap-2.5 text-sm" aria-hidden="true">
+                <div className="grid grid-cols-[4.2rem_1fr_4.4rem] items-center gap-2.5">
+                  <span className="text-ink-3">Marché</span>
+                  <span className="h-2.5 rounded-full bg-ink-3/50" style={{ width: "94%" }} />
+                  <b className="num text-right">6 950 €</b>
                 </div>
-                <div className="mt-2 flex justify-between text-xs text-ink-3">
-                  <span className="text-ok">cote 6 950 €</span>
-                  <span className="text-o2">annonce 7 400 €</span>
+                <div className="grid grid-cols-[4.2rem_1fr_4.4rem] items-center gap-2.5">
+                  <span className="text-ink-3">Annonce</span>
+                  <span className="flex h-2.5">
+                    <span className="rounded-l-full bg-o" style={{ width: "94%" }} />
+                    <span className="rounded-r-full bg-[repeating-linear-gradient(135deg,var(--color-bad)_0_3px,transparent_3px_6px)]" style={{ width: "6%" }} />
+                  </span>
+                  <b className="num text-right text-bad">7 400 €</b>
                 </div>
+                <p className="text-xs font-semibold text-bad">450 € au-dessus du marché</p>
               </div>
               <p className="sr-only">Exemple : cote 6 950 €, annonce à 7 400 €, au-dessus du marché.</p>
               <Link href="/cote" className="mt-4 inline-block text-sm font-medium text-o2 underline underline-offset-4">
@@ -131,6 +161,31 @@ export default async function Accueil() {
               Benef calcule votre marge →
             </Link>
           </p>
+        </div>
+      </section>
+
+      {/* ---------------- les pièges repérés dans le texte des annonces ---------------- */}
+      <section aria-labelledby="pieges" className="py-10">
+        <h2 id="pieges" className="wrap mb-4 text-center font-display text-xl font-semibold">
+          Les pièges qu&apos;on repère <span className="text-ink-3">(38 au total)</span>
+        </h2>
+        <Defile items={PIEGES} label="Exemples de pièges repérés" inverse />
+      </section>
+
+      {/* ---------------- la cote en direct : vrais prix médians de la base ---------------- */}
+      <section className="py-16">
+        <div className="wrap">
+          <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
+            <h2 className="h-sec">
+              La cote <span className="it">en direct</span>
+            </h2>
+            <Link href="/cote" className="text-sm font-medium text-o2 underline underline-offset-4">
+              Toutes les cotes →
+            </Link>
+          </div>
+          <div className="mx-auto max-w-5xl">
+            <CoteEnDirect />
+          </div>
         </div>
       </section>
 

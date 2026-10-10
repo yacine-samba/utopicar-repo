@@ -17,13 +17,13 @@ export function TroisTemps({ etapes }: { etapes: [keyof typeof ICONES, string][]
       {etapes.map(([icone, l], i) => (
         <li key={l} className="relative flex flex-1 flex-col items-center gap-2 text-center lg:items-start lg:text-left">
           {i > 0 && (
-            // la ligne qui relie l'étape précédente à celle-ci
-            <span className="absolute left-[-50%] right-[50%] top-5 h-0.5 bg-line-2 lg:left-[-100%] lg:right-[calc(100%-1.25rem)]" aria-hidden="true">
+            // du centre du pictogramme précédent au centre de celui-ci (centrés sur téléphone, à gauche sur ordinateur)
+            <span className="absolute left-[-50%] right-[50%] top-5 z-0 h-0.5 bg-line-2 lg:left-[calc(-100%+1.25rem)] lg:right-[calc(100%-1.25rem)]" aria-hidden="true">
               <span className="jauge absolute inset-0 bg-o" style={d(0.35 + i * 0.45)} />
             </span>
           )}
           <span
-            className={`pas relative grid size-10 place-items-center rounded-full ${i === etapes.length - 1 ? "bg-o text-[#160904]" : "border border-line-2 bg-panel text-o2"}`}
+            className={`pas relative z-10 grid size-10 place-items-center rounded-full ${i === etapes.length - 1 ? "bg-o text-[#160904]" : "border border-line-2 bg-bg0 text-o2"}`}
             style={d(0.15 + i * 0.45)}
             aria-hidden="true"
           >

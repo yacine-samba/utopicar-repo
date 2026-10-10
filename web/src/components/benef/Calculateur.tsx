@@ -36,6 +36,9 @@ export function Calculateur({ scenarios = SCENARIOS }: { scenarios?: Scenario[] 
   const net = r - a - f;
   const ton = net >= 500 ? "text-ok" : net >= 0 ? "text-warn" : "text-bad";
   const verdict = net >= 500 ? "Bonne affaire" : net >= 0 ? "Marge trop faible" : "Vous perdez de l'argent";
+  // la revente découpée en achat, frais et marge (même image que l'en-tête de la page) ; en cas de perte, l'échelle est le coût total
+  const base = Math.max(r, a + f, 1);
+  const part = (v: number) => `${(Math.max(0, v) / base) * 100}%`;
   return (
     <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
       <div className="carte grid gap-6 p-6 sm:p-7">
@@ -54,17 +57,22 @@ export function Calculateur({ scenarios = SCENARIOS }: { scenarios?: Scenario[] 
         <h3 className="font-display text-lg font-semibold">Votre ticket de caisse</h3>
         <ul className="mt-4 divide-y divide-line">
           <li className="flex justify-between py-2.5">
-            Achat négocié <span className="num">{eur(a)}</span>
+            <span className="flex items-center gap-2"><i className="size-2.5 rounded-full bg-o" aria-hidden="true" />Achat négocié</span> <span className="num">{eur(a)}</span>
           </li>
           <li className="flex justify-between py-2.5">
-            Frais et remise en état <span className="num">− {eur(f)}</span>
+            <span className="flex items-center gap-2"><i className="size-2.5 rounded-full bg-warn" aria-hidden="true" />Frais et remise en état</span> <span className="num">− {eur(f)}</span>
           </li>
           <li className="flex justify-between py-2.5">
             Revente <span className="num">{eur(r)}</span>
           </li>
         </ul>
+        <div className="mt-4 flex h-3.5 overflow-hidden rounded-full bg-glass" aria-hidden="true">
+          <span className="bg-o transition-[width] duration-300" style={{ width: part(a) }} />
+          <span className="bg-warn transition-[width] duration-300" style={{ width: part(f) }} />
+          <span className={`transition-[width] duration-300 ${net >= 0 ? "bg-ok" : ""}`} style={{ width: part(net) }} />
+        </div>
         <div className="mt-4 flex items-baseline justify-between border-t border-line-2 pt-4">
-          <b>Bénéfice net</b>
+          <b className="flex items-center gap-2"><i className="size-2.5 rounded-full bg-ok" aria-hidden="true" />Bénéfice net</b>
           <b className={`num font-display text-3xl ${ton}`}>{eur(net)}</b>
         </div>
         <p className={`mt-1 text-right text-sm ${ton}`}>{verdict}</p>

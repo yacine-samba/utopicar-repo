@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Calculateur } from "@/components/benef/Calculateur";
 import { Peurs } from "@/components/benef/Peurs";
 import { MargeAnimee } from "@/components/benef/MargeAnimee";
+import { OutilsBenef } from "@/components/benef/OutilsBenef";
 import { TroisTemps } from "@/components/accueil/TroisTemps";
 import { PrixCompact } from "@/components/site/PrixCompact";
 import { ChiffresMarche } from "@/components/site/ChiffresMarche";
@@ -21,13 +22,6 @@ export const metadata: Metadata = {
    Peu de texte, une preuve animée de 2 s, le calculateur à manipuler, puis les réponses aux peurs du débutant. */
 
 const CHAPITRES = ["Les vrais chiffres, avant de rêver", "Commencer sans argent : le mandat de vente", "Les moteurs et les boîtes à fuir"];
-
-const OUTILS: [string, string, string][] = [
-  ["M4 20h16M6 16l4-5 3 3 5-7M15 7h3v3", "Marge et verdict", "GO ou NO GO"],
-  ["M4 5h16v11H8l-4 4V5Zm4 5h8M8 8h5", "Négociation", "Message et arguments prêts"],
-  ["M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm7 0v5h5M9 13h6M9 17h6", "Tableau de bord", "Vos marges du mois"],
-  ["M4 16.5V12l2-5h12l2 5v4.5M4 16.5h16M4 16.5V19h3v-2.5M17 16.5V19h3v-2.5", "Parc", "La marge réelle (Pro)"],
-];
 
 const Coche = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true" className="shrink-0 text-ok">
@@ -97,21 +91,7 @@ export default async function Benef() {
           <h2 className="apparait h-sec mx-auto mb-10 max-w-2xl text-center">
             Tout pour chaque voiture, <span className="it">au même endroit</span>
           </h2>
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {OUTILS.map(([icone, t, d], i) => (
-              <li key={t} className="carte vue flex items-center gap-4 p-5" style={{ "--i": i % 2 } as React.CSSProperties}>
-                <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-o/12 text-o2" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={icone} />
-                  </svg>
-                </span>
-                <span>
-                  <span className="block font-display text-lg font-semibold">{t}</span>
-                  <span className="text-ink-2">{d}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
+          <OutilsBenef />
         </div>
       </section>
 
@@ -122,7 +102,7 @@ export default async function Benef() {
             <h2 className="h-sec">
               Du premier achat <span className="it">au stock géré</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Sans engagement. Guide inclus.</p>
+            <p className="mt-3 text-lg text-ink-2">Le guide de la première revente est inclus.</p>
           </div>
           <PrixCompact ids={BENEF} lien="/tarifs#benef" />
         </div>
