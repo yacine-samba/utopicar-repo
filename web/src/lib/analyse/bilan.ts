@@ -60,6 +60,8 @@ export type Bilan = {
   aSavoir: Raison[];
   /** Annonce douteuse : signaux d'arnaque ou de vente à risque. */
   vigilance: Vigilance;
+  /** Ce que l'annonce ou le vendeur ont déjà prouvé : les questions à ce sujet ne sont plus posées. */
+  connu: { distribution: boolean; entretien: boolean; ct: boolean };
   /** Historique de l'annonce : jours en ligne, baisses de prix, même voiture ailleurs. */
   historique: ReturnType<typeof lireHistorique>;
   questions: Question[];
@@ -406,7 +408,7 @@ export function bilan(a0: Analyse, p: ProfilAnalyse, o: { prix?: number | null; 
     else if (x.cle === "compteur" || x.cle === "recul") Q.push({ q: "Pouvez-vous m'expliquer l'écart de kilométrage ?", pourquoi: x.t });
   }
   budget.postes.filter((x) => x.nc && x.source === "annonce").forEach((x) => Q.push({ q: `${x.libelle.replace(/\.$/, "")} : a-t-il été diagnostiqué par un garage ?`, pourquoi: "Impossible à chiffrer sans diagnostic", montant: x.max || undefined }));
-  connus.filter((c) => c.question && (c.avis === "eviter" || c.avis === "fragile")).forEach((c) => Q.push({ q: maj(c.question!), pourquoi: c.nom, montant: c.risque?.[2] }));
+  connus.filter((c) => c.question && (c.avis === "eviter" || c.avis === "fragile") && !(distriRefaite && /courroie|chaîne|distribution/i.test(c.question))).forEach((c) => Q.push({ q: maj(c.question!), pourquoi: c.nom, montant: c.risque?.[2] }));
   const ed = budget.postes.find((x) => x.cle === "e_distri");
   if (ed) Q.push({ q: "La distribution a-t-elle été faite, à quel kilométrage ?", pourquoi: ed.pourquoi ?? "Entretien arrivé à échéance", montant: ed.max });
   if (age != null && age >= 4 && (!f.ct || f.ct.statut === "mentionné")) Q.push({ q: "Avez-vous un contrôle technique de moins de 6 mois ?", pourquoi: "Obligatoire pour vendre, et il montre les défauts" });
@@ -444,6 +446,6 @@ export function bilan(a0: Analyse, p: ProfilAnalyse, o: { prix?: number | null; 
   return {
     indice, verdict, libelle: VERDICTS[verdict].l, ton: VERDICTS[verdict].ton, phrase, action, piliers, limites: limites.map((c) => c.why), confiance, travaux: budget, connus,
     argent: { prix, marche, realiste, ecartPct: ecart, cg: cgv, trajet, dist, fraisFixes: p.fraisFixes, seuil, travauxRetenus, scenarios, retenu, marge, plafond, offre, cible, proposer, coutReel, mensuel, decote, entretienAn, liquidite, budgetDepasse },
-    aSavoir: aSavoir.slice(0, 4), questions, message, vigilance: vig, historique: histo,
+    aSavoir: aSavoir.slice(0, 4), questions, message, vigilance: vig, historique: histo, connu: { distribution: distriRefaite, entretien: !!(f.carnet || f.factures), ct: f.ct?.statut === "ok" || f.ct?.statut === "vierge" },
   };
 }

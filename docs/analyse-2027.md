@@ -74,18 +74,40 @@ La consigne reçoit le profil : ton simple et termes expliqués pour un débutan
 
 Les anciens rapports restent lisibles : leur verdict enregistré est traduit (GO → Bonne affaire, NO GO → À éviter…), et leur bilan est recalculé à l'ouverture.
 
+## Second lot (octobre 2026) : un outil qu'on conseille
+
+### Prouver que l'analyse a raison
+- **Banc d'essai** : `cd web && npm run banc` passe 26 annonces types (RS3, M3, 911, PureTech, N47, DSG, Zoé en location, arnaque au coupon, kilométrage non garanti…) et dit ce qui s'écarte de l'attendu. `npm run banc -- --dossier mes-annonces/` analyse un dossier de vraies annonces (.txt) et sort `banc-analyse.csv` avec une colonne « votre avis » à remplir.
+- **« Ce chiffre vous semble faux ? »** sous chaque réponse du bilan (table `retours_analyse`).
+- **Justesse** (Administration) : vitesse de vente des annonces disparues selon leur position face à la cote, part des analyses sans cote, verdicts, retours. Première mesure sur la base réelle (octobre 2026, environ 200 annonces disparues : à confirmer) : 8 % ou plus sous la cote, 13 jours en ligne en médiane et 55 % parties en 15 jours ; au prix de la cote, 22 jours et 29 %.
+- **Page publique `/methode`** : les quatre questions, ce que fait l'outil et ce que fait l'IA, neutralité (aucune commission), limites, et la mesure de justesse en direct.
+
+### Faire montrer l'outil
+- **Rapport partageable** : bouton Partager sur chaque rapport, lien `/r/<jeton>` en lecture seule, sans le vendeur ni le texte brut ; arrêt du partage à tout moment. La page invite à analyser sa propre annonce.
+- **Partage depuis l'appli Leboncoin** : l'application installée (Android) apparaît dans le menu Partager ; l'analyse démarre sur le lien. iPhone : pas de cible de partage pour les applications web, il faut coller le lien.
+
+### Juger avant le premier message, encore mieux
+- **Annonce douteuse** (`vigilance.ts`) : paiement par coupon ou mandat, vendeur à l'étranger, acompte avant visite, contact hors messagerie, livraison par un particulier, prix très bas sans défaut annoncé, compteur en photo différent, kilométrage qui recule dans les documents, même voiture vue ailleurs. Une arnaque probable donne « À éviter », un signal sérieux « À creuser », avec les questions à poser.
+- **Historique de l'annonce** (`historique_annonce`, table `prix_vus` alimentée par déclencheurs sur la base du marché) : jours en ligne, baisses de prix, même voiture (même année, même kilométrage exact, même modèle) sous un autre numéro. Rafraîchi à chaque ouverture du rapport.
+- **Aperçu gratuit** (accueil, sans compte) : verdict, note et les quatre réponses de l'outil, la vigilance et la première question à poser.
+
+### Accompagner jusqu'à l'achat (et la revente)
+- **Après le premier message** : coller la réponse du vendeur, photographier le CT, les factures ou HistoVec (lus par l'IA), puis la visite (points propres au moteur, défauts constatés chiffrés, offre finale en direct). Le bilan est recalculé avec l'avant / après ; les questions déjà répondues disparaissent ; verdict et note du rapport suivent.
+- **Suivre le prix** : alerte quand l'annonce passe sous le prix conseillé par le bilan (plafond pour revendre, prix raisonnable pour rouler avec) ou disparaît ; carte « Annonces suivies » du tableau de bord, vérification à la demande (import par le lien, sans consommer d'analyse).
+- **Annonce de revente** (parc, Benef Pro) : prix d'affichage selon le délai visé, titre et texte rédigés à partir des seuls faits du dossier, photos à faire.
+
+### À faire de votre côté
+- **Appliquer la migration** `supabase/migrations/20261010120000_analyse_2027.sql` (partage, retours, prix vus et leurs déclencheurs, suivis, réponses du vendeur, justesse). Sans elle, le site fonctionne mais ces fonctions restent invisibles ou en erreur douce. Elle pose des déclencheurs sur les tables écrites par les collectes : en cas de collecte en cours, elle s'arrête au bout de 15 s, il suffit de la relancer.
+- **Couverture de la cote** : la page Justesse montre la part d'analyses sans cote ; la réduire demande de collecter les modèles manquants (et La Centrale, AutoScout24), selon le budget Apify.
+
 ## Pour aller plus loin (non construit)
 
-Classées par effet attendu sur la décision, du plus fort au plus faible.
-
-1. **Analyse vivante** : quand le vendeur répond (CT, factures, HistoVec collés ou photographiés), le rapport se met à jour et la note bouge sous les yeux : « la courroie est prouvée, Fiable ? passe de Moyen à Oui ». Le cycle complet : annonce → message → réponses → visite (liste cochée sur place, défauts constatés chiffrés) → offre.
-2. **Liquidité mesurée** : la base du marché est cumulative ; mesurer le délai réel de vente et les baisses de prix par modèle et motorisation, pour remplacer l'estimation de facilité de revente par un vrai « se vend en 23 jours en moyenne à ce prix ».
-3. **Calibrage par les résultats** : comparer la marge prévue et la marge réelle des voitures du parc (achat, frais, vente) pour corriger automatiquement les probabilités de travaux et les prix de revente, par modèle.
-4. **Suivi des annonces analysées** : alerte quand le prix d'une annonce analysée baisse sous le prix à ne pas dépasser, ou quand elle disparaît (vendue : signal de liquidité).
-5. **Comparateur de projets** : trois annonces côte à côte avec les quatre réponses ; « laquelle choisir pour mon profil » en une phrase.
-6. **Coût d'usage complet** : carburant (consommation de la version, prix du litre), assurance estimée et Crit'Air (zones à faibles émissions de la ville du profil), pour un vrai coût mensuel.
-7. **Rappels constructeur et campagnes de prise en charge** (PureTech, AdBlue) par numéro de série, quand une source fiable est disponible.
-8. **Mode collection et plus-value** : pour les modèles dont la cote monte (sportives, youngtimers), une courbe de valeur sur plusieurs années au lieu d'une décote.
+1. Calibrage automatique des probabilités de travaux et des prix de revente avec les marges réelles du parc et les retours « ce chiffre est faux ».
+2. Alerte de prix par e-mail ou notification (aujourd'hui : tableau de bord et vérification à la demande).
+3. Comparateur de projets : trois annonces côte à côte avec les quatre réponses, « laquelle pour mon profil ».
+4. Coût d'usage complet : carburant, assurance estimée, Crit'Air et zones à faibles émissions de la ville du profil.
+5. Rappels constructeur et campagnes de prise en charge (PureTech, AdBlue) par numéro de série.
+6. Mode collection et plus-value : courbe de valeur sur plusieurs années pour les modèles dont la cote monte.
 
 ## Vérifié
 

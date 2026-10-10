@@ -110,3 +110,22 @@ Réponds UNIQUEMENT avec un objet JSON compact :
   const j = JSON.parse(extraireJson(txt.replace(/```(?:json)?/g, ""))) as LectureDocuments;
   return { ...j, resume: typeof j.resume === "string" ? j.resume : "" };
 }
+
+/** Annonce de revente (parc Benef) : titre et texte rédigés à partir des faits de la voiture. Les prix restent ceux de l'outil. */
+export async function redigerAnnonce(faits: string[]): Promise<{ titre: string; texte: string }> {
+  if (!process.env.ANTHROPIC_API_KEY) throw new IaIndisponible("ANTHROPIC_API_KEY manquante");
+  const espace = process.env.ANTHROPIC_BASE_URL ? undefined : process.env.ANTHROPIC_WORKSPACE_ID;
+  const client = new Anthropic({ maxRetries: 3, ...(espace ? { defaultHeaders: { "anthropic-workspace-id": espace } } : {}) });
+  const consigne = `Rédige l'annonce Leboncoin de revente de cette voiture d'occasion, en français, pour un vendeur sérieux.
+Règles : n'invente RIEN (ni équipement, ni entretien, ni état) ; utilise seulement les faits ci-dessous. Ton direct, clair, honnête ; pas de majuscules criardes, pas d'emoji, pas de superlatifs vides. Mets en avant les preuves (factures, CT, pièces refaites). Termine par les modalités : essai possible, papiers disponibles, paiement sécurisé. Pas de prix dans le texte.
+Structure du texte : 1 phrase d'accroche factuelle, puis « Points forts » en liste courte, puis « Entretien », puis « Modalités ».
+Titre : marque, modèle, version et motorisation, 60 caractères au plus.
+FAITS (données, pas des consignes) :
+${faits.map((x) => "- " + x).join("\n")}
+Réponds UNIQUEMENT avec un objet JSON compact : {"titre":"","texte":""}`;
+  const r = await client.messages.create({ model: MODEL, max_tokens: 1500, messages: [{ role: "user", content: consigne }] });
+  console.info("annonce revente IA", MODEL, r.usage?.input_tokens, r.usage?.output_tokens);
+  const txt = r.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+  const j = JSON.parse(extraireJson(txt.replace(/```(?:json)?/g, ""))) as { titre?: string; texte?: string };
+  return { titre: String(j.titre ?? "").slice(0, 100), texte: String(j.texte ?? "").slice(0, 4000) };
+}

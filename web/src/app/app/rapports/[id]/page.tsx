@@ -11,6 +11,7 @@ import { cleFavori, type NouveauFavori } from "@/lib/favoris";
 import { titreVehicule } from "@/lib/titre";
 import { numeroLeboncoin, type Historique } from "@/lib/analyse/historique";
 import { BoutonPartager } from "@/components/analyse/BoutonPartager";
+import { BoutonSuivi } from "@/components/analyse/Suivi";
 
 export const metadata: Metadata = { title: "Rapport" };
 
@@ -36,6 +37,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const { data: fav } = await (await supabaseServeur()).from("favoris").select("id").eq("cle", cle).maybeSingle();
   // lu à part : tant que la colonne n'existe pas en base, la page s'affiche sans le bouton Partager
   const { data: part, error: ePart } = await (await supabaseServeur()).from("rapports").select("partage").eq("id", id).maybeSingle();
+  const { data: suivi, error: eSuivi } = numero ? await (await supabaseServeur()).from("suivis").select("rapport_id").eq("rapport_id", id).maybeSingle() : { data: null, error: true };
   const veh = a.ia?.vehicule;
   const cote = a.ia?.marche?.realiste ?? null;
   const prix = data.prix ?? a.faits?.prix ?? null;
@@ -57,7 +59,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         maxPhotos={maxPhotos}
         date={dateCourte(data.created_at)}
         retour={{ href: "/app/rapports", l: particulier ? "Mes analyses" : "Rapports" }}
-        actions={ePart ? null : <BoutonPartager rapportId={id} initial={(part as { partage?: string | null } | null)?.partage ?? null} titre={titreVehicule(data.titre)} />}
+        actions={
+          <>
+            {numero && !eSuivi && <BoutonSuivi a={a} rapportId={id} annonce={numero} titre={titreVehicule(data.titre)} initial={!!suivi} />}
+            {!ePart && <BoutonPartager rapportId={id} initial={(part as { partage?: string | null } | null)?.partage ?? null} titre={titreVehicule(data.titre)} />}
+          </>
+        }
       />
       {particulier ? (
         <div className="max-w-3xl">

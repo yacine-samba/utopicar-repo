@@ -3,6 +3,9 @@ import { compteCourant } from "@/lib/compte";
 import { lireAnnonce } from "@/lib/analyse/texte";
 import { fiabilite } from "@/lib/analyse/fiabilite";
 import { coteMarche } from "@/lib/analyse/cote";
+import { iaRegles } from "@/lib/analyse/regles";
+import { bilan } from "@/lib/analyse/bilan";
+import { profilParDefaut } from "@/lib/analyse/profil";
 import { ipDe, tropDeDemandes } from "@/lib/limite";
 
 /* Aperçu instantané (2 à 3 s, sans IA, sans consommer d'analyse) : ce que l'outil calcule seul — prix face à la cote
@@ -22,12 +25,22 @@ export async function POST(req: Request) {
   const f = lireAnnonce(texte);
   const fiab = fiabilite({ texte, annee: f.annee, km: f.km, energie: f.energie });
   const cote = await coteMarche(texte, f).catch(() => null);
+  // bilan de l'outil, gratuit : verdict et quatre réponses, avec le profil du compte (sinon celui d'un particulier)
+  const b = (() => {
+    try {
+      return bilan({ faits: f, fiab, cote, ia: iaRegles(texte, f, fiab, cote), regles: true }, c?.profilAnalyse ?? profilParDefaut("particulier"));
+    } catch (e) {
+      console.error("aperçu bilan", e);
+      return null;
+    }
+  })();
   return Response.json({
     titre: f.titre, prix: f.prix, annee: f.annee, km: f.km, energie: f.energie, boite: f.boite, ville: f.ville,
     cote: cote ? { n: cote.n, mediane: cote.mediane, p25: cote.p25, p75: cote.p75 } : null,
     ecart: cote && f.prix ? cote.mediane - f.prix : null,
     fiab: { k: fiab.k, modele: fiab.modele, pourquoi: fiab.pourquoi.slice(0, 2) },
     defauts: f.defauts.slice(0, 5).map((d) => ({ l: d.l, piege: d.cat === "piege" })),
+    bilan: b ? { libelle: b.libelle, ton: b.ton, indice: b.indice, piliers: b.piliers.map((p) => ({ question: p.question, reponse: p.reponse, sous: p.sous, ton: p.ton })), vigilance: b.vigilance.niveau !== "aucune" ? b.vigilance.signaux[0]?.t ?? null : null, question: b.questions[0]?.q ?? null } : null,
     papiers: [f.ct ? `Contrôle technique : ${f.ct.statut}` : "Contrôle technique non mentionné", f.carnet ? "Carnet d'entretien annoncé" : null, f.factures ? "Factures annoncées" : null, f.distribution ? `Distribution ${f.distribution.statut}` : null].filter((x): x is string => !!x),
   });
 }

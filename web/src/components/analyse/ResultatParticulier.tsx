@@ -48,7 +48,17 @@ export function ResultatParticulier({ a, onNouvelle, id }: { a: Analyse; onNouve
   const c = coutParticulier(a, { kmCost, tarifCV, ville: "" }, kmSaisi != null && Number.isFinite(kmSaisi) ? kmSaisi : null);
   const b = useBilan(a, { distance: kmSaisi != null && Number.isFinite(kmSaisi) ? kmSaisi : null });
   const ia = a.ia;
-  const acc = ia?.accompagnement ? ACCOMP[ia.accompagnement.recommandation] ?? { ton: "warn" as Ton, icone: "!" } : null;
+  // y aller seul : d'après le bilan (il tient compte des réponses du vendeur et de la vigilance), l'explication de l'IA si elle concorde
+  const reco = b.verdict === "eviter" || b.vigilance.niveau === "alerte" || (b.piliers[0]?.score ?? 100) < 45 ? "faites inspecter la voiture" : b.travaux.nc > 0 || b.verdict === "creuser" || (b.piliers[0]?.score ?? 100) < 60 ? "venez accompagné" : "vous pouvez y aller seul";
+  const pourquoiReco =
+    ia?.accompagnement?.recommandation === reco && ia.accompagnement.pourquoi
+      ? ia.accompagnement.pourquoi
+      : reco === "faites inspecter la voiture"
+        ? b.vigilance.niveau === "alerte" ? "L'annonce présente des signaux d'arnaque : ne vous déplacez pas seul, et ne versez rien avant d'avoir tout vérifié." : "Un risque important est signalé : un mécanicien saura dire s'il est réel."
+        : reco === "venez accompagné"
+          ? "Plusieurs points restent à vérifier sur place : un second avis aide à ne rien oublier."
+          : "Rien de grave n'est signalé : suivez la liste « À contrôler sur place »."; 
+  const acc = ia ? { ...ACCOMP[reco], recommandation: reco, pourquoi: pourquoiReco } : null;
 
   return (
     <div className="grid gap-5">
@@ -128,14 +138,14 @@ export function ResultatParticulier({ a, onNouvelle, id }: { a: Analyse; onNouve
         </p>
       )}
 
-      {acc && ia?.accompagnement && (
+      {acc && (
         <section className={cx("carte p-6", acc.ton === "ok" ? "border-ok/40" : acc.ton === "bad" ? "border-bad/40" : "border-warn/40")} aria-labelledby="acc">
           <p className="text-sm text-ink-3">Faut-il y aller seul ?</p>
           <h2 id="acc" className={cx("mt-1 font-display text-2xl font-semibold first-letter:uppercase", TEXTE[acc.ton])}>
             <span aria-hidden="true">{acc.icone} </span>
-            {ia.accompagnement.recommandation}
+            {acc.recommandation}
           </h2>
-          <p className="mt-2 text-ink-2">{ia.accompagnement.pourquoi}</p>
+          <p className="mt-2 text-ink-2">{acc.pourquoi}</p>
         </section>
       )}
 

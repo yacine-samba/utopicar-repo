@@ -207,7 +207,7 @@ export function SuiteRapport({ a, id }: { a: Analyse; id: string }) {
               {revente ? (
                 <p className="mt-1 text-lg">
                   Offre finale <b className="num font-display text-2xl text-o2">{eur(enVisite.argent.offre)}</b>
-                  <span className="text-sm text-ink-3"> · plafond {eur(enVisite.argent.plafond != null && enVisite.argent.plafond > 0 ? enVisite.argent.plafond : null)} · bénéfice au prix affiché {eur(enVisite.argent.marge)}</span>
+                  <span className="text-sm text-ink-3"> · plafond {eur(enVisite.argent.plafond != null && enVisite.argent.plafond > 0 ? enVisite.argent.plafond : null)} · au prix affiché {enVisite.argent.marge == null ? "—" : enVisite.argent.marge >= 0 ? `+${eur(enVisite.argent.marge)}` : `−${eur(-enVisite.argent.marge)}`}</span>
                 </p>
               ) : (
                 <p className="mt-1 text-lg">
@@ -215,7 +215,10 @@ export function SuiteRapport({ a, id }: { a: Analyse; id: string }) {
                   <span className="text-sm text-ink-3"> · travaux probables {eur(enVisite.travaux.probable)}</span>
                 </p>
               )}
-              <p className="mt-1 text-sm text-ink-2">Verdict : {enVisite.libelle}.</p>
+              <p className="mt-1 text-sm text-ink-2">
+                Verdict au prix affiché : {enVisite.libelle}.
+                {revente && enVisite.verdict === "eviter" && enVisite.argent.offre != null && " À l'offre finale, l'achat redevient rentable : sinon, passez."}
+              </p>
             </div>
             <div>
               <button type="button" disabled={envoi} onClick={() => envoyer({ type: "visite", constats: visiteEnCours.constats, coches }, "Visite enregistrée : le bilan est à jour.")} className="btn btn-o btn-sm">

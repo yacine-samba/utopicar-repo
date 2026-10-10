@@ -101,7 +101,7 @@ function HistoriqueAnnonce({ h }: { h: NonNullable<BilanT["historique"]> }) {
         </div>
       </div>
       {h.serie.length > 1 && (
-        <p className="mt-3 text-sm text-ink-2">
+        <p className="mt-3 flex flex-wrap gap-x-1 text-sm text-ink-2">
           {h.serie.map((x, i) => (
             <span key={i} className="whitespace-nowrap">
               {i > 0 && <span className="text-ink-3"> → </span>}
@@ -154,7 +154,7 @@ export function Bilan({ a, b, detail = "complet", lien, argent, rapportId }: { a
   // questions de l'outil d'abord (faiblesses connues, entretien), puis celles de l'analyse IA qui ne les répètent pas
   const cle = (q: string) => q.toLowerCase().normalize("NFD").replace(/[^a-z]/g, "").slice(0, 28);
   const vues = new Set(b.questions.map((q) => cle(q.q)));
-  const questions = [...b.questions, ...(a.ia?.questions ?? []).filter((q) => q && !vues.has(cle(q)) && !/contr[oô]le technique|histovec/i.test(q) && !(/^depuis/i.test(q) && b.questions.some((x) => /^depuis/i.test(x.q)))).slice(0, 3).map((q) => ({ q, pourquoi: "Conseillé par l'analyse de l'annonce", montant: undefined as number | undefined }))].slice(0, 7);
+  const questions = [...b.questions, ...(a.ia?.questions ?? []).filter((q) => q && !vues.has(cle(q)) && !/contr[oô]le technique|histovec/i.test(q) && !(b.connu.distribution && /distribution|courroie/i.test(q)) && !(b.connu.entretien && /factures|carnet/i.test(q)) && !(/^depuis/i.test(q) && b.questions.some((x) => /^depuis/i.test(x.q)))).slice(0, 3).map((q) => ({ q, pourquoi: "Conseillé par l'analyse de l'annonce", montant: undefined as number | undefined }))].slice(0, 7);
   return (
     <div className="grid gap-5">
       {/* Verdict */}
@@ -210,6 +210,9 @@ export function Bilan({ a, b, detail = "complet", lien, argent, rapportId }: { a
             )}
           </details>
           {b.limites.length > 0 && <p className="text-sm text-ink-3">Note limitée : {b.limites.join(" ; ")}.</p>}
+          <p className="text-sm text-ink-3">
+            <Link href="/methode" className="underline underline-offset-4 hover:text-ink">Comment la note est calculée</Link>
+          </p>
           <PuceProfil />
         </div>
       </section>

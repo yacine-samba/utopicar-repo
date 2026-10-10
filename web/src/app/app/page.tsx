@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AnnoncesSuivies, type LigneSuivi } from "@/components/analyse/Suivi";
 import { estFavorable, VERDICTS_FAVORABLES } from "@/lib/analyse/verdicts";
 import { titreVehicule } from "@/lib/titre";
 import { compteBenef } from "@/lib/benef";
@@ -76,6 +77,13 @@ async function Bonjour({ c, texte }: { c: Compte; texte: string }) {
   );
 }
 
+/** Annonces suivies, prix à jour d'après la base du marché ; rien si la fonction n'est pas encore en base. */
+async function Suivies() {
+  const { data, error } = await (await supabaseServeur()).rpc("suivis_verifier");
+  if (error || !Array.isArray(data) || !data.length) return null;
+  return <AnnoncesSuivies initiales={data as LigneSuivi[]} />;
+}
+
 async function TableauParticulier({ c }: { c: Compte }) {
   const o = c.offre;
   const { data } = await (await supabaseServeur())
@@ -92,6 +100,7 @@ async function TableauParticulier({ c }: { c: Compte }) {
       <div className="hidden sm:block">
         <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle va vraiment vous coûter et ce qu'il faut vérifier." />
       </div>
+      <Suivies />
       <ProjetAchat lignes={data ?? []} />
       <div className="grid gap-4 sm:grid-cols-3">
         <Tuile
@@ -183,6 +192,7 @@ async function TableauComplet({ c }: { c: Compte }) {
     <div className="grid gap-8">
       <EnTeteTableau c={c} texte={`${nomFormule(c)} · votre parc, vos marges et le marché.`} />
       <CartePremiersPas c={c} />
+      <Suivies />
 
       <section aria-labelledby="tb-pipe" className="carte grid gap-5 p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -350,6 +360,7 @@ async function TableauBenef({ c }: { c: Compte }) {
     <div className="grid gap-8">
       <EnTeteTableau c={c} texte={`${nomFormule(c)} · vos chiffres du mois, depuis le 1er.`} />
       <CartePremiersPas c={c} />
+      <Suivies />
       {recherches && <RechercheRapide recentes={recherches} />}
 
       <section aria-labelledby="tb-analyses">
