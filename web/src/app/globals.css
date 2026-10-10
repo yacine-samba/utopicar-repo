@@ -279,6 +279,45 @@ select option:disabled {
   }
 }
 
+/* Preuves animées (accueil, Benef) : une scène courte qui se joue une fois, en CSS seul (transform et opacité,
+   rien qui recalcule la mise en page). Elle attend d'être à l'écran ; sans JavaScript elle se joue dès le chargement,
+   et avec les animations réduites l'état final s'affiche tout de suite (règle plus bas). */
+.scene .pas {
+  animation: surgit 0.42s var(--ease-ressort) both;
+  animation-delay: var(--d, 0s);
+}
+.scene .jauge {
+  animation: remplit 0.7s var(--ease-doux) both;
+  animation-delay: var(--d, 0s);
+  transform-origin: left center;
+}
+.scene .curseur {
+  animation: glisse 0.9s var(--ease-doux) both;
+  animation-delay: var(--d, 0s);
+}
+:root[data-anim] .apparait:not(.vu) .scene .pas,
+:root[data-anim] .apparait:not(.vu) .scene .jauge,
+:root[data-anim] .apparait:not(.vu) .scene .curseur {
+  animation-play-state: paused;
+}
+@keyframes surgit {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+@keyframes remplit {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes glisse {
+  from {
+    transform: translateX(calc(-1 * var(--depart, 60px)));
+    opacity: 0;
+  }
+}
+
 @keyframes defile {
   to {
     transform: translateX(-100%);
@@ -314,6 +353,7 @@ select option:disabled {
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
+:root[data-calme] .scene *,
 :root[data-calme] .apparait,
 :root[data-calme] .arrivee {
   opacity: 1;
