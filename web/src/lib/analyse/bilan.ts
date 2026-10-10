@@ -8,6 +8,9 @@ import { connaissancesDe, estPremium, ORDRE_AVIS, type Connu } from "./connaissa
 import { seuilMarge, type Delai, type ProfilAnalyse } from "./profil";
 import { travauxProbables, type BudgetTravaux } from "./travaux";
 import { VERDICTS, type TonVerdict, type VerdictCode } from "./verdicts";
+import { avecComplements } from "./complements";
+import { lireHistorique } from "./historique";
+import { vigilance, type Vigilance } from "./vigilance";
 
 export type Raison = { t: string; s: 1 | 0 | -1 };
 export type ClePilier = "fiabilite" | "travaux" | "prix" | "rentabilite" | "usage";
@@ -55,6 +58,10 @@ export type Bilan = {
     budgetDepasse: number | null;
   };
   aSavoir: Raison[];
+  /** Annonce douteuse : signaux d'arnaque ou de vente à risque. */
+  vigilance: Vigilance;
+  /** Historique de l'annonce : jours en ligne, baisses de prix, même voiture ailleurs. */
+  historique: ReturnType<typeof lireHistorique>;
   questions: Question[];
   message: string;
 };
@@ -90,7 +97,9 @@ function principal(connus: Connu[], type: Connu["type"]) {
 }
 
 /** `travaux` : budget travaux modifié à la main (sans marge de prudence) ; `remise` : le même avec la marge de prudence retenue. */
-export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; distance?: number | null; travaux?: number | null; remise?: number | null } = {}): Bilan {
+export function bilan(a0: Analyse, p: ProfilAnalyse, o: { prix?: number | null; distance?: number | null; travaux?: number | null; remise?: number | null } = {}): Bilan {
+  // réponses du vendeur, documents et visite ajoutés au rapport : l'annonce relue avec eux
+  const a = avecComplements(a0);
   const f = a.faits;
   const ia = a.ia;
   const v = ia?.vehicule;
@@ -252,7 +261,9 @@ export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; d
   else if (proj?.dans1an != null && proj.P != null) decote = Math.round(Math.max(0, (proj.P - proj.dans1an) * (0.6 + (0.4 * p.kmAn) / 15000)));
   else if (valeur != null) decote = Math.round(Math.max(200, valeur * (age == null ? 0.1 : age <= 3 ? 0.15 : age <= 6 ? 0.11 : age <= 10 ? 0.08 : 0.05)));
   const entretienAn = Math.round((premium ? 700 : 450) * clamp(p.kmAn / 15000, 0.6, 1.6) * (electrique ? 0.6 : 1));
-  const annuel = decote != null ? decote + entretienAn + budget.probable : null;
+  // batterie en location (Zoé, Twizy…) : loyer mensuel en plus, environ 90 € selon le forfait kilométrique
+  const loyerBatterie = connus.some((c) => c.id === "location-batterie") ? 90 * 12 : 0;
+  const annuel = decote != null ? decote + entretienAn + budget.probable + loyerBatterie : null;
   const mensuel = annuel != null ? Math.round(annuel / 12 / 5) * 5 : null;
   const cp = coutParticulier(a, { tarifCV: p.tarifCV, kmCost: p.kmCost, ville: p.ville }, o.distance ?? null);
   const coutReel = cp.total;
@@ -280,6 +291,7 @@ export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; d
     if (decote != null) ur.push({ t: `Perte de valeur estimée : ${eur(decote)} la première année${proj ? " (mesurée sur les annonces du modèle)" : ""}`, s: 0 });
     ur.push({ t: `Entretien courant : environ ${eur(entretienAn)} par an pour ${p.kmAn.toLocaleString("fr-FR")} km`, s: 0 });
     if (budget.probable >= 150) ur.push({ t: `Travaux probables : ${eur(budget.probable)}`, s: -1 });
+    if (loyerBatterie) ur.push({ t: "Loyer de batterie : environ 90 € par mois en plus", s: -1 });
     if (p.objectif === "mixte" && valeur != null && decote != null) ur.push({ t: `Valeur de revente dans un an : environ ${eur(Math.max(0, valeur - decote))}`, s: 0 });
     piliers.push({
       cle: "usage", question: p.objectif === "mixte" ? "Combien elle vous coûte ?" : "Combien par mois ?", score: su, ton: tonScore(su),
@@ -299,7 +311,11 @@ export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; d
   const notes = piliers.filter((x) => x.score != null);
   let indice = notes.length ? Math.round(notes.reduce((s, x) => s + poids[x.cle] * x.score!, 0) / notes.reduce((s, x) => s + poids[x.cle], 0)) : null;
   const caps: { v: number; why: string }[] = [];
+  const vig = vigilance(a);
+  const arnaque = vig.signaux.some((x) => x.poids === 3);
   if (flags.gage) caps.push({ v: 15, why: "problème de papiers (gage, opposition, carte grise)" });
+  if (vig.niveau === "alerte") caps.push({ v: arnaque ? 20 : 40, why: "signaux d'annonce douteuse" });
+  else if (vig.niveau === "prudence") caps.push({ v: 70, why: "points de vigilance sur l'annonce" });
   if (flags.compteur) caps.push({ v: 20, why: "kilométrage non garanti" });
   if (flags.bloquant) caps.push({ v: 25, why: "panne grave annoncée" });
   if (flags.sinistre) caps.push({ v: 45, why: "véhicule déclaré gravement endommagé" });
@@ -315,11 +331,12 @@ export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; d
   /* ---------- Verdict ---------- */
   const pireNeg = [...pFiab.raisons, ...pTrav.raisons].find((x) => x.s === -1)?.t;
   let verdict: VerdictCode;
-  if (flags.gage || flags.compteur || flags.bloquant) verdict = "eviter";
+  if (flags.gage || flags.compteur || flags.bloquant || arnaque) verdict = "eviter";
   else if (p.objectif === "revente") {
     if (marge == null) verdict = "creuser";
     else if (marge >= seuil) verdict = budget.nc || flags.sinistre ? "creuser" : (indice ?? 0) >= 75 ? "excellente" : "bonne";
-    else if (plafond != null && plafond > 0 && prix != null && plafond >= prix * 0.85) verdict = "negocier";
+    // négociable : le prix maximum reste à moins de 18 % du prix affiché (au-delà, peu de vendeurs suivent)
+    else if (plafond != null && plafond > 0 && prix != null && plafond >= prix * 0.82) verdict = "negocier";
     else verdict = "eviter";
   } else {
     const i = indice ?? 0;
@@ -333,7 +350,7 @@ export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; d
   }
   if (verdict === "excellente" && connus.some((c) => c.avis === "eviter")) verdict = "bonne";
   const nomVoiture = [v?.marque, v?.modele].filter(Boolean).join(" ") || "la voiture";
-  const raisonEviter = flags.gage ? "Problème de papiers (gage, opposition ou carte grise)." : flags.compteur ? "Kilométrage non garanti : impossible de savoir ce que vous achetez." : flags.bloquant ? `${budget.pieges[0]?.libelle ?? "Panne grave annoncée"} : réparation impossible à chiffrer.` : null;
+  const raisonEviter = arnaque ? `Signaux d'arnaque : ${vig.signaux[0].t.charAt(0).toLowerCase()}${vig.signaux[0].t.slice(1)}.` : flags.gage ? "Problème de papiers (gage, opposition ou carte grise)." : flags.compteur ? "Kilométrage non garanti : impossible de savoir ce que vous achetez." : flags.bloquant ? `${budget.pieges[0]?.libelle ?? "Panne grave annoncée"} : réparation impossible à chiffrer.` : null;
   const PHRASES: Record<VerdictCode, [string, string]> =
     p.objectif === "revente"
       ? {
@@ -350,6 +367,15 @@ export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; d
           creuser: [pireNeg ? `À confirmer : ${pireNeg.charAt(0).toLowerCase()}${pireNeg.slice(1)}.` : "Trop d'inconnues pour trancher.", "Posez les questions ci-dessous avant de vous déplacer."],
           eviter: [raisonEviter ?? (pireNeg ? `${pireNeg}.` : "Trop de risques pour le prix demandé."), "Passez à l'annonce suivante."],
         };
+  // annonce douteuse ou signal sérieux (acompte, vendeur à l'étranger…) : on vérifie d'abord, quel que soit le reste
+  const aVerifier = vig.niveau === "alerte" || vig.signaux.some((x) => x.poids >= 2);
+  if (aVerifier && verdict !== "eviter") verdict = "creuser";
+  // trop peu d'informations pour conseiller d'y aller (annonce de quelques lignes, sans cote)
+  else if (p.objectif !== "revente" && (verdict === "excellente" || verdict === "bonne") && f.descCourte && sp == null) {
+    verdict = "creuser";
+    PHRASES.creuser = ["Trop peu d'informations pour juger : annonce de quelques lignes, prix impossible à comparer.", "Demandez la version exacte, l'entretien et des photos avant de vous déplacer."];
+  }
+  if (aVerifier && verdict === "creuser") PHRASES.creuser = [`Annonce à vérifier avant tout : ${vig.signaux[0].t.charAt(0).toLowerCase()}${vig.signaux[0].t.slice(1)}.`, "Posez les questions ci-dessous et ne versez rien avant d'avoir vu la voiture."];
   const [phrase, action] = PHRASES[verdict];
 
   /* ---------- Confiance de l'analyse ---------- */
@@ -373,6 +399,12 @@ export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; d
 
   /* ---------- Ce qu'on ne sait pas encore : questions au vendeur ---------- */
   const Q: Question[] = [];
+  for (const x of vig.signaux) {
+    if (x.cle === "doublon") Q.push({ q: "Pourquoi la voiture est-elle remise en vente ?", pourquoi: x.t });
+    else if (x.cle === "prix") Q.push({ q: "Pourquoi ce prix, nettement sous le marché ?", pourquoi: x.t });
+    else if (x.cle === "etranger" || x.cle === "livraison") Q.push({ q: "Où et quand puis-je voir et essayer la voiture ?", pourquoi: x.t });
+    else if (x.cle === "compteur" || x.cle === "recul") Q.push({ q: "Pouvez-vous m'expliquer l'écart de kilométrage ?", pourquoi: x.t });
+  }
   budget.postes.filter((x) => x.nc && x.source === "annonce").forEach((x) => Q.push({ q: `${x.libelle.replace(/\.$/, "")} : a-t-il été diagnostiqué par un garage ?`, pourquoi: "Impossible à chiffrer sans diagnostic", montant: x.max || undefined }));
   connus.filter((c) => c.question && (c.avis === "eviter" || c.avis === "fragile")).forEach((c) => Q.push({ q: maj(c.question!), pourquoi: c.nom, montant: c.risque?.[2] }));
   const ed = budget.postes.find((x) => x.cle === "e_distri");
@@ -403,10 +435,15 @@ export function bilan(a: Analyse, p: ProfilAnalyse, o: { prix?: number | null; d
   if (p.objectif === "revente" && marge != null) aSavoir.push({ t: marge >= 0 ? `Bénéfice estimé au prix affiché : ${eur(marge)} (${retenu?.l.toLowerCase()}, ${retenu?.delai})` : `Au prix affiché, perte estimée de ${eur(-marge)} (${retenu?.l.toLowerCase()})`, s: marge >= seuil ? 1 : -1 });
   else if (coutReel != null) aSavoir.push({ t: `Coût réel d'achat : ${eur(coutReel)}${mensuel != null ? `, puis environ ${eur(mensuel)} par mois` : ""}`, s: 0 });
   if (budgetDepasse) aSavoir.push({ t: `${eur(budgetDepasse)} au-dessus de votre budget`, s: -1 });
+  const histo = lireHistorique(a.historique, f.prix ?? prix);
+  if (histo?.enLigne != null && histo.enLigne >= 30)
+    aSavoir.unshift({ t: `En ligne depuis ${histo.enLigne} jours${histo.baisses ? `, prix baissé ${histo.baisses} fois (−${eur(histo.baisse)})` : ""} : le vendeur est sans doute prêt à négocier`, s: 1 });
+  else if (histo?.baisse) aSavoir.unshift({ t: `Prix déjà baissé de ${eur(histo.baisse)} depuis la mise en ligne`, s: 1 });
+  if (vig.niveau !== "aucune") aSavoir.unshift({ t: vig.signaux[0].t, s: -1 });
 
   return {
     indice, verdict, libelle: VERDICTS[verdict].l, ton: VERDICTS[verdict].ton, phrase, action, piliers, limites: limites.map((c) => c.why), confiance, travaux: budget, connus,
     argent: { prix, marche, realiste, ecartPct: ecart, cg: cgv, trajet, dist, fraisFixes: p.fraisFixes, seuil, travauxRetenus, scenarios, retenu, marge, plafond, offre, cible, proposer, coutReel, mensuel, decote, entretienAn, liquidite, budgetDepasse },
-    aSavoir: aSavoir.slice(0, 4), questions, message,
+    aSavoir: aSavoir.slice(0, 4), questions, message, vigilance: vig, historique: histo,
   };
 }

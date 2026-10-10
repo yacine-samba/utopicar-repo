@@ -21,7 +21,7 @@ const TEXTE: Record<TonVerdict, string> = { ok: "text-ok", o: "text-o2", warn: "
 const FOND: Record<TonVerdict, string> = { ok: "from-ok/15 border-ok/40", o: "from-o/15 border-o/40", warn: "from-warn/15 border-warn/40", bad: "from-bad/15 border-bad/40", neutre: "from-glass border-line-2" };
 const BARRE: Record<TonVerdict, string> = { ok: "bg-ok", o: "bg-o2", warn: "bg-warn", bad: "bg-bad", neutre: "bg-ink-3" };
 const TRAIT: Record<TonVerdict, string> = { ok: "stroke-ok", o: "stroke-o2", warn: "stroke-warn", bad: "stroke-bad", neutre: "stroke-ink-3" };
-const SOURCES: Record<SourcePoste, string> = { annonce: "Annonce", photos: "Photos", ia: "Analyse", entretien: "Entretien", moteur: "Réputation" };
+const SOURCES: Record<SourcePoste, string> = { annonce: "Annonce", photos: "Photos", ia: "Analyse", entretien: "Entretien", moteur: "Réputation", vendeur: "Vendeur", visite: "Visite" };
 
 /** Bilan avec le profil courant ; `prix` et `remise` : simulation (prix envisagé, travaux modifiés). */
 export function useBilan(a: Analyse, o: { prix?: number | null; distance?: number | null; travaux?: number | null; remise?: number | null } = {}) {
@@ -74,6 +74,55 @@ function CartePilier({ p }: { p: Pilier }) {
         </ul>
       )}
     </details>
+  );
+}
+
+function HistoriqueAnnonce({ h }: { h: NonNullable<BilanT["historique"]> }) {
+  const date = (d: string | null) => (d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "");
+  return (
+    <Bloc titre="Historique de l'annonce" aside="base du marché Utopicar">
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="rounded-2xl border border-line bg-black/20 p-3">
+          <p className="text-xs text-ink-3">En ligne depuis</p>
+          <p className="num font-display text-xl font-semibold">{h.enLigne != null ? `${h.enLigne} jour${h.enLigne > 1 ? "s" : ""}` : "—"}</p>
+          <p className="text-xs text-ink-3">{h.enLigne != null && h.enLigne >= 30 ? "vendeur souvent ouvert à la négociation" : h.enLigne != null && h.enLigne <= 3 ? "annonce récente : décidez vite" : "\u00a0"}</p>
+        </div>
+        <div className="rounded-2xl border border-line bg-black/20 p-3">
+          <p className="text-xs text-ink-3">Prix</p>
+          <p className="num font-display text-xl font-semibold">{h.baisse ? `−${eur(h.baisse)}` : "Inchangé"}</p>
+          <p className="text-xs text-ink-3">{h.baisses ? `${h.baisses} baisse${h.baisses > 1 ? "s" : ""} depuis ${eur(h.initial)}` : h.serie.length ? "depuis la première fois que nous l'avons vue" : "pas encore d'historique"}</p>
+        </div>
+        <div className="rounded-2xl border border-line bg-black/20 p-3">
+          <p className="text-xs text-ink-3">Même voiture ailleurs</p>
+          <p className={cx("num font-display text-xl font-semibold", h.autres.length > 0 && "text-warn")}>{h.autres.length ? `${h.autres.length} annonce${h.autres.length > 1 ? "s" : ""}` : "Aucune"}</p>
+          <p className="text-xs text-ink-3">même année et même kilométrage exact</p>
+        </div>
+      </div>
+      {h.serie.length > 1 && (
+        <p className="mt-3 text-sm text-ink-2">
+          {h.serie.map((x, i) => (
+            <span key={i} className="whitespace-nowrap">
+              {i > 0 && <span className="text-ink-3"> → </span>}
+              <b className="num">{eur(x.prix)}</b> <span className="text-ink-3">{date(x.le)}</span>
+            </span>
+          ))}
+        </p>
+      )}
+      {h.autres.length > 0 && (
+        <ul className="mt-3 grid gap-1 text-sm">
+          {h.autres.map((x) => (
+            <li key={x.id} className="flex flex-wrap gap-x-2">
+              <a href={`https://www.leboncoin.fr/ad/voitures/${x.id}`} target="_blank" rel="noopener noreferrer" className="text-o2 underline underline-offset-4">
+                Annonce {x.id}
+              </a>
+              <span className="text-ink-3">
+                {[x.prix != null ? eur(x.prix) : null, x.lieu, x.vu_le ? `vue le ${date(x.vu_le)}` : null].filter(Boolean).join(" · ")}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Bloc>
   );
 }
 
@@ -163,12 +212,32 @@ export function Bilan({ a, b, detail = "complet", lien, argent }: { a: Analyse; 
         </div>
       </section>
 
+      {/* Annonce douteuse */}
+      {b.vigilance.niveau !== "aucune" && (
+        <section className={cx("rounded-3xl border p-5 sm:p-6", b.vigilance.niveau === "alerte" ? "border-bad/50 bg-bad/10" : "border-warn/40 bg-warn/5")} aria-labelledby="bilan-vigilance">
+          <h2 id="bilan-vigilance" className={cx("font-display text-lg font-semibold", b.vigilance.niveau === "alerte" ? "text-bad" : "text-warn")}>
+            {b.vigilance.niveau === "alerte" ? "Annonce douteuse : vérifiez avant tout" : "Points de vigilance sur l'annonce"}
+          </h2>
+          <ul className="mt-3 grid gap-3">
+            {b.vigilance.signaux.map((x) => (
+              <li key={x.cle} className="grid gap-0.5">
+                <span className="font-medium">{x.t}</span>
+                <span className="text-sm text-ink-2">{x.conseil}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {/* Les quatre questions */}
       <div className="grid gap-3 sm:grid-cols-2">
         {b.piliers.map((p) => (
           <CartePilier key={p.cle} p={p} />
         ))}
       </div>
+
+      {/* Historique de l'annonce */}
+      {b.historique && (b.historique.enLigne != null || b.historique.serie.length > 1 || b.historique.autres.length > 0) && <HistoriqueAnnonce h={b.historique} />}
 
       {/* Ce qu'on ne sait pas encore */}
       {questions.length > 0 && (

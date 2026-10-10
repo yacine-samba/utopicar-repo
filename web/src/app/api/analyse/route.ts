@@ -12,6 +12,8 @@ import type { Analyse } from "@/lib/analyse/couts";
 import { bilan } from "@/lib/analyse/bilan";
 import { profilParDefaut } from "@/lib/analyse/profil";
 import { projectionMarche } from "@/lib/analyse/projection";
+import { numeroLeboncoin, type Historique } from "@/lib/analyse/historique";
+import { marqueModele } from "@/lib/analyse/regles";
 import { compteCourant } from "@/lib/compte";
 import { OFFRES, type Offre } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
@@ -93,6 +95,14 @@ export async function POST(req: Request) {
   const projectionP = compte
     ? Promise.race([projectionMarche(texte, faits), new Promise<null>((ok) => setTimeout(() => ok(null), 15000))]).catch((e) => (console.error("projection", e), null))
     : Promise.resolve(null);
+  // Historique de l'annonce et même voiture vue ailleurs (base du marché) : facultatif, jamais bloquant.
+  const historiqueP: Promise<Historique | null> = compte
+    ? (async () => {
+        const { data, error } = await (await supabaseServeur()).rpc("historique_annonce", { p_id: numeroLeboncoin(r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0]), p_annee: faits.annee, p_km: faits.km, p_modele: marqueModele(texte, faits).modele });
+        if (error) console.error("historique_annonce", error.message);
+        return error ? null : (data as Historique | null);
+      })().catch(() => null)
+    : Promise.resolve(null);
   const cote = compte ? await coteMarche(texte, faits) : null;
   const out: Analyse = { faits, fiab, ia: null, cote, profil };
 
@@ -124,6 +134,7 @@ export async function POST(req: Request) {
   }
 
   out.projection = await projectionP;
+  out.historique = await historiqueP;
   out.offre = o.id;
   out.lien = r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0];
   out.vendeur = vendeurDe(r.data.vendeur, texte);

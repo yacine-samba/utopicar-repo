@@ -89,6 +89,8 @@ export type Faits = {
   importe?: boolean;
   /** Pièces et entretiens annoncés comme neufs ou refaits récemment (« embrayage neuf », « pneus récents »). */
   recents?: string[];
+  /** Signaux de vigilance lus dans le texte (paiement par coupon, vendeur à l'étranger, acompte…), voir vigilance.ts. */
+  signaux?: string[];
   defauts: Defaut[];
   /** Description très courte : on ne peut pas juger l'état sur le texte. */
   descCourte: boolean;
@@ -215,6 +217,7 @@ function descFacts(txt: string): Partial<Faits> {
   if (/\b(import|importe|immatricule a l'?etranger|plaque etrangere)\b/.test(t) && !NEG.test(t.slice(0, t.search(/\bimport/)).slice(-16))) out.importe = true;
 
   out.recents = recentsDesc(t);
+  out.signaux = signauxDesc(t);
   out.defauts = defautsDesc(s);
   return out;
 }
@@ -246,4 +249,18 @@ function recentsDesc(t: string): string[] {
     if (m && !/\b(a faire|a prevoir|a changer|a refaire|pas faite?|non faite?|jamais)\b/.test(m[0])) out.push(nom);
   }
   return out;
+}
+
+/** Tournures typiques des fausses annonces et des ventes à risque (texte sans accents, en minuscules). */
+const SIGNAUX: [string, RegExp][] = [
+  ["paiement", /mandat cash|western union|moneygram|transcash|neosurf|paysafecard|coupons? (pcs|transcash|neosurf)|carte (pcs|cadeau)|paiement (par|en) coupons?|crypto ?monnaie|bitcoin/],
+  ["etranger", /(je suis|actuellement|me trouve|vehicule|voiture)( actuellement)? (a|en) (l'?etranger|belgique|allemagne|espagne|angleterre|irlande|ecosse|italie|suisse)|expatrie|mute(e)? a l'?etranger|militaire en (mission|operation)|en mission a l'?etranger|je ne suis (plus )?(pas )?en france/],
+  ["acompte", /acompte|virement (avant|d'?avance|a la reservation)|reserv\w* (le vehicule |la voiture )?(contre|avec) (un )?(versement|virement|paiement)|paiement avant (la )?(visite|livraison)/],
+  ["contact", /(contactez|ecrivez|joignez)[- ]moi (uniquement |directement )?(par|sur|via) (mail|e-?mail|whatsapp|sms|telegram)|whatsapp|telegram|\b[\w.+-]+@[\w-]+\.(com|fr|net|org)\b/],
+  ["livraison", /livr\w* (a domicile|par (un )?transporteur|par camion|partout en france)|transporteur agree|expedi\w* (du vehicule|de la voiture)/],
+  ["urgence", /(pour )?cause (de )?(deces|divorce|demenagement|depart a l'?etranger|mutation)|prix sacrifie|cede a petit prix|vente (tres )?urgente|doit partir vite/],
+];
+
+function signauxDesc(t: string): string[] {
+  return SIGNAUX.filter(([, re]) => re.test(t)).map(([k]) => k);
 }

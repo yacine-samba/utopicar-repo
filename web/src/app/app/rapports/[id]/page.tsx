@@ -9,6 +9,7 @@ import type { Vendeur } from "@/lib/analyse/vendeur";
 import { EnTeteRapport } from "@/components/analyse/EnTeteRapport";
 import { cleFavori, type NouveauFavori } from "@/lib/favoris";
 import { titreVehicule } from "@/lib/titre";
+import { numeroLeboncoin, type Historique } from "@/lib/analyse/historique";
 
 export const metadata: Metadata = { title: "Rapport" };
 
@@ -20,6 +21,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (!data) notFound();
   const particulier = data.mode === "particulier";
   const a = data.resultat as Analyse;
+  // historique à jour (jours en ligne, baisses de prix, même voiture ailleurs) ; celui de l'analyse si la base ne répond pas
+  const numero = numeroLeboncoin(data.lien ?? a.lien);
+  if (numero || a.faits?.km) {
+    const { data: h } = await (await supabaseServeur()).rpc("historique_annonce", { p_id: numero, p_annee: a.faits?.annee ?? null, p_km: a.faits?.km ?? null, p_modele: a.ia?.vehicule.modele ?? null });
+    if (h) a.historique = h as Historique;
+  }
   const photos: string[] = data.photos?.length ? data.photos : (a.photosUrls ?? []);
   // Découverte : les 3 premières photos, toutes ensuite
   const maxPhotos = !c.illimite && c.offre.prix === 0 && c.credits === 0 ? 3 : 30;
@@ -50,10 +57,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       />
       {particulier ? (
         <div className="max-w-3xl">
-          <ResultatParticulier a={data.resultat as Analyse} />
+          <ResultatParticulier a={a} />
         </div>
       ) : (
-        <RapportEnregistre a={data.resultat as Analyse} id={id} titre={data.titre} parc={c.offre.parc} />
+        <RapportEnregistre a={a} id={id} titre={data.titre} parc={c.offre.parc} />
       )}
       {data.annonce && (
         <details className="carte max-w-3xl p-5">

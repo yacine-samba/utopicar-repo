@@ -24,7 +24,7 @@ import { Bilan, useBilan } from "@/components/analyse/Bilan";
 import { useProfilAnalyse } from "@/components/analyse/ProfilAnalyse";
 
 type Poste = { categorie: string; libelle: string; montant: number };
-const CATEGORIE: Record<SourcePoste, string> = { annonce: "petite mécanique", photos: "cosmétique", ia: "petite mécanique", entretien: "consommables", moteur: "remise en confiance" };
+const CATEGORIE: Record<SourcePoste, string> = { annonce: "petite mécanique", photos: "cosmétique", ia: "petite mécanique", entretien: "consommables", moteur: "remise en confiance", vendeur: "petite mécanique", visite: "petite mécanique" };
 
 const e = (v: number | null | undefined) => (v == null || !isFinite(v) ? "—" : eur(v));
 const km = (v: number | null | undefined) => (v == null ? null : `${Math.round(v).toLocaleString("fr-FR")} km`);

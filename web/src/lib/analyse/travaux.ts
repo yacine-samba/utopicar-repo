@@ -7,7 +7,7 @@ import type { Analyse } from "./couts";
 import type { Connu } from "./connaissances";
 import { estPremium } from "./connaissances";
 
-export type SourcePoste = "annonce" | "photos" | "ia" | "entretien" | "moteur";
+export type SourcePoste = "annonce" | "photos" | "ia" | "entretien" | "moteur" | "vendeur" | "visite";
 export type PosteTravaux = {
   cle: string;
   libelle: string;
@@ -51,7 +51,7 @@ export function travauxProbables(a: Analyse, connus: Connu[]): BudgetTravaux {
   // 1. Écrit dans l'annonce (règles fixes)
   for (const d of f.defauts) {
     if (d.cat === "info") continue;
-    P.push({ cle: d.k, libelle: d.l, min: d.min, max: d.max, proba: 1, source: "annonce", nc: d.nc || d.cat === "piege", piege: d.cat === "piege", extrait: d.extrait });
+    P.push({ cle: d.k, libelle: d.l, min: d.min, max: d.max, proba: 1, source: d.src === "visite" || d.src === "vendeur" ? d.src : "annonce", nc: d.nc || d.cat === "piege", piege: d.cat === "piege", extrait: d.extrait });
   }
   if (f.ct?.statut === "contre-visite") P.push({ cle: "ct_cv", libelle: "Contre-visite au contrôle technique", min: 100, max: 800, proba: 1, source: "annonce", nc: true, extrait: f.ct.extrait });
   if (f.distribution?.statut === "à faire" && !P.some((p) => p.cle === "distri"))
