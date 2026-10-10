@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Calculateur } from "@/components/benef/Calculateur";
 import { Peurs } from "@/components/benef/Peurs";
-import { CARTE_BENEF, PreuveAnimee } from "@/components/accueil/PreuveAnimee";
+import { CARTE_BENEF } from "@/components/accueil/PreuveAnimee";
+import { CarteHero } from "@/components/accueil/CarteHero";
 import { OutilsBenef } from "@/components/benef/OutilsBenef";
 import { TroisTemps } from "@/components/accueil/TroisTemps";
 import { GainsAbonnement } from "@/components/site/GainsAbonnement";
@@ -56,7 +57,7 @@ export default async function Benef() {
               ))}
             </ul>
           </div>
-          <PreuveAnimee carte={CARTE_BENEF} />
+          <CarteHero defaut={CARTE_BENEF} />
         </div>
       </section>
 

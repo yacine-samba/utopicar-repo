@@ -3,11 +3,13 @@ import { Rotateur } from "@/components/accueil/Rotateur";
 import { Defile } from "@/components/site/Defile";
 import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
-import { PreuveAnimee } from "@/components/accueil/PreuveAnimee";
+import { CARTE_ACCUEIL } from "@/components/accueil/PreuveAnimee";
+import { CarteHero } from "@/components/accueil/CarteHero";
 import { TroisTemps } from "@/components/accueil/TroisTemps";
 import { TroisVerdicts } from "@/components/accueil/TroisVerdicts";
 import { CoteEnDirect } from "@/components/accueil/CoteEnDirect";
 import { Bento } from "@/components/accueil/Bento";
+import { VisiteApp } from "@/components/accueil/VisiteApp";
 import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
@@ -67,7 +69,7 @@ export default async function Accueil() {
               ))}
             </ul>
           </div>
-          <PreuveAnimee />
+          <CarteHero defaut={CARTE_ACCUEIL} />
         </div>
       </section>
 
@@ -107,6 +109,21 @@ export default async function Accueil() {
               Benef calcule votre marge →
             </Link>
           </p>
+        </div>
+      </section>
+
+      {/* ---------------- visite interactive de l'app ---------------- */}
+      <section className="py-16">
+        <div className="wrap">
+          <div className="apparait mx-auto mb-10 max-w-2xl text-center">
+            <h2 className="h-sec">
+              Dans l&apos;app, <span className="it">en vrai</span>
+            </h2>
+            <p className="mt-3 text-lg text-ink-2">Cliquez sur un écran.</p>
+          </div>
+          <div className="mx-auto max-w-4xl">
+            <VisiteApp />
+          </div>
         </div>
       </section>
 

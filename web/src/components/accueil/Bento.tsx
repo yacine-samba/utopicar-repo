@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { libelle, listeCotes } from "@/lib/cotes-publiques";
 import { EXEMPLES } from "@/lib/demo";
 import { cx } from "@/lib/cx";
+import { Picto, TuilePicto, type NomPicto } from "@/components/site/Picto";
 
 /* Ce que l'outil vérifie, en bento (pages produit d'Apple, sites Framer) : la taille d'une case dit son importance,
    une seule idée par case, et l'action dans sa propre case.
@@ -11,11 +12,16 @@ import { cx } from "@/lib/cx";
 
 const d = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
 
-function Case({ className, titre, children, i = 0 }: { className?: string; titre?: ReactNode; children: ReactNode; i?: number }) {
+function Case({ className, titre, picto, children, i = 0 }: { className?: string; titre?: ReactNode; picto?: NomPicto; children: ReactNode; i?: number }) {
   return (
     <li className={cx("vue attend", className)} style={{ "--i": i } as CSSProperties}>
       <div className="carte scene flex h-full flex-col gap-4 overflow-hidden p-5 sm:p-6">
-        {titre && <h3 className="font-display text-lg font-semibold leading-tight">{titre}</h3>}
+        {titre && (
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="font-display text-lg font-semibold leading-tight">{titre}</h3>
+            {picto && <TuilePicto nom={picto} />}
+          </div>
+        )}
         {children}
       </div>
     </li>
@@ -62,11 +68,11 @@ export async function Bento() {
       ) : null}
 
       {/* 2. les mots qui coûtent : les vraies règles de l'outil (embrayage 500 à 900 €, pneus 150 à 350 €) */}
-      <Case className="lg:col-span-2" titre="Les mots qui coûtent" i={1}>
+      <Case className="lg:col-span-2" titre="Les mots qui coûtent" picto="annonce" i={1}>
         <p className="leading-relaxed text-ink-2">
           « Très bon état,{" "}
-          <mark className="pas rounded bg-bad/20 px-1 text-ink" style={d(0.3)}>embrayage à prévoir</mark>,{" "}
-          <mark className="pas rounded bg-bad/20 px-1 text-ink" style={d(0.55)}>pneus à changer</mark>. »
+          <mark className="surligne rounded px-1 text-ink" style={d(0.3)}>embrayage à prévoir</mark>,{" "}
+          <mark className="surligne rounded px-1 text-ink" style={d(0.55)}>pneus à changer</mark>. »
         </p>
         <p className="pas mt-auto text-sm font-semibold text-bad" style={d(0.8)}>
           + 650 à 1 250 € à prévoir
@@ -74,7 +80,7 @@ export async function Bento() {
       </Case>
 
       {/* 3. fiable ou à fuir (lien vers les fiches fiabilité, publiques) */}
-      <Case className="lg:col-span-2" titre="Fiable ou à fuir" i={2}>
+      <Case className="lg:col-span-2" titre="Fiable ou à fuir" picto="moteur" i={2}>
         <ul className="flex flex-wrap gap-2 text-sm">
           {(
             [
@@ -96,17 +102,25 @@ export async function Bento() {
       </Case>
 
       {/* 4. le message au vendeur, déjà rédigé */}
-      <Case className="lg:col-span-2" titre="Le message au vendeur" i={0}>
-        <p className="pas rounded-2xl rounded-bl-md bg-glass px-4 py-3 text-sm text-ink-2" style={d(0.3)}>
-          {ex.message}
-        </p>
+      <Case className="lg:col-span-2" titre="Le message au vendeur" picto="message" i={0}>
+        {/* « en train d'écrire… », puis la bulle */}
+        <div className="grid">
+          <span className="passe frappe col-start-1 row-start-1 flex w-fit gap-1 self-start rounded-2xl rounded-bl-md bg-glass px-4 py-3 text-ink-3" style={d(0.1)} aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <p className="pas col-start-1 row-start-1 rounded-2xl rounded-bl-md bg-glass px-4 py-3 text-sm text-ink-2" style={d(1.15)}>
+            {ex.message}
+          </p>
+        </div>
         <p className="pas mt-auto text-sm text-ink-3" style={d(0.6)}>
           Rédigé pour vous, à copier en un clic.
         </p>
       </Case>
 
       {/* 5. avant d'y aller */}
-      <Case className="lg:col-span-2" titre="Avant d'y aller" i={1}>
+      <Case className="lg:col-span-2" titre="Avant d'y aller" picto="liste" i={1}>
         <ul className="grid gap-2 text-sm text-ink-2">
           {(
             [
@@ -124,12 +138,15 @@ export async function Bento() {
 
       {/* 6. l'action, dans sa propre case */}
       <li className="vue lg:col-span-2" style={{ "--i": 2 } as CSSProperties}>
-        <Link href="#essai" className="group flex h-full min-h-40 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(255_90_31/0.9)]">
+        <Link href="#essai" className="reflet isolate group flex h-full min-h-40 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(255_90_31/0.9)]">
+          <span className="pointer-events-none absolute -bottom-6 -right-6 -z-10 text-[#160904]/15" aria-hidden="true">
+            <Picto nom="voiture" className="size-40" />
+          </span>
           <span className="font-display text-2xl font-semibold leading-tight">Et votre annonce, elle vaut quoi ?</span>
           <span className="flex items-center justify-between font-semibold">
             Analyser en 10 secondes
             <span className="grid size-11 place-items-center rounded-full bg-[#160904] text-o transition group-hover:translate-x-1" aria-hidden="true">
-              →
+              <span className="pousse">→</span>
             </span>
           </span>
         </Link>
