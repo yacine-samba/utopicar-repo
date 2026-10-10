@@ -97,7 +97,7 @@ Les anciens rapports restent lisibles : leur verdict enregistré est traduit (GO
 - **Annonce de revente** (parc, Benef Pro) : prix d'affichage selon le délai visé, titre et texte rédigés à partir des seuls faits du dossier, photos à faire.
 
 ### À faire de votre côté
-- **Appliquer la migration** `supabase/migrations/20261010120000_analyse_2027.sql` (partage, retours, prix vus et leurs déclencheurs, suivis, réponses du vendeur, justesse). Sans elle, le site fonctionne mais ces fonctions restent invisibles ou en erreur douce. Elle pose des déclencheurs sur les tables écrites par les collectes : en cas de collecte en cours, elle s'arrête au bout de 15 s, il suffit de la relancer.
+- **Migration appliquée** le 10 octobre 2026 sur la base Supabase, en cinq étapes (`supabase/migrations/20261010120000` à `20261010120400`) : partage, retours, prix vus (39 110 prix de départ) et leurs déclencheurs, suivis, réponses du vendeur, justesse. Les déclencheurs ne bloquent jamais une collecte : en cas d'erreur, le prix n'est simplement pas noté.
 - **Couverture de la cote** : la page Justesse montre la part d'analyses sans cote ; la réduire demande de collecter les modèles manquants (et La Centrale, AutoScout24), selon le budget Apify.
 
 ## Pour aller plus loin (non construit)
