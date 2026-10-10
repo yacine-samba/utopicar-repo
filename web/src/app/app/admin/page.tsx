@@ -32,7 +32,8 @@ export default async function Page() {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY)
     return <p className="carte p-6 text-warn">Ajoutez SUPABASE_SERVICE_ROLE_KEY dans Vercel pour ouvrir l&apos;administration.</p>;
 
-  const { comptes, inscrits, journal } = await donneesAdmin();
+  const { comptes, inscrits, journal, analyses } = await donneesAdmin();
+  const actifs = comptes.filter((x) => x.analysesMois > 0).length;
   const payants = comptes.filter((x) => !x.illimite && !x.offerte && OFFRES[x.formule].prix > 0).length;
   const offerts = comptes.filter((x) => x.offerte && x.offerte.id !== "gratuit").length;
   const ouverts = inscrits.filter((x) => x.ouvert).length;
@@ -43,10 +44,12 @@ export default async function Page() {
         <h1 className="font-display text-3xl font-semibold">Administration</h1>
         <p className="mt-1 text-ink-3">Nouveaux comptes, inscrits au guide, et ce que vous leur offrez.</p>
       </div>
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <Kpi l="Comptes" v={comptes.length} s={`${recents(comptes, 1)} aujourd'hui · ${recents(comptes, 7)} en 7 jours`} />
         <Kpi l="Formules payantes" v={payants} s={`${offerts} formule${offerts > 1 ? "s" : ""} offerte${offerts > 1 ? "s" : ""}`} />
         <Kpi l="Inscrits au guide" v={inscrits.length} s={`${recents(inscrits, 1)} aujourd'hui · ${recents(inscrits, 7)} en 7 jours`} />
+        <Kpi l="Analyses faites" v={analyses.total} s={`${analyses.jour} aujourd'hui · ${analyses.sept} en 7 jours`} />
+        <Kpi l="Analyses ce mois" v={analyses.mois} s={`par ${actifs} compte${actifs > 1 ? "s" : ""}${actifs ? ` · ${(analyses.mois / actifs).toFixed(1).replace(".", ",")} par compte` : ""}`} />
         <Kpi l="Guides ouverts" v={inscrits.length ? `${Math.round((ouverts / inscrits.length) * 100)} %` : "—"} s={`${ouverts} sur ${inscrits.length}`} />
       </div>
       <Administration comptes={comptes} inscrits={inscrits} journal={journal} moi={c.id} guides={GUIDES.map(({ id, titre, pour }) => ({ id, titre, pour }))} />
