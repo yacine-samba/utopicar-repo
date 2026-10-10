@@ -233,6 +233,19 @@ select option:disabled {
     background: var(--color-panel);
     backdrop-filter: blur(10px);
   }
+  /* Bloc d'évitement : hors écran, il descend dès qu'un de ses liens reçoit le focus clavier. */
+  .evitement {
+    position: fixed;
+    left: 12px;
+    top: -200px;
+    z-index: 60;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .evitement:focus-within {
+    top: 12px;
+  }
   .sr-only-focusable:not(:focus) {
     position: absolute;
     width: 1px;

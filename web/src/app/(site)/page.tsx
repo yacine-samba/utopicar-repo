@@ -82,7 +82,7 @@ export default async function Accueil() {
             <h2 className="h-sec">
               3 annonces, <span className="it">3 verdicts</span>
             </h2>
-            <Link href="#essai" className="text-sm font-medium text-o2 underline underline-offset-4">
+            <Link href="#essai" className="inline-flex min-h-6 items-center text-sm font-medium text-o2 underline underline-offset-4">
               Essayez la vôtre ↑
             </Link>
           </div>

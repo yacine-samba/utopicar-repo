@@ -26,7 +26,8 @@ export function TroisVerdicts() {
   const liste = [EXEMPLES.clio, EXEMPLES.yaris, EXEMPLES.p208];
   return (
     // téléphone : on fait glisser les cartes (une et demie visible) ; à partir de la tablette, trois colonnes
-    <ul className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0 md:pb-0" aria-label="Trois annonces analysées">
+    <div tabIndex={0} role="region" aria-label="Trois annonces analysées (faire défiler)" className="-mx-5 overflow-x-auto px-5 pb-2 md:mx-0 md:overflow-visible md:px-0 md:pb-0">
+    <ul className="flex snap-x snap-mandatory gap-3 md:grid md:grid-cols-3 md:gap-4">
       {liste.map((x, i) => {
         const cote = x.lignes[0].v ?? x.prix;
         const max = Math.max(cote, x.prix);
@@ -65,5 +66,6 @@ export function TroisVerdicts() {
         );
       })}
     </ul>
+    </div>
   );
 }

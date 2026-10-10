@@ -41,11 +41,11 @@ export default async function PageMoteur({ params }: Params) {
       <JsonLdFil etapes={[{ nom: "Accueil", chemin: "/" }, { nom: "Moteurs à éviter", chemin: "/moteur" }, { nom: m.nom, chemin: `/moteur/${m.slug}` }]} />
       <JsonLdFaq questions={faq} />
       <nav aria-label="Fil d'Ariane" className="mb-6 text-sm text-ink-3">
-        <Link href="/" className="hover:text-ink">
+        <Link href="/" className="inline-block py-1 hover:text-ink">
           Accueil
         </Link>{" "}
         ›{" "}
-        <Link href="/moteur" className="hover:text-ink">
+        <Link href="/moteur" className="inline-block py-1 hover:text-ink">
           Moteurs à éviter
         </Link>{" "}
         › <span aria-current="page">{m.nom}</span>

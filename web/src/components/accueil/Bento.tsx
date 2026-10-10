@@ -90,7 +90,7 @@ export async function Bento() {
             </li>
           ))}
         </ul>
-        <Link href="/fiabilite" className="mt-auto text-sm font-medium text-o2 underline underline-offset-4">
+        <Link href="/fiabilite" className="mt-auto inline-flex min-h-6 items-center text-sm font-medium text-o2 underline underline-offset-4">
           Les occasions fiables →
         </Link>
       </Case>

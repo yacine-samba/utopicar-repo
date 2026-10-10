@@ -23,7 +23,7 @@ function Curseur({ label, aide, v, min, max, pas, onChange }: { label: string; a
           {eur(v)}
         </output>
       </div>
-      <input id={id} type="range" min={min} max={max} step={pas} value={v} onChange={(e) => onChange(+e.target.value)} className="w-full accent-[#ff5a1f]" aria-valuetext={eur(v)} />
+      <input id={id} type="range" min={min} max={max} step={pas} value={v} onChange={(e) => onChange(+e.target.value)} className="h-6 w-full cursor-pointer accent-[#ff5a1f]" aria-valuetext={eur(v)} />
     </div>
   );
 }
