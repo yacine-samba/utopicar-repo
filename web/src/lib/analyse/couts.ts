@@ -33,6 +33,16 @@ export type Analyse = {
   restantes?: number | null;
   demo?: boolean;
   ville?: string;
+  /** Projection de la cote (moteur de cote de l'outil) : valeur dans un an (+15 000 km), perte par an d'âge et pour 10 000 km. */
+  projection?: { P: number | null; dans1an: number | null; parAn: number | null; parKm: number | null; n: number; conf: string } | null;
+  /** Profil d'analyse au moment de l'analyse (objectif, seuil…), gardé avec le rapport. */
+  profil?: import("./profil").ProfilAnalyse;
+  /** Historique de l'annonce dans la base du marché : publication, prix vus, même voiture vue ailleurs (historique.ts). */
+  historique?: import("./historique").Historique | null;
+  /** Ajouts après l'analyse : réponses du vendeur, documents lus, visite (complements.ts). L'analyse d'origine ne change pas. */
+  complements?: import("./complements").Complement[];
+  /** Résumé du bilan calculé à l'enregistrement (verdict, note sur 100). */
+  bilan?: { verdict: string; indice: number | null; version: 2 };
 };
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));

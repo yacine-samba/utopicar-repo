@@ -9,6 +9,9 @@ import type { Vendeur } from "@/lib/analyse/vendeur";
 import { EnTeteRapport } from "@/components/analyse/EnTeteRapport";
 import { cleFavori, type NouveauFavori } from "@/lib/favoris";
 import { titreVehicule } from "@/lib/titre";
+import { numeroLeboncoin, type Historique } from "@/lib/analyse/historique";
+import { BoutonPartager } from "@/components/analyse/BoutonPartager";
+import { BoutonSuivi } from "@/components/analyse/Suivi";
 
 export const metadata: Metadata = { title: "Rapport" };
 
@@ -20,12 +23,21 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (!data) notFound();
   const particulier = data.mode === "particulier";
   const a = data.resultat as Analyse;
+  // historique à jour (jours en ligne, baisses de prix, même voiture ailleurs) ; celui de l'analyse si la base ne répond pas
+  const numero = numeroLeboncoin(data.lien ?? a.lien);
+  if (numero || a.faits?.km) {
+    const { data: h } = await (await supabaseServeur()).rpc("historique_annonce", { p_id: numero, p_annee: a.faits?.annee ?? null, p_km: a.faits?.km ?? null, p_modele: a.ia?.vehicule.modele ?? null });
+    if (h) a.historique = h as Historique;
+  }
   const photos: string[] = data.photos?.length ? data.photos : (a.photosUrls ?? []);
   // Découverte : les 3 premières photos, toutes ensuite
   const maxPhotos = !c.illimite && c.offre.prix === 0 && c.credits === 0 ? 3 : 30;
   const lien = data.lien ?? a.lien ?? null;
   const cle = cleFavori(lien, `rapport:${id}`);
   const { data: fav } = await (await supabaseServeur()).from("favoris").select("id").eq("cle", cle).maybeSingle();
+  // lu à part : tant que la colonne n'existe pas en base, la page s'affiche sans le bouton Partager
+  const { data: part, error: ePart } = await (await supabaseServeur()).from("rapports").select("partage").eq("id", id).maybeSingle();
+  const { data: suivi, error: eSuivi } = numero ? await (await supabaseServeur()).from("suivis").select("rapport_id").eq("rapport_id", id).maybeSingle() : { data: null, error: true };
   const veh = a.ia?.vehicule;
   const cote = a.ia?.marche?.realiste ?? null;
   const prix = data.prix ?? a.faits?.prix ?? null;
@@ -47,13 +59,19 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         maxPhotos={maxPhotos}
         date={dateCourte(data.created_at)}
         retour={{ href: "/app/rapports", l: particulier ? "Mes analyses" : "Rapports" }}
+        actions={
+          <>
+            {numero && !eSuivi && <BoutonSuivi a={a} rapportId={id} annonce={numero} titre={titreVehicule(data.titre)} initial={!!suivi} />}
+            {!ePart && <BoutonPartager rapportId={id} initial={(part as { partage?: string | null } | null)?.partage ?? null} titre={titreVehicule(data.titre)} />}
+          </>
+        }
       />
       {particulier ? (
         <div className="max-w-3xl">
-          <ResultatParticulier a={data.resultat as Analyse} />
+          <ResultatParticulier a={a} id={id} />
         </div>
       ) : (
-        <RapportEnregistre a={data.resultat as Analyse} id={id} titre={data.titre} parc={c.offre.parc} />
+        <RapportEnregistre a={a} id={id} titre={data.titre} parc={c.offre.parc} />
       )}
       {data.annonce && (
         <details className="carte max-w-3xl p-5">

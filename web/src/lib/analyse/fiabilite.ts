@@ -1,5 +1,7 @@
 /* Moteurs et boîtes à éviter, modèles fiables : liste fixe, jamais par l'IA.
-   Port de EVITER_GLOBAL / FIABLES / fiabRate de l'outil UTOPICAR Garage. */
+   Port de EVITER_GLOBAL / FIABLES / fiabRate de l'outil UTOPICAR Garage. EVITER_GLOBAL sert aux pages publiques /moteur ;
+   le classement d'une annonce passe par les fiches détaillées de connaissances.ts (années, boîtes précises, toutes gammes). */
+import { connaissancesDe, type Connu } from "./connaissances";
 
 const BOITE_FRAGILE: [RegExp, string] = [/\bedc\b|\bdsg\b|powershift|easytronic|quickshift|\bmmt\b|2-?tronic|\bbmp ?6\b|bo[iî]te manuelle pilot[eé]e|\betg ?[56]?\b|\begs\b|i-?shift|\bal4\b|\bdp0\b/, "Boîte robotisée ou automatique réputée fragile"];
 
@@ -81,16 +83,20 @@ export type Fiabilite = {
   bonsMoteurs: string | null;
   aVerifier: string | null;
   pourquoi: string[];
+  /** Réputation du moteur, de la boîte et de la batterie reconnus dans l'annonce (toutes gammes, voir connaissances.ts). */
+  connus?: Connu[];
 };
 
-/** Classement : fiable, limite (hors tranche), à éviter (moteur ou boîte), hors liste. */
-export function fiabilite(a: { texte: string; annee: number | null; km: number | null; energie: string }): Fiabilite {
+/** Classement : fiable, limite (hors tranche), à éviter (moteur ou boîte), hors liste.
+    « Hors liste » ne pénalise rien : la liste fiable ne couvre que des citadines, les autres voitures sont jugées
+    sur la réputation de leur moteur et de leur boîte. « À éviter » ne vient que d'une fiche précise (année comprise). */
+export function fiabilite(a: { texte: string; annee: number | null; km: number | null; energie: string; titre?: string }): Fiabilite {
   const t = flatA(a.texte.slice(0, 2500));
   const id = FIAB_RE.find(([, b, m]) => (!b || b.test(t)) && m.test(t))?.[0];
   const e = id ? FIABLES.find((x) => x.id === id) ?? null : null;
-  const base = { modele: e?.nom ?? null, bonsMoteurs: e?.bons ?? null, aVerifier: e?.verif ?? null };
-  const bad: string[] = [];
-  EVITER_GLOBAL.forEach(([re, why]) => { if (re.test(t)) bad.push(why); });
+  const connus = connaissancesDe({ texte: a.texte, titre: a.titre, annee: a.annee, km: a.km, energie: a.energie });
+  const base = { modele: e?.nom ?? null, bonsMoteurs: e?.bons ?? null, aVerifier: e?.verif ?? null, connus };
+  const bad: string[] = connus.filter((c) => c.avis === "eviter").map((c) => `${c.nom} : ${c.detail.charAt(0).toLowerCase()}${c.detail.slice(1).replace(/\.$/, "")}`);
   if (e) e.ev.forEach(([re, why, maxY]) => { if (re.test(t) && (!maxY || !a.annee || a.annee <= maxY)) bad.push(why); });
   if (bad.length) return { k: "eviter", ...base, pourquoi: [...new Set(bad)] };
   if (!e) return { k: "hors", ...base, pourquoi: [] };
