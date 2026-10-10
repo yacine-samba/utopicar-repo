@@ -80,7 +80,8 @@
   T.att = M('et'); T.att2 = M('davoir') - 0.05;
   // le rembobinage, la carte
   const REW = [LE('att') + 0.23, LE('att') + 1.53]; const ST_TO = 5.2;
-  T.card = REW[1]; T.l1 = M('vente') + 0.06; T.l2 = T.l1 + 0.5; T.l3 = T.l1 + 1.0;
+  // round 3 : la carte entre quand le HUD et la silhouette sont sortis (hx ≈ 0,9, voir paint), plus de fondu enchaîné
+  T.card = REW[1] + 0.06; T.l1 = M('vente') + 0.06; T.l2 = T.l1 + 0.5; T.l3 = T.l1 + 1.0;
   T.step4 = M('quatrieme'); T.l4 = M('quatrieme') + 0.25; T.claque = M('b2500') - 0.02;
   // marches, dans l'ordre : quand elles apparaissent (pâles), quand une voiture s'y pose, quand l'arête se trace
   const story = (t) => {
@@ -183,6 +184,7 @@
     mkCar(imFie, window.CAR_FIESTA6_REPERES, window.CAR_FIESTA6_CONTOUR, window.CAR_FIESTA6_REPERES.echelle.facteur_vs_206, 2),
   ];
   // la 206 garée en face (image 0) : plus petite, centrée, roues au-dessus de y = 1480
+  const SINK = 260;                                // round 3 : enfoncement de la silhouette à la sortie du rembobinage (px du monde)
   const STREET = { k: 0.8 }; STREET.x = 540 - cars[0].w * STREET.k / 2; STREET.y = 1404 - ((cars[0].front[1] + window.CAR_206_MO13_REPERES.sol.arriere.px[1] * cars[0].s) / 2) * STREET.k;
   // étiquettes en papier (dans le monde, à taille fixe : ≥ 260 px de large, chiffres ≥ 70 px)
   const tags = [K.paperTag(LW, { old: '1 400 €', neu: '1 200 € ✓', max: true }), K.paperTag(LW, { old: '1 800 €', neu: '1 550 € ✓' }), K.paperTag(LW, { old: '2 300 €', neu: '2 000 € ✓' })];
@@ -242,7 +244,9 @@
   // ---------- HUD : compteur COMPTE (une plaque de verre), réserve, mention, palettes ----------
   const LH = el('div', 'L', stage);
   const VALS = [1500, 300, 260, 108, 50, 1950, 400, 50, 2500, 500, 150, 3100];
-  const TV = [0, T.pay1, T.d1 + 0.25, T.d2 + 0.25, T.toi, T.up1, T.pay2, T.tk2 + 0.12, T.up2, T.pay3, T.tk3 + 0.12, T.up3];
+  // round 3 : le compte descend quand la carte du débit ou du ticket est posée (85 % de P.card à + 0,19 s), pas pendant
+  // qu'elle entre (+ 0,25 / + 0,12 avant) ; le tic du roulement suit (audio-mo13.py, x + 0,32)
+  const TV = [0, T.pay1, T.d1 + 0.32, T.d2 + 0.32, T.toi, T.up1, T.pay2, T.tk2 + 0.3, T.up2, T.pay3, T.tk3 + 0.3, T.up3];
   const PRE = VALS.map((v, i) => (i === VALS.length - 1 ? { f: 0.85, z: 1 } : P.roll));
   const RK = K.rollKeys2(VALS, TV, 4, PRE);
   const C = K.plateCounter(LH, { top: 300, w: 108, h: 150, gap: 10, fs: 112, efs: 92, lo: RK.lo, hi: RK.hi, labelTop: 246 });
@@ -252,7 +256,8 @@
   const RESW = [[T.res, T.up1], [T.pay2 + 0.45, T.up2], [T.pay3 + 0.45, T.up3]];
   const F = K.plateFlaps(LH, { y: 536, w: 70, h: 88, fs: 60, g: 6, gap: 22 });
   const FEV = [[T.flap1, 'MARCHE', '1'], [T.sem3, 'SEMAINE', '3'], [T.sem7, 'SEMAINE', '7'], [T.sem8, 'SEMAINE', '8'], [T.sem9, 'SEMAINE', '9'], [T.sem10, 'SEMAINE', '10'], [T.sem11, 'SEMAINE', '11'], [T.sem12, 'SEMAINE', '12']];
-  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:478px;text-align:center;font:500 24px Satoshi;color:rgba(246,239,231,.55);white-space:nowrap'); mention.textContent = 'Exemple · prix moyens constatés';
+  // round 3 : 28 px à 70 % (24 px à 55 % ne se lisait pas à 360 px ; MO9 : 26 px)
+  const mention = el('div', 'abs', stage, 'left:0;width:1080px;top:476px;text-align:center;font:500 28px Satoshi;color:rgba(246,239,231,.7);white-space:nowrap'); mention.textContent = 'Exemple · prix moyens constatés';
 
   // ---------- N : débits, gag, bulles, virements, tickets, l'annonce, les messages ----------
   const LN = el('div', 'L', stage);
@@ -319,7 +324,7 @@
   // « prix max » et « 2 500 € » : au moins 40 px d'écart (à 76 / 116 px, ils se touchaient presque ; carte de 820 px : 102 px)
   const resMax = el('span', 'serif', resRow, 'font-size:72px;padding:.05em .14em .12em .3em;margin-left:-.3em'); resMax.textContent = 'prix max';
   const resV = el('span', '', resRow, 'font:700 102px Clash;letter-spacing:-.02em'); resV.innerHTML = '2<i style="display:inline-block;width:.24em"></i>500 €';
-  const dM = el('div', 'abs', card, `left:0;width:${CW}px;top:806px;text-align:center;font:500 22px Satoshi;color:rgba(246,239,231,.5);white-space:nowrap`); dM.textContent = 'Exemple · prix moyens constatés';
+  const dM = el('div', 'abs', card, `left:0;width:${CW}px;top:802px;text-align:center;font:500 28px Satoshi;color:rgba(246,239,231,.7);white-space:nowrap`); dM.textContent = 'Exemple · prix moyens constatés';
 
   const rewFx = el('div', 'L', stage, 'background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 6px);mix-blend-mode:screen');
   const flash = el('div', 'L', stage, 'background:radial-gradient(60% 45% at 50% 50%,#fff1e6,rgba(255,140,80,.6) 45%,transparent 75%);mix-blend-mode:screen');
@@ -360,7 +365,8 @@
   const camS = (st, tA) => ({
     x: track(st, [[0, 540], [T.out, 370, { f: 0.7, z: 1 }], [T.rise1, 468, CAMR], [T.rise2, 591, CAMR], [T.pull, OV.x, CAMP]]) + noise(11, tA * 0.3) * 5,
     y: track(st, [[0, 1310], [T.rise1, 1010, CAMR], [T.rise2, 710, CAMR], [T.pull, OV.y, CAMP]]) + noise(12, tA * 0.28) * 7 - 14 * (S(st, T.out, { f: 0.3, z: 1 }) - S(st, T.pull, CAMP)),
-    s: track(st, [[0, 1], [T.focus, 1.04, { f: 0.8, z: 1 }], [T.out, 1, { f: 0.7, z: 1 }], [T.pull, OV.s, CAMP]]) + 0.006 * noise(13, tA * 0.25)
+    // round 3 : après le contour, une poussée lente (+ 5 %) jusqu'au repli : l'image restait figée de 3,0 à 4,8 s
+    s: track(st, [[0, 1], [T.focus, 1.04, { f: 0.8, z: 1 }], [T.contour, 1.092, { f: 0.5, z: 1 }], [T.out, 1, { f: 0.7, z: 1 }], [T.pull, OV.s, CAMP]]) + 0.006 * noise(13, tA * 0.25)
       + 0.03 * (S(st, T.out + 0.6, { f: 0.14, z: 1 }) - S(st, T.rise1, CAMR)) + 0.03 * (S(st, T.rise1 + 0.6, { f: 0.2, z: 1 }) - S(st, T.rise2, CAMR))
       + 0.03 * (S(st, T.rise2 + 0.6, { f: 0.14, z: 1 }) - S(st, T.pull, CAMP)),
   });
@@ -387,6 +393,11 @@
     const st = story(t);
     const tA = t >= LOOP ? 0 : t;                          // l'ouverture revient dans son état de l'image 0
     const inRew = t >= REW[0];
+    // round 3 : la sortie du rembobinage se fait en mouvement (25,33 → 25,5 s, c'était un fondu enchaîné à trois couches :
+    // compteur, « MARCHE 1 », silhouette de la 206 et la carte, tous à 30-50 %). Le compte a fini de rouler jusqu'à
+    // 1 500 vers 25,2 s : le HUD et la mention filent par le haut, la silhouette et son étiquette s'enfoncent sous la
+    // marche 1 ; tout est sorti (hx ≈ 0,9) quand la carte entre, à T.card = REW[1] + 0,06
+    const hx = t >= REW[1] - 0.2 && t < LOOP ? S(t, REW[1] - 0.2, { f: 2.6, z: 1 }) : 0, hxo = 1 - sm(0.35, 0.85, hx);
     // retour vers l'image 0, une fois la carte et l'escalier partis (round 2 : à CLR − 0,04, image presque noire de
     // 30,8 à 30,95 s avec les fantômes des inscriptions)
     // départ franc, arrivée posée (pente nulle à DUR − 0,06 : l'image 0 revient exacte)
@@ -401,7 +412,7 @@
     set(bgA, street);
     const vt = t >= LOOP ? 1.5 + t - DUR + 1 / 60 + 1e-4 : 1.5 + t;       // la rue : même image de la vidéo au début et à la fin (1e-4 : l'arrondi de t ne doit pas tomber sur l'image d'avant)
     if (street > 0.002) K.paintSeq(rueCv, IMG.rue, vt, 'blur(2px) brightness(.8) saturate(1.1)');
-    const push = 1 + 0.04 * S(tA, T.focus, { f: 0.8, z: 1 }) * (t < LOOP ? 1 - S(t, T.out, { f: 0.7, z: 1 }) : 1);
+    const push = 1 + (0.04 * S(tA, T.focus, { f: 0.8, z: 1 }) + 0.05 * S(tA, T.contour, { f: 0.5, z: 1 })) * (t < LOOP ? 1 - S(t, T.out, { f: 0.7, z: 1 }) : 1);
     if (street > 0.002) rueCv.style.transform = `translate(${f3(noise(7, tA * 0.3) * 14)}px,${f3(noise(8, tA * 0.3) * 14)}px) scale(${f3(push)})`;
     rueCv.style.transformOrigin = `${540 - RUE.l}px ${1400 - RUE.t}px`;   // l'avance se fait autour des roues de la 206
     set(glowA, (0.45 + 0.4 * S(tA, 0.5, P.heavy)) * showA);
@@ -470,7 +481,7 @@
 
     // voitures
     const sil = inRew && t < LOOP ? sm(REW[0], REW[0] + 0.3, t) : 0;
-    const gone = t >= REW[1] - 0.3 && t < LOOP ? 1 - sm(REW[1] - 0.3, REW[1] + 0.2, t) : 1;
+    const gone = hxo;
     cars.forEach((c, i) => {
       const v = CARV[i];
       let stc = t >= LOOP ? 0 : st;
@@ -480,6 +491,7 @@
         x = lerp(STREET.x, c.pose.x, g); y = lerp(STREET.y, c.pose.y, g); k = lerp(STREET.k, 1, g);
       } else { x = c.pose.x + track(stc, [[0, 1150], [v.arr, 0, { f: 1.15, z: 1 }]]); y = c.pose.y; }
       const dep = track(stc, [[0, 0], [v.leave, -1400, { f: 0.75, z: 1 }]]); x += dep;
+      y += SINK * hx;                                       // round 3 : la silhouette s'enfonce, elle ne fond plus sur place
       const xx = (u) => (i === 0 ? 0 : track(u, [[0, 1150], [v.arr, 0, { f: 1.15, z: 1 }]])) + track(u, [[0, 0], [v.leave, -1400, { f: 0.75, z: 1 }]]);
       const vel = (xx(stc + 0.01) - xx(stc - 0.01)) / 0.02;
       const dip = v.brake > 0 ? 1.4 * Math.sin(Math.PI * clamp((stc - v.brake + 0.15) / 0.6, 0, 1)) * (stc > v.brake - 0.15 ? 1 : 0) : 0;
@@ -521,7 +533,7 @@
       const tagIn = i === 0 ? (t >= LOOP ? 0 : S(st, T.tag, P.card)) : 1;
       set(g.hang, vis * (i === 0 ? sm(T.tag - 0.02, T.tag + 0.06, t >= LOOP ? 0 : st) : 1) * (1 - sil * 0.65));
       // l'étiquette de la 206 bat sur « mille quatre » (la voix confirme le prix déjà écrit)
-      const tPul = i === 0 && t < LOOP ? 0.06 * sm(T.trem, T.trem + 0.05, stc) * Math.exp(-6 * Math.max(0, stc - T.trem - 0.05)) : 0;
+      const tPul = i === 0 && t < LOOP ? 0.1 * sm(T.trem, T.trem + 0.05, stc) * Math.exp(-6 * Math.max(0, stc - T.trem - 0.05)) : 0;
       g.tag.style.transform = `translateY(${f3(-40 * (1 - tagIn))}px) scale(${f3(0.85 + 0.15 * tagIn + tPul)})`; g.tag.style.transformOrigin = '50% 0';
       g.fil.style.transform = `scaleY(${f3(tagIn)})`; g.fil.style.transformOrigin = '50% 0';
       if (i === 0) {   // la plume écrit « 1 400 € » sur la voix (l'étiquette est arrivée vierge sur la mise au point)
@@ -574,7 +586,8 @@
       A.qPen.setAttribute('transform', `translate(${f3(q.cx + 30 * Math.cos(qd * 5.5 - 1))},${f3(q.base - 90 + 70 * Math.sin(qd * 3))})`);
       set(A.qPen, sm(T.q - 0.02, T.q + 0.06, tA) * (1 - sm(T.q + 0.5, T.q + 0.75, tA)));
       // « 8 500 € ? » tremble sur « mille quatre »
-      const tr = tA > T.trem ? 14 * Math.exp(-(tA - T.trem) * 6.5) * Math.sin((tA - T.trem) * 50) : 0;
+      // round 3 : ± 14 px au premier battement (± 11 avant, invisible à 360 px)
+      const tr = tA > T.trem ? 17 * Math.exp(-(tA - T.trem) * 6.5) * Math.sin((tA - T.trem) * 50) : 0;
       A.big.setAttribute('transform', `translate(${f3(tr)},0)`);
       q.g.setAttribute('transform', `rotate(${f3(tr * 0.6)} ${f3(q.cx)} ${f3(q.base - 60)})`);
     } else {
@@ -585,7 +598,9 @@
     }
 
     // « 1 500 » qui monte devenir le compteur (comme le « 1 500 € » de MO5)
-    const mvp = t >= LOOP ? 0 : S(t, T.out, { f: 1.25, z: 1 }), swap = t >= LOOP ? 0 : sm(T.out + 0.36, T.out + 0.5, t);
+    // round 3 : « 1 500 » arrive avant le relais (f 2,0 : 97,7 % à + 0,45 s, 98,9 % à + 0,52 s) ; avec f 1,25 il n'avait
+    // fait que 77 → 90 % de sa course pendant le relais, et les chiffres du compteur s'allumaient 90 px à sa gauche
+    const mvp = t >= LOOP ? 0 : S(t, T.out, { f: 2.0, z: 1 }), swap = t >= LOOP ? 0 : sm(T.out + 0.45, T.out + 0.52, t);
     const cMix = { rx: lerp(cA.rx, 0, mvp), ry: lerp(cA.ry, 0, mvp), z: lerp(cA.z, 0, mvp), x: lerp(cA.x, 0, mvp), y: lerp(cA.y, 0, mvp) };
     const lcK = (t < LOOP ? 1 : back) * (1 - swap);
     if (lcK > 0.002) LC.style.transform = tf(cMix, 0);
@@ -605,9 +620,9 @@
 
     // HUD : compteur, réserve, palettes
     const cH = camH(t);
-    const hudOn = (t < LOOP ? 1 : 0) * (1 - bigOn) * (t >= REW[1] - 0.3 ? 1 - sm(REW[1] - 0.3, REW[1] + 0.1, t) : 1);
+    const hudOn = (t < LOOP ? 1 : 0) * (1 - bigOn) * hxo;
     const lhK = hudOn * sm(T.out - 0.02, T.out + 0.02, t < LOOP ? t : 0);
-    if (lhK > 0.002) LH.style.transform = tf(cH, 0);
+    if (lhK > 0.002) LH.style.transform = tf(cH, 0, hx > 0 ? `translateY(${f3(-220 * hx)}px)` : '');
     set(LH, lhK);
     const lit = sm(T.bump - 0.02, T.bump + 0.04, st) * (1 - sm(T.bump + 0.5, T.bump + 0.9, st));
     // les cases se tracent puis se remplissent de verre derrière les chiffres, qui prennent le relais de « 1 500 » qui
@@ -630,9 +645,10 @@
     // quand la carte entre (round 1 : absente de 25,1 à 26,3 s ; round 2 : écrite deux fois de 25,5 à 25,7 s)
     const mIn = HB ? 1 : sm(T.mention - 0.02, T.mention + 0.3, t);
     const mHide = t < LOOP ? sm(T.out - 0.02, T.out + 0.06, t) * (1 - sm(T.out + 0.4, T.out + 0.6, t)) : 0;
-    const mOut = t < LOOP ? sm(REW[1] - 0.05, REW[1] + 0.05, t) : (HB ? 1 - back : 1);
+    // round 3 : elle part avec le HUD, par le haut (hx), et celle de la carte monte dès que la carte entre
+    const mOut = t < LOOP ? 1 - hxo : (HB ? 1 - back : 1);
     set(mention, mIn * (1 - mHide) * (1 - mOut));
-    mention.style.transform = `translateY(${f3((HB ? 0 : (1 - sm(T.mention, T.mention + 0.35, t)) * 14) + 14 * mHide - 12 * (t < LOOP ? mOut : 0))}px)`;
+    mention.style.transform = `translateY(${f3((HB ? 0 : (1 - sm(T.mention, T.mention + 0.35, t)) * 14) + 14 * mHide - 220 * hx)}px)`;
 
     // N : notifications
     const nOn = t < LOOP ? 1 : 0;
@@ -645,7 +661,13 @@
       const a = S(st, t0, P.card);
       const up = i < 2 ? away : 0, outL = i === 2 ? S(st, T.sem3 - 0.28, P.push) : 0;
       d.w.style.transform = `translate(${f3(150 + 1150 * (1 - a) - 1250 * outL)}px,${f3(NY + 34 * k - 520 * up)}px) scale(${f3((1 - 0.06 * k) * (1 - 0.45 * up))})`;
-      set(d.w, sm(t0 - 0.06, t0, st) * (1 - sm(0.25, 0.7, up)) * (1 - sm(0.3, 0.7, outL)));
+      // round 3 : comme les virements (round 2), les deux débits qui montent dans le compte passent sous le HUD (calque V)
+      // et s'éteignent en chemin : ils s'imprimaient sur « MARCHE 1 », la mention et le compteur (8,55 → 8,7 s). Le
+      // calque se déduit de up à chaque image ; au retour, ils reprennent leur place sous la carte du gag
+      if (i < 2) { const tgt = up > 0.002 ? LV : LN; if (d.w.parentNode !== tgt) tgt.insertBefore(d.w, tgt === LN ? D[2].w : null); }
+      // la carte du dessous (assurance) s'éteint d'abord, encore couverte par l'autre : sinon son « − 40,00 € » se lisait
+      // à travers « − 152,00 € » qui pâlit (8,5 s)
+      set(d.w, sm(t0 - 0.06, t0, st) * (1 - (i === 0 ? sm(0, 0.1, up) : sm(0.1, 0.35, up))) * (1 - sm(0.3, 0.7, outL)));
       K.flat(d.n.d, k > 0.05 || up > 0.05);
       if (d.w.style.visibility !== 'hidden') drawSeq(d.n.c, IMG[d.seq], Math.max(0, st - t0));
     });
@@ -671,10 +693,12 @@
     });
     // tickets des marches 2 et 3 : une seule arrivée
     // le ticket reste jusqu'à l'arrivée de la bulle (marche 2) ou de l'annonce (marche 3), qui le chassent à gauche
-    [[T.tk2, T.sem7 - 0.1], [T.tk3, T.ann - 0.1]].forEach(([t0, t1], i) => {
+    // round 3 : le ticket 2 part à T.sem7 − 0,25 (il passait sur « 2 450 et je la prends. » de 14,0 à 14,13 s) et
+    // s'éteint plus tôt dans sa course : sorti quand la bulle est pleine
+    [[T.tk2, T.sem7 - 0.25], [T.tk3, T.ann - 0.1]].forEach(([t0, t1], i) => {
       const d = tk[i], a = S(st, t0, P.card), o = S(st, t1, P.push);
       d.w.style.transform = `translate(${f3(150 + 1150 * (1 - a) - 1250 * o)}px,${NY}px)`;
-      set(d.w, sm(t0 - 0.06, t0, st) * (1 - sm(0.3, 0.7, o)));
+      set(d.w, sm(t0 - 0.06, t0, st) * (1 - sm(0.15, 0.45, o)));
       if (d.w.style.visibility !== 'hidden') drawSeq(d.n.c, IMG[d.seq], Math.max(0, st - t0));
     });
     // l'annonce glisse vers le compte, bute sur ses 150 €, prend son tampon et repart
@@ -728,7 +752,7 @@
     });
     K.writeWord(l4, t, T.l4, 0.03, 14);
     { const rs = S(t, T.claque, { f: 2.4, z: 1 }); set(resRow, sm(T.claque - 0.02, T.claque + 0.05, t)); resRow.style.transform = `translateY(${f3(-44 * (1 - rs))}px) scale(${f3(1.06 - 0.06 * rs)})`; }
-    { const p = S(t, T.card + 0.05, P.rise); set(dM, p); dM.style.transform = `translateY(${f3((1 - p) * 12)}px)`; }
+    { const p = S(t, T.card, P.rise); set(dM, p); dM.style.transform = `translateY(${f3((1 - p) * 12)}px)`; }
 
     // effets
     set(rewFx, sm(REW[0], REW[0] + 0.15, t) * (1 - sm(REW[1] - 0.15, REW[1], t)) * 0.9);
@@ -745,7 +769,7 @@
   const WIN = [[T.out, T.out + 0.7, 0.7], [LOOP, DUR, 0.6], [T.leave1, T.leave1 + 0.9, 0.8], [T.arr2, T.arr2 + 0.55, 0.8], [T.leave2, T.leave2 + 0.9, 0.8], [T.arr3, T.arr3 + 0.55, 0.8],
     [T.leave3, T.leave3 + 0.85, 0.7], [T.pull, T.pull + 0.9, 0.45], [T.big - 0.05, T.big + 0.4, 0.6], [REW[0], REW[1], 0.8], [T.ann, T.ann + 0.5, 0.6], [T.annOut, T.annOut + 0.4, 0.6]];
   // glissements (≈ 1 150 px) : arrivées des débits, virements et tickets, montées dans le compteur, messages, départs à gauche
-  [T.d1, T.d2, T.gag, T.vir1, T.tk2, T.vir2, T.tk3, T.vir3, T.up1, T.up2, T.up3, ...T.msg, T.gag - 0.08, T.sem3 - 0.28, T.sem7 - 0.1, T.ann - 0.1, T.bub3 - 0.2]
+  [T.d1, T.d2, T.gag, T.vir1, T.tk2, T.vir2, T.tk3, T.vir3, T.up1, T.up2, T.up3, ...T.msg, T.gag - 0.08, T.sem3 - 0.28, T.sem7 - 0.25, T.ann - 0.1, T.bub3 - 0.2]
     .forEach((x) => { WIN.push([x - 0.03, x + 0.17, 0.6]); WIN.push([x - 0.03, x + 0.3, 0.45]); });
   [T.pay1, T.pay2, T.pay3, T.toiS, T.une, T.card].forEach((x) => WIN.push([x - 0.03, x + 0.28, 0.45]));
   const fast = (t) => { const st = story(t); let s = 0; for (const [a, b, v] of WIN) { const u = a < REW[0] && t >= REW[1] ? -1 : (a < REW[0] ? st : t); if (u < 0) continue; s = Math.max(s, v * sm(a - 0.05, a + 0.05, u) * (1 - sm(b - 0.05, b + 0.05, u))); } return s; };

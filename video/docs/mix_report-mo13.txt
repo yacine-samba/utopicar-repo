@@ -1,28 +1,28 @@
-MO13 A · mix : -14.1 LUFS intégrés, true peak -4.2 dBTP (4× suréchantillonné, avant AAC) ; pistes séparées écrites à -1.5 dB du mix (gain commun, aucune n'écrête) ; après AAC 256 k : -14.1 LUFS, true peak -4.0 dBTP (cible MP4 ≤ −1)
-gain de normalisation +15.2 dB ; limiteur (plafond -4.2 dBTP, crête vraie) : réduction max -5.7 dB à 28.01 s, -5.5 dB à 10.18 s, -5.5 dB à 27.97 s, -5.5 dB à 16.79 s ; 8.7 % du film à plus de 3 dB ; 9.8 % des blocs de 10 ms à moins de 0,5 dB du plafond (cibles du round 2 : réduction max ≤ 6 dB, < 10 % du film à plus de 3 dB)
-étages avant la somme : musique (doux −22 dB 2,5:1 + crête -20 dB 4:1, 3/150 ms) réduction médiane -0.6 dB, 95e centile -4.0, max -8.9 dB à 0.07 s (premier coup, 0–0,2 s : -8.9 dB), active (> 0,5 dB) 55 % du film ; bruitages (crête -17 dB 3:1, 1/80 ms) réduction max -4.2 dB, active 14 % du film
-limiteur sur les passages à écouter : 0.0–2.0 s max -2.4 dB, moyenne -0.3 dB, 0 % à plus de 3 dB ; 20.5–21.6 s max -5.5 dB, moyenne -1.6 dB, 15 % à plus de 3 dB
+MO13 A · mix : -14.1 LUFS intégrés, true peak -4.2 dBTP (4× suréchantillonné, avant AAC) ; pistes séparées écrites à -1.6 dB du mix (gain commun, aucune n'écrête) ; après AAC 256 k : -14.1 LUFS, true peak -4.0 dBTP (cible MP4 ≤ −1)
+gain de normalisation +15.1 dB ; limiteur (plafond -4.2 dBTP, crête vraie) : réduction max -6.4 dB à 14.93 s, -5.8 dB à 20.23 s, -5.7 dB à 16.95 s, -5.5 dB à 15.50 s ; 8.2 % du film à plus de 3 dB ; 9.7 % des blocs de 10 ms à moins de 0,5 dB du plafond (cibles du round 2 : réduction max ≤ 6 dB, < 10 % du film à plus de 3 dB)
+étages avant la somme : musique (doux −22 dB 2,5:1 + crête -20 dB 4:1, 3/150 ms) réduction médiane -0.6 dB, 95e centile -4.0, max -8.9 dB à 0.07 s (premier coup, 0–0,2 s : -8.9 dB), active (> 0,5 dB) 55 % du film ; bruitages (crête -17 dB 3:1, 1/80 ms) réduction max -4.5 dB, active 14 % du film
+limiteur sur les passages à écouter : 0.0–2.0 s max -2.3 dB, moyenne -0.2 dB, 0 % à plus de 3 dB ; 20.5–21.6 s max -5.2 dB, moyenne -1.8 dB, 19 % à plus de 3 dB
 minutage : PROVISOIRE (voix provisoire, muette) · durée 31.45 s, boucle 30.35 s
-bruitages placés : 89 (tick 23, ui 22, orn 13, whoosh 11, chime 8, accent 5, tool 4, thud 2, squeak 1) + moteurs (3 départs, 2 arrivées), vibrations ×4 · retirés pour collision : 12 : 1119@10.05 (palettes SEMAINE 3 1), 1119@10.09 (palettes SEMAINE 3 2), 2384@13.34 (prix payé écrit ✓ (2)), 1490@14.10 (virement 2 (arrive)), 2589@14.61 (arête 2 : « achat → revente ✓ »), 1013@15.48 (le pneu couine sur la marche (3)), 1119@16.82 (palettes SEMAINE 9 1), 1490@16.88 (l'annonce glisse vers le compte), 1490@18.09 (l'annonce repart), 1119@18.71 (palettes SEMAINE 11 1), 1490@19.61 (virement 3 (arrive)), 2589@20.12 (arête 3 : « achat → revente ✓ »)
-attaque : 1re image -21.9 dBFS RMS, 0–0,1 s -17.6, 0–0,5 s -22.1 ; musique dès l'échantillon 0 (-21.7 dBFS sur la 1re image), premier temps de la mesure 13 entendu à 0.041 s (visé 0.047 s) ; 2 premières secondes -15.4 LUFS contre -14.0 sur le reste (qa_video : écart ≤ 8)
+bruitages placés : 92 (tick 24, ui 22, orn 13, whoosh 13, chime 8, accent 5, tool 4, thud 2, squeak 1) + moteurs (3 départs, 2 arrivées), vibrations ×4 · retirés pour collision : 9 : 1119@10.05 (palettes SEMAINE 3 1), 1119@10.09 (palettes SEMAINE 3 2), 2589@14.61 (arête 2 : « achat → revente ✓ »), 1013@15.48 (le pneu couine sur la marche (3)), 2384@16.05 (prix payé écrit ✓ (3)), 1490@16.88 (l'annonce glisse vers le compte), 1490@18.09 (l'annonce repart), 1119@18.71 (palettes SEMAINE 11 1), 2589@20.12 (arête 3 : « achat → revente ✓ »)
+attaque : 1re image -22.0 dBFS RMS, 0–0,1 s -17.6, 0–0,5 s -22.1 ; musique dès l'échantillon 0 (-21.8 dBFS sur la 1re image), premier temps de la mesure 13 entendu à 0.041 s (visé 0.047 s) ; 2 premières secondes -15.5 LUFS contre -14.0 sur le reste (qa_video : écart ≤ 8)
 arrêt de bande : 21.547 s ; « 3 100 € » géant posé 21.547 s → écart +0.00 image (tolérance ±1 à 60 i/s) ; le compteur touche 3 100 à 21.247 s ; musique sous −60 dBFS à 21.758 s, silence jusqu'au rembobinage (24.11 s) ; « trois mille cent » dit 20.84–21.35 s ; arrêt sur le temps 4 de la mesure 23
 la seule pause (21.55–22.35 s) : musique arrêtée ; bruitages (coup et note du « 3 100 € ») sous −40 dBFS de 21.93 à 22.27 s (0.34 s de silence, avant le tracé de « Tu attendais ») ; mix -31.0 dBFS RMS de 21.80 à 22.35 s
 reprise : mesure 55 à 26.007 s (premier temps visé 26.005 s = ligne 1 de la carte) ; lignes de la carte 26.00 s (+0 ms du temps), 26.50 s (+0 ms du temps), 27.00 s (+0 ms du temps), 27.42 s (-86 ms du temps) ; « prix max 2 500 € » claque 27.94 s (-67 ms du temps, premier temps de la mesure 56 à 28.00 s) ; attaques mesurées dans le morceau : mesure 13 à -39 ms, mesure 55 à -15 ms de la mesure théorique
 grille de l'élan : calcul replié 4.80 s (-249 ms), virement 1 10.52 s (-28 ms), virement 2 14.49 s (-58 ms), SEMAINE 8 16.45 s (-97 ms), virement 3 20.00 s (-47 ms), « Budget » 20.05 s (+3 ms) ; basse de retour à 19.55 s (bulle « 2 950 » 19.50 s)
-élan (RMS musique / mix, dBFS) : calcul -17.2 / -17.0 · marche 1 -20.5 / -19.2 · marche 2 -20.0 / -17.2 · marche 3 -16.2 / -15.4 · chute -16.6 / -16.3 (courbe de niveau : −1, −2,5, −1,5, −0,5, +0,5 → +1 dB)
-boucle : 0,1 s avant la fin -23.7 dBFS → 0,1 s du début -17.6 dBFS ; dernier temps de la reprise à 31.00 s, fin à 31.45 s, premier temps du début à 0.047 s : 492 ms entre les deux temps de la jointure (500 sur la grille), masqués par le fondu de boucle (−6 dB) et le souffle du repli
+élan (RMS musique / mix, dBFS) : calcul -17.3 / -17.1 · marche 1 -20.6 / -19.3 · marche 2 -20.0 / -16.8 · marche 3 -16.3 / -15.6 · chute -16.7 / -16.0 (courbe de niveau : −1, −2,5, −1,5, −0,5, +0,5 → +1 dB)
+boucle : 0,1 s avant la fin -23.8 dBFS → 0,1 s du début -17.6 dBFS ; dernier temps de la reprise à 31.00 s, fin à 31.45 s, premier temps du début à 0.047 s : 492 ms entre les deux temps de la jointure (500 sur la grille), masqués par le fondu de boucle (−6 dB) et le souffle du repli
 musique : réglage téléphone -10.0 dB sous 150 Hz (-11.1 dB sous 100 Hz), 36 % de son énergie sous 150 Hz ; pendant la tentation (16.45–18.61 s), grave < 200 Hz -11.6 dB, aigu > 1 400 Hz -19.1 dB, niveau -8.9 dB par rapport aux 2 s qui précèdent
-mix (téléphone, mesure de qa_video) : 30 % de l'énergie sous 150 Hz, 25.1 % entre 1 et 5 kHz
+mix (téléphone, mesure de qa_video) : 30 % de l'énergie sous 150 Hz, 25.3 % entre 1 et 5 kHz
 RMS (dBFS)                       mix  musique  bruitages
-  le calcul         0.00– 4.80   -17.0    -17.2      -25.7
-  marche 1          4.80– 6.65   -17.4    -17.9      -23.4
-  la montée         6.65–16.45   -17.4    -19.4      -17.3
-  la tentation     16.45–18.61   -19.2    -23.4      -19.6
-    messages       18.61–19.50   -18.1    -19.4      -19.6
-  la chute         19.50–21.55   -15.8    -17.6      -15.3
-  la seule pause   21.80–22.35   -31.0   -134.3      -30.5
-    « 10 000 »     22.35–24.11   -30.1   -200.0      -30.1
-  rembobinage      24.11–26.00   -17.9    -23.9      -18.8
-  la méthode       26.00–30.35   -15.6    -15.6      -20.4
-  la boucle        30.35–31.45   -17.0    -16.8      -27.3
+  le calcul         0.00– 4.80   -17.1    -17.3      -25.7
+  marche 1          4.80– 6.65   -17.5    -18.0      -23.8
+  la montée         6.65–16.45   -17.3    -19.4      -17.3
+  la tentation     16.45–18.61   -19.1    -23.4      -19.6
+    messages       18.61–19.50   -18.1    -19.4      -19.7
+  la chute         19.50–21.55   -16.1    -17.7      -15.2
+  la seule pause   21.80–22.35   -31.0   -134.3      -30.6
+    « 10 000 »     22.35–24.11   -30.2   -200.0      -30.2
+  rembobinage      24.11–26.00   -18.0    -24.0      -18.9
+  la méthode       26.00–30.35   -15.6    -15.7      -20.4
+  la boucle        30.35–31.45   -17.0    -16.9      -27.4
 voix/musique et voix/bruitages : non mesurables (voix provisoire muette) ; le ducking jouera dès la vraie voix

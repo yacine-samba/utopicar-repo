@@ -239,6 +239,11 @@ def cue(t, i, role, prio=2, st=0, dur=None, pan=0.0, gain=0, rev=False, start=0.
                      bed=bed, what=what))
 
 E_ = EV
+# Round 3 : une carte de notification (débit, gag, virement, ticket, annonce) part de x = 1 300, hors cadre, à son
+# repère t0 (events.json) : 150 + 1150 (1 − a), a = spring(t − t0, P.card = f 2,2, z 0,78). Elle entre dans le cadre
+# à t0 + 0,055 s, est à mi-course à + 0,10 s (50 %) et se pose à + 0,19 s (85 %). Les sons suivent le geste vu :
+# souffle à mi-course, note ou carillon à la pose (round 2 : ≈ 11 images trop tôt, posés sur t0).
+ARR, MID = 0.19, 0.10
 def flaps(t0, n, st=0, gap=0.04, prio=3, what='palettes'):
     """Palettes : un tic par case qui se retourne (le film retourne les cases à gap s d'écart, film-mo13/kit-mo13.js) ;
     le tic tombe quand la case se pose (≈ 0,1 s après son départ)."""
@@ -246,15 +251,15 @@ def flaps(t0, n, st=0, gap=0.04, prio=3, what='palettes'):
 def note_debit(x, k, what):
     """Un débit : la notification arrive de la droite (souffle), une note un demi-ton plus bas à chaque débit.
     Round 2 : le premier (assurance) à −3 dB (crête du mix à 6,70 s, le limiteur y réduisait de 9,9 dB)."""
-    cue(x - 0.03, 1490, 'whoosh', 3, start=0.35, gain=-6, pan=0.4, peak=True, what=f'{what} (arrive)')
-    cue(x, 2354, 'ui', 1, st=-k, pan=0.35, gain=-3 if k == 0 else 0, what=what)
+    cue(x + MID, 1490, 'whoosh', 3, start=0.35, gain=-6, pan=0.4, peak=True, what=f'{what} (arrive)')
+    cue(x + ARR, 2354, 'ui', 1, st=-k, pan=0.35, gain=-3 if k == 0 else 0, what=what)
 def bulle(x, st, what):
     """Une bulle d'acheteur ou une annonce qui arrive : le pop (la vibration est fabriquée plus bas)."""
     cue(x + 0.03, 2356, 'ui', 2, st=st, start=0.03, dur=0.19, pan=0.3, what=what)
 def virement(x, st, what):
-    cue(x - 0.02, 1490, 'whoosh', 3, start=0.35, gain=-6, pan=0.45, peak=True, what=f'{what} (arrive)')
-    cue(x + 0.03, 951, 'chime', 1, pan=0.2, what=what)
-    cue(x + 0.05, 1107, 'chime', 1, st=st, gain=-4, pan=0.2, what=f'{what} (note)')   # une note par vente, qui monte
+    cue(x + MID, 1490, 'whoosh', 3, start=0.35, gain=-6, pan=0.45, peak=True, what=f'{what} (arrive)')
+    cue(x + ARR, 951, 'chime', 1, pan=0.2, what=what)
+    cue(x + ARR + 0.02, 1107, 'chime', 1, st=st, gain=-4, pan=0.2, what=f'{what} (note)')   # une note par vente, qui monte
 def tampon(x, what, note=None):
     cue(x, 2182, 'accent', 1, start=0.06, dur=0.12, gain=-7, what=f'{what} (coup)')   # −14 dBFS de crête
     cue(x, 2380, 'tick', 1, dur=0.4, gain=10, what=f'{what} (papier)')
@@ -283,17 +288,19 @@ cue(E_['max1'], 2369, 'orn', 3, dur=0.5, gain=-4, what='« prix max » s\'écrit
 # les frais de la marche 1 : deux débits, puis le gag seul et son tampon
 for k, (x, what) in enumerate(zip(E_['debits'][:2], ['assurance − 40', 'carte grise − 152'])):
     note_debit(x, k, what)
-    cue(x + 0.25, 1054, 'tick', 3, st=-1 - k, dur=0.4, gain=4, what=f'{what} : le compte roule')
-cue(E_['gag'] - 0.03, 1490, 'whoosh', 3, start=0.35, gain=-6, pan=0.4, peak=True, what='gag (arrive)')
-cue(E_['gag'], 2849, 'tool', 1, start=0.12, dur=0.35, fade=0.1, pan=0.3, what='gag : le pistolet de pompe décroché')
+    cue(x + 0.32, 1054, 'tick', 3, st=-1 - k, dur=0.4, gain=4, what=f'{what} : le compte roule')   # film : TV, d + 0,32
+cue(E_['gag'] + MID, 1490, 'whoosh', 3, start=0.35, gain=-6, pan=0.4, peak=True, what='gag (arrive)')
+cue(E_['gag'] + ARR, 2849, 'tool', 1, start=0.12, dur=0.35, fade=0.1, pan=0.3, what='gag : le pistolet de pompe décroché')
 tampon(E_['tampons'][0], 'tampon « toi aussi »', note=9)                                     # la note la plus haute ; round 2 : quand le compte touche 50 €
 # vente 1, la caméra monte, marche 2 ; vente 2, marche 3 (les moteurs sont fabriqués plus bas)
 for k, (xb, xv, st) in enumerate(zip(E_['bulles'][:2], E_['ventes'][:2], [0, 3])):
     bulle(xb, 2 * k, f'bulle {k + 1} « … et je la prends »')
     virement(xv, st, f'virement {k + 1}')
 flaps(E_['sem3'], 7, what='palettes SEMAINE 3')
+# le compte qui remonte est une nappe de tics (bed) : posé 0,06 s après le carillon du virement (le virement 2 et le 3
+# se posent et montent aussitôt), il aurait été retiré par la règle de collision
 for k, x in enumerate([E_['up1'], E_['up2']]):
-    cue(x, 1054, 'tick', 2, st=2 + 2 * k, dur=0.5, gain=6, what=f'le compte remonte ({k + 1})')
+    cue(x, 1054, 'tick', 2, st=2 + 2 * k, dur=0.5, gain=6, bed=True, what=f'le compte remonte ({k + 1})')
 for k, x in enumerate(E_['aretes']):
     cue(x, 2589, 'orn', 2, dur=0.8, gain=-2, pan=-0.2, what=f'arête {k + 1} : « achat → revente ✓ »')
 for k, x in enumerate(E_['montees']):
@@ -301,12 +308,12 @@ for k, x in enumerate(E_['montees']):
 for k, x in enumerate(E_['freins']):
     cue(x, 1013, 'squeak', 3, st=-4, start=0.55, dur=0.12, fade=0.04, pan=0.15, what=f'le pneu couine sur la marche ({k + 2})')
 for k, x in enumerate(E_['tickets']):
-    cue(x, 1530, 'ui', 1, start=0.17, dur=0.23, pan=0.35, what=f'ticket de frais {k + 2} (papier)')
-    cue(x, 2384, 'ui', 1, st=-2 - k, gain=-3, pan=0.35, what=f'ticket de frais {k + 2} (note)')
+    cue(x + ARR, 1530, 'ui', 1, start=0.17, dur=0.23, pan=0.35, gain=-2, what=f'ticket de frais {k + 2} (papier)')   # −2 dB (round 3 : limiteur −6,0 dB à 16,07 s)
+    cue(x + ARR, 2384, 'ui', 1, st=-2 - k, gain=-3, pan=0.35, what=f'ticket de frais {k + 2} (note)')
 # la tentation : SEMAINE 8 → 11, de plus en plus lentes (une note plus basse à chaque semaine) ; l'annonce bute
 for k, x in enumerate([E_['sem8'], E_['sem9'], E_['sem10'], E_['sem11']]):
     flaps(x, 2 if k == 2 else 1, st=-k, what=f'palettes SEMAINE {8 + k}')   # 9 → 10 retourne deux cases, 10 → 11 une
-bulle(E_['ann'], -2, 'l\'annonce à 1 600 € arrive')
+bulle(E_['ann'] + ARR - 0.03, -2, 'l\'annonce à 1 600 € arrive')   # le pop (bulle : + 0,03) tombe à la pose
 cue(E_['ann'] + 0.35 + 0.15, 1490, 'whoosh', 3, start=0.35, gain=-8, pan=0.15, peak=True, what='l\'annonce glisse vers le compte')
 cue(E_['bump'], 2150, 'thud', 1, start=0.1, dur=0.3, what='l\'annonce bute sur les 150 €')
 tampon(E_['une'], 'tampon « une à la fois »')
@@ -317,7 +324,7 @@ flaps(E_['sem12'], 1, what='palettes SEMAINE 12')
 # la vente 3, la chute : le compte roule jusqu'à 3 100, la caméra recule, « 3 100 € » géant, l'arrêt
 bulle(E_['bulles'][2], 4, 'bulle 3 « 2 950 et je la prends »')
 virement(E_['ventes'][2], 5, 'virement 3')
-cue(E_['up3'], 1054, 'tick', 2, st=5, dur=1.0, gain=6, what='le compte roule 150 → 3 100')
+cue(E_['up3'], 1054, 'tick', 2, st=5, dur=1.0, gain=6, bed=True, what='le compte roule 150 → 3 100')
 cue(E_['pull'], 3120, 'whoosh', 2, dur=T_STOP - E_['pull'], rev=True, gain=-4, what='la caméra recule (souffle inversé jusqu\'à l\'arrêt)')
 # le coup et sa note sont coupés courts (leçon du round 1 de MO12 : un accent de 0,8 s remplissait le silence de la
 # chute) : 2909 garde son premier coup (le second tombe à 0,75 s), la pause qui suit reste silencieuse
@@ -330,15 +337,16 @@ cue(E_['att2'], 2369, 'orn', 2, st=3, dur=0.45, gain=-4, what='« 10 000. » s\'
 # rembobinage, la carte, une ligne par temps, le verdict, la boucle
 # la bande qui rembobine passe sous « Ceux qui gagnent… » : −15 dBFS de crête (3 dB sous MO9), puis le ducking
 cue(REW[0], 1092, 'accent', 1, dur=REW[1] - REW[0] + 0.15, fade=0.2, gain=-8, what='bande qui rembobine')
-cue(E_['card'] + 0.05, 1490, 'whoosh', 3, st=-2, start=0.35, gain=-6, peak=True, what='la carte se pose')
+cue(E_['card'] + MID, 1490, 'whoosh', 3, st=-2, start=0.35, gain=-6, peak=True, what='la carte se pose')   # à mi-course (P.card)
 cue(E_['card'] + 0.15, 2369, 'orn', 3, dur=0.6, gain=-5, what='« budget − réserve = prix max » s\'écrit')
 for k, x in enumerate(E_['lignes'][:3]):
     cue(x, 2384, 'ui', 2, st=2 * k, gain=-3, what=f'ligne {k + 1} de la carte')                # une note par temps
 cue(E_['step4'], 2589, 'orn', 2, st=7, dur=0.6, gain=-2, what='la 4e marche s\'allume')
 cue(E_['lignes'][3], 2384, 'ui', 2, st=5, gain=-3, what='ligne 4 « 3 100 − 600 = »')
 # un seul coup (0,5 s : le second coup de 2909, à 0,75 s, tomberait sur « max. »)
-cue(E_['claque'], 2909, 'accent', 1, dur=0.5, fade=0.25, gain=-7, what='« prix max 2 500 € » claque')   # round 1 : −6 dB (limiteur −12,4 dB à 28,02 s)
-cue(E_['claque'] + 0.02, 1107, 'chime', 1, st=5, gain=-3, what='« prix max 2 500 € » (note)')
+# round 3 : + 0,03 s, quand les chiffres se lisent (le son attaquait 2 à 3 images avant)
+cue(E_['claque'] + 0.03, 2909, 'accent', 1, dur=0.5, fade=0.25, gain=-7, what='« prix max 2 500 € » claque')   # round 1 : −6 dB (limiteur −12,4 dB à 28,02 s)
+cue(E_['claque'] + 0.05, 1107, 'chime', 1, st=5, gain=-3, what='« prix max 2 500 € » (note)')
 cue(E_['loop'] + 0.1, 3120, 'whoosh', 2, dur=0.8, peak=True, what='tout se replie vers l\'image 0')
 
 # priorité : un son moins prioritaire qui attaque à moins de 0,12 s d'un plus prioritaire est retiré (pas baissé)
@@ -408,7 +416,7 @@ def buzz(dur, gap=None):
     if gap: b *= (tv < gap[0]) | (tv > gap[1])
     return bp(b, 120, 3000) * np.minimum(1, np.minimum(tv, dur - tv) / 0.01)
 for x in E_['bulles']: put(buzz(0.25) * db(-15), x, 0.3)
-put(buzz(0.25) * db(-20), E_['ann'], 0.3)          # round 2 : −3 dB (crête à 16,79 s, limiteur −9,7 dB)
+put(buzz(0.25) * db(-20), E_['ann'] + 0.055, 0.3)  # round 2 : −3 dB (crête à 16,79 s, limiteur −9,7 dB) ; round 3 : quand elle entre dans le cadre
 
 # les bruitages cèdent aussi à la voix (−7 dB pendant qu'elle parle)
 fx *= (1 - (1 - db(-7)) * d2)[:, None]

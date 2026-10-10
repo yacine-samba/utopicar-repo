@@ -528,3 +528,226 @@ Aucune erreur `PAGEERR`.
 - Recaler sur la vraie prise : `T.out` sur le temps, et la place du tampon (≈ 0,35 s de lecture).
 - `qa_video.py` sur le premier MP4 (aucun rendu `--all` à ce round). WARN attendus sur les zones sûres pour les
   cartes qui sortent à gauche (10,9 · 14,85 s) et la Fiesta qui entre (15,6 s), pas des textes au repos.
+
+## Round 3 (10 octobre 2026, critique seule : le film n'a pas été modifié)
+
+**Matériel regardé** (film dans l'état des corrections du round 2 : `film.js` de 19 h 37, `mix-mo13.wav` de 19 h 14)
+- Montage 540p avec le son, `renders/draft-mo13-9x16.mp4` (10 octobre, 00 h 58, plus récent que `film.js`, le mix et
+  `vo-timing.json`) : 31,45 s, 1 887 images, H.264 yuv420p 60 i/s, AAC 48 kHz. Réutilisé, pas refait.
+- `qa_video.py` sur ce MP4 (`--intentional 21.5-22.4`) : `renders/qa-mo13/draft-mo13-9x16-qa.md` et `-safe.png`.
+- Planches toutes les 0,1 s refaites : `renders/review/mo13-planche-0.1s-0-10.jpg`, `-10-20.jpg`, `-20-31.45.jpg`
+  (315 images, regardées par tranches de 2 s), plus une planche à 0,1 s tirée du MP4 encodé et des bandes à 30 et
+  60 i/s autour de chaque arrivée de carte, des tampons, de la butée, du « 3 100 € », de « prix max » et du raccord
+  25,25 → 25,55 s.
+- Test téléphone à 360 px : `renders/phone-mo13.png` (0 · 2,95 · 6,4 · 9,6 · 10,8 · 13,7 · 16,3 · 18,1 · 19,1 ·
+  21,15 · 23,9 · 28,9 s).
+- Images pleine définition, `renders/stills-mo13/` : A (0 · 2,95 · 5,15 · 5,2 · 8,6 · 11,5 · 12,0 · 14,0 · 15,6 ·
+  16,75 · 17,0 · 18,05 · 21,2 · 22,0 · 23,9 · 25,5 · 26,1 · 27,6 · 28,9 · 30,75 · 31,433 s) ; B (`HOOK=B` : 0,001 ·
+  1,501 · 3,001 · 4,201 s). Aucune erreur `PAGEERR` ni `CONSOLE`.
+- Son : attaques mesurées dans `audio/stems-mo13/bruitages.wav` (crêtes par 10 ms) et comparées image par image au
+  geste dans le MP4. **Rien n'a été écouté.**
+- Hook passé au mode diagnostic d'`art-du-hook` (image seule, texte et voix inchangés).
+
+**Notes**
+
+| Hook | Lisibilité 360 | Zones sûres | Mouvement | Variété / rythme | Marque | Voix (provisoire) | Son | Recette 47 / envie |
+|---|---|---|---|---|---|---|---|---|
+| 8 | 8 | 8 | 7 | 8 | 8 | 8 | 7 | 8 |
+
+Pas livrable en l'état (mouvement et son < 8). Round 2 → 3 : hook 7 → 8 ; le reste inchangé.
+
+**Mesures**
+- `qa_video.py` : **aucun FAIL**. Première image écart-type 45,7 ; aucune image vide ; aucun plan figé de plus de
+  0,9 s ; −14,1 LUFS, −4,0 dBTP sur le MP4 ; 2 premières secondes −15,3 LUFS contre −14,3 ; 15 % de l'énergie sous
+  150 Hz, 33,3 % entre 1 et 5 kHz. Un WARN, zones sûres : sur la planche, seulement des objets en mouvement (Mégane
+  et Fiesta qui entrent par la droite, cartes, bulles et messages qui entrent ou sortent, silhouettes du rembobinage)
+  et le décor de l'escalier dans la bande du bas, sans texte. Aucun texte au repos dans le rouge.
+- Voitures (pleine définition) : Fiesta qui freine à 15,6 s de x = 218 à **981** (limite 980, 0,25 s, sans texte),
+  posée à 18,05 s de 150 à 920 ; la 206 qui part à 12,0 s touche le bord gauche (mouvement de sortie).
+- Boucle sur le MP4 : 1,05 / 255 d'écart entre 31,433 s et l'image 0, approche progressive. Image la plus sombre
+  du repli : 30,75 s (écart-type 8,6), pas une image vide.
+- Voix provisoire : 13 répliques, 71 mots écrits (77 dits, nombres en lettres), écarts de 0,30 à 2,77 s, aucun
+  chevauchement, dernière réplique finie à 31,02 s pour un film de 31,45 s (0,53 s avant la reprise de « Dix
+  mille »). Cohérent avec le brief : note 8 (consigne).
+- **Synchro des cartes** : une carte de notification part de x = 1 300 (`150 + 1150 × (1 − a)`,
+  `a = S(st, t0, P.card)`, f = 2,2, z = 0,78). Elle entre dans le cadre à t0 + 0,055 s, est à mi-course à + 0,108 s et
+  se pose (85 %) à + 0,19 s. Sur le MP4 : débit 1 bord visible à 6,773, posé à 6,87 ; virement 1 à 10,60 et 10,70 ;
+  ticket 2 à 13,42 et 13,52 ; virement 2 à 14,57 et 14,67 ; ticket 3 à 15,96 et 16,06 ; virement 3 à 20,08 et 20,18 s.
+  Le souffle d'arrivée culmine à t0 − 0,03 s, quand la carte n'existe pas encore ; la note (débit, −4 dBFS de crête à
+  6,70 s) et le carillon (virement, 10,54 s) sonnent à t0 : **≈ 11 images avant la pose**.
+- Autres synchros (crête du son → geste) : tampon « toi aussi » 9,39 s, posé à + 1-2 images ; tampon « une à la
+  fois » 18,00 s, idem ; butée de l'annonce 17,50 s, cellule allumée à + 1 image ; arrêt de bande 21,54 s sur le
+  « 3 100 € » (0 image) ; « prix max 2 500 € » 27,92 s, visible à + 1 image et lisible à + 3.
+- Hook (diagnostic `art-du-hook`, image seule) : Temps ✅ (« Il te manque 8 500 € ? » et la 206 à l'image 0), Sens ✅,
+  Miroir ✅ (« tu », son calcul), Écart ✅ et fermé à l'image à 2,9 s (« 1 400 € » sous les 1 500). Ouverture B :
+  « 1 500 € ↓ 3 100 € » et la mention dès 0,001 s, mise au point à 3,0 s, étiquette à 4,2 s.
+
+**Ce qui marche** : le hook tient ses 3 s sur A et sur B. À 360 px, tout le récit se lit : compteur, palettes,
+étiquettes barrées, gag et « toi aussi », virements, annonce et « une à la fois », « Toujours dispo ? »,
+inscriptions des marches au recul, chute, carte (« frais … ✓ » petits mais lus). La chute est pleine de 23,5 à
+24,35 s, rien au travers. Le rembobinage repasse chaque état du compte. La carte se remplit sur les temps et reste
+immobile de 28,3 à 30,35 s. Le repli de boucle n'a plus de triple exposition. Une seule couleur d'accent, aucun logo,
+plaques vierges, aucun visage, aucun site nommé.
+
+### Les 3 problèmes les plus graves
+
+**1. Son : les neuf arrivées de cartes sonnent ≈ 0,19 s avant que la carte se pose.** C'est la colonne vertébrale
+de la montée : trois débits dont le gag, trois virements, deux tickets et l'annonce. Les bruitages sont posés sur
+`events.json` (t0 = départ de la carte, hors cadre), pas sur le geste vu. Correction, `scripts/audio-mo13.py` :
+- en tête des sons : `ARR, MID = 0.19, 0.10` (85 % et 50 % de `P.card` ; commentaire : la carte part de x = 1 300) ;
+- `note_debit` (l. 249-250) : souffle `cue(x + MID, 1490, 'whoosh', …, peak=True)`, note `cue(x + ARR, 2354, 'ui', …)` ;
+- `virement` (l. 255-257) : souffle `x + MID`, carillon `x + ARR`, note `x + ARR + 0.02` ;
+- gag (l. 287-288) : souffle `E_['gag'] + MID`, pompe `E_['gag'] + ARR` ;
+- tickets (l. 304-305) : les deux sons à `x + ARR` ;
+- annonce (l. 309) : `bulle(E_['ann'] + ARR - 0.03, …)` (le pop tombe à la pose) ;
+- le tic « le compte roule » des débits (`x + 0.25`) tomberait à 0,06 s de la note et serait retiré par la règle de
+  collision : décaler le roulement et son tic ensemble. Dans `film-mo13/film.js` l. 245, passer `T.d1 + 0.25`,
+  `T.d2 + 0.25` à `+ 0.32` et `T.tk2 + 0.12`, `T.tk3 + 0.12` à `+ 0.3` (aujourd'hui, l'argent du ticket quitte le
+  compte avant que le ticket arrive) ; dans `audio-mo13.py`, `cue(x + 0.32, 1054, 'tick', …)`.
+  Effet de bord : le son « prix payé écrit ✓ (2) » (13,34 s), retiré aujourd'hui par collision avec le ticket 2,
+  revient ; « prix payé ✓ (3) » (16,05 s) part à son tour (ticket 3 posé à 16,07 s), ce qui est acceptable.
+- Puis `CUT=mo13 node scripts/events.mjs`, `python3 scripts/audio-mo13.py`. Vérifier, à 60 i/s sur le MP4, que la
+  crête de chaque note tombe à ± 1 image de la pose : 6,89 · 7,85 · 8,64 · 10,71 · 13,53 · 14,68 · 16,07 · 16,94 ·
+  20,19 s.
+
+**2. Le raccord du rembobinage vers la carte est un fondu enchaîné à trois couches (25,33 → 25,50 s).** Le compteur
+« 1 500 € », « MARCHE 1 » (`hudOn`, l. 608 : `1 − sm(REW[1] − 0.3, REW[1] + 0.1)`), la silhouette de la 206 et son
+« 1 400 € » (`gone`, l. 473 : `1 − sm(REW[1] − 0.3, REW[1] + 0.2)`) ne sortent que par l'opacité. Pendant ce
+temps, les marches s'allument en montant et la carte entre à `T.card = REW[1]`. De 25,383 à 25,45 s, on les voit
+toutes à 30-50 %, l'une sur l'autre (bande à 30 i/s, planche à 25,4 s). C'est le défaut corrigé au repli de boucle
+au round 1, et `video/CLAUDE.md` l'interdit (« crossfades entre scènes », « une simple opacité ne doit jamais être
+l'unique animation de sortie »). Correction, `film-mo13/film.js` :
+- `const hx = t >= REW[1] - 0.2 && t < LOOP ? S(t, REW[1] - 0.2, { f: 2.6, z: 1 }) : 0;` (le compte a fini de
+  rouler jusqu'à 1 500 vers 25,2 s) ;
+- HUD : `hudOn = … * (1 − sm(0.35, 0.85, hx))` à la place du `sm` actuel, et `translateY(${f3(-220 * hx)}px)`
+  ajouté à `LH.style.transform` (le compteur file par le haut, comme la carte au repli) ;
+- voitures : `gone = 1 − sm(0.35, 0.85, hx)`, et la silhouette descend avec la marche 1 (`y + 260 * hx`) ;
+- carte : `T.card = REW[1] + 0.06`, quand le HUD est sorti (`hx` ≈ 0,88). `T.l1` (26,0 s) ne bouge pas.
+- Vérifier : `CUT=mo13 node scripts/at.mjs 25.2,25.3,25.35,25.4,25.45,25.5,25.6 renders/review/mo13-at.jpg` : au
+  plus deux calques à chaque image, et aucun texte à moitié transparent qui reste en place.
+
+**3. Deux relais laissent du texte sur du texte : « 1 500 » en double (5,16 → 5,30 s) et les débits sur « MARCHE 1 »
+et le compteur (8,55 → 8,70 s).**
+- Le « 1 500 » qui monte (l. 588 : `S(t, T.out, { f: 1.25, z: 1 })`) n'a fait que 77 % de sa course quand le relais
+  commence (`swap = sm(T.out + 0.36, T.out + 0.5)`), et 90 % à la fin. Les chiffres du compteur apparaissent ≈ 90 px à
+  gauche du « 1 500 » qui vole (`t05.200.png`, MP4 à 5,183 et 5,25 s). Correction : `{ f: 2.0, z: 1 }` (97,7 % à
+  + 0,45 s, 98,9 % à + 0,52 s) et `swap = sm(T.out + 0.45, T.out + 0.52, t)` : moins de 5 px d'écart pendant le
+  relais, fini à 5,32 s, avant que le compte roule (5,50 s).
+- Les deux débits qui montent dans le compteur (l. 641-650 : `away = S(st, T.gag − 0.08, P.push)`, opacité
+  `1 − sm(0.25, 0.7, up)`, calque `LN` au-dessus du HUD) s'impriment sur « MARCHE 1 », la mention et « 108 € » :
+  « Carte grise · 4 CV · − 152,00 € » et « − 40,00 € » à 8,6 s (`t08.600.png`). Correction : le traitement des
+  virements au round 2. Dans la boucle `D.forEach`, ajouter
+  `{ const tgt = up > 0.002 ? LV : LN; if (d.w.parentNode !== tgt) tgt.insertBefore(d.w, tgt === LN ? tk[0].w : null); }`,
+  avec l'opacité `(1 − sm(0.1, 0.35, up))`.
+- Vérifier : `CUT=mo13 node scripts/at.mjs 5.1,5.15,5.2,5.25,5.3,8.5,8.55,8.6,8.65,8.7 renders/review/mo13-at.jpg`.
+
+### Les autres
+- **Hook, 3,0 → 4,8 s** : l'image est figée 1,8 s. Le contour est posé à 3,02 s, et le tremblement de « 8 500 € ? »
+  (4,28 s) ne se voit pas à 360 px. Pendant ce temps, la voix dit « La petite rouge d'en face demande mille quatre »,
+  que l'image a déjà montré à 2,9 s. Correction, sans toucher au texte ni à la voix :
+  - une poussée de caméra lente sur la rue et la 206, de `T.contour` à `T.out` (échelle 1,00 → 1,05, ressort
+    `{ f: 0.5, z: 1 }`) ; le brief prévoyait 1,00 → 1,04 à la mise au point ;
+  - battement de l'étiquette sur « mille quatre » : + 6 % → + 10 % ;
+  - tremblement de « 8 500 € ? » : ± 6 → ± 14 px.
+- **Ticket 2 sur la bulle de SEMAINE 7 (14,0 → 14,13 s)** : le ticket qui sort à gauche (`S(st, T.sem7 − 0.1, P.push)`)
+  passe sur « 2 450 et je la prends. » qui monte. Faire partir le ticket à `T.sem7 − 0.25`.
+- **Mention** « Exemple · prix moyens constatés » : 24 px à 55 % d'opacité (l. 255), illisible à 360 px (MO9 :
+  26 px). Passer à 28 px et 0,7. La mention de la carte (22 px à 0,5, l. 322) suit.
+- **Carte** : verre presque vide de 25,45 à 25,6 s (« bu » à 25,5 s), titre complet à 26,1 s. Acceptable ; garder
+  `hd1` à `T.card + 0.02` si `T.card` bouge (point 2).
+- **« prix max 2 500 € »** : le son attaque 2 à 3 images avant que les chiffres se lisent :
+  `cue(E_['claque'] + 0.03, 2909, …)` et sa note à `+ 0.05`.
+- **Compteur aligné sur « 1 500 € » à 15,9 s** (le chiffre des milliers passe par 1 entre 2 500 et 500) : une image
+  de la planche, quelques images à 60 i/s. Laissé.
+- **Fiesta qui freine** à x = 981 (15,6 s) : laissé (voiture seule en mouvement, sans texte).
+- **Son** : écouter 0–2 s, la montée de 6,6 à 16,5 s (après la correction 1) et 20,5–21,6 s ; refaire le rapport de
+  mix sur la vraie voix (ducking).
+
+**FAIL de `qa_video.py`** : aucun. WARN zones sûres : seulement des objets en mouvement et le décor de l'escalier,
+aucun texte au repos dans le rouge.
+
+### Corrections du round 3 (10 octobre 2026, après la critique)
+
+Fichiers touchés : `film-mo13/film.js`, `scripts/audio-mo13.py`, puis `film-mo13/events.json` (relancé : seuls `card`,
+25,405 → 25,465 s, et `rouleaux` bougent), `audio/mix-mo13.wav`, `audio/stems-mo13/`, `docs/mix_report-mo13.txt`
+(relancés). Minutage provisoire et `vo-mo13.py` inchangés, aucun appel ElevenLabs, rien de partagé modifié
+(`lib/kit47.js`, `film-mo9/`, `film-mo10/`, outils de `scripts/`).
+
+Vérifié sur des images rendues et regardées : `renders/review/mo13-at.jpg` (raccord, 25,15 → 25,7 s, 12 images),
+`mo13-at2.jpg` (5,1 → 5,35 et 8,4 → 8,7 s), `mo13-at3.jpg` (hook 3,0 → 4,75 s, débits 8,47 · 8,5 s, ticket 2
+13,6 → 14,1 s), `renders/phone-mo13.png` (16 instants à 360 px, mentions comprises), `renders/stills-mo13/` en pleine
+définition (A : 0 · 8,5 · 14,0 · 25,35 · 25,45 · 31,433 s ; B : 0,002 · 3,002 · 4,502 · 30,833 s). Aucune erreur
+`PAGEERR` ni `CONSOLE`.
+
+**Les 3 problèmes les plus graves : corrigés.**
+1. **Son des neuf cartes, posé sur le geste vu.** Dans `audio-mo13.py`, `ARR, MID = 0.19, 0.10` (85 % et 50 % de
+   `P.card`) : souffle à mi-course, note, carillon, pompe, papier et pop de l'annonce à la pose, note du virement à
+   `ARR + 0,02`. Le souffle « la carte se pose » de la méthode passe aussi à `card + MID`, et la vibration de l'annonce
+   part quand la carte entre dans le cadre (`ann + 0,055`). Dans `film.js`, le compte descend à `d + 0,32` et
+   `tk + 0,3` (il descendait avant que le ticket arrive), et le tic « le compte roule » suit (`x + 0,32`).
+   Mesuré sur `audio/stems-mo13/bruitages.wav` contre la pose calculée par le ressort du film (85 %) :
+   | carte | pose | montée la plus raide | 1re crête |
+   |---|---|---|---|
+   | débit 1 | 6,891 | 0,0 image | +0,1 |
+   | débit 2 | 7,849 | 0,0 | +0,1 |
+   | gag | 8,637 | 0,0 | +0,1 |
+   | virement 1 | 10,710 | 0,0 | +1,4 (carillon) |
+   | ticket 2 | 13,530 | 0,0 | +0,1 |
+   | virement 2 | 14,680 | 0,0 | +1,4 |
+   | ticket 3 | 16,069 | −0,1 | +0,1 |
+   | annonce | 16,941 | (vibration) | +0,1 (pop) |
+   | virement 3 | 20,191 | 0,0 | +1,5 |
+   Les carillons attaquent sur la pose et culminent 23 ms plus tard (1,4 image) : c'est leur timbre de cloche.
+   Effets de bord, vérifiés dans le rapport : « prix payé écrit ✓ (2) » revient, « prix payé ✓ (3) » part (prévu) ;
+   les souffles d'arrivée des virements 2 et 3 et « palettes SEMAINE 9 » ne sont plus retirés (9 sons retirés au lieu
+   de 12). Écart à la prescription : le tic « le compte remonte » (virements 1 et 2) et « le compte roule 150 → 3 100 »
+   passent en nappe (`bed=True`, hors règle de collision). Les virements 2 et 3 se posent 0,06 s avant que le compte
+   roule : sans cela, la règle de collision retirait ces deux tics, dont celui qui mène à la chute.
+   Papier des tickets à −2 dB (le limiteur réduisait de 6,0 dB à 16,07 s, les deux sons du ticket tombant ensemble).
+2. **Raccord rembobinage → carte, sans fondu enchaîné.** `hx = S(t, REW[1] − 0,2, { f: 2,6, z: 1 })` : le HUD
+   (compteur, palettes) file par le haut (`translateY(−220 hx)`, opacité `1 − sm(0,35 ; 0,85, hx)`), la mention du
+   haut part avec lui, la silhouette de la 206 et son « 1 400 € » s'enfoncent dans la marche 1 (`y + 260 hx`, px du
+   monde) ; `T.card = REW[1] + 0,06` ; `hd1` reste à `T.card + 0,02`, la mention de la carte monte dès `T.card` (au lieu
+   de `+ 0,05`). Images : 25,25 s HUD et silhouette nets, en mouvement ; 25,35 s HUD à ≈ 40 % parti vers le haut,
+   silhouette à ≈ 45 % qui descend dans le verre (aucun des deux en place) ; 25,40 → 25,45 s l'escalier seul ;
+   25,50 s la carte entre, seule ; 25,6 s « budge » ; 25,7 s « budget − r ». La carte ne croise plus le HUD.
+3. **Relais.** (a) `mvp` à `{ f: 2,0, z: 1 }` et `swap = sm(T.out + 0,45 ; T.out + 0,52)` : à 5,2 et 5,25 s, un seul
+   « 1 500 », posé dans ses cases (planche `mo13-at2.jpg`). (b) Les deux débits qui montent passent dans le calque `LV`
+   sous le HUD, comme les virements (le calque se déduit de `up` à chaque image ; au retour, ils reprennent leur place
+   sous la carte du gag). En plus de la prescription : la carte du dessous (assurance) s'éteint d'abord
+   (`sm(0 ; 0,1, up)`), car avec l'opacité prescrite `sm(0,1 ; 0,35)` son « − 40,00 € » se lisait à travers
+   « − 152,00 € » à 8,5 s. Images : 8,47 s une seule carte qui monte ; 8,5 s « − 152,00 € » glisse sous la plaque
+   « MARCHE 1 », dont les lettres restent nettes ; 8,55 s plus rien de lisible.
+
+**Les autres points**
+- **Hook, 3,0 → 4,8 s : corrigé.** Poussée lente de la caméra du monde et de la rue de `T.contour` à `T.out` (+ 5 %,
+  ressort `{ f: 0,5, z: 1 }`, en plus du 1,00 → 1,04 de la mise au point) : la 206 passe de 251 à 261 px de large entre
+  3,0 et 4,75 s (images à 0,4). Battement de l'étiquette + 10 %, tremblement de « 8 500 € ? » à ± 14 px au premier
+  battement (amplitude 17). Image 0 et ouverture B inchangées à l'image 0.
+- **Ticket 2 : corrigé.** Départ à `T.sem7 − 0,25`, extinction `sm(0,15 ; 0,45)` (tickets 2 et 3) : à 14,0 s le ticket
+  pâle sort au-dessus de la bulle, sans passer sur « 2 450 et je la prends. » ; à 14,05 s la bulle est seule.
+- **Mentions : corrigé.** 28 px à 70 % en haut (`top` 476) et sur la carte (`top` 802). Lisibles à 360 px
+  (`phone-mo13.png`, 2,95 · 6,4 · 26,1 · 28,9 s ; B à 0,002 s).
+- **« prix max 2 500 € » : corrigé.** Coup à `claque + 0,03`, note à `+ 0,05`.
+- **Carte vide de 25,5 à 25,6 s** : décalée de 0,06 s avec `T.card`, comme prévu (acceptable au round 3).
+- **Compteur aligné sur « 1 500 € » vers 15,9 s, Fiesta à x = 981 à 15,6 s** : laissés.
+- **Boucle** : le début et la fin n'ont pas été touchés ; mesurée quand même en pleine définition. A : écart moyen
+  0,31 / 255 entre l'image 0 et 31,433 s, 99e centile 5 ; B : 0,31 / 255 entre 0,002 et 30,833 s. Image 0 :
+  écart-type 45,8.
+
+**Mix** (`mix_report-mo13.txt`) : −14,1 LUFS, −4,0 dBTP après AAC 256 k ; 8,2 % du film à plus de 3 dB de limiteur,
+9,7 % des blocs au plafond ; arrêt de bande à 0 image ; lignes de la carte sur les temps. Réduction max **−6,4 dB à
+14,93 s** (cible ≤ 6) : le carillon du virement 2, posé avec la carte, culmine sur un coup de la musique. Baisser le
+carillon de 1,5 dB ou le moteur de la Mégane de 2 dB ne la change que de 0,1 dB (les deux essais ont été retirés) ; la
+vraie voix fera baisser le gain de normalisation (+15,1 dB aujourd'hui) et cette réduction avec lui.
+
+**Ce qui reste**
+- Le montage `renders/draft-mo13-9x16.mp4` (10 octobre, 00 h 58) est antérieur à ces corrections : à refaire, puis
+  `qa_video.py` et la synchro des neuf cartes à 60 i/s sur le MP4 (ici mesurée sur la piste des bruitages). Pas fait
+  ici : la machine faisait tourner deux montages des autres épisodes (≈ 5 s par image).
+- Les trois planches à 0,1 s datent d'avant ces corrections. Les tranches touchées (3,0 → 4,8 · 5,1 → 5,35 · 8,4 → 8,7
+  · 13,6 → 14,1 · 25,15 → 25,7 s) ont été regardées sur les planches `mo13-at*.jpg`.
+- Rien n'a été écouté : 0–2 s, la montée de 6,6 à 16,5 s (sons sur la pose des cartes, tics en nappe) et
+  20,5–21,6 s. Refaire le rapport de mix sur la vraie voix (ducking, limiteur à 14,93 s).
+- La mention manque ≈ 0,2 s au raccord (de 25,38 s, celle du haut sortie, à ≈ 25,58 s, celle de la carte lisible).
+- Recaler sur la vraie prise : `T.out` sur le temps, la place du tampon « toi aussi ».
