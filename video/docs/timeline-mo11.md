@@ -48,7 +48,7 @@ enjoliveurs sont des SVG de même `viewBox` (pixels de la photo), nets à × 1,6
 | `clio3-rayure.svg` | rayure claire, effilée, interrompue deux fois (la clé a sauté), halo de vernis rayé, ombre fine sur le bord haut du sillon ; deux éraflures plus fines et quatre micro-rayures | trait principal de (1 165, 657) à (1 346, 592) ; le tout x 1 158 → 1 346, y 591 → 677 | rayure ; revient au rembobinage ; l'ongle la traverse au verdict |
 | `clio3-enjoliveurs.svg` | les enjoliveurs à l'achat : **la photo des enjoliveurs salie pixel par pixel** (PNG opaque intégré, à la résolution de la photo : rayons gardés, creux noircis par la poussière de frein, voile brun mat, plus dense vers le bord, bord roulé compris), puis en vectoriel le bord frotté, l'éclat manquant et la fissure du rayon fendu | avant : image x 1 179 → 1 333, y 820 → 1 162 (ellipse de centre (1 256, 991), demi-axes 67 × 169, 10°) ; arrière : x 1 723 → 1 777, y 513 → 713 | enjoliveurs ; reviennent au rembobinage |
 | `clio3-enjoliveurs-neufs.svg` | le reflet des neufs : un arc de lumière sur le bord, rien d'autre (la photo montre déjà des enjoliveurs gris argent propres, losanges effacés) | mêmes ellipses | enjoliveurs (après) |
-| `clio3-parechocs.png` (round 2) | le coin avant gauche du bouclier frotté sur une bordure : vernis abrasé blanchi, stries dans le sens du frottement, plastique noir à nu au coin, bord de vernis éclaté | lèvre basse x 30 → 280, y 896 → 1 086 | jamais réparé : la 3e règle (« Pare-chocs · 600 € ✗ »), entouré à la lumière sur « Le pare-chocs, », ✗ sur « tu le laisses. » ; visible tout le film, photo 1 comprise |
+| `clio3-parechocs.png` (round 2) | le coin avant gauche du bouclier frotté sur une bordure : vernis abrasé blanchi, stries dans le sens du frottement, plastique noir à nu au coin, bord de vernis éclaté | lèvre basse x 30 → 280, y 896 → 1 086 | jamais réparé : la 3e règle (« Pare-chocs · 600 € ✗ »), entouré à la lumière sur « Le pare-chocs, », ✗ sur « tu le laisses. » ; visible tout le film, photo 1 comprise. Round 3 : fondu dans `car-clio3.png` et `clio3-poussiere.png`, le film ne charge plus ce calque |
 | `CREDITS.tsv` | crédits de la photo, écrits par le script | | |
 
 États composés (`--check`) : **sale** = propre + poussière + phares + pare-brise + vitres + rayure + enjoliveurs ;
@@ -254,18 +254,18 @@ que la prise existera :
 | l'embout aspire la bande du flanc, « LAVE-MOI » part | 2,75 → 3,70 | « aspirateur » |
 | « 2 900 » passe au gris, « 2 ?00 » · « C'est donné. » | 4,00 | « donné » |
 | le calcul devient le compteur (2 900 € au repos) · palettes SAMEDI · 13:00 | 4,55 → 5,00 · 4,65 | « Samedi » |
-| lavage : ligne 5,80 → 6,50 (arrêt 6,00-6,30) · débit, impulsion | 6,50 | après « treize heures » |
-| phares : ligne 6,80 → 7,50 (arrêt 7,00-7,30) · débit | 7,50 | sans voix |
-| sièges : ligne 7,80 → 8,50 (arrêt 8,00-8,30) · débit | 8,50 | « Les sièges » (7,95) |
+| lavage : ligne 5,80 → 6,50 (arrêt 6,00-6,30) · débit (pendant l'arrêt, round 3), impulsion | 6,30 | après « treize heures » |
+| phares : ligne 6,80 → 7,50 (arrêt 7,00-7,30) · débit | 7,30 | sans voix |
+| sièges : ligne 7,80 → 8,50 (arrêt 8,00-8,30) · débit | 8,30 | « Les sièges » (7,95) |
 | carte « Sous les sièges · 3,40 € · une frite » | 9,00 | seule, entre deux mots |
-| odeur : ligne 9,05 → 9,75 (arrêt 9,25-9,55) · débit | 9,75 | « L'odeur » (9,25) |
-| rayure : ligne 9,80 → 10,50 (arrêt 10,00-10,30) · débit | 10,50 | sans voix |
-| enjoliveurs : ligne 10,55 → 11,25 (arrêt 10,75-11,05) · débit | 11,25 | « Les enjoliveurs » (10,75) |
-| compteur au repos à 3 330 €, recul de la caméra | 11,70 | après « enjoliveurs » |
-| palettes 13:00 → 16:30, la lumière tombe · « Soleil bas, dans ton dos. » · « l'heure avant le coucher » | 11,90 → 13,90 · 12,60 · 13,20 | « Et là, tu attends le soleil » (12,20) |
+| odeur : ligne 9,05 → 9,75 (arrêt 9,25-9,55) · débit | 9,55 | « L'odeur » (9,25) |
+| rayure : ligne 9,80 → 10,50 (arrêt 10,00-10,30) · débit | 10,30 | sans voix |
+| enjoliveurs : ligne 10,55 → 11,25 (arrêt 10,75-11,05) · débit | 11,05 | « Les enjoliveurs » (10,75) |
+| compteur au repos à 3 330 €, recul de la caméra | 12,00 | après « enjoliveurs » |
+| palettes 13:00 → 16:30, la lumière tombe · « Soleil bas, dans ton dos. » · « l'heure avant le coucher » | 11,90 → 13,90 · 12,90 · 13,20 | « Et là, tu attends le soleil » (12,20) |
 | avancée de la caméra, viseur · déclic | 13,90 → 14,50 · 14,50 | « Photo 1 » (14,25) |
 | la photo devient l'annonce · palettes 16:30 → J+4 · deux messages | 14,80 · 14,90 → 15,60 · 15,30 et 15,70 | après « Photo 1 » |
-| bulle « 3 300 et je la prends. » · virement | 15,90 · 16,78 | 1 s avant « Quatre cents » (« Quatre jours » retiré, round 2) · avant « Quatre cents » |
+| bulle « 3 300 et je la prends. » · « 3 300 » part vers le compteur, qui roule à 3 300 € (round 3) · virement | 15,90 · 16,10 → 17,00 · 16,78 | 1 s avant « Quatre cents » (« Quatre jours » retiré, round 2) · avant « Quatre cents » |
 | « + 400 € » géant · « − 109,60 € de prépa » · arrêt de la musique | 17,30 → 17,90 · 17,60 · 18,00 | « de plus » · premier temps |
 | « Ton samedi le mieux payé. » s'écrit | 18,70 | sur les mots |
 | rembobinage jusqu'à 13:10 | 20,40 → 21,10 | 0,25 s après « payé » |
@@ -508,12 +508,12 @@ n'ont pas le type `image/svg+xml`.
 | « 2 ?00 », la fente réécrit « C'est donné. » | 3,97 | « donné » − 0,05 |
 | Le calcul devient le compteur (2 900 €), palettes SAMEDI · 13:00, repère 3 490 €, mention | 4,64 · 4,68 · 5,2 · 5,3 | « Samedi » |
 | Lavage · phares · sièges · odeur · rayure · enjoliveurs (début de ligne ; arrêt 0,2 s après) | 5,96 · 6,88 · 7,80 · 9,05 · 9,80 · 10,55 | fin de « heures » · entre deux · « sièges » − 0,33 · « L'odeur » − 0,2 · entre deux · « Les enjoliveurs » − 0,2 |
-| Débits (notification) ; impulsion au compteur 0,33 s après (une étincelle monte de la notification) | 6,68 · 7,60 · 8,52 · 9,77 · 10,52 · 11,27 | fin de chaque ligne |
+| Débits (notification, partie 0,2 s avant, posée sur le débit) ; impulsion au compteur 0,33 s après (une étincelle monte de la notification) | 6,28 · 7,28 · 8,28 · 9,53 · 10,28 · 11,03 | pendant l'arrêt de chaque ligne, croche qui suit t0 + 0,32 (round 3 : à t0 + 0,72, la carte se posait sur le coup suivant) |
 | Carte « trouvé » · « Sous les sièges · 3,40 € · une frite » | 8,83 | entre « sièges » et « L'odeur » |
-| Recul, compteur posé à 3 330 € | 11,33 → ≈ 12,2 | |
-| La lumière baisse ; « Soleil bas, dans ton dos. » ; « l'heure avant le coucher » | 11,90 → 13,90 · 12,60 · 13,20 | « Et là » − 0,3 · « Et là » + 0,4 · « soleil » − 0,35 |
+| Recul, compteur posé à 3 330 € | 11,33 → 11,98 | |
+| La lumière baisse ; « Soleil bas, dans ton dos. » (descend à sa place) ; « l'heure avant le coucher » | 11,90 → 13,90 · 12,88 · 13,20 | « Et là » − 0,3 · « Et là » + 0,68 · « soleil » − 0,35 |
 | Viseur · déclic · la photo part dans l'écran du téléphone (annonce 3 330 €) · J+4 | 13,84 · 14,52 · 14,78 · 14,92 | fin de « soleil » · « 1 » − 0,1 |
-| Messages · offre « 3 300 et je la prends. » · virement · « + 400 € » | 15,30 · 15,65 · 15,90 · 16,78 · 17,28 | « 4 jours » · « 400 » · « plus » |
+| Messages · offre « 3 300 et je la prends. » · « 3 300 » part en étincelle, le compteur roule de 3 330 à 3 300 €, l'annonce et la bulle avancent de 5 % (round 3) · virement · « + 400 € » | 15,30 · 15,65 · 15,90 · 16,10 → 16,37 → 17,0 · 16,78 · 17,28 | « 4 jours » · « 400 » · « plus » |
 | « − 109,60 € de prépa » · la seule pause · « Ton samedi le mieux payé. » | 17,65 · 18,0 → 18,7 · 18,67 | « Ton samedi » |
 | Rembobinage jusqu'à 13:10 (lavée, phares jaunes, rayure, enjoliveurs bruns) | 20,40 → 21,10 | fin de « payé » + 0,36 |
 | Carte « Avant la photo 1 » · « Pas tout. » · trois lignes · ✗ | 21,10 · 22,12 · 22,51 / 23,01 / 23,51 · 23,93 | « Ceux » · « pas » · fin de « tout » |

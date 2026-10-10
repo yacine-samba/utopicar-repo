@@ -154,7 +154,8 @@ def shelf(x, fc, g_lo=1.0, g_hi=1.0):
     lo, hi = lr4(x, fc)
     return lo * g_lo + hi * g_hi
 
-def music_shape(mus):
+LV = {}                                    # courbe d'élan (dB), lue par les étages de crête (round 3)
+def music_shape(mus, keep=False):
     """Mise en scène, ducking par bande, réglage téléphone : identique pour la musique et sa référence sans arrêt."""
     # l'attente : la basse sort et le son passe sous 1 400 Hz ; les aigus reviennent avec la notification, la basse
     # sur le premier temps qui la suit
@@ -167,7 +168,10 @@ def music_shape(mus):
     g = EV['gag']
     lvl = (env_curve([(0, -1), (T_W1 + 0.12, -1), (T_BIG, 0.5), (T_BIG + 0.01, 0), (DUR - 0.4, 0), (DUR, -3)])
            + env_curve([(0, 0), (T_W0, 0), (T_W0 + 0.4, -4), (T_W1 - 0.02, -4), (T_W1 + 0.12, 0), (DUR, 0)])
-           + env_curve([(0, 0), (g - 0.05, 0), (g + 0.05, -3), (g + 0.5, -3), (g + 0.8, 0), (DUR, 0)]))
+           + env_curve([(0, 0), (g - 0.05, 0), (g + 0.05, -3), (g + 0.5, -3), (g + 0.8, 0), (DUR, 0)])
+           # retour de la basse : −3 dB pendant 0,4 s (le limiteur y creusait tout de 10 dB, round 3)
+           + env_curve([(0, 0), (T_BASS - 0.03, 0), (T_BASS + 0.01, -3), (T_BASS + 0.4, -3), (T_BASS + 0.6, 0), (DUR, 0)]))
+    if keep: LV['lvl'] = lvl
     mus = mus * db(lvl)
     # ducking par bande sous la voix : présence (1,5–6 kHz) −10 dB (tout ce qui dépasse 1,5 kHz baissé, puis ce qui
     # dépasse 6 kHz rendu), niveau −8 dB
@@ -179,7 +183,7 @@ def music_shape(mus):
     mus = bp(mus, 45, None, 2)
     return mus * db(-6)
 
-mus = music_shape(music_raw())
+mus = music_shape(music_raw(), keep=True)
 mus_ref = music_shape(music_raw(stop=False))
 
 # ---------- bruitages (repérés sur l'image : film-mo12/events.json) ----------
@@ -205,6 +209,11 @@ ROLE = {  # crête visée (dBFS) et bande
     'orn': (-17, 1500, 15000), 'tick': (-22, 1500, 12000), 'engine': (-11, 140, 9000), 'tool': (-15, 200, 10000),
     'amb': (-24, 200, 8000),
 }
+# voix provisoire muette : la normalisation monte tout d'environ 15 dB, et les notes des cartes passaient le plafond du
+# limiteur de 9 à 10 dB (la musique se creusait sous chacune). Tant que la voix manque, les rôles qui frappent le plus
+# (accent, ui, chime) sont baissés de 4 dB ; à remesurer avec la vraie prise (round 3).
+if not VO_ON:
+    for k_ in ('accent', 'ui', 'chime'): ROLE[k_] = (ROLE[k_][0] - 4,) + ROLE[k_][1:]
 CUES = []
 def cue(t, i, role, prio=2, st=0, dur=None, pan=0.0, gain=0, rev=False, lead=0.0, start=0.0, fade=0.04, peak=False,
         bed=False, what=''):
@@ -273,14 +282,14 @@ for k in range(7): cue(E_['flaps'] + 0.08 + 0.05 * k + 0.1, 1119, 'tick', 3, pan
 for k, (x, xd) in enumerate(zip(E_['mdocs'], E_['mdrops'])):
     cue(x, 2369, 'orn', 2, st=[0, 2, 4, 5, 7][k], dur=0.45, gain=-3, what=f'pochette : carte {k + 1}')
     cue(xd, 2380, 'tick', 3, dur=0.3, gain=2, what=f'pochette : carte {k + 1} rangée')
-cue(E_['l2'], 1107, 'chime', 2, gain=-4, what='« 2 ans pour rouler »')
+cue(E_['l2'] + 0.2, 1107, 'chime', 2, gain=-4, what='« 2 ans pour rouler »')     # la ligne entre une fois le bandeau agrandi
 cue(E_['total'], 3005, 'orn', 2, dur=0.18, what='trait de total')
 cue(E_['total'] + 0.3, 2384, 'ui', 2, gain=-3, what='« Pochette : 78 € »')
-cue(E_['l6'], 1107, 'chime', 2, st=3, gain=-4, what='« < 6 mois à sa carte grise »')
+cue(E_['l6'] + 0.2, 1107, 'chime', 2, st=3, gain=-4, what='« < 6 mois à sa carte grise »')
 cue(E_['achat'] + 0.2, 1490, 'whoosh', 3, start=0.35, gain=-5, pan=0.3, peak=True, what='contrôle d\'achat (arrive)')
 cue(E_['strike'], 2998, 'ui', 2, dur=0.3, gain=-3, what='contrôle d\'achat barré')
 cue(E_['refait'], 2369, 'orn', 2, st=2, dur=0.6, gain=-2, what='« refait le 6 oct. » s\'écrit')
-cue(E_['eclair'], 3005, 'orn', 2, st=3, dur=0.18, what='l\'éclair')
+cue(E_['eclair'], 3005, 'orn', 2, st=3, dur=0.18, what='« tu le refais » : le bandeau du contrôle s\'allume')
 cue(E_['close'], 1105, 'ui', 2, start=0.26, dur=0.25, rev=True, gain=-2, what='le rabat se ferme')
 cue(E_['pret'], 2182, 'accent', 1, start=0.06, dur=0.12, gain=-4, what='tampon PRÊTE (coup)')
 cue(E_['pret'], 2380, 'tick', 1, st=2, dur=0.4, gain=10, what='tampon PRÊTE (papier)')     # répond à VENDUE
@@ -352,6 +361,40 @@ ir = np.random.default_rng(5).standard_normal(int(0.45 * SR)) * np.exp(-np.arang
 ir = bp(ir, 300, 7000); ir /= np.sqrt((ir ** 2).sum())
 for ch in range(2): fx[:, ch] += fftconvolve(fx[:, ch], ir)[:N] * db(-15)
 
+# ---------- étages de crête (round 3, méthode de audio-mo13.py) ----------
+# Voix provisoire muette : la normalisation remonte tout d'environ 15 dB, et les coups de la batterie comme les notes
+# des cartes passaient le plafond du limiteur de 9 à 10 dB (22 % du film à plus de 3 dB de réduction : la musique
+# pompait sous chaque note). Musique : compresseur doux (moyenné sur 10 ms) puis détecteur de crête (attaque 3 ms,
+# relâche 150 ms, 4:1), qui lisent la musique sans sa courbe d'élan (elle monte toujours jusqu'au chiffre) ; même étage,
+# plus rapide, sur le bus des bruitages. Seuils en dBFS avant normalisation. Seulement sans voix : avec la vraie prise,
+# le gain de normalisation baisse, à remesurer.
+MUS_SOFT = float(os.environ.get('MUS_SOFT', -28)); MUS_THR = float(os.environ.get('MUS_THR', -22))
+FX_THR = float(os.environ.get('FX_THR', -24))
+def comp_gain(det, thr=-14, ratio=1.8):
+    """Gain (dB) du compresseur doux : enveloppe moyennée sur 10 ms, sans attaque ni relâche."""
+    envl = np.abs(det); envl = envl.max(1) if envl.ndim > 1 else envl
+    k = int(0.01 * SR); envl = np.convolve(envl, np.ones(k) / k, 'same')
+    l = 20 * np.log10(envl + 1e-9); return np.where(l > thr, (thr + (l - thr) / ratio) - l, 0)
+def pcomp_gain(det, thr, ratio, att=0.003, rel=0.15, look=0.003):
+    """Gain (dB) du compresseur de crête : crête anticipée de look, attaque att, relâche rel."""
+    a = np.abs(det); a = a.max(1) if a.ndim > 1 else a
+    pk = -minimum_filter1d(-a, size=2 * int(look * SR) + 1)
+    l = 20 * np.log10(pk + 1e-9); gt = np.where(l > thr, (thr + (l - thr) / ratio) - l, 0.0)
+    a_, r_ = np.exp(-1 / (att * SR)), np.exp(-1 / (rel * SR)); out = np.empty_like(gt); s_ = 0.0
+    for i, v in enumerate(gt):
+        s_ = a_ * s_ + (1 - a_) * v if v < s_ else r_ * s_ + (1 - r_) * v
+        out[i] = s_
+    return out
+if not VO_ON:
+    _lv = db(LV['lvl'])
+    g_c = comp_gain(mus / _lv, thr=MUS_SOFT, ratio=2.5)
+    g_p = pcomp_gain(mus * db(g_c) / _lv, thr=MUS_THR, ratio=4)
+    MUS_G = db(g_c + g_p); mus = mus * MUS_G; mus_ref = mus_ref * MUS_G
+    FX_GDB = pcomp_gain(fx, thr=FX_THR, ratio=3, att=0.001, rel=0.08, look=0.002); fx = fx * db(FX_GDB)[:, None]
+    PK_REP = (f'étages de crête (sans voix ; doux {MUS_SOFT:.0f}, crête {MUS_THR:.0f}, bruitages {FX_THR:.0f} dBFS) : musique '
+              f'{np.median(g_c + g_p):.1f} dB en médiane, {np.percentile(g_c + g_p, 5):.1f} dB au 95e centile ; '
+              f'bruitages {FX_GDB.min():.1f} dB au plus')
+
 # ---------- somme, compression douce, loudness ----------
 mus_st = np.stack([mus, mus], 1)
 # voix : présence 2–5 kHz légèrement remontée
@@ -408,9 +451,11 @@ rep = [f'MO12 {HOOK} · mix : {Lm:.1f} LUFS intégrés, true peak {truepeak(mixw
        f'gain de normalisation {gain_total:+.1f} dB ; limiteur (plafond −5 dBFS) : réduction max '
        + ', '.join(f'{20 * np.log10(GR[i]):.1f} dB à {i / SR:.2f} s' for i in
                    sorted({int(np.argmin(GR[j:j + SR // 2])) + j for j in range(0, N, SR // 2)}, key=lambda i: GR[i])[:4])
-       + f' ; {100 * (GR < db(-3)).mean():.1f} % du film à plus de 3 dB',
+       + f' ; {100 * (GR < db(-3)).mean():.1f} % du film à plus de 3 dB ; '
+       + f'{int(np.count_nonzero(np.diff((GR < db(-6)).astype(np.int8)) == 1))} coups à plus de 6 dB',
        f'minutage : {"PROVISOIRE (voix " + str(VT.get("take")) + ", muette)" if not VO_ON else "voix " + str(VT.get("take"))} · film-mo12/events.json '
        f'{"provisoire" if EV.get("provisional") else "définitif"} · durée {DUR:.2f} s',
+       *([PK_REP] if not VO_ON else []),
        f'bruitages placés : {len(kept)} (+ moteur ×2, vibrations ×3, tic-tac) · retirés pour collision : {len(dropped)} '
        + ', '.join(f"{c['i']}@{c['tc']:.2f} ({c['what']})" for c in dropped)]
 # l'attaque à 0 s

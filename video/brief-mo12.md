@@ -153,7 +153,7 @@ remplis la pochette. » à 22,05 s · « Le tien a sept mois : » à 26,7 s.
 | 9,4-12,0 s · **l'attente** | Ses mains sur son téléphone, « Virement · en cours ». La basse sort, l'horloge hésite, ton téléphone reste noir, puis s'allume : « Virement reçu · + 2 700,00 € ». | « Tu attends le virement. » puis silence | tension courte |
 | 12,0-17,0 s · **les signatures et le gag** | Deux signatures sur la cession, la carte grise barrée « Vendu le 10/10/2026 · 11 h 16 », la déclaration à 0,00 €, le code remis. Le gag arrive seul, de travers : « Site qui imite l'officiel · − 49,90 € », légende « ton beau-frère ». | « Déclaration de vente : zéro euro. Ton beau-frère l'a payée. » | satisfaction, rire |
 | 17,0-20,6 s · **la chute** | Les clés ; la C3 part ; 11:20 se fond dans « 20 min » géant ; tout s'éteint, la musique s'arrête : la seule pause. La tasse de l'image 0 revient sous le 20, elle fume encore ; « *encore chaud.* » | « Vingt minutes. » (pause) « Ton café est encore chaud. » | fierté, sourire |
-| 20,7-29,0 s · **mardi, la pochette** | Rembobinage jusqu'à « MAR 6 OCT ». Cinq cartes entrent dans la pochette, une par temps, puis restent en bandeaux lisibles (nom, badge, valeur) ; « 2 ans pour rouler » en gris, « < 6 mois à sa carte grise » en orange ; « Pochette : 78 € ». Au-dessus, la carte « Contrôle d'achat · 10 mars · bon jusqu'au 9 sept. » se vide et se barre ; « refait le 6 oct. · 78 € ». Le rabat se ferme : « PRÊTE ». | « Mardi, tu remplis la pochette. Contrôle : deux ans pour rouler, six mois pour vendre. Le tien a sept mois : tu le refais. » | soulagement, valeur |
+| 20,7-29,0 s · **mardi, la pochette** | Rembobinage jusqu'à « MAR 6 OCT ». Cinq cartes entrent dans la pochette, une par temps, puis restent en bandeaux lisibles (durée écrite, nom, valeur : dans le bandeau, l'anneau cède la place à sa durée, round 3) ; « 2 ans pour rouler » en gris, « < 6 mois à sa carte grise » en orange ; « Pochette : 78 € ». Au-dessus, la carte « Contrôle d'achat · 10 mars · bon jusqu'au 9 sept. » se vide et se barre ; « refait le 6 oct. · 78 € ». Le rabat se ferme : « PRÊTE ». | « Mardi, tu remplis la pochette. Contrôle : deux ans pour rouler, six mois pour vendre. Le tien a sept mois : tu le refais. » | soulagement, valeur |
 | 29,0-30,7 s · **la boucle** | Tout se replie dans le cadre de l'image 0 : l'horloge à 11:00, la C3 et son étiquette, la bulle, la tasse. | « La prochaine fois que tu vends… » → « Onze heures, ton acheteur sonne. » | relance |
 
 ## La grille de transposition
@@ -215,13 +215,13 @@ script minuté ; ils se recalent mot à mot sur `audio/vo-mo12/vo-timing.json` �
 | 19,35 | La tasse de l'image 0 revient sous le 20, au trait de lumière, deux volutes montent ; « *encore chaud.* » s'écrit à la lumière en Fraunces orange (19,90). | « Ton café est encore chaud. » (19,35-20,55) | petite note, tracé |
 | 20,70 → 21,95 | **Rembobinage** : lignes de balayage ; « 20 min » redevient 11:20 ; les bandeaux ressortent puis rentrent, la C3 revient, les rouleaux redescendent à 11:00, puis les palettes affichent « MAR 6 OCT ». Derrière, flou, des jours rayés sur un calendrier (Mixkit 38501). | | bande qui rembobine, souffle inversé, 0,9 s de musique à l'envers ; la musique repart sur le temps à 22,00 (mesure 55) |
 | 22,05 | Fond chaud. Les palettes se réduisent en libellé « MAR 6 OCT » (y ≈ 240). La pochette vide, ouverte, au centre (y 590-1400) ; la C3 en retrait, floue. | « Mardi, » (22,05-22,45) « tu remplis la pochette. » (22,65-23,80) | |
-| 22,50 · 23,00 · 23,50 · 24,00 · 24,50 | Cinq cartes entrent dans la pochette, une par temps, lisibles en entier 0,4 s, puis rangées en bandeau (y 600 → 1150) : « Contrôle · 78 € » (anneau « 6 mois ») · « Situation adm. · 0 € » (« 15 j ») · « Cession · × 2 » (« 15 j ») · « Carte grise · à barrer » (« 1 mois ») · « Déclaration · ANTS · 0 € ». | « Contrôle : deux ans pour rouler, » (24,00-25,55) | une note par carte, qui monte |
+| 22,50 · 23,00 · 23,50 · 24,00 · 24,50 | Cinq cartes entrent dans la pochette, une par temps, lisibles en entier 0,4 s, puis rangées en bandeau (y 600 → 1150 ; l'anneau devient la durée écrite en orange, Clash 38 px) : « Contrôle · 78 € » (« 6 mois ») · « Situation adm. · 0 € » (« 15 j ») · « Cession · × 2 » (« 15 j ») · « Carte grise · à barrer » (« 1 mois ») · « Déclaration · ANTS · 0 € ». | « Contrôle : deux ans pour rouler, » (24,00-25,55) | une note par carte, qui monte |
 | 24,60 | Sur « deux ans », le bandeau du contrôle s'agrandit d'une ligne : « 2 ans pour rouler » en gris. | | note claire |
 | 25,00 | Trait de total sous les bandeaux : « Pochette : 78 € ». **La liste complète reste lisible, sans rien devant, de 25,00 à 28,50.** | | les chiffres claquent |
 | 25,80 | Sur « six mois », la ligne du contrôle devient « < 6 mois à sa carte grise », en orange. | « six mois pour vendre. » (25,75-26,45) | note claire |
 | 26,50 | Au-dessus de la pochette (y 330-540), la carte « Contrôle d'achat · 10 mars » se pose, ligne « bon jusqu'au 9 sept. » ; son anneau se vide. | « Le tien a sept mois : » (26,70-27,90) | |
 | 27,50 | Un trait orange barre la carte du contrôle d'achat. | | trait |
-| 28,00 | « refait le 6 oct. · 78 € » s'écrit à la lumière sous le trait (« refait » en Fraunces) ; un éclair relie la carte au bandeau du contrôle. | « tu le refais. » (28,10-28,75) | stylo, éclair |
+| 28,00 | « refait le 6 oct. · 78 € » s'écrit à la lumière sous le trait (« refait » en Fraunces) ; sur « refais », le bandeau « Contrôle » pulse et son « 78 € » s'allume en orange (round 3 : l'éclair de 26 px se perdait à 360 px). | « tu le refais. » (28,10-28,75) | stylo, note |
 | 28,50 | Le rabat de la pochette se ferme ; tampon « PRÊTE » sur le rabat (28,75), qui répond au « VENDUE » de l'ouverture. | | rabat, tampon |
 | 29,00 | **Retour** : la pochette et la carte se replient vers le haut, les palettes redeviennent l'horloge « 11:00 » et le libellé « 1re REVENTE · SAMEDI », la C3 reprend sa place avec son étiquette, la bulle « Acheteur · Je suis devant. » et la tasse reviennent. | | la musique boucle sur la mesure |
 | 29,20 | | « La prochaine fois que tu vends… » (29,20-30,55) | |
@@ -416,6 +416,7 @@ Clash 40 px, 13 px à 360, dans un anneau de 110 px qui se vide), de la même fa
 | 0,0 | 1re REVENTE · SAMEDI | libellé Satoshi gris, espacé |
 | 0,0 | 11:00 | horloge à rouleaux, Clash |
 | 0,0 | Acheteur · Je suis devant. | bulle de verre (nom en gris) |
+| 5,65 | Acheteur · Les papiers ? | la bulle change sur « Il demande les papiers » (round 3) |
 | 0,0 | 2 700 € | étiquette de papier sur le pare-brise |
 | 2,15 | 11:20 | rouleaux |
 | 2,5 | VENDUE | tampon orange sur l'étiquette |
@@ -435,7 +436,7 @@ Clash 40 px, 13 px à 360, dans un anneau de 110 px qui se vide), de la même fa
 | 17,5 | 20 min | Clash géant |
 | 19,9 | encore chaud. | Fraunces italique orange, sous la tasse |
 | 21,5 | MAR 6 OCT | palettes, puis libellé |
-| 22,5 → 24,5 | Contrôle · 78 € · Situation adm. · 0 € · Cession · × 2 · Carte grise · à barrer · Déclaration · ANTS · 0 € | cartes puis bandeaux, avec leurs anneaux (6 mois, 15 j, 15 j, 1 mois) |
+| 22,5 → 24,5 | Contrôle · 78 € · Situation adm. · 0 € · Cession · × 2 · Carte grise · à barrer · Déclaration · ANTS · 0 € | cartes avec leurs anneaux, puis bandeaux avec la durée écrite (6 mois, 15 j, 15 j, 1 mois, 15 j) |
 | 24,6 | 2 ans pour rouler | ligne grise du bandeau du contrôle |
 | 25,0 | Pochette : 78 € | trait de total |
 | 25,8 | < 6 mois à sa carte grise | ligne orange du bandeau du contrôle |

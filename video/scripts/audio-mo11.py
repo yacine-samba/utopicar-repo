@@ -233,15 +233,15 @@ for k in range(5): cue(E_['sam'] + 0.12 + k * 0.07, 1119, 'tick', 3, pan=-0.3 + 
 # les six coups : chaque préparation a son outil, sa ligne de partage, puis son débit sur une note qui monte
 C_ = COUPS
 cue(C_['lavage']['t0'], 3215, 'tool', 2, st=-2, dur=0.7, pan=-0.2, pan2=0.2, what='lavage : le jet suit la ligne')
-cue(C_['phares']['t0'] + 0.1, 850, 'tool', 2, start=2.0, dur=0.6, pan=-0.1, what='phares : ponçage court (+ 0,1 s : le débit du lavage, sur la croche, tombe 0,1 s avant le départ)')
+cue(C_['phares']['t0'], 850, 'tool', 2, start=2.0, dur=0.6, pan=-0.1, what='phares : ponçage court (round 3 : au départ de la ligne, le débit du lavage tombe 0,6 s avant)')
 cue(C_['sieges']['t0'], 1835, 'tool', 2, start=3.0, dur=0.65, what='sièges : aspiration humide')
 cue(C_['odeur']['t0'] + 0.13, 1832, 'tool', 2, dur=0.6, pan=0.15, what="odeur : la molette, puis le souffle (après les pièces)")
 cue(C_['rayure']['t0'] + 0.13, 3087, 'tool', 2, dur=0.65, pan=0.1, what='rayure : le polish passé à la main')
-cue(C_['rayure']['hold'][1], 2589, 'orn', 3, st=7, dur=0.4, gain=-2, what='… la rayure disparaît, scintillement')
+cue(C_['rayure']['t0'] + 0.62, 2589, 'orn', 3, st=7, dur=0.4, gain=-2, what='… la rayure disparaît, scintillement (round 3 : 0,12 s après la fin de l\'arrêt, où tombe le débit)')
 cue(C_['enjo']['hold'][0], 486, 'tool', 2, start=0.33, dur=0.3, gain=3, pan=0.1, what="enjoliveurs : le neuf se clipse à l'arrêt de la ligne")
 for k, (x, xi) in enumerate(zip(E_['deb'], E_['imp'])):
-    cue(x, 2354, 'ui', 1, st=k, pan=0.3, what=f'débit {k + 1} (note + {k})')
-    cue(x, 1490, 'whoosh', 3, dur=0.35, pan=0.35, gain=-4, lead=0.14, what='la notification arrive')
+    cue(x, 2354, 'ui', 1, st=k, pan=0.3, what=f'débit {k + 1} (note + {k}) : la carte se pose, pendant l\'arrêt de la ligne')
+    cue(x, 1490, 'whoosh', 3, dur=0.35, pan=0.35, gain=-4, lead=0.2, what='la notification arrive (elle part 0,2 s avant son débit)')
     cue(xi, 1054, 'tick', 3, dur=0.3, gain=2, what='impulsion : le compteur roule')
 # le gag, seul : quatre pièces sous les sièges (2 €, 1 €, 20 c, 20 c : la plus grosse sonne le plus grave)
 for k, st_ in enumerate([0, 2, 6, 7]):
@@ -262,6 +262,8 @@ for k in range(4): cue(E_['j4'] + 0.16 + k * 0.06, 1119, 'tick', 3, pan=-0.2 + 0
 cue(E_['msg1'], 2354, 'ui', 2, st=7, pan=-0.25, gain=-5, what='« Belle photo. Toujours dispo ? »')
 cue(E_['msg2'], 2384, 'ui', 2, st=9, pan=-0.25, gain=-5, what='« Je passe demain ? »')
 cue(E_['bubble'], 2354, 'ui', 1, st=4, pan=-0.2, gain=-2, what='« 3 300 et je la prends. »')
+cue(E_['offer'] - 0.27, 2589, 'orn', 3, st=5, dur=0.35, gain=-6, what='« 3 300 » part de la bulle vers le compteur (round 3)')
+cue(E_['offer'], 1054, 'tick', 3, dur=0.3, gain=2, what='impulsion : le compteur roule de 3 330 à 3 300 € (round 3 ; pas de son de pose : il tomberait sur le virement)')
 cue(E_['credit'], 1490, 'whoosh', 2, dur=0.5, pan=0.3, lead=0.12, what='virement reçu')
 cue(E_['credit'] + 0.04, 951, 'chime', 1, pan=0.2, dur=0.7, fade=0.2, what='… + 3 300,00 € (traîne coupée : « Quatre cents de plus » passe devant)')
 # « + 400 € » : l'accent sur le chiffre, l'arrêt de bande, la seule pause
@@ -274,8 +276,8 @@ cue(E_['pay2'], 2589, 'orn', 3, st=4, dur=0.5, gain=-4, what='… « le mieux pa
 cue(REW[0], 1092, 'accent', 1, dur=REW[1] - REW[0] + 0.1, gain=-6, what='rembobinage')
 cue(E_['card'], 3120, 'whoosh', 2, dur=0.7, lead=0.08, what='carte « Avant la photo 1 »')
 cue(E_['pas'], 3005, 'orn', 2, dur=0.6, gain=-1, what='« Pas tout. » s\'écrit')
-for k, x in enumerate(E_['l']): cue(x, 2369, 'orn', 2, st=2 * k, dur=0.45, gain=-3, what=f'règle {k + 1}')
-cue(E_['pc'] + 0.25, 2589, 'orn', 3, st=5, dur=0.45, gain=-5, what="la plume entoure l'éraflure du pare-chocs (round 2)")
+for k, x in enumerate(E_['l']): cue(x, 2369, 'orn', 3 if k == 2 else 2, st=2 * k, dur=0.45, gain=-3, what=f'règle {k + 1}')
+cue(E_['pc'] - 0.02, 2589, 'orn', 2, st=5, dur=0.45, gain=-5, what="la plume entoure l'éraflure du pare-chocs (round 3 : au départ de la plume ; la règle 3, 0,12 s après, passe en p3)")
 cue(E_['x'], 3005, 'orn', 2, st=-3, dur=0.5, what='« tu le laisses » : la lumière barre « Pare-chocs · 600 € » et le bouclier')
 cue(E_['dive2'], 1492, 'whoosh', 2, st=2, dur=0.7, lead=0.1, gain=-3, what="plongée sur l'aile")
 cue(E_['nail'], 1898, 'tool', 2, start=0.65, dur=0.4, lo=2000, gain=-2, what="l'ongle glisse sur la rayure")

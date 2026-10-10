@@ -581,19 +581,23 @@ ElevenLabs, `lib/kit47.js` et les fichiers de MO9 et MO10 intacts.
 - Voix : le texte à générer change (510 caractères). Toujours une seule génération, quand l'utilisateur aura débloqué
   ElevenLabs.
 
-## Critique, round 3 (9 octobre 2026, relecture extérieure, film non modifié)
+## Critique, round 3 (9 et 10 octobre 2026, relecture extérieure, film non modifié)
 
 Jugé sur `film.js` de 18:03 (minutage provisoire, piste de voix muette, mix de 17:59), après les corrections du
-round 2. Regardé image par image :
+round 2. La relecture, coupée le 9 au soir, a repris le 10 octobre sur le montage avec le son. Regardé image par image :
 
 - planches 0,1 s refaites : `renders/review/mo11-planche-0.1s-0-10.jpg`, `-10-20.jpg`, `-20-30.2.jpg` (302 images, aucune
   erreur `PAGEERR`), lues par tranches de 2 s ;
 - test téléphone sur 12 instants : `renders/phone-mo11.png` (0 · 3,4 · 4,5 · 6,15 · 8,2 · 9,3 · 10,15 · 13,6 · 16 ·
   17,8 · 23,9 · 26,9 s) ;
 - 36 images pleine définition : `renders/stills-mo11/t*.png` (0 → 30,13 s) ;
-- montage 540p avec le son : `renders/draft-mo11-9x16.mp4`, mesuré par `qa_video.py` (`renders/qa-mo11/`) ;
-- preuves : `renders/review/mo11-r3-tuile.jpg` (21,5 → 22,2 s), `mo11-r3-vente.jpg` (14,8 → 16,8 s),
-  `mo11-r3-chute.jpg` (19,5 → 20,5 s).
+- montage 540p avec le son : `renders/draft-mo11-9x16.mp4` du 10 octobre, 02:27 (30,15 s, 1 809 images, plus récent que
+  `film.js`, `audio/mix-mo11.wav` et `vo-timing.json`), regardé à 4 i/s sur toute sa durée et à 60 i/s sur les
+  passages douteux, mesuré par `qa_video.py` (`renders/qa-mo11/`) ;
+- rendus séquentiels pleine définition (`render.mjs --range`) : 20,95-21,30 · 22,05-22,30 · 27,20-27,45 s ;
+- preuves : `renders/review/mo11-r3-collisions.jpg` (les trois mots en deux moitiés, à 30 i/s, et 22,27 s en pleine
+  définition), `mo11-r3-tuiles-draft.jpg` (montage contre pleine définition aux mêmes instants), `mo11-r3-vente.jpg`
+  (14,8 → 16,8 s), `mo11-r3-chute.jpg` (19,5 → 20,5 s), `mo11-r3-tuile.jpg` (planche, 21,5 → 22,2 s).
 
 ### Notes
 
@@ -605,11 +609,11 @@ Corrections du round 2 vérifiées sur l'image :
 
 - Sièges : à 8,2 s, les auréoles se voient à 360 px (plaques ocre de 30 à 50 px avec leur liseré), la moitié lavée
   montre le pare-brise net et le siège derrière. La lisibilité passe à 8.
-- Renversement : l'éraflure du bouclier se voit dès l'image 0 et dans la photo 1. La plume l'entoure (23,4 → 23,9 s)
-  et le ✗ s'y répète sur « tu le laisses » (24,3 s). La voiture glisse vers le bouclier de 23,0 à 24,0 s (écart
-  entre images de 5,0 à 7,2 sur la planche, contre 1,1 à 2,6 de 21,4 à 22,9 s).
-- Centrage : « Avant la photo 1 » seul à 21,4 s, « L'ongle glisse ? » à 26,3 s et « Soleil bas, » à 13,0 s sont sur
-  x = 540.
+- Renversement : l'éraflure du bouclier se voit dès l'image 0 et dans la photo 1. La plume l'entoure (23,40 → 23,75 s
+  sur le montage) et le ✗ s'y répète sur « tu le laisses » (24,3 s). La voiture glisse vers le bouclier de 23,0 à
+  24,0 s (écart entre images de 5,0 à 7,2 sur la planche, contre 1,1 à 2,6 de 21,4 à 22,9 s).
+- Centrage : au repos, « Avant la photo 1 » seul (21,4 s), « L'ongle glisse ? » (26,3 s) et « Soleil bas, » (12,8 s)
+  sont sur x = 540. L'entrée de la deuxième moitié pose un autre problème (problème 2).
 - Hook : la bande laissée par l'embout se lit comme du vernis lavé à 3,4 et 4,3 s. « LAVE-MOI » se lit à 360 px et sur
   l'image 0 réduite à 200 px.
 - Carte « une frite » : seule et lisible de 9,0 à 9,8 s, elle descend et sort à gauche sans couvrir la rayure (partie
@@ -620,88 +624,90 @@ Corrections du round 2 vérifiées sur l'image :
 
 **Voix (8)**, minutage provisoire cohérent avec le brief :
 
-- Débit : 67 mots écrits en 30,15 s, soit 2,2 mots/s. Si on compte « 2 000 » et « 2 900 » tels qu'on les dit, on
-  arrive à environ 2,4 mots/s (MO5 : 2,5). Parole : 17,6 s, soit 3,8 mots/s pendant qu'il parle.
+- Débit : 67 mots écrits (64 dans `vo-timing.json`, qui compte « 2 000 » pour un) en 30,15 s, soit 2,2 mots/s, la
+  cible du brief (65 mots pour 29,6 s). Si on compte « 2 000 » et « 2 900 » tels qu'on les dit, on arrive à environ
+  2,4 mots/s (MO5 : 2,5). Parole : 17,6 s.
 - Chevauchements : aucun. Écart minimal : 0,15 s sur la virgule de l'ouverture. Entre deux phrases : 0,25 à 0,30 s.
 - Fin : « Quinze euros de polish. » finit à 27,43 s, avant le départ de la boucle (27,83 s). « La prochaine fois que
   tu te dis… » finit à 29,77 s, avant la fin du film (30,15 s).
+- Plus longs silences : 2,10 s pendant la vente (14,80 → 16,90 s, problème 3) et 1,94 s entre « heures » et « Les
+  sièges » (6,01 → 7,95 s, occupé par le lavage et les phares).
 
-**Son (8)**, mesuré, pas écouté :
+**Son (8)**, mesuré sur le MP4, pas écouté :
 
-- Mix encodé en AAC 256 k, 48 kHz, avec les réglages de `render.mjs` : −14,2 LUFS, −3,8 dBTP, 30 % de l'énergie sous
-  150 Hz et 25,4 % entre 1 et 5 kHz.
-- Chaque bruitage de `docs/mix_report-mo11.txt` a été comparé à son geste sur la planche : jet sur la ligne du lavage
-  (5,96 s), ponçage des phares (6,98), aspiration humide (7,80), quatre pièces sur la carte « trouvé » (8,83 → 9,04),
-  souffle de l'odeur (9,18), polish (9,93), clac de l'enjoliveur (10,75), déclic (14,52), palettes, messages,
-  « + 400 € » sur le premier temps (17,283), rembobinage (20,40), « Pas tout. » (22,12), ongle (25,32), barre du
-  carrossier (27,06). Tous tombent sur leur geste, sauf un (voir « Les autres problèmes »).
+- −14,2 LUFS, −3,8 dBTP après AAC, 30 % de l'énergie sous 150 Hz et 25,4 % entre 1 et 5 kHz, son dès 0 s.
+- Attaques relevées dans l'audio du MP4 (flux spectral au-dessus de 1,5 kHz) contre la liste de
+  `docs/mix_report-mo11.txt` : les sons secs tombent à ± 60 ms de leur repère (palettes, pièces, débits, déclic 14,52,
+  « + 400 € » 17,283 à + 16 ms, rembobinage 20,40, « Pas tout. » 22,12, règles 22,51 · 23,01 · 23,51, ongle 25,32,
+  « Polish » 26,46). Les souffles et la barre du carrossier ont une attaque lente (+ 70 à + 116 ms), normal. Le MP4
+  ne décale pas le son.
+- Gestes sur l'image : jet sur la ligne du lavage (5,96 s), ponçage des phares (6,98), aspiration humide (7,80),
+  quatre pièces sur la carte « trouvé » (8,83 → 9,04), souffle de l'odeur (9,18), polish (9,93), clac de l'enjoliveur
+  (10,75), déclic quand les coins du viseur se serrent (14,52), barre du carrossier (27,06, la barre part à 27,10).
+  Deux écarts : le tracé du pare-chocs sonne 0,25 s après le départ de la plume (« Les autres problèmes »), et chaque
+  note de débit tombe sur l'image du coup suivant (problème 1).
 
 ### Les trois problèmes les plus graves
 
-1. **Une tuile de la voiture est dessinée hors de sa place de 21,7 à 22,1 s**, pendant la carte « Avant la photo 1 »
-   (preuve : `mo11-r3-tuile.jpg`).
-   - Sur cinq images de suite de la planche, un bloc d'environ 35 × 50 px (soit environ 140 × 200 px en pleine
-     définition) apparaît sous le bouclier, puis sur son coin gauche, puis de nouveau sous le bouclier.
-   - Une recherche du bloc dans l'image de 21,5 s le retrouve : c'est l'aile avant avec la rayure blanche et le haut du
-     passage de roue.
-   - Le défaut est nouveau : il n'existe pas sur la planche de 17:15 (`mo11-planche-0.1s-20-30.1.jpg`, film d'avant les
-     corrections du round 2).
-   - C'est la même famille que la tuile du hook corrigée au round 1 : en rendu séquentiel, sous la caméra 3D, le
-     compositeur logiciel recopie une tuile ailleurs. Au round 2, la pile des calques de `C.body` a changé : un calque
-     `<img>` plein cadre, `parechocs`, toujours visible, s'est ajouté. C'est le suspect principal.
-
-   Corrections :
-   - L'éraflure ne change jamais pendant le film, donc elle n'a pas besoin d'un calque à elle. Dans
-     `scripts/dirty-mo11.py`, composer `clio3-parechocs.png` dans `assets/photos-mo11/car-clio3.png` (la base, d'où
-     sortent aussi `C.gold` et la photo 1) et dans `clio3-poussiere.png` (pour qu'elle reste au-dessus de la poussière
-     à l'image 0, comme aujourd'hui).
-   - `film-mo11/film.js` : retirer `['parechocs', A + 'clio3-parechocs.png']` de la liste `layers` de `E.car(...)`, et
-     retirer `c.drawImage(C.L.parechocs, x, y, w, h)` du bloc `photo`.
-   - Contrôle : `CUT=mo11 node scripts/sheet.mjs 21 23`, puis `CUT=mo11 node scripts/render.mjs --range 21.6,22.2`
-     (rendu séquentiel pleine définition, le chemin du rendu final). Aucune tuile ne doit apparaître de 21,6 à 22,2 s.
-     L'image 0 doit rester identique, à 0,1 / 255 près.
-   - Si la tuile reste, faire la même chose avec la rayure : la tirer en PNG à pleine résolution dans `dirty-mo11.py`
-     au lieu du SVG servi en Blob. Un SVG dans un `<img>`, sous une perspective, est rastérisé de nouveau à chaque
-     échelle.
-
-2. **Pendant chaque coup, la notification affichée est celle du coup d'avant.** Le prix n'est jamais à côté de son
+1. **Pendant chaque coup, la notification affichée est celle du coup d'avant.** Le prix n'est jamais à côté de son
    avant / après, alors que c'est la variable testée.
    - Le débit tombe quand la ligne a fini (`TD` ≈ `t0` + 0,72 s, arrondi à la croche), et la carte met encore 0,2 à
      0,3 s à se poser. Mais la caméra part vers le coup suivant entre `t0` + 0,37 et `t0` + 0,87 s (clé `t0 − 0,38` du
      coup suivant). Chaque carte arrive donc sur l'image du coup d'après.
-   - Ce qu'on voit, images à l'appui : à 7,15 s, les phares sont coupés en deux sous « Lavage · − 8 € » ; à 8,2 s, les
-     sièges sous « Phares · − 25 € » (alors que la voix dit « Les sièges. ») ; à 9,3 s, les vitres sous « Sièges ·
-     − 30 € » ; à 10,15 s, la rayure sous « Odeur · − 15 € » ; à 10,9 s, les enjoliveurs sous « Rayure · − 15 € ».
+   - Ce qu'on voit, sur les images fixes et sur le montage : à 7,15-7,25 s, les phares sont coupés en deux sous
+     « Lavage · − 8 € » ; à 8,0-8,25 s, les sièges sous « Phares · − 25 € » (alors que la voix dit « Les sièges. ») ;
+     à 9,3 s, les vitres sous « Sièges · − 30 € » ; à 10,0-10,25 s, la rayure sous « Odeur · − 15 € » ; à 10,75-11,0 s,
+     les enjoliveurs sous « Rayure · − 15 € ».
    - Pour un spectateur sans le son, les trois coups que la voix nomme reçoivent leur prix quand le mot finit, sur
      l'image suivante.
 
    Corrections :
-   - `film-mo11/film.js`, `TD` : faire tomber le débit pendant l'arrêt de la ligne, sur le temps qui suit :
+   - `film-mo11/film.js` l. 57, `TD` : faire tomber le débit pendant l'arrêt de la ligne, sur le temps qui suit :
      `TD = COUPS.map((c) => T.big + 0.25 * Math.ceil((c.t0 + 0.32 - T.big) / 0.25))`.
-   - Cela donne 6,283 · 7,283 · 8,283 · 9,533 · 10,283 · 11,033 s. Chaque carte tombe dans l'arrêt de son coup (6,16-6,46 ·
-     7,08-7,38 · 8,00-8,30 · 9,25-9,55 · 10,00-10,30 · 10,75-11,05), sur un temps de la grille, au moins 0,28 s
-     après le bruitage d'outil du coup (pas de collision dans `audio-mo11.py`). « Les sièges. » (8,13 s), « L'odeur. »
-     (9,25 s) et « Les enjoliveurs. » (10,92 s) ont leur carte pendant le mot.
+   - Cela donne 6,283 · 7,283 · 8,283 · 9,533 · 10,283 · 11,033 s. Chaque carte tombe dans l'arrêt de son coup
+     (6,16-6,46 · 7,08-7,38 · 8,00-8,30 · 9,25-9,55 · 10,00-10,30 · 10,75-11,05), sur un temps de la grille, au moins
+     0,28 s après le bruitage d'outil du coup (pas de collision dans `audio-mo11.py`). « Les sièges. » (8,13 s),
+     « L'odeur. » (9,25 s) et « Les enjoliveurs. » (10,92 s) ont leur carte pendant le mot.
    - `TI`, `T.leaveN` et `T.pose` suivent seuls. Le compteur se pose 0,25 s plus tôt (11,98 s).
    - Relancer `CUT=mo11 node scripts/events.mjs` puis `python3 scripts/audio-mo11.py`. Le scintillement de la rayure
      (10,30 s, p3) sera retiré par la note du débit (10,283 s, p1). C'est accepté.
    - Contrôle : `CUT=mo11 node scripts/at.mjs 6.4,7.35,8.3,9.55,10.3,11.05 renders/review/mo11-coups-prix.jpg`. Sur
      chaque image, la carte doit porter le nom du coup coupé en deux.
 
+2. **Les mots en deux moitiés se chevauchent pendant 0,2 s, trois fois** (défaut apparu avec le centrage du round 2,
+   preuve : `mo11-r3-collisions.jpg`).
+   - « Avant la photo 1Pas tout. », de 22,20 à 22,43 s : le « 1 » recouvre le « P ». Vu sur le montage et en pleine
+     définition (22,267 et 22,300 s). C'est la relance du renversement, sur « pas tout » dans la voix.
+   - « L'ongle glisse ?Tu lustres. », de 26,50 à 26,67 s : le « ? » recouvre le « T ».
+   - « Soleil bas,dans ton dos. », de 12,95 à 13,15 s : la virgule touche le « d ».
+   - Cause : la première moitié (`cT1`, `vd1`, `sb1`) glisse vers la gauche de `hT2 × (1 − tt2)` pendant que la
+     deuxième (`cT2`, `vd2`, `sb2`) s'écrit déjà à sa place finale (`film.js` l. 680-681, 779-780, 800-801). Tant que
+     le ressort n'a pas fini, la première moitié reste décalée vers la droite et mord sur la deuxième.
+
+   Corrections (`film-mo11/film.js`) :
+   - l. 780 : donner à `cT2` le même décalage que `cT1`,
+     ``cT2.style.transform = `translate(${f3(hT2 * (1 - tt2))}px,${f3((1 - tt2) * 26)}px)` ``. Les deux moitiés glissent
+     ensemble et gardent leurs 14 px d'écart ; au repos, rien ne change.
+   - l. 801 : même chose pour `vd2`, avec `hV2 * (1 - vI2)`.
+   - l. 681 : même chose pour `sb2`, avec `hS2 * (1 - s2)`.
+   - Contrôle : `CUT=mo11 node scripts/at.mjs 12.98,13.05,13.12,22.22,22.30,22.38,26.52,26.58,26.64
+     renders/review/mo11-moities.jpg 1`. Sur chaque image, un blanc d'au moins 10 px sépare les deux moitiés.
+
 3. **La vente se joue sans voix et finit sur un plan immobile.** De 14,80 à 16,90 s, la voix se tait 2,1 s : c'est son
    plus long silence avant la pause. De 16,2 à 16,7 s, rien ne bouge (preuve : `mo11-r3-vente.jpg`).
-   - Sur la planche, l'écart entre images est de 1,3 à 2,1 / 255. C'est le plus bas du récit en dehors de la pause
-     voulue : les coups sont entre 4 et 25, le soleil entre 3 et 9.
+   - Sur la planche, l'écart entre images est de 1,3 à 2,1 / 255. Sur le montage (10 i/s, 270 px), il tombe à 0,3-1,1
+     de 16,2 à 16,6 s. C'est le plus bas du récit en dehors de la pause et de la chute : les coups sont entre 4 et 25,
+     le soleil entre 3 et 9.
    - « Quatre jours. » est sorti du texte au round 2. Depuis, J+4, les deux messages et l'offre passent sans un mot, au
      moment où MO5 disait « Il négocie. Tu acceptes. ».
    - Le compteur reste à 3 330 € pendant que l'acheteur écrit « 3 300 et je la prends. ». Il se fond ensuite dans
      « + 400 € », sans avoir montré le prix de vente. Le calcul 3 300 − 2 900 ne se fait que si on a lu la bulle.
 
    Corrections :
-   - `film-mo11/film.js`, `price(st)` : ajouter un septième terme,
+   - `film-mo11/film.js` l. 89, `price(st)` : ajouter un septième terme,
      `- 30 * Math.min(1, spring(st - (T.bubble + 0.3), { f: 1.3, z: 1 }) / 0.985)`. Le compteur roule de 3 330 à
      3 300 sur l'offre (16,2 → 16,7 s), puis c'est ce 3 300 qui se fond dans « + 400 € ».
-   - Ajouter `T.bubble + 0.3` aux impulsions de `glowH` (`imp`). Le rembobinage repasse par 3 330 sans autre
+   - Ajouter `T.bubble + 0.3` aux impulsions de `glowH` (`imp`, l. 649). Le rembobinage repasse par 3 330 sans autre
      changement, parce que `price` lit le temps du récit.
    - `scripts/audio-mo11.py` : une impulsion (1054, p3) à `bubble` + 0,3 s. Pas de son « le compteur se pose » : à
      `bubble` + 0,75 s, il tomberait sur le virement (16,66 s, p2).
@@ -712,6 +718,23 @@ Corrections du round 2 vérifiées sur l'image :
 
 ### Les autres problèmes
 
+- **Tuiles déplacées sur le montage 540p, bloquant si elles reviennent sur le MP4 final** (preuve :
+  `mo11-r3-tuiles-draft.jpg`). Une recherche de blocs de 60 px qui changent sur une image et reviennent à la suivante
+  trouve trois accidents :
+  - vers 21,17 s, une image : l'avant gauche de la voiture recopié sur l'aile, un bout de pare-brise sur les palettes ;
+  - de 22,17 à 22,20 s, trois images : un bout d'aile et de passage de roue sous le bouclier, sur l'éraflure ;
+  - de 27,37 à 27,38 s, deux images : un bloc d'environ 460 × 300 px (l'aile et le phare) collé en bas, sur la
+    mention.
+
+  Les rendus séquentiels pleine définition des mêmes instants (`--range`, lancés 0,2 à 0,4 s avant) n'en montrent
+  aucune. Comme aux rounds 1 et 2, le défaut suit la définition réduite (montage à 0,5, planches à 0,25). Mais le
+  round 1 avait aussi trouvé une tuile en pleine définition (le trou `evenodd` du hook), et une plage courte n'a pas
+  l'historique d'un rendu lancé depuis 0 s. La planche de 17:15 (avant le round 2) n'en avait pas : le calque
+  `parechocs`, ajouté au round 2, reste le suspect principal. Correction préventive : composer `clio3-parechocs.png`
+  dans `assets/photos-mo11/car-clio3.png` et dans `clio3-poussiere.png` (`scripts/dirty-mo11.py`), retirer
+  `['parechocs', …]` de `layers` (`film.js` l. 110) et `c.drawImage(C.L.parechocs, …)` du bloc photo (l. 369). Image 0
+  identique à 0,1 / 255 près. Contrôle sur le MP4 final : la même recherche de blocs, au moins sur 20,4 → 22,6 s et
+  26,4 → 27,9 s.
 - **Les auréoles des sièges sont posées sur la vitre.** Au round 2, le voile du pare-brise a été éclairci de 75 % sur
   les taches. Elles passent donc devant la vitre poussiéreuse, au lieu d'être vues à travers. À l'image 0, ces trois
   plaques ocre sont l'élément le plus saturé après « telle quelle ? ». À 23,9 s, elles dépassent du bord droit de la
@@ -719,20 +742,21 @@ Corrections du round 2 vérifiées sur l'image :
   de siège en tissu sombre (#2e2a27 à 55 %, rectangle arrondi derrière la vitre passager), pour qu'elles se posent sur
   du tissu. Garder R − B ≥ 60 à 360 px.
 - **Le bout gauche de la bande du hook est un bord droit.** De 3,0 à 6,4 s, la bande commence par un bord vertical
-  net à x = 1 150 (`BAND.x0`). À 6,15 s, sur la moitié encore sale du lavage, elle se lit comme un rectangle collé.
-  Correction : dans `bandPoly`, quand `xs` vaut `BAND.x0`, arrondir aussi la queue (miroir de l'attaque : cinq points
-  sur un demi-cercle de 70 px à gauche de `xs`). Quand la ligne du lavage passe, `xs` suit la ligne et le bord droit
-  est la ligne elle-même.
-- **Bruitage en retard sur le tracé du pare-chocs.** « La plume entoure l'éraflure » sonne à 23,66 s, 0,25 s après
-  le début du tracé (`T.pc` = 23,41 s) : l'ornement de la règle 3 (23,51 s, p2) le bloque. Correction dans
-  `audio-mo11.py` : le tracé à `pc` − 0,02 s en p2 ; l'ornement de la règle 3 passe en p3 ou sort (la règle entre
+  net à x = 1 150 (`BAND.x0`), bien visible sur le montage de 3,95 à 5,45 s. À 6,15 s, sur la moitié encore sale du
+  lavage, elle se lit comme un rectangle collé. Correction : dans `bandPoly`, quand `xs` vaut `BAND.x0`, arrondir aussi
+  la queue (miroir de l'attaque : cinq points sur un demi-cercle de 70 px à gauche de `xs`). Quand la ligne du lavage
+  passe, `xs` suit la ligne et le bord droit est la ligne elle-même.
+- **Bruitage en retard sur le tracé du pare-chocs.** Sur le montage, la plume part à 23,40 s ; le son « la plume
+  entoure l'éraflure » attaque à 23,66 s, 0,25 s après : l'ornement de la règle 3 (23,51 s, p2) le bloque. Correction
+  dans `audio-mo11.py` : le tracé à `pc` − 0,02 s en p2 ; l'ornement de la règle 3 passe en p3 ou sort (la règle entre
   0,1 s après le tracé).
 - **La chute ne bouge que par ses lettres.** « Ton samedi le mieux payé. » est entière de 20,0 à 20,4 s (0,4 s, autant
   que « Même pas un plein. » dans MO5). Mais de 18,7 à 20,3 s, c'est le passage le plus immobile en dehors de la pause
-  voulue : 0,6 à 1,0 / 255 sur la planche. Correction : poussée de `big4` de 0,05 à 0,12, `L4` qui monte de 24 px avec
+  voulue : 0,6 à 1,0 / 255 sur la planche, 0,1 à 0,7 sur le montage. Avec la pause, la musique se tait et l'image
+  reste presque fixe de 17,6 à 20,3 s. Correction : poussée de `big4` de 0,05 à 0,12, `L4` qui monte de 24 px avec
   `push`, et pas de `writeW` de 0,04 à 0,03 pour `pay2`.
-- **La fente de « C'est donné. » coupe le bas de « 2 000 »** à 3,7 s : ses rectangles vont de y = 430 à 630, et la
-  ligne de base des chiffres est à 452. Correction : rectangles à y −110 et −100, hauteurs 160 et 140.
+- **La fente de « C'est donné. » touche le bas de « 2 000 »** de 3,72 à 3,78 s : ses rectangles vont de y = 430 à 630,
+  et la ligne de base des chiffres est à 452. Correction : rectangles à y −110 et −100, hauteurs 160 et 140.
 - **Passages de 0,1 à 0,2 s** : à 12,6-12,7 s, « Soleil bas, » entre sur le toit ; à 29,5 s, le contour du toit
   traverse « telle quelle ? » pendant le retour de caméra.
 - **Hook, 0 → 2,6 s** : seules la plume et une poussée lente bougent (1,0 à 2,6 / 255 sur la planche). Inchangé,
@@ -743,17 +767,101 @@ Corrections du round 2 vérifiées sur l'image :
 
 ### `qa_video.py`
 
+`python3 ../.claude/skills/motion-studio/scripts/qa_video.py renders/draft-mo11-9x16.mp4 --out renders/qa-mo11
+--intentional 18-18.7` (rapport `renders/qa-mo11/draft-mo11-9x16-qa.md`, planche `draft-mo11-9x16-safe.png`).
+
 **Aucun FAIL.**
 
-Mesuré d'abord sur un montage de substitution, sans Chromium : les 302 images des planches (10 i/s) agrandies en
-540 × 960, avec le mix encodé comme dans `render.mjs` (AAC 256 k, 48 kHz).
-
-- Première image pleine (écart-type 55,6). Aucune image vide.
-- Aucun plan figé de plus de 0,9 s (pause voulue passée en `--intentional 18-18.7`).
+- Fichier : h264 yuv420p 540 × 960, 60 i/s, 30,15 s, AAC 48 kHz.
+- Première image pleine (écart-type 56,0). Aucune image vide. Aucun plan figé de plus de 0,9 s.
 - −14,2 LUFS et −3,8 dBTP après AAC. Son des 2 premières secondes : −15,7 LUFS momentané contre −14,3 sur le reste.
 - Équilibre téléphone : 30 % de l'énergie sous 150 Hz, 25,4 % entre 1 et 5 kHz.
-- Zones : WARN seulement, tranchés sur la planche des zones. Ce sont la voiture et son contour dans les bandes
-  latérales (0 → 5,75 s, 12,0 → 15,0 s, 28,5 → 30,0 s), le flexible de l'embout (3,0 → 3,7 s), et les cartes qui
-  entrent ou sortent par les côtés (notifications, messages, bulle à 16,0 s, virement à 16,9 s, carte « une frite » à
-  10,15 s). Aucun texte au repos dans une bande interdite. Le détecteur de zones, appliqué aux 36 images pleine
-  définition, donne le même résultat.
+- Zones : un WARN, tranché sur la planche des zones et sur des images du montage tirées dans chaque intervalle
+  (6,6 · 9,6 · 11,7 · 12,1 · 15,3 · 15,4 · 15,48 s). Ce sont la voiture et son contour dans les bandes latérales
+  (0 → 5,5 s, 12,0 → 14,75 s, 28,25 → 30,15 s), le flexible de l'embout (3,0 → 3,7 s), le rembobinage (20,5 → 21,25 s)
+  et les cartes qui entrent ou sortent par les côtés (notifications, message « Belle photo. Toujours dispo ? » qui
+  entre par la gauche à 15,25-15,5 s, bulle, virement). Aucun texte au repos dans une bande interdite.
+- Hors `qa_video.py` : les trois tuiles du montage 540p (« Les autres problèmes »), qu'aucun contrôle de
+  `qa_video.py` ne voit. À chercher sur le MP4 final.
+
+### Corrections du round 3 (10 octobre 2026)
+
+Vérifiées sur des images rendues par `scripts/at.mjs` et `render.mjs --at`, regardées en pleine définition et
+réduites à 360 px : `renders/review/mo11-coups-prix.jpg`, `mo11-moities.jpg` et `mo11-moities-crops.jpg` (pleine
+définition), `mo11-vente.jpg`, `mo11-r3fix-chute.jpg`, `mo11-r3fix-hook.jpg`, `mo11-r3fix-fente-bande.jpg`,
+`mo11-soleil.jpg` et `mo11-soleil-crops.jpg`, `mo11-passages.jpg`, `mo11-r3fix-at.jpg` ; images fixes
+`renders/stills-mo11/t00.000.png`, `t08.200.png`, `t23.900.png`, `t30.133.png`. Aucune erreur `PAGEERR`. Aucun appel
+ElevenLabs ; `lib/kit47.js`, `film-mo9/`, `film-mo10/` et leurs scripts intacts. `events.json` refait
+(`CUT=mo11 node scripts/events.mjs`), mix refait (`python3 scripts/audio-mo11.py`).
+
+**1. Chaque débit se pose pendant l'arrêt de sa ligne.**
+- `film.js`, `TD` : la formule de la critique, `T.big + 0,25 × ceil((t0 + 0,32 − T.big) / 0,25)`. Débits à 6,283 ·
+  7,283 · 8,283 · 9,533 · 10,283 · 11,033 s, sur la grille de « + 400 € ». `TI`, `T.leaveN` (11,653 s) et `T.pose`
+  (11,983 s) suivent.
+- La formule seule ne passait pas le contrôle. La carte entre par la droite sur `P.card` et n'atteint 0,875 qu'à
+  + 0,2 s : partie à `TD`, elle était à moitié hors cadre aux six instants du contrôle, et la carte du coup d'avant
+  restait devant (première planche : « Lavage » sur les phares à 7,35 s, « Phares » sur les sièges à 8,3 s). La carte
+  part donc 0,2 s avant son débit (`CL`, aussi pour l'empilement et le flou de bougé) et se pose dessus. La note du débit
+  tombe sur la pose ; le souffle de la notification part avec la carte (`lead` 0,14 → 0,2 s).
+- Contrôle `mo11-coups-prix.jpg` (6,4 · 7,35 · 8,3 · 9,55 · 10,3 · 11,05 s) : chaque image porte la carte du coup coupé
+  en deux, posée ou à quelques pixels de sa place : Lavage, Phares, Sièges, Odeur, Rayure, Enjoliveurs.
+- Son : le ponçage des phares repart au début de sa ligne (`t0` au lieu de `t0` + 0,1 s). Le scintillement de la rayure
+  reste, déplacé à `t0` + 0,62 s (10,42 s, 0,14 s après le débit, pendant que la ligne efface la moitié droite).
+  Retirés pour collision : l'impulsion du 4e débit (9,86 s, sous le polish de 9,93 s) et le souffle du 6e (10,83 s, sous
+  le clac de 10,75 s).
+- La carte « une frite » sort toujours à `TD[3]` + 0,25 s, donc 0,25 s plus tôt (9,78 s). « Odeur » se pose dessous à
+  9,53 s sans la toucher, et la carte part à gauche à 9,9 s (`mo11-r3fix-at.jpg`).
+
+**2. Les mots en deux moitiés ne se chevauchent plus.** `cT2`, `vd2` et `sb2` glissent du même décalage que leur
+première moitié (`hT2`, `hV2`, `hS2` × (1 − ressort)) ; le flou d'entrée de `cT2` et `vd2` est gardé. Contrôle aux neuf
+instants de la critique, recadrés en pleine définition (`mo11-moities-crops.jpg`) : 14 à 20 px de blanc entre « Soleil
+bas, » et « dans ton dos. », entre « Avant la photo 1 » et « Pas tout. », entre « L'ongle glisse ? » et « Tu lustres. ».
+Au repos, rien ne bouge.
+
+**3. La vente.**
+- `price` : septième terme, `− 30 × min(1, ressort f 1,3 / 0,985)`. Le compteur roule de 3 330 à 3 300 €, montre 3 300 €
+  de 16,9 à 17,2 s, puis 3 300 € se fond dans « + 400 € ». Le rembobinage repasse par 3 330 € (vu à 20,7 s).
+- **Écart à la consigne** : le roulement part à `T.offer` = `T.bubble` + 0,47 s (16,37 s), et non + 0,3 s. Avant, le
+  « 3 300 » de la bulle part en étincelle vers le compteur (16,10 → 16,37 s, par la gauche de l'annonce, même dessin
+  que les étincelles des débits). Sans elle, le chiffre change en haut de l'écran sans cause visible.
+- `glowH` reçoit une impulsion à `T.offer` ; flou de bougé sur l'étincelle et le roulement.
+- L'annonce et la bulle avancent de 5 % autour du bord haut de l'annonce (ressort f 0,6 depuis 16,10 s). Le virement
+  n'avance pas. Une poussée de toute la couche (5 % autour du compteur) bougeait un peu plus (2,0 à 3,6 / 255), mais
+  posait le bas du virement sur la mention : écartée.
+- Son : ornement 2589 (p3) au départ de l'étincelle, 16,10 s ; impulsion 1054 (p3) à son arrivée, 16,37 s. Pas de son
+  de pose, il tomberait sur le virement (16,66 s).
+- `brief-mo11.md` (valeurs du compteur, tableau du récit) et `docs/timeline-mo11.md` : « 16,4 → 17,2 s : 3 300 €,
+  l'offre acceptée », et les nouveaux instants des débits et de « Soleil bas ».
+- Mesure (images à 0,1 s, réduites à 270 px, comme la planche) de 16,2 à 16,7 s : 2,2 · 3,5 · 2,7 · 2,5 · 2,3 / 255.
+  Avec le roulement seul : 2,1 · 2,2 · 2,0 · 1,3 · 1,5. La cible de 3 n'est atteinte que sur un pas sur cinq :
+  l'étincelle et les chiffres couvrent peu de pixels. À l'image, il se passe une chose nouvelle toutes les 0,3 s :
+  bulle (15,9), étincelle (16,1), roulement (16,4 → 17,0), virement (16,78), « + 400 € » (17,28).
+- Voix : « Quatre jours. » n'est pas remis. La critique le conditionne à la marge que laissera la prise de Simon sous
+  31,5 s ; c'est à trancher avec la prise.
+
+**Les autres points.**
+- **Tuiles, correction préventive** : `dirty-mo11.py` fond l'éraflure dans `car-clio3.png` (couleur seule, l'alpha de la
+  photo est gardé) et dans `clio3-poussiere.png`. `film.js` ne charge plus le calque `parechocs`, et la photo 1 ne le
+  peint plus (il est dans la photo dorée). Contrôle des fichiers : la voiture sale composée est identique à l'ancienne
+  composition (poussière + calque) à 9 / 255 près au plus (moyenne 0,0002). La voiture propre diffère sur 157 pixels du
+  bord de la silhouette (x 38-50, y 908-984), où l'ancien calque débordait de l'alpha. Les autres calques (phares, vitres,
+  SVG) sont identiques à l'octet près : le script garde ses graines. Recherche des tuiles sur le nouveau montage : voir
+  plus bas.
+- **Auréoles** : `dirty-mo11.py` § 3b, voile éclairci de 50 % (et non 75 %) devant les taches, et un dossier en tissu
+  sombre (#2e2a27 à 55 %, rectangle arrondi x 1 066-1 266, y 112-352, flou 8 px) derrière elles. Les plaques se posent sur
+  du tissu, derrière le verre. À 360 px : sur l'image 0, R − B médian 62 (66 avant), maximum 78 (84) ; à 8,2 s, 69 sur
+  les plaques. L'image 0 ne change que dans ce cadre (écart moyen 0,098 / 255 sur toute l'image, tous les pixels
+  touchés entre x 627-743 et y 709-846). À 23,9 s, les taches restent visibles à droite de la carte, plus sourdes.
+- **Bande du hook** : `bandPoly` arrondit aussi la queue, en miroir de l'attaque (demi-cercle de 70 px, cinq points à
+  gauche de `BAND.x0`). La queue rentre quand la ligne du lavage la rattrape, puis la ligne fait le bord. Vu à 4,3 ·
+  5,2 · 6,15 s (`mo11-r3fix-fente-bande.jpg`) : la bande se termine par deux bouts arrondis.
+- **Tracé du pare-chocs** : son à `pc` − 0,02 s (23,39 s) en p2 ; l'ornement de la règle 3 (23,51 s) passe en p3 et
+  reste (0,12 s d'écart).
+- **Chute** : poussée de `big4` 0,05 → 0,12, `L4` monte de 24 px avec elle, pas de `writeW` 0,03 pour `pay2`. La poussée
+  ne se pose plus avant le rembobinage : `sm` court jusqu'à `REW[0]` + 0,6 s, normalisé à 1 au rembobinage (la fin de
+  `sm` figeait l'image de 20,1 à 20,4 s). Écart entre images à 0,1 s, de 18,7 à 20,3 s : 0,5 à 1,4 / 255 (0,6 à 1,0 sur
+  la planche de la critique). C'est la pause voulue, et le passage le plus calme du film.
+- **Fente de « C'est donné. »** : rectangles à 470-630 et 480-620. À 3,72 et 3,76 s, 30 px de noir sous « 2 000 ».
+- **« Soleil bas, »** : entre 0,28 s plus tard (12,88 s, sur « tu attends ») et descend de 22 px à sa place au lieu de
+  monter de 24. Le toit passe 10 px sous la ligne au repos : en montant, le texte entrait dessus. Recadrages pleine
+  définition de 12,94 à 13,4 s : il ne le touche plus.

@@ -51,15 +51,21 @@
     { key: 'rayure', t0: T.ra, x0: 1150, xm: 1252, x1: 1356, y0: 556, y1: 712, seq: 'rayure', ti: 'Rayure · polish', am: '15,00', P: [1252, 634], s: 2.75, Y: 900, ry: 5, rx: -1 },
     { key: 'enjo', t0: T.en, x0: 1170, xm: 1256, x1: 1792, y0: 800, y1: 1186, lay: ['enjo'], after: ['neufs'], seq: 'roue', ti: 'Enjoliveurs · jeu de 4', am: '20,00', P: [1256, 991], s: 2.3, Y: 900, ry: 3, rx: -4 },
   ];
-  // le débit tombe quand la ligne a fini, arrondi à la croche de la musique : « + 400 € » (T.big) tombe sur un premier
-  // temps du mix (scripts/audio-mo11.py), la grille est donc T.big + 0,25 k (round 2 : lavage et phares tombaient
-  // 0,107 et 0,067 s hors de la croche)
-  const TD = COUPS.map((c) => T.big + 0.25 * Math.round((c.t0 + 0.72 - T.big) / 0.25));
+  // le débit tombe pendant l'arrêt de sa ligne (t0 + 0,2 → t0 + 0,5), sur la croche qui suit t0 + 0,32 : « + 400 € »
+  // (T.big) tombe sur un premier temps du mix (scripts/audio-mo11.py), la grille est donc T.big + 0,25 k. Round 3 : à
+  // t0 + 0,72, la carte se posait sur l'image du coup suivant (les phares sous « Lavage », les sièges sous « Phares »…)
+  const TD = COUPS.map((c) => T.big + 0.25 * Math.ceil((c.t0 + 0.32 - T.big) / 0.25));
+  // la carte part 0,2 s avant son débit et se pose dessus (ressort P.card à 0,875 à TD, 0,97 à TD + 0,05) : partie à TD,
+  // elle n'était qu'à moitié entrée à la fin de l'arrêt de la ligne (round 3)
+  const CL = 0.2;
   const TI = TD.map((x) => x + 0.33);                   // l'étincelle arrive au compteur : impulsion
   const DV = [80, 90, 90, 60, 70, 40];                  // 2 900 → 3 330 € ; aucune valeur n'est lue à un coup
   const DM = [10, 30, 40, 15, 25, 20];                  // l'horloge avance à chaque coup : 13:00 → 15:20
   T.leaveN = TD[5] + 0.62; T.pose = TI[5] + 0.62;
   const ST_FROM = T.big - 0.15, ST_TO = T.ph - 0.06;    // rembobinage jusqu'à 13:10 : lavée, encore rayée
+  // round 3 : l'offre acceptée. Le « 3 300 » de la bulle part en étincelle vers le compteur (T.bubble + 0,2 s), qui roule
+  // de 3 330 à 3 300 € à son arrivée (T.offer) : c'est le prix de vente qui se fond ensuite dans « + 400 € »
+  T.offer = T.bubble + 0.47;
 
   await Promise.all([
     document.fonts.load('700 150px Clash'), document.fonts.load('600 50px Clash'), document.fonts.load('500 22px Satoshi'),
@@ -84,9 +90,11 @@
     if (t < REW[1]) { const u = (t - REW[0]) / (REW[1] - REW[0]); const e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; return lerp(ST_FROM, ST_TO, e); }
     return ST_TO;
   };
-  // prix affiché : impulsions qui se chevauchent (le compteur ne se pose qu'à 2 900 et à 3 330)
+  // prix affiché : impulsions qui se chevauchent (le compteur ne se pose qu'à 2 900, à 3 330, puis à 3 300 sur l'offre :
+  // c'est le prix de vente qui se fond dans « + 400 € » ; round 3)
   const IMP = { f: 0.7, z: 1 };
-  const price = (st) => 2900 + DV.reduce((s, d, i) => s + d * Math.min(1, spring(st - TI[i], i === 5 ? { f: 1.3, z: 1 } : IMP) / 0.985), 0);
+  const price = (st) => 2900 + DV.reduce((s, d, i) => s + d * Math.min(1, spring(st - TI[i], i === 5 ? { f: 1.3, z: 1 } : IMP) / 0.985), 0)
+    - 30 * Math.min(1, spring(st - T.offer, { f: 1.3, z: 1 }) / 0.985);
   const clockM = (st) => 780 + DM.reduce((s, d, i) => s + d * sm(TD[i] - 0.1, TD[i] + 0.12, st), 0) + 70 * Math.pow(clamp((st - T.sun0) / (T.sun1 - 0.2 - T.sun0), 0, 1), 1.6);
   const sunK = (st) => sm(T.sun0, T.sun1, st);
 
@@ -106,8 +114,10 @@
   const glowCar = el('div', 'glow', LW, 'left:60px;top:1160px;width:960px;height:360px;background:radial-gradient(closest-side,rgba(255,110,40,.36),transparent)');
   const pool = el('div', 'glow', LW, 'left:-260px;top:1040px;width:1600px;height:620px;background:radial-gradient(closest-side,rgba(255,170,90,.42),rgba(255,120,50,.12) 60%,transparent);visibility:hidden');
   const CAR = { left: 40, top: 650, w: 1000 };
+  // round 3 : l'éraflure du pare-chocs est fondue dans car-clio3.png et clio3-poussiere.png (scripts/dirty-mo11.py) ; son
+  // calque, ajouté au round 2, était le suspect des tuiles déplacées du montage 540p
   const C = E.car(LW, { img: carI, w: CAR.w, left: CAR.left, top: CAR.top, reflect: 0, layers: [
-    ['poussiere', A + 'clio3-poussiere.png'], ['parechocs', A + 'clio3-parechocs.png'], ['phares', A + 'clio3-phares.png'], ['parebrise', A + 'clio3-pare-brise.png'],
+    ['poussiere', A + 'clio3-poussiere.png'], ['phares', A + 'clio3-phares.png'], ['parebrise', A + 'clio3-pare-brise.png'],
     ['vitres', A + 'clio3-vitres.png'], ['rayure', SVGU.rayure], ['enjo', SVGU.enjo], ['neufs', SVGU.neufs]] });
   E.prepSun(C, carI);
   await Promise.all([C.base, ...Object.values(C.L)].map((e) => e.decode().catch(() => 0)));
@@ -135,13 +145,17 @@
     return { deg: f3(th * 180 / Math.PI), p: L / 2 + (px - C.w / 2) * sx + (py - C.h / 2) * sy, hw: BAND.hw * C.k * Math.cos(Math.atan(0.16)) };
   })();
   // contour du passage de l'embout entre xs et xe : bords qui ondulent, attaque arrondie
-  const bandPoly = (xs, xe) => {
+  const bandPoly = (xs, xe, xl = -1e9) => {
     // round 2 : l'attaque fait 70 px (16 px laissaient un bord vertical droit de 190 px quand l'embout s'arrête) ; la
     // partie droite finit 30 px avant xe, le bout arrondi passe sous la tête de l'embout (± 40 px) tant qu'elle avance
     const xb = Math.max(xs, xe - 30), R = Math.min(70, xe + 40 - xb), n = Math.max(2, Math.ceil((xb - xs) / 18)), top = [], bot = [];
     for (let i = 0; i <= n; i++) { const x = lerp(xs, xb, i / n); top.push([x, BAND.c(x) - BAND.hw + 7 * noise(21, x / 40)]); bot.push([x, BAND.c(x) + BAND.hw + 7 * noise(22, x / 37)]); }
     const cy = BAND.c(xb), lead = [0.2, 0.4, 0.6, 0.8, 0.95].map((a) => [xb + R * Math.sin(Math.PI * a), cy - BAND.hw * Math.cos(Math.PI * a)]);
-    return [...top, ...lead, ...bot.reverse()];
+    // round 3 : la queue aussi est arrondie (demi-cercle de 70 px à gauche de BAND.x0 : le bord vertical droit se lisait
+    // comme un ruban collé) ; elle rentre à mesure que la ligne du lavage xl la rattrape, puis la ligne fait le bord
+    const Rt = xs <= BAND.x0 + 0.5 ? clamp(Math.min(70, xe + 40 - xs, BAND.x0 - xl), 0, 70) : 0, cy0 = BAND.c(xs);
+    const tail = Rt > 0.5 ? [0.05, 0.2, 0.4, 0.6, 0.8].map((a) => [xs - Rt * Math.sin(Math.PI * a), cy0 + BAND.hw * Math.cos(Math.PI * a)]) : [];
+    return [...top, ...lead, ...bot.reverse(), ...tail];
   };
   const dust = Array.from({ length: 38 }, (_, i) => {
     const h = (k) => { const s = Math.sin((i + 1) * 127.1 + k * 311.7) * 43758.5453; return s - Math.floor(s); };
@@ -287,8 +301,9 @@
   const Qq = Q.items[Q.items.length - 1];
   const Cd = word(gOut, "C'est donné.", FQ, 92, 540, BASE2, { italic: true, fill: 'url(#qga)', strokeColor: '#ffb38a', sw: 1.8, track: -1 });
   const slit = sv('g', {}, svgA);
-  sv('rect', { x: -22, y: -150, width: 44, height: 200, rx: 22, fill: '#ff7a3a', opacity: 0.5, filter: 'url(#softa)' }, slit);
-  sv('rect', { x: -3, y: -140, width: 6, height: 180, rx: 3, fill: '#fff' }, slit);
+  // round 3 : 470 → 630 et 480 → 620 (de 430 à 630, elle touchait le bas de « 2 000 », ligne de base 452)
+  sv('rect', { x: -22, y: -110, width: 44, height: 160, rx: 22, fill: '#ff7a3a', opacity: 0.5, filter: 'url(#softa)' }, slit);
+  sv('rect', { x: -3, y: -100, width: 6, height: 140, rx: 3, fill: '#fff' }, slit);
   const pen = sv('g', {}, svgA); sv('circle', { r: 30, fill: '#ff7a3a', opacity: 0.6, filter: 'url(#softa)' }, pen); sv('circle', { r: 8, fill: '#fff' }, pen);
   // écrire à la lumière, sans contour résiduel (la boucle doit retomber exactement sur l'image 0)
   function writeW(w, t, t0, step = 0.05, dy = 24) {
@@ -338,6 +353,7 @@
   const svgN = sv('svg', { width: 1080, height: 1920, viewBox: '0 0 1080 1920', style: 'position:absolute;left:0;top:0;overflow:visible' }, LN); defs(svgN, 'n');
   const sparks = TD.map(() => { const g = sv('g', { visibility: 'hidden' }, svgN); const tr = [0.5, 0.3, 0.16].map((o, j) => sv('circle', { r: 9 - 2 * j, fill: '#ffd2b8', opacity: o }, g)); sv('circle', { r: 26, fill: '#ff7a3a', opacity: 0.55, filter: 'url(#softn)' }, g); const h = sv('circle', { r: 7, fill: '#fff' }, g); return { g, tr, h }; });
   const SPK = [[700, 1318], [930, 820], [540, 392]];
+  const spO = (() => { const g = sv('g', { visibility: 'hidden' }, svgN); const tr = [0.5, 0.3, 0.16].map((o, j) => sv('circle', { r: 9 - 2 * j, fill: '#ffd2b8', opacity: o }, g)); sv('circle', { r: 26, fill: '#ff7a3a', opacity: 0.55, filter: 'url(#softn)' }, g); sv('circle', { r: 7, fill: '#fff' }, g); return { g, tr }; })();
   const bez = (u) => { const [a, b, c] = SPK, v = 1 - u; return [v * v * a[0] + 2 * v * u * b[0] + u * u * c[0], v * v * a[1] + 2 * v * u * b[1] + u * u * c[1]]; };
 
   // ---------- S : photo 1, l'annonce, les messages, l'offre, le virement ----------
@@ -356,6 +372,7 @@
   el('div', '', bubble, 'font:500 24px Satoshi;color:rgba(246,239,231,.7);margin-bottom:8px').textContent = 'Acheteur · message';
   el('div', '', bubble, 'font:700 46px Satoshi;line-height:1.2;white-space:nowrap').innerHTML = '3 300 et je <span style="font-family:Fraunces;font-style:italic;font-weight:500;color:#ff8a4c">la prends.</span>';
   const credit = notif(LS, 'Virement reçu', '3 300,00', { sign: '+' });
+  const BUBY = 1086 + bubble.offsetHeight / 2;                // centre de la bulle (poussée de la vente)
   // la photo 1 telle qu'elle part dans l'annonce : la Clio dorée sur le soir, calculée une fois
   const photo = document.createElement('canvas'); photo.width = 920; photo.height = 400;
   {
@@ -366,7 +383,7 @@
     c.fillStyle = rg; c.fillRect(0, 0, 920, 400);
     const h = 352, w = h * C.W / C.H, x = (920 - w) / 2, y = 380 - h;
     c.save(); c.globalAlpha = 0.55; c.filter = 'blur(10px)'; c.fillStyle = '#000'; c.beginPath(); c.ellipse(460, 372, w * 0.46, 22, 0, 0, Math.PI * 2); c.fill(); c.restore();
-    c.drawImage(C.gold, x, y, w, h); c.drawImage(C.L.parechocs, x, y, w, h); c.drawImage(neufI, x, y, w, h);   // on la vend en l'état
+    c.drawImage(C.gold, x, y, w, h); c.drawImage(neufI, x, y, w, h);   // l'éraflure est dans la photo : on la vend en l'état
   }
   // la photo peinte dans l'écran du téléphone (deux triangles affines, puis le masque de la paume)
   const tmp = document.createElement('canvas'); tmp.width = 720; tmp.height = 406; const tc = tmp.getContext('2d');
@@ -451,7 +468,8 @@
   pcSvg.setAttribute('width', wCar - 48); pcSvg.setAttribute('viewBox', `0 0 400 40`); pcSvg.setAttribute('preserveAspectRatio', 'none');
   const l3 = lines[2].s2; const l3x = () => [l3.offsetLeft + lines[2].r.offsetLeft, l3.offsetWidth];
   // round 2 : tant que la 2e moitié d'une ligne n'est pas entrée, la 1re est centrée sur x = 540 (le span invisible gardait
-  // sa place : « Avant la photo 1 » seul à x = 380, « L'ongle glisse ? » à 328, « Soleil bas, » décalé)
+  // sa place : « Avant la photo 1 » seul à x = 380, « L'ongle glisse ? » à 328, « Soleil bas, » décalé). Round 3 : la 2e
+  // moitié glisse du même décalage que la 1re (elle s'écrivait à sa place finale et la 1re mordait dessus 0,2 s)
   const hT2 = (cT2.offsetWidth + 14) / 2, hV2 = (vd2.offsetWidth + 12) / 2, hS2 = (sb2.offsetWidth + 12) / 2;
 
   // ---------- la frame t ----------
@@ -482,7 +500,7 @@
       const xs = Math.max(BAND.x0, xLav), hole = xN > xs + 1;
       E.clip(C, C.L.poussiere, xLav, C.W);
       bandBase.style.visibility = hole ? 'visible' : 'hidden';
-      bandBase.style.clipPath = hole ? `polygon(${bandPoly(xs, xN).map(([x, y]) => `${f3(100 * x / C.W)}% ${f3(100 * y / C.H)}%`).join(',')})` : '';
+      bandBase.style.clipPath = hole ? `polygon(${bandPoly(xs, xN, xLav).map(([x, y]) => `${f3(100 * x / C.W)}% ${f3(100 * y / C.H)}%`).join(',')})` : '';
       E.drawLine(C, xLav, lav.y0, lav.y1, E.lineOn(st, lav), sc);
     }
     E.wet(C, xLav, 0.55 * sm(lav.t0, lav.t0 + 0.08, st) * (1 - sm(lav.t0 + 0.9, lav.t0 + 1.9, st)) * (1 - loopK));
@@ -491,7 +509,7 @@
     if (bK > 0.002) {
       const xs = Math.max(BAND.x0, xLav);
       E.clip(C, band, 0, C.W, null);
-      band.style.clipPath = xN > xs + 1 ? `polygon(${bandPoly(xs, xN).map(([x, y]) => `${f3(100 * x / C.W)}% ${f3(100 * y / C.H)}%`).join(',')})` : 'inset(50%)';
+      band.style.clipPath = xN > xs + 1 ? `polygon(${bandPoly(xs, xN, xLav).map(([x, y]) => `${f3(100 * x / C.W)}% ${f3(100 * y / C.H)}%`).join(',')})` : 'inset(50%)';
       const { deg, p: bp0, hw: bh } = BN;                   // reflet le long du haut de la bande, puis éclaircie qui sèche
       // round 2 : reflet .85 → .5 et éclaircie .24-.5 → .10-.22 (la bande montait à 237 de luminance contre 180 pour la
       // peinture lavée : un film blanc collé, pas du vernis propre)
@@ -645,7 +663,7 @@
     Cn.cells.forEach((cc) => set(cc.d, digK));
     set(Cn.lab, hud);
     Cn.labL.forEach((s, i) => { const p = S(tb, T.fold + 0.3 + i * 0.04, P.rise); s.style.opacity = f3(p); s.style.transform = `translateY(${f3((1 - p) * 18)}px)`; });
-    const imp = Math.max(0, ...TI.map((x) => Math.exp(-Math.max(0, st - x) * 5) * sm(x - 0.02, x + 0.03, st)), 1.2 * Math.exp(-Math.max(0, st - T.pose) * 4) * sm(T.pose - 0.02, T.pose + 0.04, st));
+    const imp = Math.max(0, ...[...TI, T.offer].map((x) => Math.exp(-Math.max(0, st - x) * 5) * sm(x - 0.02, x + 0.03, st)), 1.2 * Math.exp(-Math.max(0, st - T.pose) * 4) * sm(T.pose - 0.02, T.pose + 0.04, st));
     set(glowH, hud * (0.25 + 0.6 * imp));
     const rp = S(st, T.fold + 0.55, P.rise);
     set(rep, rp * (1 - fuse) * (t < REW[0] ? 1 : 0) * (1 - loopK)); rep.style.transform = `translateY(${f3((1 - rp) * 16)}px)`;
@@ -675,10 +693,12 @@
     set(LTx, t < REW[0] ? 1 : 1 - sm(REW[0], REW[0] + 0.2, t));
     const hI = S(st, T.heure, P.rise), hO = sm(T.click, T.click + 0.25, st);
     set(heure, hI * (1 - hO)); heure.style.transform = `translateY(${f3((1 - hI) * 18 - 30 * hO)}px)`;
-    const s1 = S(st, T.sbas, P.rise), s2 = S(st, T.sbas + 0.22, P.rise), sO = sm(T.vf - 0.1, T.vf + 0.15, st);
+    // round 3 : la règle entre 0,28 s après le reflet rasant (T.sbas), sur « tu attends », et descend à sa place comme le
+    // soleil (montant de 24 px plus bas, elle entrait sur le toit, posé 10 px sous elle)
+    const s1 = S(st, T.sbas + 0.28, P.rise), s2 = S(st, T.sbas + 0.5, P.rise), sO = sm(T.vf - 0.1, T.vf + 0.15, st);
     set(sbas, 1 - sO); sbas.style.transform = `translateY(${f3(-28 * sO)}px)`;
-    sb1.style.opacity = f3(s1); sb1.style.transform = `translate(${f3(hS2 * (1 - s2))}px,${f3((1 - s1) * 24)}px)`;
-    sb2.style.opacity = f3(s2); sb2.style.transform = `translateY(${f3((1 - s2) * 24)}px)`;
+    sb1.style.opacity = f3(s1); sb1.style.transform = `translate(${f3(hS2 * (1 - s2))}px,${f3(-(1 - s1) * 22)}px)`;
+    sb2.style.opacity = f3(s2); sb2.style.transform = `translate(${f3(hS2 * (1 - s2))}px,${f3(-(1 - s2) * 22)}px)`;   // round 3 : avec sb1
     const l1 = S(st, T.lab1, P.rise), l1o = sm(T.click + 0.1, T.click + 0.35, st);
     set(lab1, l1 * (1 - l1o)); lab1.style.transform = `translateY(${f3((1 - l1) * 22 - 40 * l1o)}px)`;
 
@@ -687,9 +707,9 @@
     const stackOut = S(st, T.leaveN, { f: 1.7, z: 1 }), nGate = t < REW[1] ? 1 - sm(REW[1] - 0.25, REW[1] - 0.05, t) : 0;
     set(LN, (t < REW[0] ? 1 : nGate) * (1 - loopK) * bigOff);
     debs.forEach((d, i) => {
-      const Td = TD[i], a = S(st, Td, P.card);
-      let kk = 0; for (let j = i + 1; j < TD.length; j++) kk += S(st, TD[j], P.card);
-      const o = sm(Td - 0.06, Td, st) * clamp(1 - 0.75 * Math.max(0, kk - 0.6), 0, 1) * (1 - sm(T.leaveN - 0.02, T.leaveN + 0.18, st));
+      const Td = TD[i], a = S(st, Td - CL, P.card);
+      let kk = 0; for (let j = i + 1; j < TD.length; j++) kk += S(st, TD[j] - CL, P.card);
+      const o = sm(Td - CL - 0.06, Td - CL, st) * clamp(1 - 0.75 * Math.max(0, kk - 0.6), 0, 1) * (1 - sm(T.leaveN - 0.02, T.leaveN + 0.18, st));
       d.w.style.transform = `translate(${f3(150 + 1150 * (1 - a))}px,${f3(1236 - 46 * kk + 380 * stackOut)}px) rotate(${f3((1 - a) * -7)}deg) scale(${f3(1 - 0.06 * kk)})`;
       d.w.style.transformOrigin = '50% 0';
       d.w.style.filter = kk > 0.05 ? `brightness(${f3(1 - 0.25 * Math.min(1, kk))})` : '';
@@ -703,6 +723,19 @@
       sp.g.setAttribute('transform', `translate(${f3(x)},${f3(y)})`); sp.g.setAttribute('opacity', f3(sm(0, 0.08, u) * (1 - sm(0.88, 1, u))));
       sp.tr.forEach((c2, j) => { const [x2, y2] = bez(Math.max(0, e - 0.07 * (j + 1))); c2.setAttribute('cx', f3(x2 - x)); c2.setAttribute('cy', f3(y2 - y)); });
     });
+    // l'offre : de « 3 300 » (bulle, côté gauche) au compteur, par la gauche de l'annonce
+    {
+      const u = clamp((st - (T.offer - 0.27)) / 0.27, 0, 1), on = u > 0 && u < 1;
+      spO.g.setAttribute('visibility', on ? 'visible' : 'hidden');
+      if (on) {
+        const kB = 1 + 0.05 * S(st, T.offer - 0.27, { f: 0.6, z: 1 }), sc = (0.9 + 0.1 * S(st, T.bubble, P.card)) * kB;   // poussée de la vente
+        const A0 = [540 + (238 - 540) * sc, BUBY + (1168 - BUBY) * sc + (BUBY - 636) * (kB - 1)], A1 = [108, 760], A2 = [540, 392];
+        const bz2 = (w) => { const v = 1 - w; return [v * v * A0[0] + 2 * v * w * A1[0] + w * w * A2[0], v * v * A0[1] + 2 * v * w * A1[1] + w * w * A2[1]]; };
+        const e = u * u * (3 - 2 * u), [x, y] = bz2(e);
+        spO.g.setAttribute('transform', `translate(${f3(x)},${f3(y)})`); spO.g.setAttribute('opacity', f3(sm(0, 0.08, u) * (1 - sm(0.88, 1, u))));
+        spO.tr.forEach((c2, j) => { const [x2, y2] = bz2(Math.max(0, e - 0.07 * (j + 1))); c2.setAttribute('cx', f3(x2 - x)); c2.setAttribute('cy', f3(y2 - y)); });
+      }
+    }
     // round 2 : la carte reste 0,3 s de plus (sortie à TD[3] + 0,25 s). Pour ne pas couvrir la rayure (9,8 → 10,5 s, ligne
     // jusqu'à y ≈ 1 020), elle descend de 80 px quand la caméra y arrive, puis sort vers la gauche, sans remonter, sur un
     // ressort vif (P.push la laissait sur la rayure, puis sur la roue)
@@ -716,7 +749,11 @@
     const annIn = S(st, T.ann - 0.08, P.card), annUp = S(st, T.bubble - 0.05, P.card), annC = S(st, T.credit - 0.05, P.card);
     // quand l'offre arrive, l'annonce se resserre vers son bord haut (qui ne bouge pas : J+4 est juste au-dessus) : son
     // prix « 3 330 € » remonte de 55 px, puis de 33 px au virement, et reste lisible au-dessus de la bulle (round 1)
-    const sB = 0.92 + 0.08 * annIn, sF = sB * (1 - 0.16 * annUp - 0.06 * annC), H2 = (ANN.ch + 128) / 2;
+    // round 3 : poussée lente sur l'annonce et la bulle (+ 5 % autour du bord haut de l'annonce, x = 540, y = 636) quand
+    // l'offre part vers le compteur : la voix se tait 2,1 s et la vente finissait sur un plan figé. Le virement n'est pas
+    // poussé (il descendrait sur la mention)
+    const kP = 1 + 0.05 * S(st, T.offer - 0.27, { f: 0.6, z: 1 });
+    const sB = 0.92 + 0.08 * annIn, sF = sB * (1 - 0.16 * annUp - 0.06 * annC) * kP, H2 = (ANN.ch + 128) / 2;
     ann.style.transform = `perspective(1500px) translateY(${f3((1 - annIn) * 360 + H2 * (sF - sB) - 29 * annUp)}px) rotateX(${f3((1 - annIn) * 26)}deg) scale(${f3(sF)})`;
     set(ann, sm(T.ann - 0.1, T.ann - 0.02, st));
     let q = PE.quads[0];
@@ -750,7 +787,7 @@
       set(d, sm(Tm - 0.04, Tm + 0.02, st) * (1 - sm(0.2, 0.6, o2)));
     });
     const bz = st > T.bubble && st < T.bubble + 0.5 ? Math.sin((st - T.bubble) * 90) * 6 * (1 - (st - T.bubble) / 0.5) : 0, bi = S(st, T.bubble, P.card), bU = S(st, T.credit - 0.05, P.card);
-    bubble.style.transform = `translate(${f3(bz + (1 - bi) * 700)}px,${f3(-40 * bU)}px) scale(${f3(0.9 + 0.1 * bi)})`;
+    bubble.style.transform = `translate(${f3(bz + (1 - bi) * 700)}px,${f3(-40 * bU + (BUBY - 636) * (kP - 1))}px) scale(${f3((0.9 + 0.1 * bi) * kP)})`;
     set(bubble, sm(T.bubble - 0.06, T.bubble + 0.02, st));
     const ca = S(st, T.credit, P.card);
     credit.d.style.transform = `translate(${f3(150 + 1150 * (1 - ca))}px,1236px) rotate(${f3((1 - ca) * -7)}deg)`; set(credit.d, sm(T.credit - 0.02, T.credit + 0.04, st));
@@ -760,13 +797,15 @@
     const bigK = sm(T.big - 0.05, T.big + 0.25, st) * (1 - sm(REW[0] - 0.05, REW[0] + 0.2, t)) * (1 - loopK);
     set(dim, bigK * 0.92);
     set(L4, bigK);
-    const s9 = S(st, T.big, { f: 1.3, z: 1 }), push = sm(T.big + 0.4, REW[0], st);
-    big4.style.transform = `translateY(${f3(-300 * (1 - s9))}px) scale(${f3((0.42 + 0.58 * s9) * (1 + 0.05 * push))})`;
-    L4.style.transform = `translateY(${f3(-160 * sm(REW[0] - 0.05, REW[0] + 0.2, t))}px)`;
+    // la poussée court jusqu'au rembobinage sans se poser (round 3 : la fin de sm la figeait de 20,1 à 20,4 s)
+    const s9 = S(st, T.big, { f: 1.3, z: 1 }), push = sm(T.big + 0.4, REW[0] + 0.6, st) / sm(T.big + 0.4, REW[0] + 0.6, REW[0]);
+    // round 3 : poussée 0,05 → 0,12 et montée de 24 px (de 18,7 à 20,3 s, seules les lettres bougeaient)
+    big4.style.transform = `translateY(${f3(-300 * (1 - s9))}px) scale(${f3((0.42 + 0.58 * s9) * (1 + 0.12 * push))})`;
+    L4.style.transform = `translateY(${f3(-160 * sm(REW[0] - 0.05, REW[0] + 0.2, t) - 24 * push)}px)`;
     set(glow4, 0.4 + 0.6 * S(st, T.big + 0.12, P.heavy));
     const lb = S(st, T.big + 0.1, P.rise); lab4.style.opacity = f3(lb); lab4.style.transform = `translateY(${f3((1 - lb) * 20)}px)`;
     const pp = S(st, T.prepa, P.rise); prepa.style.opacity = f3(pp); prepa.style.transform = `translateY(${f3((1 - pp) * 26)}px)`;
-    writeW(pay1, st, T.pay1, 0.04, 20); writeW(pay2, st, T.pay2, 0.04, 20);
+    writeW(pay1, st, T.pay1, 0.04, 20); writeW(pay2, st, T.pay2, 0.03, 20);
 
     // le renversement : la carte, ses trois lignes, la barre ; l'ongle et le verdict
     const cIn = S(t, T.card, P.card), cmp = S(t, T.dive2, { f: 1.2, z: 1 }), cOut = loopK ? S(t, LOOP, P.push) : 0;
@@ -777,7 +816,7 @@
     cardW.style.transform = `translateY(${f3((1 - cIn) * 240 - 64 * cmp + 90 * cOut + cNy - 10 * cdr * (1 - cmp) * noise(31, t * 0.35))}px) perspective(1500px) rotateX(${f3((1 - cIn) * 24 + 1.6 * cdr * noise(32, t * 0.3))}deg) rotateY(${f3(cRy + 2.2 * cdr * noise(33, t * 0.27))}deg) scale(${f3((0.94 + 0.06 * cIn) * (1 - 0.12 * cmp) * (1 - 0.45 * cOut) * (1 + 0.012 * cdr * (1 - cmp)))})`;
     const tt1 = S(t, T.ceux + 0.1, P.rise), tt2 = S(t, T.pas, P.rise);
     cT1.style.opacity = f3(tt1); cT1.style.transform = `translate(${f3(hT2 * (1 - tt2))}px,${f3((1 - tt1) * 22)}px)`;
-    cT2.style.opacity = f3(tt2); cT2.style.transform = `translateY(${f3((1 - tt2) * 26)}px)`; cT2.style.filter = `blur(${f3((1 - tt2) * 6)}px)`;
+    cT2.style.opacity = f3(tt2); cT2.style.transform = `translate(${f3(hT2 * (1 - tt2))}px,${f3((1 - tt2) * 26)}px)`; cT2.style.filter = `blur(${f3((1 - tt2) * 6)}px)`;   // round 3 : glisse avec cT1
     rule.style.transform = `scaleX(${f3(S(t, T.pas + 0.1, P.pen))})`;
     // la carte grandit ligne par ligne (le texte entre une fois le conteneur ouvert) : jamais de verre vide
     card.style.height = `${f3(150 + 108 * S(t, T.l[0] - 0.12, P.card) + 100 * S(t, T.l[1] - 0.12, P.card) + 112 * S(t, T.l[2] - 0.12, P.card))}px`;
@@ -798,7 +837,7 @@
     verd.style.transform = `translateY(${f3(120 * vO)}px)`;
     set(veilB, sm(T.verd - 0.2, T.verd + 0.2, t) * (1 - sm(LOOP, LOOP + 0.4, t)));
     vd1.style.opacity = f3(vI); vd1.style.transform = `translate(${f3(hV2 * (1 - vI2))}px,${f3((1 - vI) * 24)}px)`;
-    vd2.style.opacity = f3(vI2); vd2.style.transform = `translateY(${f3((1 - vI2) * 26)}px)`; vd2.style.filter = `blur(${f3((1 - vI2) * 6)}px)`;
+    vd2.style.opacity = f3(vI2); vd2.style.transform = `translate(${f3(hV2 * (1 - vI2))}px,${f3((1 - vI2) * 26)}px)`; vd2.style.filter = `blur(${f3((1 - vI2) * 6)}px)`;   // round 3 : glisse avec vd1
     const pa = S(t, T.verd + 0.3, P.card), pl = sm(T.pol, T.pol + 0.12, t), pc = S(t, T.carr, P.pen);
     for (const [e, d2] of [[pPol, 0], [pCar, 0.08]]) { const a2 = S(t, T.verd + 0.3 + d2, P.card); e.style.transform = `translateY(${f3((1 - a2) * 60 + 140 * vO)}px) scale(${f3(0.9 + 0.1 * a2)})`; set(e, sm(T.verd + 0.28 + d2, T.verd + 0.34 + d2, t) * (1 - sm(0.2, 0.6, vO))); }
     pPol.style.boxShadow = `inset 0 1px 0 rgba(255,255,255,.45),0 0 0 ${f3(3 * pl)}px rgba(255,179,138,${f3(0.95 * pl)}),0 0 ${f3(36 * pl)}px rgba(255,110,40,${f3(0.55 * pl)})`;
@@ -825,14 +864,15 @@
     [T.click, T.ann + 0.45, 0.6], [T.big - 0.05, T.big + 0.45, 0.6], [REW[0], REW[1], 0.75], [T.card - 0.05, T.card + 0.4, 0.5], [T.dive2, T.dive2 + 0.7, 0.5],
     [T.nail, T.nail + 0.45, 0.5], [LOOP, LOOP + 1.4, 0.5]];
   COUPS.forEach((cp) => { WIN.push([cp.t0, cp.t0 + 0.25, 0.6]); WIN.push([cp.t0 + 0.5, cp.t0 + 0.75, 0.6]); });
-  [...TD, T.gag, T.msg1, T.msg2, T.bubble, T.credit].forEach((x) => WIN.push([x - 0.04, x + 0.35, 0.6]));
+  [...TD.map((x) => x - CL), T.gag, T.msg1, T.msg2, T.bubble, T.credit].forEach((x) => WIN.push([x - 0.04, x + 0.35, 0.6]));
+  WIN.push([T.offer - 0.31, T.offer + 0.5, 0.35]);
   const fast = (t) => { let s = 0; for (const [a, b, v] of WIN) s = Math.max(s, v * sm(a - 0.05, a + 0.05, t) * (1 - sm(b - 0.05, b + 0.05, t))); return s; };
   window.shutter = (t) => Math.max(0.12, fast(t));
   window.samples = (t) => (fast(t) > 0.3 ? 4 : 1);
   // temps des événements, pour poser les bruitages (scripts/events.mjs → film-mo11/events.json)
   window.EVENTS = {
     ...T, coups: COUPS.map((cp) => ({ key: cp.key, t0: cp.t0, hold: [cp.t0 + 0.2, cp.t0 + 0.5], end: cp.t0 + 0.7 })),
-    deb: TD, imp: TI, pose: T.pose, sparks: TD.map((x) => x + 0.06), gag: T.gag, leaveN: T.leaveN,
+    deb: TD, debIn: TD.map((x) => x - CL), imp: TI, pose: T.pose, sparks: TD.map((x) => x + 0.06), gag: T.gag, leaveN: T.leaveN,
     rew: REW, stFrom: ST_FROM, stTo: ST_TO, loop: LOOP, dur: DUR, front: [LOOP + 0.3, LOOP + 1.35], contour: [LOOP + 0.55, LOOP + 1.75],
     calc: [T.cw, T.cw + 0.42, T.cw + 0.78], provisional: !!VT.provisional,
   };

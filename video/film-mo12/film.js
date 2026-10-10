@@ -28,6 +28,7 @@
     go: M('vendue') + 0.05,               // la C3 garde VENDUE à l'arrêt 0,65 s, puis sort par la gauche sur « vendue »
     bf: M('beaufrere') - 0.28,            // bulle du beau-frère : elle entre par la droite pendant que la C3 sort à gauche
     croit: M('croit'),                    // « il n'y croit pas » : sa bulle tremble (comme le gag)
+    ask: M('demande') - 0.05,             // la bulle : « Les papiers ? » (« Il demande les papiers »)
     blur: M('papiers') + 0.05,            // la caméra plonge, la C3 passe en décor flou
     poch: M('tends') - 0.15,              // la pochette monte (« tu tends la pochette »)
     rabat: M('pochette') - 0.05,          // le rabat s'ouvre
@@ -38,7 +39,7 @@
     cles: ME('payee') + 0.12,
     roll20: M('vingt2') - 0.5, big: M('vingt2') - 0.3,
     tasse: M('tasse'), chaud: M('encore') - 0.25,   // « encore chaud. » complet et immobile 0,5 s avant le rembobinage
-    mardi: M('mardi'), l2: M('deuxans') - 0.05, total: M('rouler') - 0.1, l6: M('sixmois') - 0.05,
+    mardi: M('mardi'), ctl: M('controle') - 0.04, l2: M('deuxans') - 0.05, total: M('rouler') - 0.1, l6: M('sixmois') - 0.22,
     achat: M('letien') - 0.12, vide: M('sept') - 0.05, strike: M('mois'), refait: ME('mois') + 0.1,   // « refait le 6 oct. · 78 € » juste après « sept mois : » (complet vers 28,7 s)
   };
   const R1 = [ME('retour') + 0.04, ME('retour') + 0.54];   // retour court (grammaire du rembobinage)
@@ -46,14 +47,16 @@
   T.recu = M('declaration') - 1.4;                           // « Virement reçu » sur la mesure, 1,4 s avant « Déclaration »
   T.sig = [T.recu + 0.25, T.recu + 0.5]; T.cg = T.recu + 0.75; T.cgW = T.cg + 0.18; T.cgS = T.cg + 0.95;
   T.go2 = T.cles + 0.17;
-  // la bulle pose une question par temps ; la carte qui répond sort de la pochette 0,1 s avant : son texte est plein à
-  // T.q + 0,155 s, la question à T.q + 0,16 s, et chaque paire reste ensemble jusqu'à la question suivante (T.q + 0,40 s)
+  // la bulle pose une question par temps ; la carte qui répond sort de la pochette 0,1 s avant : son texte est plein vers
+  // T.q + 0,18 s, la question à T.q + 0,16 s, et chaque paire reste ensemble jusqu'à la question suivante (T.q + 0,40 s)
   T.q = [0, 1, 2, 3].map((i) => T.rabat + 0.42 + 0.45 * i);
   T.c = T.q.map((x) => x - 0.1);
   const REW = [ME('chaud') + 0.3, M('mardi') - 0.1];        // grand rembobinage jusqu'au mardi d'avant (1,1 s)
   T.flaps = REW[1] - 0.5; T.pochM = REW[1] - 0.15;
   T.m = [0, 1, 2, 3, 4].map((i) => T.mardi + 0.45 + 0.5 * i); // cinq cartes entrent dans la pochette, une par temps
-  T.eclair = M('tu') + 0.25; T.close = ME('refais') - 0.25; T.pret = ME('refais') - 0.02;
+  T.l2 = Math.max(T.l2, T.m[4] + 0.36 + 0.3);                 // la liste grandit une fois la 5e carte posée (25,16 s)
+  T.eclair = M('tu') + 0.25;   // « tu le refais » : le bandeau « Contrôle · 78 € » pulse et s'allume (nom gardé pour le son)
+  T.close = ME('refais') - 0.25; T.pret = ME('refais') - 0.02;
 
   // l'horloge : une minute par geste (scénario chiffré du brief)
   const ESS = Array.from({ length: 9 }, (_, i) => T.essai + 0.1 + i * (T.essaiOut - T.essai - 0.15) / 8);
@@ -80,6 +83,8 @@
 
   // ---------- temps du récit : la scène avance, se rembobine après la chute jusqu'au début de la visite ----------
   const ST_FROM = T.big + 0.45, ST_TO = T.essai - 0.06, RW = [REW[0], REW[0] + 0.85];
+  // retour du « 20 » dans l'horloge (ressort critique ramené à 1 à 96 %) : BKL, l'instant où il se pose
+  const BK0 = REW[0] - 0.06, BKF = { f: 3.4, z: 1 }; let BKL = BK0; while (S(BKL, BK0, BKF) < 0.96) BKL += 0.001;
   const story = (t) => {
     if (t >= LOOP) return ST_TO;
     if (t < RW[0]) return t;
@@ -201,10 +206,11 @@
   const ripple = el('div', 'ripple', LB, `height:${BUB.h}px`);
   const bub = el('div', 'glass bub', LB, `height:${BUB.h}px`); el('div', 'sheen', bub);
   el('div', 'n', bub).textContent = 'Acheteur';
-  const QT = ['Je suis devant.', 'Le contrôle ?', 'Pas de gage ?', 'La cession ?', 'La carte grise ?'];
+  const QT = ['Je suis devant.', 'Les papiers ?', 'Le contrôle ?', 'Pas de gage ?', 'La cession ?', 'La carte grise ?'];
+  const QIN = [-1, T.ask, ...T.q];                               // la question j entre à QIN[j], sort à QIN[j + 1]
   const qEl = QT.map((s) => { const e = el('div', 't', bub); e.textContent = s; return e; });
   const QW = QT.map((s) => Math.max(KP.textW('700 40px Satoshi', s), KP.textW('500 30px Satoshi', 'Acheteur')) + 64);
-  const QK = [[0, QW[0]], ...T.q.map((x, i) => [x, QW[i + 1], P.flip])];
+  const QK = [[0, QW[0]], ...QIN.slice(1).map((x, i) => [x, QW[i + 1], P.flip])];
   const bfW = KP.textW('700 40px Satoshi', '20 min ? ') + KP.textW('italic 500 46px Fraunces', 'Impossible.') + 70;
   const bf = el('div', 'glass bub', LB, `width:${f3(bfW)}px;height:${BUB.h}px;border-radius:34px 34px 10px 34px;transform-origin:50% 50%`); el('div', 'sheen', bf);
   el('div', 'n', bf).textContent = 'Beau-frère';
@@ -238,13 +244,15 @@
   const PM = KP.folder(LMb, LMf, { flapH: 72 });                 // le rabat fermé ne couvre plus la ligne du contrôle
   const POM = { x: 150, y: 630, w: 780, h: 780 };
   const MY0 = 686;                                              // premier bandeau, sous le rabat fermé (630 → 702)
+  // dans le bandeau, l'anneau cède la place à sa durée écrite (« 15 j » : 12,7 px à 360, l'anneau réduit n'y faisait que
+  // 9,5 px pour le chiffre et 5,4 px pour l'unité) ; les noms partent tous de x = 184
   const MD = [
-    { name: 'Contrôle', value: '78 €', ring: { num: '6', unit: 'mois' } },
-    { name: 'Situation adm.', value: '0 €', ring: { num: '15', unit: 'j' } },
-    { name: 'Cession', value: '× 2', ring: { num: '15', unit: 'j' } },
-    { name: 'Carte grise', value: 'à barrer', ring: { num: '1', unit: 'mois' } },
-    { name: 'Déclaration · ANTS', value: '0 €', ring: { num: '15', unit: 'j' } },
-  ].map((s) => KP.doc(LMc, { ...s, wb: 740 }));
+    { name: 'Contrôle', value: '78 €', ring: { num: '6', unit: 'mois' }, dur: '6 mois' },
+    { name: 'Situation adm.', value: '0 €', ring: { num: '15', unit: 'j' }, dur: '15 j' },
+    { name: 'Cession', value: '× 2', ring: { num: '15', unit: 'j' }, dur: '15 j' },
+    { name: 'Carte grise', value: 'à barrer', ring: { num: '1', unit: 'mois' }, dur: '1 mois' },
+    { name: 'Déclaration · ANTS', value: '0 €', ring: { num: '15', unit: 'j' }, dur: '15 j' },
+  ].map((s) => KP.doc(LMc, { ...s, wb: 740, durX: 184 }));
   const xl2 = el('div', 'xl', MD[0].root, 'color:rgba(246,239,231,.85)'); xl2.textContent = '2 ans pour rouler';
   const xl6 = el('div', 'xl', MD[0].root, 'color:#ffb38a'); xl6.textContent = '< 6 mois à sa carte grise';
   const mSvg = sv('svg', { width: 1080, height: 1920, viewBox: '0 0 1080 1920', style: 'position:absolute;left:0;top:0;overflow:visible' }, LMc);
@@ -257,7 +265,8 @@
   defs(ach.fx, 'ach');
   const achW1 = word(ach.fx, 'refait', '500 54px Fraunces', 54, 168, 222, { align: 'left', italic: true, fill: 'url(#qgach)', strokeColor: '#ffb38a', sw: 1.6 });
   const achW2 = word(ach.fx, 'le 6 oct. · 78 €', '700 48px Satoshi', 48, 168 + achW1.width + 16, 222, { align: 'left', strokeColor: '#ffd9c2', sw: 1.6 });
-  const eclair = KP.stroke(mSvg, 'M300 0 L322 24 L296 36 L318 70', { w: 5, gw: 16 });
+  // (round 3 : l'éclair de 26 px entre le verdict et la liste, perdu à 360 px, est retiré ; sur « tu le refais », c'est
+  // le bandeau « Contrôle · 78 € » qui pulse et dont le prix s'allume : le contrôle refait, c'est lui)
 
   // ---------- chute : tout s'éteint, « 20 min » géant, la tasse revient ----------
   const dim = el('div', 'L', stage, 'background:rgba(8,7,10,.95)');
@@ -291,7 +300,12 @@
     const pOut = sm(T.flaps, T.flaps + 0.35, t), pIn = eo(LOOP + 0.45, DUR - 0.08, t);
     const pres = t < LOOP ? 1 - pOut : pIn;
     const mIn = sm(REW[1] - 0.35, REW[1] + 0.3, t) * (t < LOOP ? 1 : 1 - eo(LOOP + 0.36, LOOP + 1.15, t));    // le mardi ; la C3 revient sur un fond vide
-    const big0 = sm(T.big, T.big + 0.25, st) * (1 - sm(REW[0] - 0.05, REW[0] + 0.2, t));               // « 20 min » : tout s'éteint
+    // « 20 min » : tout s'éteint. Au rembobinage, le chiffre revient en deux temps, comme à l'aller (temps du film : le
+    // temps du récit ne recule presque pas au début) : il rapetisse et remonte dans la case des minutes, l'horloge le
+    // reprend, puis seulement le voile se lève sur la scène qui se rembobine (jamais deux scènes superposées)
+    const back = Math.min(1, S(t, BK0, BKF) / 0.96);             // 0 → 1, posé dans la case à BKL (21,0 s)
+    const on20 = t < REW[0] ? sm(T.big, T.big + 0.25, st) : 1, st20 = t < REW[0] ? st : REW[0];
+    const big0 = on20 * (1 - sm(BKL, BKL + 0.16, t));
     const rew = sm(REW[0], REW[0] + 0.12, t) * (1 - sm(REW[1] - 0.12, REW[1], t)) + sm(R1[0], R1[0] + 0.06, t) * (1 - sm(R1[1] - 0.06, R1[1], t));
 
     // fonds
@@ -353,8 +367,9 @@
         const shk = s.d === dVir ? bump(st, T.recu, 0.32) * Math.sin((st - T.recu) * 110) * 7 : 0;
         KP.paintDoc(s.d, { x: x + shk, y, b, k: on, sc, ring: remK, swap: sw, lit: s.d === dDecl ? sm(T.zero, T.zero + 0.12, st) : 0 });
         clipX(s.d.root, x, x + 760 - 20 * b);
-        // une carte qui sort de la pochette : son texte n'entre qu'une fois la carte sortie (jamais lu à travers le verre des autres)
-        if (s.from === 'p') { const tk = sm(0.75, 0.97, a); for (const e of [s.d.name.e, s.d.value.e]) e.style.opacity = f3(+e.style.opacity * tk); }
+        // une carte qui sort de la pochette : son texte n'entre qu'une fois la carte sortie et passée devant (a ≥ 0,95 : jamais
+        // lu à travers le verre des autres, ni coupé par la carte qui descend d'une case, round 3)
+        if (s.from === 'p') { const tk = sm(0.95, 1, a); for (const e of [s.d.name.e, s.d.value.e]) e.style.opacity = f3(+e.style.opacity * tk); }
         // la carte se replie en bandeau en passant le liseré de la pochette (k de 2 à 3) : son texte sort au début du
         // repli et revient une fois le bandeau rangé (règle du conteneur qui se transforme, comme au mardi)
         s.fold = sm(2.02, 2.2, k) * (1 - sm(2.8, 2.98, k));
@@ -363,7 +378,7 @@
         // « 0,00 € » : appui d'échelle 1,12 → 1 sur « 0 » (ressort amorti, sans dépassement)
         if (s.d === dDecl) { const zp = sm(T.zero - 0.06, T.zero + 0.02, st) * (1 - S(st, T.zero + 0.02, { f: 2.4, z: 1 })); if (zp > 0.001) s.d.value.e.style.transform += ` scale(${f3(1 + 0.12 * zp)})`; }
         // la carte qui sort de la pochette monte derrière les autres (verre dépoli devant), puis passe au premier plan
-        s.d.root.style.zIndex = s.from === 'p' && a < 0.97 ? 1 : 100 - Math.round(10 * k);
+        s.d.root.style.zIndex = s.from === 'p' && a < 0.95 ? 1 : 100 - Math.round(10 * k);
         s.b = b;
         if (s.seq && on > 0.01) drawCrop(s.d.cv, IMG[s.seq], st - s.t + 0.5, s.fx, s.fy);
       } else {
@@ -406,10 +421,10 @@
     set(bub, bPres);
     bub.style.width = `${f3(bw)}px`;
     bub.style.transform = `translate(${f3(BUB.x + shake)}px,${f3(BUB.y - 70 * bOut + 40 * (1 - pres))}px) scale(${f3((1 + 0.1 * pulse) * (1 - 0.12 * bOut) * (0.92 + 0.08 * pres))})`;
-    const qPop = Math.max(...T.q.map((x) => bump(st, x, 0.22)));
+    const qPop = Math.max(...QIN.slice(1).map((x) => bump(st, x, 0.22)));
     if (qPop > 0) bub.style.transform += ` scale(${f3(1 + 0.04 * qPop)})`;
     qEl.forEach((e, j) => {
-      const tin = j ? T.q[j - 1] : -1, tout = j < 4 ? T.q[j] : 99;
+      const tin = QIN[j], tout = j + 1 < QIN.length ? QIN[j + 1] : 99;
       const a = j ? sm(tin + 0.06, tin + 0.16, st) : 1, o = sm(tout - 0.05, tout + 0.04, st);
       set(e, a * (1 - o)); e.style.transform = `translateY(${f3(12 * (1 - a) - 12 * o)}px)`;
     });
@@ -438,15 +453,22 @@
         const t0 = T.m[i] - 0.12, a = S(t, t0, P.card), dr = S(t, T.m[i] + 0.36, P.card);
         const yb = MY0 + i * 102 + (i ? grow : 0);
         const mx = lerp(160 + 1150 * (1 - a), 160, dr); clipX(d.root, mx, mx + 760 - 10 * dr);
-        KP.paintDoc(d, { x: mx, y: lerp(400, yb, dr), b: dr, k: sm(t0 - 0.02, t0 + 0.06, t), hx: i ? 0 : grow * dr,
+        KP.paintDoc(d, { x: mx, y: lerp(400, yb, dr), b: dr, k: sm(t0 - 0.02, t0 + 0.06, t), hx: i ? 0 : grow * dr, lit: i ? 0 : sm(T.eclair, T.eclair + 0.12, t),
           ring: [S(t, t0 + 0.05, P.draw), sm(t0 + 0.04, t0 + 0.1, t) * (1 - sm(t0 + 0.5, t0 + 0.7, t))] });
-        // la carte se replie en bandeau en tombant sur les autres : son texte sort au début du repli, revient à la fin
-        const dk = 1 - sm(0.02, 0.22, dr) * (1 - sm(0.72, 0.95, dr));
+        // la carte se replie en bandeau en tombant sur les autres : son texte sort au début du repli et ne revient qu'à la
+        // fin de la chute (dr ≥ 0,9 : moins de 35 px au-dessus de sa place, jamais sur le texte du bandeau d'au-dessus)
+        const dk = 1 - sm(0.02, 0.22, dr) * (1 - sm(0.9, 1, dr));
         if (dk < 0.999) for (const e of [d.name.e, d.value.e]) e.style.opacity = f3(+e.style.opacity * dk);
+        // « Contrôle : » (pendant que la carte grise entre en haut), puis « tu le refais » : le bandeau du contrôle pulse,
+        // « 6 mois » grossit
+        const pu = i ? 0 : bump(t, T.ctl, 0.36) + bump(t, T.eclair, 0.4);
+        if (pu > 0) { d.root.style.transform += ` scale(${f3(1 + 0.03 * pu)})`; d.dur.style.transform += ` scale(${f3(1 + 0.2 * pu)})`; }
       });
       // les deux lignes du contrôle : deux ans pour rouler, moins de six mois à la carte grise de l'acheteur
-      set(xl2, g2); xl2.style.transform = `translate(104px,${f3(94 + 10 * (1 - g2))}px)`;
-      set(xl6, g6); xl6.style.transform = `translate(104px,${f3(146 + 10 * (1 - g6))}px)`;
+      // (règle du conteneur qui se transforme : la ligne entre une fois le bandeau agrandi, g ≥ 0,85, jamais sur le suivant)
+      const a2 = sm(0.85, 1, g2), a6 = sm(0.85, 1, g6);
+      set(xl2, a2); xl2.style.transform = `translate(184px,${f3(94 + 14 * (1 - a2))}px)`;
+      set(xl6, a6); xl6.style.transform = `translate(184px,${f3(146 + 14 * (1 - a6))}px)`;
       const yTot = MY0 + 4 * 102 + 90 + 104 + 20;
       KP.paintStroke(totBar, S(t, T.total, P.pen)); totBar.l.parentNode && [totBar.g, totBar.l].forEach((e) => e.setAttribute('transform', `translate(0,${yTot})`));
       const ta = S(t, T.total + 0.12, P.rise), tb = S(t, T.total + 0.3, { f: 2.4, z: 0.85 });
@@ -459,8 +481,6 @@
       achSub.style.transform = `translate(${f3(168 + 256 + 24)}px,106px)`;
       KP.paintStroke(achStrike, S(t, T.strike, P.pen));
       writeWord(achW1, t, T.refait, 0.045, 18); writeWord(achW2, t, T.refait + 0.22, 0.018, 18);
-      KP.paintStroke(eclair, S(t, T.eclair, { f: 2.2, z: 1 }), 1 - sm(T.eclair + 0.5, T.eclair + 0.8, t));
-      [eclair.g, eclair.l].forEach((e) => e.setAttribute('transform', 'translate(0,590)'));
     }
 
     // chute : tout s'éteint
@@ -474,7 +494,8 @@
     });
     const idx = t < R1[1] ? [track(hk, KH[0]), track(hk, KH[1])] : [track(st, KV[0]), track(st, KV[1])];
     idx[1] += 0.3 * Math.abs(Math.sin(Math.PI * 1.5 * (st - T.wait))) * sm(T.wait, T.wait + 0.15, st) * (1 - sm(T.recu - 0.2, T.recu - 0.02, st));   // la colonne hésite entre 4 et 5
-    const mg = sm(T.big - 0.02, T.big + 0.16, st), hg = sm(T.big - 0.05, T.big + 0.22, st);
+    const ckB = 1 - sm(0.96, 1, back);                           // les cases reviennent quand le 20 s'y pose
+    const mg = sm(T.big - 0.02, T.big + 0.16, st20) * ckB, hg = sm(T.big - 0.05, T.big + 0.22, st20) * ckB;
     const cfOut = (i) => sm(T.flaps + 0.05 * i, T.flaps + 0.3 + 0.05 * i, t), cfIn = (i) => eo(LOOP + 0.3 + 0.07 * i, LOOP + 0.95 + 0.07 * i, t);   // après le départ du mardi (LOOP + 0,36)
     CK.paintClock(CKC, idx, {
       k: 1, colonK: (1 - hg) * (t < LOOP ? 1 - cfOut(1.5) : cfIn(1.5)), colonDx: -70 * hg, blink: 0.5 + 0.5 * Math.cos(2 * Math.PI * Math.round(DUR) * t / DUR),
@@ -494,12 +515,14 @@
     });
 
     // 20 min : l'horloge se fond dans le chiffre géant
-    L20.style.transform = tf(part(c, 0.5, 0.35, 0.3, 0.1), `scale(${f3(1 + 0.035 * sm(T.big + 0.4, REW[0], t))})`);
-    set(L20, big0);
-    const s20 = S(st, T.big + 0.02, { f: 1.5, z: 0.92 });
-    big20.style.transform = `translate(${f3((686 - X20) * (1 - s20))}px,${f3((386 - 660) * (1 - s20))}px) scale(${f3(lerp(0.457, 1, s20))})`;
+    // au retour, le calque du chiffre reprend la caméra de l'horloge : le 20 se pose exactement dans sa case
+    const c20 = part(c, 0.5, 0.35, 0.3, 0.1), cMix = {}; for (const k in c20) cMix[k] = lerp(c20[k], cH[k], back);
+    L20.style.transform = tf(cMix, `scale(${f3(1 + 0.035 * sm(T.big + 0.4, REW[0], t) * (1 - back))})`);
+    set(L20, on20 * (1 - sm(0.97, 1, back)));
+    const s20 = S(st20, T.big + 0.02, { f: 1.5, z: 0.92 }) * (1 - back);
+    big20.style.transform = `translate(${f3((698 - X20) * (1 - s20))}px,${f3((386 - 660) * (1 - s20))}px) scale(${f3(lerp(0.457, 1, s20))})`;
     minS.style.opacity = f3(sm(0.25, 0.75, s20)); minS.style.transform = `translateX(${f3(-40 * (1 - s20))}px)`;
-    set(glow20, 0.4 + 0.6 * S(st, T.big + 0.15, P.heavy));
+    set(glow20, (0.4 + 0.6 * S(st20, T.big + 0.15, P.heavy)) * (1 - back));
     // la tasse revient sous le 20, « encore chaud. » s'écrit
     const tOut = sm(REW[0] - 0.08, REW[0] + 0.14, t), tOs = S(t, REW[0] - 0.1, { f: 1.8, z: 1 });
     LT.style.transform = `${L20.style.transform} translateY(${f3(-160 * tOs)}px) scale(${f3(1 - 0.25 * tOs)})`;

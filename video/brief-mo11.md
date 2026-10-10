@@ -195,10 +195,12 @@ professionnel avec garantie, **3 490 €** (lien vivant) ; un particulier, 2 799
 | 0 → 4,0 | (calcul de l'image 0) | « 2 900 » |
 | 4,0 → 4,6 | « 2 ?00 » | le chiffre des centaines roule et s'arrête sur « ? » |
 | 4,6 → 6,5 | **2 900 €, au repos** | le « ? » revient à 9 quand le calcul devient le compteur |
-| 6,5 → 11,7 | en mouvement continu | chaque débit donne une impulsion et le coup suivant arrive avant l'arrêt ; on lit les centaines monter 9 → 0 → 1 → 2 → 3, les dizaines et les unités ne s'arrêtent jamais ; aucune valeur n'est attribuée à un coup |
-| 11,7 → 16,8 | **3 330 €, au repos** (+ 430 €, + 14,8 %), toujours sous le repère « Propre, chez un pro · 3 490 € » | |
+| 6,3 → 12,0 | en mouvement continu | chaque débit donne une impulsion et le coup suivant arrive avant l'arrêt ; on lit les centaines monter 9 → 0 → 1 → 2 → 3, les dizaines et les unités ne s'arrêtent jamais ; aucune valeur n'est attribuée à un coup |
+| 12,0 → 16,4 | **3 330 €, au repos** (+ 430 €, + 14,8 %), toujours sous le repère « Propre, chez un pro · 3 490 € » | |
 | 14,8 | l'annonce reprend « 3 330 € » | |
-| 16,8 → 17,9 | il se fond dans « **+ 400 €** » | vente à 3 300 € (« 3 300 et je la prends. ») |
+| 16,1 → 16,4 | « 3 300 » part de la bulle en étincelle vers le compteur | l'offre (round 3) |
+| 16,4 → 17,2 | **3 300 €, l'offre acceptée** : il roule de 3 330 à 3 300 € | vente à 3 300 € (« 3 300 et je la prends. ») |
+| 17,2 → 17,9 | 3 300 € se fond dans « **+ 400 €** » | 3 300 − 2 900 |
 
 La hausse est un cas favorable, au plafond de la seule fourchette chiffrée (« jusqu'à 15 % plus cher », Toyota, sans
 source) et sous l'écart que Caradisiac fait accepter pour des défauts visibles sur une Clio 3 (« baisser le prix de
@@ -240,19 +242,19 @@ sur x = 540, dans la colonne 140 → 940 ; le point visé de chaque coup reste e
 | 2,75 → 3,7 | Sur « aspirateur », la plume devient un embout : elle passe le long du flanc (aile avant → portière), la poussière se soulève et part dedans ; derrière, une bande nette et brillante ; « LAVE-MOI » s'en va avec. | « Ton aspirateur trouve ça donné. » (2,75-4,35) | aspiration courte, en balayage |
 | 4,0 | Sur « donné » : « 2 900 » passe au gris, le chiffre des centaines roule et s'arrête sur « ? » (« 2 ?00 ») ; la lumière réécrit « telle quelle ? » en « *C'est donné.* ». | | roulement court, tracé |
 | 4,55 → 5,0 | Le calcul se replie vers le haut et devient le compteur à rouleaux « PRIX AFFICHÉ » (y ≈ 320) ; le « ? » revient à 9 : **2 900 €**. Sous le compteur, en gris, un repère fixe « Propre, chez un pro · 3 490 € ». Palettes « SAMEDI · 13:00 ». La mention « Exemple · prix moyens constatés » entre. | « Samedi, treize heures. » (4,65-5,80) | palettes |
-| 5,8 → 6,5 | **Lavage**, plan large : une ligne de partage verticale traverse toute la voiture de gauche à droite et s'arrête 0,3 s au milieu (6,0-6,3) : à gauche la poussière et les coulures, à droite le vernis net, mouillé. Elle finit ; « Lavage · haute pression · − 8,00 € » tombe (6,5), vidéo de jet dedans ; le compteur se met à rouler. | | jet haute pression ; débit sur une note |
-| 6,8 → 7,5 | **Phares** : la caméra avance sur le grand phare (x 680-1110 de la photo). Ligne de partage, arrêt 7,0-7,3 : voile jaune / optique claire. « Phares · kit + vernis · − 25,00 € » (7,5) ; impulsion. | | ponçage court ; note plus haute |
-| 7,8 → 8,5 | **Sièges** : la caméra monte vers le pare-brise (x 480-1380, en haut). Ligne de partage, arrêt 8,0-8,3 : voile gris / pare-brise net, sièges visibles derrière. « Sièges · injecteur loué · − 30,00 € » (8,5), vidéo d'un siège qu'on shampouine. | « Les sièges. » (7,95-8,50) | aspiration humide ; note |
+| 5,8 → 6,5 | **Lavage**, plan large : une ligne de partage verticale traverse toute la voiture de gauche à droite et s'arrête 0,3 s au milieu (6,0-6,3) : à gauche la poussière et les coulures, à droite le vernis net, mouillé. « Lavage · haute pression · − 8,00 € » se pose pendant l'arrêt (6,3 ; round 3 : à 6,8, il tombait sur le plan des phares), vidéo de jet dedans ; le compteur se met à rouler. La ligne finit. | | jet haute pression ; débit sur une note |
+| 6,8 → 7,5 | **Phares** : la caméra avance sur le grand phare (x 680-1110 de la photo). Ligne de partage, arrêt 7,0-7,3 : voile jaune / optique claire. « Phares · kit + vernis · − 25,00 € » (7,3, pendant l'arrêt) ; impulsion. | | ponçage court ; note plus haute |
+| 7,8 → 8,5 | **Sièges** : la caméra monte vers le pare-brise (x 480-1380, en haut). Ligne de partage, arrêt 8,0-8,3 : voile gris / pare-brise net, sièges visibles derrière. « Sièges · injecteur loué · − 30,00 € » (8,3, pendant l'arrêt), vidéo d'un siège qu'on shampouine. | « Les sièges. » (7,95-8,50) | aspiration humide ; note |
 | 9,0 | **Gag**, seul, pendant que la caméra glisse vers les vitres : une petite carte de verre « trouvé », sans signe bancaire : « Sous les sièges · 3,40 € · *une frite* », vidéo de pièces dedans. | | quatre pièces qui tintent |
-| 9,05 → 9,75 | **Odeur** : la caméra arrive sur les vitres latérales (x 1400-1650). Ligne de partage, arrêt 9,25-9,55 : voile jaunâtre du tabac / vitres nettes. « Odeur · filtre à charbon · − 15,00 € » (9,75), vidéo d'une grille d'aération. Aucun trait d'odeur dessiné. | « L'odeur. » (9,25-9,80) | souffle d'aération ; note |
-| 9,8 → 10,5 | **Rayure** : la caméra descend sur l'aile avant (x 1150-1360), grossissement 1,6. Ligne de partage, arrêt 10,0-10,3 : rayure claire / vernis lisse. « Rayure · polish · − 15,00 € » (10,5). | | polisseuse courte, scintillement ; note |
-| 10,55 → 11,25 | **Enjoliveurs** : la caméra descend sur la roue avant (x 1100-1340, en bas). Ligne de partage, arrêt 10,75-11,05 : enjoliveur brun et fendu / enjoliveur neuf. « Enjoliveurs · jeu de 4 · − 20,00 € » (11,25). | « Les enjoliveurs. » (10,75-11,65) | clac de plastique ; note la plus haute |
-| 11,3 → 12,0 | La caméra recule : la voiture entière, propre. Le compteur se pose pour la première fois depuis 2 900 : **3 330 €**, juste sous le repère 3 490 €. | | |
-| 11,9 → 13,9 | Palettes 13:00 → 16:30, qui accélèrent. La lumière tombe : étalonnage selon la luminance (hautes lumières dorées, ombres froides), ombre portée tirée du masque alpha qui s'allonge et tourne, reflet rasant sur le capot, masqué sur les zones claires. « Soleil bas, *dans ton dos.* » (12,6) ; sous la palette, en gris : « l'heure avant le coucher » (13,2). | « Et là, tu attends le soleil. » (12,20-13,95) | la musique garde sa basse, le filtre s'ouvre ; ambiance du soir légère |
+| 9,05 → 9,75 | **Odeur** : la caméra arrive sur les vitres latérales (x 1400-1650). Ligne de partage, arrêt 9,25-9,55 : voile jaunâtre du tabac / vitres nettes. « Odeur · filtre à charbon · − 15,00 € » (9,5, pendant l'arrêt), vidéo d'une grille d'aération. Aucun trait d'odeur dessiné. | « L'odeur. » (9,25-9,80) | souffle d'aération ; note |
+| 9,8 → 10,5 | **Rayure** : la caméra descend sur l'aile avant (x 1150-1360), grossissement 1,6. Ligne de partage, arrêt 10,0-10,3 : rayure claire / vernis lisse. « Rayure · polish · − 15,00 € » (10,3, pendant l'arrêt). | | polisseuse courte, scintillement ; note |
+| 10,55 → 11,25 | **Enjoliveurs** : la caméra descend sur la roue avant (x 1100-1340, en bas). Ligne de partage, arrêt 10,75-11,05 : enjoliveur brun et fendu / enjoliveur neuf. « Enjoliveurs · jeu de 4 · − 20,00 € » (11,0, pendant l'arrêt). | « Les enjoliveurs. » (10,75-11,65) | clac de plastique ; note la plus haute |
+| 11,3 → 12,0 | La caméra recule : la voiture entière, propre. Le compteur se pose (12,0) pour la première fois depuis 2 900 : **3 330 €**, juste sous le repère 3 490 €. | | |
+| 11,9 → 13,9 | Palettes 13:00 → 16:30, qui accélèrent. La lumière tombe : étalonnage selon la luminance (hautes lumières dorées, ombres froides), ombre portée tirée du masque alpha qui s'allonge et tourne, reflet rasant sur le capot, masqué sur les zones claires. « Soleil bas, *dans ton dos.* » (12,9, descend à sa place) ; sous la palette, en gris : « l'heure avant le coucher » (13,2). | « Et là, tu attends le soleil. » (12,20-13,95) | la musique garde sa basse, le filtre s'ouvre ; ambiance du soir légère |
 | 13,9 → 14,5 | Avancée lente de la caméra, parallaxe (ombre au sol et décor sur des calques séparés) ; un viseur se referme sur la voiture ; déclic (14,5). « Photo 1 · trois quarts avant ». | « Photo 1. » (14,25-14,85) | déclic d'appareil |
 | 14,8 → 15,6 | La photo du viseur devient la carte d'annonce « 3 330 € · 2008 · 150 000 km » (aucun site, aucune annonce voisine). Sur le même panneau, les palettes passent de 16:30 à J+4. | | palettes |
 | 15,3 · 15,7 | Deux messages se posent sur la vignette de la photo : « Belle photo. Toujours dispo ? », puis « Je passe demain ? ». | | vibration, notes de message |
-| 15,95 → 16,2 | Bulle : « 3 300 et je la prends. » | (« Quatre jours. » retiré au round 2 : J+4 le dit) | |
+| 15,95 → 17,0 | Bulle : « 3 300 et je la prends. » ; le « 3 300 » part en étincelle vers le compteur, qui roule de 3 330 à 3 300 € (16,1 → 17,0) ; l'annonce et la bulle avancent de 5 % (round 3 : la vente finissait sur un plan figé). | (« Quatre jours. » retiré au round 2 : J+4 le dit) | |
 | 16,8 | « Virement reçu · + 3 300,00 € ». | « Quatre cents de plus. » (16,90-17,70) | |
 | 17,3 → 17,9 | Le compteur se fond dans un « **+ 400 €** » géant, petit libellé « SUR TON PLAN » au-dessus ; tout le reste s'éteint ; dessous, « − 109,60 € de prépa » en 44 px au moins, visible pendant toute la pause. | | arrêt de bande à 18,0, silence : **la seule pause** (18,0-18,7) |
 | 18,7 | « *Ton samedi le mieux payé.* » s'écrit à la lumière sous le 400. | « Ton samedi le mieux payé. » (18,70-20,15) | voix seule |
@@ -367,7 +369,8 @@ mot porteur (« telle quelle ? », « C'est donné. », « une frite », « dans
 charte devient la lumière de 16 h 30 : la seule couleur d'accent sert aussi de soleil. La plume reste la seule source
 de lumière du récit (`codes-attention.md`) et change d'outil sans changer de trait : embout d'aspirateur au hook,
 ligne de partage dans l'accumulation, viseur à la photo 1, ongle au verdict. Chaque coup suit la même grammaire : la
-ligne entre, s'arrête 0,3 s moitié sale moitié propre, finit, le débit tombe, le compteur reçoit une impulsion.
+ligne entre, s'arrête 0,3 s moitié sale moitié propre, le débit se pose pendant l'arrêt (round 3), la ligne finit, le
+compteur reçoit une impulsion.
 
 **Image 0, contrôlée avant d'animer** : `CUT=mo11 node scripts/render.mjs --phone` (`renders/phone-mo11.png`), puis
 `CUT=mo11 node scripts/at.mjs 0 renders/review/mo11-image0.jpg` réduite à 200 px de large, à côté de la même image avec

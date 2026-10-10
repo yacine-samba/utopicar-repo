@@ -64,15 +64,19 @@
   }
 
   // ---------- carte de document : 760 × 170 (nom Satoshi 700 48 px, valeur Clash 64 px), qui se replie en bandeau ----------
-  // spec : { name, value, ring: {num, unit} | null, thumb: 'left' | 'right' | null, name2, value2, sub2, w, h, wb, hb }
+  // spec : { name, value, ring: {num, unit} | null, thumb: 'left' | 'right' | null, name2, value2, sub2, w, h, wb, hb,
+  //         dur, durX }
   // À gauche : le badge (ou une vignette vidéo) ; à droite : une vignette vidéo facultative. name2 / value2 / sub2 :
   // second état du texte (« Virement · en cours » → « Virement reçu · + 2 700,00 € »), échangé par paintDoc(swap).
-  const FN = '700 48px Satoshi', FV = '700 64px Clash';
+  // dur : durée écrite (« 15 j ») qui remplace l'anneau dans le bandeau, où l'anneau réduit ne se lit plus à 360 px ;
+  // durX : départ du nom dans ce bandeau (même colonne pour toute une liste).
+  const FN = '700 48px Satoshi', FV = '700 64px Clash', FD = '700 38px Clash';
   function doc(parent, spec) {
     const o = { w: 760, h: 170, wb: 720, hb: 90, ...spec };
     const D = { o, root: el('div', 'kp-doc', parent, `width:${o.w}px;height:${o.h}px`) };
     D.bg = el('div', 'glass kp-bg', D.root); el('div', 'sheen', D.bg);
     if (o.ring) D.badge = badge(D.root, o.ring);
+    if (o.dur) { D.dur = el('div', 'kp-dur', D.root); D.dur.innerHTML = clash(o.dur); D.durW = clashW(FD, o.dur); }
     if (o.thumb) { D.cv = el('canvas', 'kp-thumb', D.root); D.cv.width = 300; D.cv.height = 210; D.tw = o.thumb === 'left' ? 150 : 180; D.th = o.thumb === 'left' ? 118 : 126; D.cv.style.width = `${D.tw}px`; D.cv.style.height = `${D.th}px`; }
     const txt = (cls, s, font) => { const e = el('div', cls, D.root); e.innerHTML = s || ''; return { e, w: textW(font, s || '') }; };
     const val = (s) => { const e = el('div', 'kp-value', D.root); e.innerHTML = clash(s || ''); return { e, w: clashW(FV, s || '') }; };
@@ -94,11 +98,18 @@
     // bandeau rangé dans la pochette : posé sur le fond de la pochette, le flou d'arrière-plan ne se voit plus (et coûte cher)
     const bd = b > 0.98 ? 'none' : ''; if (D.bg.style.backdropFilter !== bd) { D.bg.style.backdropFilter = bd; D.bg.style.webkitBackdropFilter = bd; }
     const left = D.badge || (D.cv && o.thumb === 'left');
-    const x0 = left ? lerp(D.badge ? 168 : 196, D.badge ? 104 : 112, b) : lerp(40, 34, b);
+    const x0 = left ? lerp(D.badge ? 168 : 196, D.dur ? o.durX || 184 : D.badge ? 104 : 112, b) : lerp(40, 34, b);
+    // durée écrite : elle entre une fois le bandeau formé (b de 0,85 à 1), l'anneau rapetisse et sort en même temps
+    const dB = D.dur ? sm(0.85, 1, b) : 0;
     if (D.badge) {
-      const s = lerp(1, 0.62, b);
-      D.badge.r.style.transform = `translate(${f3(lerp(30, 22, b))}px,${f3((H0 - 110 * s) / 2)}px) scale(${f3(s)})`;
+      const s = lerp(1, 0.62, b) * (1 - 0.3 * dB);
+      D.badge.r.style.transform = `translate(${f3(lerp(30, 22, b) + 110 * 0.62 * 0.15 * dB)}px,${f3((H0 - 110 * s) / 2)}px) scale(${f3(s)})`;
+      if (D.dur) set(D.badge.r, 1 - dB);
       if (ring) paintBadge(D.badge, ring[0], ring[1] || 0);
+    }
+    if (D.dur) {
+      set(D.dur, dB);
+      D.dur.style.transform = `translate(${f3(22 - 16 * (1 - dB))}px,${f3((H0 - 38) / 2)}px) scale(${f3(0.86 + 0.14 * dB)})`;
     }
     if (D.cv) {
       if (o.thumb === 'left') { const s = lerp(1, 0.56, b); D.cv.style.transform = `translate(${f3(lerp(22, 18, b))}px,${f3((H0 - D.th * s) / 2)}px) scale(${f3(s)})`; }
@@ -116,7 +127,10 @@
     place(D.name, D.value, D.name2 ? aOut : 1, -16 * (1 - aOut));
     if (D.name2) place(D.name2, D.value2, aIn, 16 * (1 - aIn));
     if (D.sub2) { D.sub2.style.transform = `translate(${f3(x0 + D.name2.w + 22)}px,${f3(lerp(38, 32, b) + 16 * (1 - aIn))}px)`; set(D.sub2, aIn * (1 - b)); }
-    if (lit) { const c = lit; (D.value2 || D.value).e.style.color = `rgb(${Math.round(lerp(246, 255, c))},${Math.round(lerp(239, 179, c))},${Math.round(lerp(231, 138, c))})`; (D.value2 || D.value).e.style.textShadow = `0 0 ${f3(26 * c)}px rgba(255,120,50,${f3(0.55 * c)})`; }
+    // lit : la valeur s'allume ; à 0, la couleur d'origine est rendue (la frame ne dépend que de t, même en reculant)
+    const lv = (D.value2 || D.value).e;
+    if (lit) { const c = lit; lv.style.color = `rgb(${Math.round(lerp(246, 255, c))},${Math.round(lerp(239, 179, c))},${Math.round(lerp(231, 138, c))})`; lv.style.textShadow = `0 0 ${f3(26 * c)}px rgba(255,120,50,${f3(0.55 * c)})`; }
+    else if (lv.style.color) { lv.style.color = ''; lv.style.textShadow = ''; }
     D.fx.style.transform = `scale(${f3(W / o.w)},${f3(H0 / o.h)})`;
   }
 

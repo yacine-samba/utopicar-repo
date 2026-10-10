@@ -28,8 +28,11 @@ Vectoriels (viewBox = pixels du PNG, nets à tout grossissement, la caméra va j
   clio3-enjoliveurs-neufs.svg   le reflet des enjoliveurs neufs (arc de lumière sur le bord, rien d'autre : la photo
                                 montre déjà des enjoliveurs gris argent propres, losanges effacés)
   clio3-parechocs.png           (round 2) le coin avant gauche du bouclier frotté sur une bordure (lèvre basse,
-                                x 42 → 246) : jamais réparé, la 3e règle de la carte ; visible tout le film
-Copies pour le film : car-clio3.png, car-clio3-contour.js (window.CAR_CLIO3_CONTOUR), crédits dans CREDITS.tsv.
+                                x 42 → 246) : jamais réparé, la 3e règle de la carte ; visible tout le film. Round 3 :
+                                fondu dans car-clio3.png et clio3-poussiere.png (le film ne charge plus ce calque, suspect
+                                des tuiles déplacées du montage 540p) ; le fichier reste pour les planches de contrôle
+Copies pour le film : car-clio3.png (la photo de la bibliothèque, l'éraflure du pare-chocs fondue dedans),
+car-clio3-contour.js (window.CAR_CLIO3_CONTOUR), crédits dans CREDITS.tsv.
 """
 import shutil, sys
 import numpy as np, cv2
@@ -235,12 +238,22 @@ for cx, cy, rx, ry, ang in STAINS:
 fill = np.asarray(fill_m.filter(ImageFilter.GaussianBlur(6))).astype(np.float32) / 255
 ring = np.asarray(ring_m.filter(ImageFilter.GaussianBlur(3))).astype(np.float32) / 255
 stain = np.maximum(fill, ring)
-a = a * (1 - 0.75 * stain)                                        # voile plus léger devant les taches
+# round 3 : voile éclairci de 50 % (et non 75 %) devant les taches, et un dossier en tissu sombre dessous (#2e2a27 à
+# 55 %, derrière la vitre) : les plaques ocre, posées sur le gris clair de la lunette arrière, se lisaient collées sur
+# la vitre, et dépassaient de la carte à 23,9 s
+a = a * (1 - 0.5 * stain)                                         # voile plus léger devant les taches
+seat_m = Image.new('L', (W, H), 0)
+ImageDraw.Draw(seat_m).rounded_rectangle([1066, 112, 1266, 352], radius=46, fill=255)
+seat = m * 0.55 * np.asarray(seat_m.filter(ImageFilter.GaussianBlur(8))).astype(np.float32) / 255
+c_seat = np.array([0.180, 0.165, 0.153], np.float32)              # #2e2a27
 a_f, a_r = m * 0.95 * fill, m * 0.9 * ring             # mesuré à 360 px : R − B 54 avec 0,85 et un fond à 200
 c_s = np.array([0.769, 0.604, 0.361], np.float32)                 # #c49a5c
 c_r = np.array([0.361, 0.255, 0.157], np.float32)                 # #5c4128
 a_b = a_r + a_f * (1 - a_r)                                       # le liseré sur le fond de la tache, derrière la vitre
 col_b = (c_r * a_r[..., None] + c_s * (a_f * (1 - a_r))[..., None]) / np.maximum(a_b, 1e-6)[..., None]
+a_bs = a_b + seat * (1 - a_b)                                     # la tache sur le dossier
+col_b = (col_b * a_b[..., None] + c_seat * (seat * (1 - a_b))[..., None]) / np.maximum(a_bs, 1e-6)[..., None]
+a_b = a_bs
 A = a + a_b * (1 - a)                                             # la tache derrière, le voile devant
 col = (col * a[..., None] + col_b * (a_b * (1 - a))[..., None]) / np.maximum(A, 1e-6)[..., None]
 a = A
@@ -436,6 +449,15 @@ colp = colp * (1 - 0.8 * ge[..., None]) + np.array([0.93, 0.92, 0.9], np.float32
 a_pc = np.clip(np.maximum(abr * 0.92, np.maximum(g, ge * 0.8)) , 0, 1) * (alpha > 0.5)
 a_pc = cv2.GaussianBlur(a_pc, (0, 0), 0.7)
 save(colp, a_pc, 'clio3-parechocs.png')
+# round 3 : l'éraflure fondue dans la voiture propre (alpha de la photo gardé) et dans la poussière (opaque sur la
+# carrosserie) : un calque plein cadre de moins dans le film
+pc8 = np.asarray(Image.open(OUT / 'clio3-parechocs.png').convert('RGBA')).astype(np.float32) / 255
+ap = pc8[..., 3:4]
+car8 = np.asarray(Image.open(OUT / 'car-clio3.png').convert('RGBA')).astype(np.float32) / 255
+car8[..., :3] = pc8[..., :3] * ap + car8[..., :3] * (1 - ap)
+Image.fromarray((np.clip(car8, 0, 1) * 255 + 0.5).astype(np.uint8), 'RGBA').save(OUT / 'car-clio3.png', optimize=True)
+du = Image.open(OUT / 'clio3-poussiere.png').convert('RGBA'); du.alpha_composite(Image.open(OUT / 'clio3-parechocs.png').convert('RGBA'))
+du.save(OUT / 'clio3-poussiere.png', optimize=True)
 print('ok', OUT)
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -454,17 +476,16 @@ if CHECK:
     subprocess.run(['node', '--input-type=module', '-e', js, json.dumps([W, H, str(CHECK), *[str(OUT / n) for n in names]])], cwd=ROOT, check=True)
     def svg_png(name):
         return Image.open(CHECK / f'{name}.png').convert('RGBA')
-    clean = car
+    clean = Image.open(OUT / 'car-clio3.png').convert('RGBA')     # l'éraflure du pare-chocs est dedans (round 3)
     def comp(layers):
         bg = Image.new('RGBA', (W, H), (8, 7, 10, 255)); bg.alpha_composite(clean)
         for L in layers: bg.alpha_composite(L)
         return bg
     P = {n: Image.open(OUT / n).convert('RGBA') for n in ('clio3-poussiere.png', 'clio3-phares.png', 'clio3-pare-brise.png', 'clio3-vitres.png')}
-    PC = Image.open(OUT / 'clio3-parechocs.png').convert('RGBA')
     R, E, N = svg_png('clio3-rayure.svg'), svg_png('clio3-enjoliveurs.svg'), svg_png('clio3-enjoliveurs-neufs.svg')
-    sale = comp([P['clio3-poussiere.png'], PC, P['clio3-phares.png'], P['clio3-pare-brise.png'], P['clio3-vitres.png'], R, E])
-    lavee = comp([PC, P['clio3-phares.png'], P['clio3-pare-brise.png'], P['clio3-vitres.png'], R, E])
-    propre = comp([PC, N])
+    sale = comp([P['clio3-poussiere.png'], P['clio3-phares.png'], P['clio3-pare-brise.png'], P['clio3-vitres.png'], R, E])
+    lavee = comp([P['clio3-phares.png'], P['clio3-pare-brise.png'], P['clio3-vitres.png'], R, E])
+    propre = comp([N])
     for n, im in [('sale', sale), ('lavee', lavee), ('propre', propre)]: im.convert('RGB').save(CHECK / f'mo11-etat-{n}.jpg', quality=90)
     small = [im.convert('RGB').resize((200, int(200 * H / W)), Image.LANCZOS) for im in (sale, propre)]
     S = Image.new('RGB', (420, small[0].height + 20), (8, 7, 10)); S.paste(small[0], (5, 10)); S.paste(small[1], (215, 10))

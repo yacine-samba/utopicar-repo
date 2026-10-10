@@ -464,7 +464,9 @@ Film jugé : `film-mo12/film.js` de 14 h 06, `index.html` de 13 h 50, `lib/kit47
   26,9 · 28,9 s).
 - 17 images pleine définition refaites dans `renders/stills-mo12/` (0 · 2,9 · 7,1 · 8,4 · 13,7 · 15,9 · 17,3 · 20,9 ·
   22,0 · 24,0 · 25,0 · 25,1 · 26,3 · 28,9 · 29,65 · 29,8 · 31,033 s).
-- Montage 540p avec le son (`render.mjs --draft`) et `qa_video.py` : voir « FAIL de `qa_video.py` » plus bas.
+- Montage 540p avec le son : `renders/draft-mo12-9x16.mp4`, refait (fini le 10 octobre à 2 h 50, après `film.js`, le
+  mix et `vo-timing.json`), 31,05 s, 1 863 images à 60 i/s, AAC 48 kHz. `qa_video.py` passé le 10 octobre à 12 h 18
+  (`renders/qa-mo12/`) ; planche des zones sûres regardée ; voir « FAIL de `qa_video.py` » plus bas.
 - Son : `audio/mix-mo12.wav` et `audio/stems-mo12/` mesurés (réduction du limiteur toutes les 50 ms, attaque de chaque
   bruitage), `docs/mix_report-mo12.txt`. **Rien n'a été écouté.**
 - Aucune erreur `PAGEERR` ni `CONSOLE` (`render.mjs --phone` et `--at`).
@@ -585,9 +587,42 @@ reste un fondu enchaîné (`video/CLAUDE.md`, direction interdite), au début de
 
 ### FAIL de `qa_video.py`
 
-QA_DRAFT
+**Aucun FAIL.** `python3 ../.claude/skills/motion-studio/scripts/qa_video.py renders/draft-mo12-9x16.mp4 --out
+renders/qa-mo12 --intentional 18.3-19.45` (la seule pause, sous « 20 min ») :
+
+| Niveau | Contrôle | Détail |
+|---|---|---|
+| WARN | Zones sûres | marge gauche de 3,25 à 3,50 s |
+| OK | Codec vidéo / audio | H.264 yuv420p 540 × 960 60 i/s, 31,05 s ; AAC 48 kHz |
+| OK | Première image | écart-type 46,1 |
+| OK | Images vides / plans figés > 0,9 s | aucun (aussi sans `--intentional` : la lueur et la vapeur bougent pendant la pause) |
+| OK | Loudness (MP4) | −14,2 LUFS |
+| OK | True peak (MP4 encodé) | −3,8 dBTP |
+| OK | 2 premières secondes | −13,4 LUFS momentané contre −14,8 sur le reste |
+| OK | Haut-parleur de téléphone | 26 % de l'énergie sous 150 Hz, 26,7 % entre 1 et 5 kHz |
+
+Le WARN : regardé sur `renders/qa-mo12/draft-mo12-9x16-safe.png` et sur trois images du MP4 (3,25 · 3,35 · 3,45 s,
+recadrées sur le bord gauche). C'est la C3 qui sort par la gauche, son contour et son tampon VENDUE en mouvement (le
+« V » passe la marge de 60 px à 3,45 s, 0,25 s, pendant la sortie). Aucun texte posé dans une zone interdite : pas un
+FAIL. La planche des zones sûres montre le reste du film dans la colonne (horloge, bulle, cartes, gag, liste, mention).
+
+**Synchro des bruitages, mesurée sur le MP4** : le son du MP4 est calé sur `audio/mix-mo12.wav` (décalage 0 ms par
+corrélation). Sur la piste des bruitages, niveau toutes les 10 ms autour de chaque repère : le son monte sur son repère
+(à 20 ms près) pour la vibration (0,10), la sonnette (1,46), le tampon VENDUE (2,58), le tremblement de « croit pas »
+(4,41), la pochette (7,01), les cartes 1 à 4 (7,77 · 8,22 · 8,67 · 9,12), les tapotements (9,57), la notification
+(12,0), la carte grise barrée (12,75), la déclaration (13,48), « 0,00 € » (14,85), le code (15,20), le gag (15,73), les
+clés (16,98), « 20 min » (17,72), la tasse (19,35), « 2 ans pour rouler » (24,90), « < 6 mois » (26,19), le contrôle
+d'achat barré (27,90) et PRÊTE (29,18). Sur l'image (écart d'une image à la suivante, 90 × 160), pour les gestes nets,
+le pic de mouvement suit le son de 0 à 0,14 s : tampon VENDUE + 20 ms, cartes 1 à 4 + 85 à + 135 ms (le ressort va
+le plus vite après son départ), déclaration + 53 ms, code + 55 ms, « 20 min » + 63 ms, PRÊTE − 9 ms. Aucun bruitage en
+avance sur son geste. Ailleurs (bulle du beau-frère, signatures, rabat), le pic de la fenêtre vient d'un autre
+mouvement (la C3 qui sort, la caméra) : vérifié sur les planches, le geste tombe sur son son. Le moteur de 3,23 s
+monte en 0,2 s avec la voiture ; les rouleaux de 2,22 s sortent de 7 à 9 dB dans les aigus (2,5 à 9 kHz), sous la fin
+de la sonnette : discrets, à écouter avec la voix.
 
 ### Ce qui n'a pas été vérifié
 
 Le son n'a pas été écouté. La voix est estimée : la vraie prise de Simon décidera de l'ouverture (0 → 2,2 s), de la
-bulle pendant « Il demande les papiers » et du limiteur. Le hook B n'a pas d'image propre à juger (même film).
+bulle pendant « Il demande les papiers » et du limiteur. Le hook B n'a pas d'image propre à juger (même film). Le
+montage 540p n'a pas été regardé en lecture continue : ses images ont été comparées aux planches (zones sûres,
+3,25 à 3,45 s).

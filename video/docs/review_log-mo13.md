@@ -751,3 +751,141 @@ vraie voix fera baisser le gain de normalisation (+15,1 dB aujourd'hui) et cette
   20,5–21,6 s. Refaire le rapport de mix sur la vraie voix (ducking, limiteur à 14,93 s).
 - La mention manque ≈ 0,2 s au raccord (de 25,38 s, celle du haut sortie, à ≈ 25,58 s, celle de la carte lisible).
 - Recaler sur la vraie prise : `T.out` sur le temps, la place du tampon « toi aussi ».
+
+## Round 4 (10 octobre 2026, critique seule : le film n'a pas été modifié)
+
+**Matériel regardé** (film dans l'état des corrections du round 3 : `film.js` de 01 h 56, `events.json` de 02 h 01,
+`mix-mo13.wav` de 01 h 52 ; le souffle de la carte du mix tombe bien à `card + 0,10` = 25,56 s, le mix suit donc
+`card` = 25,465 s)
+- Montage 540p avec le son, `renders/draft-mo13-9x16.mp4` : celui de 02 h 59 était incomplet (21,05 s). Refait avec
+  `CUT=mo13 node scripts/render.mjs --draft`, mais arrêté à la limite d'une heure des commandes en arrière-plan à
+  l'image 1 800 (la machine portait trois montages, jusqu'à 3,5 s par image). Complété : les images 1 800 → 1 886
+  (30,0 → 31,433 s) rendues en pleine définition (`--range 30,31.43`), réduites à 540 × 960 et accolées aux 1 800
+  premières, puis le mix posé (AAC 256 k). Résultat : 31,45 s, 1 887 images à 60 i/s. Écart à la soudure : 0,81 / 255
+  (0,18 à 0,48 entre les images voisines, carte immobile).
+- `qa_video.py` sur ce MP4 (`--intentional 21.5-22.4`) : `renders/qa-mo13/draft-mo13-9x16-qa.md` et `-safe.png`.
+- Planches toutes les 0,1 s refaites : `renders/review/mo13-planche-0.1s-0-10.jpg`, `-10-20.jpg`, `-20-31.45.jpg`
+  (315 images, regardées par tranches de 2 s), plus deux planches à 4 i/s tirées du MP4.
+- Bandes à 60 i/s sur le MP4 : débit 1, virements 1 et 3, gag et « toi aussi », compteur de 15,6 à 16,0 s, butée et
+  « une à la fois », montée de l'annonce, pile « Toujours dispo ? » et bulle 3, arrêt « 3 100 € », « prix max 2 500 € ».
+- Test téléphone à 360 px : `renders/phone-mo13.png` (0 · 2,95 · 5,3 · 6,6 · 9,6 · 10,75 · 13,7 · 16,2 · 18,1 · 20,6 ·
+  23,9 · 28,9 s).
+- Images pleine définition, `renders/stills-mo13/` : A (0 · 2,0 · 2,95 · 4,3 · 5,25 · 6,6 · 8,55 · 9,6 · 11,5 · 14,0 ·
+  15,6 · 16,3 · 17,3 · 18,05 · 19,2 · 19,45 · 20,6 · 21,2 · 22,6 · 24,6 · 25,35 · 25,55 · 26,6 · 28,9 · 30,5 s) ;
+  B (`HOOK=B` : 0,001 · 1,501 · 3,001 · 4,201 · 30,501 · 30,834 s) ; repli de boucle image par image (`range-mo13/`).
+  Aucune erreur `PAGEERR` ni `CONSOLE`.
+- Son : attaques mesurées sur `audio/stems-mo13/bruitages.wav` et sur la piste du MP4 (enveloppe à 2 ms), comparées à
+  la pose calculée des cartes (`t0 + 0,19`) et aux images. **Rien n'a été écouté.**
+- Hook passé au mode diagnostic d'`art-du-hook` (image seule, texte et voix inchangés).
+
+**Notes**
+
+| Hook | Lisibilité 360 | Zones sûres | Mouvement | Variété / rythme | Marque | Voix (provisoire) | Son | Recette 47 / envie |
+|---|---|---|---|---|---|---|---|---|
+| 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8 |
+
+Toutes les notes à 8, aucun FAIL : la grille est atteinte **sur le minutage provisoire**. Round 3 → 4 : mouvement 7 → 8
+(raccord de la carte et relais corrigés, vérifiés) et son 7 → 8 (bruitages posés sur le geste vu). La livraison attend
+la prise de Simon : recaler, refaire le mix (ducking) et un dernier contrôle.
+
+**Mesures**
+- `qa_video.py` : **aucun FAIL**. Première image écart-type 45,6 ; aucune image vide ; aucun plan figé de plus de
+  0,9 s ; −14,1 LUFS et −4,0 dBTP sur le MP4 ; 2 premières secondes −15,3 LUFS contre −14,3 ; 14 % de l'énergie sous
+  150 Hz, 33,5 % entre 1 et 5 kHz. Un WARN, zones sûres (droite : 8,50 → 20,25 s par endroits ; gauche : 9,75 →
+  24,75 s) : sur la planche et sur les 25 images pleine définition, seulement des cartes, bulles, messages et voitures
+  qui entrent ou sortent, le bord des marches de verre (x 940 → 1 050, y 1 276 → 1 366) et le bas du papier de
+  l'étiquette (y 1 480 → 1 502 de 2,95 à 4,3 s, sans texte). Aucun texte au repos dans le rouge.
+- **Synchro des cartes** (attaque la plus raide, à ± 0,2 image de la pose sur la piste des bruitages comme sur le MP4) :
+  débit 1 6,888 s (pose 6,890) · débit 2 7,846 (7,848) · gag 8,634 (8,637) · virement 1 10,706 (10,709) · ticket 2
+  13,526 (13,529) · virement 2 14,676 (14,679) · ticket 3 16,066 (16,069) · annonce 16,928 (16,940, vibration) ·
+  virement 3 20,186 (20,190). Vu sur le MP4 à 60 i/s : le débit 1 entre à 6,767 s et se pose à 6,883-6,900 s, le
+  virement 1 se pose à 10,700-10,717 s. Autres : « toi aussi » posé à 9,42 s, son à 9,394 (+ 2,5 images de crête) ;
+  butée à 17,488 s, cellule allumée à 17,517 ; « une à la fois » posé à 18,017-18,033, son à 18,006 ; arrêt de bande
+  21,566 s, « 3 100 € » à sa taille à 21,55 ; « prix max 2 500 € » lisible à 27,967, coup à 28,000.
+- Boucle : A, dernière image (31,433 s) identique à l'image 0 (écart 0,00 / 255 ; 0,35 à 31,417 s) ; B, 30,834 s
+  identique à 0,001 s. Repli : écart-type de l'image le plus bas à 30,75 s (8,8), puis 30,8 (9,6) ; pas d'image vide.
+- Voix provisoire : 13 répliques, 71 mots écrits, écarts de 0,30 à 2,77 s, aucun chevauchement, dernière réplique
+  finie à 31,02 s pour un film de 31,45 s. Parole 17,8 s (4,0 mots par seconde de parole, 2,3 sur la durée du film).
+  Écart au brief : 71 mots pour ≈ 65 (journal § 6), compensé par le film de 31,45 s. Cohérent : note 8 (consigne).
+- Hook (diagnostic `art-du-hook`, image seule) : Temps ✅ (« Il te manque 8 500 € ? » et la 206 dès l'image 0), Sens ✅,
+  Miroir ✅, Écart ✅, fermé à l'image à 2,9 s (« 1 400 € » écrit sous les 1 500). De 0 à 2,28 s, à 360 px : « 10 000 »
+  s'allume (0,2 → 0,7 s), la plume repasse le « ? » (1,0 → 1,6 s), « 1 500 » bat (1,9 → 2,4 s). Ouverture B :
+  « 1 500 € ↓ 3 100 € » et la mention dès 0,001 s, mise au point à 3,0 s, étiquette à 4,2 s.
+
+**Ce qui marche** : le hook tient sur A et sur B. Le récit se suit sans le son : compteur, prix barrés et payés,
+« réserve », trois débits puis deux tickets de plus en plus courts, trois virements, trois voitures qui montent, la
+tentation qui bute, la chute (« 3 100 € », « Tu attendais d'avoir 10 000. ») pleine de 23,5 à 24,35 s, le rembobinage
+qui repasse chaque état du compte, la carte remplie sur les temps et immobile 2 s. Le raccord du rembobinage n'est plus
+un fondu enchaîné (25,35 s : HUD qui file, silhouette qui s'enfonce ; 25,40-25,45 s : l'escalier seul). Un seul
+« 1 500 » à 5,2 s ; les débits passent sous « MARCHE 1 » à 8,5 s. Une seule couleur d'accent, aucun logo, plaques
+vierges, aucun visage, aucun site nommé.
+
+### Les 3 problèmes les plus graves
+
+**1. « 1 200 → 1 900 ✓ » ne se lit jamais, et « 1 550 → 2 450 ✓ » seulement au recul.** Les inscriptions des
+arêtes sont la mémoire de l'escalier (brief : « l'arête de la marche quittée garde achat → revente ✓ »), donc de la
+variable testée. Mesuré à 11,5 s (pleine définition) : les glyphes de « 1 200 → 1 900 ✓ » vont de y = 1 436 à 1 474,
+au-dessus de la bande interdite, mais à ≈ 15 % de contraste (crêtes 100 / 255 sur un fond à 85). La règle
+`const safe = 1 - sm(1440, 1474, iy);` (`film-mo13/film.js` l. 476) éteint le texte dès que sa **ligne de base**
+dépasse 1 440 ; celle de la marche 1 est à ≈ 1 474 quand la caméra est posée (11,1 → 11,8 s). Au recul (20,5 → 21,2 s),
+la marche 1 est sous 1 480 : son inscription reste cachée, et elle ne revient qu'à 21,3 s, assombrie sous le « 3 100 € ».
+« 1 550 → 2 450 ✓ » s'écrit à 14,71 s quand la caméra monte à 14,78 s : il ne se lit qu'au recul, comme « 2 000 →
+2 950 ✓ ». Correction :
+- `film-mo13/film.js` l. 476 : `const safe = 1 - sm(1476, 1500, iy);` (l'inscription est pleine tant que sa ligne de
+  base est au-dessus de 1 476, chiffres et ✓ au-dessus de 1 480 ; elle s'éteint pendant la montée) ;
+- vérifier : `CUT=mo13 node scripts/at.mjs 11.2,11.4,11.6,11.75,11.9,14.75,20.6 renders/review/mo13-at.jpg`, puis
+  `--phone` à 11,6 s : « 1 200 → 1 900 ✓ » lisible à 360 px de 11,3 à 11,75 s, et aucun glyphe au repos sous y = 1 480
+  (seuil de luminance sur l'image pleine définition).
+
+**2. La pile « Toujours dispo ? » s'imprime sur elle-même, puis sur la bulle « 2 950 et je la prends. »
+(18,9 → 19,55 s).** Dans `film.js` l. 715-721, un message recouvert garde son texte à `1 − 0,2 k` d'opacité (0,8 · 0,6
+· 0,4 · 0,2) et les plus anciens ne sont décalés que de 18 px (`dy = 92 min(k, 1) + 18 max(0, k − 1)`) : à 19,2 s,
+deux « Toujours dispo ? » à 40 % et 20 % se lisent l'un sur l'autre (`t19.200.png`). La sortie
+`go = S(st, T.bub3 − 0,2 + 0,05 (4 − i), P.push)` ne démarre qu'à 19,30 s pour le dernier et 19,50 s pour le premier,
+quand la bulle 3 arrive (`T.bub3` = 19,50 s) : de 19,40 à 19,55 s, trois fantômes à 30-60 % passent sur
+« Acheteur · message » et sur « … et je la prends. » (MP4, images 1 164 → 1 173 ; `t19.450.png`). Le commentaire de
+la l. 285 voulait que les anciens « ne montrent que leur bord ». Correction :
+- l. 75 : `T.msg = [0, 1, 2, 3, 4].map((i) => T.annOut + 0.3 + i * 0.12)` (dernier message à 19,09 s, SEMAINE 12 à
+  19,19 s) ;
+- l. 717 : `go = S(st, T.bub3 − 0.25 + 0.02 * (4 − i), { f: 1.6, z: 1 })` (la pile part de 19,25 à 19,33 s) ;
+- l. 719 : opacité `… * (1 − sm(0.15, 0.4, go))` (partie vers 19,37 s, avant la bulle) ;
+- après `set(m, …)` : ``m.style.color = `rgba(246,239,231,${f3(1 - sm(1.05, 1.5, k))})`;`` (un message recouvert ne
+  montre plus que son bord de verre) ;
+- puis `CUT=mo13 node scripts/events.mjs` et `python3 scripts/audio-mo13.py` (les notes des messages suivent `msg`) ;
+  vérifier `at.mjs 19.0,19.1,19.2,19.3,19.4,19.5,19.55` : jamais deux « Toujours dispo ? » l'un sur l'autre, et la
+  bulle 3 seule dès 19,45 s.
+
+**3. La tentation est serrée (17,4 → 18,45 s) : l'annonce touche la mention et le tampon cache le « ? » et le « € ».**
+L'annonce monte à `lerp(NY, 474, up)` + 40 au choc (`film.js` l. 708) : son bord haut se pose à y ≈ 514, la mention
+« Exemple · prix moyens constatés » occupe 484 → 511, et « Annonce · maintenant » est 6 px dessous (`t18.050.png`,
+`phone-mo13.png` à 18,1 s : les deux lignes se touchent). Le tampon « une à la fois » (`left:470px;top:64px`, l. 284)
+couvre de 18,0 à 18,45 s le « ? » de « Une affaire ? » et le « € » de « 1 600 € » : le défaut corrigé au round 2 sur
+« toi aussi » (`left:522px;top:100px`). Correction :
+- l. 708 : `lerp(NY, 500, up)` (bord haut à ≈ 540 après le choc, 30 px sous la mention ; l'annonce couvre toujours les
+  palettes, qu'elle découvre à SEMAINE 11) ;
+- l. 284 : `une` à `left:500px;top:100px` ; contrôler que son bord droit reste sous x = 940 avec l'échelle 0,88 de
+  l'annonce ;
+- vérifier `at.mjs 17.5,17.8,18.05,18.3` et `--phone` 18,1 : mention, « Une affaire ? » et « 1 600 € » entiers.
+
+### Les autres
+- **Compteur qui roule** : chaque chiffre roule seul, et des valeurs fausses se lisent un instant : « 1 500 € » de
+  15,85 à 15,92 s pendant 2 500 → 500 (MP4, images 951 → 954 pleines, 950 → 957 en partie ; planche à 15,9 s),
+  « 197 € » à 9,1 s pendant 108 → 50. Une image ou deux à 0,1 s ; laissé aux rounds 2 et 3. Correction possible, dans
+  `K.rollKeys2` (`kit-mo13.js`) : un chiffre de tête qui devient vide sort par le haut au lieu de passer par « 1 ».
+- **Repli de boucle (30,55 → 31,1 s)** : la carte file, l'escalier descend et s'éteint (écart-type 8,8 à 30,75 s), puis
+  l'image 0 revient avec une avance de caméra (z 160 → 0) et l'opacité. Pas de fondu enchaîné, pas d'image vide, mais
+  0,3 s presque noire juste avant la reprise : un signal de fin. À essayer : `back` qui part à `CLR − 0,15 FO`.
+- **Carte vide** de 25,45 à 25,7 s (verre entré, « bu » écrit) : acceptable, comme au round 3.
+- **Mention** absente de ≈ 25,38 à 25,58 s (raccord) : connu.
+- **Fiesta qui freine** à x ≈ 981 à 15,6 s : laissé (voiture seule en mouvement).
+- **Hook** : de 3,0 à 4,8 s, l'image ne change que par la poussée lente et le battement de l'étiquette (+10 %) ; le
+  tremblement de « 8 500 € ? » (4,28 s) se voit à peine à 360 px. Suffisant (note 8).
+- **Son** : réduction du limiteur −6,4 dB à 14,93 s (cible ≤ 6), étage de crête de la musique −8,9 dB sur le premier
+  coup (0,07 s) ; saut de 6 dB à la reprise de la boucle (−23,8 → −17,6 dBFS). Tout se rejoue avec la vraie voix.
+
+**FAIL de `qa_video.py`** : aucun.
+
+**Ce qui reste**
+- La prise de Simon (ElevenLabs bloqué), puis : recalage (`T.out` sur le temps, tampon « toi aussi »), mix avec ducking,
+  montage refait d'un seul tenant et contrôle sur le MP4.
+- Rien n'a été écouté : 0–2 s, la montée de 6,6 à 16,5 s, 20,5–21,6 s, la boucle.

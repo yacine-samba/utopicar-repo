@@ -162,7 +162,7 @@ du film du brief).
 | 0,00 | **11:00** | il sonne ; bulle « Acheteur · Je suis devant. » | étiquette 2 700 € |
 | 2,15 | 11:20 | flash-forward : VENDUE, la C3 part ; « Beau-frère · 20 min ? Impossible. » | — |
 | 4,45 → 4,95 | 11:20 → 11:00 | retour | — |
-| 4,95 → 5,75 | 11:01 → 11:09 | l'essai | — |
+| 4,95 → 5,75 | 11:01 → 11:09 | l'essai ; à 5,64 s, la bulle passe à « Les papiers ? » (round 3) | — |
 | 7,50 | 11:10 | « Le contrôle ? » → contrôle du 6 oct. | 78 € (payé mardi) |
 | 8,00 | 11:11 | « Pas de gage ? » → certificat de situation administrative du 6 oct., ni gage ni opposition | 0 € |
 | 8,50 | 11:12 | « La cession ? » → deux exemplaires pré-remplis | 0 € |
@@ -456,9 +456,9 @@ claquent), 1092 (bande qui rembobine), 1063 (tic-tac), 1538 et 1566 (moteur : d�
 | 19,35 · 19,90 | la tasse revient · « encore chaud. » s'écrit | 2835 (un tintement) · 2369 | orn −3 dB · orn |
 | 20,70 → 21,95 | rembobinage, palettes « MAR 6 OCT » | 1092 + 1119 × 5 | accent −6 dB, 1,45 s ; tick |
 | 22,50 → 24,50 | cinq cartes entrent dans la pochette | 2369 st 0, 2, 4, 5, 7 (+ 2380 −6 dB) | orn, une note par carte, qui monte |
-| 24,60 · 25,80 | « 2 ans pour rouler » · « < 6 mois à sa carte grise » | 1107 st 0 · 1107 st 3 | chime −4 dB, note claire |
+| 24,60 · 25,80 | « 2 ans pour rouler » · « < 6 mois à sa carte grise » (round 3, minutage provisoire : lignes à 25,36 et 26,22 s, une fois le bandeau agrandi ; les notes suivent le texte) | 1107 st 0 · 1107 st 3 | chime −4 dB, note claire |
 | 25,00 | « Pochette : 78 € » | 2589 + 2384 | orn · ui |
-| 26,50 · 27,50 · 28,00 | contrôle d'achat posé · barré · « refait le 6 oct. » et l'éclair | 1490 · 2998 · 2369 + 2589 | whoosh −4 dB · ui · orn |
+| 26,50 · 27,50 · 28,00 | contrôle d'achat posé · barré · « refait le 6 oct. » ; sur « refais », le bandeau « Contrôle » pulse et son « 78 € » s'allume (round 3 : l'éclair est retiré) | 1490 · 2998 · 2369 + 3005 | whoosh −4 dB · ui · orn |
 | 28,50 · 28,75 | le rabat se ferme · tampon PRÊTE | 1105 à l'envers · 2182 + 2380 st +2 | ui · accent (répond à VENDUE) |
 | 29,00 | retour à l'image 0 | 3120 | whoosh 0,8 s |
 
