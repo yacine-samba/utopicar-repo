@@ -60,3 +60,5 @@ assets/stock/mo10/
 renders/storyboard-master60/
 renders/stills-master60/
 renders/storyboard-master60-blanc/
+renders/*.log
+renders/err.txt

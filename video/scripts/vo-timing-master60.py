@@ -11,6 +11,21 @@ def _p(*a, **k):
 av.open = _p
 from faster_whisper import WhisperModel
 import soundfile as sf
+import librosa, numpy as np
+
+def silences(y, SR=44100):
+    """Silences de plus de 0,12 s (début, fin en s) d'après l'enveloppe à 10 ms."""
+    hop = 441
+    db = 20 * np.log10(librosa.feature.rms(y=y, frame_length=1764, hop_length=hop)[0] + 1e-9)
+    act = db > db.max() - 40
+    t = np.arange(len(act)) * hop / SR
+    out, st = [], None
+    for i, a in enumerate(act):
+        if not a and st is None: st = t[i]
+        if a and st is not None:
+            if t[i] - st > 0.12: out.append((st, t[i]))
+            st = None
+    return out
 
 M = WhisperModel('medium', device='cpu', compute_type='int8')
 OUT = 'audio/vo-master60'
@@ -25,7 +40,7 @@ CLES = [('celle', 'celle', 4.0), ('achetes', 'achetes', 4.0), ('colle', 'colle',
         ('n1650', '1650', 9.5), ('vendeur', 'vendeur', 10.0), ('bizarre', 'bizarre', 12.0), ('utopicar', 'utopicar', 13.5),
         ('bam', 'bam', 15.0), ('reste', 'reste', 16.0), ('frais', 'frais', 16.5), ('mercedes', 'mercedes', 18.0),
         ('prixmax', 'prix', 19.5), ('n16500', '16500', 19.5), ('attends', 'attends', 21.0), ('trois', 'trois', 22.0),
-        ('ahouais', 'ah', 23.0), ('quinze', '15', 24.0), ('pfff', 'pfff', 25.0), ('carnet', 'carnet', 26.5),
+        ('ahouais', 'ah', 23.0), ('quinze', ('15', 'quinze'), 24.0), ('pfff', ('pf', 'pff', 'pfff', 'pfff'), 25.0), ('carnet', 'carnet', 26.5),
         ('calculette', 'calculette', 27.0), ('onglets', 'onglets', 28.0), ('hop', 'hop', 29.5), ('tableau', 'tableau', 30.0),
         ('matin', 'matin', 31.5), ('n308', '308', 33.0), ('n63', '63', 34.0), ('baisse', 'baisse', 35.5), ('a3', 'a3', 36.5),
         ('ding', 'ding', 37.5), ('alerte', 'alerte', 38.0), ('marge', 'marge', 39.5), ('voiture', 'voiture', 40.5),
@@ -35,10 +50,17 @@ CLES = [('celle', 'celle', 4.0), ('achetes', 'achetes', 4.0), ('colle', 'colle',
 
 if __name__ == '__main__':
     A = mots(f'{OUT}/vo-placed-A.wav'); B = mots(f'{OUT}/vo-placed-B.wav')
+    y, _ = librosa.load(f'{OUT}/vo-placed-A.wav', sr=44100); SIL = silences(y)
     marks = {}
     for k, n, after in CLES:
-        w = next((w for w in A if w['n'].startswith(n) and w['s'] >= after), None)
-        if w: marks[k] = dict(t=w['s'], end=w['e'], mot=w['w'])
+        ns = n if isinstance(n, tuple) else (n,)
+        w = next((w for w in A if any(w['n'].startswith(x) for x in ns) and w['s'] >= after), None)
+        if w:
+            t = w['s']
+            # mot qui suit un silence : son attaque réelle (fin du silence) est plus précise que l'horodatage de Whisper
+            att = [b for a_, b in SIL if t - 0.25 <= b <= t + 0.12]
+            if att: t = round(att[-1], 3)
+            marks[k] = dict(t=t, end=w['e'], mot=w['w'])
         else: print('absent :', k)
     hook = lambda W: dict(debut=W[0]['s'], fin=max(w['e'] for w in W if w['s'] < 4.1), mots=[w for w in W if w['s'] < 4.1])
     dur = sf.info(f'{OUT}/vo-placed-A.wav').duration

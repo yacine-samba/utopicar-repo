@@ -104,6 +104,22 @@ img.ui{position:absolute;left:0;top:0;display:block;user-select:none}
 .gauge .s{font:500 24px Satoshi;color:var(--ink3);margin-top:16px;white-space:nowrap}
 .check{position:absolute;left:0;top:0;display:flex;align-items:center;gap:18px;font:700 40px Satoshi;white-space:nowrap}
 .check i{width:54px;height:54px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center;color:var(--onok);font:900 30px Satoshi;font-style:normal}
+/* couche interactive : onde de clic, survol, bulle, interrupteur, puces du parc */
+.rip{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;border:5px solid var(--o);pointer-events:none}
+.hov{position:absolute;border:3px solid var(--o);border-radius:20px;background:rgba(255,90,31,.07);transform-origin:50% 50%;pointer-events:none}
+.bub{position:absolute;left:0;top:0;padding:16px 24px;border-radius:20px;background:var(--ink);color:var(--bg0);font:700 28px Satoshi;white-space:nowrap;
+  box-shadow:var(--sh-soft);font-variant-numeric:tabular-nums}
+.bub small{display:block;font:500 20px Satoshi;opacity:.7;margin-top:2px}
+.bub::after{content:"";position:absolute;left:28px;bottom:-10px;width:22px;height:22px;background:var(--ink);transform:rotate(45deg);border-radius:4px}
+.seg{position:absolute;left:0;top:0;display:flex;padding:8px;border-radius:999px;background:var(--panel);border:1.5px solid var(--line);box-shadow:var(--sh-soft)}
+.seg span{position:relative;z-index:1;padding:16px 34px;font:700 32px Satoshi;white-space:nowrap;color:var(--ink2)}
+.seg .ind{position:absolute;top:8px;bottom:8px;border-radius:999px;background:var(--o);z-index:0}
+.puce{position:absolute;left:0;top:0;padding:14px 22px;border-radius:18px;background:var(--card);border:1.5px solid var(--line);box-shadow:var(--sh-soft);
+  font:700 26px Satoshi;white-space:nowrap}
+.puce b{color:var(--o2);font-weight:700;margin-right:10px}
+.step i{position:relative}
+.step i .c{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--ok);color:#fff;font:900 26px Satoshi}
+.cursor{position:absolute}
 #grain{position:absolute;inset:-50%;pointer-events:none;opacity:var(--grain);mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 #vign{position:absolute;inset:0;pointer-events:none;background:var(--vign)}

@@ -3,7 +3,11 @@
  "style": "master60 « UTOPICAR, la pub d'une minute » : deux cibles, voix de Simon (v4), vraie interface de l'app (données démo), ouvertures A (débutant) / B (marchand)",
  "fps": 30,
  "bpm": 112,
- "size": [1080, 1920],
- "dur": 58.5,
- "poster": 9.6
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 59.0,
+ "poster": 9.9,
+ "grille": "audio/vo-master60/grille.json (112 BPM, temps 0 = « Celle-là » à 4,23 s)"
 }
