@@ -104,6 +104,12 @@ Ouvertures : « [excited] Ta première voiture à revendre ? [short pause] Tu pe
 Crédits dépensés (coût réel facturé, v3 ≈ 1,15 crédit par caractère) : premières ouvertures 260, casting 710, essai 703,
 voix finale ≈ 2 450 (corps 2 × 1 058, ouvertures 2 × 85 + 2 × 82). Total ≈ 4 120.
 
+## 7 bis. Voix retenue (10 oct. 2026)
+**eleven_v3**, corps-2 + ouvertures A1 / B2, posée par `scripts/vo-master60.py` (silences ramenés à des respirations,
+× 1,08) : 56,9 s avec A, 56,2 s avec B. Écoute : `audio/vo-master60/ecoute-voix-A-v3.mp3` (« plus humain » pour
+l'utilisateur). Essai eleven_v4 (corps 145 Hz contre 124 Hz en v3) jugé « trop aigu » ; gardé dans `audio/vo-master60/v4/`.
+Crédits : ElevenLabs a affiché 0 crédit pour les prises v4 (à vérifier sur le compte).
+
 ## 8. Premières prises des ouvertures (10 oct. 2026, remplacées)
 Générées (eleven_v3, Simon, 2 prises chacune, ≈ 260 crédits), transcrites par faster-whisper *medium* : texte exact,
 aucune balise prononcée. Choix sur mesure : **A1** (3,18 s) et **B2** (2,80 s), les deux seules sous 3,2 s.

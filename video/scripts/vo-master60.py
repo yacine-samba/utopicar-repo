@@ -1,8 +1,8 @@
 """master60 : pose de la voix de Simon.
 
-Version retenue : eleven_v4 (demande de l'utilisateur, 10 oct.), prises `v4/corps-2`, `v4/hookA-2`, `v4/hookB-1`
-(corps-1 : « Digne » au lieu de « Ding » ; ouvertures choisies au plus près de la hauteur du corps).
-Version précédente, eleven_v3 : `v2/corps-2`, `v2/hookA-1`, `v2/hookB-2` (VERSION=v3).
+Version retenue (utilisateur, 10 oct. : « plus humain ») : eleven_v3, prises `v2/corps-2`, `v2/hookA-1`, `v2/hookB-2`,
+× 1,08. Essai eleven_v4 (`v4/corps-2`, `v4/hookA-2`, `v4/hookB-1`, VERSION=v4) : « trop aiguë » ; les ouvertures v4 sans
+[excited] (`v4/hook*-calme-*`) descendent à 110–136 Hz mais ne sont pas utilisées.
 
 Les prises eleven_v3 laissent de longs silences (28 s sur 74 s). On garde chaque morceau de parole tel quel et on
 ramène les silences à une respiration (0,26 s), sauf les silences voulus : avant « Non. » (le gag) et avant les
@@ -14,10 +14,12 @@ usage : python3 scripts/vo-master60.py            (depuis video/)
 import json, subprocess, sys, os
 import numpy as np, soundfile as sf, librosa, av
 
-VERSION = os.environ.get('VERSION', 'v4')
+VERSION = os.environ.get('VERSION', 'v3')
 PRISES = {'v4': ('audio/vo-master60/v4', 'corps-2', 'hookA-2', 'hookB-1', 1.0),
           'v3': ('audio/vo-master60/v2', 'corps-2', 'hookA-1', 'hookB-2', 1.08)}
 D, CORPS, HA, HB, SPEED = PRISES[VERSION]
+# transposition en demi-tons : la v4 sort plus aiguë que la v3 (corps 146 Hz contre 124) ; « trop aiguë » (utilisateur)
+PITCH = float(os.environ.get('PITCH', '-2' if VERSION == 'v4' else '0'))
 OUT = 'audio/vo-master60'
 SR = 44100
 RESPI = 0.26        # silence courant après pose (respiration)
@@ -72,10 +74,12 @@ def pose(f, ws):
     return tmp
 
 def accel(src, dst):
-    if SPEED == 1.0:
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-ar', str(SR), dst], check=True); os.remove(src); return
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-af', f'atempo={SPEED}', '-ar', str(SR), dst], check=True)
-    os.remove(src)
+    """Accélération (atempo) et transposition (rubberband, formants préservés : la voix descend sans effet « ralenti »)."""
+    f = []
+    if SPEED != 1.0: f.append(f'atempo={SPEED}')
+    if PITCH: f.append(f'rubberband=pitch={2 ** (PITCH / 12):.6f}:formant=preserved:pitchq=quality')
+    cmd = ['ffmpeg', '-v', 'error', '-y', '-i', src] + (['-af', ','.join(f)] if f else []) + ['-ar', str(SR), dst]
+    subprocess.run(cmd, check=True); os.remove(src)
 
 if __name__ == '__main__':
     W = {k: words(f'{D}/{k}.mp3') for k in (CORPS, HA, HB)}
