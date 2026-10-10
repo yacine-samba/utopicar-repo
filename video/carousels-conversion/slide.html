@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>utopicar — carrousels de conversion (mode clair)</title>
+<style>
+/* Charte du site utopicar.fr (branche main, web/src/app/globals.css) : fond sombre chaud, orange en accent,
+   Clash Display (titres) + Satoshi (texte) + Instrument Serif italique (le mot mis en avant). */
+@font-face{font-family:'Clash Display';font-weight:500;src:url(../assets/fonts-site/ClashDisplay-500.woff2) format('woff2')}
+@font-face{font-family:'Clash Display';font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:'Clash Display';font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:400;src:url(../assets/fonts-site/Satoshi-400.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:900;src:url(../assets/fonts-site/Satoshi-900.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#f7f2ea}
+:root{--bg0:#0b0a09;--bg1:#17100b;--ink:#f4f1ec;--ink2:rgba(244,241,236,.8);--ink3:rgba(244,241,236,.62);--line:rgba(244,241,236,.1);--line2:rgba(244,241,236,.2);
+  --glass:rgba(244,241,236,.05);--panel:rgba(22,16,12,.72);--o:#ff5a1f;--o2:#ff8a4c;--o3:#ffb38a;--ok:#3ecb7f;--warn:#ffc53d;--bad:#ff7a7a}
+#s{position:absolute;inset:0;overflow:hidden;color:var(--ink);font-family:'Satoshi',sans-serif;-webkit-font-smoothing:antialiased;
+  background:linear-gradient(160deg,var(--bg0),var(--bg1) 60%,var(--bg0))}
+#glow{position:absolute;inset:0;pointer-events:none}
+#grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 2px,transparent 2px),linear-gradient(90deg,var(--line) 2px,transparent 2px);
+  background-size:120px 120px;background-position:0 0;opacity:.45;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 80%)}
+/* colonne sûre TikTok : x 140 → 940, y 220 → 1480 */
+#safe{position:absolute;left:140px;width:800px;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:46px;text-align:center}
+.brand{position:absolute;left:140px;top:232px;width:800px;display:flex;justify-content:center;align-items:center;gap:18px}
+.tile{display:grid;place-items:center;width:72px;height:72px;border-radius:20px;border:2px solid var(--line2);background:#15110d;overflow:hidden}
+.tile img{width:84%}
+.brand b{font-family:'Clash Display';font-weight:600;font-size:40px;letter-spacing:-.01em}
+.brand .pg{font-weight:500;font-size:30px;color:var(--ink3);margin-left:6px}
+.kicker.k1{font-size:46px;padding:16px 34px}
+.kicker{display:inline-flex;align-items:center;gap:16px;padding:14px 28px;border:2px solid var(--line2);border-radius:999px;background:var(--glass);font-weight:500;font-size:36px;color:var(--ink2);white-space:nowrap}
+.kicker::before{content:'';width:14px;height:14px;border-radius:50%;background:var(--o);box-shadow:0 0 22px var(--o)}
+.title{font-family:'Clash Display';font-weight:600;letter-spacing:-.012em;word-spacing:.04em;line-height:1.04;color:var(--ink);white-space:nowrap}
+.it{font-family:'Instrument Serif';font-style:italic;font-weight:400;letter-spacing:0;padding-right:.06em;
+  background:linear-gradient(100deg,var(--o2),var(--o3) 60%,var(--o2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.title .r,.r{color:var(--bad)}.title .g,.g{color:var(--ok)}
+.body{font-weight:500;font-size:52px;line-height:1.3;color:var(--ink2);max-width:800px;text-wrap:balance}
+.body b{font-weight:700;color:var(--ink)}
+.carte{width:800px;border:2px solid var(--line);border-radius:44px;background:var(--panel);padding:44px 48px;text-align:left;box-shadow:0 60px 120px -60px rgba(0,0,0,.8)}
+.lab{font-weight:500;font-size:32px;color:var(--o2);margin-bottom:22px}
+/* liste numérotée */
+.list{display:flex;flex-direction:column;gap:30px;width:800px;text-align:left}
+.list .li{display:flex;gap:30px;align-items:flex-start}
+.list .n{flex:none;width:84px;height:84px;border-radius:26px;border:2px solid rgba(255,90,31,.45);background:rgba(255,90,31,.1);color:var(--o2);
+  font-family:'Clash Display';font-weight:600;font-size:48px;display:grid;place-items:center}
+.list .t{font-weight:700;font-size:52px;line-height:1.18;color:var(--ink);padding-top:10px}
+.list .t small{display:block;font-weight:500;font-size:41px;color:var(--ink3);margin-top:8px;line-height:1.25}
+/* lignes à cocher : libellé + statut */
+.rows{display:flex;flex-direction:column}
+.row{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:26px 0;border-top:2px solid var(--line);font-weight:500;font-size:46px;color:var(--ink2)}
+.row:first-child{border-top:0;padding-top:4px}.row:last-child{padding-bottom:0}
+.row b{font-weight:700;white-space:nowrap}
+.st{flex:none;font-weight:700;font-size:34px;padding:8px 22px;border-radius:999px;white-space:nowrap}
+.st.ok{color:var(--ok);background:rgba(62,203,127,.12);border:2px solid rgba(62,203,127,.35)}
+.st.warn{color:var(--warn);background:rgba(255,197,61,.1);border:2px solid rgba(255,197,61,.35)}
+.st.bad{color:var(--bad);background:rgba(255,122,122,.1);border:2px solid rgba(255,122,122,.35)}
+/* pastilles moteurs */
+.pills{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;width:800px}
+.pill{font-weight:700;font-size:40px;padding:14px 28px;border-radius:999px;white-space:nowrap}
+.pill.ok{color:var(--ok);background:rgba(62,203,127,.1);border:2px solid rgba(62,203,127,.4)}
+.pill.bad{color:var(--bad);background:rgba(255,122,122,.1);border:2px solid rgba(255,122,122,.4)}
+.pill.neu{color:var(--ink);background:var(--glass);border:2px solid var(--line2)}
+.pill.warn{color:var(--warn);background:rgba(255,197,61,.1);border:2px solid rgba(255,197,61,.4)}
+/* annonce citée */
+.quote{font-weight:500;font-size:50px;line-height:1.45;color:var(--ink2)}
+.quote mark{background:rgba(255,122,122,.2);color:var(--ink);border-radius:10px;padding:0 8px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.quote mark.ok{background:rgba(62,203,127,.18)}
+/* ticket de frais */
+.tk .row{font-size:44px}
+.tk .row span:last-child{font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.tk .tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:22px;padding-top:26px;border-top:3px dashed var(--line2)}
+.tk .tot span{font-weight:700;font-size:40px}
+.tk .tot b{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.02em;white-space:nowrap;font-variant-numeric:tabular-nums}
+/* verdict */
+.vd{display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center}
+.vd .chip{font-family:'Clash Display';font-weight:600;font-size:84px;letter-spacing:-.02em;padding:16px 48px;border-radius:999px;white-space:nowrap}
+.vd .chip.ok{color:var(--ok);background:rgba(62,203,127,.12);border:3px solid rgba(62,203,127,.45)}
+.vd .chip.warn{color:var(--warn);background:rgba(255,197,61,.1);border:3px solid rgba(255,197,61,.4)}
+.vd .chip.bad{color:var(--bad);background:rgba(255,122,122,.1);border:3px solid rgba(255,122,122,.45)}
+.vd .sub{font-weight:500;font-size:46px;line-height:1.3;color:var(--ink2)}
+.vd .sub b{color:var(--ink);font-weight:700}
+/* cote : fourchette du marché + annonce */
+.cote .bar{position:relative;height:30px;border-radius:15px;margin:96px 10px 28px;background:linear-gradient(90deg,rgba(62,203,127,.5),rgba(255,197,61,.5) 50%,rgba(255,122,122,.55))}
+.cote .mk{position:absolute;top:50%;transform:translate(-50%,-50%)}
+.cote .mk i{display:block;width:6px;height:72px;border-radius:3px;background:var(--ink)}
+.cote .dot{position:absolute;top:50%;width:52px;height:52px;border-radius:50%;background:var(--o);border:6px solid #17100b;box-shadow:0 0 30px rgba(255,90,31,.8);transform:translate(-50%,-50%)}
+.cote .tag{position:absolute;bottom:58px;transform:translateX(-50%);white-space:nowrap;font-weight:700;font-size:36px}
+.cote .ends{display:flex;justify-content:space-between;font-weight:500;font-size:32px;color:var(--ink3)}
+/* conversation */
+.chat{display:flex;flex-direction:column;gap:22px;width:800px}
+.bub{max-width:660px;padding:26px 34px;border-radius:36px;font-weight:500;font-size:46px;line-height:1.3;text-align:left}
+.bub.v{align-self:flex-start;background:var(--glass);border:2px solid var(--line2);border-bottom-left-radius:10px;color:var(--ink)}
+.bub.m{align-self:flex-end;background:rgba(255,90,31,.16);border:2px solid rgba(255,90,31,.45);border-bottom-right-radius:10px;color:var(--ink)}
+.who{font-weight:500;font-size:28px;color:var(--ink3);margin-bottom:4px}
+.bub.m .who{color:var(--o3)}
+/* notification d'alerte */
+.nt{display:flex;gap:30px;align-items:flex-start}
+.nt .ic{flex:none;width:100px;height:100px;border-radius:28px;border:2px solid var(--line2);background:#15110d;display:grid;place-items:center}
+.nt .ic img{width:84%}
+.nt .h{display:flex;justify-content:space-between;font-weight:500;font-size:30px;color:var(--ink3)}
+.nt .t1{font-weight:700;font-size:42px;margin-top:6px;line-height:1.2}
+.nt .t2{font-weight:500;font-size:38px;color:var(--ink2);margin-top:8px}
+/* grand chiffre */
+.big{font-family:'Clash Display';font-weight:600;font-size:260px;letter-spacing:-.04em;line-height:.95;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bigcap{font-weight:500;font-size:46px;color:var(--ink2);margin-top:10px}
+/* avant / maintenant */
+.vs{display:flex;gap:24px;width:800px}
+.vs .carte{width:388px;padding:36px 34px}
+.vs h4{font-family:'Clash Display';font-weight:600;font-size:46px;margin-bottom:18px}
+.vs .a h4{color:var(--ink3)}.vs .b h4{color:var(--o2)}.vs .b{border-color:rgba(255,90,31,.4)}
+.vs p{font-weight:500;font-size:36px;line-height:1.3;color:var(--ink2);padding:14px 0;border-top:2px solid var(--line)}
+.vs p:first-of-type{border-top:0;padding-top:0}
+/* frise horaire */
+.tl{display:flex;flex-direction:column;width:800px;text-align:left}
+.tl .e{display:flex;gap:30px;padding-bottom:34px;position:relative}
+.tl .e::before{content:'';position:absolute;left:23px;top:50px;bottom:0;width:4px;background:var(--line2)}
+.tl .e:last-child{padding-bottom:0}.tl .e:last-child::before{display:none}
+.tl .d{flex:none;width:50px;height:50px;border-radius:50%;border:4px solid var(--o);background:#17100b;margin-top:4px}
+.tl .e.x .d{border-color:var(--bad)}.tl .e.v .d{border-color:var(--ok)}
+.tl .hh{font-family:'Clash Display';font-weight:600;font-size:46px;color:var(--o2)}
+.tl .e.x .hh{color:var(--bad)}.tl .e.v .hh{color:var(--ok)}
+.tl .tt{font-weight:500;font-size:46px;line-height:1.25;color:var(--ink2);margin-top:2px}
+/* bas d'image */
+.swipe{position:absolute;left:140px;top:1340px;width:800px;display:flex;justify-content:center}
+.swipe span{font-weight:700;font-size:38px;color:var(--ink);border:2px solid var(--line2);background:var(--glass);border-radius:999px;padding:14px 34px}
+.relance{position:absolute;left:140px;top:1350px;width:800px;display:flex;justify-content:center}
+.relance span{font-weight:700;font-size:34px;line-height:1.25;color:var(--o3);border:2px solid rgba(255,90,31,.35);background:rgba(255,90,31,.08);border-radius:999px;padding:14px 32px;text-align:center;max-width:800px}
+/* vraie voiture détourée (photo Pexels, crédit en bas d'image) */
+.car{position:relative;width:800px;display:flex;justify-content:center;margin-top:6px}
+.car img{width:100%;height:auto;display:block;filter:drop-shadow(0 44px 38px rgba(0,0,0,.6))}
+.car::after{content:'';position:absolute;left:8%;right:8%;bottom:-26px;height:70px;z-index:-1;background:radial-gradient(ellipse at center,rgba(255,90,31,.32),transparent 70%)}
+.car.md{width:600px}
+.credit{position:absolute;left:140px;top:1428px;width:800px;text-align:center;font-weight:500;font-size:20px;line-height:1.35;color:var(--ink3);opacity:.75;text-wrap:balance}
+/* image 5 */
+.end .tile{width:150px;height:150px;border-radius:42px}
+.cta{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.01em;line-height:1.25;white-space:nowrap}
+.cta .k{display:inline-block;background:var(--o);color:#160904;border-radius:24px;padding:6px 30px 2px;box-shadow:0 24px 60px -20px rgba(255,90,31,.85)}
+.guide{font-weight:500;font-size:44px;line-height:1.3;color:var(--ink2)}
+.guide .it{font-size:1.18em}
+/* téléphone retrouvé dans l'histoire (objet du récit, pas une interface du produit) : coque bleu nuit, écran LCD vert */
+.nokia{width:640px;padding:30px 34px 40px;border-radius:70px 70px 56px 56px;background:linear-gradient(180deg,#34456a,#1d2843);
+  border:2px solid rgba(255,255,255,.1);box-shadow:0 70px 120px -50px rgba(0,0,0,.95),inset 0 3px 0 rgba(255,255,255,.14)}
+.nokia .nb{font-weight:900;font-size:30px;letter-spacing:.3em;color:rgba(226,233,245,.7);text-align:center;margin:0 0 22px .3em}
+.lcd{position:relative;border-radius:24px;background:linear-gradient(170deg,#b3c48b,#9bb176);padding:20px 30px 18px;color:#1c2911;text-align:left;
+  overflow:hidden;box-shadow:inset 0 8px 22px rgba(0,0,0,.38)}
+.lcd::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(0deg,rgba(28,41,17,.07) 0 2px,transparent 2px 6px),repeating-linear-gradient(90deg,rgba(28,41,17,.07) 0 2px,transparent 2px 6px)}
+.lcd .top{display:flex;justify-content:space-between;align-items:flex-end;height:54px}
+.lcd .bars{display:flex;gap:7px;align-items:flex-end}
+.lcd .bars i{display:block;width:13px;background:#1c2911}
+.lcd .bars i.off{background:transparent;border:3px solid #1c2911}
+.lcd .bat{display:flex;align-items:flex-end;gap:10px;font-weight:900;font-size:26px}
+.lcd .hd{font-weight:900;font-size:44px;text-align:center;margin-top:6px}
+.lcd .tm{font-family:'Clash Display';font-weight:700;font-size:168px;text-align:center;line-height:1.05;letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.lcd .msg{font-weight:700;font-size:60px;line-height:1.2;margin:22px 0 10px}
+.lcd .sub{font-weight:700;font-size:34px;text-align:center;opacity:.85}
+.lcd .msg + .sub{text-align:left}
+.lcd .ft{display:flex;justify-content:space-between;font-weight:900;font-size:32px;margin-top:20px;padding-top:12px;border-top:3px solid rgba(28,41,17,.45)}
+/* image de fin « partage » : la morale + à qui l'envoyer */
+.share{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.01em;line-height:1.25;white-space:nowrap}
+.share .k{display:inline-block;background:var(--o);color:#160904;border-radius:24px;padding:6px 30px 2px;box-shadow:0 24px 60px -20px rgba(255,90,31,.85)}
+.sharesub{font-weight:500;font-size:48px;line-height:1.3;color:var(--ink2);margin-top:-18px}
+.sign{font-weight:500;font-size:34px;color:var(--ink3)}
+.sign b{font-family:'Clash Display';font-weight:600;color:var(--ink2)}
+/* ——— visuels ajoutés (même charte) ——— */
+/* photo plein cadre en haut de l'image 1, fondue dans le fond */
+.hero{position:absolute;left:0;top:0;width:1080px;height:960px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,#000 52%,transparent 100%);mask-image:linear-gradient(180deg,#000 52%,transparent 100%)}
+.hero img{width:100%;height:100%;object-fit:cover;filter:saturate(1.06) contrast(1.05)}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,10,9,.5) 0%,rgba(11,10,9,0) 24%)}
+/* autocollant de prix sur la photo */
+.ptag{position:absolute;display:flex;flex-direction:column;align-items:flex-start;padding:18px 40px 24px;background:#f4f1ec;color:#160904;
+  border-radius:30px;transform:rotate(-7deg);box-shadow:0 36px 70px -24px rgba(0,0,0,.85)}
+.ptag s,.strike{position:relative;text-decoration:none;white-space:nowrap}
+.ptag s{font-weight:700;font-size:42px;color:#8f847b}
+.ptag s::after,.strike::after{content:'';position:absolute;left:-6px;right:-6px;top:50%;height:6px;margin-top:-3px;background:var(--bad);transform:rotate(-7deg);border-radius:3px}
+.ptag b{font-family:'Clash Display';font-weight:700;font-size:104px;line-height:1;letter-spacing:-.02em;white-space:nowrap}
+/* annonce façon capture claire, légèrement inclinée, avec une annotation */
+.lwrap{position:relative;width:780px}
+.listing{position:relative;width:780px;border-radius:40px;background:#f4f1ec;color:#17120e;overflow:hidden;text-align:left;transform:rotate(-2deg);
+  box-shadow:0 70px 120px -50px rgba(0,0,0,.95)}
+.listing .lph{position:relative;height:380px}
+.listing .lph img{display:block;width:100%;height:100%;object-fit:cover}
+/* voiture détourée dans l'annonce : fond clair de studio, voiture entière */
+.listing .lph.cut{background:radial-gradient(ellipse 80% 70% at 50% 60%,#ffffff,#ddd6cd)}
+.listing .lph.cut img{object-fit:contain;padding:26px 40px 18px}
+.listing .cnt{position:absolute;right:22px;bottom:20px;font-weight:700;font-size:26px;color:#fff;background:rgba(0,0,0,.55);border-radius:999px;padding:6px 18px}
+.listing .in{padding:28px 40px 32px}
+.listing .lt{font-weight:700;font-size:44px;line-height:1.15}
+.listing .lm{font-weight:500;font-size:32px;color:#6d635b;margin-top:6px}
+.listing .lp{font-family:'Clash Display';font-weight:700;font-size:76px;margin-top:12px;letter-spacing:-.02em;line-height:1}
+.listing .ll{font-weight:500;font-size:28px;color:#8a7f76;margin-top:12px}
+.note{position:absolute;display:flex;align-items:center;gap:6px;font-family:'Instrument Serif';font-style:italic;font-size:70px;color:var(--o);white-space:nowrap}
+.note svg{width:96px;height:64px;flex:none}
+/* chrono : anneau qui se remplit + prix du moment */
+.chrono{display:flex;align-items:center;gap:48px;width:800px}
+.ring{position:relative;flex:none;width:260px;height:260px}
+.ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring .t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .t b{font-family:'Clash Display';font-weight:600;font-size:80px;line-height:1;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.ring .t span{font-weight:500;font-size:26px;color:var(--ink3);margin-top:8px}
+.cp{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px}
+.cp .l{font-weight:500;font-size:32px;color:var(--ink3)}
+.cp .v{font-family:'Clash Display';font-weight:600;font-size:116px;line-height:1;letter-spacing:-.02em;white-space:nowrap;color:var(--o2)}
+.cp .olds{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline}
+.cp .olds .strike{font-weight:700;font-size:38px;color:var(--ink3)}
+.cp .plus{font-weight:700;font-size:36px;color:var(--ok);white-space:nowrap}
+/* bulle « … » : il ne dit rien */
+.dots{display:inline-flex;gap:14px;padding:12px 6px 6px}
+.dots i{width:20px;height:20px;border-radius:50%;background:var(--o3)}
+.dots i:nth-child(2){opacity:.6}.dots i:nth-child(3){opacity:.3}
+/* ce qu'il pense pendant ce temps */
+.thought{position:relative;width:800px;padding:30px 44px 36px;border:3px dashed rgba(244,241,236,.24);border-radius:64px;text-align:left;margin-top:26px}
+.thought::before,.thought::after{content:'';position:absolute;border:3px dashed rgba(244,241,236,.24);border-radius:50%}
+.thought::before{width:34px;height:34px;right:60px;top:-50px}
+.thought::after{width:18px;height:18px;right:34px;top:-82px}
+.thought .tlab{font-weight:500;font-size:30px;color:var(--ink3);margin-bottom:4px}
+.thought .tx{font-family:'Instrument Serif';font-style:italic;font-size:62px;line-height:1.12;color:var(--ink)}
+/* format mème : ce que voit le vendeur / ce qui se passe vraiment */
+.split{display:flex;gap:22px;width:800px;align-items:stretch}
+.sc{flex:1;border-radius:40px;padding:30px 32px 34px;text-align:left}
+.sc.a{background:var(--panel);border:2px solid var(--line2)}
+.sc.b{background:rgba(255,90,31,.1);border:3px dashed rgba(255,90,31,.5)}
+.sc .sl{font-weight:500;font-size:30px;color:var(--ink3);margin-bottom:14px}
+.sc.b .sl{color:var(--o3)}
+.sc.a .sx{font-family:'Clash Display';font-weight:600;font-size:50px;line-height:1.1;letter-spacing:-.01em}
+.sc.b .sx{font-family:'Instrument Serif';font-style:italic;font-size:60px;line-height:1.08}
+/* bulle « … » posée sur la photo de l'image 1 */
+.hb{position:absolute;max-width:none;background:rgba(24,15,10,.92)!important;box-shadow:0 30px 60px -24px rgba(0,0,0,.8)}
+/* grande bulle « … » de la dernière image */
+.bigdots{display:flex;gap:30px;padding:48px 66px;border-radius:90px 90px 24px 90px;background:rgba(255,90,31,.16);border:3px solid rgba(255,90,31,.5)}
+.bigdots i{width:50px;height:50px;border-radius:50%;background:var(--o3)}
+.bigdots i:nth-child(2){opacity:.6}.bigdots i:nth-child(3){opacity:.3}
+/* grand chiffre orange */
+.big.o{background:linear-gradient(100deg,var(--o),var(--o3) 70%);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em}
+/* bilan */
+.stats{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;width:800px}
+.stat{min-width:0}
+.stat{border:2px solid var(--line);border-radius:40px;background:var(--panel);padding:32px 36px 34px;text-align:left}
+.stat.w{grid-column:span 2;border-color:rgba(255,90,31,.4);background:rgba(255,90,31,.08)}
+.stat b{display:block;font-family:'Clash Display';font-weight:600;font-size:112px;line-height:1;letter-spacing:-.02em;white-space:nowrap}
+.stat.w b{color:var(--o2)}
+.stat span{display:block;font-weight:500;font-size:36px;color:var(--ink3);margin-top:12px}
+.stat.w{display:flex;justify-content:space-between;align-items:center;gap:24px}
+.stat .side{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.stat .side .strike{display:inline-block;margin:0;font-weight:700;font-size:38px;color:var(--ink3)}
+.stat .side em{font-style:normal;font-family:'Clash Display';font-weight:600;font-size:52px;color:var(--ink);white-space:nowrap}
+.hist{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 20px;width:800px}
+.hist .strike{font-weight:700;font-size:40px;color:var(--ink3)}
+.hist .ar{font-weight:500;color:var(--ink3);font-size:36px}
+.hist b{font-family:'Clash Display';font-weight:600;font-size:60px;color:var(--o2);white-space:nowrap}
+
+/* ════════ Mode clair ════════
+   La DA de base (Clash Display, Satoshi, mot en Instrument Serif italique orange, pastilles, cartes, grille, halo),
+   recolorée avec le thème clair du site public (web/src/app/globals.css, .cadre-site[data-theme="clair"]). */
+:root{--bg0:#f7f2ea;--bg1:#efe7dc;--ink:#1c1612;--ink2:rgba(28,22,18,.8);--ink3:rgba(28,22,18,.62);--line:rgba(28,22,18,.1);--line2:rgba(28,22,18,.2);
+  --glass:rgba(28,22,18,.04);--panel:rgba(255,255,255,.86);--o:#ff5a1f;--o2:#c2410c;--o3:#e0571a;--ok:#137036;--warn:#8a5306;--bad:#c81e1e;
+  --sh:0 40px 80px -48px rgba(70,40,15,.42),0 6px 16px -8px rgba(70,40,15,.12)}
+#s{background:linear-gradient(160deg,#fbf8f3,var(--bg1) 60%,#fbf8f3)}
+#grid{opacity:.55}
+.nb{display:inline-block;width:.2em}
+.it{background-image:linear-gradient(100deg,var(--o),var(--o2) 60%,var(--o3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tile{background:#1c1612;border-color:#1c1612}
+.kicker{background:rgba(255,255,255,.7);border-color:var(--line2);box-shadow:0 10px 24px -16px rgba(70,40,15,.3)}
+.carte{background:var(--panel);border-color:var(--line);box-shadow:var(--sh)}
+.st.ok,.pill.ok{color:var(--ok);background:rgba(19,112,54,.08);border-color:rgba(19,112,54,.35)}
+.st.warn,.pill.warn{color:var(--warn);background:rgba(138,83,6,.08);border-color:rgba(138,83,6,.35)}
+.st.bad,.pill.bad{color:var(--bad);background:rgba(200,30,30,.07);border-color:rgba(200,30,30,.35)}
+.pill.neu{background:rgba(255,255,255,.75)}
+.vd .chip.ok{color:var(--ok);background:rgba(19,112,54,.08);border-color:rgba(19,112,54,.4)}
+.vd .chip.warn{color:var(--warn);background:rgba(138,83,6,.08);border-color:rgba(138,83,6,.4)}
+.vd .chip.bad{color:var(--bad);background:rgba(200,30,30,.07);border-color:rgba(200,30,30,.4)}
+.quote mark{background:rgba(200,30,30,.12);color:var(--ink)}
+.quote mark.ok{background:rgba(19,112,54,.12)}
+.cote .dot{border-color:#fff}
+.bub.v{background:#fff;border-color:var(--line2);box-shadow:var(--sh)}
+.bub.m{background:rgba(255,90,31,.1);border-color:rgba(255,90,31,.45)}
+.bub.m .who{color:var(--o2)}
+.hb{background:rgba(255,255,255,.95)!important}
+.thought,.thought::before,.thought::after{border-color:rgba(28,22,18,.26)}
+.listing{background:#fff;box-shadow:0 60px 110px -50px rgba(70,40,15,.55),0 0 0 2px var(--line)}
+.tl .d{background:#fff}
+.stat{box-shadow:var(--sh)}
+.swipe span{background:#fff;border-color:var(--line2);box-shadow:var(--sh)}
+.hero::after{background:linear-gradient(180deg,rgba(247,242,234,.45) 0%,rgba(247,242,234,0) 24%)}
+.cta .k,.share .k{color:#1c0b03}
+/* ════════ Conversion ════════ */
+/* l'offre rappelée dans l'en-tête de chaque image de contenu */
+.brand .offre{margin-left:8px;font-weight:700;font-size:26px;color:var(--o2);border:2px solid rgba(255,90,31,.45);background:rgba(255,90,31,.08);border-radius:999px;padding:6px 18px;white-space:nowrap}
+/* dernière image : la carte de l'offre */
+.offer{width:800px;border-radius:44px;background:#fff;box-shadow:var(--sh),0 0 0 2px rgba(255,90,31,.35);padding:40px 48px 44px;text-align:left;position:relative;overflow:hidden}
+.offer::before{content:'';position:absolute;inset:0 0 auto 0;height:12px;background:linear-gradient(90deg,var(--o),var(--o3))}
+.offer .hd{display:flex;align-items:center;gap:30px}
+.offer .n{font-family:'Clash Display';font-weight:600;font-size:200px;line-height:.8;letter-spacing:-.05em;background:linear-gradient(100deg,var(--o),var(--o2));-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em}
+.offer .l1{font-family:'Clash Display';font-weight:600;font-size:66px;line-height:1;letter-spacing:-.01em}
+.offer .l2{font-weight:700;font-size:32px;color:var(--ok);margin-top:12px}
+.offer .gets{margin-top:30px;border-top:2px dashed var(--line2);padding-top:22px;display:flex;flex-direction:column;gap:14px}
+.offer .gets div{display:flex;align-items:center;gap:20px;font-weight:500;font-size:40px;color:var(--ink2)}
+.offer .gets i{flex:none;width:46px;height:46px;border-radius:50%;background:rgba(19,112,54,.1);border:2px solid rgba(19,112,54,.4);color:var(--ok);font-style:normal;font-weight:900;font-size:26px;display:grid;place-items:center}
+.ou{font-weight:700;font-size:34px;color:var(--ink3);margin-top:-18px}
+
+/* ════════ 2027 ════════
+   Fond aurore (orange, pêche, abricot) avec grain ; surfaces en verre (flou, reflet du haut, liseré blanc) ;
+   pastille « en direct » façon Dynamic Island ; tuiles (bento) ; pass ; bouton à ombre dure pour l'action. */
+#glow{filter:saturate(1.08)}
+#grid{opacity:.4;-webkit-mask-image:radial-gradient(ellipse 70% 45% at 50% 38%,#000 20%,transparent 75%)}
+#grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.9;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4  0 0 0 0 .25  0 0 0 0 .12  0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.glass,.kicker,.brand,.carte,.swipe span,.bento .tile2{background:rgba(255,255,255,.52)!important;-webkit-backdrop-filter:blur(26px) saturate(170%);backdrop-filter:blur(26px) saturate(170%);
+  border:1.5px solid rgba(255,255,255,.85)!important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),0 30px 60px -36px rgba(120,50,10,.45),0 2px 8px -4px rgba(120,50,10,.12)!important}
+.brand{left:50%!important;width:auto!important;transform:translateX(-50%);padding:10px 14px 10px 10px;border-radius:999px;gap:14px!important}
+.brand .tile{width:58px;height:58px;border-radius:18px}
+.brand b{font-size:34px}
+.brand .offre{margin-left:2px}
+.title{letter-spacing:-.032em}
+.title .it{font-size:1.08em;letter-spacing:-.005em}
+.kicker.k1{font-size:42px}
+/* pastille d'analyse « en direct » */
+.island{display:inline-flex;align-items:center;gap:20px;background:#120d0a;color:#f7f2ea;border-radius:999px;padding:14px 30px 14px 14px;
+  box-shadow:0 26px 50px -24px rgba(30,12,4,.6);font-weight:700;font-size:34px;white-space:nowrap}
+.island .ic{width:58px;height:58px;border-radius:50%;background:#2a1d15;display:grid;place-items:center}
+.island .ic img{width:70%}
+.island .rg{width:46px;height:46px;flex:none}
+.island .ok{color:#3ecb7f}
+.island small{display:block;font-weight:500;font-size:24px;color:rgba(247,242,234,.6);margin-top:2px}
+.lwrap .island.onlisting{position:absolute;left:50%;top:-54px;transform:translateX(-50%) rotate(1.5deg);z-index:3}
+/* annonce : le passage relevé par l'analyse, surligné */
+.listing .ll mark{background:linear-gradient(transparent 12%,rgba(255,90,31,.28) 12%,rgba(255,90,31,.28) 92%,transparent 92%);color:#17120e;padding:0 4px;border-radius:4px}
+/* tuiles */
+.bento{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;width:800px;text-align:left}
+.bento .tile2{border-radius:40px;padding:30px 34px 32px;min-width:0;position:relative;overflow:hidden}
+.bento .tile2.w{grid-column:span 2}
+.bento .lb{font-weight:700;font-size:30px;color:var(--ink3)}
+.bento .vl{font-family:'Clash Display';font-weight:600;font-size:110px;line-height:.95;letter-spacing:-.035em;margin-top:10px;white-space:nowrap}
+.bento .tile2.w .vl{font-size:132px}
+.bento .sb{font-weight:500;font-size:30px;color:var(--ink2);margin-top:12px;line-height:1.25}
+.bento .vl.ok{color:var(--ok)}.bento .vl.o{background-image:linear-gradient(100deg,var(--o),var(--o2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bento .tile2.hl{background:linear-gradient(140deg,rgba(255,255,255,.7),rgba(255,214,190,.55))!important}
+.bento .ring{position:absolute;right:24px;top:50%;width:150px;height:150px;transform:translateY(-50%)}
+.bento .tile2.rg{min-height:240px}
+.bento .tile2.rg .lb,.bento .tile2.rg .sb{max-width:calc(100% - 160px)}
+.bento .ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:'Clash Display';font-weight:600;font-size:44px;letter-spacing:-.02em;color:var(--ok)}
+/* l'offre en pass */
+.pass{position:relative;width:780px;border-radius:52px;padding:34px 44px 38px;text-align:left;color:#1c0b03;overflow:hidden;
+  background:radial-gradient(120% 90% at 0% 0%,#ffb38a 0%,rgba(255,179,138,0) 55%),linear-gradient(150deg,#ff5a1f,#ff7a3d 55%,#ff9a5c);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.55),0 50px 90px -40px rgba(200,60,10,.65),0 4px 12px -4px rgba(120,40,5,.25);
+  -webkit-mask:radial-gradient(circle 26px at 0 63%,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 26px at 100% 63%,#0000 97%,#000) right/51% 100% no-repeat;
+  mask:radial-gradient(circle 26px at 0 63%,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 26px at 100% 63%,#0000 97%,#000) right/51% 100% no-repeat}
+.pass::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.32) 45%,rgba(255,255,255,0) 60%);pointer-events:none}
+.pass .top{display:flex;justify-content:space-between;align-items:center}
+.pass .top .mq{display:flex;align-items:center;gap:14px;font-family:'Clash Display';font-weight:600;font-size:36px}
+.pass .top .mq span{width:52px;height:52px;border-radius:16px;background:#1c1612;display:grid;place-items:center}
+.pass .top .mq img{width:84%}
+.pass .top em{font-style:normal;font-weight:700;font-size:26px;background:rgba(255,255,255,.35);border-radius:999px;padding:8px 18px}
+.pass .mid{display:flex;align-items:flex-end;gap:26px;margin-top:26px}
+.pass .n{font-family:'Clash Display';font-weight:600;font-size:230px;line-height:.78;letter-spacing:-.06em;color:#fff;text-shadow:0 10px 30px rgba(150,40,0,.25)}
+.pass .l1{font-family:'Clash Display';font-weight:600;font-size:66px;line-height:.98;letter-spacing:-.015em;padding-bottom:6px}
+.pass .perf{margin:34px 0 26px;border-top:5px dotted rgba(28,11,3,.35)}
+.pass .bot{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.pass .bot .lb{font-weight:700;font-size:26px;opacity:.75}
+.pass .bot .cd{font-family:'Clash Display';font-weight:600;font-size:64px;letter-spacing:.02em;line-height:1}
+.pass .bot .nc{font-weight:700;font-size:26px;text-align:right;line-height:1.25}
+.gets2{display:flex;flex-direction:column;gap:12px;width:760px;text-align:left}
+.gets2 div{display:flex;align-items:center;gap:18px;font-weight:500;font-size:38px;color:var(--ink2)}
+.gets2 i{flex:none;width:44px;height:44px;border-radius:50%;background:rgba(19,112,54,.1);border:2px solid rgba(19,112,54,.4);color:var(--ok);font-style:normal;font-weight:900;font-size:24px;display:grid;place-items:center}
+/* le bouton d'action : ombre dure, il se voit au premier coup d'œil */
+.btn{display:inline-flex;align-items:center;gap:18px;font-family:'Clash Display';font-weight:600;font-size:60px;letter-spacing:-.01em;white-space:nowrap;
+  background:#1c1612;color:#fff;border-radius:30px;padding:22px 44px;box-shadow:9px 9px 0 #ff5a1f}
+.btn b{color:#ff8a4c;font-weight:600}
+/* montants de la valeur : gros chiffres, c'est ce qu'on doit voir */
+.carte .rows .st{font-family:'Clash Display';font-weight:600;font-size:54px;letter-spacing:-.02em;padding:4px 24px 2px}
+.carte .rows .row{font-size:44px;padding:24px 0}
+.vs .carte{padding:34px 32px}
+.vs h4{font-size:44px;line-height:1.05}
+.vs p{font-size:44px}
+.vs p b{font-family:'Clash Display';font-weight:600;font-size:1.6em;line-height:1.1;color:var(--ink)}
+.vs .b p b{color:var(--ok)}
+
+/* ════════ Touches à la main (SVG, discrètes) ════════ */
+/* trait de feutre sous le mot en italique des titres */
+.title .it{position:relative;display:inline-block}
+.title .it::after{content:'';position:absolute;left:4%;right:2%;bottom:-.04em;height:.15em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 18' preserveAspectRatio='none'%3E%3Cpath d='M3 12 C 40 4, 78 15, 118 8 S 196 13, 237 5' fill='none' stroke='%23ff5a1f' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;opacity:.75;transform:rotate(-1.2deg)}
+/* cercle tracé à la main autour d'un grand chiffre */
+.bigw{position:relative;display:inline-block}
+.bigw{margin-bottom:10px}
+.bigw .cerc{position:absolute;left:-9%;right:-9%;top:-12%;bottom:-10%;width:118%;height:122%;pointer-events:none;color:var(--o);opacity:.85}
+/* étiquette collée sur la photo de l'annonce */
+.stk{position:absolute;left:22px;top:22px;display:inline-flex;align-items:center;gap:10px;background:#fff;color:#17120e;font-weight:700;font-size:26px;
+  padding:9px 18px 9px 14px;border-radius:999px;transform:rotate(-5deg);box-shadow:0 10px 22px -10px rgba(0,0,0,.5)}
+.stk::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--o)}
+/* flèche dessinée qui amène l'œil sur le bouton */
+.btnw{position:relative;display:inline-block}
+.btnw .fl{position:absolute;left:-150px;top:-78px;width:150px;height:110px;color:var(--o);opacity:.9}
+</style>
+</head>
+<body>
+<div id="s"><div id="glow"></div><div id="grid"></div><div id="grain"></div></div>
+<script type="module">
+const q = new URLSearchParams(location.search);
+const DATA = await (await fetch('carousels.json')).json();
+const C = DATA.carousels[+q.get('c')]; const N = +q.get('s'); const SL = C.slides[N]; const LAST = N === C.slides.length - 1;
+const S = document.getElementById('s');
+const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (parent) parent.appendChild(e); return e; };
+// balisage : *mot* = serif italique orange, **gras**, [r]rouge[/r], [g]vert[/g], ==surligné== (annonce), \n = ligne
+// espace fine dessinée (span) : Clash Display n'a pas le caractère « espace fine insécable » (6 700 € s'affichait 6700€)
+const NB = '<span class="nb"></span>';
+const md = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/(\d) (?=\d{3}(\D|$))/g, '$1' + NB).replace(/ (€|h\b|%|km|ch\b)/g, NB + '$1').replace(/ ([?!:;»])/g, NB + '$1').replace(/« /g, '«' + NB)
+  .replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<span class="it">$1</span>')
+  .replace(/\[r\](.+?)\[\/r\]/g, '<span class="r">$1</span>').replace(/\[g\](.+?)\[\/g\]/g, '<span class="g">$1</span>')
+  .replace(/==(.+?)==/g, '<mark>$1</mark>').replace(/\+\+(.+?)\+\+/g, '<mark class="ok">$1</mark>');
+const SYM = '../assets/brand/official/utopicar-symbole-site.svg';
+// halo orange : position différente à chaque image, pour que le glissement se sente
+const G = [['50% -8%', .16], ['105% 30%', .11], ['-5% 70%', .11], ['100% 105%', .13], ['50% 110%', .18]][Math.min(N, 4)];
+const AU = [[['12% 4%', '255,90,31', .26], ['92% 22%', '255,179,138', .55], ['30% 96%', '255,140,80', .2]],
+  [['95% 8%', '255,90,31', .22], ['6% 46%', '255,190,150', .5], ['80% 98%', '255,120,60', .2]],
+  [['4% 10%', '255,170,120', .5], ['96% 54%', '255,90,31', .2], ['40% 100%', '255,200,160', .45]],
+  [['50% 0%', '255,90,31', .22], ['0% 80%', '255,180,140', .5], ['100% 70%', '255,120,60', .18]]][N % 4];
+document.getElementById('glow').style.background = AU.map(([p, c, a]) => `radial-gradient(ellipse 62% 36% at ${p}, rgba(${c},${a}), transparent 70%)`).join(',');
+
+if (SL.glow) document.getElementById('glow').style.background = `radial-gradient(ellipse 90% 50% at ${SL.glow[0]}, rgba(255,90,31,${SL.glow[1]}), transparent 72%)`;
+// photo plein cadre (image 1), avec l'étiquette de prix collée dessus
+if (SL.hero) {
+  el('div', 'hero', S, `<img src="${SL.hero.src}" style="object-position:${SL.hero.pos || '50% 50%'}">`);
+  if (SL.hero.tag) { const t = el('div', 'ptag', S, `<s>${md(SL.hero.tag[0])}</s><b>${md(SL.hero.tag[1])}</b>`); t.style.left = (SL.hero.tx ?? 560) + 'px'; t.style.top = (SL.hero.ty ?? 330) + 'px'; }
+  if (SL.hero.bub) { const b = el('div', 'bub m hb', S, `<div class="who">${md(SL.hero.bub[2] || 'Toi')}</div><span class="dots"><i></i><i></i><i></i></span>`); b.style.left = SL.hero.bub[0] + 'px'; b.style.top = SL.hero.bub[1] + 'px'; }
+}
+if (N > 0 && !LAST) el('div', 'brand', S,`<span class="tile"><img src="${SYM}"></span><b>utopicar</b><span class="pg">${N + 1}/${C.slides.length}</span>` +
+  (C.offer && C.offer.pastille ? `<span class="offre">${md(C.offer.pastille)}</span>` : ''));
+const box = el('div', '', S); box.id = 'safe';
+
+// pastille d'analyse « en direct » : anneau qui tourne (en cours) ou coche verte (terminé)
+function island(c) {
+  const ring = c.state === 'ok' ? '<span class="ok" style="font-size:40px">✓</span>'
+    : '<svg class="rg" viewBox="0 0 46 46"><circle cx="23" cy="23" r="19" fill="none" stroke="rgba(247,242,234,.18)" stroke-width="5"/><circle cx="23" cy="23" r="19" fill="none" stroke="#ff5a1f" stroke-width="5" stroke-linecap="round" stroke-dasharray="78 120" transform="rotate(-90 23 23)"/></svg>';
+  return `<span class="ic"><img src="${SYM}"></span><span>${md(c.t)}${c.sub ? `<small>${md(c.sub)}</small>` : ''}</span>${ring}`;
+}
+function comp(c, parent) {
+  const k = c.k;
+  if (k === 'island') { el('div', 'island', parent, island(c)); return; }
+  if (k === 'bento') {
+    const w = el('div', 'bento', parent);
+    for (const t of c.items) {
+      // tuile à anneau (note du moteur) : la note dans l'anneau, le libellé à côté
+      const val = t.ring != null ? '' : `<div class="vl ${t.tone || ''}">${md(t.v)}</div>`;
+      const d = el('div', 'tile2' + (t.w ? ' w' : '') + (t.hl ? ' hl' : '') + (t.ring != null ? ' rg' : ''), w, `<div class="lb">${md(t.l)}</div>${val}${t.s ? `<div class="sb">${md(t.s)}</div>` : ''}`);
+      if (t.ring != null) { const C2 = 2 * Math.PI * 50; el('div', 'ring', d, `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(19,112,54,.15)" stroke-width="11"/><circle cx="60" cy="60" r="50" fill="none" stroke="#137036" stroke-width="11" stroke-linecap="round" stroke-dasharray="${(C2 * t.ring).toFixed(1)} ${C2.toFixed(1)}" transform="rotate(-90 60 60)"/></svg><b>${md(t.v)}</b>`); }
+    }
+    return;
+  }
+  if (k === 'list') { const w = el('div', 'list', parent); c.items.forEach((it, i) => { const [t, sm] = Array.isArray(it) ? it : [it]; el('div', 'li', w, `<span class="n">${c.start != null ? c.start + i : i + 1}</span><span class="t">${md(t)}${sm ? `<small>${md(sm)}</small>` : ''}</span>`); }); return; }
+  if (k === 'pills') { const w = el('div', 'pills', parent); for (const [t, tone] of c.items) el('span', 'pill ' + (tone || 'neu'), w, (tone === 'ok' ? '✓ ' : tone === 'bad' ? '✕ ' : '') + md(t)); return; }
+  // « … » seul dans une bulle = trois points : il ne dit rien
+  // 3e élément facultatif : nom propre à cette bulle (ex. « Le vendeur · 0:12 »)
+  if (k === 'chat') { const w = el('div', 'chat', parent); for (const [who, t, lab] of c.items) el('div', 'bub ' + who, w, `<div class="who">${md(lab || (who === 'v' ? (c.v || 'Le vendeur') : (c.m || 'Toi')))}</div>${t === '…' ? '<span class="dots"><i></i><i></i><i></i></span>' : md(t)}`); return; }
+  if (k === 'listing') {
+    const w = el('div', 'lwrap', parent); const d = el('div', 'listing', w);
+    el('div', 'lph' + (c.cut ? ' cut' : ''), d, `<img src="${c.src}" style="object-position:${c.pos || '50% 50%'}"><span class="cnt">1/${c.n || 8}</span>`);
+    // annonce réduite à l'essentiel quand m et l sont vides : photo, modèle, prix
+    el('div', 'in', d, `<div class="lt">${md(c.t)}</div>${c.m ? `<div class="lm">${md(c.m)}</div>` : ''}<div class="lp">${md(c.p)}</div>${c.l ? `<div class="ll">${md(c.l)}</div>` : ''}`);
+    if (c.note) {
+      const arrow = '<svg viewBox="0 0 96 64"><path d="M92 14C70 52 38 58 10 38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M10 38L32 34M10 38L20 58" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>';
+      const n = el('div', 'note', d, `${arrow}<span>${md(c.note)}</span>`); n.style.left = (c.nx ?? 330) + 'px'; n.style.top = (c.ny ?? 520) + 'px';
+    }
+    if (c.vraie) el('span', 'stk free', d.querySelector('.lph'), 'Vraie annonce');
+    // pastille d'analyse posée sur l'annonce, comme une notification qui arrive
+    if (c.island) { el('div', 'island onlisting', w, island(c.island)); w.style.marginTop = '40px'; }
+    if (c.ph) d.querySelector('.lph').style.height = c.ph + 'px';
+    return;
+  }
+  if (k === 'chrono') {
+    const C2 = 2 * Math.PI * 112, w = el('div', 'chrono', parent);
+    el('div', 'ring', w, `<svg viewBox="0 0 260 260"><circle cx="130" cy="130" r="112" fill="none" stroke="rgba(244,241,236,.12)" stroke-width="18"/>` +
+      `<circle cx="130" cy="130" r="112" fill="none" stroke="#ff5a1f" stroke-width="18" stroke-linecap="round" stroke-dasharray="${(C2 * c.p).toFixed(1)} ${C2.toFixed(1)}"/></svg>` +
+      `<div class="t"><b>${md(c.t)}</b><span>${md(c.cap || 'sans un mot')}</span></div>`);
+    el('div', 'cp', w, `<span class="l">${md(c.lab || 'Prix du vendeur')}</span><span class="v">${md(c.price)}</span>` +
+      `<span class="olds">${(c.olds || []).map(o => `<span class="strike">${md(o)}</span>`).join('')}${c.plus ? `<span class="plus">${md(c.plus)}</span>` : ''}</span>`);
+    return;
+  }
+  // la pensée grossit d'une image à l'autre (c.size) : la panique monte
+  if (k === 'thought') { el('div', 'thought', parent, `<div class="tlab">${md(c.lab || 'Dans sa tête :')}</div><div class="tx"${c.size ? ` style="font-size:${c.size}px"` : ''}>${md(c.t)}</div>`); return; }
+  if (k === 'split') { const w = el('div', 'split', parent); for (const [cls, [lab, t]] of [['a', c.a], ['b', c.b]]) el('div', 'sc ' + cls, w, `<div class="sl">${md(lab)}</div><div class="sx">${md(t)}</div>`); return; }
+  // case large : la valeur à gauche, la suite des prix (barrés sauf le dernier) à droite
+  if (k === 'stats') { const w = el('div', 'stats', parent); for (const [v, l, wide, side] of c.items) el('div', 'stat' + (wide ? ' w' : ''), w,
+    `<div><b>${md(v)}</b><span>${md(l)}</span></div>` + (side ? `<div class="side">${side.map((p, i) => i < side.length - 1 ? `<span class="strike">${md(p)}</span>` : `<em>${md(p)}</em>`).join('')}</div>` : '')); return; }
+  if (k === 'hist') { const w = el('div', 'hist', parent); c.items.forEach((p, i) => { if (i) el('span', 'ar', w, '→'); el(i === c.items.length - 1 ? 'b' : 'span', i === c.items.length - 1 ? '' : 'strike', w, md(p)); }); return; }
+  if (k === 'tl') { const w = el('div', 'tl', parent); for (const [h, t, tone] of c.items) el('div', 'e ' + (tone || ''), w, `<span class="d"></span><div><div class="hh">${md(h)}</div><div class="tt">${md(t)}</div></div>`); return; }
+  if (k === 'big') { const w = el('div', '', parent); const bw = el('div', 'bigw', w); el('div', 'big' + (c.tone ? ' ' + c.tone : ''), bw, md(c.v));
+    // cercle à la main, pas tout à fait fermé
+    el('div', 'free', bw, '<svg class="cerc" viewBox="0 0 300 160" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M168 14 C 90 6, 14 30, 12 78 C 10 128, 92 152, 168 148 C 246 144, 292 116, 288 74 C 285 34, 228 10, 140 18"/></svg>');
+    if (c.cap) el('div', 'bigcap', w, md(c.cap)); return; }
+  if (k === 'nokia') {
+    const w = el('div', 'nokia', parent); el('div', 'nb', w, 'NOKIA'); const s = el('div', 'lcd', w);
+    const sig = [18, 28, 38, 48].map(h => `<i style="height:${h}px"></i>`).join('');
+    const bat = [0, 1, 2, 3].map(i => `<i class="${i < (c.batt ?? 4) ? '' : 'off'}" style="height:${18 + i * 10}px"></i>`).join('');
+    el('div', 'top', s, `<span class="bars">${sig}</span><span class="bat"><span class="bars">${bat}</span></span>`);
+    if (c.head) el('div', 'hd', s, md(c.head));
+    if (c.time) el('div', 'tm', s, md(c.time));
+    if (c.msg) el('div', 'msg', s, md(c.msg));
+    if (c.sub) el('div', 'sub', s, md(c.sub));
+    if (c.foot) el('div', 'ft', s, `<span>${md(c.foot[0])}</span><span>${md(c.foot[1])}</span>`);
+    return;
+  }
+  if (k === 'vs') { const w = el('div', 'vs', parent); for (const [cls, h, items] of [['a', c.a[0], c.a[1]], ['b', c.b[0], c.b[1]]]) { const d = el('div', 'carte ' + cls, w); el('h4', '', d, md(h)); for (const t of items) el('p', '', d, md(t)); } return; }
+  const card = el('div', 'carte' + (k === 'ticket' ? ' tk' : '') + (k === 'cote' ? ' cote' : ''), parent);
+  if (c.lab) el('div', 'lab', card, md(c.lab));
+  if (k === 'rows') { const w = el('div', 'rows', card); for (const [t, st, tone] of c.items) el('div', 'row', w, `<span>${md(t)}</span>${st ? `<span class="st ${tone || 'ok'}">${md(st)}</span>` : ''}`); }
+  if (k === 'ticket') { const w = el('div', 'rows', card); for (const [t, v] of c.items) el('div', 'row', w, `<span>${md(t)}</span><span>${md(v)}</span>`); el('div', 'tot', card, `<span>${md(c.totLab || 'Total')}</span><b class="${c.tone || ''}">${md(c.tot)}</b>`); }
+  if (k === 'quote') el('div', 'quote', card, md(c.t));
+  if (k === 'verdict') { const w = el('div', 'vd', card); el('span', 'chip ' + c.tone, w, md(c.v)); if (c.sub) el('div', 'sub', w, md(c.sub)); }
+  if (k === 'notif') { const w = el('div', 'nt', card); el('span', 'ic', w, `<img src="${SYM}">`); el('div', '', w, `<div class="h"><span>${md(c.h || 'utopicar · alerte')}</span><span>${md(c.time || 'à l\'instant')}</span></div><div class="t1">${md(c.t1)}</div><div class="t2">${md(c.t2)}</div>`); }
+  if (k === 'cote') {
+    const pos = (v) => ((v - c.min) / (c.max - c.min) * 100).toFixed(2) + '%';
+    const bar = el('div', 'bar', card);
+    el('span', 'mk', bar, '<i></i>').style.left = pos(c.cote);
+    el('span', 'tag', bar, `Cote ${md(c.coteTxt)}`).style.left = pos(c.cote);
+    el('span', 'dot', bar).style.left = pos(c.prix);
+    const t2 = el('span', 'tag', bar, `<span style="color:var(--o2)">Annonce ${md(c.prixTxt)}</span>`); t2.style.left = pos(c.prix); t2.style.bottom = 'auto'; t2.style.top = '64px';
+    el('div', 'ends', card, `<span>${md(c.minTxt)}</span><span>${md(c.maxTxt)}</span>`).style.marginTop = '86px';
+  }
+}
+
+if (LAST) {
+  box.classList.add('end');
+  if (SL.bigdots) el('div', 'bigdots', box, '<i></i><i></i><i></i>');
+  else if (!(C.offer && C.offer.pass)) el('span', 'tile', box, `<img src="${SYM}">`);   // le pass porte déjà le logo
+  if (SL.title) { const t = el('div', 'title', box, md(SL.title)); t.dataset.size = SL.size || 92; }
+  if (C.offer && C.offer.pass) {
+    // fin « conversion » 2027 : le pass (3 analyses, sans carte, ton code), ce que tu reçois, puis le bouton d'action
+    const o = C.offer, w = el('div', 'pass', box);
+    el('div', 'top', w, `<span class="mq"><span><img src="${SYM}"></span>utopicar</span><em>${md(o.badge)}</em>`);
+    el('div', 'mid', w, `<span class="n">${md(o.n)}</span><span class="l1">${md(o.l1)}</span>`);
+    el('div', 'perf', w);
+    el('div', 'bot', w, `<div><div class="lb">${md(o.codeLab)}</div><div class="cd">${md(o.word)}</div></div><div class="nc">${md(o.l2)}</div>`);
+    el('div', 'gets2', box, o.gets.map(g => `<div><i>✓</i><span>${md(g)}</span></div>`).join(''));
+    const bw = el('div', 'btnw', box); el('div', 'btn', bw, `<span>${md(o.btn)}</span>`);
+    el('div', 'free', bw, '<svg class="fl" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12 C 22 70, 70 96, 132 92"/><path d="M132 92 L 110 80 M132 92 L 114 106"/></svg>');
+    if (o.ou) el('div', 'ou', box, md(o.ou));
+  } else if (C.offer) {
+    // fin « conversion » : ce que la personne reçoit, sans carte bancaire, puis une seule action (TikTok : c'est elle qui écrit)
+    const o = C.offer, w = el('div', 'offer', box);
+    el('div', 'hd', w, `<span class="n">${md(o.n)}</span><div><div class="l1">${md(o.l1)}</div><div class="l2">${md(o.l2)}</div></div>`);
+    el('div', 'gets', w, o.gets.map(g => `<div><i>✓</i><span>${md(g)}</span></div>`).join(''));
+    el('div', 'cta', box, `${md(o.lead)} <span class="k">${md(o.word)}</span> ${md(o.tail)}`);
+    if (o.ou) el('div', 'ou', box, md(o.ou));
+  } else if (C.share) {
+    // fin « partage » : le geste demandé est l'envoi à un proche, pas un commentaire
+    el('div', 'share', box, `${md(C.share.lead)} <span class="k">${md(C.share.k)}</span>`);
+    if (C.share.sub) el('div', 'sharesub', box, md(C.share.sub));
+    el('div', 'sign', box, `<b>utopicar</b>${C.share.sign ? ` · ${md(C.share.sign)}` : ''}`);
+  } else {
+    el('div', 'cta', box, `Commente <span class="k">${C.word}</span>`);
+    // C.after : la promesse propre au mot (ex. MESSAGE pour l'outil) ; sinon le guide
+    el('div', 'guide', box, C.after ? md(C.after) : `je t'envoie le guide<br><span class="it">${md(C.guide)}</span>`);
+  }
+} else {
+  if (SL.kicker) el('div', N === 0 ? 'kicker k1' : 'kicker', box, `<span>${md(SL.kicker)}</span>`);   // un seul bloc : la pastille est en flex, chaque espace dessiné y deviendrait un élément
+  if (SL.title) { const t = el('div', 'title', box, md(SL.title)); t.dataset.size = SL.size || (N === 0 ? 150 : 104); }
+  if (SL.body) el('div', 'body', box, md(SL.body));
+  for (const c of SL.comp || []) comp(c, box);
+  if (SL.body2) el('div', 'body', box, md(SL.body2));
+  if (SL.compFirst && box.querySelector('.title')) { const first = box.lastElementChild; box.insertBefore(first, box.querySelector('.kicker') || box.querySelector('.title')); }
+  // la voiture : celle de l'image (SL.car = {src, credit}) ou celle du carrousel ; en grand seule sous l'accroche,
+  // plus petite à côté d'un autre visuel
+  const CARX = SL.car && typeof SL.car === 'object' ? SL.car : (C.car && (N === 0 || !(SL.comp || []).length) && SL.car !== false ? C.car : null);
+  if (CARX) {
+    const w = el('div', N === 0 && !(SL.comp || []).length ? 'car' : 'car md', box, `<img src="${CARX.src}">`);
+    await w.querySelector('img').decode();
+  }
+  // bas d'image : crédit photo et source des chiffres, sur une ligne
+  const credit = [CARX && CARX.credit, SL.credit].filter(Boolean).join(' · ');
+  if (credit) el('div', 'credit', S, md(credit));
+  if (N === 0) el('div', 'swipe', S, `<span>${md(SL.swipe || 'Glisse →')}</span>`);
+  // pas de pastille « Image 4 : … » (retirée à la demande de l'utilisateur)
+}
+const TOP = SL.top || (N > 0 && !LAST ? 330 : 236), BOT = N === 0 ? 1306 : 1470;
+box.style.top = TOP + 'px'; box.style.height = (BOT - TOP) + 'px';
+if (SL.align) box.style.justifyContent = SL.align;
+await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+await document.fonts.ready;
+for (const f of ["600 100px 'Clash Display'", "500 40px 'Satoshi'", "700 40px 'Satoshi'", "italic 400 100px 'Instrument Serif'"]) await document.fonts.load(f);
+// largeur réelle du texte (une ligne trop longue déborde des deux côtés quand elle est centrée)
+const textW = (e) => { const r = document.createRange(); r.selectNodeContents(e); return Math.max(e.scrollWidth, r.getBoundingClientRect().width); };
+function fit(e, base, max = 790) { e.style.fontSize = base + 'px'; for (let i = 0; i < 3; i++) { const w = textW(e); if (w <= max) break; e.style.fontSize = (parseFloat(e.style.fontSize) * max / w * 0.995).toFixed(1) + 'px'; } }
+document.querySelectorAll('.title').forEach(t => fit(t, +t.dataset.size));
+document.querySelectorAll('.cta, .share').forEach(t => fit(t, 76));
+// pastille de verdict : tient dans la carte (800 − marges) ; grand chiffre : tient dans la colonne
+document.querySelectorAll('.vd .chip').forEach(t => fit(t, 84, 690));
+document.querySelectorAll('.kicker').forEach(t => fit(t, parseFloat(getComputedStyle(t).fontSize), 720));
+document.querySelectorAll('.big').forEach(t => fit(t, 260, 780));
+// chiffres du bilan : chacun tient dans sa case
+// chiffres des tuiles : chacun tient dans sa tuile (l'anneau du moteur garde sa place)
+document.querySelectorAll('.bento .vl').forEach(t => { const c = t.closest('.tile2'), cs = getComputedStyle(c);
+  fit(t, parseFloat(getComputedStyle(t).fontSize), c.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (c.querySelector('.ring') ? 130 : 4)); });
+document.querySelectorAll('.btn').forEach(t => fit(t, 60, 760));
+document.querySelectorAll('.stat b').forEach(t => { const c = t.closest('.stat'), cs = getComputedStyle(c);
+  fit(t, 112, c.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (c.querySelector('.side') ? 260 : 4)); });
+document.querySelectorAll('.pill, .st').forEach(t => { if (t.getBoundingClientRect().width > 700) fit(t, parseFloat(getComputedStyle(t).fontSize), 690); });
+const H = BOT - TOP;
+// tout le contenu dans un bloc intérieur : s'il dépasse la zone sûre, on réduit les titres puis on zoome le bloc
+const inner = el('div', '', null); inner.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:inherit;width:800px';
+while (box.firstChild) inner.appendChild(box.firstChild); box.appendChild(inner);
+for (let i = 0; i < 4 && inner.getBoundingClientRect().height > H; i++) document.querySelectorAll('.title').forEach(t => fit(t, parseFloat(t.style.fontSize) * 0.93));
+const hh = inner.getBoundingClientRect().height; if (hh > H) inner.style.zoom = (H / hh).toFixed(3);
+// (l'annonce inclinée et son annotation débordent volontairement de quelques pixels : on ne contrôle que le texte)
+window.overflow = inner.getBoundingClientRect().height > H + 2 || [...box.querySelectorAll('*')].filter(e => !e.closest('.lwrap') && !e.closest('.free') && e.tagName !== 'IMG').some(e => e.getBoundingClientRect().right > 942 || e.getBoundingClientRect().left < 138);
+window.ready = true;
+</script>
+</body>
+</html>

@@ -1,0 +1,3244 @@
+{
+ "carousels": [
+  {
+   "id": "D1A",
+   "slug": "accroche-a",
+   "famille": "Contraste chiffré (référence)",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "Ta 1re voiture à revendre",
+     "title": "89 € de marge.\nOu *539 €*.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1B",
+   "slug": "accroche-b",
+   "famille": "Croyance → vérité",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "Ta 1re voiture à revendre",
+     "title": "Un choc sur l'aile.\n*539 €* de marge.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1C",
+   "slug": "accroche-c",
+   "famille": "Scénario POV, perte",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "POV : le vendeur décroche",
+     "title": "« Ok pour 6 700 €. »\nTu perds *450 €*.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1D",
+   "slug": "accroche-d",
+   "famille": "Résultat d'abord",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "Ta 1re voiture à revendre",
+     "title": "Achète 6 250 €.\nRevends *7 550 €*.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1E",
+   "slug": "accroche-e",
+   "famille": "Devinette (fait commenter)",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "Clio IV à 6 700 €",
+     "title": "Tu proposes\n*combien* ?",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1F",
+   "slug": "accroche-f",
+   "famille": "Appel d'identité",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "Tu débutes en achat-revente ?",
+     "title": "Cette Clio\nte laisse *539 €*.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1G",
+   "slug": "accroche-g",
+   "famille": "Interdit",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "Clio IV à 6 700 €",
+     "title": "N'appelle pas\nsans *ce chiffre*.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1H",
+   "slug": "accroche-h",
+   "famille": "Verdict d'abord",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "Ta 1re voiture à revendre",
+     "title": "*425 €* sous le\nprix du marché.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1I",
+   "slug": "accroche-i",
+   "famille": "Scénario minuté",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "18 h 02 : la Clio sort",
+     "title": "18 h 03 : tu connais\nta *marge*.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "D1J",
+   "slug": "accroche-j",
+   "famille": "Preuve par la comparaison",
+   "offer": {
+    "pass": true,
+    "badge": "Offert",
+    "n": "3",
+    "l1": "analyses\nde marge",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Sans carte\nbancaire",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "slides": [
+    {
+     "kicker": "Clio IV à 6 700 €",
+     "title": "Comparée à\n*174* autres Clio.",
+     "comp": [
+      {
+       "vraie": true,
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": 400,
+       "ny": 430,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 380
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché,\nchoc compris.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Ta marge :\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente au marché",
+         "7 550 €"
+        ],
+        [
+         "Achat au prix conseillé",
+         "− 6 250 €"
+        ],
+        [
+         "Choc à réparer",
+         "− 425 €"
+        ],
+        [
+         "Carte grise, 5 CV",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Avant trajet et charges. En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente.",
+     "align": "flex-start"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fais pareil\navec *la tienne*."
+    }
+   ]
+  },
+  {
+   "id": "P01",
+   "slug": "marge-89-ou-539",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Même Clio : 89 € de marge, ou 539 €",
+   "legende": "Vraie annonce, Clio IV à 6 700 €. Au prix affiché, il te reste 89 €. Au prix conseillé par l'analyse, 539 €.",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "Ta 1re voiture à revendre",
+     "title": "89 € de marge.\nOu *539 €*.",
+     "comp": [
+      {
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": null,
+       "ny": null,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 360,
+       "vraie": true
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : bon prix",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "425 €",
+       "cap": "sous le prix du marché.",
+       "tone": "g"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "La négo vaut\n*450 €*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Au prix affiché",
+        [
+         "Payée 6 700 €",
+         "**89 €**\nde marge"
+        ]
+       ],
+       "b": [
+        "Au prix conseillé",
+        [
+         "Payée 6 250 €",
+         "**539 €**\nde marge"
+        ]
+       ]
+      }
+     ],
+     "credit": "Exemple chiffré, pas une promesse de gain. Avant trajet et charges."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P02",
+   "slug": "yaris-3000-trop-chere",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Yaris à 10 999 € : près de 3 000 € au-dessus du marché",
+   "legende": "Vraie annonce. Moteur fiable, garantie 12 mois, mais l'analyse propose 8 050 €.",
+   "tags": [
+    "#voitureoccasion",
+    "#leboncoin",
+    "#achatrevente"
+   ],
+   "slides": [
+    {
+     "kicker": "Belle, fiable, garantie",
+     "title": "Et *2 949 €*\ntrop chère.",
+     "comp": [
+      {
+       "k": "listing",
+       "src": "img/yaris-1.webp",
+       "t": "Toyota Yaris III",
+       "m": null,
+       "p": "10 999 €",
+       "l": null,
+       "note": null,
+       "nx": null,
+       "ny": null,
+       "n": 3,
+       "pos": "50% 60%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 360,
+       "vraie": true
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : trop cher",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "8 350 €",
+       "cap": "le prix du marché\npour cette Yaris.",
+       "tone": "o"
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "title": "Tu proposes\n*8 050 €*.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "2 949 € de moins que l'annonce",
+         "ok"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P03",
+   "slug": "208-1650-travaux",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "208 PureTech à 7 190 € : 1 650 € de travaux que l'annonce ne dit pas",
+   "legende": "Vraie annonce : pas un mot sur la courroie. L'analyse : moteur noté 4/10, déconseillée.",
+   "tags": [
+    "#voitureoccasion",
+    "#leboncoin",
+    "#achatrevente"
+   ],
+   "slides": [
+    {
+     "kicker": "Rien sur la courroie",
+     "title": "*1 650 €*\nde travaux cachés.",
+     "comp": [
+      {
+       "k": "listing",
+       "src": "img/208-4.webp",
+       "t": "Peugeot 208 PureTech",
+       "m": null,
+       "p": "7 190 €",
+       "l": null,
+       "note": null,
+       "nx": null,
+       "ny": null,
+       "n": 3,
+       "pos": "50% 62%",
+       "island": {
+        "t": "Analyse en cours…"
+       },
+       "ph": 360,
+       "vraie": true
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Son vrai prix :\n*8 840 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Prix affiché",
+         "7 190 €"
+        ],
+        [
+         "Pneus, freins, révision, courroie",
+         "+ 1 650 €"
+        ]
+       ],
+       "tot": "8 840 €",
+       "totLab": "Prix réel",
+       "tone": "r",
+       "lab": null
+      }
+     ],
+     "credit": "Vraie annonce Leboncoin du 3 octobre 2026, analysée par utopicar"
+    },
+    {
+     "comp": [
+      {
+       "k": "island",
+       "t": "Verdict : déconseillée",
+       "sub": null,
+       "state": "ok"
+      },
+      {
+       "k": "big",
+       "v": "4/10",
+       "cap": "la note du moteur\n1.2 PureTech 110.",
+       "tone": "r"
+      }
+     ]
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P04",
+   "slug": "trois-annonces-une-seule",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "3 vraies annonces, une seule à acheter : laquelle ?",
+   "legende": "Clio à 6 700 €, Yaris à 10 999 €, 208 à 7 190 €. Trois verdicts de l'analyse. Tu avais choisi laquelle ?",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "3 vraies annonces Leboncoin",
+     "title": "Une seule\nest à *acheter*.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Clio IV · 6 700 €",
+         "?",
+         "neu"
+        ],
+        [
+         "Yaris · 10 999 €",
+         "?",
+         "neu"
+        ],
+        [
+         "208 · 7 190 €",
+         "?",
+         "neu"
+        ]
+       ],
+       "lab": null
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "La *Clio*.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Clio IV",
+         "Bon prix",
+         "ok"
+        ],
+        [
+         "Yaris",
+         "Trop cher",
+         "warn"
+        ],
+        [
+         "208",
+         "Déconseillée",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ],
+     "credit": "Vraies annonces du 3 octobre 2026, analysées par utopicar"
+    },
+    {
+     "title": "La moins belle\nétait la *bonne*.",
+     "body": "Un choc sur l'aile, et 425 € sous le prix du marché."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P05",
+   "slug": "pov-premier-appel",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "POV : premier appel au vendeur, tu ne sais pas quoi proposer",
+   "legende": "Le vendeur demande ton prix. Sans chiffre, tu dis oui au prix affiché. Avec l'analyse, tu as ton prix d'offre avant d'appeler.",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "POV : ton premier appel",
+     "title": "« Vous proposez\n*combien* ? »",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Alors, vous proposez combien ?"
+        ],
+        [
+         "m",
+         "Euh…"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Sans chiffre,\ntu dis *oui*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "6 700, c'est bon pour moi."
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ],
+     "body2": "Il te reste 89 € de marge."
+    },
+    {
+     "title": "Avec l'analyse :\n*6 250 €*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Je vous propose 6 250 €, le choc est à reprendre."
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      }
+     ],
+     "body2": "Il te reste 539 €.",
+     "credit": "Exemple chiffré, pas une promesse de gain. Avant trajet et charges."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P06",
+   "slug": "golf-perte-1200",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Golf achetée 9 500 €, revendue 9 800 €, et 1 200 € de perte",
+   "legende": "300 € d'écart sur le papier, 1 500 € de frais en vrai. Le prix max était 7 500 €.",
+   "tags": [
+    "#achatrevente",
+    "#revenucomplementaire",
+    "#voitureoccasion"
+   ],
+   "slides": [
+    {
+     "kicker": "Achetée 9 500 €, revendue 9 800 €",
+     "title": "Et tu perds\n*1 200 €*.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Les *frais*\nqu'on oublie.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Remise en état",
+         "1 100 €"
+        ],
+        [
+         "Carte grise",
+         "186 €"
+        ],
+        [
+         "Trajet",
+         "64 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "150 €"
+        ]
+       ],
+       "tot": "1 500 €",
+       "totLab": "Frais",
+       "tone": "r",
+       "lab": null
+      }
+     ],
+     "credit": "Exemple calculé par l'outil sur des données de démonstration"
+    },
+    {
+     "title": "Ton prix max :\n*7 500 €*.",
+     "body": "Au-dessus, tu passes à l'annonce suivante."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P07",
+   "slug": "embrayage-oublie",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Même Clio, même prix : +670 € ou −130 €",
+   "legende": "Un embrayage oublié efface la marge. L'analyse chiffre chaque défaut écrit dans l'annonce.",
+   "tags": [
+    "#achatrevente",
+    "#revenucomplementaire",
+    "#voitureoccasion"
+   ],
+   "slides": [
+    {
+     "kicker": "Même Clio, même prix",
+     "title": "*+670 €*\nou −130 €.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Bien achetée :\n*+670 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente",
+         "6 300 €"
+        ],
+        [
+         "Achat",
+         "− 5 000 €"
+        ],
+        [
+         "Frais",
+         "− 630 €"
+        ]
+       ],
+       "tot": "+ 670 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Exemple chiffré, pas une promesse de gain. Avant trajet et charges."
+    },
+    {
+     "title": "Embrayage oublié :\n*−130 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente",
+         "6 300 €"
+        ],
+        [
+         "Achat",
+         "− 5 000 €"
+        ],
+        [
+         "Frais + embrayage",
+         "− 1 430 €"
+        ]
+       ],
+       "tot": "− 130 €",
+       "totLab": "Marge",
+       "tone": "r",
+       "lab": null
+      }
+     ],
+     "credit": "Exemple chiffré, pas une promesse de gain. Avant trajet et charges."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P08",
+   "slug": "cinq-minutes",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "La bonne affaire part en 5 minutes : ton verdict, avant",
+   "legende": "Sur Leboncoin, les bonnes annonces partent vite. Colle le lien, tu as ta marge avant d'appeler.",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "18 h 02 : la Clio sort",
+     "title": "18 h 07 :\n*vendue*.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Tu calculais\nencore ta *marge*.",
+     "body": "Cote, frais, carte grise, prix max : à la main, ça prend une soirée."
+    },
+    {
+     "title": "Colle le lien.\nTa marge *tombe*.",
+     "comp": [
+      {
+       "k": "island",
+       "t": "Analyse terminée : GO",
+       "sub": null,
+       "state": "ok"
+      }
+     ]
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P09",
+   "slug": "carte-grise-oubliee",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "La carte grise que les débutants oublient dans leur marge",
+   "legende": "Chevaux × tarif de ta région, divisé par 2 après 10 ans, + 13,76 €. De 119 € à 186 € pour une Clio de 5 CV.",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "Ta 1re voiture à revendre",
+     "title": "*186 €*\nque tu n'as\npas comptés.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "La carte grise\nse *calcule*.",
+     "body": "Chevaux × tarif de ta région, ÷ 2 après 10 ans, + 13,76 €.",
+     "credit": "Tarifs 2026 : 42 €/CV (Hauts-de-France) à 68,95 €/CV (Île-de-France)"
+    },
+    {
+     "title": "L'analyse la\ncompte *pour toi*.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Carte grise ✓",
+         "ok"
+        ],
+        [
+         "Trajet ✓",
+         "ok"
+        ],
+        [
+         "CT ✓",
+         "ok"
+        ],
+        [
+         "Réparations ✓",
+         "ok"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P10",
+   "slug": "urssaf-1476",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Achetée 10 000 €, revendue 12 000 € : l'URSSAF prend 1 476 €",
+   "legende": "En micro-entreprise, l'URSSAF prend 12,3 % du prix de vente, pas de la marge. Compte-le avant d'acheter.",
+   "tags": [
+    "#achatrevente",
+    "#revenucomplementaire",
+    "#voitureoccasion"
+   ],
+   "slides": [
+    {
+     "kicker": "Micro-entreprise",
+     "title": "+2 000 € de marge.\nL'URSSAF : *1 476 €*.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "12,3 % du\n*prix de vente*.",
+     "body": "Pas de la marge. Source : economie.gouv.fr, 2026."
+    },
+    {
+     "title": "Ta marge se décide\nà *l'achat*.",
+     "body": "Plus ton prix d'achat est juste, plus il te reste."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P11",
+   "slug": "compteur-histovec",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "89 000 km au compteur, 162 000 au dernier contrôle technique",
+   "legende": "Demande le rapport HistoVec avant le trajet : il montre le kilométrage de chaque CT depuis 2021.",
+   "tags": [
+    "#voitureoccasion",
+    "#leboncoin",
+    "#achatrevente"
+   ],
+   "slides": [
+    {
+     "kicker": "Clio de 2012, annonce Leboncoin",
+     "title": "89 000 km.\nLe CT dit *162 000*.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Le *HistoVec*.",
+     "body": "Gratuit et officiel. Le kilométrage de chaque contrôle technique, depuis 2021."
+    },
+    {
+     "title": "L'analyse lit\nles *signaux*.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Compteur suspect",
+         "bad"
+        ],
+        [
+         "Gage",
+         "bad"
+        ],
+        [
+         "Défaut bloquant",
+         "bad"
+        ]
+       ]
+      }
+     ],
+     "body2": "Un seul : verdict NO GO."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P12",
+   "slug": "trajet-pour-rien",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "4 heures de route pour une voiture qui ne valait pas le trajet",
+   "legende": "Avant de rouler, colle l'annonce : verdict, défauts et questions au vendeur.",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "POV : samedi, 6 h du matin",
+     "title": "4 h de route.\nPour *rien*.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Les défauts\nétaient *écrits*.",
+     "body": "« Petit bruit », « clim à recharger » : l'annonce prévenait."
+    },
+    {
+     "title": "L'analyse les\n*chiffre*.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Clim à recharger",
+         "50 à 100 €",
+         "warn"
+        ],
+        [
+         "Embrayage à prévoir",
+         "600 € et +",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P13",
+   "slug": "dico-annonces",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "« Petit bruit, rien de grave » : ce que l'annonce veut dire",
+   "legende": "Chaque phrase d'annonce cache une ligne de frais. L'analyse la chiffre avant ton appel.",
+   "tags": [
+    "#voitureoccasion",
+    "#leboncoin",
+    "#achatrevente"
+   ],
+   "slides": [
+    {
+     "kicker": "Le dico des annonces",
+     "title": "« Petit bruit,\nrien de *grave* »",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Traduction :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "« Clim à recharger »",
+         "fuite ?",
+         "warn"
+        ],
+        [
+         "« Embrayage un peu dur »",
+         "600 € +",
+         "bad"
+        ],
+        [
+         "« Vendue sans CT »",
+         "à toi",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "L'analyse lit\nl'annonce *pour toi*."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P14",
+   "slug": "prix-max-avant-appel",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Le seul chiffre à connaître avant d'appeler un vendeur",
+   "legende": "Prix max = revente − frais − ta marge minimum. Au-dessus, tu passes.",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "Avant d'appeler",
+     "title": "Un seul\n*chiffre*.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Ton *prix max*.",
+     "body": "Revente − frais − ta marge minimum."
+    },
+    {
+     "title": "Au-dessus,\ntu *passes*.",
+     "comp": [
+      {
+       "k": "vs",
+       "a": [
+        "Le vendeur",
+        [
+         "Demande 9 500 €"
+        ]
+       ],
+       "b": [
+        "Ton prix max",
+        [
+         "**7 500 €**"
+        ]
+       ]
+      }
+     ],
+     "credit": "Exemple : données de démonstration du guide"
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P15",
+   "slug": "moteurs-a-fuir",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "5 moteurs qui mangent ta marge (jusqu'à 10 000 €)",
+   "legende": "PureTech, TCe 120, EcoBoost, TSI, N13 : les années à éviter. L'analyse note chaque moteur.",
+   "tags": [
+    "#voitureoccasion",
+    "#leboncoin",
+    "#achatrevente"
+   ],
+   "slides": [
+    {
+     "kicker": "5 moteurs à fuir",
+     "title": "Jusqu'à *10 000 €*\nde moteur.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "La *liste*.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "1.2 PureTech",
+         "2013-2022",
+         "bad"
+        ],
+        [
+         "1.2 TCe 120",
+         "2012-2016",
+         "bad"
+        ],
+        [
+         "1.0 EcoBoost",
+         "2011-2018",
+         "bad"
+        ],
+        [
+         "1.4 TSI",
+         "2008-2012",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ],
+     "credit": "Coûts relevés dans la presse auto et chez des propriétaires"
+    },
+    {
+     "title": "L'analyse note\nle *moteur*.",
+     "comp": [
+      {
+       "k": "pills",
+       "items": [
+        [
+         "Clio 0.9 TCe : 8/10",
+         "ok"
+        ],
+        [
+         "208 PureTech : 4/10",
+         "bad"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P16",
+   "slug": "leboncoin-3e-annonce",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Ta 3e voiture de l'année sur Leboncoin : l'annonce devient payante",
+   "legende": "2 annonces auto gratuites sur 12 mois, la 3e payante. Encore un frais à mettre dans ta marge.",
+   "tags": [
+    "#achatrevente",
+    "#revenucomplementaire",
+    "#voitureoccasion"
+   ],
+   "slides": [
+    {
+     "kicker": "Ta 3e voiture de l'année",
+     "title": "L'annonce\ndevient *payante*.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "2 gratuites,\npuis *59,90 à 79,90 €*.",
+     "credit": "Conditions Leboncoin, 12 mois glissants ; montants selon la presse"
+    },
+    {
+     "title": "Chaque frais\nmange ta *marge*.",
+     "body": "L'analyse les compte tous, avant l'achat."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P17",
+   "slug": "trois-cartes-grises-faux",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "« 3 cartes grises par an maximum » : faux",
+   "legende": "La loi ne fixe aucun nombre : elle regarde l'habitude et l'intention de revendre (Code de commerce, L110-1 et L121-1).",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "Tu te lances à côté du boulot",
+     "title": "« 3 cartes grises\npar an max. » *Faux*.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "La loi regarde\nl'*habitude*.",
+     "body": "Acheter pour revendre, souvent : tu es commerçant.",
+     "credit": "Code de commerce, art. L110-1 et L121-1"
+    },
+    {
+     "title": "Déclaré, tu suis\nta *vraie marge*.",
+     "body": "Information générale, pas un conseil juridique."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P18",
+   "slug": "deux-mille-euros",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Te lancer avec 2 000 € : jamais plus de 1 500 € sur la voiture",
+   "legende": "Garde 500 € pour la carte grise, les pneus et l'imprévu. Ton prix max se calcule avant l'appel.",
+   "tags": [
+    "#achatrevente",
+    "#revenucomplementaire",
+    "#voitureoccasion"
+   ],
+   "slides": [
+    {
+     "kicker": "Tu te lances avec 2 000 €",
+     "title": "Ta voiture :\n*1 500 €* max.",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Les *500 €*\nqui restent.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Carte grise",
+         "≈ 110 €",
+         "neu"
+        ],
+        [
+         "2 pneus",
+         "≈ 120 €",
+         "neu"
+        ],
+        [
+         "Imprévu",
+         "le reste",
+         "neu"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Une voiture,\nun *prix max*.",
+     "body": "Calculé avant l'appel, pas au feeling."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P19",
+   "slug": "achete-6250-revends-7550",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "Achète 6 250 €, revends 7 550 € : ce qui reste vraiment",
+   "legende": "Revente − achat − réparation − carte grise − frais : 539 € sur cette vraie Clio.",
+   "tags": [
+    "#achatrevente",
+    "#revenucomplementaire",
+    "#voitureoccasion"
+   ],
+   "slides": [
+    {
+     "kicker": "Ta 1re voiture à revendre",
+     "title": "Achète 6 250 €.\nRevends *7 550 €*.",
+     "comp": [
+      {
+       "k": "listing",
+       "src": "img/clio-1.webp",
+       "t": "Renault Clio IV",
+       "m": null,
+       "p": "6 700 €",
+       "l": null,
+       "note": null,
+       "nx": null,
+       "ny": null,
+       "n": 3,
+       "pos": "30% 70%",
+       "island": null,
+       "ph": 360,
+       "vraie": true
+      }
+     ],
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Il reste\n*539 €*.",
+     "comp": [
+      {
+       "k": "ticket",
+       "items": [
+        [
+         "Revente",
+         "7 550 €"
+        ],
+        [
+         "Achat",
+         "− 6 250 €"
+        ],
+        [
+         "Choc",
+         "− 425 €"
+        ],
+        [
+         "Carte grise",
+         "− 186 €"
+        ],
+        [
+         "CT, nettoyage, annonce",
+         "− 150 €"
+        ]
+       ],
+       "tot": "539 €",
+       "totLab": "Marge",
+       "tone": "g",
+       "lab": null
+      }
+     ],
+     "credit": "Exemple chiffré, pas une promesse de gain. Avant trajet et charges.",
+     "align": "flex-start"
+    },
+    {
+     "title": "Pas *1 300 €*.",
+     "body": "L'écart affiché n'est pas ta marge."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  },
+  {
+   "id": "P20",
+   "slug": "pov-dimanche-soir",
+   "offer": {
+    "pass": true,
+    "badge": "Sans carte bancaire",
+    "n": "3",
+    "l1": "jours de Benef\nofferts",
+    "codeLab": "Sur le site",
+    "word": "utopicar.fr",
+    "l2": "Marge, prix d'offre,\nprix max",
+    "gets": [],
+    "btn": "Lien dans ma bio →",
+    "ou": "Colle l'annonce, vois ta marge."
+   },
+   "car": null,
+   "titre": "POV : dimanche soir, 12 annonces ouvertes, laquelle appeler ?",
+   "legende": "Colle chaque lien : marge, prix d'offre, verdict. Tu appelles seulement celles qui passent.",
+   "tags": [
+    "#achatreventevoiture",
+    "#leboncoinvoiture",
+    "#debutant"
+   ],
+   "slides": [
+    {
+     "kicker": "POV : dimanche soir",
+     "title": "12 annonces.\nLaquelle *appeler* ?",
+     "swipe": "Glisse →"
+    },
+    {
+     "title": "Tu colles\nles *liens*.",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Annonce 1",
+         "NO GO",
+         "bad"
+        ],
+        [
+         "Annonce 2",
+         "GO",
+         "ok"
+        ],
+        [
+         "Annonce 3",
+         "NO GO",
+         "bad"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Tu appelles\n*la bonne*.",
+     "body": "Les autres ne te coûtent pas un trajet."
+    },
+    {
+     "title": "Tu colles l'annonce.\nTu as *ça* :",
+     "comp": [
+      {
+       "k": "rows",
+       "items": [
+        [
+         "Ta marge nette",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix d'offre",
+         "✓",
+         "ok"
+        ],
+        [
+         "Ton prix max",
+         "✓",
+         "ok"
+        ],
+        [
+         "Le verdict GO / NO GO",
+         "✓",
+         "ok"
+        ]
+       ],
+       "lab": null
+      }
+     ]
+    },
+    {
+     "title": "Essaie avec\n*ta prochaine annonce*."
+    }
+   ]
+  }
+ ]
+}
