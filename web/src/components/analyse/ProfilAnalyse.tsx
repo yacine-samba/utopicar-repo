@@ -132,7 +132,7 @@ const nombre = (s: string) => {
 };
 
 /** Champs du profil, par étape (questionnaire) ou tous à la suite (paramètres). */
-function Etape({ n, p, maj }: { n: number; p: ProfilAnalyse; maj: (x: Partial<ProfilAnalyse>) => void }) {
+export function Etape({ n, p, maj }: { n: number; p: ProfilAnalyse; maj: (x: Partial<ProfilAnalyse>) => void }) {
   if (n === 0) return <Options nom="Objectif" choix={OBJECTIFS} valeur={p.objectif} onChange={(objectif) => maj({ objectif })} />;
   if (n === 1) return <Options nom="Expérience" choix={EXPERIENCES} valeur={p.experience} onChange={(experience) => maj({ experience })} />;
   if (n === 2) return <Options nom="Travaux acceptés" choix={TRAVAUX} valeur={p.travaux} onChange={(travaux) => maj({ travaux })} />;
@@ -167,8 +167,8 @@ function Etape({ n, p, maj }: { n: number; p: ProfilAnalyse; maj: (x: Partial<Pr
   );
 }
 
-const TITRES = ["Cette voiture, c'est pour…", "Votre expérience des voitures d'occasion", "Les travaux, vous les acceptez ?", "Dernière question"];
-const TITRES_REVENTE = "Votre objectif de revente";
+export const TITRES = ["Cette voiture, c'est pour…", "Votre expérience des voitures d'occasion", "Les travaux, vous les acceptez ?", "Dernière question"];
+export const TITRES_REVENTE = "Votre objectif de revente";
 
 function Questionnaire({ initial, onFermer, onValider }: { initial: ProfilAnalyse; onFermer: () => void; onValider: (p: ProfilAnalyse) => Promise<void> }) {
   const ref = useRef<HTMLDialogElement>(null);

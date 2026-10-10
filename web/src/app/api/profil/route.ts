@@ -7,6 +7,7 @@ import { ProfilSchema } from "@/lib/analyse/profil";
    - POST { onboarding } : réponses données sur le site avant l'inscription (pastille « pour moi / je revends »),
      récupérées après une inscription Google ou Apple ; seulement si le profil est encore vide.
    - PATCH { premiers_pas } : la carte « Premiers pas » du tableau de bord, masquée ou finie.
+   - PATCH { bienvenue } : la visite de bienvenue après un abonnement, terminée ou passée.
    - PUT { analyse } : le profil d'analyse (questionnaire de la première analyse, Profil › Mon profil d'analyse). */
 
 const Onboarding = z.record(z.string().max(20), z.string().max(40).nullable()).refine((o) => Object.keys(o).length <= 8, "trop de clés");
@@ -33,12 +34,14 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   const c = await compteCourant();
   if (!c) return Response.json({ erreur: "connexion" }, { status: 401 });
-  const corps = (await req.json().catch(() => null)) as { premiers_pas?: unknown } | null;
-  const v = corps?.premiers_pas;
-  if (v !== "masque" && v !== "fini") return Response.json({ erreur: "premiers_pas" }, { status: 400 });
+  const corps = (await req.json().catch(() => null)) as { premiers_pas?: unknown; bienvenue?: unknown } | null;
+  const maj: Record<string, string> = {};
+  if (corps?.premiers_pas === "masque" || corps?.premiers_pas === "fini") maj.premiers_pas = corps.premiers_pas;
+  if (corps?.bienvenue === "fait" || corps?.bienvenue === "passee") maj.bienvenue = corps.bienvenue;
+  if (!Object.keys(maj).length) return Response.json({ erreur: "premiers_pas" }, { status: 400 });
   const sb = await supabaseServeur();
   const { data: p } = await sb.from("profils").select("reglages").eq("id", c.id).maybeSingle();
-  const reglages = { ...((p?.reglages as Record<string, unknown> | null) ?? {}), premiers_pas: v };
+  const reglages = { ...((p?.reglages as Record<string, unknown> | null) ?? {}), ...maj };
   const { error } = await sb.from("profils").update({ reglages }).eq("id", c.id);
   if (error) return Response.json({ erreur: "ecriture" }, { status: 500 });
   return Response.json({ ok: true });
