@@ -679,8 +679,64 @@
     };
   };
 
+  // =====================================================================================================
+  // FI3 · « Lamborghini… mais non ! » (moins de 8 s) : on croit regarder une vidéo de supercar (vraie vidéo Pexels de
+  // l'utilisateur, plein écran) ; arrêt sur image, « Mais non ! », et la vraie première revente : la Peugeot 107,
+  // moteur Toyota (fiche fiabilité de l'outil, lib/analyse/fiabilite.ts : « très demandé en ville »)
+  // =====================================================================================================
+  SPECS.FI3 = async () => {
+    const P = '../assets/photos-fi1/', L = '../assets/fi3-lambo/', NF = 103;
+    const CRED = 'Vidéo Pexels n° 3066451 · Photo de la 107 : Vauxford, Wikimedia Commons (CC BY-SA 4.0), détourée · Fiche fiabilité UTOPICAR';
+    // les images de la vidéo, chargées et décodées avant le premier seek (drawImage est alors synchrone)
+    const IM = await Promise.all([...Array(NF)].map((_, i) => new Promise((ok) => { const im = new Image(); im.onload = () => im.decode().then(() => ok(im), () => ok(im)); im.onerror = () => ok(null); im.src = `${L}f${String(i + 1).padStart(3, '0')}.jpg`; })));
+    const tLe = T('le', 1.5), tMN = T('mais', 2.2) - 0.1, tTa = T('ta', 3.1), tEl = T('elle', 4.3), tMo = T('mot', 5), tTr = T('tres', 5.9), tTu = T('tu', 6.7), tLa = T('laquelle', 7);
+    // phase 1 : la Lamborghini, plein écran
+    const s = S(-1, DUR + 1, '#f4ece0', { type: 'cut' }, 0.02); s.imp.push([tMN + 0.03, 34]); s.imp.push([tEl + 0.05, 20]);
+    const cv = mk('canvas', 'a', s.el, { left: '0', top: '0', width: '1080px', height: '1920px', zIndex: 0 }); cv.width = 1080; cv.height = 1920; const cx = cv.getContext('2d');
+    const vig = mk('div', 'a', s.el, { inset: '0', zIndex: 1, background: 'linear-gradient(rgba(0,0,0,.55), transparent 30%, transparent 70%, rgba(0,0,0,.45))' });
+    const kH = L1(s.el, 140, 250, 96, 'Lamborghini Huracán', '#fff'), kR = L1(s.el, 140, 380, 170, 'le rêve.', '#fff', true);
+    [kH, kR].forEach((k) => { k.box.style.zIndex = 2; k.box.style.textShadow = '0 6px 30px rgba(0,0,0,.45)'; });
+    const mn = stamp(s.el, 'MAIS NON', 'var(--r)', 128); mn.style.zIndex = 5; mn.style.background = 'rgba(255,255,255,.92)';
+    const creme = mk('div', 'a', s.el, { inset: '0', zIndex: 3, background: '#f4ece0' });
+    // phase 2 : la vraie première revente
+    s.el.appendChild(s.cam); s.cam.style.zIndex = 4;
+    const kT = L1(s.cam, 140, 250, 112, 'Ta première revente,', 'var(--ink)'), kE = L1(s.cam, 140, 390, 190, "c'est elle.", 'var(--o)', true);
+    const c107 = car(s.cam, P + 'p107.webp', 840);
+    const pills = [['Moteur Toyota 1.0', 'var(--ink)', tMo], ['Très demandée en ville', 'var(--ok)', tTr], ['À vérifier : l’embrayage', '#b26a00', tTr + 0.45]].map(([l, bg, t0], i) => { const e = mk('div', 'pill a', s.cam, { background: bg, color: '#fff', fontSize: '40px' }, l); e.t0 = t0; e.i = i; return e; });
+    // phase 3 : la question
+    const kQ = L1(s.cam, 140, 250, 150, 'Tu prends', 'var(--ink)'), kQ2 = L1(s.cam, 140, 420, 150, 'laquelle ?', 'var(--o)', true);
+    const vign = mk('div', 'card a', s.cam, { width: '420px', height: '300px', background: `url(${L}f072.jpg) 50% 62%/cover` });
+    const lab = [['Huracán', 330], ['Peugeot 107', 740]].map(([n, x]) => { const e = mk('div', 'pill a', s.cam, { background: '#fff', color: 'var(--ink)', fontSize: '34px', boxShadow: '0 12px 24px -10px rgba(0,0,0,.35)' }, n); e.X = x; return e; });
+    const bub = mk('div', 'bub2 a th', s.cam, { fontSize: '38px' }, '💬 <b>Lambo</b> ou <b>107</b> ?<small>Réponds en commentaire</small>');
+    const cr = cred(s, CRED); cr.style.zIndex = 6;
+    cue(MU.stop, 'tapestop'); cue(tMN, 'impact'); cue(tMN + 0.65, 'whoosh', 0.8); cue(tEl, 'thud', 0.9); cue(tMo, 'pop', 0.7); cue(tTr, 'pop', 0.7); cue(tTr + 0.45, 'pop', 0.6); cue(tTu - 0.05, 'whoosh', 0.6); cue(tLa + 0.15, 'sent', 0.7);
+    const fam = tTu - 0.1, tOut = tMN + 0.62;   // tOut : la Lambo laisse la place
+    s.paint = (t) => {
+      // la vidéo : joue jusqu'à « Mais », puis arrêt sur image (zoom, désaturation)
+      const fz = Math.min(t, tMN), idx = clamp(Math.round(fz * 30), 0, NF - 1), im = IM[idx];
+      const z = 1 + 0.06 * E(t, tMN, 0.25) + 0.02 * (fz / tMN);
+      if (t < tOut + 0.4 && im) { cx.save(); cx.translate(540, 960); cx.scale(z, z); cx.translate(-540, -960); cx.drawImage(im, 0, 0, 1080, 1920); cx.restore(); }
+      cv.style.filter = t >= tMN ? `grayscale(${(0.85 * E(t, tMN, 0.2)).toFixed(2)}) contrast(1.1)` : '';
+      cv.style.display = vig.style.display = t < tOut + 0.4 ? '' : 'none';
+      ktP(kH, t, [-0.6, -0.5], 'rise', tMN - 0.05); ktP(kR, t, tLe - 0.05, 'blur', tMN - 0.05);
+      slamAt(mn, t, tMN, 540, 960, -7); mn.style.opacity = t < tMN ? 0 : (1 - E(t, tOut + 0.15, 0.2)).toFixed(3);
+      // le fond creme remonte comme un rideau
+      const cp = E(t, tOut, 0.35, eIO); creme.style.clipPath = `inset(${((1 - cp) * 100).toFixed(2)}% 0 0 0)`; creme.style.display = t >= tOut ? '' : 'none';
+      s.cam.style.visibility = t >= tOut ? '' : 'hidden';
+      ktP(kT, t, tTa, 'rise', fam - 0.15); ktP(kE, t, tEl - 0.08, 'slam', fam - 0.15);
+      pose(c107, t, (tt) => { if (tt < tEl - 0.3) return null; const p = E(tt, tEl - 0.25, 0.45), q = E(tt, fam, 0.5, eIO), f = Math.max(0, tt - tEl);
+        return { x: lerp(540, 740, q) + 5 * Math.sin(f * 0.9), y: lerp(1900, 900, p) + lerp(0, 0, q) + 6 * Math.sin(f * 1.4), c: 1, s: lerp(1, 0.52, q), r: -8 * (1 - p) + 0.4 * Math.sin(f) }; });
+      pills.forEach((e) => pose(e, t, (tt) => { if (tt < e.t0 - 0.02 || tt > fam + 0.1) return null; const p = E(tt, e.t0, 0.28); return { x: 540, y: 1150 + e.i * 92, c: 1, r: [-2, 2, -1][e.i], s: 1 + 0.4 * (1 - p), o: Math.min(1, p * 3) * (1 - E(tt, fam - 0.1, 0.2)) }; }));
+      ktP(kQ, t, tTu, 'slam'); ktP(kQ2, t, tLa, 'rise');
+      pose(vign, t, (tt) => { if (tt < fam) return null; const p = E(tt, fam, 0.45); return { x: lerp(-300, 330, p), y: 860, c: 1, p: 1, r: -3, rx: 4 }; });
+      lab.forEach((e, i) => pose(e, t, (tt) => { const t0 = fam + 0.2 + i * 0.1; if (tt < t0) return null; const p = E(tt, t0, 0.3), hi = bump(tt, tLa + 0.2 + i * 0.25, 0.2); return { x: e.X, y: 1060, c: 1, s: (1 + 0.4 * (1 - p)) * (1 + 0.15 * hi), o: Math.min(1, p * 3) }; }));
+      pose(bub, t, (tt) => { if (tt < tLa + 0.1) return null; const p = E(tt, tLa + 0.12, 0.35); return { x: 540, y: lerp(1500, 1270, p), c: 1, o: p * 2, r: -2 * (1 - p) }; });
+      cr.style.opacity = t < tOut + 0.3 ? 0 : 0.6;   // le crédit nomme la 107 : caché tant que la Lambo est à l'écran
+    };
+  };
+
   if (!SPECS[ID]) throw new Error('vidéo inconnue : ' + ID);
-  SPECS[ID]();
+  await SPECS[ID]();   // FI3 charge les images de sa vidéo avant le premier seek
   // intro des séries : la première scène finit à la deuxième
   // ---------- seek ----------
   window.seek = (t) => {

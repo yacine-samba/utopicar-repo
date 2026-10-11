@@ -16,9 +16,10 @@ MU = {
     'PS2':   {'stop': 8.22, 'muf': 11.45, 'pivot': 15.08, 'hit': 19.34, 'dur': 26.0, 'rew': [10.3, 11.42, 0.55]},
     'FI1':   {'stop': 2.5, 'muf': None, 'pivot': 3.84, 'hit': 6.78, 'dur': 7.9},
     'FI2':   {'stop': 4.0, 'muf': None, 'pivot': 4.32, 'hit': 6.54, 'dur': 7.8},
+    'FI3':   {'stop': 2.42, 'muf': None, 'pivot': 4.56, 'hit': 6.94, 'dur': 7.95},
 }
 json.dump(MU, open('audio/c7-musique.json', 'w', encoding='utf8'), indent=1)
-POSTER = {'dico2': 1.9, 'A01': 1.6, 'A02': 3.2, 'A03': 1.9, 'A04': 2.1, 'A05': 2.2, 'A06': 2.1, 'A07': 2.0, 'PS1': 3.4, 'PS2': 8.8, 'FI1': 0.0, 'FI2': 0.0}
+POSTER = {'dico2': 1.9, 'A01': 1.6, 'A02': 3.2, 'A03': 1.9, 'A04': 2.1, 'A05': 2.2, 'A06': 2.1, 'A07': 2.0, 'PS1': 3.4, 'PS2': 8.8, 'FI1': 0.0, 'FI2': 0.0, 'FI3': 0.0}
 json.dump({'version': 1, 'style': 'Motions de 15 à 20 s (dictionnaire du vendeur, carrousels A01 à A07) dans la grammaire master60w ; HOOK = id de la vidéo',
            'fps': 30, 'bpm': 112, 'size': [1080, 1920], 'dur': 20.0,
            'hooks': {k: {'dur': v['dur'], 'poster': POSTER[k]} for k, v in MU.items()}},
