@@ -8,7 +8,12 @@ import { coteMarche, marcheDepuisCote } from "@/lib/analyse/cote";
 import { iaRegles } from "@/lib/analyse/regles";
 import { filtrerRapport } from "@/lib/analyse/sections";
 import { depuisIa } from "@/lib/analyse/rapport";
-import { coutParticulier, dealPro, DEFAUTS_PART, DEFAUTS_PRO, type Analyse } from "@/lib/analyse/couts";
+import type { Analyse } from "@/lib/analyse/couts";
+import { bilan } from "@/lib/analyse/bilan";
+import { profilParDefaut } from "@/lib/analyse/profil";
+import { projectionMarche } from "@/lib/analyse/projection";
+import { numeroLeboncoin, type Historique } from "@/lib/analyse/historique";
+import { marqueModele } from "@/lib/analyse/regles";
 import { compteCourant } from "@/lib/compte";
 import { OFFRES, type Offre } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
@@ -82,12 +87,27 @@ export async function POST(req: Request) {
   const faits = lireAnnonce(texte);
   const fiab = fiabilite({ texte, annee: faits.annee, km: faits.km, energie: faits.energie });
   const detail = mode === "benef" ? "complet" : o.detail;
+  // Profil d'analyse : celui du compte (questionnaire), sinon celui de l'espace ; la ville saisie fait foi pour le trajet.
+  const base = compte?.profilAnalyse ?? profilParDefaut(mode === "benef" ? "benef" : "particulier", ville);
+  const profil = { ...(base.rempli ? base : profilParDefaut(mode === "benef" ? "benef" : "particulier", base.ville)), ville: ville || base.ville };
   // Cote calculée par l'outil sur les annonces en ligne : elle fait foi pour le prix du marché.
+  // Projection de valeur (décote) en parallèle de l'IA : facultative, jamais bloquante.
+  const projectionP = compte
+    ? Promise.race([projectionMarche(texte, faits), new Promise<null>((ok) => setTimeout(() => ok(null), 15000))]).catch((e) => (console.error("projection", e), null))
+    : Promise.resolve(null);
+  // Historique de l'annonce et même voiture vue ailleurs (base du marché) : facultatif, jamais bloquant.
+  const historiqueP: Promise<Historique | null> = compte
+    ? (async () => {
+        const { data, error } = await (await supabaseServeur()).rpc("historique_annonce", { p_id: numeroLeboncoin(r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0]), p_annee: faits.annee, p_km: faits.km, p_modele: marqueModele(texte, faits).modele });
+        if (error) console.error("historique_annonce", error.message);
+        return error ? null : (data as Historique | null);
+      })().catch(() => null)
+    : Promise.resolve(null);
   const cote = compte ? await coteMarche(texte, faits) : null;
-  const out: Analyse = { faits, fiab, ia: null, cote };
+  const out: Analyse = { faits, fiab, ia: null, cote, profil };
 
   try {
-    const { ia: brut, rapport } = await analyseIA({ texte, faits, fiab, ville, photos, offre: o.id, cote, margeMin: DEFAUTS_PRO.margeMin });
+    const { ia: brut, rapport } = await analyseIA({ texte, faits, fiab, profil, photos, offre: o.id, cote });
     // La cote de l'outil (annonces comparables) fait foi pour le prix du marché, dans les deux vues.
     if (cote) {
       const mc = marcheDepuisCote(cote);
@@ -113,6 +133,8 @@ export async function POST(req: Request) {
     delete out.iaErreur;
   }
 
+  out.projection = await projectionP;
+  out.historique = await historiqueP;
   out.offre = o.id;
   out.lien = r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0];
   out.vendeur = vendeurDe(r.data.vendeur, texte);
@@ -122,16 +144,10 @@ export async function POST(req: Request) {
   if (compte && out.ia) {
     const v = out.ia.vehicule;
     const titre = titreVehicule([v.marque, v.modele, v.version].filter(Boolean).join(" ")).slice(0, 140) || faits.titre || "Annonce";
-    const resume =
-      mode === "benef"
-        ? (() => {
-            const d = dealPro(out, { ...DEFAUTS_PRO, ville: ville || DEFAUTS_PRO.ville }, null, null);
-            return { verdict: d.verdict, marge: d.gain, note: d.note, prix: d.prix };
-          })()
-        : (() => {
-            const c = coutParticulier(out, { ...DEFAUTS_PART, ville }, null);
-            return { verdict: c.niveau, marge: null, note: c.etat.score, prix: c.prix };
-          })();
+    // Verdict et note du bilan (profil de la personne) : ce que montrent les listes de rapports.
+    const b = bilan(out, profil);
+    out.bilan = { verdict: b.libelle, indice: b.indice, version: 2 };
+    const resume = { verdict: b.libelle, marge: profil.objectif === "revente" ? b.argent.marge : null, note: b.indice, prix: b.argent.prix };
     // Décompte et rapport en une fois, avec la session de la personne (fonction enregistrer_analyse).
     const { data, error } = await (await supabaseServeur()).rpc("enregistrer_analyse", {
       p_mode: mode,

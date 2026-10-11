@@ -2,16 +2,19 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DEFAUTS_PRO, type Analyse, type ParamsPro } from "@/lib/analyse/couts";
+import type { Analyse } from "@/lib/analyse/couts";
+import { paramsPro } from "@/lib/analyse/profil";
 import { Saisie } from "../Saisie";
-import { Champ, inputCls, useReglages } from "../ui";
-import { Reglages, ResultatBenef } from "./ResultatBenef";
+import { Champ, inputCls } from "../ui";
+import { ResultatBenef } from "./ResultatBenef";
+import { DemandeProfil, FormulaireProfilAnalyse, useProfilAnalyse } from "../analyse/ProfilAnalyse";
 import { RapportComplet } from "./RapportComplet";
 import { AjouterParc } from "./AjouterParc";
 import { EnTeteRapport } from "../analyse/EnTeteRapport";
 
 export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restantes = null }: { maxPhotos: number; parc: boolean; villeCompte: string; lienInitial?: string; restantes?: number | null }) {
-  const [reg, setReg] = useReglages<ParamsPro>("utp-pro", { ...DEFAUTS_PRO, ville: villeCompte || DEFAUTS_PRO.ville });
+  const { profil } = useProfilAnalyse();
+  const reg = { ...paramsPro(profil), ville: profil.ville || villeCompte || "Paris" };
   const router = useRouter();
   const [a, setA] = useState<Analyse | null>(null);
   const [prix, setPrix] = useState("");
@@ -47,7 +50,6 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restante
       {entete}
       <ResultatBenef
         a={a}
-        reg={reg}
         prixInit={prix}
         onNouvelle={() => {
           setA(null);
@@ -90,8 +92,7 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restante
               <input value={prix} onChange={(e) => setPrix(e.target.value)} inputMode="numeric" placeholder="ex. 6 500" className={inputCls} />
             </Champ>
           }
-          onResultat={(r, ville) => {
-            setReg({ ville });
+          onResultat={(r) => {
             // rapport enregistré (sans prix envisagé à tester) : la page complète s'ouvre, photos d'abord
             if (r.rapportId && !prix.trim()) return router.push(`/app/rapports/${r.rapportId}`);
             setA(r);
@@ -99,9 +100,15 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restante
           }}
         />
       </div>
-      <div id="reglages" className="scroll-mt-24">
-        <Reglages reg={reg} setReg={setReg} />
-      </div>
+      <DemandeProfil />
+      <details id="reglages" className="scroll-mt-24 rounded-3xl border border-line bg-panel p-5 sm:p-6">
+        <summary className="cursor-pointer font-display text-lg font-semibold">
+          Mon profil d&apos;analyse <span className="mt-0.5 block font-body text-sm font-normal text-ink-3 sm:ml-2 sm:mt-0 sm:inline">bénéfice minimum, délai de revente, travaux, frais</span>
+        </summary>
+        <div className="mt-4">
+          <FormulaireProfilAnalyse />
+        </div>
+      </details>
     </div>
   );
 }

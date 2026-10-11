@@ -1,22 +1,27 @@
 "use client";
 import Link from "next/link";
-import { DEFAUTS_PRO, type ParamsPro } from "@/lib/analyse/couts";
 import { cx } from "@/lib/cx";
-import { useReglages } from "../ui";
+import { useProfilAnalyse } from "../analyse/ProfilAnalyse";
 
-/* Marges par voiture (vendues, puis prévues en clair) face au seuil de marge réglé dans le menu, comme l'outil Garage. */
+/* Marges par voiture (vendues, puis prévues en clair) face au bénéfice minimum du profil d'analyse, comme l'outil Garage. */
 export type BarreMarge = { id: string; nom: string; marge: number; prevue: boolean };
 
 export function GraphMarges({ barres }: { barres: BarreMarge[] }) {
-  const [reg] = useReglages<ParamsPro>("utp-pro", DEFAUTS_PRO);
-  const seuil = reg.margeMin;
+  const seuil = useProfilAnalyse().profil.margeMin;
   if (!barres.length) return <p className="text-sm text-ink-3">Renseignez prix d&apos;achat, frais et prix de vente dans le parc pour voir les marges.</p>;
   const lo = Math.min(0, ...barres.map((b) => b.marge));
   const hi = Math.max(seuil, ...barres.map((b) => b.marge)) * 1.08;
   const pos = (x: number) => ((x - lo) / (hi - lo || 1)) * 100;
   const z = pos(0), th = pos(seuil);
+  // résumé en phrase : le graphique se lit aussi sans les couleurs
+  const dessus = barres.filter((b) => b.marge >= seuil).length, perte = barres.filter((b) => b.marge < 0).length;
+  const dessous = barres.length - dessus - perte;
   return (
     <div className="grid gap-2">
+      <p className="mb-1 text-sm text-ink-2">
+        {[`${dessus} au-dessus du seuil`, dessous ? `${dessous} en dessous` : null, perte ? `${perte} à perte` : null].filter(Boolean).join(", ")}
+        {" "}sur {barres.length} voiture{barres.length > 1 ? "s" : ""}.
+      </p>
       {barres.map((b) => {
         const a = Math.min(z, pos(b.marge)), w = Math.max(Math.abs(pos(b.marge) - z), 0.6);
         return (

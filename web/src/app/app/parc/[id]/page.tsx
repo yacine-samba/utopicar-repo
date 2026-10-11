@@ -11,6 +11,7 @@ import { EnTeteRapport } from "@/components/analyse/EnTeteRapport";
 import { RapportEnregistre } from "@/components/benef/RapportEnregistre";
 import { PiecesDossier } from "@/components/benef/PiecesDossier";
 import { EditionFiche } from "@/components/benef/EditionFiche";
+import { AnnonceRevente } from "@/components/benef/AnnonceRevente";
 
 export const metadata: Metadata = { title: "Voiture du parc" };
 
@@ -72,6 +73,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <section className="carte p-5 sm:p-6">
         <PiecesDossier parcId={veh.id} rapportId={veh.rapport_id} />
       </section>
+
+      {veh.statut !== "vendu" && veh.statut !== "abandonne" && <AnnonceRevente parcId={veh.id} />}
 
       {a && r?.mode === "benef" ? (
         <RapportEnregistre a={a} id={veh.rapport_id!} titre={r.titre} parc parcId={veh.id} />

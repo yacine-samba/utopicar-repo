@@ -53,17 +53,24 @@ Vraies photos des versions exactes, Wikimedia Commons ; auteurs et licences dans
 
 Légende du post : « Photos : Thomas doerfer, M 93 / Wikimedia Commons ».
 
-## La voix (enregistrée le 7 octobre 2026)
+## La voix (enregistrée le 7 octobre 2026, corrigée le 8)
 
-Simon (`mvhJVdVoTWVUtL4keT7W`), eleven_v3, 2 prises (1 054 crédits). **Prise B retenue par l'utilisateur** (43,4 s
-brute). Note : la transcription entend « deux cents vites » pour « deux cent huit » ; prise gardée telle quelle à la
-demande de l'utilisateur. Mise en place par `scripts/vo-mo8.py takeB.mp3 --retenue` :
-- répliques définies par leurs mots (faster-whisper small), posées à leur ancre, découpées aux pauses de plus de 0,3 s ;
+Simon (`mvhJVdVoTWVUtL4keT7W`), eleven_v3. **Prise B retenue par l'utilisateur** (2 prises, 1 054 crédits). Le 8
+octobre, règle de l'utilisateur : la cylindrée se dit en litres (« un litre quatre TSI », « un litre deux TCe »,
+« un litre deux PureTech »). Les répliques n° 4, n° 2 et n° 1 ont été régénérées seules (2 variantes, 450 crédits) ;
+la variante C (`fixC.mp3`) les remplace dans la prise B. Transcription du montage : « 1.4 litre TSI », « 1 litre de
+TCE », « 1 litre de PureTech » (whisper écrit « de » pour « deux »). La transcription entend toujours « deux cents
+vites » pour « deux cent huit » dans la prise B, gardée telle quelle.
+
+`scripts/vo-mo8.py takeB.mp3 --retenue` :
+- répliques définies par leurs mots (faster-whisper small), chacune prise dans sa source, posée à son ancre ;
+- découpe aux pauses de plus de 0,3 s ;
 - accélération 1,20 (liste) et 1,25 (chute), pauses internes ramenées à 0,12 s, timbre conservé ;
-- la voix finit à 28,4 s ; débit ≈ 2,8 mots/s.
+- repères donnés par réplique et rang du mot, début de mot borné au son ;
+- la voix finit à 28,5 s.
 
-Le film lit `audio/vo-mo8/vo-timing.json` (répliques, mots, repères) : la palette tombe sur le numéro, la voiture se range
-sur son nom, l'étiquette sort sur le défaut, le tampon tombe sur « Toi ». `scripts/audio-mo8.py` relit les mêmes repères.
+Le film lit `audio/vo-mo8/vo-timing.json`. La palette tombe sur le numéro, la voiture se range sur son nom,
+l'étiquette sort sur le défaut et le tampon tombe sur « Toi ». `scripts/audio-mo8.py` relit les mêmes repères.
 
 ```
  0,10  Cinq voitures à ne jamais acheter en achat-revente.
@@ -73,10 +80,10 @@ sur son nom, l'étiquette sort sur le défaut, le tampon tombe sur « Toi ». `s
 12,75  Trois. Le 1.0 EcoBoost : il chauffe.
 15,80  Deux. Clio 4, 1.2 TCe : il boit son huile.
 19,40  Et numéro un : le 1.2 PureTech. Sa courroie baigne dans l'huile.
-23,33  Le six ?
-23,97  La même 208, courroie changée : cinq cents euros.
-26,56  Tout le monde la fuit.
-27,45  Toi, tu l'achètes.
+23,53  Le six ?
+24,16  La même 208, courroie changée : cinq cents euros.
+26,76  Tout le monde la fuit.
+27,52  Toi, tu l'achètes.
 ```
 
 ## La grammaire d'un numéro (4 s, deux mesures)

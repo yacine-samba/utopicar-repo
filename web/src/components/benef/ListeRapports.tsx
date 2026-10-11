@@ -8,12 +8,12 @@ import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { titreVehicule } from "@/lib/titre";
 import { CarteVoiture } from "../analyse/CarteVoiture";
 import { cx, useReglages } from "../ui";
+import { infoVerdict, PASTILLE, TEXTE_TON } from "@/lib/analyse/verdicts";
 
 export type LigneRapport = { id: string; titre: string; created_at: string; prix: number | null; verdict: string | null; marge: number | null; note: number | null; photos?: string[]; lien?: string | null };
 
-const ton = (v: string | null) => (!v ? "text-ink-3" : v.startsWith("NO") ? "text-bad" : v.includes("SURVEILLER") ? "text-warn" : v === "GO" ? "text-ok" : "text-o2");
-const badgeTon = (v: string | null) =>
-  !v ? "border-line-2 text-ink-2" : v.startsWith("NO") ? "border-bad/50 bg-bad/15 text-bad" : v.includes("SURVEILLER") ? "border-warn/50 bg-warn/15 text-warn" : v === "GO" ? "border-ok/50 bg-ok/15 text-ok" : "border-o/50 bg-o/15 text-o2";
+const ton = (v: string | null) => TEXTE_TON[infoVerdict(v).ton];
+const badgeTon = (v: string | null) => PASTILLE[infoVerdict(v).ton];
 const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")} €`);
 
 export function ListeRapports({ rapports, comparateur, vide = "Aucun rapport pour le moment.", choixVue = true }: { rapports: LigneRapport[]; comparateur: boolean; vide?: string; choixVue?: boolean }) {

@@ -10,6 +10,8 @@ export type Apercu = {
   cote: { n: number; mediane: number; p25: number; p75: number } | null; ecart: number | null;
   fiab: { k: "fiable" | "limite" | "eviter" | "hors"; modele: string | null; pourquoi: string[] };
   defauts: { l: string; piege: boolean }[]; papiers: string[];
+  /** Bilan de l'outil (sans IA) : verdict, quatre réponses, vigilance, première question à poser. */
+  bilan?: { libelle: string; ton: string; indice: number | null; piliers: { question: string; reponse: string; sous: string; ton: string }[]; vigilance: string | null; question: string | null } | null;
 };
 
 const CONSEILS = [

@@ -9,6 +9,8 @@ import { Fourchette } from "../analyse/Fourchette";
    Deux contenus : l'aperçu réel d'une annonce collée (règles et cote de l'outil, sans IA) ou l'un des trois exemples de la démo.
    Les lignes arrivent en cascade avec la classe « arrivee » (animation CSS globale, coupée si les animations sont réduites). */
 
+const TON_BILAN: Record<string, string> = { ok: "text-ok", o: "text-o2", warn: "text-warn", bad: "text-bad", neutre: "text-ink" };
+
 const ETAPES = ["Lecture du texte de l'annonce", "Cote sur les annonces comparables", "Contrôles : moteur, défauts, papiers"];
 const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;
 const reduit = () => typeof window !== "undefined" && (matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.hasAttribute("data-calme"));
@@ -67,6 +69,29 @@ function Reel({ a }: { a: Apercu }) {
         {infos && <span className="block text-sm font-normal text-ink-3">{infos}</span>}
       </p>
       <ul className="divide-y divide-line">
+        {a.bilan && (
+          <Ligne i={1}>
+            <div className="flex items-center justify-between gap-3">
+              <b className={cx("font-display text-2xl", TON_BILAN[a.bilan.ton] ?? "text-ink")}>{a.bilan.libelle}</b>
+              {a.bilan.indice != null && <span className="num rounded-full border border-line-2 px-2.5 py-0.5 text-sm">{a.bilan.indice} / 100</span>}
+            </div>
+            {a.bilan.vigilance && <p className="mt-2 rounded-xl border border-bad/40 bg-bad/10 px-3 py-2 text-sm text-bad">{a.bilan.vigilance}</p>}
+            <ul className="mt-3 grid grid-cols-2 gap-2">
+              {a.bilan.piliers.map((p) => (
+                <li key={p.question} className="rounded-xl border border-line px-3 py-2">
+                  <span className="block text-xs text-ink-3">{p.question}</span>
+                  <b className={cx("block text-sm", TON_BILAN[p.ton] ?? "text-ink")}>{p.reponse}</b>
+                </li>
+              ))}
+            </ul>
+            {a.bilan.question && (
+              <p className="mt-3 text-sm text-ink-2">
+                <span className="text-ink-3">À demander au vendeur : </span>
+                {a.bilan.question}
+              </p>
+            )}
+          </Ligne>
+        )}
         <Ligne i={1}>
           {a.cote && a.prix ? (
             <>

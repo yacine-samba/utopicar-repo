@@ -1,4 +1,5 @@
 import { CarteVoiture } from "../analyse/CarteVoiture";
+import { CONSEILS, infoVerdict, PASTILLE } from "@/lib/analyse/verdicts";
 
 export type LigneAnalyse = { id: string; titre: string; verdict: string | null; prix: number | null; note: number | null; created_at: string; photos?: string[]; lien?: string | null };
 
@@ -11,12 +12,19 @@ export const NIVEAUX: Record<string, { l: string; ton: string; conseil: string }
   inconnu: { l: "Prix à confirmer", ton: "border-line-2 bg-glass text-ink-2", conseil: "Pas assez d'annonces comparables pour juger le prix." },
 };
 
+/** Pastille d'une analyse : ancien niveau de prix (bon, cher…) ou verdict du bilan. */
+export function niveauDe(v: string | null) {
+  if (v && v in NIVEAUX) return NIVEAUX[v];
+  const i = infoVerdict(v);
+  return i.code ? { l: i.l, ton: PASTILLE[i.ton], conseil: CONSEILS[i.code] } : NIVEAUX.inconnu;
+}
+
 /** Analyses d'un particulier : une carte par voiture, photos à faire glisser, verdict en clair. */
 export function ListeAnalyses({ lignes }: { lignes: LigneAnalyse[] }) {
   return (
     <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {lignes.map((r) => {
-        const n = NIVEAUX[r.verdict ?? ""] ?? NIVEAUX.inconnu;
+        const n = niveauDe(r.verdict);
         return (
           <li key={r.id}>
             <CarteVoiture href={`/app/rapports/${r.id}`} titre={r.titre} photos={r.photos ?? []} prix={r.prix} badge={n} sous={n.conseil} lien={r.lien} date={r.created_at} />

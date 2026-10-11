@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FormulaireProfilAnalyse } from "@/components/analyse/ProfilAnalyse";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { compteCourant } from "@/lib/compte";
@@ -276,6 +277,12 @@ export default async function Compte({
           ))}
         </ul>
         <p className="mt-3 text-sm text-ink-3">{compte.guide ? "Accès complet aux quatre guides, imprimables en PDF." : compte.guides.length ? `${compte.guides.length} guide${compte.guides.length > 1 ? "s" : ""} ouvert${compte.guides.length > 1 ? "s" : ""} en entier, imprimable${compte.guides.length > 1 ? "s" : ""} en PDF. Les autres : deux chapitres offerts.` : "Les deux premiers chapitres sont offerts."} Les autres guides sont dans la même page.</p>
+      </section>
+
+      <section id="analyse" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-analyse">
+        <h2 id="c-analyse" className="font-display text-xl font-semibold">Mon profil d&apos;analyse</h2>
+        <p className="mb-5 mt-1 text-ink-2">Ce que vous voulez faire de la voiture et ce que vous acceptez. La note, les frais et les conseils de chaque rapport en dépendent ; vos rapports déjà enregistrés sont recalculés.</p>
+        <FormulaireProfilAnalyse />
       </section>
 
       <section id="accessibilite" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-acces">

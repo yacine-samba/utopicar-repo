@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { compteCourant } from "@/lib/compte";
-import { donneesAdmin } from "@/lib/admin";
+import { donneesAdmin, justesseAnalyse } from "@/lib/admin";
+import { JustesseAnalyse } from "@/components/admin/Justesse";
 import { OFFRES } from "@/lib/offres";
 import { GUIDES } from "@/lib/guides";
 import { Administration } from "@/components/admin/Administration";
@@ -34,6 +35,7 @@ export default async function Page() {
 
   const { comptes, inscrits, journal, analyses } = await donneesAdmin();
   const actifs = comptes.filter((x) => x.analysesMois > 0).length;
+  const [{ comptes, inscrits, journal }, justesse] = await Promise.all([donneesAdmin(), justesseAnalyse().catch(() => null)]);
   const payants = comptes.filter((x) => !x.illimite && !x.offerte && OFFRES[x.formule].prix > 0).length;
   const offerts = comptes.filter((x) => x.offerte && x.offerte.id !== "gratuit").length;
   const ouverts = inscrits.filter((x) => x.ouvert).length;
@@ -52,6 +54,7 @@ export default async function Page() {
         <Kpi l="Analyses ce mois" v={analyses.mois} s={`par ${actifs} compte${actifs > 1 ? "s" : ""}${actifs ? ` · ${(analyses.mois / actifs).toFixed(1).replace(".", ",")} par compte` : ""}`} />
         <Kpi l="Guides ouverts" v={inscrits.length ? `${Math.round((ouverts / inscrits.length) * 100)} %` : "—"} s={`${ouverts} sur ${inscrits.length}`} />
       </div>
+      <JustesseAnalyse j={justesse} />
       <Administration comptes={comptes} inscrits={inscrits} journal={journal} moi={c.id} guides={GUIDES.map(({ id, titre, pour }) => ({ id, titre, pour }))} />
     </div>
   );

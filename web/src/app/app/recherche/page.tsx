@@ -1,4 +1,5 @@
 import { compteBenef } from "@/lib/benef";
+import { codeVerdict, valeursStockees, VERDICTS, type VerdictCode } from "@/lib/analyse/verdicts";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { VerrouBenef } from "@/components/benef/Verrou";
 import { ListeRapports } from "@/components/benef/ListeRapports";
@@ -25,7 +26,7 @@ function nomsCatalogue(): NomsCatalogue {
   return noms;
 }
 
-const VERDICTS = ["GO", "GO SI NÉGOCIÉ", "GO EN MANDAT UNIQUEMENT", "À SURVEILLER", "NO GO"];
+const CODES = Object.keys(VERDICTS) as VerdictCode[];
 type Filtres = { vue?: string; q?: string; marque?: string; modele?: string; gen?: string; r?: string; j?: string; verdict?: string; marge?: string; prix?: string; depuis?: string };
 const entier = (s?: string) => (s && /^\d{1,7}$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
 
@@ -100,7 +101,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   const texte = (f.q ?? "").replace(/[%_,()]/g, " ").trim().slice(0, 60);
   if (texte) q = q.ilike("titre", `%${texte}%`);
   if (f.marque) q = q.ilike("marque", f.marque.replace(/[%_,()]/g, "").slice(0, 40));
-  if (f.verdict && VERDICTS.includes(f.verdict)) q = q.eq("verdict", f.verdict);
+  const code = codeVerdict(f.verdict);
+  if (code) q = q.in("verdict", valeursStockees(code));
   if (entier(f.marge) != null) q = q.gte("marge", entier(f.marge)!);
   if (entier(f.prix) != null) q = q.lte("prix", entier(f.prix)!);
   if (f.depuis && /^\d{4}-\d{2}-\d{2}$/.test(f.depuis)) q = q.gte("created_at", f.depuis);
@@ -130,8 +132,10 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
           <span className="text-ink-2">Verdict</span>
           <select name="verdict" defaultValue={f.verdict ?? ""} className={inputCls}>
             <option value="">Tous</option>
-            {VERDICTS.map((v) => (
-              <option key={v}>{v}</option>
+            {CODES.map((v) => (
+              <option key={v} value={VERDICTS[v].l}>
+                {VERDICTS[v].l}
+              </option>
             ))}
           </select>
         </label>

@@ -87,6 +87,10 @@ export type Faits = {
   carnet?: boolean;
   factures?: boolean;
   importe?: boolean;
+  /** Pièces et entretiens annoncés comme neufs ou refaits récemment (« embrayage neuf », « pneus récents »). */
+  recents?: string[];
+  /** Signaux de vigilance lus dans le texte (paiement par coupon, vendeur à l'étranger, acompte…), voir vigilance.ts. */
+  signaux?: string[];
   defauts: Defaut[];
   /** Description très courte : on ne peut pas juger l'état sur le texte. */
   descCourte: boolean;
@@ -212,6 +216,57 @@ function descFacts(txt: string): Partial<Faits> {
   if (/\bfactures?\b/.test(t)) out.factures = true;
   if (/\b(import|importe|immatricule a l'?etranger|plaque etrangere)\b/.test(t) && !NEG.test(t.slice(0, t.search(/\bimport/)).slice(-16))) out.importe = true;
 
+  out.recents = recentsDesc(t);
+  out.signaux = signauxDesc(t);
   out.defauts = defautsDesc(s);
   return out;
+}
+
+/** Pièces annoncées neuves ou refaites : la clé et son nom lisible. */
+const PIECES: [RegExp, string][] = [
+  [/embrayage|kit d'?embrayage/, "embrayage"],
+  [/distribution|courroie|kit de distri\w*/, "distribution"],
+  [/pneus?|pneumatiques?/, "pneus"],
+  [/freins?|plaquettes?|disques?/, "freins"],
+  [/batterie/, "batterie"],
+  [/amortisseurs?/, "amortisseurs"],
+  [/vidange|revision|entretien/, "vidange"],
+  [/turbo/, "turbo"],
+  [/injecteurs?/, "injecteurs"],
+  [/pompe a eau/, "pompe à eau"],
+  [/climatisation|clim/, "climatisation"],
+  [/volant moteur/, "volant moteur"],
+];
+const NEUF = "(neu(f|fs|ve|ves)|refaite?s?|change(e|es|s)?|remplace(e|es|s)?|recente?s?|faite?s?|nouvelle?s?|nouveaux)";
+
+function recentsDesc(t: string): string[] {
+  const out: string[] = [];
+  for (const [re, nom] of PIECES) {
+    const avant = new RegExp(`\\b(${re.source})\\b[^.;!?\\n]{0,22}?\\b${NEUF}\\b`);
+    const apres = new RegExp(`\\b${NEUF}\\s+(${re.source})\\b`);
+    const m = t.match(avant) ?? t.match(apres);
+    // « distribution à faire », « pneus à changer » : pas neuf
+    if (m && !/\b(a faire|a prevoir|a changer|a refaire|pas faite?|non faite?|jamais)\b/.test(m[0])) out.push(nom);
+  }
+  return out;
+}
+
+/** Tournures typiques des fausses annonces et des ventes à risque (texte sans accents, en minuscules). */
+const SIGNAUX: [string, RegExp][] = [
+  ["paiement", /mandat cash|western union|moneygram|transcash|neosurf|paysafecard|coupons? (pcs|transcash|neosurf)|carte (pcs|cadeau)|paiement (par|en) coupons?|crypto ?monnaie|bitcoin/],
+  ["etranger", /(je suis|actuellement|me trouve|vehicule|voiture)( actuellement)? (a|en) (l'?etranger|belgique|allemagne|espagne|angleterre|irlande|ecosse|italie|suisse)|expatrie|mute(e)? a l'?etranger|militaire en (mission|operation)|en mission a l'?etranger|je ne suis (plus )?(pas )?en france/],
+  ["acompte", /acompte|virement (avant|d'?avance|a la reservation)|reserv\w* (le vehicule |la voiture )?(contre|avec) (un )?(versement|virement|paiement)|paiement avant (la )?(visite|livraison)/],
+  ["contact", /(contactez|ecrivez|joignez)[- ]moi (uniquement |directement )?(par|sur|via) (mail|e-?mail|whatsapp|sms|telegram)|whatsapp|telegram|\b[\w.+-]+@[\w-]+\.(com|fr|net|org)\b/],
+  ["livraison", /livr\w* (a domicile|par (un )?transporteur|par camion|partout en france)|transporteur agree|expedi\w* (du vehicule|de la voiture)/],
+  ["urgence", /(pour )?cause (de )?(deces|divorce|demenagement|depart a l'?etranger|mutation)|prix sacrifie|cede a petit prix|vente (tres )?urgente|doit partir vite/],
+];
+
+function signauxDesc(t: string): string[] {
+  return SIGNAUX.filter(([, re]) => re.test(t)).map(([k]) => k);
+}
+
+/** Faits d'un texte libre (réponse du vendeur, compte rendu collé) : CT, distribution, entretien, pièces refaites, défauts. */
+export function faitsDuTexte(texte: string) {
+  const f = descFacts(texte);
+  return { ct: f.ct, distribution: f.distribution, proprietaires: f.proprietaires, carnet: f.carnet, factures: f.factures, importe: f.importe, recents: f.recents ?? [], defauts: f.defauts ?? [] };
 }

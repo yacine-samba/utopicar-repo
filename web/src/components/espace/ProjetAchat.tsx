@@ -3,14 +3,14 @@ import Link from "next/link";
 import { cx, inputCls } from "@/lib/cx";
 import { useReglages } from "@/components/ui";
 import { titreVehicule } from "@/lib/titre";
-import { NIVEAUX, type LigneAnalyse } from "./ListeAnalyses";
+import { niveauDe, type LigneAnalyse } from "./ListeAnalyses";
+import { estFavorable, infoVerdict } from "@/lib/analyse/verdicts";
 
 /* Tableau de bord particulier : le projet d'achat, pas des chiffres.
    Où j'en suis (5 étapes), mon budget, ma sélection classée et la liste du jour de la visite. Retenu dans ce navigateur. */
 
 type Projet = { budget: string; etapes: string[]; visite: string[] };
 const DEFAUT: Projet = { budget: "", etapes: [], visite: [] };
-const ORDRE: Record<string, number> = { bon: 0, correct: 1, prudence: 2, cher: 3, eviter: 4, inconnu: 5 };
 const VISITE = [
   ["cg", "Carte grise au nom du vendeur, adresse identique à sa pièce d'identité"],
   ["ct", "Contrôle technique de moins de 6 mois, sans contre-visite en attente"],
@@ -35,8 +35,8 @@ export function ProjetAchat({ lignes }: { lignes: LigneAnalyse[] }) {
     { id: "acheter", l: "Acheter", d: "Signer, payer, carte grise", fait: p.etapes.includes("acheter"), auto: false },
   ];
   const courante = etapes.findIndex((e) => !e.fait);
-  const selection = [...lignes].sort((a, b) => (ORDRE[a.verdict ?? "inconnu"] ?? 5) - (ORDRE[b.verdict ?? "inconnu"] ?? 5) || (b.note ?? 0) - (a.note ?? 0));
-  const piste = selection.find((x) => (x.verdict === "bon" || x.verdict === "correct") && (!budget || (x.prix ?? 0) <= budget));
+  const selection = [...lignes].sort((a, b) => infoVerdict(a.verdict).ordre - infoVerdict(b.verdict).ordre || (b.note ?? 0) - (a.note ?? 0));
+  const piste = selection.find((x) => estFavorable(x.verdict) && (!budget || (x.prix ?? 0) <= budget));
   const coche = p.visite.length;
 
   return (
@@ -85,7 +85,7 @@ export function ProjetAchat({ lignes }: { lignes: LigneAnalyse[] }) {
             <span>
               <span className="text-xs font-medium uppercase tracking-[0.12em] text-ok">Votre meilleure piste{budget ? " dans le budget" : ""}</span>
               <span className="mt-1 block font-display text-xl font-semibold group-hover:text-o2">{titreVehicule(piste.titre)}</span>
-              <span className="text-sm text-ink-3">{NIVEAUX[piste.verdict ?? "inconnu"]?.l}{piste.note != null ? ` · état ${piste.note} sur 100` : ""}</span>
+              <span className="text-sm text-ink-3">{niveauDe(piste.verdict).l}{piste.note != null ? ` · note ${piste.note} sur 100` : ""}</span>
             </span>
             <span className="num font-display text-2xl font-semibold">{piste.prix != null ? `${piste.prix.toLocaleString("fr-FR")} €` : "—"}</span>
           </Link>
@@ -93,7 +93,7 @@ export function ProjetAchat({ lignes }: { lignes: LigneAnalyse[] }) {
         {selection.length ? (
           <ul className="grid gap-2">
             {selection.map((r, i) => {
-              const n = NIVEAUX[r.verdict ?? ""] ?? NIVEAUX.inconnu;
+              const n = niveauDe(r.verdict);
               const depasse = budget && r.prix != null && r.prix > budget ? r.prix - budget : 0;
               return (
                 <li key={r.id} className="min-w-0">

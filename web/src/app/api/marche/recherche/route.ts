@@ -8,6 +8,7 @@ import { cleRecherche, COLONNES_RECHERCHE, MAX_ONGLETS, type Meilleure } from "@
 import { dansPhase, memeMoteur } from "@/lib/vehicules/phases";
 import { demanderCollecte, dernierReleve, SEUIL_COLLECTE, type EtatCollecte } from "@/lib/vehicules/collecte";
 import { dansDepartements, departementsDe } from "@/lib/vehicules/leboncoin";
+import { PIEGES } from "@/lib/vehicules/pieges";
 
 /* Recherche dans la base du marché, au niveau de l'outil Garage : marque, modèle, génération,
    chaque annonce placée sur la cote de sa génération (régression sur les annonces comparables). Benef Pro et illimité. */
@@ -43,7 +44,6 @@ const Corps = z.object({
 });
 
 const sansAccent = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-const PIEGES = /\b(pour pieces|moteur hs|boite hs|joint de culasse|non roulant|epave|accidente|sans ct|export|marchand|vendu en l.etat)\b/;
 
 export async function POST(req: Request) {
   const c = await compteCourant();
