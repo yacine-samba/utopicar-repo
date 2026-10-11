@@ -11,6 +11,6 @@ RMS silence « Ah. »  mix  -23.5  musique -130.1 dBFS
 RMS étouffée         mix  -16.4  musique  -30.5 dBFS
 RMS logo → onglets   mix  -16.4  musique  -25.1 dBFS
 RMS temps d'arrêt    mix  -15.9  musique  -33.8 dBFS
-RMS drop → appeler   mix  -16.4  musique  -24.0 dBFS
+RMS drop → appeler   mix  -16.4  musique  -24.1 dBFS
 RMS arrêt final      mix  -17.8  musique  -37.0 dBFS
-RMS logo final       mix  -26.2  musique  -28.1 dBFS
+RMS logo final       mix  -26.2  musique  -28.2 dBFS
