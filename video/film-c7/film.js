@@ -945,6 +945,83 @@
     };
   };
 
+  // =====================================================================================================
+  // FI2 · « Recette du jour » (moins de 8 s) : on croit regarder une recette ; les ingrédients sont une carrosserie
+  // Peugeot et un moteur Toyota, et c'est une 107 qui sort de la casserole. 107, C1, Aygo : même moteur Toyota 1.0
+  // (fiche fiabilité de l'outil, lib/analyse/fiabilite.ts : embrayage souvent fatigué, à vérifier)
+  // =====================================================================================================
+  SPECS.FI2 = () => {
+    const P = '../assets/photos-fi1/', CRED = 'Photos Wikimedia Commons : Vauxford (CC BY-SA 4.0), Rudolf Stricker (CC BY-SA 3.0), détourées · Fiche fiabilité UTOPICAR';
+    const tCa = T('carrosserie'), tMo = T('moteur', 2.6), tVo = T('voila', 4), t107 = T('107', 4.6), tFi = T('fiable', 5.5), tTu = T('tu', 6.3), tLa = T('laquelle', 6.8);
+    const s = S(-1, DUR + 1, '#f4ece0', { type: 'cut' }, 0.03); s.imp.push([tVo + 0.05, 26]);
+    // la cuisine : carrelage, plan de travail en bois
+    const mur = mk('div', 'a', s.el, { inset: '0', background: 'repeating-linear-gradient(0deg, transparent 0 126px, rgba(28,22,18,.07) 126px 130px), repeating-linear-gradient(90deg, transparent 0 126px, rgba(28,22,18,.07) 126px 130px), linear-gradient(#f7f0e6, #efe3d2)' });
+    s.el.insertBefore(mur, s.cam);
+    const plan = mk('div', 'a', s.cam, { left: '-200px', top: '1180px', width: '1480px', height: '1000px', background: 'repeating-linear-gradient(90deg, rgba(0,0,0,.035) 0 3px, transparent 3px 46px), linear-gradient(#c88f58, #a46c3b 60%, #8a5a31)', boxShadow: '0 -14px 0 #d9a571 inset, 0 -30px 60px -20px rgba(0,0,0,.25)' });
+    // la casserole (dessinée), son couvercle et la vapeur
+    const pot = mk('div', 'a', s.cam, { width: '600px', zIndex: 4 }, `<svg viewBox="0 0 600 360" width="600" height="360"><defs><linearGradient id="pg" x1="0" x2="1"><stop offset="0" stop-color="#2a2a2e"/><stop offset=".35" stop-color="#55555c"/><stop offset=".6" stop-color="#34343a"/><stop offset="1" stop-color="#1d1d21"/></linearGradient></defs>
+      <rect x="0" y="70" width="80" height="34" rx="17" fill="#1d1d21"/><rect x="520" y="70" width="80" height="34" rx="17" fill="#1d1d21"/>
+      <path d="M60 60 H540 V300 Q540 350 490 350 H110 Q60 350 60 300 Z" fill="url(#pg)"/><ellipse cx="300" cy="60" rx="240" ry="26" fill="#3d3d44"/><ellipse cx="300" cy="62" rx="222" ry="18" fill="#141416"/></svg>`);
+    const lid = mk('div', 'a', s.cam, { width: '520px', zIndex: 5 }, `<svg viewBox="0 0 520 120" width="520" height="120"><rect x="225" y="0" width="70" height="34" rx="14" fill="#1d1d21"/><path d="M10 100 Q260 10 510 100 Z" fill="#4a4a52"/><rect x="0" y="94" width="520" height="16" rx="8" fill="#2b2b30"/></svg>`);
+    const vap = [0, 1, 2, 3, 4].map((i) => mk('div', 'a', s.cam, { width: '150px', height: '150px', borderRadius: '50%', background: 'rgba(255,255,255,.75)', filter: 'blur(26px)', zIndex: 6 }));
+    // la fiche recette
+    const kR = L1(s.cam, 140, 230, 170, 'Recette', 'var(--ink)'), kJ = L1(s.cam, 140, 410, 150, 'du jour', 'var(--o)', true);
+    kR.box.style.zIndex = 7; kJ.box.style.zIndex = 7;
+    const fiche = mk('div', 'card2 a', s.cam, { width: '780px', zIndex: 7 }, '<div style="display:flex;justify-content:space-between;font:700 26px Satoshi;letter-spacing:.14em;color:rgba(28,22,18,.5);margin-bottom:6px"><span>INGRÉDIENTS</span><span>FACILE · 2 MIN</span></div>');
+    // cuillère en bois qui tourne dans la casserole, bulles qui éclatent
+    const cuil = mk('div', 'a', s.cam, { width: '60px', zIndex: 3 }, '<svg viewBox="0 0 60 420" width="60" height="420"><rect x="24" y="0" width="12" height="330" rx="6" fill="#c8915a"/><ellipse cx="30" cy="365" rx="26" ry="50" fill="#b97f48"/></svg>');
+    const bulles = [...Array(7)].map(() => mk('div', 'a', s.cam, { width: '26px', height: '26px', borderRadius: '50%', border: '4px solid rgba(255,255,255,.8)', zIndex: 6 }));
+    const ING = [['1 carrosserie Peugeot', tCa], ['1 moteur Toyota 1.0', tMo], ['1 embrayage (à vérifier)', tMo + 0.75]].map(([l, t0]) => {
+      const e = mk('div', '', fiche, { display: 'flex', alignItems: 'center', gap: '14px', font: '600 38px Satoshi', color: 'var(--ink)', padding: '8px 0', borderTop: '2px dashed rgba(28,22,18,.12)' }, `<i style="flex:none;width:34px;height:34px;border-radius:9px;border:3px solid var(--o);display:flex;align-items:center;justify-content:center;font:700 22px Satoshi;color:#fff;font-style:normal"></i><span>${l}</span>`);
+      e.box = e.querySelector('i'); e.t0 = t0; return e; });
+    // les ingrédients qui tombent dans la casserole
+    const chips = [['carrosserie Peugeot', tCa + 0.15, -1], ['moteur Toyota', tMo + 0.15, 1]].map(([l, t0, d]) => { const e = mk('div', 'pill a', s.cam, { background: '#fff', color: 'var(--ink)', fontSize: '36px', zIndex: 3, boxShadow: '0 16px 30px -12px rgba(0,0,0,.35)' }, l); e.t0 = t0; e.d = d; return e; });
+    // la 107 qui sort de la casserole, puis les variantes
+    const c107 = car(s.cam, P + 'p107.webp', 820), cC1 = car(s.cam, P + 'c1.webp', 330), cAy = car(s.cam, P + 'aygo.webp', 330);
+    c107.style.zIndex = 2; cC1.style.zIndex = 8; cAy.style.zIndex = 8;
+    const st = stamp(s.cam, 'LA 107', 'var(--o)', 130); st.style.zIndex = 9;
+    const fi = mk('div', 'pill a', s.cam, { background: 'var(--ok)', color: '#fff', fontSize: '44px', zIndex: 9 }, '✓ Fiable');
+    const etoiles = [...Array(9)].map((_, i) => mk('div', 'a', s.cam, { font: '700 54px Satoshi', color: i % 2 ? 'var(--o)' : '#ffc928', zIndex: 9 }, '✦'));
+    const kT = L1(s.cam, 140, 260, 150, 'Tu cuisines', 'var(--ink)'), kL = L1(s.cam, 140, 430, 150, 'laquelle ?', 'var(--o)', true);
+    const lab = [['Citroën C1', 300], ['Peugeot 107', 540], ['Toyota Aygo', 780]].map(([n, x]) => { const e = mk('div', 'pill a', s.cam, { background: '#fff', color: 'var(--ink)', fontSize: '30px', padding: '12px 20px', zIndex: 9, boxShadow: '0 12px 24px -10px rgba(0,0,0,.35)' }, n); e.X = x; return e; });
+    const mm = mk('div', 'pill a', s.cam, { background: 'var(--ink)', color: '#fff', fontSize: '34px', zIndex: 9 }, 'Même moteur Toyota 1.0');
+    const cr = cred(s, CRED);
+    cue(0.05, 'pop', 0.5); cue(tCa + 0.15, 'whoosh', 0.5); cue(tCa + 0.5, 'thud', 0.6); cue(tMo + 0.15, 'whoosh', 0.5); cue(tMo + 0.5, 'thud', 0.6); cue(tMo + 0.75, 'pop', 0.6);
+    cue(MU.stop, 'tapestop'); cue(tVo, 'impact'); cue(t107 + 0.05, 'ding', 0.9); cue(tFi, 'pop', 0.8); cue(tTu, 'whoosh', 0.7); cue(tLa + 0.1, 'pop', 0.7);
+    const POT = { x: 540, y: 1235 };
+    s.paint = (t) => {
+      const rv = E(t, tVo, 0.35);                                   // la révélation
+      pose(pot, t, () => ({ x: POT.x, y: POT.y + 6 * bump(t, tVo, 0.2), c: 1, s: 1 + 0.03 * bump(t, tCa + 0.5, 0.2) + 0.03 * bump(t, tMo + 0.5, 0.2) }));
+      // le couvercle : posé, tremble avant la révélation, puis s'envole
+      pose(lid, t, (tt) => { const sh = tt > tVo - 0.6 && tt < tVo ? 10 * Math.sin(tt * 60) * E(tt, tVo - 0.6, 0.5) : 0, up = E(tt, tVo, 0.6); if (tt > tVo + 0.7) return null; return { x: POT.x + 260 * up + sh * 0.3, y: POT.y - 160 - 2200 * up + Math.abs(sh), c: 1, r: sh * 0.4 + 70 * up }; });
+      vap.forEach((v, i) => { const ph = ((t * 0.55 + i / 5) % 1), burst = E(t, tVo, 0.3), o = (0.55 * Math.sin(ph * Math.PI)) * (1 - rv) + 0.8 * burst * (1 - E(t, tVo + 0.25, 0.35));   // pose() fixe l'opacité : elle passe par o
+        pose(v, t, () => (o < 0.01 ? null : { x: POT.x - 160 + i * 80 + 30 * Math.sin(t * 1.3 + i), y: POT.y - 200 - ph * 380 - burst * 200, c: 1, s: 1 + ph * 0.8 + burst * 1.5, o })); });
+      // fiche recette : arrive, coche ses ingrédients, puis s'envole à la révélation
+      const out = E(t, tVo - 0.05, 0.4, eIn);
+      ktP(kR, t, -0.6, 'rise'); ktP(kJ, t, [-0.5], 'rise');
+      kR.box.style.transform = kJ.box.style.transform = `translateY(${(-900 * out).toFixed(1)}px)`;
+      pose(fiche, t, (tt) => { const p = E(tt, -0.4, 0.5); return { x: 540, y: lerp(1900, 770, p) - 1300 * out, c: 1, r: -1.5, rx: 8 * (1 - p) }; });
+      pose(cuil, t, (tt) => { if (tt > tVo) return null; const a = tt * 4.2; return { x: POT.x + 150 * Math.cos(a), y: POT.y - 210 + 18 * Math.sin(a), c: 1, r: 18 * Math.cos(a) }; });
+      bulles.forEach((b, i) => { const ph = (t * 1.6 + i * 0.37) % 1; pose(b, t, () => (t > tVo ? null : { x: POT.x - 180 + ((i * 97) % 360), y: POT.y - 170 - ph * 40, c: 1, s: 0.5 + ph, o: Math.sin(ph * Math.PI) * 0.9 })); });
+      ING.forEach((e) => { const p = E(t, e.t0, 0.3); e.style.opacity = t < e.t0 - 0.02 ? 0 : p.toFixed(3); e.style.transform = `translateX(${(-40 * (1 - p)).toFixed(1)}px)`;
+        e.box.style.background = t > e.t0 + 0.15 ? 'var(--o)' : 'transparent'; e.box.textContent = t > e.t0 + 0.15 ? '✓' : ''; });
+      chips.forEach((e) => pose(e, t, (tt) => { if (tt < e.t0 - 0.02 || tt > e.t0 + 0.42) return null; const p = E(tt, e.t0, 0.38, eIn); return { x: POT.x + e.d * 220 * (1 - p), y: lerp(720, POT.y - 120, p), c: 1, r: e.d * 25 * p, s: 1 - 0.5 * p }; }));
+      // la 107 sort de la casserole
+      const fam = tTu - 0.1;
+      pose(c107, t, (tt) => { if (tt < tVo - 0.02) return null; const p = E(tt, tVo, 0.55), q = E(tt, fam, 0.5, eIO), f = Math.max(0, tt - tVo - 0.55);
+        return { x: 540 + 5 * Math.sin(f * 0.9), y: lerp(1150, 760, p) + lerp(0, 40, q) + 6 * Math.sin(f * 1.4), c: 1, s: lerp(0.35, 1, p) * lerp(1, 0.47, q), r: -6 * (1 - p) + 0.4 * Math.sin(f) }; });
+      etoiles.forEach((e, i) => pose(e, t, (tt) => { if (tt < tVo || tt > tVo + 1.2) return null; const a = i / 9 * Math.PI * 2, p = E(tt, tVo, 0.8); return { x: 540 + Math.cos(a) * 420 * p, y: 760 + Math.sin(a) * 320 * p, c: 1, s: 1.2 - 0.6 * p, o: 1 - E(tt, tVo + 0.6, 0.5), r: 90 * p }; }));
+      slamAt(st, t, t107, 540, 330, -4); st.style.opacity = t < t107 ? 0 : 1 - E(t, fam - 0.2, 0.2);
+      pose(fi, t, (tt) => { if (tt < tFi - 0.02 || tt > fam + 0.1) return null; const p = E(tt, tFi, 0.25); return { x: 540, y: 490, c: 1, r: -3, s: 1 + 0.6 * (1 - p), o: (1 - E(tt, fam - 0.1, 0.2)) }; });
+      // la question : variantes C1 et Aygo
+      [[cC1, 300, -1600], [cAy, 780, 1700]].forEach(([e, x, from], i) => pose(e, t, (tt) => { const t0 = fam + 0.05 + i * 0.12; if (tt < t0 - 0.02) return null; const p = E(tt, t0, 0.45), f = Math.max(0, tt - t0); return { x: lerp(from, x, p), y: 900 + 5 * Math.sin(f * 1.6), c: 1, r: 0.3 * Math.sin(f) }; }));
+      ktP(kT, t, tTu, 'slam'); ktP(kL, t, tLa, 'rise');
+      lab.forEach((e, i) => pose(e, t, (tt) => { const t0 = fam + 0.25 + i * 0.1; if (tt < t0) return null; const p = E(tt, t0, 0.3), hi = bump(tt, tLa + 0.3 + i * 0.2, 0.2); return { x: e.X, y: [1030, 975, 1030][i], c: 1, s: (1 + 0.4 * (1 - p)) * (1 + 0.15 * hi), o: p * 3 }; }));
+      pose(mm, t, (tt) => { if (tt < tLa + 0.1) return null; const p = E(tt, tLa + 0.1, 0.3); return { x: 540, y: 1340, c: 1, r: -2, s: 1 + 0.4 * (1 - p), o: p * 3 }; });
+      cr.style.opacity = (E(t, tVo, 0.4) * 0.6).toFixed(3);   // crédits photo : seulement une fois la voiture à l'écran
+    };
+  };
+
   if (!SPECS[ID]) throw new Error('vidéo inconnue : ' + ID);
   SPECS[ID]();
   // intro des séries : la première scène finit à la deuxième

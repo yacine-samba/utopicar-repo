@@ -21,6 +21,7 @@ SCRIPTS = {
     'PS1': "Tu craques pour cette Classe A Elle est en vente trois fois à trois prix Tu prends celle du milieu Tu perds deux mille sept cents Pfff Avant d'appeler tu colles l'annonce dans UTOPICAR et bam ton prix max seize mille cinq Trois jours offerts Lien en bio",
     'PS2': "Classe A achetée dix-neuf mille neuf cent quatre-vingt-dix Revendue dix-huit mille six cents Carte grise trajet travaux moins deux mille sept cents Pfff Rembobine Même annonce Avant d'appeler tu la colles dans UTOPICAR et bam prix max seize mille cinq Tu négocies à seize mille Plus mille deux cent quatre-vingt-dix Trois jours offerts Lien en bio",
     'FI1': "Test ADN de la Peugeot cent sept Le père c'est Toyota Même moteur que l'Aygo et la C1 Tu prends laquelle",
+    'FI2': "Recette du jour Une carrosserie Peugeot un moteur Toyota et voilà la cent sept Fiable Tu cuisines laquelle",
     'A07': "Ta première revente partie trois Quatre lignes changées trois appels en deux jours Vous faites sept mille neuf Huit mille trois Pneus neufs factures Vendue Plus six cent soixante euros en douze jours Le calcul du jour un étape par étape Commente DÉBUTANT",
 }
 norm = lambda s: unicodedata.normalize('NFD', s.lower()).encode('ascii', 'ignore').decode()
