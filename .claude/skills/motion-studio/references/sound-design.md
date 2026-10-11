@@ -103,3 +103,64 @@ Script de référence : `video/scripts/audio-mo5.py`.
   - tic-tac qui accélère.
 - **Master** : limiteur à anticipation (4 ms) avant la normalisation à −14 LUFS (sans lui, les transitoires laissaient
   le mix à −18,9 LUFS) ; musique −9 dB sous 150 Hz et passe-haut 45 Hz pour le téléphone.
+
+## 9. Musique et bruitages générés, posés par l'image (master60)
+
+Script de référence : `video/scripts/audio-master60w.py` (voix de Simon, musique et 11 types de bruitages
+ElevenLabs, ouvertures A et B, même son pour 16:9 et 9:16).
+
+**Montage musical sur la grille de la voix** :
+1. **Avant le drop**, un seul passage continu du morceau. Ses premiers temps de mesure tombent sur les temps 0, 4, 8…
+   du film, et le film commence en pleine énergie.
+2. **Arrêt de bande sur la chute** (« Ah. ») : la musique elle-même ralentit et s'éteint en 0,34 s (vitesse
+   `(1 − x)^1,6`). Le bruitage d'arrêt de bande ElevenLabs passe dessous, bas. Ensuite, un silence jusqu'au verdict.
+3. **Reprise étouffée sur le verdict** (« Non. ») : même calage, passe-bas qui s'ouvre de 650 à 2 600 Hz, −5 dB,
+   jusqu'à l'apparition de la marque.
+4. **Pleine bande sur le logo**, précédée d'un souffle inversé : la mesure du logo jouée à l'envers, montée en
+   `x^2,2` sur 0,9 s.
+5. **Avant le drop** : la coupure du morceau (un trou de 0,4 s) plus **un temps de silence** où passe l'aspiration.
+   Le drop tombe sur « Hop ! ». Ce temps ajouté décale les premiers temps de mesure d'un temps, et la pulsation du film
+   suit (`techniques.md` § 15).
+6. **Après le drop** : onze mesures choisies par ressemblance (`scripts/music-pick.py --sim`) : 16 → 22, 19 → 21, puis
+   23, qui contient le roulement.
+   - Coupes sur les premiers temps, fondu enchaîné de 20 ms centré sur la coupe.
+   - Pour sauter de la fin de la mesure i à la mesure j, j doit ressembler à i+1 (distance < 0,4).
+7. **Fin** :
+   - un temps d'arrêt après la dernière réplique (« …avant d'appeler. ») ;
+   - le coup final du morceau sur le logo de fin ;
+   - la traîne remontée de 3 dB, avec un fondu sur 1,4 s.
+8. **Contrôle** : chaque attaque est mesurée (onset) sur la piste musique. Drop, logo, « Ah. » et coup final tombent à
+   moins de 6 ms de leur temps.
+
+**Bruitages aux instants publiés par le film** :
+- Les instants viennent de `audio/cues-<projet>-<A|B>.json` (exportés par le film), avec un gain par repère. Aucun
+  instant n'est recopié à la main.
+- **Rôles** : crête visée en dBFS, bande, priorité.
+
+  | Type | Crête visée (dBFS) | Priorité |
+  |---|---|---|
+  | impact | −4 | 1 |
+  | choc | −9 | 1 |
+  | clic, ding | −11 | 1 |
+  | aspiration | −11 | 1 |
+  | whoosh | −15 | 2 |
+  | frappe | −16 | 2 |
+  | rouleau, message envoyé | −17 | 2 |
+  | pop | −19 | 3 |
+
+- **Collisions** : un son moins prioritaire à moins de 0,12 s d'un plus prioritaire est retiré (9 sur 100 dans
+  master60).
+- **Familles qui montent** :
+  - les pops d'une même rafale sur une gamme (0, 2, 4, 5, 7, 9, 11, 12 demi-tons) ;
+  - les clics d'une suite +0, +2, +4, +7 ;
+  - les messages envoyés d'un demi-ton chacun ;
+  - léger panoramique alterné (±0,12) dans les rafales.
+- **Sous la voix** : les bruitages baissent de 4 dB. Les impacts, l'aspiration et l'arrêt de bande ne baissent jamais.
+- **Cohésion** : la réverbération courte commune (§ 5).
+- **Rapport** : `docs/mix_report-<projet>-<A|B>.txt`, avec :
+  - LUFS et true peak ;
+  - les sons retirés ;
+  - l'écart voix / musique par phrase ;
+  - le calage mesuré ;
+  - la RMS par passage.
+- **Pistes** : voix, musique, bruitages et une version sans musique dans `audio/stems-<projet>/`.

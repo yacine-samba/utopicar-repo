@@ -11,6 +11,20 @@ Sur le **MP4 réellement encodé** (jamais seulement sur la page) :
 3. Planche à 4 img/s sur tout le film pour la lecture fine (`ffmpeg … fps=4,scale=216:384,tile=10x6`).
 4. Noter, corriger les **trois** problèmes les plus graves, recommencer. Minimum trois rounds.
 
+**Avant chaque rendu final** (master60) :
+- **Marges** : sur des images fixes aux temps où la caméra pousse (`render.mjs --at …`), mesurer la première et la
+  dernière colonne non vides, et compter les pixels dans chaque bande interdite.
+- **WARN « zones sûres »** : trancher sur l'image. Ce qui est acceptable :
+  - le fond pleine page (mur d'annonces, motif) ;
+  - une carte d'interface qui déborde volontairement ;
+  - une carte qui entre en flou de bougé ;
+  - un mot qui traverse l'écran pendant une transition.
+
+  Un titre, un logo ou un CTA dans la bande, même de 10 px, est un FAIL.
+- **Retoucher un film déjà livré pour un autre format** : images fixes de référence avant la retouche, puis
+  comparaison au pixel après. Les repères sonores sont réexportés et comparés (`git diff`), pour que le mix livré
+  reste juste.
+
 ## Grille de notes (sur 10, livrable si tout ≥ 8 et aucun FAIL)
 
 | Critère | 8 veut dire |
