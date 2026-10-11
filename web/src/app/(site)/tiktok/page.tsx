@@ -3,10 +3,11 @@ import Link from "next/link";
 import { Calculateur } from "@/components/benef/Calculateur";
 
 // Page d'arrivée du lien en bio TikTok : elle reprend la vidéo « 47 € » (la Polo) et mène à l'analyse offerte.
+// Le code TIKTOK (3 analyses Benef offertes, annoncé à la fin des vidéos) part avec le lien d'inscription.
 // Les visites se lisent dans Vercel Analytics sur le chemin /tiktok.
 export const metadata: Metadata = {
   title: "1 500 € prévus, 47 € encaissés : le calcul à faire avant d'acheter",
-  description: "Calculez votre prix maximum avant d'appeler le vendeur, puis analysez l'annonce. Première analyse offerte, sans carte bancaire.",
+  description: "Calculez votre prix maximum avant d'appeler le vendeur, puis analysez l'annonce. Avec le code TIKTOK : 3 analyses Benef offertes, sans carte bancaire.",
   robots: { index: false },
 };
 
@@ -40,14 +41,14 @@ export default function TikTok() {
             <Link href="#calcul" className="btn btn-o">
               Calculer mon prix max <span aria-hidden="true">↓</span>
             </Link>
-            <Link href="/analyse" className="btn">
-              Analyser une annonce
+            <Link href="/inscription?code=TIKTOK&next=/app/analyser" className="btn">
+              3 analyses offertes avec TIKTOK
             </Link>
           </div>
           <ul className="arrivee mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-2" style={{ "--i": 4 } as React.CSSProperties}>
             <li className="flex items-center gap-2">
               <Coche />
-              Première analyse offerte
+              Code TIKTOK : 3 analyses Benef offertes
             </li>
             <li className="flex items-center gap-2">
               <Coche />
@@ -81,11 +82,11 @@ export default function TikTok() {
                 Collez-la. Utopicar fait le calcul <span className="it">à votre place.</span>
               </h2>
               <p className="text-lg text-ink-2">
-                Cote tirée des annonces réellement en ligne, défauts qui coûtent cher, moteurs à éviter, coût réel et points à vérifier avant de vous déplacer. La première analyse est offerte.
+                Marge nette après frais, prix d&apos;offre et prix max, cote tirée des annonces réellement en ligne, défauts qui coûtent cher. Avec le code TIKTOK, vos 3 premières analyses Benef sont offertes, sans carte bancaire.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Link href="/analyse" className="btn btn-o">
-                  Analyser mon annonce <span aria-hidden="true">→</span>
+                <Link href="/inscription?code=TIKTOK&next=/app/analyser" className="btn btn-o">
+                  Activer le code TIKTOK <span aria-hidden="true">→</span>
                 </Link>
                 <Link href="/guide?guide=premiere-revente" className="btn">
                   Lire le guide de la première revente

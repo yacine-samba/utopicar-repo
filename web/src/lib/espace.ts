@@ -6,7 +6,7 @@ export type Icone = "accueil" | "analyser" | "rapports" | "parc" | "rentabilite"
 export type EntreeNav = { href: string; label: string; court: string; icone: Icone; verrou?: string; mobile?: boolean; menu?: boolean };
 
 /** Espace affiché : la famille de la formule payée (ou offerte), sinon l'usage choisi à l'inscription. */
-export const familleEspace = (c: Compte): Famille => (c.illimite ? (c.famille ?? "benef") : c.offre.prix > 0 || c.offerte ? c.offre.famille : (c.famille ?? "particulier"));
+export const familleEspace = (c: Compte): Famille => (c.illimite ? (c.famille ?? "benef") : c.offre.prix > 0 || c.offerte || c.code ? c.offre.famille : (c.famille ?? "particulier"));
 
 /** Modules gardés dans le code mais retirés de l'espace (on ne les utilise pas pour l'instant) : Tri rapide, Comparateur.
     La calculette de rentabilité est sur le site public (/benef), les alertes e-mail dans la Recherche, les guides dans le profil. */
@@ -54,5 +54,5 @@ export const nomFormule = (c: Compte) => (c.illimite ? "Accès illimité" : c.of
 export const texteRestantes = (c: Compte) =>
   c.illimite
     ? "Analyses illimitées"
-    : `${c.restantes} analyse${c.restantes > 1 ? "s" : ""} restante${c.restantes > 1 ? "s" : ""}${c.credits ? ` dont ${c.credits} crédit${c.credits > 1 ? "s" : ""}` : c.offre.parMois ? " ce mois" : ""}`;
+    : `${c.restantes} analyse${c.restantes > 1 ? "s" : ""} restante${c.restantes > 1 ? "s" : ""}${c.codeBenef ? ` dont ${c.codeBenef} offerte${c.codeBenef > 1 ? "s" : ""} par code` : c.credits ? ` dont ${c.credits} crédit${c.credits > 1 ? "s" : ""}` : c.offre.parMois ? " ce mois" : ""}`;
 export const pluriel = (n: number, mot: string) => `${n} ${mot}${n > 1 ? "s" : ""}`;

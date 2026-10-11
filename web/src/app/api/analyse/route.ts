@@ -83,6 +83,8 @@ export async function POST(req: Request) {
       { offres: o.famille },
     );
 
+  // Analyses offertes par un code (formule Découverte) : contenu Benef au niveau Starter
+  const niveau = compte?.code && mode === "benef" ? OFFRES.starter.id : o.id;
   const photos = r.data.photos.slice(0, o.photos);
   const faits = lireAnnonce(texte);
   const fiab = fiabilite({ texte, annee: faits.annee, km: faits.km, energie: faits.energie });
@@ -107,7 +109,7 @@ export async function POST(req: Request) {
   const out: Analyse = { faits, fiab, ia: null, cote, profil };
 
   try {
-    const { ia: brut, rapport } = await analyseIA({ texte, faits, fiab, profil, photos, offre: o.id, cote });
+    const { ia: brut, rapport } = await analyseIA({ texte, faits, fiab, profil, photos, offre: niveau, cote });
     // La cote de l'outil (annonces comparables) fait foi pour le prix du marché, dans les deux vues.
     if (cote) {
       const mc = marcheDepuisCote(cote);
@@ -115,7 +117,7 @@ export async function POST(req: Request) {
       rapport.marche = { ...rapport.marche, bas: mc.bas ?? undefined, realiste: mc.realiste ?? undefined, reventeRapide: mc.reventeRapide ?? undefined, confiance: mc.confiance, commentaire: mc.commentaire };
     }
     out.ia = filtrer(brut, detail);
-    if (mode === "benef") out.rapport = filtrerRapport(rapport, o.id);
+    if (mode === "benef") out.rapport = filtrerRapport(rapport, niveau);
   } catch (e) {
     if (e instanceof IaIndisponible) out.iaErreur = "L'estimation du marché n'est pas configurée sur ce serveur.";
     else if (e instanceof Anthropic.RateLimitError) out.iaErreur = "Trop de demandes en ce moment, réessayez dans une minute.";
@@ -128,14 +130,14 @@ export async function POST(req: Request) {
     // L'IA ne répond pas : l'analyse reste complète avec les règles et la cote de l'outil, comme l'outil Garage.
     const regles = iaRegles(texte, faits, fiab, cote);
     out.ia = filtrer(regles, detail);
-    if (mode === "benef") out.rapport = filtrerRapport(depuisIa(regles), o.id);
+    if (mode === "benef") out.rapport = filtrerRapport(depuisIa(regles), niveau);
     out.regles = true;
     delete out.iaErreur;
   }
 
   out.projection = await projectionP;
   out.historique = await historiqueP;
-  out.offre = o.id;
+  out.offre = niveau;
   out.lien = r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0];
   out.vendeur = vendeurDe(r.data.vendeur, texte);
   if (compte) out.photosUrls = r.data.photosLiens.length ? r.data.photosLiens : photos.length ? await stockerPhotos(compte.id, photos) : [];
@@ -168,5 +170,5 @@ export async function POST(req: Request) {
     }
   }
 
-  return Response.json({ ...out, rapportId, detail, offre: o.id, restantes: compte ? Math.max(0, compte.restantes - (out.ia ? 1 : 0)) : null, demo });
+  return Response.json({ ...out, rapportId, detail, offre: niveau, restantes: compte ? Math.max(0, compte.restantes - (out.ia ? 1 : 0)) : null, demo });
 }
