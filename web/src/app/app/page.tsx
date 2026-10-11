@@ -18,6 +18,7 @@ import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
 import { phraseAccueil } from "@/lib/orientation";
 import { CartePremiersPas } from "@/components/espace/PremiersPasCompte";
+import { BienvenueCompte } from "@/components/espace/BienvenueCompte";
 import { titreVehicule } from "@/lib/titre";
 import { estPiege } from "@/lib/vehicules/pieges";
 import { Affaires, AgeStock, Chiffre, EnTeteTableau as EnTeteComplet, EtapesParc, eur, Journee, Marche, Outil, TitreSection, type Action, type EtapeParc, type Opportunite } from "@/components/espace/Tableau";
@@ -502,8 +503,7 @@ async function TableauBenef({ c }: { c: Compte }) {
   );
 }
 
-export default async function Accueil() {
-  const c = await compteBenef("/app");
+async function Tableau({ c }: { c: Compte }) {
   if (familleEspace(c) === "particulier") return <TableauParticulier c={c} />;
   if (c.offre.famille === "benef") return c.offre.tableauDeBord === "complet" ? <TableauComplet c={c} /> : <TableauBenef c={c} />;
   return (
@@ -527,5 +527,16 @@ export default async function Accueil() {
         Vous cherchez une voiture pour vous ? <Link href="/app/compte#usage" className="text-o2 underline underline-offset-4">Passez en usage particulier</Link> : votre première analyse est offerte.
       </p>
     </div>
+  );
+}
+
+export default async function Accueil({ searchParams }: { searchParams: Promise<{ bienvenue?: string }> }) {
+  const c = await compteBenef("/app");
+  const { bienvenue } = await searchParams;
+  return (
+    <>
+      <BienvenueCompte c={c} actif={bienvenue === "1"} />
+      <Tableau c={c} />
+    </>
   );
 }

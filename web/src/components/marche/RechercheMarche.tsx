@@ -12,6 +12,7 @@ import { motorisationsTypes } from "@/lib/vehicules/phases";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
 import { lienRechercheLeboncoin } from "@/lib/vehicules/leboncoin";
 import { InterrupteurAlerte } from "./InterrupteurAlerte";
+import { FicheAnnonce, type FicheData } from "@/components/espace/FicheAnnonce";
 
 type Annonce = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; ch: number | null; pro: boolean; lieu: string | null;
@@ -584,9 +585,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
             </p>
           )}
           {res.annonces.length ? (
-            <ul className="grid gap-3">
-              {res.annonces.map((a) => <LigneAnnonce key={a.id} a={a} fav={favs.has(cleFavori(a.url, `marche:${a.id}`))} onFav={(on) => (on ? favs.add(cleFavori(a.url, `marche:${a.id}`)) : favs.delete(cleFavori(a.url, `marche:${a.id}`)))} />)}
-            </ul>
+            <ListeResultats annonces={res.annonces} favs={favs} />
           ) : (
             <p className="carte p-6 text-ink-2">
               {suivie ? "Aucune annonce en base pour l'instant : la collecte Leboncoin est en cours, les résultats s'afficheront seuls." : "Aucune annonce ne correspond. Élargissez les années, le prix, le kilométrage ou la puissance."}
@@ -602,11 +601,30 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   );
 }
 
-function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on: boolean) => void }) {
+const ficheDe = (a: Annonce): FicheData => ({
+  id: a.id, titre: a.titre, prix: a.prix, annee: a.annee, km: a.km, ch: a.ch, energie: a.energie, boite: a.boite, moteur: a.moteur, version: a.version ?? a.genLabel ?? null,
+  lieu: a.lieu, pro: a.pro, photo: a.photo ?? null, url: a.url, cote: a.cote, doute: a.doute, lbc: a.lbc ?? null,
+  alerte: a.piege ? (a.suspect ? "Prix suspect : pièces, location ou acompte possible. Vérifiez avant tout contact." : "Piège possible sur cette annonce : lisez-la en entier avant de contacter le vendeur.") : null,
+});
+
+/** Résultats : un clic sur une voiture ouvre sa fiche sur le site (flèches pour passer à la suivante). */
+function ListeResultats({ annonces, favs }: { annonces: Annonce[]; favs: Set<string> }) {
+  const [fi, setFi] = useState<number | null>(null);
+  return (
+    <>
+      <ul className="grid gap-3">
+        {annonces.map((a, i) => <LigneAnnonce key={a.id} a={a} onOuvrir={() => setFi(i)} fav={favs.has(cleFavori(a.url, `marche:${a.id}`))} onFav={(on) => (on ? favs.add(cleFavori(a.url, `marche:${a.id}`)) : favs.delete(cleFavori(a.url, `marche:${a.id}`)))} />)}
+      </ul>
+      <FicheAnnonce fiches={annonces.map(ficheDe)} index={fi} onIndex={setFi} />
+    </>
+  );
+}
+
+function LigneAnnonce({ a, fav, onFav, onOuvrir }: { a: Annonce; fav: boolean; onFav: (on: boolean) => void; onOuvrir: () => void }) {
   const c = a.cote;
   const bon = c?.pct != null && c.pct >= 0.05, cher = c?.pct != null && c.pct <= -0.05;
   return (
-    <li className="carte grid gap-3 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center">
+    <li className="carte relative grid gap-3 p-4 transition hover:border-o/40 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center">
       {a.photo ? (
         // eslint-disable-next-line @next/next/no-img-element -- vignette servie par Leboncoin
         <img src={a.photo} alt="" loading="lazy" referrerPolicy="no-referrer" className="h-28 w-40 rounded-xl border border-line object-cover max-sm:h-44 max-sm:w-full" />
@@ -614,7 +632,9 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
         <span className="hidden h-28 w-40 place-items-center rounded-xl border border-dashed border-line-2 text-xs text-ink-3 sm:grid">Sans photo</span>
       )}
       <div className="min-w-0">
-        <p className="truncate font-medium">{a.titre || "Annonce"}</p>
+        <p className="truncate font-medium">
+          <button type="button" onClick={onOuvrir} className="max-w-full truncate text-left after:absolute after:inset-0 after:content-['']" aria-label={`Voir la fiche : ${a.titre || "Annonce"}`}>{a.titre || "Annonce"}</button>
+        </p>
         <p className="mt-0.5 text-sm text-ink-3">
           {[a.annee, a.km != null ? `${a.km.toLocaleString("fr-FR")} km` : null].filter(Boolean).join(" · ")}
           {a.moteur && <span title={a.moteurDeduit ? "Reconnue à sa puissance et son énergie (pas écrite dans l'annonce)" : undefined}> · {a.moteurDeduit ? "≈ " : ""}{a.moteur}</span>}
@@ -650,7 +670,7 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
         ) : (
           <p className="text-xs text-ink-3">{a.gen ? "pas assez de comparables" : "génération incertaine"}</p>
         )}
-        <div className="mt-2 flex items-center gap-2 sm:justify-end">
+        <div className="relative z-10 mt-2 flex items-center gap-2 sm:justify-end">
           <BoutonFavori
             compact
             initial={fav}
@@ -658,11 +678,6 @@ function LigneAnnonce({ a, fav, onFav }: { a: Annonce; fav: boolean; onFav: (on:
             f={{ cle: cleFavori(a.url, `marche:${a.id}`), titre: a.titre || "Annonce", prix: a.prix, annee: a.annee, km: a.km, energie: a.energie, boite: a.boite, lieu: a.lieu, url: a.url, photo: a.photo ?? null, source: "recherche", cote: c ? { P: c.P ?? null, ecart: c.ecart ?? null, pct: c.pct ?? null } : null }}
           />
           <BoutonAnalyserAnnonce url={a.url} />
-          {a.url && (
-            <a href={a.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">
-              Ouvrir
-            </a>
-          )}
         </div>
       </div>
     </li>

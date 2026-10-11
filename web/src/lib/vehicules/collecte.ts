@@ -3,7 +3,7 @@ import { supabaseService } from "@/lib/supabase/service";
 import { specCollecte } from "./moteur";
 
 /* Collecte Leboncoin, comme l'outil Garage : quand la base du marché a trop peu d'annonces pour une génération
-   (et sa version, son énergie), ou quand son relevé a plus de 3 jours, toutes ses annonces (jusqu'à 3 000) sont relevées sur Leboncoin
+   (et sa version, son énergie), ou quand son relevé a plus de 3 jours, ses annonces (les 1 000 plus récentes au plus) sont relevées sur Leboncoin
    (Apify, 1 à 3 centimes), puis versées dans la base.
    Demandée seulement par le serveur, après la vérification de la formule, avec un quota par compte et un plafond global. */
 

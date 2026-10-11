@@ -8,6 +8,7 @@ import { cx } from "@/lib/cx";
 import type { Favori } from "@/lib/favoris";
 import { SansPhoto } from "../analyse/Photos";
 import { Ico } from "./Icones";
+import { FicheAnnonce, type FicheData } from "./FicheAnnonce";
 
 const eur = (v: number | null) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 const SOURCE: Record<Favori["source"], string> = { recherche: "Recherche", alerte: "Alerte", rapport: "Rapport" };
@@ -17,6 +18,7 @@ export function ListeFavoris({ initiaux, parc }: { initiaux: Favori[]; parc: boo
   const [liste, setListe] = useState(initiaux);
   const [etat, setEtat] = useState("");
   const [auParc, setAuParc] = useState<string[]>([]);
+  const [fi, setFi] = useState<number | null>(null);
 
   async function retirer(f: Favori) {
     setListe((l) => l.filter((x) => x.id !== f.id));
@@ -54,12 +56,12 @@ export function ListeFavoris({ initiaux, parc }: { initiaux: Favori[]; parc: boo
         {liste.length} voiture{liste.length > 1 ? "s" : ""} en favori{etat ? ` · ${etat}` : ""}
       </p>
       <ul className="grid gap-4 lg:grid-cols-2">
-        {liste.map((f) => {
+        {liste.map((f, i) => {
           const lbc = f.url ? lienLeboncoin(f.url) : null;
           const ecart = f.cote?.ecart ?? null;
           return (
             <li key={f.id} className="carte grid gap-4 p-4 sm:grid-cols-[150px_minmax(0,1fr)]">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-bg0 sm:aspect-auto sm:h-full sm:min-h-28">
+              <button type="button" onClick={() => setFi(i)} aria-label={`Voir la fiche : ${f.titre}`} className="relative block aspect-[4/3] overflow-hidden rounded-xl bg-bg0 text-left sm:aspect-auto sm:h-full sm:min-h-28">
                 {f.photo ? (
                   // eslint-disable-next-line @next/next/no-img-element -- photo de l'annonce (lien Leboncoin ou vignette enregistrée)
                   <img src={f.photo} alt="" referrerPolicy="no-referrer" loading="lazy" className="absolute inset-0 size-full object-cover" />
@@ -67,11 +69,13 @@ export function ListeFavoris({ initiaux, parc }: { initiaux: Favori[]; parc: boo
                   <SansPhoto className="absolute inset-0" />
                 )}
                 <span className="absolute left-2 top-2 rounded-full bg-bg0/85 px-2 py-0.5 text-xs text-ink-2">{SOURCE[f.source]}</span>
-              </div>
+              </button>
               <div className="grid min-w-0 gap-2">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate font-semibold">{f.titre}</p>
+                    <p className="truncate font-semibold">
+                      <button type="button" onClick={() => setFi(i)} className="max-w-full truncate text-left underline-offset-4 hover:underline">{f.titre}</button>
+                    </p>
                     <p className="text-sm text-ink-3">{[f.annee, f.km != null ? `${f.km.toLocaleString("fr-FR")} km` : null, f.energie, f.boite, f.lieu].filter(Boolean).join(" · ")}</p>
                   </div>
                   <p className="num shrink-0 font-display text-xl font-semibold">{eur(f.prix)}</p>
@@ -87,7 +91,7 @@ export function ListeFavoris({ initiaux, parc }: { initiaux: Favori[]; parc: boo
                   {lbc && <Link href={`/app/analyser?lien=${encodeURIComponent(lbc)}`} className="btn btn-o btn-sm">Analyser</Link>}
                   {f.rapport_id && <Link href={`/app/rapports/${f.rapport_id}`} className="btn btn-sm">Voir le rapport</Link>}
                   {!f.rapport_id && <BoutonAnalyserAnnonce url={f.url} />}
-                  {f.url && <a href={f.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Annonce ↗</a>}
+                  <button type="button" onClick={() => setFi(i)} className="btn btn-sm">Voir la fiche</button>
                   {parc && (auParc.includes(f.id) ? (
                     <Link href="/app/parc" className="btn btn-sm text-ok">Dans le parc ✓</Link>
                   ) : (
@@ -101,6 +105,11 @@ export function ListeFavoris({ initiaux, parc }: { initiaux: Favori[]; parc: boo
           );
         })}
       </ul>
+      <FicheAnnonce
+        fiches={liste.map((f): FicheData => ({ id: f.id, titre: f.titre, prix: f.prix, annee: f.annee, km: f.km, energie: f.energie, boite: f.boite, lieu: f.lieu, pro: null, photo: f.photo, url: f.url, cote: f.cote ? { P: f.cote.P ?? null, ecart: f.cote.ecart ?? null, pct: f.cote.pct ?? null } : null }))}
+        index={fi}
+        onIndex={setFi}
+      />
     </div>
   );
 }

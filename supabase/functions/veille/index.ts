@@ -282,9 +282,10 @@ async function start(v: any, R: Record<string, string>) {
 }
 
 
-// ---------- Cotes : toutes les annonces d'une génération (jusqu'à 3 000), pour la cote et pour une recherche alignée sur Leboncoin ----------
-// (1 000 ne suffisaient pas : 4 763 Clio diesel 2012-2019 sur Leboncoin le 8 octobre 2026 ; ~0,01 $ les 1 000 annonces)
-const COTE_MAX = 3000;
+// ---------- Cotes : les annonces d'une génération (jusqu'à 1 000), pour la cote et pour une recherche alignée sur Leboncoin ----------
+// Plafond volontaire pour protéger le crédit Apify (~0,01 $ les 1 000 annonces). Une génération plus fournie (4 763 Clio diesel
+// 2012-2019 le 8 octobre 2026) n'est lue qu'en partie : les plus récentes d'abord, les anciennes restent en base 21 jours (en_ligne).
+const COTE_MAX = 1000;
 function coteRow(c: any, it: any) {
   const r = norm(it); if (!r.id || r.prix == null) return null;
   const A = Array.isArray(it.attributes) ? it.attributes : [];
@@ -302,7 +303,7 @@ function coteRow(c: any, it: any) {
 }
 async function startCote(c: any, R: Record<string, string>) {
   const f = c.filtres || {};
-  const input = { category: '2', sort: 'relevance', max_results: COTE_MAX, owner_type: 'all', proxyConfiguration: { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'], apifyProxyCountry: 'FR' }, ...f };
+  const input = { category: '2', sort: 'newest', max_results: COTE_MAX, owner_type: 'all', proxyConfiguration: { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'], apifyProxyCountry: 'FR' }, ...f };
   const hook = [{ eventTypes: ['ACTOR.RUN.SUCCEEDED', 'ACTOR.RUN.FAILED', 'ACTOR.RUN.TIMED_OUT', 'ACTOR.RUN.ABORTED'], requestUrl: `${FN}?k=${encodeURIComponent(R.cle_interne)}&cote=${encodeURIComponent(c.cle)}` }];
   const url = `${APIFY}/acts/${encodeURIComponent(R.apify_actor || 'scrapifier~leboncoin-universal-scraper-vehicles')}/runs?token=${encodeURIComponent(R.apify_token)}&timeout=2400&memory=1024&webhooks=${encodeURIComponent(btoa(JSON.stringify(hook)))}`;
   const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
