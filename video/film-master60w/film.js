@@ -168,7 +168,11 @@
     for (const s of tmp) { const L = letters[letters.length - 1]; if (L && s.x0 < L.x1 - 5) { L.ps.push(s.p); L.x1 = Math.max(L.x1, s.x1); } else letters.push({ ps: [s.p], x0: s.x0, x1: s.x1 }); }
     const cp2 = document.createElementNS(NS, 'clipPath'); cp2.id = 'lw' + FID++; cp2.innerHTML = '<rect x="-100" y="-1000" width="5000" height="1400"/>'; FX.appendChild(cp2);
     wordG.setAttribute('clip-path', `url(#${cp2.id})`);
-    for (const L of letters) { const lg = document.createElementNS(NS, 'g'); wordG.appendChild(lg); L.ps.forEach((p) => lg.appendChild(p)); L.g = lg; }
+    for (const L of letters) {      // une seule forme par lettre : les creux du o, du p et du a restent vides
+      const lg = document.createElementNS(NS, 'g'), one = document.createElementNS(NS, 'path');
+      one.setAttribute('d', L.ps.map((p) => p.getAttribute('d')).join(' ')); one.setAttribute('fill', fill);
+      L.ps.forEach((p) => p.remove()); lg.appendChild(one); wordG.appendChild(lg); L.g = lg;
+    }
     holder.style.display = 'none';
     return (t, t0) => {
       if (t < t0 - 0.01) { holder.style.display = 'none'; return; }
@@ -216,7 +220,6 @@
       const k4 = KT(s.cam, 96, 300, 150, 'Tu peux la payer…');
       const card = lst(s.cam), mark = card.querySelector('.p i');
       const cur = cursor(s.cam, [[-1, 2100, 1000], [1.25, 1440, 380], [1.7, 1300, 790], [2.5, 1320, 800]], [Wt('payer', 2, HKA)]);
-      men(s, 'Vraie annonce, analysée par UTOPICAR');
       s.paint = (t) => {
         ktP(k1, t, [-0.62, -0.52], 'rise', 1.66, 'up', { acc: [Wt('ta', 0, HKA), Wt('premiere', 0, HKA)] });
         ktP(k2, t, [-0.42, -0.42], 'rise', 1.7, 'up', { acc: [Wt('voiture', 0, HKA)] });
@@ -231,7 +234,6 @@
       const k1 = KT(s.cam, 96, 150, 380, [['Deux', { c: '#fff' }]]), k2 = KT(s.cam, 110, 520, 400, [['fois.', { i: 1, c: 'var(--k)' }]]);
       const t1 = mk('div', 'tag a', s.cam, null, '7 190 €<small>le prix affiché</small>');
       const t2 = mk('div', 'tag a', s.cam, { borderColor: 'var(--k)' }, '7 190 €<small>une 2e fois en réparations ?</small>');
-      men(s, 'Vraie annonce, analysée par UTOPICAR', '#fff');
       s.paint = (t) => {
         ktP(k1, t, tDeux, 'slam'); ktP(k2, t, tFois, 'rise');
         pose(t1, t, (tt) => { const p = E(tt, tDeux + 0.06, 0.4); return { x: 1330, y: lerp(-300, 420, p), c: 1, r: -6 - 20 * (1 - p) }; });
@@ -250,7 +252,12 @@
     const r50 = ROLL(s.cam, 90, 110, 560, '00', '50', 'var(--o)');
     const k1 = KT(s.cam, 100, 650, 120, [['annonces.', { c: '#fff' }]]), k2 = KT(s.cam, 104, 780, 140, [['ce matin.', { i: 1, c: '#fff' }]]);
     const k3 = KT(s.cam, 1260, 720, 200, [['Pfff…', { i: 1, c: 'rgba(251,249,245,.55)' }]]);
-    men(s, 'Vraies annonces du marché', '#fff');
+    // l'option Messages de Benef Pro : un premier message automatique part vers chaque vendeur
+    const ok = [...Array(12)].map((_, i) => mk('div', 'a', s.cam, { padding: '10px 18px', borderRadius: '999px', background: 'var(--ok)', color: '#fff', font: '700 24px Satoshi', whiteSpace: 'nowrap', boxShadow: '0 12px 24px -8px rgba(0,0,0,.6)' }, '✓ Message envoyé'));
+    const OKP = [[1180, 220], [1520, 170], [1820, 300], [1340, 420], [1660, 520], [1150, 600], [1480, 700], [1800, 760], [1250, 860], [1600, 330], [1880, 520], [1380, 980]];
+    const pill = mk('div', 'a', s.cam, { padding: '18px 30px', borderRadius: '999px', background: 'rgba(251,249,245,.1)', border: '1.5px solid rgba(251,249,245,.2)', color: '#fff', font: '700 36px Satoshi', whiteSpace: 'nowrap' });
+    const tMsg = Wt('matin', 1.5, HKB) + 0.3;
+    mk('div', 'men a', s.el, { left: '96px', top: '940px', color: '#fff' }, 'Option Messages de Benef Pro : un premier message automatique par annonce');
     s.paint = (t) => {
       let st = 0; for (let n = -8; n < 0; n++) st += E(t, BT(n), 0.38);
       pose(wall, t, () => ({ x: 1250, y: 760 - st * 115, c: 1, p: 1, rx: 46, ry: 0, r: -14, s: 1.05 }));
@@ -258,6 +265,10 @@
       r50.box.style.visibility = t >= Wt('50', 0.8, HKB) - 0.05 ? '' : 'hidden'; rollP(r50, t, Wt('50', 0.8, HKB), 0.5, 0.08);
       ktP(k1, t, Wt('annonces', 1, HKB)); ktP(k2, t, [Wt('ce', 1.5, HKB), Wt('matin', 1.5, HKB)]);
       ktP(k3, t, Wt('pfff', 3, HKB), 'blur', null, 'up', { fx: (i, j, tt) => ({ y: E(tt, Wt('pfff', 3, HKB) + 0.2 + j * 0.05, 0.5) * (14 + j * 9), r: E(tt, Wt('pfff', 3, HKB) + 0.2, 0.5) * (j % 2 ? 5 : -4) }) });
+      ok.forEach((e, i) => pose(e, t, (tt) => { const t0 = tMsg + i * GR.beat / 4; if (tt < t0) return null; const p = E(tt, t0, 0.3); return { x: OKP[i][0], y: OKP[i][1], c: 1, s: 0.4 + 0.6 * p, o: p * 2, r: (i % 3) - 1 }; }));
+      const n = Math.round(50 * clamp((t - tMsg) / (Wt('pfff', 3, HKB) - 0.1 - tMsg), 0, 1));
+      pill.innerHTML = `<span style="color:var(--ok)">✓</span> ${n} premiers messages envoyés`;
+      pose(pill, t, (tt) => { if (tt < tMsg - 0.02) return null; const p = E(tt, tMsg, 0.35); return { x: 1160, y: 60 + 40 * (1 - p), o: p }; });
     };
   }
 
@@ -271,7 +282,6 @@
     const k3 = KT(s.cam, 110, 150, 170, 'Tu'), k4 = KT(s.cam, 80, 470, 300, [["l'achètes", { i: 1, c: 'var(--o)' }], ['?', { i: 1, c: 'var(--o)' }]]);
     const card = lst(s.cam, 540), mark = card.querySelector('.p i');
     const cur = cursor(s.cam, [[T0, 2100, 1000], [5.0, 1510, 380], [5.9, 1430, 800], [7.0, 1450, 810]]);
-    men(s, 'Vraie annonce, analysée par UTOPICAR');
     s.paint = (t) => {
       ktP(k1, t, T0, 'rise', tTu - 0.12);
       ktP(k2, t, Wt('hum', 5), 'blur', tTu - 0.12, 'up', { fx: (i, j, tt) => ({ y: Math.sin(tt * 7 + j * 1.3) * 7 }) });
@@ -318,7 +328,6 @@
   { const a = VT.marks.non.t, s = scene(a, VT.marks.n1650.t, 'var(--r)'); s.imp.push([a + 0.2, 26]);
     const k = KT(s.cam, 70, 300, 760, [['Non.', { c: '#fff' }]]);
     const f = crop(s.cam, 'fiche-208', { W: 1050, x: 0, y: 0, w: 1050, h: 700 }, 620, { background: '#fff' });
-    men(s, 'Vraie annonce, analysée par UTOPICAR', '#fff');
     s.paint = (t) => {
       ktP(k, t, a, 'slam');
       pose(f, t, (tt) => { const p = E(tt, a + 0.16, 0.45); if (tt < a + 0.14) return null; return { x: 1480, y: lerp(-500, 380, p), c: 1, r: 6 + 14 * (1 - p) }; });
@@ -334,7 +343,6 @@
     const kz = KT(s.cam, 90, 300, 430, [['Bizarre.', { i: 1 }]]);
     const tTr = Wt('travaux', a);
     const cur = cursor(s.cam, [[a, 2100, 900], [tTr + 0.1, 1580, 640], [tBz - 0.1, 1600, 650], [tBz + 0.4, 1330, 420]]);
-    men(s, 'Vraie annonce, analysée par UTOPICAR');
     s.paint = (t) => {
       pose(R.box, t, (tt) => (tt > tBz + 0.4 ? null : { x: 0, y: -E(tt, tBz - 0.14, 0.3, eIn) * 600, o: 1 - E(tt, tBz - 0.05, 0.2) }));
       rollP(R, t, a, 0.8, 0.09);
@@ -385,7 +393,6 @@
     const kb = brk(s.cam, 100, 720, [['[ au-delà, tu', {}], ["perds de l'argent", { c: 'var(--o)' }], [']', {}]], '#fff');
     const photo = mk('div', 'card a', s.cam, { width: '760px', height: '520px' }, `<img src="${PH}mercedes-profil.jpg" style="width:100%;height:100%;object-fit:cover;position:static">`);
     const mx = crop(s.cam, 'merc-argent', { W: 1074, x: 66, y: 1960, w: 942, h: 286 }, 740);
-    men(s, 'Vraie annonce, analysée par UTOPICAR', '#fff');
     s.paint = (t) => {
       ktP(k0, t, [a, Wt('mercedes', a) + 0.11, Wt('?', 19.6)], 'rise', tP - 0.1);
       ktP(kg, t, tP + 0.05); strike.style.width = (kg.box.offsetWidth) + 'px'; strike.style.transform = `scaleX(${E(t, t165, 0.3).toFixed(3)})`;
@@ -408,7 +415,6 @@
     });
     const tAh = Wt('ah', 23.5), tOu = Wt('ouais', 23.5);
     const cur = cursor(s.cam, [[a, 2000, 1050], [tOu + 0.1, 1450, 760], [tOu + 1, 1460, 770]]);
-    men(s, 'Vraies annonces, analysées par UTOPICAR');
     s.paint = (t) => {
       ktP(ka, t, a, 'rise', tTr - 0.25);
       ktP(kx, t, tTr, 'slam');

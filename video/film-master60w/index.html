@@ -82,7 +82,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#000}
 .kt .c{display:inline-block;will-change:auto;transform-origin:50% 80%}
 .kt .i{font-family:Instrument;font-style:italic;font-weight:400;letter-spacing:-.01em}
 .roll{position:absolute;left:0;top:0;white-space:nowrap;font:700 200px/1 Clash;letter-spacing:-.04em;display:flex;align-items:flex-start}
-.roll .col{display:inline-block;height:1em;overflow:hidden}
+.roll .col{display:inline-block;height:1em;clip-path:inset(0 -.35em)}   /* coupe en haut et en bas seulement : le 0 garde sa largeur */
 .roll .col .strip{display:block}
 .roll .col .strip span{display:block;height:1em;text-align:center}
 .strike{position:absolute;height:10px;border-radius:5px;transform-origin:0 50%}
