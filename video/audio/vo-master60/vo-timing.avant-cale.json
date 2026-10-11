@@ -1,0 +1,370 @@
+{
+ "dur": 55.07,
+ "corps": 4.23,
+ "hooks": {
+  "A": {
+   "debut": 0.0,
+   "fin": 3.98,
+   "mots": [
+    {
+     "w": "Ta",
+     "n": "ta",
+     "s": 0.0,
+     "e": 0.24
+    },
+    {
+     "w": "première",
+     "n": "premiere",
+     "s": 0.24,
+     "e": 0.54
+    },
+    {
+     "w": "voiture",
+     "n": "voiture",
+     "s": 0.54,
+     "e": 0.86
+    },
+    {
+     "w": "à",
+     "n": "a",
+     "s": 0.86,
+     "e": 1.04
+    },
+    {
+     "w": "revendre,",
+     "n": "revendre",
+     "s": 1.04,
+     "e": 1.38
+    },
+    {
+     "w": "tu",
+     "n": "tu",
+     "s": 1.9,
+     "e": 1.96
+    },
+    {
+     "w": "peux",
+     "n": "peux",
+     "s": 1.96,
+     "e": 2.12
+    },
+    {
+     "w": "la",
+     "n": "la",
+     "s": 2.12,
+     "e": 2.32
+    },
+    {
+     "w": "payer",
+     "n": "payer",
+     "s": 2.32,
+     "e": 2.62
+    },
+    {
+     "w": "deux",
+     "n": "deux",
+     "s": 2.62,
+     "e": 3.36
+    },
+    {
+     "w": "fois.",
+     "n": "fois",
+     "s": 3.36,
+     "e": 3.98
+    }
+   ]
+  },
+  "B": {
+   "debut": 0.0,
+   "fin": 4.34,
+   "mots": [
+    {
+     "w": "T",
+     "n": "t",
+     "s": 0.0,
+     "e": 0.1
+    },
+    {
+     "w": "'es",
+     "n": "es",
+     "s": 0.1,
+     "e": 0.28
+    },
+    {
+     "w": "marchand",
+     "n": "marchand",
+     "s": 0.28,
+     "e": 0.7
+    },
+    {
+     "w": "?",
+     "n": "",
+     "s": 0.7,
+     "e": 1.12
+    },
+    {
+     "w": "Cinquante",
+     "n": "cinquante",
+     "s": 1.12,
+     "e": 1.56
+    },
+    {
+     "w": "annonces",
+     "n": "annonces",
+     "s": 1.56,
+     "e": 1.8
+    },
+    {
+     "w": "ce",
+     "n": "ce",
+     "s": 1.8,
+     "e": 2.04
+    },
+    {
+     "w": "matin.",
+     "n": "matin",
+     "s": 2.04,
+     "e": 2.52
+    },
+    {
+     "w": "Pfff.",
+     "n": "pfff",
+     "s": 3.86,
+     "e": 4.34
+    }
+   ]
+  }
+ },
+ "marks": {
+  "celle": {
+   "t": 4.4,
+   "end": 4.72,
+   "mot": "Celle"
+  },
+  "achetes": {
+   "t": 6.32,
+   "end": 6.58,
+   "mot": "'achètes"
+  },
+  "colle": {
+   "t": 7.42,
+   "end": 7.54,
+   "mot": "colle"
+  },
+  "ah": {
+   "t": 8.26,
+   "end": 8.58,
+   "mot": "Ah."
+  },
+  "non": {
+   "t": 9.1,
+   "end": 9.42,
+   "mot": "Non."
+  },
+  "n1650": {
+   "t": 10.74,
+   "end": 11.26,
+   "mot": "1650"
+  },
+  "vendeur": {
+   "t": 12.6,
+   "end": 12.78,
+   "mot": "vendeur"
+  },
+  "bizarre": {
+   "t": 13.92,
+   "end": 14.44,
+   "mot": "Bizarre."
+  },
+  "utopicar": {
+   "t": 14.84,
+   "end": 15.36,
+   "mot": "UTOPICAR,"
+  },
+  "bam": {
+   "t": 16.7,
+   "end": 17.04,
+   "mot": "BAM"
+  },
+  "reste": {
+   "t": 17.66,
+   "end": 17.9,
+   "mot": "reste,"
+  },
+  "frais": {
+   "t": 18.26,
+   "end": 18.3,
+   "mot": "frais"
+  },
+  "mercedes": {
+   "t": 19.36,
+   "end": 19.8,
+   "mot": "Mercedes"
+  },
+  "prixmax": {
+   "t": 20.32,
+   "end": 20.34,
+   "mot": "Prix"
+  },
+  "n16500": {
+   "t": 20.78,
+   "end": 21.44,
+   "mot": "16500."
+  },
+  "attends": {
+   "t": 21.92,
+   "end": 22.28,
+   "mot": "Attends,"
+  },
+  "trois": {
+   "t": 23.06,
+   "end": 23.36,
+   "mot": "trois"
+  },
+  "ahouais": {
+   "t": 23.9,
+   "end": 24.2,
+   "mot": "Ah"
+  },
+  "quinze": {
+   "t": 24.76,
+   "end": 25.02,
+   "mot": "15"
+  },
+  "pfff": {
+   "t": 26.22,
+   "end": 27.34,
+   "mot": "Pfff."
+  },
+  "carnet": {
+   "t": 27.5,
+   "end": 27.98,
+   "mot": "Carnet,"
+  },
+  "calculette": {
+   "t": 28.14,
+   "end": 28.8,
+   "mot": "calculette,"
+  },
+  "onglets": {
+   "t": 29.4,
+   "end": 30.52,
+   "mot": "onglets…"
+  },
+  "hop": {
+   "t": 30.52,
+   "end": 30.86,
+   "mot": "Hop"
+  },
+  "tableau": {
+   "t": 31.7,
+   "end": 31.94,
+   "mot": "tableau"
+  },
+  "matin": {
+   "t": 33.32,
+   "end": 33.56,
+   "mot": "matin."
+  },
+  "n308": {
+   "t": 34.28,
+   "end": 34.8,
+   "mot": "308"
+  },
+  "n63": {
+   "t": 35.36,
+   "end": 35.78,
+   "mot": "63"
+  },
+  "baisse": {
+   "t": 36.44,
+   "end": 36.62,
+   "mot": "Baisse"
+  },
+  "a3": {
+   "t": 37.66,
+   "end": 37.98,
+   "mot": "A3"
+  },
+  "ding": {
+   "t": 38.82,
+   "end": 39.2,
+   "mot": "Ding"
+  },
+  "alerte": {
+   "t": 39.68,
+   "end": 40.06,
+   "mot": "'alerte."
+  },
+  "marge": {
+   "t": 40.92,
+   "end": 41.1,
+   "mot": "marge,"
+  },
+  "voiture": {
+   "t": 41.4,
+   "end": 41.56,
+   "mot": "voiture"
+  },
+  "debutes": {
+   "t": 42.78,
+   "end": 43.24,
+   "mot": "débutes"
+  },
+  "starter": {
+   "t": 43.56,
+   "end": 44.0,
+   "mot": "Starter."
+  },
+  "seule": {
+   "t": 44.9,
+   "end": 45.0,
+   "mot": "seule"
+  },
+  "ans": {
+   "t": 46.74,
+   "end": 46.92,
+   "mot": "ans."
+  },
+  "parc": {
+   "t": 47.78,
+   "end": 48.02,
+   "mot": "parc"
+  },
+  "pro": {
+   "t": 48.38,
+   "end": 48.58,
+   "mot": "Pro."
+  },
+  "essaie": {
+   "t": 49.26,
+   "end": 49.44,
+   "mot": "trois"
+  },
+  "carte": {
+   "t": 50.02,
+   "end": 50.24,
+   "mot": "carte"
+  },
+  "bio": {
+   "t": 51.28,
+   "end": 51.42,
+   "mot": "bio"
+  },
+  "chiffres": {
+   "t": 52.08,
+   "end": 52.36,
+   "mot": "chiffres"
+  },
+  "appeler": {
+   "t": 53.64,
+   "end": 53.94,
+   "mot": "'appeler."
+  },
+  "utopicar2": {
+   "t": 53.94,
+   "end": 54.9,
+   "mot": "UTOPICAR"
+  }
+ }
+}

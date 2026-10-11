@@ -1,7 +1,8 @@
-# Boîte à techniques (MO1 → MO6)
+# Boîte à techniques (MO1 → MO6, master60)
 
-Chaque technique ici a servi dans un film livré ou validé. Code de référence : `video/film-mo5/film.js` (MO5 « 47 € »)
-et `video/film-mo6/film.js` (MO6 « Ce qui se voit, ce qui se cache »). On copie la recette, on change le contenu.
+Chaque technique ici a servi dans un film livré ou validé. Code de référence : `video/film-mo5/film.js` (MO5 « 47 € »),
+`video/film-mo6/film.js` (MO6 « Ce qui se voit, ce qui se cache ») et `video/film-master60w/film.js` (master60, pub
+« wow » de 60 s en 16:9 et 9:16, ouvertures A et B). On copie la recette, on change le contenu.
 Les règles de fond restent dans `fluidite.md` (mouvement permanent), `motion-craft.md` (contrat de rendu) et
 `codes-attention.md` (vidéos sans produit).
 
@@ -21,6 +22,8 @@ Les règles de fond restent dans `fluidite.md` (mouvement permanent), `motion-cr
 12. Voix
 13. Son
 14. Pièges de code rencontrés
+15. Écrans pleins et sous-titres géants (master60)
+16. Un seul film pour 16:9 et 9:16
 
 ---
 
@@ -252,6 +255,9 @@ Méthode complète : `sound-design.md`. Recettes de `video/scripts/audio-mo5.py`
   - musique −9 dB sous 150 Hz, passe-haut 45 Hz pour le téléphone (51 % → 48 % d'énergie sous 150 Hz, contrôle OK).
 - **Contrôle mesuré** : écart voix/musique par réplique (minimum ≥ 4 dB, médiane ≈ 10 dB), rapport dans
   `docs/mix_report-<projet>.txt`.
+- **Musique et bruitages générés par ElevenLabs, posés par les repères du film** (master60,
+  `video/scripts/audio-master60w.py`) : choisir la prise par mesure (`scripts/music-pick.py`), la monter mesure par
+  mesure sur la grille de la voix, poser chaque bruitage à l'instant publié par le film. Méthode : `sound-design.md` § 9.
 
 ## 14. Pièges de code rencontrés
 
@@ -267,3 +273,97 @@ Méthode complète : `sound-design.md`. Recettes de `video/scripts/audio-mo5.py`
 | Une part de rendu valide supprimée par erreur après un redémarrage du conteneur | nettoyage trop large | vérifier ce que contient un dossier avant de le vider ; le dire si ça arrive |
 | Commande d'attente coupée à 2 h | limite des tâches de fond | moniteur avec condition, état revérifié à la main |
 | Moniteur qui n'en finit pas | `pgrep -f motif` trouve la commande d'attente elle-même | attendre un fichier, ou `pgrep -f '[r]ender.mjs'` |
+| Creux du o, du p et du a remplis dans le logo animé | sous-chemins d'une lettre répartis dans des `path` séparés : le remplissage ne voit plus les trous | un seul `path` par lettre (attributs `d` concaténés) |
+| « 50 » : le 0 rogné | `overflow:hidden` sur une colonne de chiffres plus étroite que le glyphe | `clip-path: inset(0 -.35em)` : coupe en haut et en bas seulement |
+| Bouton « Analyser » passé sous le texte | `pose()` remettait `display` à vide et effaçait le `display:flex` posé à la création | mémoriser le `display` d'origine (`el._d`) |
+| `Wt('!')` renvoyait le mot d'avant | la ponctuation se normalise en chaîne vide, préfixe de tout mot | chercher après le mot d'avant (`après + 0,1`) |
+| Titres desktop posés à x = 96 vus à x ≈ 70 | poussée de caméra de 3 % depuis le centre | colonne décalée de 32 px en 16:9, titres réduits jusqu'à x = 910 en 9:16 |
+| Aplat vide de 0,2 à 0,4 s à deux coupes | carte lancée 0,1 s après la coupe ; coupe posée sur un mot qui n'amène rien | entrée à `a − 0,03` ; couper sur le mot qui amène l'élément |
+
+## 15. Écrans pleins et sous-titres géants (master60)
+
+Un écran plein par idée (blanc, noir, orange ; rouge seulement pour le verdict « Non. »), la réplique de la voix
+écrite en géant, mot par mot sur sa syllabe, la vraie interface en carte inclinée, un curseur qui joue la démo. 25 scènes
+en 55 s, quelque chose de neuf sur chaque temps. Rendu 1080p de 60 s : ≈ 4 min en 3 parts, sans sur-échantillonnage.
+
+- **Scènes** : `scene(a, b, fond, entrée, poussée)`. Entrées :
+  - `cut` ;
+  - `slab` : volet diagonal, `clip-path: polygon` ;
+  - `circle` : cercle qui s'ouvre depuis le curseur ou le centre.
+
+  Un `whoosh` est publié à chaque volet ou cercle. La caméra de la scène cumule trois mouvements :
+  - poussée lente (`1 + poussée × progression`) ;
+  - secousse amortie sur les impacts (`noise × e^(−10 Δt) × amplitude`) ;
+  - micro-pulsation sur chaque temps (`pulse(t)` : 1 sur les premiers temps de mesure, 0,55 sur les autres, 0 pendant
+    les silences voulus).
+
+  Si le montage musical décale les mesures, `pulse` suit la même phase (master60 : un temps de plus avant « Hop ! »).
+- **Texte cinétique (`KT` + `ktP`)** : chaque mot dans un masque (`overflow:hidden`), chaque lettre animée.
+  - Entrées :
+    - `rise` : la lettre monte hors du masque, 0,42 s, 0,017 s par lettre ;
+    - `slam` : échelle 2,2 → 1 en 0,22 s ;
+    - `drop` : elle tombe d'en haut ;
+    - `type` : frappe lettre à lettre ;
+    - `blur` : elle arrive floue.
+  - Sorties :
+    - `up` : par le masque ;
+    - `fall` : chaque lettre tombe avec sa rotation ;
+    - fondu.
+  - `acc` : le mot « sonne » (+ 7 %, bump) quand la voix le dit.
+  - `fx(i, j, t)` : geste propre à un mot (« hum… » qui ondule, « Pfff… » qui s'affaisse).
+
+  La phrase suivante n'entre qu'une fois la précédente sortie.
+- **Instants des mots** : `Wt(mot, après)` cherche le mot normalisé (sans accents ni ponctuation) dans
+  `vo-timing.json`. Deux mots au même départ sont écartés de 0,11 s.
+- **Flou de bougé directionnel par élément** :
+  - `pose(el, t, P)` calcule la pose à `t` et à `t − 1/120` ;
+  - un `feGaussianBlur` SVG reçoit l'écart-type (|Δx|, |Δy|) × 120 × 0,0065 (l'obturateur) ;
+  - l'échelle ajoute un flou rond ;
+  - même calcul pour les lettres (vitesse verticale dans le masque) et les rouleaux de chiffres.
+
+  Il remplace `MB=8` (8 captures par image) quand le film est fait de textes et de cartes : une seule capture par image.
+- **Interpolation exponentielle** (`eOut = 1 − 2^(−10p)`, `eIn`, `eIO`) pour les arrivées. Les bosses (clic,
+  accent) passent par des springs fermés (`bump`).
+- **Curseur qui joue la démo** : trajet par clés `[t, x, y]` en `eIO` ; un clic = appui de −16 % et une onde.
+  - Il traîne une pastille « 🔗 Lien de l'annonce » jusqu'au champ.
+  - L'URL se tape à 0,012 s par lettre.
+  - Le bouton « Analyser » se resserre en rond et devient un spinner.
+- **Compteurs à rouleaux** : colonnes en `clip-path: inset(0 −.35em)`, départ décalé de 0,07 s par colonne, rouleau
+  caché jusqu'à son premier mouvement.
+- **Logo animé depuis le vrai SVG** :
+  - la tuile tourne et grandit ;
+  - la voiture entre en glissant (avec flou), puis le trait ;
+  - les lettres du mot-symbole montent une à une.
+
+  Découpe du mot-symbole : sous-chemins regroupés par recouvrement horizontal, puis **fusionnés en un seul `path` par
+  lettre**. La voiture reste dans son carré (`clipPath` aux rayons du logo).
+- **Ouverture « marchand »** :
+  - mur d'annonces en perspective, qui avance d'un cran à chaque temps (somme d'`eOut` sur les 8 temps de l'ouverture) ;
+  - 12 pastilles « ✓ Message envoyé » au quart de temps ;
+  - un compteur qui monte jusqu'à 50.
+- **Le film publie ses repères sonores** : `cue(t, type, gain)` à chaque geste (impact, whoosh, clic, pop, rouleau,
+  arrêt de bande, aspiration, « ding », message envoyé…).
+  - Chaîne : `window.cues` → `video/scripts/cues-master60w.mjs` → `audio/cues-<projet>-<A|B>.json` → mix.
+  - Un geste déplacé emporte son son. Après chaque retouche du film : réexporter, puis `git diff` sur les repères.
+
+## 16. Un seul film pour 16:9 et 9:16
+
+- **Un helper par valeur** : `V = fmt === 'vertical'`, `W`, `H`, `h = (a, b) => (V ? b : a)`. Chaque position
+  s'écrit `h(valeur 16:9, valeur 9:16)`, et le 16:9 garde ses chiffres exacts.
+- **Vertical** :
+  - titres dans la colonne 140 → 940, sous les 220 px du haut ;
+  - interface en bas, au-dessus des 440 px réservés ;
+  - cartes qui arrivent de la droite (x 1700 → 540) ;
+  - étapes empilées le long d'une ligne verticale (`scaleY`) ;
+  - réplique trop longue coupée en deux `KT`, son minutage réparti (« Tu peux / la payer… »).
+- **Titre réduit à la colonne** : `KT(…, fitW)` mesure la boîte rendue et réduit la taille jusqu'à
+  `x + largeur ≤ 910`, et non 940. Avec une poussée de caméra de 3 %, le bord finit au plus à 921, hors des boutons
+  TikTok. Les rouleaux suivent la même règle.
+- **Géométrie par format** : `transform-origin` au centre du format, volet diagonal calculé sur `W` et `H`, cercles
+  centrés en `W/2, H/2`, logo à 760 px de large en 9:16.
+- **CTA de chaque format** : en 9:16, ce que dit la voix (« lien en bio ») ; en 16:9, l'URL.
+- **Ne rien casser dans le format déjà livré** :
+  - avant la première retouche, rendre 25 à 30 images fixes du format livré ;
+  - après, les rendre de nouveau et les comparer au pixel (master60 : 29/29 identiques).
+- **Même son pour les deux formats** : les repères ne dépendent que du temps. `render.mjs` prend le même
+  `audio/mix-<projet>-<A|B>.wav`.

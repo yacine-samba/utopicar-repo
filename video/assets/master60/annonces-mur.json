@@ -1,0 +1,397 @@
+{
+"source": "base du marché UTOPICAR (marche_annonces), relevé du 10 oct. 2026 ; marque, modèle, année, km, prix seulement (aucun texte ni photo d'annonce)",
+"annonces": [
+{
+"marque": "Opel",
+"modele": "Corsa",
+"annee": 2014,
+"km": 98580,
+"prix": 6500,
+"energie": "Essence"
+},
+{
+"marque": "Audi",
+"modele": "A3",
+"annee": 2018,
+"km": 98267,
+"prix": 20980,
+"energie": "Hybride"
+},
+{
+"marque": "BMW",
+"modele": "Série 3",
+"annee": 2015,
+"km": 132400,
+"prix": 13990,
+"energie": "Essence"
+},
+{
+"marque": "Mercedes-Benz",
+"modele": "GLA",
+"annee": 2019,
+"km": 110000,
+"prix": 22000,
+"energie": "Diesel"
+},
+{
+"marque": "BMW",
+"modele": "Série 3",
+"annee": 2020,
+"km": 152203,
+"prix": 19859,
+"energie": "Diesel"
+},
+{
+"marque": "Renault",
+"modele": "Mégane",
+"annee": 2015,
+"km": 180736,
+"prix": 6990,
+"energie": "Diesel"
+},
+{
+"marque": "Volkswagen",
+"modele": "Golf",
+"annee": 2013,
+"km": 182562,
+"prix": 5500,
+"energie": "Essence"
+},
+{
+"marque": "Renault",
+"modele": "Clio",
+"annee": 2014,
+"km": 112120,
+"prix": 8000,
+"energie": "Diesel"
+},
+{
+"marque": "BMW",
+"modele": "Série 1",
+"annee": 2012,
+"km": 165360,
+"prix": 5490,
+"energie": "Essence"
+},
+{
+"marque": "Peugeot",
+"modele": "208",
+"annee": 2016,
+"km": 135080,
+"prix": 11900,
+"energie": "Diesel"
+},
+{
+"marque": "Volkswagen",
+"modele": "Polo",
+"annee": 2014,
+"km": 32900,
+"prix": 10490,
+"energie": "Essence"
+},
+{
+"marque": "Renault",
+"modele": "Scénic",
+"annee": 2015,
+"km": 76000,
+"prix": 5990,
+"energie": "Essence"
+},
+{
+"marque": "BMW",
+"modele": "Série 3",
+"annee": 2014,
+"km": 188000,
+"prix": 9990,
+"energie": "Diesel"
+},
+{
+"marque": "Volkswagen",
+"modele": "Polo",
+"annee": 2016,
+"km": 30515,
+"prix": 11490,
+"energie": "Essence"
+},
+{
+"marque": "Peugeot",
+"modele": "208",
+"annee": 2015,
+"km": 59986,
+"prix": 10979,
+"energie": "Diesel"
+},
+{
+"marque": "Renault",
+"modele": "Scénic",
+"annee": 2014,
+"km": 112998,
+"prix": 5290,
+"energie": "Essence"
+},
+{
+"marque": "Renault",
+"modele": "Mégane",
+"annee": 2018,
+"km": 153314,
+"prix": 8250,
+"energie": "Essence"
+},
+{
+"marque": "Opel",
+"modele": "Corsa",
+"annee": 2013,
+"km": 23900,
+"prix": 7900,
+"energie": "Essence"
+},
+{
+"marque": "BMW",
+"modele": "Série 1",
+"annee": 2013,
+"km": 174000,
+"prix": 5500,
+"energie": "Essence"
+},
+{
+"marque": "Renault",
+"modele": "Mégane",
+"annee": 2014,
+"km": 155000,
+"prix": 7500,
+"energie": "Diesel"
+},
+{
+"marque": "BMW",
+"modele": "Série 1",
+"annee": 2012,
+"km": 171000,
+"prix": 8990,
+"energie": "Essence"
+},
+{
+"marque": "Volkswagen",
+"modele": "Golf Plus",
+"annee": 2013,
+"km": 65000,
+"prix": 8880,
+"energie": "Essence"
+},
+{
+"marque": "DS",
+"modele": "DS 3",
+"annee": 2013,
+"km": 134075,
+"prix": 5900,
+"energie": "Essence"
+},
+{
+"marque": "Peugeot",
+"modele": "208",
+"annee": 2015,
+"km": 115000,
+"prix": 10990,
+"energie": "Diesel"
+},
+{
+"marque": "Peugeot",
+"modele": "208",
+"annee": 2013,
+"km": 37875,
+"prix": 11490,
+"energie": "Diesel"
+},
+{
+"marque": "Renault",
+"modele": "Twingo",
+"annee": 2013,
+"km": 110000,
+"prix": 6790,
+"energie": "Diesel"
+},
+{
+"marque": "Renault",
+"modele": "Scénic",
+"annee": 2016,
+"km": 104000,
+"prix": 8200,
+"energie": "Essence"
+},
+{
+"marque": "Mercedes-Benz",
+"modele": "Classe A",
+"annee": 2018,
+"km": 92100,
+"prix": 21390,
+"energie": "Diesel"
+},
+{
+"marque": "Volkswagen",
+"modele": "Golf",
+"annee": 2013,
+"km": 176000,
+"prix": 12400,
+"energie": "Essence"
+},
+{
+"marque": "Mercedes-Benz",
+"modele": "Classe A",
+"annee": 2021,
+"km": 110366,
+"prix": 19880,
+"energie": "Diesel"
+},
+{
+"marque": "Volkswagen",
+"modele": "Golf Sportsvan",
+"annee": 2016,
+"km": 179900,
+"prix": 9490,
+"energie": "Diesel"
+},
+{
+"marque": "Volkswagen",
+"modele": "Polo",
+"annee": 2014,
+"km": 170000,
+"prix": 6990,
+"energie": "Diesel"
+},
+{
+"marque": "Audi",
+"modele": "Q2",
+"annee": 2020,
+"km": 53000,
+"prix": 18490,
+"energie": "Essence"
+},
+{
+"marque": "Mercedes-Benz",
+"modele": "Classe A",
+"annee": 2018,
+"km": 145000,
+"prix": 12500,
+"energie": "Essence"
+},
+{
+"marque": "Peugeot",
+"modele": "208",
+"annee": 2016,
+"km": 62931,
+"prix": 12500,
+"energie": "Diesel"
+},
+{
+"marque": "Audi",
+"modele": "A3",
+"annee": 2020,
+"km": 48500,
+"prix": 19990,
+"energie": "Hybride"
+},
+{
+"marque": "Volkswagen",
+"modele": "Golf Plus",
+"annee": 2012,
+"km": 125000,
+"prix": 9990,
+"energie": "Essence"
+},
+{
+"marque": "Opel",
+"modele": "Corsa",
+"annee": 2012,
+"km": 140000,
+"prix": 5700,
+"energie": "Diesel"
+},
+{
+"marque": "BMW",
+"modele": "Série 1",
+"annee": 2012,
+"km": 149900,
+"prix": 8980,
+"energie": "Essence"
+},
+{
+"marque": "Volkswagen",
+"modele": "Polo",
+"annee": 2014,
+"km": 154272,
+"prix": 7500,
+"energie": "Diesel"
+},
+{
+"marque": "Audi",
+"modele": "Q3",
+"annee": 2016,
+"km": 126504,
+"prix": 19900,
+"energie": "Essence"
+},
+{
+"marque": "Volkswagen",
+"modele": "Golf Plus",
+"annee": 2014,
+"km": 145000,
+"prix": 7900,
+"energie": "Diesel"
+},
+{
+"marque": "Volkswagen",
+"modele": "Golf Plus",
+"annee": 2012,
+"km": 64325,
+"prix": 7490,
+"energie": "Diesel"
+},
+{
+"marque": "Renault",
+"modele": "Scénic",
+"annee": 2012,
+"km": 190000,
+"prix": 4900,
+"energie": "Diesel"
+},
+{
+"marque": "Renault",
+"modele": "Clio",
+"annee": 2018,
+"km": 101442,
+"prix": 9290,
+"energie": "Essence"
+},
+{
+"marque": "BMW",
+"modele": "Série 1",
+"annee": 2012,
+"km": 145675,
+"prix": 5490,
+"energie": "Essence"
+},
+{
+"marque": "Renault",
+"modele": "Mégane",
+"annee": 2016,
+"km": 98000,
+"prix": 9990,
+"energie": "Diesel"
+},
+{
+"marque": "Peugeot",
+"modele": "308",
+"annee": 2017,
+"km": 121000,
+"prix": 10490,
+"energie": "Diesel"
+},
+{
+"marque": "Citroën",
+"modele": "C3",
+"annee": 2018,
+"km": 74000,
+"prix": 8990,
+"energie": "Essence"
+}
+]
+}

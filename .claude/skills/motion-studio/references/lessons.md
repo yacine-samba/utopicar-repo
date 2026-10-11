@@ -1,4 +1,4 @@
-# Leçons des films UTOPICAR (v1 → v9, MO1 → MO6)
+# Leçons des films UTOPICAR (v1 → v9, MO1 → MO10, master60)
 
 À relire avant de construire. Chaque ligne est arrivée pour de vrai.
 
@@ -71,6 +71,17 @@
 | MO9 | faster-whisper *small* écrit « banquets », « Pneulis », « fargenis » et avale le rire `[chuckles]` dans le mot suivant (0,9 s pour « Même ») | Contrôler la prononciation avec le modèle *medium* (il relit le texte exact), sur la prise puis sur le mix ; recaler à l'enveloppe les mots que *small* étire |
 | MO9 | Rendu `--draft` à 60 i/s : ≈ 1,1 s par image, 33 min pour 30 s | Brouillon d'écoute à 30 i/s (`fps` du timeline le temps du rendu), 60 i/s pour le rendu final |
 | MO9 | Caméra qui cadre de près et calques en profondeur (`translateZ` 160-200) : « 974 € » sortait de la colonne, « MARGE » montait dans la bande du haut ; vu seulement par `qa_video.py` sur le MP4, deux rendus finaux de 40 min de plus | Dimensionner les gros chiffres avec le grossissement de la caméra la plus proche ; avant chaque rendu final, mesurer les bandes interdites sur des images fixes (`at.mjs` + seuil de luminance) aux temps où la caméra bouge |
+| master60 | Maquette validée (« la dernière est bien, anime bien les textes »), puis détour proposé (essai de 15 s, retouche du calage de la voix) : refusé | Une maquette validée se produit telle quelle ; les vérifications se font sur images fixes, sans demander de détour |
+| master60 | « Recréer pas les 2 vidéos, fait direct sound design » : retouches d'image et son demandés ensemble | Grouper les retouches, faire le son, puis **un seul** rendu final avec le mix |
+| master60 | Logo animé : creux du o, du p et du a remplis (capture de l'utilisateur) | Un seul `path` par lettre quand on découpe le mot-symbole (`techniques.md` § 14) |
+| master60 | Compteur « 50 » : le 0 rogné (capture de l'utilisateur) | Colonnes de chiffres en `clip-path: inset(0 -.35em)`, pas `overflow:hidden` |
+| master60 | Mention « Vraies annonces… » à retirer (demande de l'utilisateur) | Seulement les mentions exigées : « Données de démonstration », « Exemples chiffrés, pas une promesse de gain », option payante nommée |
+| master60 | 4 musiques demandées à 112 BPM : l'une tournait à 112,67 BPM avec 133 ms d'écart | `scripts/music-pick.py` sur chaque prise ; ne jamais caler sur le BPM demandé |
+| master60 | Musique trop forte : écart voix / musique médian de 1,4 dB avec un gain de bus fixe | Régler la musique sur l'écart visé (médiane 11 dB, minimum ≥ 5) |
+| master60 | Liens ElevenLabs expirés (HTTP 400) environ 2 h après la génération ; réponse de statut de 45 ko | `scripts/eleven-dl.py` dès la fin des générations ; liens neufs par un nouveau `creative_get_flow_run_status` |
+| master60 | Titres desktop posés à x = 96, vus à x ≈ 70 dans le MP4 | La poussée de caméra (zoom depuis le centre) élargit tout : prévoir la marge (`motion-craft.md` § 3) |
+| master60 | Aplats vides de 0,2 à 0,4 s à deux coupes (`qa_video.py`) | Le premier élément entre à la frame de coupe ; la coupe tombe sur le mot qui amène l'élément |
+| master60 | `matplotlib` absent, `sleep` bloqué dans Bash | Spectrogrammes en PIL (`music-pick.py`) ; rendus en tâche de fond, attendre la notification de fin |
 
 ## Ce qui a marché (à reprendre)
 
@@ -92,3 +103,17 @@
 - MO5/MO6 (vidéos d'attention) : la photo réelle de l'utilisateur détourée et redessinée à la lumière ; les textes
   écrits lettre par lettre ; un compteur qui roule ; des raccords par la forme (disque → cadran, bouchon → loupe) ; une
   boucle mesurée ; une chute qui relance la première phrase. Recettes : `references/techniques.md`.
+- Oct. 2026, master60 (pub « wow » de 60 s, ouvertures A débutant et B marchand, 16:9 puis 9:16). Demande de
+  l'utilisateur : « du wow, des écrans qui changent, des sous-titres écrits en gros en motion », d'après prompt-motion.com.
+  Les 4 MP4 sont livrés sans FAIL ; voici ce qui a marché :
+  - **Image** :
+    - un écran plein par idée ;
+    - la réplique écrite en géant, mot par mot sur sa syllabe ;
+    - flou de bougé directionnel par élément (60 s rendues en ≈ 4 min) ;
+    - curseur qui joue la démo ;
+    - logo animé depuis le vrai SVG.
+  - **Son** : musique et bruitages ElevenLabs choisis par mesure et posés aux repères publiés par le film, drop sur
+    « Hop ! ».
+  - **Formats** : le 9:16 vient du même code, et le 16:9 est resté identique au pixel près.
+
+  Recettes : `techniques.md` § 15–16, `sound-design.md` § 9.
