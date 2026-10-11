@@ -213,6 +213,7 @@
   // flou de bougé ; le flou CSS par élément est réduit (KF) pour ne pas flouter deux fois.
   // =====================================================================================================
   const WIN = [], win = (a, b) => WIN.push([a, b]);
+  let REW = null;   // rembobinage (PS2) : { a, b, to, paint } — seek() repeint les scènes à l'envers entre a et b
   const inWin = (t) => WIN.some(([a, b]) => t >= a && t <= b);
   const CUES = [], cue = (t, k, g = 1) => { if (t >= 0 && t < DUR) CUES.push({ t: +t.toFixed(3), k, g }); };
   const SC = [], SCN = new Map();   // SCN : élément de scène → scène
@@ -670,11 +671,235 @@
     endCard(16.72, 'var(--o)', [['Commente', 300, 170, '#fff', false, T('commente', 16.6)], ['DÉBUTANT', 470, 200, 'var(--ink)', false, T('debut', 16.9)]], 'Le guide <b style="color:var(--o)">Ta 1re revente</b>', T('commente', 16.6));
   };
 
+  // =====================================================================================================
+  // PS1 · Problème → solution : la Classe A en vente trois fois, à trois prix (vraie annonce analysée le 10 oct. 2026)
+  // =====================================================================================================
+  SPECS.PS1 = () => {
+    const MERC = PH + 'mercedes-profil.jpg', SRC = 'Vraie annonce (Classe A 180d, 2018, 96 000 km), analysée par UTOPICAR le 10 oct. 2026';
+    const tBam = T('bam', 13), tMax = T('ton', 13.5), t165 = T('16', 14.5), tJ = T('3', 15.5);
+    // « Tu craques pour cette Classe A. » : l'annonce entre, le cœur se remplit
+    const s1 = S(-1, 2.25, 'var(--w)', { type: 'cut' }, 0.04);
+    KA(s1, 140, 250, 190, 'Tu craques', 'var(--ink)', false, [-0.6, -0.5], 'rise', { acc: [-1, T('craques')] });
+    KA(s1, 140, 455, 96, 'pour cette Classe A.', 'var(--o)', true, [T('pour'), T('cette'), T('classe'), T('a', 1.2)]);
+    const L1c = listing(s1.cam, 720, MERC, 'Mercedes Classe A 180d', '2018 · 96 000 km · Diesel', '19 990 €', '50% 58%');
+    const heart = mk('div', 'a', L1c, { left: '600px', top: '24px', width: '92px', height: '92px', borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 24px -8px rgba(0,0,0,.4)' },
+      '<svg width="52" height="52" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3.1 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.7 0 5.9 3.8 4.4 7.3C19.5 16.4 12 21 12 21z" fill="none" stroke="#1c1612" stroke-width="2"/></svg>');
+    const hp = heart.querySelector('path'), mk1 = L1c.querySelector('.p i'), tH = T('craques') + 0.15;
+    cue(tH, 'pop', 0.8);
+    s1.P.push((t) => {
+      pose(L1c, t, (tt) => { const p = E(tt, -0.75, 0.75), f = Math.max(0, tt + 0.75 - 0.75); return { x: lerp(1500, 540, p) + 6 * Math.sin(f * 0.9), y: 1010 + 6 * Math.sin(f * 1.3), c: 1, p: 1, rx: 6, ry: -12 - 34 * (1 - p), r: -2 + 0.4 * Math.sin(f) }; });
+      const on = t >= tH; hp.setAttribute('fill', on ? 'var(--o)' : 'none'); hp.setAttribute('stroke', on ? 'var(--o)' : '#1c1612');
+      heart.style.transform = `scale(${(1 + 0.45 * bump(t, tH, 0.22)).toFixed(3)})`;
+      mk1.style.transform = `scaleX(${E(t, T('classe'), 0.45).toFixed(3)})`;
+    });
+    cred(s1, SRC);
+    // « Elle est en vente trois fois… à trois prix. » (rire) : zoom arrière, la même annonce trois fois
+    const a2 = 2.25, s2 = S(a2, 5.85, 'var(--w)', { type: 'pull', x: 540, y: 960 }, 0.03);
+    KA(s2, 140, 240, 100, 'Elle est en vente', 'var(--ink)', false, [T('elle', 2), T('est', 2), T('en', 2.5), T('vente', 2.5)]);
+    const k3 = KA(s2, 140, 370, 210, '3 fois.', 'var(--o)', true, [T('3', 2.8), T('fois', 2.8)], 'slam');
+    KA(s2, 770, 430, 80, 'ha !', '#b5aa9c', true, 4.95, 'blur', { fx: (i, j, tt) => ({ y: Math.sin(tt * 20 + j) * 6 }) });
+    const C = [0, 1, 2].map((i) => listing(s2.cam, 380, MERC, 'Mercedes Classe A', '2018 · 96 000 km', '', '50% 58%'));
+    C[1].style.zIndex = 3; C.forEach((c) => { c.querySelector('.p').style.display = 'none'; });
+    const tOut = [T('3', 2.8), T('fois', 2.8)], X = [330, 540, 750], R_ = [-7, 0, 7];
+    tOut.forEach((ti) => cue(ti, 'whoosh', 0.45));
+    const tP = [T('a', 3.9), T('3', 4.1) + 0.12, T('prix', 4.2) + 0.12];
+    const TG = [['17 990 €', 'Bretagne'], ['19 990 €', 'cette annonce'], ['21 990 €', 'Tarn']].map(([p, l], i) => { const e = tag(s2.cam, p, l, 54); if (i === 1) { e.style.borderColor = 'var(--o)'; e.style.borderWidth = '5px'; e.style.zIndex = 4; } return e; });
+    tP.forEach((ti) => cue(ti, 'pop', 0.7));
+    s2.P.push((t) => {
+      C.forEach((c, i) => pose(c, t, (tt) => { const p = i === 1 ? 1 : E(tt, tOut[i === 0 ? 0 : 1], 0.5); const f = tt - a2; return { x: lerp(540, X[i], p), y: 960 + 22 * p * (i === 1 ? -1 : 1) + 5 * Math.sin(f * 1.4 + i), c: 1, p: 1, rx: 4, ry: 0, r: R_[i] * p + 0.4 * Math.sin(f * 1.1 + i), s: i === 1 ? 1.06 : 0.97 }; }));
+      TG.forEach((e, i) => drop(e, t, tP[i], X[i], 1255 + (i === 1 ? -10 : 18), [-6, 2, 7][i]));
+    });
+    cred(s2, SRC + ' · même voiture vue dans 2 autres annonces');
+    // « Tu prends celle du milieu ? » : portail par le prix du milieu, le curseur va appeler
+    const a3 = 5.85, s3 = S(a3, T('tu', 7.1), 'var(--w)', { type: 'portal', x: 540, y: 1255 }, 0.04);
+    KA(s3, 140, 250, 170, 'Tu prends', 'var(--ink)', false, [T('tu', 5.8), T('prends', 5.8)]);
+    KA(s3, 140, 440, 130, 'celle du milieu ?', 'var(--o)', true, [T('celle', 6), T('du', 6.2), T('milieu', 6.3), T('?', 6.6)]);
+    const L3 = listing(s3.cam, 720, MERC, 'Mercedes Classe A 180d', '2018 · 96 000 km · Diesel', '19 990 €', '50% 58%');
+    const btn3 = mk('div', 'a', L3, { left: 'auto', top: 'auto', right: '34px', bottom: '40px', padding: '22px 40px', borderRadius: '999px', background: 'var(--ink)', color: '#fff', font: '600 40px Clash' }, 'Appeler');
+    const cur3 = cursor(s3.cam, [[a3, 1100, 1700], [6.5, 880, 1420], [7.1, 800, 1340]]);
+    s3.P.push((t) => { pose(L3, t, (tt) => { const f = tt - a3; return { x: 540 + 6 * Math.sin(f * 0.9), y: 1060 + 6 * Math.sin(f * 1.3), c: 1, p: 1, rx: 5, ry: -8, r: -1.5 }; });
+      btn3.style.transform = `scale(${(1 + 0.06 * Math.max(0, Math.sin((t - a3) * 9))).toFixed(3)})`; cur3(t); });
+    // « Tu perds 2 700. » (soupir) Pfff. : coupe sur le rouge, le vrai calcul de l'outil, la musique s'arrête
+    const a4 = T('tu', 7.1), t27 = T('2', 7.8), s4 = S(a4, 10.0, 'var(--r)', { type: 'cut' }, 0.04); s4.imp.push([t27 + 0.05, 22]);
+    cue(a4, 'impact', 0.8); cue(t27, 'thud', 0.9); cue(MU.stop, 'tapestop');
+    KA(s4, 140, 230, 170, 'Tu perds', '#fff', false, [a4, T('perds', 7.2)], 'slam');
+    const tk = ticket(s4.cam, 780, [['Revente (1 à 2 mois)', '18 600 €', a4 + 0.05], ['Achat', '− 19 990 €', a4 + 0.2], ['Travaux', '− 500 €', a4 + 0.35], ['Carte grise', '− 427 €', a4 + 0.5], ['Trajet et frais', '− 383 €', a4 + 0.65]],
+      { lab: 'Ce qui te reste', v: 2700, t: t27, tone: 'r', sign: '− ' });
+    const kP = KA(s4, 140, 1190, 140, 'Pfff…', '#fff', true, 8.75, 'blur', { fx: (i, j, tt) => ({ y: E(tt, 8.95 + j * 0.05, 0.5) * (14 + j * 9), r: E(tt, 8.95, 0.5) * (j % 2 ? 5 : -4) }) });
+    s4.P.push((t) => { rise(tk, t, a4 - 0.05, 540, 790, -1); tk.paint(t); });
+    cred(s4, SRC + ' · revente normale estimée par l’outil', '#fff');
+    // « Avant d'appeler, tu colles l'annonce dans UTOPICAR… »
+    const a5 = 10.0, tCl = T('car', 12) + 0.2, s5 = S(a5, tBam - 0.03, 'var(--o)', { type: 'slab' });
+    KA(s5, 140, 250, 170, "Avant", '#fff', false, T('avant', 9.9)); KA(s5, 140, 430, 190, "d'appeler,", 'var(--ink)', true, [T('d', 10.3)]);
+    const field = mk('div', 'a', s5.cam, { width: '800px', height: '150px', borderRadius: '999px', background: '#fff', display: 'flex', alignItems: 'center', padding: '0 18px 0 36px', gap: '16px', boxShadow: '0 50px 100px -30px rgba(28,22,18,.45)' },
+      '<svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#1c1612" stroke-width="2.2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>');
+    const txt = mk('div', '', field, { flex: '1', font: '500 36px Satoshi', color: '#1c1612', whiteSpace: 'nowrap', overflow: 'hidden' });
+    const tTy = T('colles', 11.2), chars = [...'…/annonce/mercedes-classe-a'].map((ch) => mk('span', '', txt, null, ch));
+    const btn = mk('div', '', field, { height: '114px', width: '270px', borderRadius: '999px', background: 'var(--o)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '600 44px Clash', color: '#1a1310', flex: 'none' }, 'Analyser');
+    const L5 = logo(s5.cam, 540, 1200, 620), cur5 = cursor(s5.cam, [[a5, 1200, 1900], [tCl - 0.02, 800, 905], [tCl + 0.6, 815, 925]], [tCl]);
+    cue(tTy + 0.05, 'type'); cue(T('dans', 11.5), 'whoosh', 0.6); cue(tCl, 'click');
+    s5.P.push((t) => { pose(field, t, (tt) => { const p = E(tt, a5 + 0.15, 0.55); return { x: 540, y: lerp(1500, 860, p), c: 1, p: 1, rx: 12 * (1 - p) + 6, r: -2 }; });
+      chars.forEach((c, i) => { c.style.opacity = t >= tTy + i * 0.016 ? 1 : 0; });
+      btn.style.transform = `scale(${(1 - 0.08 * bump(t, tCl - 0.03, 0.14)).toFixed(3)})`; L5(t, T('dans', 11.5) + 0.1); cur5(t); });
+    // « …et bam ! Ton prix max, 16 500. » : la vraie analyse, le prix qui descend jusqu'au plafond
+    const s6 = S(tBam - 0.03, 15.9, 'var(--k)', { type: 'circle', x: 800, y: 905 }, 0.03); s6.imp.push([tBam + 0.03, 22]); cue(tBam, 'impact');
+    s6.P.push(((k) => (t) => ktP(k, t, tBam, 'slam', tBam + 0.42, 'up'))(L1(s6.cam, 140, 520, 330, 'Bam.', 'var(--o)', true)));
+    const vd = crop(s6.cam, 'merc-verdict', { W: 1074, x: 0, y: 0, w: 1074, h: 690 }, 780, { background: '#1c1712' });
+    KA(s6, 140, 870, 80, 'Ton prix max', '#fff', false, [tMax, T('prix', 13.9), T('max', 14.1)]);
+    const R6 = ROLL(s6.cam, 130, 975, 230, '19 990 €', '16 500 €', 'var(--o)');
+    const kb = brk(s6.cam, 144, 1290, B('au-delà, tu perds de l’argent', ['perds']), '#fbf9f5', 38);
+    cue(tMax, 'whoosh', 0.5); cue(t165 - 0.1, 'roll', 0.9); cue(T('500', 14.9) + 0.1, 'ding', 0.6);
+    s6.P.push((t) => {
+      pose(vd, t, (tt) => { const p = E(tt, tBam + 0.2, 0.6), f = Math.max(0, tt - tBam - 0.8); return { x: 540, y: lerp(1900, 560, p) + 5 * Math.sin(f * 1.5), c: 1, p: 1, rx: 6 + 30 * (1 - p), ry: -6, r: 1.5 * (1 - p) + 0.3 * Math.sin(f) }; });
+      R6.box.style.visibility = t >= tMax ? '' : 'hidden'; rollP(R6, t, t165 - 0.15, 0.6, 0.07);
+      pose(R6.box, t, (tt) => ({ x: 0, y: 0, s: 1 + 0.06 * bump(tt, t165 + 0.45, 0.2) }));
+      ktP(kb, t, t165 + 0.4, 'rise', null, 'up', { step: 0.05 });
+    });
+    cred(s6, SRC, '#fbf9f5');
+    // « Trois jours offerts. Lien en bio ! »
+    endCard(15.9, 'var(--o)', [['3 jours', 260, 200, '#fff', false, tJ], ['offerts.', 450, 200, 'var(--ink)', true, T('offerts', 15.9)]], 'Lien en bio · <b style="color:var(--o)">sans carte bancaire</b>', T('lien', 16.6),
+      { type: 'portal', ...atEl(R6.cols[1].col, 0.5, 0.5) });
+  };
+
+  // =====================================================================================================
+  // PS2 · Problème → solution, avant / après sur la même annonce : la perte, un vrai rembobinage du film, puis la même
+  // Classe A achetée avec UTOPICAR (vraie analyse du 10 oct. 2026 ; le + 1 290 € est calculé sur ses chiffres)
+  // =====================================================================================================
+  SPECS.PS2 = () => {
+    const MERC = PH + 'mercedes-profil.jpg', SRC = 'Vraie annonce (Classe A 180d, 2018, 96 000 km) analysée par UTOPICAR le 10 oct. 2026';
+    const tAch = T('achete'), t19 = T('19'), tRev = T('revendu', 3), t18 = T('18', 3.5), tCG = T('carte', 5), tTJ = T('trajet', 6), tTX = T('travaux', 7), tFR = tTX + 0.45;
+    const tMo = T('moins', 8), t27 = T('2', 8.2), tRw = T('ramb', 10), tMe = T('meme', 11), tAv = T('avant', 12), tUt = T('utopi', 13.5);
+    const tBam = T('bam', 14.5), tPx = T('prix', 15.5), t165 = T('16', 16), tNe = T('negocies', 17), t160 = T('16', 17.8), tPl = T('plus', 19), t1290 = T('1', 19.4);
+    const RW = { a: 10.3, b: 11.42, to: 0.55 };
+    const CARD = { x: 540, y: 1040 };
+    // ---------- PROBLÈME : une seule scène, que le rembobinage rejoue à l'envers ----------
+    const sP = S(-1, RW.a + 0.001, 'var(--w)', { type: 'cut' }, 0.03); sP.keep = 0;
+    const red = mk('div', 'a', sP.el, { inset: '0', background: 'var(--r)', zIndex: 0 }); sP.el.insertBefore(red, sP.cam);
+    const kA = L1(sP.cam, 140, 230, 160, 'Classe A', 'var(--ink)'), kB = L1(sP.cam, 140, 410, 150, 'achetée', 'var(--o)', true);
+    const lab = brk(sP.cam, 144, 220, B('ce qui te reste', ['reste']), 'var(--ink)', 40);
+    const cnt = mk('div', 'a', sP.cam, { left: '134px', top: '280px', font: '600 180px/1 Clash', letterSpacing: '-.04em', whiteSpace: 'nowrap', color: 'var(--r)' });
+    const kP = L1(sP.cam, 140, 560, 120, 'Pfff…', '#fff', true);
+    const kK = brk(sP.cam, 144, 580, B('et tu perds 2 700 € dessus', ['2', '700', '€']), 'var(--ink)', 44);   // l'enjeu dès l'image 0, pour ceux qui regardent sans le son
+    const LP = listing(sP.cam, 720, MERC, 'Mercedes Classe A 180d', '2018 · 96 000 km · Diesel', '19 990 €', '50% 58%'), mkP = LP.querySelector('.p i');
+    const rev = tag(sP.cam, '18 600 €', 'revendue', 56); rev.style.borderColor = 'var(--ok)';
+    const FEES = [['− 427 €', 'carte grise', tCG, 250, 820, -8], ['− 233 €', 'trajet', tTJ, 765, 780, 7], ['− 500 €', 'travaux', tTX, 300, 1120, 5], ['− 150 €', 'frais', tFR, 755, 1150, -6]]
+      .map(([p, l, t0, x, y, r]) => { const e = tag(sP.cam, p, l, 60); e.style.borderColor = 'var(--r)'; return { e, t0, x, y, r }; });
+    const STEPS = [[t18 - 0.2, -1390], [tCG, -1817], [tTJ, -2050], [tTX, -2550], [tFR, -2700]];
+    cue(tAch, 'thud', 0.5); cue(t19 + 0.1, 'roll', 0.7); cue(t18, 'pop', 0.8); FEES.forEach((f) => cue(f.t0, 'pop', 0.8));
+    cue(t27, 'impact'); cue(MU.stop, 'tapestop'); sP.imp.push([t27 + 0.03, 24]);
+    sP.P.push((t) => {
+      // titre « Classe A achetée », remplacé par le compteur quand la voix dit « revendue »
+      ktP(kA, t, -0.6, 'rise', tRev - 0.1); ktP(kB, t, tAch, 'rise', tRev - 0.05);
+      ktP(lab, t, tRev + 0.05, 'rise', null, 'up', { step: 0.05 });
+      ktP(kK, t, -0.5, 'rise', tRev - 0.15, 'up', { step: 0.03 });
+      let v = 0; for (const [t0, val] of STEPS) { const p = E(t, t0, 0.35); v = lerp(v, val, p); }
+      cnt.style.visibility = t >= t18 - 0.25 ? '' : 'hidden';
+      cnt.textContent = (v < -0.5 ? '− ' : '') + fmt(v) + ' €';
+      const bz = bump(t, t27, 0.25); cnt.style.transform = `scale(${(1 + 0.12 * bz + 0.05 * STEPS.reduce((m, [t0]) => Math.max(m, bump(t, t0, 0.16)), 0)).toFixed(3)})`; cnt.style.transformOrigin = '0 60%';
+      const rp = E(t, t27, 0.3); red.style.clipPath = `circle(${(rp * 2400).toFixed(0)}px at 320px 400px)`; red.style.opacity = rp > 0 ? 1 : 0;
+      cnt.style.color = rp > 0.3 ? '#fff' : 'var(--r)'; lab.box.style.color = rp > 0.3 ? '#fff' : 'var(--ink)';
+      ktP(kP, t, 9.4, 'blur', null, 'up', { fx: (i, j, tt) => ({ y: E(tt, 9.6 + j * 0.05, 0.5) * (14 + j * 9), r: E(tt, 9.6, 0.5) * (j % 2 ? 5 : -4) }) });
+      // la voiture : entre en mouvement, puis s'affaisse sur le soupir
+      pose(LP, t, (tt) => { const p = E(tt, -0.8, 0.8), f = Math.max(0, tt), sg = E(tt, 9.5, 0.6); return { x: lerp(1500, CARD.x, p) + 6 * Math.sin(f * 0.9), y: CARD.y + 6 * Math.sin(f * 1.3) + 40 * sg, c: 1, p: 1, rx: 6, ry: -12 - 34 * (1 - p), r: -2 + 0.4 * Math.sin(f) + 3 * sg }; });
+      mkP.style.transform = `scaleX(${E(t, t19, 0.5).toFixed(3)})`;
+      drop(rev, t, t18, 745, 1300, -4);
+      FEES.forEach((f) => drop(f.e, t, f.t0, f.x, f.y + 40 * E(t, 9.5, 0.6), f.r));
+    });
+    const crP = cred(sP, SRC + ' · revente 18 600 € et frais estimés par l’outil');
+    sP.P.push((t) => { crP.style.color = E(t, t27, 0.3) > 0.3 ? '#fff' : 'var(--ink)'; });
+    // ---------- REMBOBINAGE : seek() repeint la scène du problème à l'envers (voir REW plus bas) ----------
+    win(RW.a, RW.b + 0.05); cue(RW.a, 'whoosh', 0.6);
+    const ov = mk('div', 'a', ST, { inset: '0', zIndex: 90, pointerEvents: 'none', display: 'none',
+      background: 'repeating-linear-gradient(0deg, rgba(0,0,0,.10) 0 3px, transparent 3px 7px)' });
+    const rwL = mk('div', 'a', ov, { left: '140px', top: '800px', font: '700 120px/1 Clash', color: '#fff', letterSpacing: '-.04em', textShadow: '6px 0 rgba(255,0,60,.55), -6px 0 rgba(0,200,255,.55), 0 10px 40px rgba(0,0,0,.35)' }, '◀◀');
+    const rwT = mk('div', 'a', ov, { left: '350px', top: '840px', font: '700 44px Satoshi', color: '#fff', letterSpacing: '.18em', textShadow: '4px 0 rgba(255,0,60,.5), -4px 0 rgba(0,200,255,.5)' }, 'REMBOBINE');
+    const band = mk('div', 'a', ov, { left: '0', width: '1080px', height: '90px', background: 'rgba(255,255,255,.16)', filter: 'blur(6px)' });
+    REW = { ...RW, paint: (t) => {
+      const on = t >= RW.a && t < RW.b; ov.style.display = on ? '' : 'none';
+      if (!on) { sP.el.style.filter = ''; sP.el.style.translate = ''; return; }
+      const p = (t - RW.a) / (RW.b - RW.a);
+      sP.el.style.filter = 'saturate(1.45) contrast(1.12)';
+      sP.el.style.translate = `${(noise(3, t * 40) * 10).toFixed(1)}px ${(noise(9, t * 33) * 4).toFixed(1)}px`;
+      rwL.style.opacity = Math.floor(t * 8) % 2 ? 0.55 : 1; band.style.top = ((p * 3.2 % 1) * 2000 - 90).toFixed(0) + 'px';
+    } };
+    // ---------- SOLUTION ----------
+    // « Même annonce. Avant d'appeler, tu la colles dans UTOPICAR… » : même cadre qu'au début, cette fois on colle le lien
+    const tCl = tUt + 0.55, sS1 = S(RW.b, tBam - 0.03, 'var(--w)', { type: 'cut' }, 0.03); cue(RW.b, 'thud', 0.7); sS1.imp.push([RW.b + 0.02, 10]);
+    const kM = KT(sS1.cam, 140, 230, 150, [['Même', {}], ['annonce.', { c: 'var(--o)', i: 1 }]]); sS1.P.push((t) => ktP(kM, t, [tMe - 0.05, T('annonce', 11.5)]));
+    KA(sS1, 140, 410, 96, "Avant d'appeler,", 'var(--ink)', false, [tAv, T('d', 12.6)]);
+    const LS = listing(sS1.cam, 720, MERC, 'Mercedes Classe A 180d', '2018 · 96 000 km · Diesel', '19 990 €', '50% 58%'); LS.querySelector('.p i').style.transform = 'scaleX(1)';
+    const field = mk('div', 'a', sS1.cam, { width: '740px', height: '140px', borderRadius: '999px', background: '#fff', display: 'flex', alignItems: 'center', padding: '0 16px 0 34px', gap: '14px', boxShadow: '0 50px 100px -30px rgba(28,22,18,.45)', zIndex: 5 },
+      '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#1c1612" stroke-width="2.2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>');
+    const txt = mk('div', '', field, { flex: '1', font: '500 34px Satoshi', color: '#1c1612', whiteSpace: 'nowrap', overflow: 'hidden' });
+    const tTy = T('colles', 13.4), chars = [...'…/annonce/mercedes-classe-a'].map((ch) => mk('span', '', txt, null, ch));
+    const btn = mk('div', '', field, { height: '108px', width: '250px', borderRadius: '999px', background: 'var(--o)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '600 42px Clash', color: '#1a1310', flex: 'none' }, 'Analyser');
+    const spin = mk('div', 'a', btn, { width: '60px', height: '60px', borderRadius: '50%', border: '8px solid rgba(26,19,16,.25)', borderTopColor: '#1a1310', left: '50%', top: '50%', display: 'none' });
+    const curS = cursor(sS1.cam, [[RW.b, 1150, 1900], [tTy - 0.1, 1000, 1150], [tCl - 0.02, 790, 655], [tCl + 0.8, 805, 675]], [tCl]);
+    cue(tTy + 0.05, 'type'); cue(tCl, 'click'); cue(tAv, 'whoosh', 0.4);
+    sS1.P.push((t) => {
+      pose(LS, t, (tt) => { const p = E(tt, tAv, 0.6, eIO), f = tt; return { x: CARD.x + 6 * Math.sin(f * 0.9), y: lerp(CARD.y, 1130, p) + 6 * Math.sin(f * 1.3), c: 1, p: 1, rx: 6, ry: -12, r: -2 + 0.4 * Math.sin(f), s: lerp(1, 0.84, p) }; });
+      pose(field, t, (tt) => { if (tt < tAv - 0.05) return null; const p = E(tt, tAv, 0.5); return { x: 540, y: lerp(420, 640, p), c: 1, p: 1, rx: 20 * (1 - p), o: Math.min(1, p * 3), r: -1 }; });
+      chars.forEach((c, i) => { c.style.opacity = t >= tTy + i * 0.016 ? 1 : 0; });
+      const m = E(t, tCl + 0.02, 0.22); btn.style.width = lerp(250, 108, m) + 'px'; btn.style.color = m > 0.3 ? 'transparent' : '#1a1310';
+      spin.style.display = m > 0.6 ? '' : 'none'; spin.style.transform = `translate(-50%,-50%) rotate(${((t - tCl) * 600) % 360}deg)`;
+      curS(t);
+    });
+    cred(sS1, SRC);
+    // « …et bam : prix max, 16 500. » : la vraie analyse, le prix roule jusqu'au plafond
+    const sS2 = S(tBam - 0.03, tNe - 0.25, 'var(--k)', { type: 'circle', x: 790, y: 640 }, 0.03); sS2.imp.push([tBam + 0.03, 22]); cue(tBam, 'impact');
+    sS2.P.push(((k) => (t) => ktP(k, t, tBam, 'slam', tBam + 0.4, 'up'))(L1(sS2.cam, 140, 520, 330, 'Bam.', 'var(--o)', true)));
+    const vd = crop(sS2.cam, 'merc-verdict', { W: 1074, x: 0, y: 0, w: 1074, h: 690 }, 780, { background: '#1c1712' });
+    KA(sS2, 140, 870, 80, 'Prix max', '#fff', false, [tPx, T('max', 15.6)]);
+    const R2 = ROLL(sS2.cam, 130, 975, 230, '19 990 €', '16 500 €', 'var(--o)');
+    const kb2 = brk(sS2.cam, 144, 1290, B('au-delà, tu perds de l’argent', ['perds']), '#fbf9f5', 38);
+    cue(tPx, 'whoosh', 0.5); cue(t165 - 0.1, 'roll', 0.9); cue(t165 + 0.55, 'ding', 0.6);
+    sS2.P.push((t) => {
+      pose(vd, t, (tt) => { const p = E(tt, tBam + 0.18, 0.6), f = Math.max(0, tt - tBam - 0.8); return { x: 540, y: lerp(1900, 560, p) + 5 * Math.sin(f * 1.5), c: 1, p: 1, rx: 6 + 30 * (1 - p), ry: -6, r: 1.5 * (1 - p) + 0.3 * Math.sin(f) }; });
+      R2.box.style.visibility = t >= tPx ? '' : 'hidden'; rollP(R2, t, t165 - 0.15, 0.6, 0.07);
+      pose(R2.box, t, (tt) => ({ x: 0, y: 0, s: 1 + 0.06 * bump(tt, t165 + 0.45, 0.2) }));
+      ktP(kb2, t, t165 + 0.4, 'rise', null, 'up', { step: 0.05 });
+    });
+    cred(sS2, SRC, '#fbf9f5');
+    // « Tu négocies à 16 000… (rire) Plus 1 290. » : la négo, puis le même compteur, cette fois en vert
+    const sS3 = S(tNe - 0.25, 21.2, 'var(--w)', { type: 'swipe' }, 0.03);
+    const green = mk('div', 'a', sS3.el, { inset: '0', background: 'var(--ok)' }); sS3.el.insertBefore(green, sS3.cam);
+    const lab3 = brk(sS3.cam, 144, 220, B('ce qui te reste', ['reste']), 'var(--ink)', 40);
+    const old = mk('div', 'a', sS3.cam, { left: '140px', top: '290px', font: '600 110px/1 Clash', color: 'rgba(200,30,30,.55)', letterSpacing: '-.03em', whiteSpace: 'nowrap' }, '− 2 700 €');
+    const strike = mk('div', 'a', sS3.cam, { left: '134px', top: '345px', width: '520px', height: '10px', borderRadius: '5px', background: 'var(--ink)', transformOrigin: '0 50%' });
+    const R3 = ROLL(sS3.cam, 130, 420, 250, '+0 000 €', '+1 290 €', 'var(--ok)');
+    const b1 = bubble(sS3.cam, 870, 'Je vous propose 16 000.', true, tNe + 0.1), b2 = bubble(sS3.cam, 1050, 'Ok pour 16 000.', false, t160 + 0.35, 'Le vendeur');
+    const kh = L1(sS3.cam, 720, 1230, 80, 'ha !', '#b5aa9c', true);
+    const kx = brk(sS3.cam, 144, 712, B('achetée 16 000, mêmes frais', ['16 000,']), 'var(--ink)', 38);
+    cue(tPl, 'impact', 0.9); cue(tPl + 0.1, 'roll', 0.9); sS3.imp.push([tPl + 0.03, 16]);
+    sS3.P.push((t) => {
+      ktP(lab3, t, early(sS3, tNe), 'rise', null, 'up', { step: 0.05 });
+      const po = E(t, early(sS3, tNe), 0.4); old.style.opacity = po; strike.style.transform = `scaleX(${E(t, t160, 0.35).toFixed(3)})`;
+      b1(t); b2(t); ktP(kh, t, 18.62, 'blur', 19.2, 'up', { fx: (i, j, tt) => ({ y: Math.sin(tt * 20 + j) * 6 }) });
+      const gp = E(t, tPl, 0.32); green.style.clipPath = `circle(${(gp * 2400).toFixed(0)}px at 400px 560px)`; green.style.opacity = gp > 0 ? 1 : 0;
+      const W3 = gp > 0.3; lab3.box.style.color = W3 ? '#fff' : 'var(--ink)'; R3.box.style.color = W3 ? '#fff' : 'var(--ok)'; old.style.color = W3 ? 'rgba(255,255,255,.45)' : 'rgba(200,30,30,.55)'; strike.style.background = W3 ? '#fff' : 'var(--ink)';
+      R3.box.style.visibility = t >= tPl - 0.05 ? '' : 'hidden'; rollP(R3, t, tPl - 0.02, 0.6, 0.07);
+      pose(R3.box, t, (tt) => ({ x: 0, y: 0, s: 1 + 0.08 * bump(tt, tPl + 0.85, 0.2) }));
+      ktP(kx, t, tPl + 0.9, 'rise', null, 'up', { step: 0.05 }); kx.box.style.color = W3 ? '#fff' : 'var(--ink)';
+    });
+    const cr3 = cred(sS3, 'Exemple : achat à 16 000 € (objectif conseillé par l’outil), revente 18 600 € et frais 1 310 € estimés par l’outil');
+    sS3.P.push((t) => { cr3.style.color = E(t, tPl, 0.32) > 0.3 ? '#fff' : 'var(--ink)'; });
+    // « Trois jours offerts. Lien en bio ! »
+    endCard(21.2, 'var(--o)', [['3 analyses', 250, 170, '#fff', false, T('trois', 21)], ['offertes', 430, 190, 'var(--ink)', true, T('offertes', 21.5)], ['avec le code TIKTOK', 640, 80, '#fff', false, T('code', 22.5)]],
+      'Code <b style="color:var(--o)">TIKTOK</b> · lien en bio', T('code', 22.5),
+      { type: 'circle', x: 540, y: 560 });
+  };
+
   if (!SPECS[ID]) throw new Error('vidéo inconnue : ' + ID);
   SPECS[ID]();
   // intro des séries : la première scène finit à la deuxième
   // ---------- seek ----------
-  window.seek = (t) => { KF = inWin(t) ? 0.3 : 1; for (const s of SC) paintScene(s, t); };
+  window.seek = (t) => {
+    KF = inWin(t) ? 0.3 : 1;
+    let tt = t;   // rembobinage : le film repart à l'envers, lent puis rapide puis lent, de REW.a jusqu'à REW.to
+    if (REW && t >= REW.a && t < REW.b) tt = REW.a - eIO((t - REW.a) / (REW.b - REW.a)) * (REW.a - REW.to);
+    for (const s of SC) paintScene(s, tt);
+    if (REW) REW.paint(t);
+  };
   window.shutter = (t) => (inWin(t) ? 1 : 0);
   window.samples = (t) => 8;
   window.filmDur = DUR;

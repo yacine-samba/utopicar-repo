@@ -1,5 +1,3 @@
-"""Assemble film-c7/film.js (moteur de film-dico/_engine.js + film-c7/_core.js + film-c7/_specs.js), film-c7/index.html,
-les repères musicaux audio/c7-musique.json et timeline-c7.json. usage : python scripts/build-c7.py (depuis video/)"""
 import os, json, io
 os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # depuis video/
 
@@ -14,9 +12,11 @@ MU = {
     'A05':   {'stop': 8.40, 'muf': None, 'pivot': 11.16, 'hit': 15.22, 'dur': 19.4},
     'A06':   {'stop': 9.50, 'muf': None, 'pivot': 11.54, 'hit': 13.80, 'dur': 16.1},
     'A07':   {'stop': 9.60, 'muf': None, 'pivot': 10.00, 'hit': 16.82, 'dur': 18.8},
+    'PS1':   {'stop': 7.95, 'muf': 10.05, 'pivot': 13.40, 'hit': 15.85, 'dur': 19.4},
+    'PS2':   {'stop': 8.22, 'muf': 11.45, 'pivot': 15.08, 'hit': 19.34, 'dur': 26.0, 'rew': [10.3, 11.42, 0.55]},
 }
 json.dump(MU, open('audio/c7-musique.json', 'w', encoding='utf8'), indent=1)
-POSTER = {'dico2': 1.9, 'A01': 1.6, 'A02': 3.2, 'A03': 1.9, 'A04': 2.1, 'A05': 2.2, 'A06': 2.1, 'A07': 2.0}
+POSTER = {'dico2': 1.9, 'A01': 1.6, 'A02': 3.2, 'A03': 1.9, 'A04': 2.1, 'A05': 2.2, 'A06': 2.1, 'A07': 2.0, 'PS1': 3.4, 'PS2': 8.8}
 json.dump({'version': 1, 'style': 'Motions de 15 à 20 s (dictionnaire du vendeur, carrousels A01 à A07) dans la grammaire master60w ; HOOK = id de la vidéo',
            'fps': 30, 'bpm': 112, 'size': [1080, 1920], 'dur': 20.0,
            'hooks': {k: {'dur': v['dur'], 'poster': POSTER[k]} for k, v in MU.items()}},

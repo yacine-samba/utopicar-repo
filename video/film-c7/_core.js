@@ -10,6 +10,7 @@
   // flou de bougé ; le flou CSS par élément est réduit (KF) pour ne pas flouter deux fois.
   // =====================================================================================================
   const WIN = [], win = (a, b) => WIN.push([a, b]);
+  let REW = null;   // rembobinage (PS2) : { a, b, to, paint } — seek() repeint les scènes à l'envers entre a et b
   const inWin = (t) => WIN.some(([a, b]) => t >= a && t <= b);
   const CUES = [], cue = (t, k, g = 1) => { if (t >= 0 && t < DUR) CUES.push({ t: +t.toFixed(3), k, g }); };
   const SC = [], SCN = new Map();   // SCN : élément de scène → scène

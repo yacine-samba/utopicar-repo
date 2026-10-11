@@ -186,6 +186,15 @@ gap = lambda m: [rms(vo[a:b]) - rms(m[a:b]) for a, b in SPANS]
 mus_st = mus * db(np.median(gap(mus)) - 11)
 vo_st = np.stack([vo, vo], 1)
 mix = vo_st + mus_st + fx
+# rembobinage (PS2) : le mix déjà joué, relu à l'envers et en accéléré (lent, rapide, lent), comme une bande qu'on rembobine
+if MU.get('rew'):
+    r0, r1, rto = MU['rew']; i0, i1 = int(r0 * SR), int(r1 * SR); n = i1 - i0
+    p = np.linspace(0, 1, n); e = np.where(p < 0.5, 4 * p ** 3, 1 - (-2 * p + 2) ** 3 / 2)
+    pos = (r0 - e * (r0 - rto)) * SR
+    rw = np.stack([np.interp(pos, np.arange(len(mix)), mix[:, c]) for c in range(2)], 1)
+    rw = bp(rw, 250, 6500) * (np.sin(np.pi * p) ** 0.6)[:, None]
+    rw = rw / (np.abs(rw).max() + 1e-9) * db(-14) * (1 - 0.5 * duck[i0:i1])[:, None]
+    mix[i0:i1] += rw
 def comp(x, thr=-14, ratio=1.8):
     e = np.abs(x).max(1); k = int(0.01 * SR); e = np.convolve(e, np.ones(k) / k, 'same')
     l = 20 * np.log10(e + 1e-9); g = np.where(l > thr, (thr + (l - thr) / ratio) - l, 0)
