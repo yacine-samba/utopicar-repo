@@ -889,6 +889,62 @@
       { type: 'circle', x: 540, y: 560 });
   };
 
+  // =====================================================================================================
+  // FI1 · « Test ADN de la Peugeot 107 » (moins de 8 s) : façon émission de test de paternité, le père est Toyota ;
+  // 107, C1 et Aygo : même voiture, même moteur 1.0 VVT-i (fiche fiabilité de l'outil, lib/analyse/fiabilite.ts)
+  // =====================================================================================================
+  SPECS.FI1 = () => {
+    const P = '../assets/photos-fi1/', CRED = 'Photos Wikimedia Commons : Vauxford (CC BY-SA 4.0), Rudolf Stricker (CC BY-SA 3.0), détourées · Fiche fiabilité UTOPICAR';
+    const tPe = T('peugeot'), tPere = T('pere', 2.4), tTo = T('toyota', 3.3), tMe = T('meme', 4.3), tAy = T('aigo', 5.3), tC1 = T('c1', 5.8), tTu = T('tu', 6.5), tLa = T('laquelle', 6.8);
+    const s = S(-1, DUR + 1, 'var(--k)', { type: 'cut' }, 0.03); s.imp.push([tTo + 0.04, 30]);
+    // projecteurs du plateau
+    const spot = mk('div', 'a', s.el, { inset: '0', background: 'radial-gradient(60% 38% at 50% 44%, rgba(255,90,31,.22), transparent 70%), radial-gradient(40% 30% at 50% 0%, rgba(255,255,255,.10), transparent 70%)' }); s.el.insertBefore(spot, s.cam);
+    const flash = mk('div', 'a', s.el, { inset: '0', background: '#fff', opacity: 0, zIndex: 40, pointerEvents: 'none' });
+    // « TEST ADN » : déjà là à l'image 0
+    const st = stamp(s.cam, 'TEST ADN', 'var(--o)', 130);
+    const k1 = L1(s.cam, 140, 470, 72, 'de la Peugeot 107', '#fbf9f5');
+    // la 107 (l'enfant), puis la famille
+    const c107 = car(s.cam, P + 'p107.webp', 820), cAy = car(s.cam, P + 'aygo.webp', 330), cC1 = car(s.cam, P + 'c1.webp', 330);
+    c107.style.zIndex = 3;
+    const t107 = tag(s.cam, 'Peugeot 107', "l'enfant", 54);
+    // l'enveloppe, puis le résultat
+    const env = mk('div', 'card2 a', s.cam, { width: '700px', textAlign: 'center', font: '700 34px Satoshi', letterSpacing: '.16em', color: 'var(--ink)' }, '✉&nbsp; RÉSULTAT DU TEST');
+    const res = mk('div', 'card2 a', s.cam, { width: '760px', textAlign: 'center', zIndex: 6 }, '<div style="font:600 34px Satoshi;color:rgba(28,22,18,.55)">Le père</div><div style="font:700 150px/1 Clash;letter-spacing:-.03em;color:var(--r)">TOYOTA</div>');
+    const dots = L1(s.cam, 140, 1180, 120, '…', 'rgba(251,249,245,.6)');
+    // la famille : même moteur
+    const kM = L1(s.cam, 140, 270, 150, 'Même moteur', '#fff'), kV = L1(s.cam, 140, 440, 96, '1.0 VVT-i Toyota', 'var(--o)', true);
+    const lab = [['Toyota Aygo', 310], ['Peugeot 107', 540], ['Citroën C1', 770]].map(([n, x]) => { const e = mk('div', 'pill a', s.cam, { background: '#fff', color: 'var(--ink)', fontSize: '30px', padding: '12px 20px' }, n); e.X = x; return e; });
+    const emb = mk('div', 'pill a', s.cam, { background: '#b26a00', color: '#fff', fontSize: '34px' }, 'À vérifier : l’embrayage');
+    const kT = L1(s.cam, 140, 270, 150, 'Tu prends', '#fff'), kL = L1(s.cam, 140, 440, 150, 'laquelle ?', 'var(--o)', true);
+    const bub = mk('div', 'bub2 a th', s.cam, { fontSize: '38px' }, '💬 <b>107</b>, <b>C1</b> ou <b>Aygo</b> ?<small>Réponds en commentaire</small>');
+    cred(s, CRED, '#fbf9f5');
+    cue(-0.2, 'thud', 0.8); cue(tPe, 'pop', 0.6); cue(1.9, 'whoosh', 0.6); cue(tPere, 'roll', 0.7); cue(MU.stop, 'tapestop');
+    cue(tTo, 'impact'); cue(tMe, 'whoosh', 0.7); cue(tAy - 0.05, 'pop', 0.8); cue(tC1 - 0.05, 'pop', 0.8); cue(tC1 + 0.3, 'thud', 0.5); cue(tTu, 'whoosh', 0.6); cue(tLa + 0.2, 'sent', 0.8);
+    const fam = tMe - 0.1;        // passage à la famille
+    s.paint = (t) => {
+      // phase 1 : le test
+      slamAt(st, t, -0.6, 540, 330, -4); st.style.opacity = 1 - E(t, fam - 0.2, 0.2);
+      ktP(k1, t, tPe - 0.1, 'rise', fam - 0.25);
+      pose(c107, t, (tt) => {
+        const p = E(tt, -0.85, 0.75), f = Math.max(0, tt), q = E(tt, fam, 0.55, eIO), sh = tt > tPere && tt < tTo ? 4 * Math.sin(tt * 70) : 0;
+        return { x: lerp(1600, 540, p) + 6 * Math.sin(f * 0.9) + sh, y: lerp(860, 800, q) + 6 * Math.sin(f * 1.3), c: 1, s: lerp(1, 0.47, q), r: 0.4 * Math.sin(f) };
+      });
+      pose(t107, t, (tt) => { if (tt < tPe - 0.05 || tt > tTo) return null; const p = E(tt, tPe, 0.3); return { x: 540, y: 1150, c: 1, r: -3, s: 1 + 0.4 * (1 - p), o: p * 3 }; });
+      pose(env, t, (tt) => { if (tt < 1.8 || tt > tTo + 0.1) return null; const p = E(tt, 1.85, 0.5), sh = tt > tPere ? 6 * Math.sin(tt * 55) * E(tt, tPere, 0.4) : 0; return { x: 540 + sh, y: lerp(1900, 1330, p), c: 1, r: -2 + sh * 0.3 }; });
+      ktP(dots, t, tPere + 0.25, 'blur', tTo - 0.05, 'up', { fx: (i, j, tt) => ({ y: Math.sin(tt * 12 + j) * 10 }) });
+      pose(res, t, (tt) => { if (tt < tTo - 0.02 || tt > fam + 0.5) return null; const p = E(tt, tTo, 0.25), q = E(tt, fam, 0.45, eIO); return { x: 540, y: lerp(1300, 1250, q), c: 1, r: -3, s: (1 + 1.4 * (1 - p)) * (1 - 0.6 * q), o: Math.min(1, (tt - tTo) / 0.05) * (1 - q) }; });
+      flash.style.opacity = (0.75 * Math.max(0, 1 - (t - tTo) / 0.18) * (t >= tTo ? 1 : 0)).toFixed(3);
+      // phase 2 : la famille, même moteur
+      ktP(kM, t, tMe, 'slam', tTu - 0.15); ktP(kV, t, T('moteur', 4.5) + 0.1, 'rise', tTu - 0.15);
+      [[cAy, tAy, 310, -1600], [cC1, tC1, 770, 1700]].forEach(([e, t0, x, from]) => pose(e, t, (tt) => { if (tt < t0 - 0.35) return null; const p = E(tt, t0 - 0.3, 0.45), f = Math.max(0, tt - t0); return { x: lerp(from, x, p) + 4 * Math.sin(f * 1.2), y: 900 + 5 * Math.sin(f * 1.6), c: 1, r: 0.3 * Math.sin(f) }; }));
+      lab.forEach((e, i) => pose(e, t, (tt) => { const t0 = [tAy, fam + 0.3, tC1][i]; if (tt < t0) return null; const p = E(tt, t0, 0.3), hi = bump(tt, tLa + 0.15 + i * 0.22, 0.2); return { x: e.X, y: [1030, 975, 1030][i], c: 1, s: (1 + 0.4 * (1 - p)) * (1 + 0.15 * hi), o: p * 3 }; }));
+      pose(emb, t, (tt) => { if (tt < tC1 + 0.3) return null; const p = E(tt, tC1 + 0.3, 0.3); return { x: 540, y: 1140, c: 1, r: -2, s: 1 + 0.4 * (1 - p), o: p * 3 }; });
+      // phase 3 : la question
+      ktP(kT, t, tTu, 'slam'); ktP(kL, t, tLa, 'rise');
+      pose(bub, t, (tt) => { if (tt < tLa + 0.15) return null; const p = E(tt, tLa + 0.2, 0.35); return { x: 540, y: lerp(1500, 1290, p), c: 1, o: p * 2, r: -2 * (1 - p) }; });
+    };
+  };
+
   if (!SPECS[ID]) throw new Error('vidéo inconnue : ' + ID);
   SPECS[ID]();
   // intro des séries : la première scène finit à la deuxième
