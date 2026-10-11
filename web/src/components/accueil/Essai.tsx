@@ -294,7 +294,14 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
               className={cx(inputCls, "min-h-14 resize-none text-base leading-snug sm:min-h-[52px]")}
             />
             <button type="submit" disabled={etat === "lecture"} className="btn btn-o sm:self-start">
-              {etat === "lecture" ? "Lecture de l'annonce…" : "Analyser"}
+              {etat === "lecture" ? (
+                <span className="flex items-center justify-center gap-2.5">
+                  <span className="size-5 shrink-0 animate-spin rounded-full border-[2.5px] border-current border-t-transparent motion-reduce:animate-none" aria-hidden="true" />
+                  Lecture…
+                </span>
+              ) : (
+                "Analyser"
+              )}
             </button>
           </div>
           {erreur && (
