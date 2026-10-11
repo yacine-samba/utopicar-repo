@@ -1,8 +1,8 @@
 """Présentation UTOPICAR 30 s, sans voix : musique ElevenLabs montée sur la grille du film (120 BPM, 1 temps = 0,5 s),
 bruitages ElevenLabs du master60 posés aux repères publiés par le film (window.cues → audio/cues-presente30.json).
-Musique : audio/presente30/eleven/musique-1gY50EWAhzOq5mE0bh5D.mp3 (120,00 BPM, résidu 19 ms, aucune voix détectée) :
-mesures 8 → 13 de 0 à 12 s, la mesure 15 (coupure) étouffée de 12 à 14 s, drop (mesure 16) sur 14 s, mesures 16 → 21
-jusqu'à 26 s, un temps d'arrêt, coup final du morceau (64,0 s) sur le logo de 26 s et sa traîne.
+Musique : audio/presente30/eleven/musique-SUMYsl1ZLq0kvbuCQLXI.mp3 (pop hip-hop instrumental, 119,96 BPM, résidu 13 ms) :
+mesures 0 → 5 de 0 à 12 s, la mesure 15 (montée puis silence) de 12 à 14 s, drop (mesure 16) sur 14 s, mesures 16 → 21
+jusqu'à 26 s, un temps d'arrêt, coup final du morceau (mesure 23) sur le logo de 26 s et sa traîne.
 usage (depuis video/) : node scripts/cues-presente30.mjs && python3 scripts/audio-presente30.py → audio/mix-presente30.wav
 """
 import os, json
@@ -26,18 +26,18 @@ def curve(points, n=N):
     xs, ys = zip(*points); return np.interp(np.arange(n) / SR, xs, ys)
 
 # ---------- musique ----------
-src = librosa.load(A('presente30', 'eleven', 'musique-1gY50EWAhzOq5mE0bh5D.mp3'), sr=SR, mono=False)[0].T
-D = lambda k: 0.774 + 2.0 * k                      # premier temps de la mesure k du morceau
-HIT = 64.006                                       # coup final du morceau (onset mesuré)
+src = librosa.load(A('presente30', 'eleven', 'musique-SUMYsl1ZLq0kvbuCQLXI.mp3'), sr=SR, mono=False)[0].T
+D = lambda k: 0.010 + 4 * 60 / 119.958 * k                      # premier temps de la mesure k du morceau
+HIT = D(23)                                       # coup final du morceau (onset mesuré)
 mus = np.zeros((N, 2))
 def put(t0, t1, s0, fi=0.003, fo=0.003):
     a, b = int(round(t0 * SR)), int(round(t1 * SR)); i0 = int(round(s0 * SR)); seg = src[i0:i0 + (b - a)].copy(); b = a + len(seg)
     if fi: k = int(fi * SR); seg[:k] *= np.sin(np.linspace(0, np.pi / 2, k))[:, None]
     if fo: k = int(fo * SR); seg[-k:] *= np.cos(np.linspace(0, np.pi / 2, k))[:, None]
     mus[a:b] += seg
-put(0, 12.01, D(8), fi=0.004, fo=0.02)
+put(0, 12.01, D(0), fi=0.002, fo=0.02)
 brk = np.zeros((N, 2)); a, b = int(12 * SR), int(14 * SR); brk[a:b] = src[int(D(15) * SR):int(D(15) * SR) + (b - a)]
-brk = bp(brk, None, 900) * curve([(0, 0), (11.99, 0), (12.0, 1), (13.5, 1), (13.9, 0), (DUR, 0)])[:, None] * db(-4)
+brk = brk * curve([(0, 0), (11.99, 0), (12.0, 1), (13.99, 1), (14.0, 0), (DUR, 0)])[:, None]
 mus += brk
 put(13.99, 25.5, D(16) - 0.01, fi=0.003, fo=0.03)            # drop sur 14 s ; arrêt d'un temps avant le logo
 put(26.0 - 0.01, DUR, HIT - 0.01, fi=0.003, fo=0)

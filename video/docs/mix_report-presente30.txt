@@ -1,4 +1,4 @@
-presente30 · -14.0 LUFS, true peak -3.8 dBTP · bruitages 55 posés, 4 retirés
+presente30 · -14.0 LUFS, true peak -3.6 dBTP · bruitages 55 posés, 4 retirés
 attaque premier temps  prévue  0.00 s, mesurée  0.02 s (+24 ms)
 attaque drop           prévue 14.00 s, mesurée 13.99 s (-5 ms)
 attaque coup final     prévue 26.00 s, mesurée 25.99 s (-5 ms)
