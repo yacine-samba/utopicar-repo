@@ -59,9 +59,12 @@
 
   // ---------- texte cinétique ----------
   // KT(parent, x, y, taille, segments) ; segments = [['texte', {i: italique, c: couleur, f: police}], …]
+  // colonne de gauche décalée de MX : la poussée de caméra (zoom depuis le centre) ramènerait sinon les grands titres posés
+  // à x = 96 jusqu'à x ≈ 70, dans la marge desktop de 96 px (contrôle qa_video.py)
+  const MX = 32, CX = (x) => (x < 200 ? x + MX : x);
   function KT(parent, x, y, size, segs, css = {}) {
     if (typeof segs === 'string') segs = [[segs, {}]];
-    const box = mk('div', 'kt', parent, { left: x + 'px', top: y + 'px', fontSize: size + 'px', ...css });
+    const box = mk('div', 'kt', parent, { left: CX(x) + 'px', top: y + 'px', fontSize: size + 'px', ...css });
     const ln = mk('div', 'ln', box), words = [];
     for (const [txt, sty = {}] of segs) for (const wd of txt.split(' ')) {
       if (!wd) continue;
@@ -109,7 +112,7 @@
   }
   // compteur à rouleaux : chaque chiffre tourne (expo), les colonnes partent l'une après l'autre
   function ROLL(parent, x, y, size, from, to, color) {
-    const box = mk('div', 'roll', parent, { left: x + 'px', top: y + 'px', fontSize: size + 'px', color }), cols = [];
+    const box = mk('div', 'roll', parent, { left: CX(x) + 'px', top: y + 'px', fontSize: size + 'px', color }), cols = [];
     [...to].forEach((ch, k) => {
       if (/\d/.test(ch)) {
         const col = mk('span', 'col', box), strip = mk('span', 'strip', col);
@@ -318,7 +321,7 @@
     cue(a, 'whoosh', 0.7); cue(tType, 'type'); cue(tClick, 'click');
     s.paint = (t) => {
       ktP(k1, t, [a, Wt('colle', 7) + 0.11]);
-      k2.box.style.left = (96 + k1.box.offsetWidth + 46) + 'px'; ktP(k2, t, Wt('annonce', 7.6));
+      k2.box.style.left = (CX(96) + k1.box.offsetWidth + 46) + 'px'; ktP(k2, t, Wt('annonce', 7.6));
       pose(field, t, P);
       chars.forEach((c, i) => { c.style.opacity = t >= tType + i * 0.012 ? 1 : 0; });
       caret.style.opacity = t < tType ? 0 : (Math.floor(t * 4) % 2 ? 0.2 : 1);
@@ -402,7 +405,7 @@
   { const a = VT.marks.mercedes.t, tP = VT.marks.prixmax.t, t165 = VT.marks.n16500.t, s = scene(a, VT.marks.attends.t, 'var(--k)');
     const k0 = KT(s.cam, 96, 140, 100, [['Cette', { c: '#fff' }], ['Mercedes', { c: '#fff' }], ['?', { c: 'var(--o)' }]]);
     const kg = KT(s.cam, 96, 130, 120, [['19 990 €', { c: 'rgba(251,249,245,.3)' }]]);
-    const strike = mk('div', 'strike a', s.cam, { left: '96px', top: '178px', background: 'rgba(251,249,245,.55)' });
+    const strike = mk('div', 'strike a', s.cam, { left: CX(96) + 'px', top: '178px', background: 'rgba(251,249,245,.55)' });
     const kp = KT(s.cam, 100, 300, 90, [['Prix', { c: '#fff' }], ['max', { c: '#fff' }]]);
     const R = ROLL(s.cam, 90, 410, 190, '19 990 €', '16 500 €', 'var(--o)');
     const kb = brk(s.cam, 100, 720, [['[ au-delà, tu', {}], ["perds de l'argent", { c: 'var(--o)' }], [']', {}]], '#fff');
@@ -571,22 +574,22 @@
     const row = mk('div', 'hl a', mg, { left: (30 * mg.k) + 'px', width: (1014 * mg.k) + 'px', height: (74 * mg.k) + 'px' });
     const bub = mk('div', 'bub a', s.cam, null, 'Renault Mégane III<small>marge prévue + 1 410 €</small>');
     const tV = [Wt('voiture', tM), Wt('par', tM), Wt('voiture', tM + 0.4)];
-    cue(a + 0.1, 'whoosh', 0.5); cue(tM, 'roll'); cue(tV[2], 'pop');
+    cue(a, 'whoosh', 0.5); cue(tM, 'roll'); cue(tV[2], 'pop');
     men(s, 'Données de démonstration');
     s.paint = (t) => {
       ktP(k1, t, [Wt('ta', a), Wt('vraie', a), tM]); ktP(k2, t, tV);
       R.box.style.visibility = t >= tM - 0.05 ? '' : 'hidden'; rollP(R, t, tM, 0.7, 0.07);
       ktP(kg, t, tV[2] - 0.1, 'rise', null, 'up', { step: 0.02 });
-      pose(mg, t, (tt) => { const p = E(tt, a + 0.1, 0.6); return { x: lerp(2400, 1460, p), y: 540, c: 1, p: 1, rx: 14, ry: -12 - 30 * (1 - p), r: -2 }; });
+      pose(mg, t, (tt) => { const p = E(tt, a - 0.03, 0.6); return { x: lerp(2400, 1460, p), y: 540, c: 1, p: 1, rx: 14, ry: -12 - 30 * (1 - p), r: -2 }; });
       let rr = 0; for (let i = 0; i < 5; i++) rr += E(t, tM + i * GR.beat / 2, 0.22);
       row.style.top = ((318 - 37 + 84 * rr) * mg.k).toFixed(1) + 'px'; row.style.opacity = E(t, tM - 0.1, 0.2).toFixed(3);
       pose(bub, t, (tt) => { if (tt < tV[2] - 0.05) return null; const p = E(tt, tV[2], 0.3); return { x: 1560, y: 470 + 30 * (1 - p), c: 1, r: -2, s: 0.7 + 0.3 * p, o: p }; });
     };
   }
   // formules : interrupteur « Je débute | J'ai un parc »
-  const seg = (parent, dark) => { const e = mk('div', 'seg a', parent, { position: 'absolute', left: '96px', top: '110px', zIndex: 5 }, '<div class="a" style="top:10px;bottom:10px;border-radius:999px"></div><span style="position:relative;z-index:1">Je débute</span><span style="position:relative;z-index:1">J\'ai un parc</span>'); e.ind = e.firstChild; e.sp = e.querySelectorAll('span'); e.ind.style.background = dark ? 'var(--o)' : 'var(--k)'; return e; };
+  const seg = (parent, dark) => { const e = mk('div', 'seg a', parent, { position: 'absolute', left: CX(96) + 'px', top: '110px', zIndex: 5 }, '<div class="a" style="top:10px;bottom:10px;border-radius:999px"></div><span style="position:relative;z-index:1">Je débute</span><span style="position:relative;z-index:1">J\'ai un parc</span>'); e.ind = e.firstChild; e.sp = e.querySelectorAll('span'); e.ind.style.background = dark ? 'var(--o)' : 'var(--k)'; return e; };
   // « Tu débutes ? Starter. »
-  { const a = VT.marks.debutes.t, tS = VT.marks.starter.t, s = scene(a, Wt('avec', 44), 'var(--o)');
+  { const a = VT.marks.debutes.t, tS = VT.marks.starter.t, s = scene(a, Wt('une', 44.5), 'var(--o)');
     const sg = seg(s.cam, false), tClick = a + 0.36;
     const ks = KT(s.cam, 90, 320, 250, [['Starter.', { c: '#fff' }]]), kp = KT(s.cam, 100, 620, 90, [['14,99 € / mois', { c: 'var(--k)' }]]);
     const card = crop(s.cam, 'offre-starter', { W: 1050, x: 0, y: 0, w: 1050, h: 740 }, 600, { background: '#fff' });
@@ -603,7 +606,7 @@
     };
   }
   // « Avec une seule voiture bien achetée, tu paies trois ans. »
-  { const a = Wt('avec', 44), tTrois = Wt('trois', 46), tAns = VT.marks.ans.t, s = scene(a, Wt('tu', 47.2), 'var(--w)');
+  { const a = Wt('une', 44.5), tTrois = Wt('trois', 46), tAns = VT.marks.ans.t, s = scene(a, Wt('tu', 47.2), 'var(--w)');
     const k1 = KT(s.cam, 90, 120, 260, [['1', { c: 'var(--o)' }], ['voiture', {}]]);
     const k2 = KT(s.cam, 100, 400, 230, [['=', { i: 1 }], ['3', { i: 1, c: 'var(--o)', s: '1.25em' }], ['ans payés.', { i: 1 }]]);
     const gauge = mk('div', 'gauge a', s.cam, null, '<div class="h"><span>+ 670 € de marge</span><b>= 0 mois</b></div><div class="bar"><i style="width:100%"></i></div><div class="s">Exemple calculé : achetée 5 000 €, 630 € de frais, revendue 6 300 €</div>');
@@ -612,7 +615,7 @@
     tG.forEach((tg) => cue(tg, 'pop', 0.55)); cue(tAns, 'pop');
     men(s, 'Exemples chiffrés, pas une promesse de gain');
     s.paint = (t) => {
-      ktP(k1, t, [Wt('une', a), Wt('voiture', a)]); ktP(k2, t, [Wt('tu', 46), tTrois, tAns, tAns + 0.12]);
+      ktP(k1, t, [a - 0.06, Wt('voiture', a)]); ktP(k2, t, [Wt('tu', 46), tTrois, tAns, tAns + 0.12]);
       pose(gauge, t, (tt) => { const p = E(tt, Wt('seule', a), 0.5); return { x: 1300, y: 790 + 300 * (1 - p), c: 1, p: 1, rx: 10 + 40 * (1 - p), ry: -10, r: -1, o: p * 2 }; });
       let f = 0; tG.forEach((t0) => { f += E(t, t0, 0.4); }); f /= 4;
       gb.style.transformOrigin = '0 50%'; gb.style.transform = `scaleX(${f.toFixed(4)})`;
