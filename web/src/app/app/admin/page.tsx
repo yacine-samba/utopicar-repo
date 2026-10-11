@@ -33,9 +33,8 @@ export default async function Page() {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY)
     return <p className="carte p-6 text-warn">Ajoutez SUPABASE_SERVICE_ROLE_KEY dans Vercel pour ouvrir l&apos;administration.</p>;
 
-  const { comptes, inscrits, journal, analyses } = await donneesAdmin();
+  const [{ comptes, inscrits, journal, analyses }, justesse] = await Promise.all([donneesAdmin(), justesseAnalyse().catch(() => null)]);
   const actifs = comptes.filter((x) => x.analysesMois > 0).length;
-  const [{ comptes, inscrits, journal }, justesse] = await Promise.all([donneesAdmin(), justesseAnalyse().catch(() => null)]);
   const payants = comptes.filter((x) => !x.illimite && !x.offerte && OFFRES[x.formule].prix > 0).length;
   const offerts = comptes.filter((x) => x.offerte && x.offerte.id !== "gratuit").length;
   const ouverts = inscrits.filter((x) => x.ouvert).length;
