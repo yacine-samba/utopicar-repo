@@ -63,3 +63,5 @@ renders/storyboard-master60-blanc/
 renders/*.log
 renders/err.txt
 renders/maquette-master60/
+renders/stills-master60w/
+renders/w*-part*.log

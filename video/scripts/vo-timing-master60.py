@@ -64,5 +64,11 @@ if __name__ == '__main__':
         else: print('absent :', k)
     hook = lambda W: dict(debut=W[0]['s'], fin=max(w['e'] for w in W if w['s'] < 4.1), mots=[w for w in W if w['s'] < 4.1])
     dur = sf.info(f'{OUT}/vo-placed-A.wav').duration
-    json.dump(dict(dur=round(dur, 3), corps=4.23, hooks=dict(A=hook(A), B=hook(B)), marks=marks), open(f'{OUT}/vo-timing.json', 'w'), ensure_ascii=False, indent=1)
+    # tous les mots du corps (sous-titres géants mot par mot), attaque recalée après un silence comme les repères
+    def att(i, w):                       # seul le 1er mot après un silence prend l'attaque du silence
+        t = w['s']; prev = A[i - 1]['e'] if i else 0
+        a_ = [b for a0, b in SIL if t - 0.25 <= b <= t + 0.12 and prev <= a0 + 0.08]
+        return dict(w=w['w'], s=round(a_[-1], 3) if a_ else t, e=w['e'])
+    json.dump(dict(dur=round(dur, 3), corps=4.23, hooks=dict(A=hook(A), B=hook(B)), marks=marks, mots=[att(i, w) for i, w in enumerate(A) if w['s'] >= 4.1]),
+              open(f'{OUT}/vo-timing.json', 'w'), ensure_ascii=False, indent=1)
     for k, v in marks.items(): print(f"{k:11s} {v['t']:6.2f} {v['mot']}")
