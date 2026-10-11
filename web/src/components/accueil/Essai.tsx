@@ -15,6 +15,11 @@ import { Patience } from "../analyse/Patience";
 import { InscriptionInline } from "../compte/InscriptionInline";
 import type { Fournisseur } from "../compte/ConnexionSociale";
 import { CarteApercu, type Contenu } from "./CarteApercu";
+import { carteDepuisApercu, carteDepuisExemple, type CarteAnalyse } from "./PreuveAnimee";
+import { EVT_CARTE } from "./CarteHero";
+
+/** Prévient la carte de l'en-tête (CarteHero) : elle montre l'annonce scannée, ou revient à l'exemple. */
+const montrer = (c: CarteAnalyse | null) => dispatchEvent(new CustomEvent(EVT_CARTE, { detail: c }));
 
 /* Le hero devient le produit : un champ, un vrai aperçu en 2 secondes sans compte, et l'inscription dans la même carte
    quand la personne veut le rapport complet. Trois exemples pour ceux qui n'ont pas d'annonce sous la main. */
@@ -32,7 +37,7 @@ const ERREURS_IMPORT: Record<string, string> = {
   apify: "Lecture de l'annonce impossible pour le moment : collez le texte de la page.",
 };
 
-export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: { fournisseurs: Fournisseur[]; depuis: "hero" | "benef" | "cote"; familleInitiale?: Famille | null; retour?: string }) {
+export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: { fournisseurs: Fournisseur[]; depuis: "hero" | "benef" | "cote" | "fiabilite"; familleInitiale?: Famille | null; retour?: string }) {
   const router = useRouter();
   const id = useId();
   const champ = useRef<HTMLTextAreaElement>(null);
@@ -169,6 +174,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       }
       setContenu({ type: "apercu", a });
       setFini(true);
+      montrer(carteDepuisApercu(a, og?.liens.find((u) => u.startsWith("https://")) ?? null));
       track("apercu_vu", { source, cote: !!a.cote });
     } catch {
       setEtat("vide");
@@ -223,10 +229,12 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     setOrigine(null);
     ouvrirCarte({ type: "exemple", cle });
     setFini(true);
+    montrer(carteDepuisExemple(cle));
     track("apercu_vu", { source: "exemple", cote: true });
   }
 
   function nouvelle() {
+    montrer(null);
     setEtat("vide");
     setContenu(null);
     setValeur("");

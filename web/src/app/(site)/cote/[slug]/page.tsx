@@ -9,6 +9,8 @@ import { Barres } from "@/components/cote/Barres";
 import { Essai } from "@/components/accueil/Essai";
 import { Faq } from "@/components/site/Faq";
 import { JsonLdFaq, JsonLdFil } from "@/components/site/JsonLd";
+import { CotesReservees } from "@/components/site/CotesReservees";
+import { accesCotes, compteCourant } from "@/lib/compte";
 
 /* Page « Cote d'un modèle » : le prix du marché d'une génération et d'une énergie, d'après les annonces Leboncoin en ligne.
    Contenu calculé depuis la base (médianes, prix par année et par kilométrage), fiabilité tirée de la liste de l'outil,
@@ -21,11 +23,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { cote } = await coteParSlug(slug);
   if (!cote) return { title: "Cote introuvable", robots: { index: false } };
   const l = libelle(cote.nom);
-  return {
-    title: `Cote ${l} d'occasion : prix du marché`,
-    description: `Prix médian ${eur(cote.mediane)} sur ${nb(cote.n)} annonces en ligne (${cote.y0}-${cote.y1}) : prix par année, par kilométrage, moteurs fiables et à éviter. Analysez une annonce gratuitement.`,
-    alternates: { canonical: `/cote/${slug}` },
-  };
+  // réservée aux abonnés : aucun prix dans les métadonnées, jamais indexée
+  return { title: `Cote ${l} d'occasion`, robots: { index: false, follow: false } };
 }
 
 /** Questions-réponses calculées depuis la cote : affichées sur la page et données à Google (FAQPage). */
@@ -57,6 +56,8 @@ function questions(c: CoteDetail, l: string, fiab: ReturnType<typeof fiabiliteMo
 
 export default async function PageCote({ params }: Params) {
   const { slug } = await params;
+  const compte = await compteCourant();
+  if (!accesCotes(compte)) return <CotesReservees connecte={!!compte} suite={`/cote/${slug}`} />;
   const [{ cote: c, liste }, fournisseurs] = await Promise.all([coteParSlug(slug), fournisseursActifs()]);
   if (!c) notFound();
   const l = libelle(c.nom);

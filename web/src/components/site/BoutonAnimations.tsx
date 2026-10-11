@@ -14,6 +14,10 @@ export function BoutonAnimations({ className }: { className?: string }) {
     document.documentElement.toggleAttribute("data-calme", v);
     // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture unique de la préférence
     setCalme(v);
+    // un autre bouton pause de la page a été actionné
+    const suivre = (e: Event) => setCalme((e as CustomEvent<boolean>).detail);
+    addEventListener("utp-calme", suivre);
+    return () => removeEventListener("utp-calme", suivre);
   }, []);
   return (
     <button
@@ -24,6 +28,7 @@ export function BoutonAnimations({ className }: { className?: string }) {
         const v = !calme;
         setCalme(v);
         document.documentElement.toggleAttribute("data-calme", v);
+        dispatchEvent(new CustomEvent("utp-calme", { detail: v }));
         try {
           localStorage.setItem("utp-calme", v ? "1" : "0");
         } catch {

@@ -13,8 +13,15 @@ export function GraphMarges({ barres }: { barres: BarreMarge[] }) {
   const hi = Math.max(seuil, ...barres.map((b) => b.marge)) * 1.08;
   const pos = (x: number) => ((x - lo) / (hi - lo || 1)) * 100;
   const z = pos(0), th = pos(seuil);
+  // résumé en phrase : le graphique se lit aussi sans les couleurs
+  const dessus = barres.filter((b) => b.marge >= seuil).length, perte = barres.filter((b) => b.marge < 0).length;
+  const dessous = barres.length - dessus - perte;
   return (
     <div className="grid gap-2">
+      <p className="mb-1 text-sm text-ink-2">
+        {[`${dessus} au-dessus du seuil`, dessous ? `${dessous} en dessous` : null, perte ? `${perte} à perte` : null].filter(Boolean).join(", ")}
+        {" "}sur {barres.length} voiture{barres.length > 1 ? "s" : ""}.
+      </p>
       {barres.map((b) => {
         const a = Math.min(z, pos(b.marge)), w = Math.max(Math.abs(pos(b.marge) - z), 0.6);
         return (

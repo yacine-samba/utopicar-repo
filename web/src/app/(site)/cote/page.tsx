@@ -2,15 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { dateTxt, eur, libelle, nb, listeCotes, slugCote } from "@/lib/cotes-publiques";
 import { JsonLdFil } from "@/components/site/JsonLd";
+import { CotesReservees } from "@/components/site/CotesReservees";
+import { accesCotes, compteCourant } from "@/lib/compte";
 
 export const metadata: Metadata = {
   title: "Cote des voitures d'occasion, modèle par modèle",
-  description: "Prix du marché des voitures d'occasion relevé sur les annonces Leboncoin en ligne : prix médian, prix par année et par kilométrage, moteurs fiables et à éviter.",
-  alternates: { canonical: "/cote" },
+  description: "La cote des voitures d'occasion, modèle par modèle : réservée aux abonnés Utopicar.",
+  // réservée aux abonnés : jamais indexée
+  robots: { index: false, follow: false },
 };
 
 /** Toutes les cotes publiées : une carte par modèle (génération et énergie). */
 export default async function Cotes() {
+  const compte = await compteCourant();
+  if (!accesCotes(compte)) return <CotesReservees connecte={!!compte} suite="/cote" />;
   const liste = await listeCotes();
   const maj = liste.map((c) => c.maj).filter((d): d is string => !!d).sort().pop() ?? null;
   return (

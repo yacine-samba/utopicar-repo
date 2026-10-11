@@ -68,3 +68,6 @@ export const CLES_EXEMPLES = Object.keys(EXEMPLES);
 export const euros = (v: number) => (v < 0 ? "−\u00a0" : "") + Math.abs(Math.round(v)).toLocaleString("fr-FR") + "\u00a0€";
 export const TON_EXEMPLE = { ok: "text-ok border-ok/40 bg-ok/10", warn: "text-warn border-warn/40 bg-warn/10", bad: "text-bad border-bad/40 bg-bad/10" };
 export const ANNEAU_EXEMPLE = { ok: "var(--color-ok)", warn: "var(--color-warn)", bad: "var(--color-bad)" };
+
+/** Les photos de démonstration existent en 800 et 400 px : le navigateur prend la plus petite qui suffit (téléphone). */
+export const srcSetDemo = (u: string) => `${u.replace(/\.webp$/, "-400.webp")} 400w, ${u} 800w`;

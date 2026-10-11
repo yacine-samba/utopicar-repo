@@ -15,7 +15,7 @@ export default function Moteurs() {
     <div className="wrap py-14">
       <JsonLdFil etapes={[{ nom: "Accueil", chemin: "/" }, { nom: "Moteurs à éviter", chemin: "/moteur" }]} />
       <nav aria-label="Fil d'Ariane" className="mb-6 text-sm text-ink-3">
-        <Link href="/" className="hover:text-ink">
+        <Link href="/" className="inline-block py-1 hover:text-ink">
           Accueil
         </Link>{" "}
         › <span aria-current="page">Moteurs à éviter</span>
@@ -39,6 +39,13 @@ export default function Moteurs() {
           </li>
         ))}
       </ul>
+      <p className="mt-10 text-ink-2">
+        Et à l&apos;inverse, les modèles qui tiennent la route :{" "}
+        <Link href="/fiabilite" className="font-medium text-o2 underline underline-offset-4">
+          les occasions les plus fiables
+        </Link>
+        .
+      </p>
       <div className="carte mt-12 flex flex-wrap items-center justify-between gap-4 p-6">
         <p className="max-w-xl text-ink-2">
           <b className="text-ink">Une annonce en vue ?</b> Collez-la : l&apos;outil reconnaît le moteur et la boîte, et vous dit s&apos;ils font partie de cette liste.
