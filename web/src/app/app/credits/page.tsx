@@ -9,7 +9,7 @@ import { ListePacks } from "@/components/site/CarteCredits";
 
 export const metadata: Metadata = { title: "Crédits" };
 
-const MOTIFS: Record<string, string> = { achat: "Achat", offert: "Offerts par Utopicar", analyse: "Analyse", expiration: "Crédits expirés" };
+const MOTIFS: Record<string, string> = { achat: "Achat", offert: "Offerts par Utopicar", analyse: "Analyse", expiration: "Crédits expirés", carcrush: "Recherche CarCrush", remboursement: "CarCrush sans annonce : crédits rendus" };
 const dateFr = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 
 /** Crédits à l'unité : solde, packs, historique. */
