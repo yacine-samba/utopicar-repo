@@ -5,7 +5,7 @@
 // Action interne "taches" (cron, clé interne) : renvoi des guides non partis, relance J+2, désinscription respectée.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { contenu, titreGuide } from "./guides.ts";
+import { contenu, selection, titreGuide } from "./guides.ts";
 
 const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
@@ -89,7 +89,7 @@ async function envoyerGuide(cfg: Record<string, string>, lead: any, relance = fa
   await sb.from("landing_leads").update({ token_hash: await sha(t), token_expire }).eq("id", lead.id);
   const lien = `${SITES[site].url}/guide?t=${t}`;
   const stop = await lienStop(site, lead.id, cfg);
-  const titre = titreGuide(site, lead.objectif);
+  const titre = titreGuide(...selection(site, lead.objectif, lead.guide ?? null));
   const m = mailLead(site, lead.prenom, lien, titre, stop, relance);
   const sujet = relance
     ? (SITES[site].tu ? `${lead.prenom}, ton guide « ${titre} » t'attend` : `${lead.prenom}, votre guide « ${titre} » vous attend`)
@@ -102,7 +102,7 @@ async function taches(cfg: Record<string, string>) {
   // 1) Guides pas encore partis (domaine pas vérifié, panne) : on réessaie.
   const depuis = new Date(Date.now() - JOURS_RENVOI * 86400_000).toISOString();
   const pause = new Date(Date.now() - 25 * 60_000).toISOString();
-  const { data: aRenvoyer } = await sb.from("landing_leads").select("id, email, prenom, site, objectif, envoi_tentatives, dernier_envoi")
+  const { data: aRenvoyer } = await sb.from("landing_leads").select("id, email, prenom, site, objectif, guide, envoi_tentatives, dernier_envoi")
     .or("email_envoye.is.null,email_envoye.eq.false").eq("desinscrit", false).gte("created_at", depuis).lt("envoi_tentatives", MAX_TENTATIVES).limit(40);
   for (const lead of aRenvoyer ?? []) {
     if (lead.dernier_envoi && lead.dernier_envoi > pause) continue;
@@ -113,7 +113,7 @@ async function taches(cfg: Record<string, string>) {
   // 2) Relance unique à J+2 si le guide n'a pas été ouvert.
   const ilya48h = new Date(Date.now() - 48 * 3600_000).toISOString();
   const ilya10j = new Date(Date.now() - 10 * 86400_000).toISOString();
-  const { data: aRelancer } = await sb.from("landing_leads").select("id, email, prenom, site, objectif, dernier_envoi")
+  const { data: aRelancer } = await sb.from("landing_leads").select("id, email, prenom, site, objectif, guide, dernier_envoi")
     .eq("email_envoye", true).eq("email_confirme", false).eq("desinscrit", false).is("relance_le", null).lt("dernier_envoi", ilya48h).gte("created_at", ilya10j).limit(40);
   for (const lead of aRelancer ?? []) {
     const ok = await envoyerGuide(cfg, lead, true);
@@ -155,13 +155,14 @@ Deno.serve(async (req) => {
   if (body.action === "lire") {
     const t = clean(body.t, 100);
     if (!/^[A-Za-z0-9_-]{40,}$/.test(t)) return json(h, { ok: false, erreur: "lien" }, 400);
-    const { data: lead } = await sb.from("landing_leads").select("id, prenom, site, profil, objectif, budget, token_expire, ouvertures, email_confirme").eq("token_hash", await sha(t)).maybeSingle();
+    const { data: lead } = await sb.from("landing_leads").select("id, prenom, site, profil, objectif, guide, budget, token_expire, ouvertures, email_confirme").eq("token_hash", await sha(t)).maybeSingle();
     if (!lead || !lead.token_expire || new Date(lead.token_expire) < new Date()) return json(h, { ok: false, erreur: "expire" }, 410);
     if ((lead.ouvertures ?? 0) >= MAX_OUVERTURES) return json(h, { ok: false, erreur: "limite" }, 429);
     const maj: Record<string, unknown> = { ouvertures: (lead.ouvertures ?? 0) + 1 };
     if (!lead.email_confirme) { maj.email_confirme = true; maj.confirme_le = new Date().toISOString(); }
     await sb.from("landing_leads").update(maj).eq("id", lead.id);
-    return json(h, { ok: true, prenom: lead.prenom, site: lead.site, titre: titreGuide(lead.site, lead.objectif), contenu: contenu(lead.site, lead.objectif, lead.budget, lead.prenom) });
+    const [s, o] = selection(lead.site, lead.objectif, lead.guide);
+    return json(h, { ok: true, prenom: lead.prenom, site: lead.site, titre: titreGuide(s, o), contenu: contenu(s, o, lead.budget, lead.prenom) });
   }
 
   // ---------- Liste d'attente ebook (depuis la page du guide, avec le jeton) ----------
@@ -203,7 +204,8 @@ Deno.serve(async (req) => {
   let tentatives = 0;
   if (exist) {
     id = exist.id; tentatives = exist.envoi_tentatives ?? 0;
-    const maj: Record<string, unknown> = { prenom, site, desinscrit: false, desinscrit_le: null };
+    // nouvelle demande : le guide redevient celui du profil (le choix fait depuis l'administration est oublié)
+    const maj: Record<string, unknown> = { prenom, site, guide: null, desinscrit: false, desinscrit_le: null };
     if (profil) maj.profil = profil; if (objectif) maj.objectif = objectif; if (budget) maj.budget = budget;
     await sb.from("landing_leads").update(maj).eq("id", id);
   } else {

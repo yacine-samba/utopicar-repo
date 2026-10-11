@@ -4,19 +4,20 @@ import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { EntreeNav } from "@/lib/espace";
-import { DEFAUTS_PRO, eur, type ParamsPro } from "@/lib/analyse/couts";
+import { eur } from "@/lib/analyse/couts";
 import { cx, inputCls } from "@/lib/cx";
-import { useReglages } from "../ui";
+import { useProfilAnalyse } from "../analyse/ProfilAnalyse";
 
-/** Seuil de marge en cours (réglage de l'outil Benef), affiché dans le menu. */
+/** Bénéfice minimum du profil d'analyse, affiché dans le menu Benef. */
 export function SeuilMarge() {
-  const [reg] = useReglages<ParamsPro>("utp-pro", DEFAUTS_PRO);
+  const { profil } = useProfilAnalyse();
   return (
     <Link
-      href="/app/analyser#reglages"
+      href="/app/compte#analyse"
       className="flex items-center justify-between rounded-xl border border-line px-3 py-2 text-sm text-ink-2 hover:text-ink"
+      title="Mon profil d'analyse"
     >
-      Seuil de marge <b className="num text-ink">{eur(reg.margeMin)}</b>
+      Bénéfice minimum <b className="num text-ink">{eur(profil.margeMin)}</b>
     </Link>
   );
 }

@@ -1,5 +1,6 @@
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
+import { track } from "@vercel/analytics/server";
 import { enregistrerCredits, enregistrerGuide, synchroniser } from "@/lib/stripe-synchro";
 
 export async function POST(req: Request) {
@@ -18,6 +19,8 @@ export async function POST(req: Request) {
         const s = ev.data.object;
         await enregistrerGuide(s);
         await enregistrerCredits(s);
+        // entonnoir des statistiques Vercel : paiement réussi, par type et montant (sans donnée personnelle)
+        await track("paiement_ok", { mode: s.mode, produit: s.metadata?.produit ?? null, montant: (s.amount_total ?? 0) / 100 }).catch(() => undefined);
         if (s.mode === "subscription" && s.subscription) {
           const id = typeof s.subscription === "string" ? s.subscription : s.subscription.id;
           await synchroniser(await stripe().subscriptions.retrieve(id));

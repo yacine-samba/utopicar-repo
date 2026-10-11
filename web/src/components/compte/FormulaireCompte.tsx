@@ -1,54 +1,30 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
-import { supabaseNavigateur } from "@/lib/supabase/navigateur";
-import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
+import { useId, useRef, useState } from "react";
+import { connecter, emailValide, fonctionCompte, inscrire } from "@/lib/compte-client";
 import { inputCls } from "../ui";
 
 type Mode = "inscription" | "connexion";
 
-const MESSAGES: Record<string, string> = {
-  invalid_credentials: "Email ou mot de passe incorrect.",
-  user_already_exists: "Un compte existe déjà avec cet email. Connectez-vous.",
-  email_exists: "Un compte existe déjà avec cet email. Connectez-vous.",
-  email_not_confirmed: "Ce compte n'est pas encore activé. Utilisez « Recevoir un lien de connexion » ci-dessous.",
-  over_email_send_rate_limit: "Trop d'emails envoyés. Patientez une minute puis réessayez.",
-  over_request_rate_limit: "Trop de tentatives. Patientez une minute puis réessayez.",
-  weak_password: "Mot de passe trop simple : 8 caractères au moins, avec des lettres et des chiffres.",
-};
-const traduire = (e: { code?: string; message: string }) => MESSAGES[e.code ?? ""] ?? "Une erreur est survenue. Réessayez dans un instant.";
-
-function profilOnboarding() {
-  try {
-    return JSON.parse(localStorage.getItem("utp-profil") || "{}") as Record<string, string | null>;
-  } catch {
-    return {};
-  }
-}
-
 export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: string; actif: boolean }) {
   const router = useRouter();
   const id = useId();
-  const [prenom, setPrenom] = useState("");
   const [email, setEmail] = useState("");
   const [mdp, setMdp] = useState("");
   const [voir, setVoir] = useState(false);
   const [cgu, setCgu] = useState(false);
   const [charge, setCharge] = useState(false);
   const [erreur, setErreur] = useState("");
+  // en cas d'erreur, le focus va sur le champ concerné (le message, lui, est annoncé par role="alert")
+  const refEmail = useRef<HTMLInputElement>(null);
+  const refMdp = useRef<HTMLInputElement>(null);
+  const refCgu = useRef<HTMLInputElement>(null);
+  const fautif = (m: string, champ: { current: HTMLInputElement | null }) => {
+    setErreur(m);
+    champ.current?.focus();
+  };
   const [envoye, setEnvoye] = useState("");
-
-  /** Fonction `compte` (Supabase) : comptes créés déjà confirmés, emails envoyés depuis utopicar.fr. */
-  async function fonctionCompte(corps: Record<string, unknown>): Promise<{ ok?: boolean; erreur?: string }> {
-    const r = await fetch(`${SUPABASE_URL}/functions/v1/compte`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", apikey: SUPABASE_CLE },
-      body: JSON.stringify(corps),
-    }).catch(() => null);
-    if (!r) return { erreur: "Connexion impossible. Vérifiez votre réseau et réessayez." };
-    return r.json().catch(() => ({ erreur: "Le service ne répond pas. Réessayez dans un instant." }));
-  }
 
   if (!actif)
     return (
@@ -69,21 +45,13 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
   async function envoyer(e: React.FormEvent) {
     e.preventDefault();
     setErreur("");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErreur("Indiquez une adresse email valide, par exemple nom@exemple.fr.");
-    if (mdp.length < 8) return setErreur("Le mot de passe doit contenir au moins 8 caractères.");
-    if (mode === "inscription" && !cgu) return setErreur("Acceptez les conditions d'utilisation pour créer votre compte.");
+    if (!emailValide(email)) return fautif("Indiquez une adresse email valide, par exemple nom@exemple.fr.", refEmail);
+    if (mdp.length < 8) return fautif("Le mot de passe doit contenir au moins 8 caractères.", refMdp);
+    if (mode === "inscription" && !cgu) return fautif("Acceptez les conditions d'utilisation pour créer votre compte.", refCgu);
     setCharge(true);
-    const sb = supabaseNavigateur();
     try {
-      if (mode === "inscription") {
-        const j = await fonctionCompte({ action: "inscription", email, password: mdp, prenom: prenom.trim(), onboarding: profilOnboarding() });
-        if (!j.ok) return setErreur(j.erreur ?? "L'inscription n'a pas marché. Réessayez dans un instant.");
-        const { error } = await sb.auth.signInWithPassword({ email, password: mdp });
-        if (error) return setErreur(traduire(error));
-      } else {
-        const { error } = await sb.auth.signInWithPassword({ email, password: mdp });
-        if (error) return setErreur(traduire(error));
-      }
+      const err = mode === "inscription" ? await inscrire(email, mdp) : await connecter(email, mdp);
+      if (err) return setErreur(err);
       router.replace(suite);
       router.refresh();
     } finally {
@@ -93,7 +61,7 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
 
   async function lienMagique() {
     setErreur("");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErreur("Indiquez d'abord votre adresse email.");
+    if (!emailValide(email)) return setErreur("Indiquez d'abord votre adresse email.");
     setCharge(true);
     const j = await fonctionCompte({ action: "lien", email, suite });
     setCharge(false);
@@ -103,7 +71,7 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
 
   async function oubli() {
     setErreur("");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErreur("Indiquez d'abord votre adresse email.");
+    if (!emailValide(email)) return setErreur("Indiquez d'abord votre adresse email.");
     setCharge(true);
     const j = await fonctionCompte({ action: "oubli", email });
     setCharge(false);
@@ -114,24 +82,19 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
   const err = erreur ? `${id}-err` : undefined;
   return (
     <form onSubmit={envoyer} noValidate className="grid gap-4">
-      {mode === "inscription" && (
-        <label className="grid gap-1.5 text-sm">
-          <span className="text-ink-2">Prénom</span>
-          <input value={prenom} onChange={(e) => setPrenom(e.target.value)} autoComplete="given-name" maxLength={60} className={inputCls} />
-        </label>
-      )}
       <label className="grid gap-1.5 text-sm">
         <span className="text-ink-2">
           Email <span className="text-ink-3">(obligatoire)</span>
         </span>
-        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" aria-invalid={!!erreur && /email/i.test(erreur)} aria-describedby={err} className={inputCls} />
+        <input ref={refEmail} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" aria-invalid={!!erreur && /email/i.test(erreur)} aria-describedby={err} className={inputCls} />
       </label>
       <div className="grid gap-1.5 text-sm">
         <label htmlFor={`${id}-mdp`} className="text-ink-2">
-          Mot de passe <span className="text-ink-3">(8 caractères au moins)</span>
+          Mot de passe
         </label>
         <div className="relative">
           <input
+            ref={refMdp}
             id={`${id}-mdp`}
             type={voir ? "text" : "password"}
             required
@@ -140,17 +103,21 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
             onChange={(e) => setMdp(e.target.value)}
             autoComplete={mode === "inscription" ? "new-password" : "current-password"}
             aria-invalid={!!erreur && /mot de passe/i.test(erreur)}
-            aria-describedby={err}
+            aria-describedby={[`${id}-regle`, err].filter(Boolean).join(" ")}
             className={`${inputCls} pr-28`}
           />
           <button type="button" onClick={() => setVoir((v) => !v)} aria-pressed={voir} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full px-3 py-1 text-sm text-ink-3 hover:text-ink">
             {voir ? "Masquer" : "Afficher"}
           </button>
         </div>
+        {/* la règle se coche pendant la frappe, au lieu d'une erreur après l'envoi */}
+        <span id={`${id}-regle`} className={`flex items-center gap-1.5 text-xs transition ${mdp.length >= 8 ? "text-ok" : "text-ink-3"}`} aria-live="polite">
+          <span aria-hidden="true">{mdp.length >= 8 ? "✓" : "○"}</span> 8 caractères au moins{mdp.length > 0 && mdp.length < 8 ? ` (encore ${8 - mdp.length})` : ""}
+        </span>
       </div>
       {mode === "inscription" && (
         <label className="flex items-start gap-3 text-sm text-ink-2">
-          <input type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} className="mt-1 size-4 accent-[#ff5a1f]" />
+          <input ref={refCgu} type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} className="mt-0.5 size-5 shrink-0 cursor-pointer accent-[#ff5a1f]" />
           <span>
             J&apos;accepte les{" "}
             <Link href="/legal#conditions" className="text-o2 underline underline-offset-4">

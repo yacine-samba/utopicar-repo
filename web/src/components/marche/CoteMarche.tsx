@@ -323,12 +323,12 @@ export function PlacerVoiture({ cat, estimation = false }: { cat: CatMarque[]; e
         )}
         <div className="grid grid-cols-2 gap-3">
           <label className="grid gap-1.5 text-sm">
-            <span className="text-ink-2">Année</span>
-            <input required inputMode="numeric" value={v.annee} onChange={maj("annee")} placeholder="2011" className={inputCls} />
+            <span className="text-ink-2">Année <span className="text-o2" aria-hidden="true">*</span></span>
+            <input required inputMode="numeric" value={v.annee} onChange={maj("annee")} placeholder="ex. 2011" className={inputCls} />
           </label>
           <label className="grid gap-1.5 text-sm">
-            <span className="text-ink-2">Kilométrage</span>
-            <input required inputMode="numeric" value={v.km} onChange={maj("km")} placeholder="103000" className={inputCls} />
+            <span className="text-ink-2">Kilométrage <span className="text-o2" aria-hidden="true">*</span></span>
+            <input required inputMode="numeric" value={v.km} onChange={maj("km")} placeholder="ex. 103 000" className={inputCls} />
           </label>
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -345,6 +345,7 @@ export function PlacerVoiture({ cat, estimation = false }: { cat: CatMarque[]; e
           <button type="submit" disabled={charge} className="btn btn-o btn-sm">
             {charge ? "Calcul…" : estimation ? "Estimer la cote" : "Placer sur la cote"}
           </button>
+          <p className="text-xs text-ink-3" aria-hidden="true"><span className="text-o2">*</span> obligatoire</p>
           <p className="text-sm text-ink-3" role="status">{etat}</p>
         </div>
       </form>

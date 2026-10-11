@@ -1,7 +1,7 @@
 import type { Compte } from "./compte";
 import type { Famille } from "./offres";
 
-export type Icone = "accueil" | "analyser" | "rapports" | "parc" | "rentabilite" | "comparer" | "recherche" | "guide" | "compte" | "tri" | "cote" | "alertes" | "credits" | "favoris" | "extension" | "messages" | "estimation";
+export type Icone = "accueil" | "analyser" | "rapports" | "parc" | "rentabilite" | "comparer" | "recherche" | "guide" | "compte" | "tri" | "cote" | "alertes" | "credits" | "favoris" | "extension" | "messages" | "estimation" | "admin";
 /** `mobile` : dans la barre du bas du téléphone (5 au plus) ; `menu: false` : seulement là (le profil, en bas du menu, mène au compte). */
 export type EntreeNav = { href: string; label: string; court: string; icone: Icone; verrou?: string; mobile?: boolean; menu?: boolean };
 
@@ -18,6 +18,7 @@ export function navEspace(c: Compte): EntreeNav[] {
   // favoris : seulement si la personne les a activés (Compte › Accessibilité) ; extension et cote globale : compte illimité
   const favoris: EntreeNav[] = c.favoris ? [{ href: "/app/favoris", label: "Favoris", court: "Favoris", icone: "favoris" }] : [];
   const extension: EntreeNav[] = c.illimite ? [{ href: "/app/extension", label: "Extension Leboncoin", court: "Extension", icone: "extension" }] : [];
+  const admin: EntreeNav[] = c.admin ? [{ href: "/app/admin", label: "Administration", court: "Admin", icone: "admin" }] : [];
   const compte: EntreeNav = { href: "/app/compte", label: "Profil et paramètres", court: "Profil", icone: "compte", mobile: true, menu: false };
   if (familleEspace(c) === "particulier")
     return [
@@ -26,6 +27,7 @@ export function navEspace(c: Compte): EntreeNav[] {
       { href: "/app/rapports", label: "Mes analyses", court: "Analyses", icone: "rapports", mobile: true },
       ...favoris,
       ...extension,
+      ...admin,
       { href: "/app/credits", label: "Crédits", court: "Crédits", icone: "credits", mobile: true },
       compte,
     ];
@@ -42,6 +44,7 @@ export function navEspace(c: Compte): EntreeNav[] {
       ? { href: "/app/cote", label: "Cote du marché", court: "Cote", icone: "cote" }
       : { href: "/app/estimation", label: "Estimer une cote", court: "Estimer", icone: "estimation", verrou: benef ? undefined : "Starter" },
     ...extension,
+    ...admin,
     compte,
   ];
 }

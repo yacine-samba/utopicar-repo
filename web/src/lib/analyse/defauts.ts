@@ -14,7 +14,7 @@ export type Defaut = {
   /** Non chiffrable sans inspection. */
   nc: boolean;
   extrait: string;
-  src: "annonce" | "photos" | "ia";
+  src: "annonce" | "photos" | "ia" | "visite" | "vendeur";
   conf?: "faible" | "moyenne" | "forte";
 };
 

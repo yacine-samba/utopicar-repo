@@ -1,0 +1,838 @@
+{
+ "dur": 32.6,
+ "take": "takeA.mp3",
+ "lines": [
+  {
+   "key": "h1",
+   "t": 0.1,
+   "end": 3.104,
+   "text": "Tu en achètes deux, mille de marge chacune : deux mille."
+  },
+  {
+   "key": "h2",
+   "t": 3.364,
+   "end": 5.371,
+   "text": "Ton voisin, lui, compte les jours."
+  },
+  {
+   "key": "deb",
+   "t": 5.821,
+   "end": 9.023,
+   "text": "Deux cartes grises, deux contrôles, deux assurances."
+  },
+  {
+   "key": "part",
+   "t": 9.973,
+   "end": 11.428,
+   "text": "La première part en huit jours."
+  },
+  {
+   "key": "deux2",
+   "t": 11.848,
+   "end": 12.552,
+   "text": "La deuxième…"
+  },
+  {
+   "key": "soupir",
+   "t": 12.772,
+   "end": 13.289,
+   "text": "[soupir]"
+  },
+  {
+   "key": "reste",
+   "t": 13.349,
+   "end": 13.939,
+   "text": "reste."
+  },
+  {
+   "key": "neg",
+   "t": 16.339,
+   "end": 18.09,
+   "text": "Il négocie. Tu acceptes."
+  },
+  {
+   "key": "ben",
+   "t": 18.34,
+   "end": 20.121,
+   "text": "Bénéfice : 120 euros."
+  },
+  {
+   "key": "moins",
+   "t": 20.741,
+   "end": 21.758,
+   "text": "Moins qu'avec une seule."
+  },
+  {
+   "key": "ceux",
+   "t": 22.578,
+   "end": 24.154,
+   "text": "Ceux qui gagnent comptent en jours."
+  },
+  {
+   "key": "prem",
+   "t": 24.404,
+   "end": 26.379,
+   "text": "Ta première : 55 euros par jour."
+  },
+  {
+   "key": "ens",
+   "t": 26.599,
+   "end": 27.863,
+   "text": "Les deux ensemble : 3."
+  },
+  {
+   "key": "verd",
+   "t": 28.183,
+   "end": 30.126,
+   "text": "La deuxième, tu l'achètes au jour 8."
+  },
+  {
+   "key": "proch",
+   "t": 30.746,
+   "end": 32.201,
+   "text": "La prochaine fois que tu te dis…"
+  }
+ ],
+ "words": [
+  {
+   "line": "h1",
+   "t": 0.1,
+   "end": 0.283,
+   "w": "Tu"
+  },
+  {
+   "line": "h1",
+   "t": 0.283,
+   "end": 0.45,
+   "w": "en"
+  },
+  {
+   "line": "h1",
+   "t": 0.45,
+   "end": 0.667,
+   "w": "achètes"
+  },
+  {
+   "line": "h1",
+   "t": 0.667,
+   "end": 0.933,
+   "w": "deux,"
+  },
+  {
+   "line": "h1",
+   "t": 1.407,
+   "end": 1.607,
+   "w": "mille"
+  },
+  {
+   "line": "h1",
+   "t": 1.607,
+   "end": 1.757,
+   "w": "de"
+  },
+  {
+   "line": "h1",
+   "t": 1.757,
+   "end": 1.94,
+   "w": "marge"
+  },
+  {
+   "line": "h1",
+   "t": 1.94,
+   "end": 2.49,
+   "w": "chacune,"
+  },
+  {
+   "line": "h1",
+   "t": 2.723,
+   "end": 2.89,
+   "w": "deux"
+  },
+  {
+   "line": "h1",
+   "t": 2.89,
+   "end": 3.123,
+   "w": "mille."
+  },
+  {
+   "line": "h2",
+   "t": 3.432,
+   "end": 3.582,
+   "w": "Ton"
+  },
+  {
+   "line": "h2",
+   "t": 3.582,
+   "end": 3.982,
+   "w": "voisin,"
+  },
+  {
+   "line": "h2",
+   "t": 4.115,
+   "end": 4.432,
+   "w": "lui,"
+  },
+  {
+   "line": "h2",
+   "t": 4.665,
+   "end": 4.782,
+   "w": "compte"
+  },
+  {
+   "line": "h2",
+   "t": 4.782,
+   "end": 4.998,
+   "w": "les"
+  },
+  {
+   "line": "h2",
+   "t": 4.998,
+   "end": 5.282,
+   "w": "jours."
+  },
+  {
+   "line": "deb",
+   "t": 5.946,
+   "end": 6.046,
+   "w": "Deux"
+  },
+  {
+   "line": "deb",
+   "t": 6.046,
+   "end": 6.312,
+   "w": "cartes"
+  },
+  {
+   "line": "deb",
+   "t": 6.312,
+   "end": 6.579,
+   "w": "grises,"
+  },
+  {
+   "line": "deb",
+   "t": 7.014,
+   "end": 7.181,
+   "w": "deux"
+  },
+  {
+   "line": "deb",
+   "t": 7.181,
+   "end": 7.698,
+   "w": "contrôles,"
+  },
+  {
+   "line": "deb",
+   "t": 7.848,
+   "end": 7.981,
+   "w": "deux"
+  },
+  {
+   "line": "deb",
+   "t": 7.981,
+   "end": 8.814,
+   "w": "assurances."
+  },
+  {
+   "line": "part",
+   "t": 10.036,
+   "end": 10.253,
+   "w": "La"
+  },
+  {
+   "line": "part",
+   "t": 10.253,
+   "end": 10.42,
+   "w": "première"
+  },
+  {
+   "line": "part",
+   "t": 10.42,
+   "end": 10.62,
+   "w": "part"
+  },
+  {
+   "line": "part",
+   "t": 10.62,
+   "end": 10.72,
+   "w": "en"
+  },
+  {
+   "line": "part",
+   "t": 10.72,
+   "end": 10.886,
+   "w": "huit"
+  },
+  {
+   "line": "part",
+   "t": 10.886,
+   "end": 11.22,
+   "w": "jours."
+  },
+  {
+   "line": "deux2",
+   "t": 11.889,
+   "end": 12.056,
+   "w": "La"
+  },
+  {
+   "line": "deux2",
+   "t": 12.056,
+   "end": 12.489,
+   "w": "deuxième..."
+  },
+  {
+   "line": "reste",
+   "t": 13.352,
+   "end": 13.769,
+   "w": "reste."
+  },
+  {
+   "line": "neg",
+   "t": 16.337,
+   "end": 16.52,
+   "w": "Il"
+  },
+  {
+   "line": "neg",
+   "t": 16.52,
+   "end": 17.237,
+   "w": "négocie."
+  },
+  {
+   "line": "neg",
+   "t": 17.47,
+   "end": 17.604,
+   "w": "Tu"
+  },
+  {
+   "line": "neg",
+   "t": 17.604,
+   "end": 18.054,
+   "w": "acceptes."
+  },
+  {
+   "line": "ben",
+   "t": 18.358,
+   "end": 18.975,
+   "w": "Bénéfice"
+  },
+  {
+   "line": "ben",
+   "t": 19.379,
+   "end": 19.779,
+   "w": "120"
+  },
+  {
+   "line": "ben",
+   "t": 19.779,
+   "end": 20.079,
+   "w": "euros."
+  },
+  {
+   "line": "moins",
+   "t": 20.866,
+   "end": 21.049,
+   "w": "Moins"
+  },
+  {
+   "line": "moins",
+   "t": 21.049,
+   "end": 21.149,
+   "w": "qu"
+  },
+  {
+   "line": "moins",
+   "t": 21.149,
+   "end": 21.299,
+   "w": "'avec"
+  },
+  {
+   "line": "moins",
+   "t": 21.299,
+   "end": 21.499,
+   "w": "une"
+  },
+  {
+   "line": "moins",
+   "t": 21.499,
+   "end": 21.699,
+   "w": "seule."
+  },
+  {
+   "line": "ceux",
+   "t": 22.689,
+   "end": 22.939,
+   "w": "Ceux"
+  },
+  {
+   "line": "ceux",
+   "t": 22.939,
+   "end": 23.072,
+   "w": "qui"
+  },
+  {
+   "line": "ceux",
+   "t": 23.072,
+   "end": 23.356,
+   "w": "gagnent"
+  },
+  {
+   "line": "ceux",
+   "t": 23.356,
+   "end": 23.606,
+   "w": "comptent"
+  },
+  {
+   "line": "ceux",
+   "t": 23.606,
+   "end": 23.839,
+   "w": "en"
+  },
+  {
+   "line": "ceux",
+   "t": 23.839,
+   "end": 24.089,
+   "w": "jour."
+  },
+  {
+   "line": "prem",
+   "t": 24.404,
+   "end": 24.554,
+   "w": "Ta"
+  },
+  {
+   "line": "prem",
+   "t": 24.554,
+   "end": 24.888,
+   "w": "première,"
+  },
+  {
+   "line": "prem",
+   "t": 25.303,
+   "end": 25.636,
+   "w": "55"
+  },
+  {
+   "line": "prem",
+   "t": 25.636,
+   "end": 25.903,
+   "w": "euros"
+  },
+  {
+   "line": "prem",
+   "t": 25.903,
+   "end": 26.12,
+   "w": "par"
+  },
+  {
+   "line": "prem",
+   "t": 26.12,
+   "end": 26.353,
+   "w": "jour."
+  },
+  {
+   "line": "ens",
+   "t": 26.713,
+   "end": 26.796,
+   "w": "Les"
+  },
+  {
+   "line": "ens",
+   "t": 26.796,
+   "end": 26.913,
+   "w": "deux"
+  },
+  {
+   "line": "ens",
+   "t": 26.913,
+   "end": 27.396,
+   "w": "ensemble,"
+  },
+  {
+   "line": "ens",
+   "t": 27.629,
+   "end": 27.946,
+   "w": "trois."
+  },
+  {
+   "line": "verd",
+   "t": 28.227,
+   "end": 28.41,
+   "w": "La"
+  },
+  {
+   "line": "verd",
+   "t": 28.41,
+   "end": 28.66,
+   "w": "deuxième,"
+  },
+  {
+   "line": "verd",
+   "t": 29.154,
+   "end": 29.204,
+   "w": "tu"
+  },
+  {
+   "line": "verd",
+   "t": 29.204,
+   "end": 29.304,
+   "w": "l"
+  },
+  {
+   "line": "verd",
+   "t": 29.304,
+   "end": 29.47,
+   "w": "'achètes"
+  },
+  {
+   "line": "verd",
+   "t": 29.47,
+   "end": 29.587,
+   "w": "au"
+  },
+  {
+   "line": "verd",
+   "t": 29.587,
+   "end": 29.737,
+   "w": "jour"
+  },
+  {
+   "line": "verd",
+   "t": 29.737,
+   "end": 29.987,
+   "w": "8."
+  },
+  {
+   "line": "proch",
+   "t": 30.821,
+   "end": 31.054,
+   "w": "La"
+  },
+  {
+   "line": "proch",
+   "t": 31.054,
+   "end": 31.271,
+   "w": "prochaine"
+  },
+  {
+   "line": "proch",
+   "t": 31.271,
+   "end": 31.404,
+   "w": "fois"
+  },
+  {
+   "line": "proch",
+   "t": 31.404,
+   "end": 31.571,
+   "w": "que"
+  },
+  {
+   "line": "proch",
+   "t": 31.571,
+   "end": 31.654,
+   "w": "tu"
+  },
+  {
+   "line": "proch",
+   "t": 31.654,
+   "end": 31.837,
+   "w": "te"
+  },
+  {
+   "line": "proch",
+   "t": 31.837,
+   "end": 32.054,
+   "w": "dis"
+  }
+ ],
+ "marks": {
+  "tu": {
+   "line": "h1",
+   "t": 0.1,
+   "end": 0.283,
+   "w": "Tu"
+  },
+  "deux": {
+   "line": "h1",
+   "t": 0.667,
+   "end": 0.933,
+   "w": "deux,"
+  },
+  "mille": {
+   "line": "h1",
+   "t": 1.407,
+   "end": 1.607,
+   "w": "mille"
+  },
+  "chacune": {
+   "line": "h1",
+   "t": 1.94,
+   "end": 2.49,
+   "w": "chacune,"
+  },
+  "deuxm": {
+   "line": "h1",
+   "t": 2.723,
+   "end": 2.89,
+   "w": "deux"
+  },
+  "total": {
+   "line": "h1",
+   "t": 2.89,
+   "end": 3.123,
+   "w": "mille."
+  },
+  "ton": {
+   "line": "h2",
+   "t": 3.432,
+   "end": 3.582,
+   "w": "Ton"
+  },
+  "voisin": {
+   "line": "h2",
+   "t": 3.582,
+   "end": 3.982,
+   "w": "voisin,"
+  },
+  "lui": {
+   "line": "h2",
+   "t": 4.115,
+   "end": 4.432,
+   "w": "lui,"
+  },
+  "compte": {
+   "line": "h2",
+   "t": 4.665,
+   "end": 4.782,
+   "w": "compte"
+  },
+  "jours": {
+   "line": "h2",
+   "t": 4.998,
+   "end": 5.282,
+   "w": "jours."
+  },
+  "deuxc": {
+   "line": "deb",
+   "t": 5.946,
+   "end": 6.046,
+   "w": "Deux"
+  },
+  "cartes": {
+   "line": "deb",
+   "t": 6.046,
+   "end": 6.312,
+   "w": "cartes"
+  },
+  "controles": {
+   "line": "deb",
+   "t": 7.181,
+   "end": 7.698,
+   "w": "contrôles,"
+  },
+  "assur": {
+   "line": "deb",
+   "t": 7.981,
+   "end": 8.814,
+   "w": "assurances."
+  },
+  "la1": {
+   "line": "part",
+   "t": 10.036,
+   "end": 10.253,
+   "w": "La"
+  },
+  "premiere": {
+   "line": "part",
+   "t": 10.253,
+   "end": 10.42,
+   "w": "première"
+  },
+  "part": {
+   "line": "part",
+   "t": 10.42,
+   "end": 10.62,
+   "w": "part"
+  },
+  "huit": {
+   "line": "part",
+   "t": 10.72,
+   "end": 10.886,
+   "w": "huit"
+  },
+  "la2a": {
+   "line": "deux2",
+   "t": 11.889,
+   "end": 12.056,
+   "w": "La"
+  },
+  "deuxieme": {
+   "line": "deux2",
+   "t": 12.056,
+   "end": 12.489,
+   "w": "deuxième..."
+  },
+  "reste": {
+   "line": "reste",
+   "t": 13.352,
+   "end": 13.769,
+   "w": "reste."
+  },
+  "il": {
+   "line": "neg",
+   "t": 16.337,
+   "end": 16.52,
+   "w": "Il"
+  },
+  "negocie": {
+   "line": "neg",
+   "t": 16.52,
+   "end": 17.237,
+   "w": "négocie."
+  },
+  "tuacc": {
+   "line": "neg",
+   "t": 17.47,
+   "end": 17.604,
+   "w": "Tu"
+  },
+  "acceptes": {
+   "line": "neg",
+   "t": 17.604,
+   "end": 18.054,
+   "w": "acceptes."
+  },
+  "benef": {
+   "line": "ben",
+   "t": 18.358,
+   "end": 18.975,
+   "w": "Bénéfice"
+  },
+  "n120": {
+   "line": "ben",
+   "t": 19.379,
+   "end": 19.779,
+   "w": "120"
+  },
+  "euros": {
+   "line": "ben",
+   "t": 19.779,
+   "end": 20.079,
+   "w": "euros."
+  },
+  "moins": {
+   "line": "moins",
+   "t": 20.866,
+   "end": 21.049,
+   "w": "Moins"
+  },
+  "seule": {
+   "line": "moins",
+   "t": 21.499,
+   "end": 21.699,
+   "w": "seule."
+  },
+  "ceux": {
+   "line": "ceux",
+   "t": 22.689,
+   "end": 22.939,
+   "w": "Ceux"
+  },
+  "gagnent": {
+   "line": "ceux",
+   "t": 23.072,
+   "end": 23.356,
+   "w": "gagnent"
+  },
+  "comptent": {
+   "line": "ceux",
+   "t": 23.356,
+   "end": 23.606,
+   "w": "comptent"
+  },
+  "enjours": {
+   "line": "ceux",
+   "t": 23.839,
+   "end": 24.089,
+   "w": "jour."
+  },
+  "ta": {
+   "line": "prem",
+   "t": 24.404,
+   "end": 24.554,
+   "w": "Ta"
+  },
+  "n55": {
+   "line": "prem",
+   "t": 25.303,
+   "end": 25.636,
+   "w": "55"
+  },
+  "parjour": {
+   "line": "prem",
+   "t": 26.12,
+   "end": 26.353,
+   "w": "jour."
+  },
+  "lesdeux": {
+   "line": "ens",
+   "t": 26.713,
+   "end": 26.796,
+   "w": "Les"
+  },
+  "ensemble": {
+   "line": "ens",
+   "t": 26.913,
+   "end": 27.396,
+   "w": "ensemble,"
+  },
+  "trois": {
+   "line": "ens",
+   "t": 27.629,
+   "end": 27.946,
+   "w": "trois."
+  },
+  "la3": {
+   "line": "verd",
+   "t": 28.227,
+   "end": 28.41,
+   "w": "La"
+  },
+  "achetes": {
+   "line": "verd",
+   "t": 29.304,
+   "end": 29.47,
+   "w": "'achètes"
+  },
+  "jour8": {
+   "line": "verd",
+   "t": 29.587,
+   "end": 29.737,
+   "w": "jour"
+  },
+  "huit8": {
+   "line": "verd",
+   "t": 29.737,
+   "end": 29.987,
+   "w": "8."
+  },
+  "prochaine": {
+   "line": "proch",
+   "t": 30.821,
+   "end": 31.054,
+   "w": "La"
+  },
+  "dis": {
+   "line": "proch",
+   "t": 31.837,
+   "end": 32.054,
+   "w": "dis"
+  }
+ },
+ "loop": 30.3,
+ "hookB": {
+  "t": 0.1,
+  "end": 2.187,
+  "text": "Ta deuxième voiture va manger la marge de la première."
+ }
+}

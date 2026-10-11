@@ -1,0 +1,60 @@
+1
+00:00:00,100 --> 00:00:02,871
+Tu l'achètes 3 900,
+tu la revends 5 600.
+
+2
+00:00:02,911 --> 00:00:04,817
+Cette fois, ton compte
+en banque est d'accord.
+
+3
+00:00:04,867 --> 00:00:06,205
+Jour 0, tu comptes.
+
+4
+00:00:06,245 --> 00:00:08,220
+Les annonces d'à côté : 5 650.
+
+5
+00:00:08,260 --> 00:00:10,198
+Ton prix max : 3 900.
+
+6
+00:00:10,298 --> 00:00:12,790
+Pneus lisses, phares
+jaunis, rayure.
+
+7
+00:00:12,830 --> 00:00:13,623
+Il accepte.
+
+8
+00:00:13,663 --> 00:00:16,267
+Carte grise, contrôle,
+pneus : prévu.
+
+9
+00:00:16,317 --> 00:00:17,863
+Et là, ça sonne.
+
+10
+00:00:18,013 --> 00:00:19,730
+Il négocie. Tu acceptes.
+
+11
+00:00:19,770 --> 00:00:22,505
+Bénéfice : 974 euros.
+
+12
+00:00:23,322 --> 00:00:24,839
+Même le kebab était prévu.
+
+13
+00:00:25,689 --> 00:00:27,139
+Tout s'est joué au jour 0.
+
+14
+00:00:29,689 --> 00:00:31,338
+La prochaine fois que tu te dis…
+

@@ -178,3 +178,24 @@ Puis un tableau de bord Vercel avec l'entonnoir visite → analyse → compte �
 13. Rendu statique des pages publiques — §3.5
 
 Après la semaine 1, on peut viser : performance mobile ≥ 92, LCP < 2,5 s, toujours 100 ailleurs, et un entonnoir mesuré.
+
+---
+
+## État au 9 octobre 2026
+
+Fait (PR onboarding #58, pages de cote #59, chantiers de la revue) :
+- Onboarding : aperçu réel en 2 s sans compte dans le hero, inscription dans la même carte, « Premiers pas » dans l'espace (§1.3, §1.5).
+- Messages et parcours réécrits, un seul libellé « Analyser une annonce », un seul bandeau défilant (§1.2, §5).
+- Vrais chiffres de la base sur l'accueil : annonces relevées, modèles cotés (§1.1, partie chiffres).
+- SEO : canonique, titres, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage, BreadcrumbList), sitemap daté ; pages `/cote/...` (10 modèles) et `/moteur/...` (7 guides) (§2).
+- Performance : photos de la démo en 400 px pour les vignettes et les téléphones, cible navigateurs modernes (moins de polyfills) ; Clash Display et Satoshi servies par le site (Satoshi ne se chargeait pas du tout depuis Fontshare) ; onboarding automatique retiré (§3.1, §3.2).
+- Accessibilité : couleur de fond de secours, mode contraste élevé, cibles du pied de page et du lien d'évitement, nom accessible complet du titre animé, piège à focus et retour du focus dans les 5 fenêtres de l'espace (§4).
+- Mesure : événements Vercel de l'aperçu, de l'inscription, du rapport, du lancement et de la réussite des paiements (§6).
+- Sécurité : Permissions-Policy, Cross-Origin-Opener-Policy, CSP appliquée pour les règles sûres et observée (Report-Only) pour les sources (§7).
+
+Reste, et pourquoi :
+- Témoignages (§1.1) : à recueillir auprès de vrais clients, jamais inventés.
+- Bascule mensuel / annuel (§1.6) : demande de créer les prix annuels dans Stripe, décision commerciale.
+- Rendu statique des pages publiques (§3.5) : l'en-tête lit la session à chaque page ; à faire si le trafic monte.
+- CSP imposée (§7) : après une à deux semaines d'observation des rapports dans la console.
+- Protection contre les mots de passe compromis (Supabase, Authentication) et limite Apify : réglages de compte.

@@ -5,29 +5,20 @@ import { comptesActifs } from "@/lib/supabase/config";
 import { suiteSure } from "@/lib/suite";
 import { OFFRES, type OffreId } from "@/lib/offres";
 import { FormulaireCompte } from "./FormulaireCompte";
-import { ConnexionSociale, type Fournisseur } from "./ConnexionSociale";
-import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
+import { ConnexionSociale } from "./ConnexionSociale";
+import { fournisseursActifs } from "@/lib/fournisseurs";
+import { TroisTemps } from "../accueil/TroisTemps";
+import { PreuveAnimee } from "../accueil/PreuveAnimee";
 
-/** Fournisseurs de connexion activés dans Supabase (Google, Apple) : les boutons n'apparaissent que s'ils marchent. */
-async function fournisseursActifs(): Promise<Fournisseur[]> {
-  if (!SUPABASE_URL) return [];
-  try {
-    const r = await fetch(`${SUPABASE_URL}/auth/v1/settings`, { headers: { apikey: SUPABASE_CLE }, next: { revalidate: 600 } });
-    const ext = ((await r.json()) as { external?: Record<string, boolean> }).external ?? {};
-    return (["google", "apple"] as const).filter((f) => ext[f]);
-  } catch {
-    return [];
-  }
-}
-
-/** Écran commun inscription / connexion. */
+/** Écran commun inscription / connexion. À l'inscription : le parcours en 3 temps (on en est au premier)
+    et, sur ordinateur, la carte animée qui montre ce qu'on obtient juste après. */
 export async function PageCompte({ mode, params }: { mode: "inscription" | "connexion"; params: { next?: string; offre?: string; erreur?: string } }) {
   const suite = suiteSure(params.next, "/app");
   if (await compteCourant()) redirect(suite);
   const offre = params.offre && params.offre in OFFRES ? OFFRES[params.offre as OffreId] : null;
   const autre = `/${mode === "inscription" ? "connexion" : "inscription"}?next=${encodeURIComponent(suite)}${offre ? `&offre=${offre.id}` : ""}`;
   return (
-    <div className="wrap grid gap-10 py-14 lg:grid-cols-[1fr_440px] lg:items-start">
+    <div className="wrap grid gap-8 py-10 sm:py-14 lg:grid-cols-[1fr_440px] lg:items-start lg:gap-10">
       <div className="max-w-xl">
         <span className="kicker">{mode === "inscription" ? "Compte gratuit" : "Bon retour"}</span>
         <h1 className="h-sec mt-5">{mode === "inscription" ? <>Créez votre compte <span className="it">en 30 secondes</span></> : <>Connectez-vous <span className="it">à votre compte</span></>}</h1>
@@ -39,7 +30,12 @@ export async function PageCompte({ mode, params }: { mode: "inscription" | "conn
               : "Retrouvez vos analyses, vos rapports et votre formule."}
         </p>
         {mode === "inscription" && (
-          <ul className="mt-6 grid gap-2.5 text-ink-2">
+          <div className="mt-7">
+            <TroisTemps etapes={[["compte", "Votre compte"], ["lien", "Collez une annonce"], ["verdict", "Votre verdict"]]} actif={0} />
+          </div>
+        )}
+        {mode === "inscription" && (
+          <ul className="mt-7 hidden gap-2.5 text-ink-2 lg:grid">
             {["Une analyse complète offerte", "Vos analyses gardées dans votre compte", "Aucune publicité, aucune revente de données"].map((t) => (
               <li key={t} className="flex gap-2.5">
                 <span className="text-ok" aria-hidden="true">✓</span>
@@ -47,6 +43,11 @@ export async function PageCompte({ mode, params }: { mode: "inscription" | "conn
               </li>
             ))}
           </ul>
+        )}
+        {mode === "inscription" && (
+          <div className="mt-10 hidden max-w-[360px] lg:block">
+            <PreuveAnimee />
+          </div>
         )}
       </div>
       <div className="carte p-6 sm:p-8">

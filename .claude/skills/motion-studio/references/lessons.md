@@ -1,4 +1,4 @@
-# Leçons des films UTOPICAR v1 → v6
+# Leçons des films UTOPICAR (v1 → v9, MO1 → MO10, master60)
 
 À relire avant de construire. Chaque ligne est arrivée pour de vrai.
 
@@ -46,9 +46,47 @@
 | Réfs | Analyse à 0,5 s : coupes et transitions ratées | `ref-frames.py` image par image, planches 0,1 s, bandes −4…+4 images |
 | Réfs | Transcription en français forcé d'une voix anglaise : on obtient une traduction, pas les mots | Langue détectée (`--lang auto`) ; vérifier aussi que les sous-titres fournis sont bien ceux de la vidéo (réf. 5 : non) |
 | Réfs | « 4 coupes en 70 s » : le motion design enchaîne sans couper | Compter les **scènes** (corrélation basse définition sur ± 0,15 s), pas seulement les coupes : réf. 5 = 33 scènes, une toutes les 2,1 s |
+| MO5 | Brief écrit pour des particuliers alors que la cible était les débutants en achat-revente | Relire la cible du brief avant d'écrire une ligne ; « recommence à 0 » = nouveau brief, pas une retouche |
+| MO5 | Chiffre inventé (« 46 h de travail ») présenté comme vrai | Chaque chiffre sourcé ou annoncé comme exemple ; ce qu'on ne sait pas, on ne l'écrit pas |
+| MO5 | DA « trop statique, trop frontale », serif orange jugée moche | Verre, lueurs, caméra 3D, profondeur de champ, flou de bougé ; serif choisie sur planche de 7 (Fraunces) |
+| MO5 | Détourage « dégueulasse » (isnet) | BiRefNet + décontamination + liseré de lumière sur le contour (`scripts/cutout.py`) |
+| MO5 | Correspondance titre → id Mixkit fausse | Choisir sur une planche de vignettes étiquetées (`scripts/mixkit.py search --sheet`) |
+| MO5 | `decode()` parallèle de centaines d'images : « cannot be decoded » | Chargement séquentiel avec relance |
+| MO5 | Mix à −18,9 LUFS à cause des transitoires, voix à 0,4 dB de la musique | Limiteur à anticipation ; nivellement par réplique et ducking par bande (écart min 4 dB) |
+| MO5 | Une part de rendu valide supprimée par erreur après un redémarrage du conteneur | Regarder un dossier avant de le vider ; le dire tout de suite et refaire |
+| MO6 | Trois concepts refusés (conseil d'annonce, émotion sans valeur, fiche « à enregistrer ») | Envie + valeur concrète + rien de proposé + chute (`codes-attention.md`) |
+| MO6 | Prix illisibles sur la carrosserie quand la caméra zoome | Viser le point sous le texte (`y − (Y − FY)/s`) + voile sombre en haut indexé sur le zoom |
+| MO6 | Fils d'étiquettes invisibles | Un filtre SVG ne dessine pas un trait de largeur nulle : courbe `Q` |
+| MO6 | Écart de boucle 2,9 sur 255 | Bruit de caméra en rampe, fond périodique, grain modulo : 0,21 |
+| MO6 | ElevenLabs : offre gratuite coupée (« activité inhabituelle », proxy de l'environnement) en pleine étape voix | Ne pas relancer ; le dire avec le message exact ; options : abonnement, voix de l'utilisateur, ou attendre |
+| MO6 | `pkill -f sheet-mo6.mjs` a tué sa propre commande | `pkill` dans un appel séparé |
+| MO6 | Moniteur `until ! pgrep -f "render.mjs --all"` jamais terminé : il se trouvait lui-même | Attendre un fichier de sortie (ou `pgrep -f '[r]ender.mjs'`), jamais un motif présent dans la commande d'attente |
+| MO6 | Rendu final de 30 s avec verre dépoli : ≈ 2 h en 4 parties (6 à 15 s par image) | Prévenir l'utilisateur de la durée ; planches et images fixes pour tout contrôle avant |
+| MO8 | Silhouettes de voitures dessinées en SVG jugées « chiasse » | Vraies photos des modèles exacts (Wikimedia Commons, versions et générations exactes, licences notées), détourées, plaques et logos effacés, toutes tournées du même côté |
+| MO8 | Photos Pexels « proches » (mauvaise génération, mauvais modèle) refusées : « ce ne sont pas les vrais modèles » | Chercher la version exacte (moteur, génération) ; Commons a des photos par motorisation ; l'API Commons limite le débit : requêtes espacées, vignettes aux tailles standard (1920 px) |
+| MO8 | « 1.4 TSI » lu « un-quatre T-S-I » | La cylindrée se dit en litres : « un litre quatre », « un litre deux », « deux litres » (`script-voice.md`) ; ne refaire que les répliques fautives et les remonter dans la prise retenue |
+| MO8 | Repères de mots trop tôt : whisper compte le silence d'avant dans le premier mot d'une réplique | Borner chaque mot au début du son de son morceau ; repères donnés par réplique et rang, pas par indice global |
+| MO8 | Pièces 3D (Three.js en rendu logiciel) + flou de bougé : ≈ 2 h 30 pour 30 s en 4 parties (4 à 20 s par image) | Planches 0,1 s pour tout contrôle ; ne relancer le rendu final qu'une fois la voix figée |
+| MO9 | `estimate_only` a annoncé 1 052 crédits sans signaler le solde ; la génération a échoué : « This request exceeds your quota of 10000. You have 232 credits remaining, while 526 credits are required » | L'estimation ne vérifie pas le solde. Demander à l'utilisateur son solde ElevenLabs (ou générer une phrase courte) avant de promettre une prise ; ne jamais relancer après un échec de quota |
+| MO9 | faster-whisper *small* écrit « banquets », « Pneulis », « fargenis » et avale le rire `[chuckles]` dans le mot suivant (0,9 s pour « Même ») | Contrôler la prononciation avec le modèle *medium* (il relit le texte exact), sur la prise puis sur le mix ; recaler à l'enveloppe les mots que *small* étire |
+| MO9 | Rendu `--draft` à 60 i/s : ≈ 1,1 s par image, 33 min pour 30 s | Brouillon d'écoute à 30 i/s (`fps` du timeline le temps du rendu), 60 i/s pour le rendu final |
+| MO9 | Caméra qui cadre de près et calques en profondeur (`translateZ` 160-200) : « 974 € » sortait de la colonne, « MARGE » montait dans la bande du haut ; vu seulement par `qa_video.py` sur le MP4, deux rendus finaux de 40 min de plus | Dimensionner les gros chiffres avec le grossissement de la caméra la plus proche ; avant chaque rendu final, mesurer les bandes interdites sur des images fixes (`at.mjs` + seuil de luminance) aux temps où la caméra bouge |
+| master60 | Maquette validée (« la dernière est bien, anime bien les textes »), puis détour proposé (essai de 15 s, retouche du calage de la voix) : refusé | Une maquette validée se produit telle quelle ; les vérifications se font sur images fixes, sans demander de détour |
+| master60 | « Recréer pas les 2 vidéos, fait direct sound design » : retouches d'image et son demandés ensemble | Grouper les retouches, faire le son, puis **un seul** rendu final avec le mix |
+| master60 | Logo animé : creux du o, du p et du a remplis (capture de l'utilisateur) | Un seul `path` par lettre quand on découpe le mot-symbole (`techniques.md` § 14) |
+| master60 | Compteur « 50 » : le 0 rogné (capture de l'utilisateur) | Colonnes de chiffres en `clip-path: inset(0 -.35em)`, pas `overflow:hidden` |
+| master60 | Mention « Vraies annonces… » à retirer (demande de l'utilisateur) | Seulement les mentions exigées : « Données de démonstration », « Exemples chiffrés, pas une promesse de gain », option payante nommée |
+| master60 | 4 musiques demandées à 112 BPM : l'une tournait à 112,67 BPM avec 133 ms d'écart | `scripts/music-pick.py` sur chaque prise ; ne jamais caler sur le BPM demandé |
+| master60 | Musique trop forte : écart voix / musique médian de 1,4 dB avec un gain de bus fixe | Régler la musique sur l'écart visé (médiane 11 dB, minimum ≥ 5) |
+| master60 | Liens ElevenLabs expirés (HTTP 400) environ 2 h après la génération ; réponse de statut de 45 ko | `scripts/eleven-dl.py` dès la fin des générations ; liens neufs par un nouveau `creative_get_flow_run_status` |
+| master60 | Titres desktop posés à x = 96, vus à x ≈ 70 dans le MP4 | La poussée de caméra (zoom depuis le centre) élargit tout : prévoir la marge (`motion-craft.md` § 3) |
+| master60 | Aplats vides de 0,2 à 0,4 s à deux coupes (`qa_video.py`) | Le premier élément entre à la frame de coupe ; la coupe tombe sur le mot qui amène l'élément |
+| master60 | `matplotlib` absent, `sleep` bloqué dans Bash | Spectrogrammes en PIL (`music-pick.py`) ; rendus en tâche de fond, attendre la notification de fin |
 
 ## Ce qui a marché (à reprendre)
 
+- Oct. 2026 : MO5 « 47 € » publiée, plus de 6 000 vues, notre meilleur résultat (le meilleur carrousel : 1 000).
+  Sa recette est devenue le skill `recette-47`, avec un journal des résultats à compléter après chaque publication.
 - Vraie UI + curseur + surligneur sur le montant : c'est ce qui rend une démo lisible sur téléphone.
 - Chiffre géant qui tranche (7 500 €, 1 450 € sous la cote) après chaque preuve.
 - Phrases en deux graisses tapées lettre à lettre (léger gris → gras encre) ; aplat d'accent plein cadre au moment clé.
@@ -62,3 +100,20 @@
   « collés » au même niveau sur une musique à plat, jugé horrible → méthode d'ingénieur du son
   (`references/sound-design.md`). Musique : « un désastre » en synthèse ; banques libres puis morceau fourni par
   l'utilisateur, calé sur le pivot. Pixabay, ZapSplat et Sonniss sont bloqués ici : Mixkit fonctionne.
+- MO5/MO6 (vidéos d'attention) : la photo réelle de l'utilisateur détourée et redessinée à la lumière ; les textes
+  écrits lettre par lettre ; un compteur qui roule ; des raccords par la forme (disque → cadran, bouchon → loupe) ; une
+  boucle mesurée ; une chute qui relance la première phrase. Recettes : `references/techniques.md`.
+- Oct. 2026, master60 (pub « wow » de 60 s, ouvertures A débutant et B marchand, 16:9 puis 9:16). Demande de
+  l'utilisateur : « du wow, des écrans qui changent, des sous-titres écrits en gros en motion », d'après prompt-motion.com.
+  Les 4 MP4 sont livrés sans FAIL ; voici ce qui a marché :
+  - **Image** :
+    - un écran plein par idée ;
+    - la réplique écrite en géant, mot par mot sur sa syllabe ;
+    - flou de bougé directionnel par élément (60 s rendues en ≈ 4 min) ;
+    - curseur qui joue la démo ;
+    - logo animé depuis le vrai SVG.
+  - **Son** : musique et bruitages ElevenLabs choisis par mesure et posés aux repères publiés par le film, drop sur
+    « Hop ! ».
+  - **Formats** : le 9:16 vient du même code, et le 16:9 est resté identique au pixel près.
+
+  Recettes : `techniques.md` § 15–16, `sound-design.md` § 9.

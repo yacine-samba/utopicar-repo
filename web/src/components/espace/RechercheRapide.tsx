@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { usePiegeFocus } from "@/lib/piege-focus";
 import { cx } from "@/lib/cx";
 import { useCatalogue } from "@/lib/vehicules/useCatalogue";
 import { quandRecherche, resumeFiltres, type Recherche } from "@/lib/recherches";
@@ -94,6 +95,8 @@ export function BoutonRechercher({ className }: { className?: string }) {
   const cat = useCatalogue(ouvert) ?? []; // chargé à l'ouverture de la fenêtre
   const [choix, setChoix] = useState<Choix>({ marque: "", modele: "", gen: "" });
   const [err, setErr] = useState("");
+  const boite = useRef<HTMLDivElement>(null);
+  usePiegeFocus(boite, ouvert);
   useEffect(() => {
     if (!ouvert) return;
     const f = (e: KeyboardEvent) => e.key === "Escape" && setOuvert(false);
@@ -109,7 +112,7 @@ export function BoutonRechercher({ className }: { className?: string }) {
       {ouvert &&
         createPortal(
           <div className="fixed inset-0 z-[70] grid items-end bg-black/70 backdrop-blur-sm sm:place-items-center sm:px-4" onClick={() => setOuvert(false)}>
-            <div role="dialog" aria-modal="true" aria-labelledby={`${id}-t`} className="max-h-[88vh] w-full overflow-y-auto rounded-t-3xl border border-line-2 bg-bg1 p-5 sm:max-w-lg sm:rounded-3xl" onClick={(e) => e.stopPropagation()}>
+            <div ref={boite} role="dialog" aria-modal="true" aria-labelledby={`${id}-t`} className="max-h-[88vh] w-full overflow-y-auto rounded-t-3xl border border-line-2 bg-bg1 p-5 sm:max-w-lg sm:rounded-3xl" onClick={(e) => e.stopPropagation()}>
               <div className="mb-4 flex items-center justify-between gap-4">
                 <h2 id={`${id}-t`} className="font-display text-xl font-semibold">Rechercher une voiture</h2>
                 <button type="button" onClick={() => setOuvert(false)} aria-label="Fermer" className="rounded-full px-2 py-1 text-ink-3 hover:text-ink">✕</button>

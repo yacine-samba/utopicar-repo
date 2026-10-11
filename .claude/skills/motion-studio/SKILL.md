@@ -9,8 +9,17 @@ Tu diriges un studio de motion design à toi seul : directeur artistique, script
 monteur et contrôleur qualité. Le but n'est pas « une vidéo », c'est **une pub qui arrête le pouce, se comprend sans
 effort et fait agir**, livrée proprement en plusieurs déclinaisons.
 
-Ce skill vient de six films réalisés pour UTOPICAR (v1 → v6). Chaque règle ici corrige une erreur réellement commise
-ou garde une réussite réelle — `references/lessons.md` les liste. Lis-le avant de construire.
+Ce skill vient des films réalisés pour UTOPICAR : les pubs produit v1 → v9, les motions MO1 → MO10, dont les
+vidéos d'attention MO5 « 47 € » et MO6 « Ce qui se voit, ce qui se cache », et master60, la pub « wow » de 60 s
+(écrans pleins, sous-titres géants, musique et bruitages ElevenLabs, 16:9 et 9:16). Chaque règle ici corrige une erreur
+réellement commise ou garde une réussite réelle — `references/lessons.md` les liste. Lis-le avant de construire.
+
+**Deux formats.** Une **pub produit** suit le déroulé ci-dessous (phases 0 à 7). Une **vidéo d'attention** (30 s, rien
+à vendre, aucun CTA, en boucle) suit le processus en 5 étapes de `references/codes-attention.md` : brief → timeline et
+images tests → maquettage toutes les 0,1 s → voix → animation finale, avec un « OK » à chaque étape. Dans les deux cas,
+les recettes de construction sont dans `references/techniques.md`. Pour les épisodes de la série qui reprend MO5
+(> 6 000 vues, notre meilleur résultat), le skill **recette-47** décide du contenu et tient le journal des résultats ;
+ce skill-ci reste celui de la fabrication.
 
 ## Principes qui priment sur tout le reste
 
@@ -76,9 +85,22 @@ Suis `references/sound.md` : musique (ElevenLabs Music instrumentale au BPM choi
 mesurée (`beats.py`), bruitages, mix voix devant (ducking), master à −14 LUFS et plafond de travail −3,5 dBTP
 pour tenir ≤ −1 dBTP *après* l'encodage AAC, équilibre vérifié pour un haut-parleur de téléphone.
 
+Musique et bruitages générés par ElevenLabs (master60) :
+- générer en flow, 4 variations ;
+- télécharger aussitôt (`scripts/eleven-dl.py`), car les liens expirent après environ 2 h ;
+- choisir la prise par mesure (`scripts/music-pick.py`) ;
+- monter la musique mesure par mesure sur la grille de la voix ;
+- poser les bruitages aux repères que publie le film (`sound-design.md` § 9).
+
 ### Phase 5 — Construction
 
 Lire `references/fluidite.md` : caméra qui ne s'arrête jamais, chaîne sans coupe, flou de bougé réel (`MB=8`), fluidité mesurée avec `scripts/ref-motion.py` et comparée aux références.
+
+Puis `references/techniques.md` : caméra à point focal, écriture à la lumière lettre par lettre, compteurs à
+rouleaux, palettes, verre et lueurs, photo réelle détourée et abîmée par calques, radiographie, raccords par la forme,
+étiquettes reliées aux objets, vidéos réelles en séquences, boucle parfaite, planches 0,1 s, rendu parallèle. Pour une
+pub à écrans pleins et sous-titres géants : texte cinétique mot par mot, flou de bougé directionnel par élément, logo
+animé depuis le SVG, repères sonores publiés par le film (§ 15). Pour 16:9 et 9:16 tirés du même code : § 16.
 
 Film en code déterministe (`window.seek(t)`), springs fermés, vraie UI, mise en page **recomposée par format**
 (pas un recadrage), paramètres `?fmt=&lang=&hook=` — détails et pièges dans `references/motion-craft.md`.
@@ -109,7 +131,16 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 | `references/qa-delivery.md` | Phases 6 et 7 : grille de notes, contrôles, matrice de livraison, git, envoi |
 | `references/fluidite.md` | Phases 3 et 5 : ce qui rend un motion fluide (mesuré), règles, pièges, rendu avec flou de bougé |
 | `references/sound-design.md` | Phase 4 : sound design et mixage d'ingénieur du son (repérage, priorités, bandes, ducking, calage vérifié) |
-| `references/lessons.md` | Avant de construire : erreurs réelles des v1–v6 et ce qui a marché |
+| `references/techniques.md` | Phases 3 et 5 : toutes les recettes de construction (caméra, écriture à la lumière, compteurs, photo réelle, radiographie, raccords, boucle, rendu, voix, son, écrans pleins et sous-titres géants, un film pour deux formats) avec le code de référence |
+| `references/codes-attention.md` | Toute vidéo d'attention (sans produit) : processus en 5 étapes, trouver le concept, chiffres sourcés, DA, mouvement, son |
+| `references/lessons.md` | Avant de construire : erreurs réelles (v1–v9, MO1–MO6) et ce qui a marché |
 | `scripts/qa_video.py` | Sur chaque MP4 livré : `python3 scripts/qa_video.py film.mp4 --out renders/qa` |
+| `scripts/music-pick.py` | Choisir une musique générée : `python3 scripts/music-pick.py prises/*.mp3 --bpm 112 --sim 14-24` (tempo réel, stabilité, mesures, coupes possibles) |
+| `scripts/eleven-dl.py` | Télécharger les générations ElevenLabs avant expiration : `python3 scripts/eleven-dl.py statut.json --out dossier --map "fragment=type,…"` |
+| `video/scripts/cues-master60w.mjs` | Exporter les repères sonores publiés par un film (`window.cues`) vers `audio/cues-<projet>-<A|B>.json` |
+| `video/scripts/audio-master60w.py` | Mix de référence : musique ElevenLabs montée sur la grille, bruitages aux repères du film, voix devant |
 | `scripts/ref-motion.py` | Fluidité d'une référence ou de notre rendu : `python3 scripts/ref-motion.py a.mp4 b.mp4 --out dossier` |
 | `scripts/ref-frames.py` | Sur chaque référence (et sur nos prises de voix) : `python3 scripts/ref-frames.py ref.mp4 --step 0.1` |
+| `scripts/cutout.py` | Détourer une photo réelle + contour vectoriel pour un liseré de lumière : `python3 scripts/cutout.py photo.jpg dossier/` |
+| `scripts/mixkit.py` | Vidéos libres : `search … --sheet planche.jpg`, `get <ids> --out …`, `seq clip.mp4 dossier --start --dur` |
+| `video/scripts/sheet.mjs` | Planches toutes les 0,1 s d'un film : `CUT=<projet> node video/scripts/sheet.mjs 0 10` |

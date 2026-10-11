@@ -2,12 +2,13 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-/** Révèle les éléments « .apparait » quand ils entrent dans l'écran, sur toutes les pages. */
+/** Révèle les éléments « .apparait » quand ils entrent dans l'écran, sur toutes les pages.
+    « .attend » : déjà visible, mais sa scène animée attend d'être à l'écran pour se jouer. */
 export function Apparitions() {
   const chemin = usePathname();
   useEffect(() => {
     document.documentElement.dataset.anim = "";
-    const els = Array.from(document.querySelectorAll<HTMLElement>(".apparait:not(.vu)"));
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".apparait:not(.vu), .attend:not(.vu)"));
     if (!("IntersectionObserver" in window)) {
       els.forEach((e) => e.classList.add("vu"));
       return;

@@ -16,6 +16,12 @@ Tous les chiffres à l'écran sont calculés par l'outil lui-même.
 | **v6** | **`renders/9x16-chat.mp4`** | **« conversation » 60 s d'après la référence 4** : recherche tapée, phrases adressées au spectateur, anneau, essaim, fenêtre inclinée, panneaux pastel par fonction, pause noire, kaléidoscope, bouton cliqué |
 | **MO4** | **`renders/9x16-mo4.mp4`** | **motion fluide 15 s sans voix, d'après 9 références mesurées** (`docs/ref_motion_fluide.md`) : vraie interface du site et vraie annonce Clio, chaîne sans coupe (annonce → champ → bouton → fiche → prix → point orange), caméra 3D continue, doigt, flou de bougé au rendu, boucle. Brief : `brief-mo4.md` |
 
+**MO10 « Deux voitures »** (série recette 47, épisode 3) : `renders/9x16-mo10.mp4`, 32,6 s, voix de Simon (une seule
+génération ElevenLabs). Brief `brief-mo10.md`, sources et déroulé `docs/timeline-mo10.md`. Refaire :
+`python3 scripts/photos-mo10.py && python3 scripts/vo-mo10.py takeA.mp3 --retenue && CUT=mo10 node scripts/events.mjs &&
+python3 scripts/audio-mo10.py && python3 scripts/srt-mo10.py`, puis `CUT=mo10 MB=4 PARTS=4 PART=<i> node scripts/render.mjs --all`
+(4 parties en parallèle) et `CUT=mo10 PARTS=4 node scripts/render.mjs --assemble`. Séquences Mixkit : `docs/timeline-mo10.md`.
+
 Refaire MO4 : `python3 scripts/audio-mo4.py && CUT=mo4 MB=8 node scripts/render.mjs --all` (≈ 25 min : le flou de bougé capture
 8 sous-images par image sur les gestes rapides). Mesurer la fluidité d'un rendu : `python3 scripts/ref-motion.py renders/9x16-mo4.mp4 --out renders/motion`.
 
@@ -35,6 +41,9 @@ Style et plans : `docs/launch_style_guide.md`, `docs/launch_shotlist.md`. La ré
   (2 ouvertures × 2 langues × Vertical / Square / Desktop).
 - Ailleurs (claude.ai, autre dépôt) : colle **`MASTER_PROMPT.md`** (version compilée du skill ; la régénérer avec
   `python3 .claude/skills/motion-studio/scripts/build_master_prompt.py`). Paquet installable : `renders/skill/motion-studio.skill`.
+- Série « recette 47 » (même recette que MO5, plus de 6 000 vues) : tape **`/recette-47`** (skill
+  `.claude/skills/recette-47/`). Épisodes à valider : `serie-47.md`. Paquet installable : `renders/skill/recette-47.skill`.
+  Après chaque publication, donne les chiffres de TikTok Studio : ils vont dans le journal du skill.
 - Contrôle mesuré d'un MP4 : `python3 .claude/skills/motion-studio/scripts/qa_video.py renders/<film>.mp4 --out renders/qa`.
 - Rendu des déclinaisons (films qui lisent `?fmt=&lang=&hook=`) : `CUT=<projet> FMT=square VLANG=en HOOK=B node scripts/render.mjs --all`.
 - Analyse critique de la v5 : `docs/analyse_v5_explainer.md`.

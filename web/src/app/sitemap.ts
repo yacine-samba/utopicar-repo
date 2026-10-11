@@ -1,15 +1,24 @@
 import type { MetadataRoute } from "next";
+import { MOTEURS } from "@/lib/moteurs";
+import { MODELES_FIABLES } from "@/lib/analyse/fiabilite";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.utopicar.fr";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+/** Pages indexables du site. Les cotes détaillées (/cote) sont réservées aux abonnés : elles n'y figurent pas.
+    /inscription et /connexion sont en noindex : elles n'y figurent pas. */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const maj = new Date();
   return [
-    { url: `${SITE}/`, changeFrequency: "weekly", priority: 1 },
-    { url: `${SITE}/analyse`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${SITE}/benef`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${SITE}/tarifs`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE}/guide`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE}/inscription`, changeFrequency: "yearly", priority: 0.4 },
-    { url: `${SITE}/legal`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${SITE}/`, lastModified: maj, changeFrequency: "weekly", priority: 1 },
+    { url: `${SITE}/analyse`, lastModified: maj, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE}/benef`, lastModified: maj, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE}/fiabilite`, lastModified: maj, changeFrequency: "monthly", priority: 0.8 },
+    ...MODELES_FIABLES.map((m) => ({ url: `${SITE}/fiabilite/${m.slug}`, lastModified: maj, changeFrequency: "monthly" as const, priority: 0.7 })),
+    { url: `${SITE}/moteur`, lastModified: maj, changeFrequency: "monthly", priority: 0.7 },
+    ...MOTEURS.map((m) => ({ url: `${SITE}/moteur/${m.slug}`, lastModified: maj, changeFrequency: "monthly" as const, priority: 0.6 })),
+    { url: `${SITE}/tarifs`, lastModified: maj, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${SITE}/guide`, lastModified: maj, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${SITE}/methode`, lastModified: maj, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${SITE}/legal`, lastModified: maj, changeFrequency: "yearly", priority: 0.2 },
   ];
 }

@@ -1,0 +1,24 @@
+{
+  "name": "utopicar-capture-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rendu des vrais composants React de web/ hors de Next, avec des données de démonstration, pour filmer l'interface (master60).",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/construire.mjs",
+    "captures": "node scripts/captures.mjs",
+    "tout": "node scripts/construire.mjs && node scripts/captures.mjs"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@fontsource/instrument-serif": "5.3.0",
+    "@tailwindcss/cli": "4.3.3",
+    "esbuild": "0.28.2",
+    "playwright-core": "1.56.1",
+    "tailwindcss": "4.3.3"
+  }
+}

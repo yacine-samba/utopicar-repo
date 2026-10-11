@@ -1,5 +1,5 @@
 // Rendu du film : Chromium peint window.seek(t), FFmpeg encode.
-//   node scripts/render.mjs --at 3.2,3.25        images fixes → renders/stills/
+//   node scripts/render.mjs --at 3.2,3.25        images fixes → renders/stills/ (renders/stills-<CUT>/ avec CUT, idem range, contact, strip, phone)
 //   node scripts/render.mjs --range 3,5          une image par frame sur l'intervalle → renders/range/
 //   node scripts/render.mjs --sheet              contact sheet 2 img/s + une par beat → renders/contact.png, renders/beats.png
 //   node scripts/render.mjs --strip 8.3          12 frames autour de t → renders/strip.png
@@ -21,9 +21,10 @@ const CUT = process.env.CUT ? '-' + process.env.CUT : '';   // CUT=launch → ti
 // Déclinaisons (films qui les gèrent) : FMT=vertical|square|desktop, LANG=fr|en…, HOOK=A|B.
 // Le film reçoit ?fmt=&lang=&hook= et doit recomposer sa mise en page (pas un recadrage).
 const FMT = process.env.FMT || '', LANG = process.env.LANG_V || process.env.VLANG || '', HOOK = process.env.HOOK || '';
+const THEME = process.env.THEME || '';   // films qui le gèrent (master60) : THEME=blanc → ?theme=blanc, fichiers suffixés -blanc
 const SIZE = { vertical: [1080, 1920], square: [1080, 1080], desktop: [1920, 1080] }[FMT || 'vertical'];
 const TAG = { vertical: '9x16', square: '1x1', desktop: '16x9' }[FMT || 'vertical'];
-const VAR = (HOOK ? '-' + HOOK : '') + (LANG ? '-' + LANG : '');
+const VAR = (HOOK ? '-' + HOOK : '') + (LANG ? '-' + LANG : '') + (THEME ? '-' + THEME : '');
 const TL = JSON.parse(fs.readFileSync(path.join(ROOT, `timeline${CUT}.json`), 'utf8'));
 // films dont la durée dépend de l'ouverture (timeline.hooks[HOOK].dur, ex. MO3) ; poster propre à l'ouverture
 if (TL.hooks && HOOK && TL.hooks[HOOK]) { TL.dur = TL.hooks[HOOK].dur; if (TL.hooks[HOOK].poster != null) TL.poster = TL.hooks[HOOK].poster; }
@@ -48,7 +49,7 @@ const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || 
 const page = await browser.newPage({ viewport: { width: SIZE[0], height: SIZE[1] }, deviceScaleFactor: scale });
 page.on('pageerror', e => console.error('PAGEERR', e.message));
 page.on('console', m => { if (m.type() === 'error') console.error('CONSOLE', m.text()); });
-await page.goto(`${base}/film${CUT}/index.html?render=1${FMT ? '&fmt=' + FMT : ''}${LANG ? '&lang=' + LANG : ''}${HOOK ? '&hook=' + HOOK : ''}`);
+await page.goto(`${base}/film${CUT}/index.html?render=1${FMT ? '&fmt=' + FMT : ''}${LANG ? '&lang=' + LANG : ''}${HOOK ? '&hook=' + HOOK : ''}${THEME ? '&theme=' + THEME : ''}`);
 await page.waitForFunction(() => window.filmReady === true, null, { timeout: 60000 });
 
 const cdp = await page.context().newCDPSession(page);
@@ -61,7 +62,7 @@ async function frame(t, type = 'png') {
 const fmtT = t => t.toFixed(3).padStart(6, '0');
 
 async function grid(times, file, cols, cellW, label = true) {
-  const dir = path.join(OUT, '_cells'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+  const dir = path.join(OUT, `_cells${CUT}`); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
   for (let i = 0; i < times.length; i++) fs.writeFileSync(path.join(dir, `c${String(i).padStart(3, '0')}.png`), await frame(times[i]));
   const py = `
 import sys,glob
@@ -85,27 +86,27 @@ S.save(sys.argv[2])
 }
 
 if (opt('--at')) {
-  const dir = path.join(OUT, 'stills'); fs.mkdirSync(dir, { recursive: true });
-  for (const t of String(opt('--at')).split(',').map(Number)) { fs.writeFileSync(path.join(dir, `t${fmtT(t)}.png`), await frame(t)); console.log('→ stills/t' + fmtT(t) + '.png'); }
+  const dir = path.join(OUT, `stills${CUT}`); fs.mkdirSync(dir, { recursive: true });
+  for (const t of String(opt('--at')).split(',').map(Number)) { fs.writeFileSync(path.join(dir, `t${fmtT(t)}.png`), await frame(t)); console.log(`→ stills${CUT}/t` + fmtT(t) + '.png'); }
 }
 if (opt('--range')) {
-  const [a, b] = String(opt('--range')).split(',').map(Number); const dir = path.join(OUT, 'range'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+  const [a, b] = String(opt('--range')).split(',').map(Number); const dir = path.join(OUT, `range${CUT}`); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
   for (let f = Math.round(a * TL.fps); f <= Math.round(b * TL.fps); f++) fs.writeFileSync(path.join(dir, `f${String(f).padStart(4, '0')}.png`), await frame(f / TL.fps));
-  console.log('→ range/');
+  console.log(`→ range${CUT}/`);
 }
 if (opt('--sheet')) {
   const two = []; for (let t = 0; t < TL.dur; t += 0.5) two.push(+(t + 0.25).toFixed(3));
-  await grid(two, path.join(OUT, 'contact.png'), 10, 200);
+  await grid(two, path.join(OUT, `contact${CUT}.png`), 10, 200);
   let beats = []; try { beats = JSON.parse(fs.readFileSync(path.join(ROOT, `beats${CUT}.json`), 'utf8')).beats; } catch (e) { for (let t = 0; t < TL.dur; t += 60 / TL.bpm) beats.push(t); }
-  await grid(beats.map(b => +(b + 0.2).toFixed(3)).filter(b => b < TL.dur), path.join(OUT, 'beats.png'), 10, 200);
+  await grid(beats.map(b => +(b + 0.2).toFixed(3)).filter(b => b < TL.dur), path.join(OUT, `beats${CUT}.png`), 10, 200);
 }
 if (opt('--strip')) {
   const c = Number(opt('--strip')); const ts = []; for (let i = -6; i < 6; i++) ts.push(+(c + i / TL.fps).toFixed(4));
-  await grid(ts, path.join(OUT, 'strip.png'), 6, 260);
+  await grid(ts, path.join(OUT, `strip${CUT}.png`), 6, 260);
 }
 if (opt('--phone')) {
   const ts = String(opt('--phone') === true ? '0.5,1.6,3.6,4.8,6.5,8.2,9.4,10.6,11.5,14' : opt('--phone')).split(',').map(Number);
-  await grid(ts, path.join(OUT, 'phone.png'), 5, 360);
+  await grid(ts, path.join(OUT, `phone${CUT}.png`), 5, 360);
 }
 // Rendu en morceaux parallèles : PARTS=3 PART=0..2 … --all écrit renders/_parts/<film>-p<i>.mp4 (vidéo seule),
 // puis --assemble les met bout à bout (sans réencodage) avec le son, et écrit le poster.

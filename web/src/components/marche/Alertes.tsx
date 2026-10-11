@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { FicheAnnonce, type FicheData } from "@/components/espace/FicheAnnonce";
 import { cleFavori } from "@/lib/favoris";
 import { BoutonFavori } from "../espace/BoutonFavori";
 import { useNotification } from "../espace/Notification";
@@ -121,6 +122,7 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
   const [occupe, setOccupe] = useState(false);
   const [ouverte, setOuverte] = useState<string | null>(null);
   const [aConfirmer, setAConfirmer] = useState<string | null>(null);
+  const [fiche, setFiche] = useState<{ liste: AnnonceAlerte[]; i: number } | null>(null);
 
   async function faire(corps: unknown, ok?: string) {
     setOccupe(true);
@@ -348,8 +350,8 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
               {ouverte === a.id && (
                 a.annonces.length ? (
                   <ul className="grid gap-2 sm:grid-cols-2">
-                    {a.annonces.map((x) => (
-                      <li key={x.id} className="flex gap-3 rounded-xl border border-line p-2">
+                    {a.annonces.map((x, i) => (
+                      <li key={x.id} className="relative flex gap-3 rounded-xl border border-line p-2 transition hover:border-o/40">
                         {x.vignette ? (
                           // eslint-disable-next-line @next/next/no-img-element -- petite vignette servie par la route des alertes
                           <img src={vignette(x)!} alt="" width={64} height={64} className="size-16 shrink-0 rounded-lg object-cover" loading="lazy" decoding="async" />
@@ -357,13 +359,13 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
                           <span className="size-16 shrink-0 rounded-lg bg-glass" aria-hidden="true" />
                         )}
                         <span className="min-w-0 flex-1 text-sm">
-                          {x.url ? <a href={x.url} target="_blank" rel="noopener noreferrer" className="block truncate font-medium underline-offset-4 hover:underline">{x.titre}</a> : <span className="block truncate font-medium">{x.titre}</span>}
+                          <button type="button" onClick={() => setFiche({ liste: a.annonces, i })} className="block max-w-full truncate text-left font-medium after:absolute after:inset-0 after:content-['']" aria-label={`Voir la fiche : ${x.titre}`}>{x.titre}</button>
                           <b className="num">{eur(x.prix)}</b>
                           <span className="block truncate text-xs text-ink-3">{[x.annee, x.km != null ? `${x.km.toLocaleString("fr-FR")} km` : null, x.ville, quand(x.vu)].filter(Boolean).join(" · ")}</span>
                         </span>
                         <BoutonFavori
                           compact
-                          className="shrink-0 self-start"
+                          className="relative z-10 shrink-0 self-start"
                           initial={favs.has(cleFavori(x.url, `lbc:${x.id}`))}
                           onChange={(on) => (on ? favs.add(cleFavori(x.url, `lbc:${x.id}`)) : favs.delete(cleFavori(x.url, `lbc:${x.id}`)))}
                           f={{ cle: cleFavori(x.url, `lbc:${x.id}`), titre: x.titre, prix: x.prix, annee: x.annee, km: x.km, energie: x.energie, boite: x.boite, lieu: [x.ville, x.cp].filter(Boolean).join(" ") || null, url: x.url, photo: vignette(x), source: "alerte", cote: null }}
@@ -386,6 +388,11 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
           </div>
         )
       )}
+      <FicheAnnonce
+        fiches={(fiche?.liste ?? []).map((x): FicheData => ({ id: x.id, titre: x.titre, prix: x.prix, annee: x.annee, km: x.km, energie: x.energie, boite: x.boite, lieu: [x.ville, x.cp].filter(Boolean).join(" ") || null, pro: x.vendeur_type ? x.vendeur_type !== "particulier" : null, photo: vignette(x), url: x.url }))}
+        index={fiche ? fiche.i : null}
+        onIndex={(i) => setFiche((f) => (f && i != null ? { ...f, i } : null))}
+      />
     </div>
   );
 }

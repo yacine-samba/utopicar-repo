@@ -7,6 +7,7 @@ import { lienImportable } from "@/lib/analyse/import";
 import { useAnalyseEnFond } from "./AnalysesEnFond";
 import { cx, inputCls } from "@/lib/cx";
 import { Ico } from "./Icones";
+import { usePiegeFocus } from "@/lib/piege-focus";
 
 /** Bouton « Analyser une annonce » : une fenêtre s'ouvre, on colle le lien, la fenêtre se ferme et l'analyse tourne
     en arrière-plan (notification à la fin, avec le rapport). Sans formule d'analyse, il mène à la page Analyser. */
@@ -18,6 +19,8 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
   const [v, setV] = useState("");
   const [err, setErr] = useState("");
   const champ = useRef<HTMLInputElement>(null);
+  const boite = useRef<HTMLDivElement>(null);
+  usePiegeFocus(boite, ouvert);
   useEffect(() => {
     if (!ouvert) return;
     champ.current?.focus();
@@ -51,6 +54,7 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
             onClick={() => setOuvert(false)}
           >
             <div
+              ref={boite}
               role="dialog"
               aria-modal="true"
               aria-labelledby={`${id}-t`}

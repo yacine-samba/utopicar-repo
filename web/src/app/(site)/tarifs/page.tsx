@@ -7,7 +7,11 @@ import { OngletsTarifs } from "@/components/site/OngletsTarifs";
 import { compteCourant } from "@/lib/compte";
 import { BENEF, GUIDE, PARTICULIERS } from "@/lib/offres";
 
-export const metadata: Metadata = { title: "Tarifs", description: "Formules Utopicar pour les particuliers et formules Benef pour l'achat-revente. Sans engagement." };
+export const metadata: Metadata = {
+  title: "Tarifs : analyse d'annonce de voiture d'occasion, première offerte",
+  description: "Première analyse offerte sans carte bancaire, puis 4,99 € par mois ou 2,99 € l'analyse. Formules Benef pour l'achat-revente dès 14,99 € par mois. Sans engagement.",
+  alternates: { canonical: "/tarifs" },
+};
 
 export default async function Tarifs({ searchParams }: { searchParams: Promise<{ paiement?: string }> }) {
   const { paiement } = await searchParams;
@@ -52,7 +56,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           <div>
             <h2 id="t-guide" className="font-display text-2xl font-semibold">{GUIDE.nom}</h2>
             <p className="mt-2 text-ink-2">
-              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Accès à vie pour {GUIDE.prix}&nbsp;€, ou inclus dans toutes les formules Benef.
+              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Les quatre à vie pour {GUIDE.prix}&nbsp;€. Les formules Benef incluent aussi leurs guides : la première revente avec Starter, les trois guides Benef avec Croissance et Pro.
             </p>
           </div>
           <div className="grid gap-2 md:w-60">

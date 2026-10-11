@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { track } from "@vercel/analytics";
 
 /** Lance le paiement Stripe ; renvoie vers l'inscription si personne n'est connecté. */
 export function BoutonAbonner({ produit, children, className = "btn btn-o w-full" }: { produit: string; children: React.ReactNode; className?: string }) {
@@ -16,6 +17,7 @@ export function BoutonAbonner({ produit, children, className = "btn btn-o w-full
         onClick={async () => {
           setCharge(true);
           setMsg("");
+          track("paiement_lance", { produit });
           try {
             const r = await fetch("/api/stripe/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ produit }) });
             const j = await r.json().catch(() => ({}));

@@ -1,5 +1,7 @@
 /* Moteurs et boîtes à éviter, modèles fiables : liste fixe, jamais par l'IA.
-   Port de EVITER_GLOBAL / FIABLES / fiabRate de l'outil UTOPICAR Garage. */
+   Port de EVITER_GLOBAL / FIABLES / fiabRate de l'outil UTOPICAR Garage. EVITER_GLOBAL sert aux pages publiques /moteur ;
+   le classement d'une annonce passe par les fiches détaillées de connaissances.ts (années, boîtes précises, toutes gammes). */
+import { connaissancesDe, type Connu } from "./connaissances";
 
 const BOITE_FRAGILE: [RegExp, string] = [/\bedc\b|\bdsg\b|powershift|easytronic|quickshift|\bmmt\b|2-?tronic|\bbmp ?6\b|bo[iî]te manuelle pilot[eé]e|\betg ?[56]?\b|\begs\b|i-?shift|\bal4\b|\bdp0\b/, "Boîte robotisée ou automatique réputée fragile"];
 
@@ -59,22 +61,42 @@ const normEn = (s: string) => {
   return /diesel|gazole/.test(s) ? "diesel" : /hybride/.test(s) ? "hybride" : /essence/.test(s) ? "essence" : /lectrique/.test(s) ? "electrique" : /gpl/.test(s) ? "gpl" : "";
 };
 
+/* Marques concernées par chaque entrée d'EVITER_GLOBAL (même ordre) ; vide : toutes les marques. Sert aux pages de cote. */
+const MARQUES_EVITER: string[][] = [["peugeot", "citroen", "ds", "opel"], ["peugeot", "citroen", "ds", "mini"], ["peugeot", "citroen", "mini"], ["ford"], ["renault", "dacia", "nissan", "mercedes"], ["toyota"], []];
+
+/** Fiche d'un modèle de la liste fiable (pages publiques de cote), si sa tranche d'années recoupe celle de la page. */
+export function fiabiliteModele(nom: string, y0: number, y1: number) {
+  const t = flatA(nom);
+  const id = FIAB_RE.find(([, b, m]) => (!b || b.test(t)) && m.test(t))?.[0];
+  const e = id ? FIABLES.find((x) => x.id === id) : null;
+  if (!e || e.ans[1] < y0 || e.ans[0] > y1) return null;
+  return { nom: e.nom, bons: e.bons, verif: e.verif, pourquoi: e.pourquoi, ans: e.ans, km: e.km, aEviter: e.ev.map(([, why]) => why) };
+}
+
+/** Moteurs et boîtes signalés par l'outil pour une marque (boîtes robotisées : toutes les marques). */
+export const aEviterPour = (marque: string) =>
+  EVITER_GLOBAL.map(([, why], i) => ({ texte: why, index: i })).filter((x) => !MARQUES_EVITER[x.index].length || MARQUES_EVITER[x.index].includes(flatA(marque)));
+
 export type Fiabilite = {
   k: "fiable" | "limite" | "eviter" | "hors";
   modele: string | null;
   bonsMoteurs: string | null;
   aVerifier: string | null;
   pourquoi: string[];
+  /** Réputation du moteur, de la boîte et de la batterie reconnus dans l'annonce (toutes gammes, voir connaissances.ts). */
+  connus?: Connu[];
 };
 
-/** Classement : fiable, limite (hors tranche), à éviter (moteur ou boîte), hors liste. */
-export function fiabilite(a: { texte: string; annee: number | null; km: number | null; energie: string }): Fiabilite {
+/** Classement : fiable, limite (hors tranche), à éviter (moteur ou boîte), hors liste.
+    « Hors liste » ne pénalise rien : la liste fiable ne couvre que des citadines, les autres voitures sont jugées
+    sur la réputation de leur moteur et de leur boîte. « À éviter » ne vient que d'une fiche précise (année comprise). */
+export function fiabilite(a: { texte: string; annee: number | null; km: number | null; energie: string; titre?: string }): Fiabilite {
   const t = flatA(a.texte.slice(0, 2500));
   const id = FIAB_RE.find(([, b, m]) => (!b || b.test(t)) && m.test(t))?.[0];
   const e = id ? FIABLES.find((x) => x.id === id) ?? null : null;
-  const base = { modele: e?.nom ?? null, bonsMoteurs: e?.bons ?? null, aVerifier: e?.verif ?? null };
-  const bad: string[] = [];
-  EVITER_GLOBAL.forEach(([re, why]) => { if (re.test(t)) bad.push(why); });
+  const connus = connaissancesDe({ texte: a.texte, titre: a.titre, annee: a.annee, km: a.km, energie: a.energie });
+  const base = { modele: e?.nom ?? null, bonsMoteurs: e?.bons ?? null, aVerifier: e?.verif ?? null, connus };
+  const bad: string[] = connus.filter((c) => c.avis === "eviter").map((c) => `${c.nom} : ${c.detail.charAt(0).toLowerCase()}${c.detail.slice(1).replace(/\.$/, "")}`);
   if (e) e.ev.forEach(([re, why, maxY]) => { if (re.test(t) && (!maxY || !a.annee || a.annee <= maxY)) bad.push(why); });
   if (bad.length) return { k: "eviter", ...base, pourquoi: [...new Set(bad)] };
   if (!e) return { k: "hors", ...base, pourquoi: [] };
@@ -85,3 +107,21 @@ export function fiabilite(a: { texte: string; annee: number | null; km: number |
   if (a.km && a.km > e.km) why.push(`${a.km.toLocaleString("fr-FR")} km, au-delà de ${e.km.toLocaleString("fr-FR")} km`);
   return { k: why.length ? "limite" : "fiable", ...base, pourquoi: why.length ? why : [e.pourquoi] };
 }
+
+/** Les modèles fiables de la liste, pour les pages publiques « Fiabilité » (aucun prix : seulement la liste fixe de l'outil). */
+export type ModeleFiable = { slug: string; nom: string; marque: string; ans: [number, number]; km: number; en: string[]; bons: string; aEviter: string[]; pourquoi: string; verif: string };
+const slugModele = (nom: string) =>
+  flatA(nom).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+export const MODELES_FIABLES: ModeleFiable[] = FIABLES.map((f) => ({
+  slug: slugModele(f.nom),
+  nom: f.nom,
+  marque: f.nom.split(" ")[0],
+  ans: f.ans,
+  km: f.km,
+  en: f.en,
+  bons: f.bons,
+  aEviter: f.ev.map(([, why]) => why),
+  pourquoi: f.pourquoi,
+  verif: f.verif,
+}));
+export const modeleFiable = (slug: string) => MODELES_FIABLES.find((m) => m.slug === slug) ?? null;

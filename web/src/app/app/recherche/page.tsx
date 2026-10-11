@@ -1,8 +1,10 @@
 import { compteBenef } from "@/lib/benef";
+import { codeVerdict, valeursStockees, VERDICTS, type VerdictCode } from "@/lib/analyse/verdicts";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { VerrouBenef } from "@/components/benef/Verrou";
 import { ListeRapports } from "@/components/benef/ListeRapports";
 import { ExportCsv } from "@/components/benef/ExportCsv";
+import Link from "next/link";
 import { cx, inputCls } from "@/lib/cx";
 import { catalogue } from "@/lib/vehicules/catalogue";
 import { RechercheMarche } from "@/components/marche/RechercheMarche";
@@ -24,7 +26,7 @@ function nomsCatalogue(): NomsCatalogue {
   return noms;
 }
 
-const VERDICTS = ["GO", "GO SI NÉGOCIÉ", "GO EN MANDAT UNIQUEMENT", "À SURVEILLER", "NO GO"];
+const CODES = Object.keys(VERDICTS) as VerdictCode[];
 type Filtres = { vue?: string; q?: string; marque?: string; modele?: string; gen?: string; r?: string; j?: string; verdict?: string; marge?: string; prix?: string; depuis?: string };
 const entier = (s?: string) => (s && /^\d{1,7}$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
 
@@ -68,7 +70,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   if (f.vue === "annonces") {
     const sb = await supabaseServeur();
     const [{ data: annonces }, { data: favs }] = await Promise.all([
-      sb.from("annonces_trouvees").select("cle, titre, prix, annee, km, ch, energie, boite, moteur, version, lieu, url, marque, modele, gen, gen_label, pro, cote, recherche, premiere_le, derniere_le").order("derniere_le", { ascending: false }).limit(5000),
+      sb.from("annonces_trouvees").select("cle, titre, prix, annee, km, ch, energie, boite, moteur, version, lieu, url, marque, modele, gen, gen_label, pro, cote, recherche, premiere_le, derniere_le, photo").order("derniere_le", { ascending: false }).limit(5000),
       sb.from("favoris").select("cle").limit(2000),
     ]);
     return (
@@ -99,7 +101,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
   const texte = (f.q ?? "").replace(/[%_,()]/g, " ").trim().slice(0, 60);
   if (texte) q = q.ilike("titre", `%${texte}%`);
   if (f.marque) q = q.ilike("marque", f.marque.replace(/[%_,()]/g, "").slice(0, 40));
-  if (f.verdict && VERDICTS.includes(f.verdict)) q = q.eq("verdict", f.verdict);
+  const code = codeVerdict(f.verdict);
+  if (code) q = q.in("verdict", valeursStockees(code));
   if (entier(f.marge) != null) q = q.gte("marge", entier(f.marge)!);
   if (entier(f.prix) != null) q = q.lte("prix", entier(f.prix)!);
   if (f.depuis && /^\d{4}-\d{2}-\d{2}$/.test(f.depuis)) q = q.gte("created_at", f.depuis);
@@ -129,8 +132,10 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
           <span className="text-ink-2">Verdict</span>
           <select name="verdict" defaultValue={f.verdict ?? ""} className={inputCls}>
             <option value="">Tous</option>
-            {VERDICTS.map((v) => (
-              <option key={v}>{v}</option>
+            {CODES.map((v) => (
+              <option key={v} value={VERDICTS[v].l}>
+                {VERDICTS[v].l}
+              </option>
             ))}
           </select>
         </label>
@@ -167,7 +172,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
 }
 
 function EnTete({ vue }: { vue: "marche" | "historique" | "annonces" | "rapports" }) {
-  const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
+  const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-center text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
   const sous = { marche: "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération.", historique: "Vos recherches, leurs photos et leurs résultats gardés. Une alerte e-mail s'allume sur chaque recherche.", annonces: "Toutes les annonces trouvées par vos recherches, gardées pour toujours.", rapports: "Vos rapports enregistrés, par verdict, marge, prix ou période." }[vue];
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
@@ -175,14 +180,13 @@ function EnTete({ vue }: { vue: "marche" | "historique" | "annonces" | "rapports
         <h1 className="font-display text-3xl font-semibold">Recherche</h1>
         <p className="mt-1 text-ink-2">{sous}</p>
       </div>
-      <div className="flex max-w-full flex-wrap items-center gap-2">
-      <a href="/app/recherche?vue=chercher" className="btn btn-o btn-sm gap-2"><span aria-hidden="true">+</span> Chercher une annonce</a>
-      <nav aria-label="Type de recherche" className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-line p-1">
-        <a href="/app/recherche" aria-current={vue === "historique" ? "page" : undefined} className={onglet(vue === "historique")}>Mes recherches</a>
-        <a href="/app/recherche?vue=annonces" aria-current={vue === "annonces" ? "page" : undefined} className={onglet(vue === "annonces")}>Annonces trouvées</a>
-        <a href="/app/recherche?vue=rapports" aria-current={vue === "rapports" ? "page" : undefined} className={onglet(vue === "rapports")}>Mes rapports</a>
+      {/* Un seul jeu d'onglets : « Chercher » est l'un d'eux, toujours visible comme actif quand le formulaire est ouvert. */}
+      <nav aria-label="Recherche" className="grid w-full grid-cols-2 gap-1 rounded-3xl border border-line p-1 sm:flex sm:w-auto sm:max-w-full sm:overflow-x-auto sm:rounded-full">
+        <Link href="/app/recherche?vue=chercher" aria-current={vue === "marche" ? "page" : undefined} className={onglet(vue === "marche")}>Chercher</Link>
+        <Link href="/app/recherche" aria-current={vue === "historique" ? "page" : undefined} className={onglet(vue === "historique")}>Mes recherches</Link>
+        <Link href="/app/recherche?vue=annonces" aria-current={vue === "annonces" ? "page" : undefined} className={onglet(vue === "annonces")}>Annonces trouvées</Link>
+        <Link href="/app/recherche?vue=rapports" aria-current={vue === "rapports" ? "page" : undefined} className={onglet(vue === "rapports")}>Mes rapports</Link>
       </nav>
-      </div>
     </div>
   );
 }
