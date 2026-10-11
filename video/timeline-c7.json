@@ -1,0 +1,65 @@
+{
+ "version": 1,
+ "style": "Motions de 15 à 20 s (dictionnaire du vendeur, carrousels A01 à A07) dans la grammaire master60w ; HOOK = id de la vidéo",
+ "fps": 30,
+ "bpm": 112,
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 20.0,
+ "hooks": {
+  "dico2": {
+   "dur": 20.0,
+   "poster": 1.9
+  },
+  "A01": {
+   "dur": 20.0,
+   "poster": 1.6
+  },
+  "A02": {
+   "dur": 18.4,
+   "poster": 3.2
+  },
+  "A03": {
+   "dur": 17.0,
+   "poster": 1.9
+  },
+  "A04": {
+   "dur": 17.2,
+   "poster": 2.1
+  },
+  "A05": {
+   "dur": 19.4,
+   "poster": 2.2
+  },
+  "A06": {
+   "dur": 16.1,
+   "poster": 2.1
+  },
+  "A07": {
+   "dur": 18.8,
+   "poster": 2.0
+  },
+  "PS1": {
+   "dur": 19.4,
+   "poster": 3.4
+  },
+  "PS2": {
+   "dur": 26.0,
+   "poster": 8.8
+  },
+  "FI1": {
+   "dur": 7.9,
+   "poster": 0.0
+  },
+  "FI2": {
+   "dur": 7.8,
+   "poster": 0.0
+  },
+  "FI3": {
+   "dur": 7.95,
+   "poster": 0.0
+  }
+ }
+}

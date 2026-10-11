@@ -6,6 +6,7 @@ import { compteCourant } from "@/lib/compte";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { guidesPour, GUIDES } from "@/lib/guides";
 import { OptionMessages } from "@/components/compte/OptionMessages";
+import { ChampCode } from "@/components/compte/CodeOffert";
 import { familleEspace, nomFormule } from "@/lib/espace";
 import { BENEF, PARTICULIERS, prixTxt } from "@/lib/offres";
 import { confirmerRetour } from "@/lib/stripe-synchro";
@@ -195,6 +196,16 @@ export default async function Compte({
                 {compte.credits ? "Voir mes crédits" : "Acheter des crédits"}
               </Link>
             </p>
+          </div>
+        )}
+        {!compte.illimite && (
+          <div className="mt-6 border-t border-line pt-5">
+            {compte.codeBenef > 0 && (
+              <p className="mb-3 text-sm">
+                Analyses Benef offertes par code : <b className="num">{compte.codeBenef}</b>
+              </p>
+            )}
+            <ChampCode />
           </div>
         )}
         {aboActif && (

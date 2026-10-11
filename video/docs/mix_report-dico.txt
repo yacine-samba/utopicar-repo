@@ -1,0 +1,10 @@
+dico · -14.0 LUFS intégrés, true peak -3.6 dBTP
+bruitages posés : 41 · retirés pour collision : 2 (pop@19.43, whoosh@24.46)
+écart voix / musique par phrase : min 8.2 dB, médiane 11.0 dB (14 phrases)
+attaque premier temps (image 0)  prévue   0.00 s, mesurée   0.02 s (+24 ms)
+attaque drop « bam »             prévue  24.46 s, mesurée  24.46 s (-1 ms)
+attaque coup final (logo)        prévue  30.89 s, mesurée  30.88 s (-9 ms)
+RMS phrases              mix  -16.4  musique  -23.7 dBFS
+RMS silence pfff → bam   mix  -15.5  musique -179.8 dBFS
+RMS drop                 mix  -16.6  musique  -21.3 dBFS
+RMS logo final           mix  -22.8  musique  -22.9 dBFS

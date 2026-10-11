@@ -1,0 +1,9 @@
+c7 A04 · -14.0 LUFS intégrés, true peak -3.7 dBTP
+bruitages posés : 16 · retirés pour collision : 1 (pop@14.76)
+écart voix / musique par phrase : min 8.0 dB, médiane 11.0 dB (6 phrases)
+attaque premier temps (image 0)  prévue   0.00 s, mesurée   0.02 s (+24 ms)
+attaque drop                     prévue  11.86 s, mesurée  11.86 s (-1 ms)
+attaque coup final (carton)      prévue  14.76 s, mesurée  14.76 s (+0 ms)
+RMS avant arrêt          mix  -16.9  musique  -23.7 dBFS
+RMS drop                 mix  -16.4  musique  -20.8 dBFS
+RMS carton final         mix  -19.6  musique  -24.7 dBFS

@@ -35,7 +35,11 @@ export type Compte = {
   restantesFormule: number;
   /** Crédits achetés à l'unité, utilisés quand la formule est épuisée. */
   credits: number;
-  /** Total disponible : formule puis crédits. */
+  /** Analyses Benef offertes par un code (TIKTOK…) encore disponibles. */
+  codeBenef: number;
+  /** Un code a été utilisé sur ce compte : l'espace passe en Benef, analyses au niveau Starter. */
+  code: boolean;
+  /** Total disponible : formule, puis code, puis crédits. */
   restantes: number;
   /** Favoris affichés (paramètres d'accessibilité, désactivés par défaut). */
   favoris: boolean;
@@ -56,7 +60,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     data: { user },
   } = await sb.auth.getUser();
   if (!user) return null;
-  const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }, { data: messages }, { data: droitsAdmin }] = await Promise.all([
+  const [{ data: profil }, { data: abo }, { data: achats }, { data: credits }, { count: achatsCredits }, { data: messages }, { data: droitsAdmin }, { data: soldeCode }, { count: codesUtilises }] = await Promise.all([
     sb.from("profils").select("prenom, nom, famille, ville, formule_offerte, offerte_jusqu_au, illimite, reglages").eq("id", user.id).maybeSingle(),
     sb.from("abonnements").select("offre, statut, periode_fin, annule_fin_periode").eq("user_id", user.id).maybeSingle(),
     sb.from("achats").select("produit, stripe_session_id").eq("user_id", user.id),
@@ -65,19 +69,33 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     sb.rpc("option_active", { p_uid: user.id, p_option: "messages" }),
     // à part : tant que la colonne admin n'existe pas, cette lecture échoue seule sans bloquer le profil
     sb.from("profils").select("admin").eq("id", user.id).maybeSingle(),
+    // codes offerts (migration 20261011120000) : tant qu'elle n'est pas appliquée, ces lectures échouent seules et valent 0
+    sb.rpc("mon_code_solde"),
+    sb.from("codes_utilises").select("code", { count: "exact", head: true }).eq("user_id", user.id),
   ]);
   const actif = abo && STATUTS_ACTIFS.includes(abo.statut);
   const aujourdhui = new Date().toISOString().slice(0, 10);
   const offerte = profil?.formule_offerte && (!profil.offerte_jusqu_au || profil.offerte_jusqu_au >= aujourdhui) ? (profil.formule_offerte as string) : null;
   const illimite = !!profil?.illimite;
   let o = illimite ? ILLIMITE : offre(offerte ?? (actif ? abo.offre : "gratuit"));
-  const { count } = await sb.from("usages").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", debutPeriode(o));
-  const utilisees = count ?? 0;
+  const [{ count }, { count: parCode }] = await Promise.all([
+    sb.from("usages").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", debutPeriode(o)),
+    sb.from("usages").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("par_code", true).gte("created_at", debutPeriode(o)),
+  ]);
+  // les analyses payées par un code ne comptent pas dans le quota de la formule
+  const utilisees = Math.max(0, (count ?? 0) - (parCode ?? 0));
   const restantesFormule = Math.max(0, o.analyses - utilisees);
   const solde = typeof credits === "number" ? credits : 0;
   // Formule Découverte avec des crédits achetés : historique comme Essentiel, et les analyses payées par crédit ont son niveau.
   if (!illimite && o.prix === 0 && (achatsCredits ?? 0) > 0) o = { ...o, historique: OFFRES.essentiel.historique };
   if (!illimite && o.prix === 0 && restantesFormule <= 0 && solde > 0) o = { ...o, detail: NIVEAU_CREDIT.detail, photos: Math.max(o.photos, NIVEAU_CREDIT.photos) };
+  // Formule Découverte et code utilisé (TIKTOK…) : espace Benef, analyses au niveau Starter (marge nette, prix d'offre, prix max)
+  const codeBenef = typeof soldeCode === "number" ? soldeCode : 0;
+  const code = !illimite && !offerte && o.prix === 0 && (codesUtilises ?? 0) > 0;
+  if (code) {
+    const s = OFFRES.starter;
+    o = { ...o, famille: "benef", detail: "complet", photos: Math.max(o.photos, s.photos), historique: Math.max(o.historique, s.historique), tableauDeBord: "simple" };
+  }
   // les quatre guides (« guide ») seulement après un vrai paiement Stripe ; les guides offerts un par un sont « guide:<id> »
   const produits = (achats ?? []).filter((a) => a.produit !== "guide" || !!a.stripe_session_id).map((a) => a.produit);
   const guides = guidesOuverts(illimite, o.id, produits);
@@ -98,7 +116,9 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     utilisees,
     restantesFormule,
     credits: solde,
-    restantes: restantesFormule + solde,
+    codeBenef,
+    code,
+    restantes: restantesFormule + codeBenef + solde,
     favoris: (profil?.reglages as { favoris?: boolean } | null)?.favoris === true,
     messages: messages === true,
     // sans questionnaire : le profil de l'espace affiché (Benef si la formule ou l'usage l'est)
