@@ -641,3 +641,18 @@ select option:disabled {
     stroke-dashoffset: 100;
   }
 }
+
+/* carte de l'en-tête pendant l'analyse : le balayage tourne en boucle */
+.balayage-boucle {
+  animation: balaye 1.6s var(--ease-doux) infinite;
+}
+:root[data-calme] .balayage-boucle {
+  animation: none;
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .balayage-boucle {
+    animation: none;
+    display: none;
+  }
+}

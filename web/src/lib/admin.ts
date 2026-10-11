@@ -72,6 +72,16 @@ export async function donneesAdmin() {
     sb.from("landing_leads").select("id, email, prenom, site, objectif, guide, budget, source, created_at, email_envoye, email_confirme, ouvertures, dernier_envoi, desinscrit").order("created_at", { ascending: false }).limit(500),
     sb.from("journal_admin").select("id, action, cible, details, created_at").order("created_at", { ascending: false }).limit(30),
   ]);
+  // analyses faites par les comptes (une ligne de « usages » par analyse complète), comptées sans tout charger
+  const depuis = (j: number) => new Date(Date.now() - j * 86400_000).toISOString();
+  const nb = async (gte?: string) => {
+    let q = sb.from("usages").select("user_id", { count: "exact", head: true });
+    if (gte) q = q.gte("created_at", gte);
+    return (await q).count ?? 0;
+  };
+  const [aTotal, aJour, a7, aMois] = await Promise.all([nb(), nb(depuis(1)), nb(depuis(7)), nb(debutMois())]);
+  const analyses = { total: aTotal, jour: aJour, sept: a7, mois: aMois };
+
   if (profils.error) throw new Error(`profils : ${profils.error.message}`);
 
   const parUser = <T extends { user_id: string }>(l: T[] | null) => {
@@ -132,6 +142,7 @@ export async function donneesAdmin() {
   return {
     comptes,
     inscrits,
+    analyses,
     journal: (journal.data ?? []).map((j): JournalAdmin => ({ id: j.id, action: j.action, cible: j.cible, details: (j.details as Record<string, unknown>) ?? {}, le: j.created_at })),
   };
 }
