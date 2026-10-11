@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>utopicar — carrousels de conversion (mode clair)</title>
+<style>
+/* Charte du site utopicar.fr (branche main, web/src/app/globals.css) : fond sombre chaud, orange en accent,
+   Clash Display (titres) + Satoshi (texte) + Instrument Serif italique (le mot mis en avant). */
+@font-face{font-family:'Clash Display';font-weight:500;src:url(../assets/fonts-site/ClashDisplay-500.woff2) format('woff2')}
+@font-face{font-family:'Clash Display';font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:'Clash Display';font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:400;src:url(../assets/fonts-site/Satoshi-400.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:900;src:url(../assets/fonts-site/Satoshi-900.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#f7f2ea}
+:root{--bg0:#0b0a09;--bg1:#17100b;--ink:#f4f1ec;--ink2:rgba(244,241,236,.8);--ink3:rgba(244,241,236,.62);--line:rgba(244,241,236,.1);--line2:rgba(244,241,236,.2);
+  --glass:rgba(244,241,236,.05);--panel:rgba(22,16,12,.72);--o:#ff5a1f;--o2:#ff8a4c;--o3:#ffb38a;--ok:#3ecb7f;--warn:#ffc53d;--bad:#ff7a7a}
+#s{position:absolute;inset:0;overflow:hidden;color:var(--ink);font-family:'Satoshi',sans-serif;-webkit-font-smoothing:antialiased;
+  background:linear-gradient(160deg,var(--bg0),var(--bg1) 60%,var(--bg0))}
+#glow{position:absolute;inset:0;pointer-events:none}
+#grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 2px,transparent 2px),linear-gradient(90deg,var(--line) 2px,transparent 2px);
+  background-size:120px 120px;background-position:0 0;opacity:.45;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 80%)}
+/* colonne sûre TikTok : x 140 → 940, y 220 → 1480 */
+#safe{position:absolute;left:140px;width:800px;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:46px;text-align:center}
+.brand{position:absolute;left:140px;top:232px;width:800px;display:flex;justify-content:center;align-items:center;gap:18px}
+.tile{display:grid;place-items:center;width:72px;height:72px;border-radius:20px;border:2px solid var(--line2);background:#15110d;overflow:hidden}
+.tile img{width:84%}
+.brand b{font-family:'Clash Display';font-weight:600;font-size:40px;letter-spacing:-.01em}
+.brand .pg{font-weight:500;font-size:30px;color:var(--ink3);margin-left:6px}
+.kicker.k1{font-size:46px;padding:16px 34px}
+.kicker{display:inline-flex;align-items:center;gap:16px;padding:14px 28px;border:2px solid var(--line2);border-radius:999px;background:var(--glass);font-weight:500;font-size:36px;color:var(--ink2);white-space:nowrap}
+.kicker::before{content:'';width:14px;height:14px;border-radius:50%;background:var(--o);box-shadow:0 0 22px var(--o)}
+.title{font-family:'Clash Display';font-weight:600;letter-spacing:-.012em;word-spacing:.04em;line-height:1.04;color:var(--ink);white-space:nowrap}
+.it{font-family:'Instrument Serif';font-style:italic;font-weight:400;letter-spacing:0;padding-right:.06em;
+  background:linear-gradient(100deg,var(--o2),var(--o3) 60%,var(--o2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.title .r,.r{color:var(--bad)}.title .g,.g{color:var(--ok)}
+.body{font-weight:500;font-size:52px;line-height:1.3;color:var(--ink2);max-width:800px;text-wrap:balance}
+.body b{font-weight:700;color:var(--ink)}
+.carte{width:800px;border:2px solid var(--line);border-radius:44px;background:var(--panel);padding:44px 48px;text-align:left;box-shadow:0 60px 120px -60px rgba(0,0,0,.8)}
+.lab{font-weight:500;font-size:32px;color:var(--o2);margin-bottom:22px}
+/* liste numérotée */
+.list{display:flex;flex-direction:column;gap:30px;width:800px;text-align:left}
+.list .li{display:flex;gap:30px;align-items:flex-start}
+.list .n{flex:none;width:84px;height:84px;border-radius:26px;border:2px solid rgba(255,90,31,.45);background:rgba(255,90,31,.1);color:var(--o2);
+  font-family:'Clash Display';font-weight:600;font-size:48px;display:grid;place-items:center}
+.list .t{font-weight:700;font-size:52px;line-height:1.18;color:var(--ink);padding-top:10px}
+.list .t small{display:block;font-weight:500;font-size:41px;color:var(--ink3);margin-top:8px;line-height:1.25}
+/* lignes à cocher : libellé + statut */
+.rows{display:flex;flex-direction:column}
+.row{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:26px 0;border-top:2px solid var(--line);font-weight:500;font-size:46px;color:var(--ink2)}
+.row:first-child{border-top:0;padding-top:4px}.row:last-child{padding-bottom:0}
+.row b{font-weight:700;white-space:nowrap}
+.st{flex:none;font-weight:700;font-size:34px;padding:8px 22px;border-radius:999px;white-space:nowrap}
+.st.ok{color:var(--ok);background:rgba(62,203,127,.12);border:2px solid rgba(62,203,127,.35)}
+.st.warn{color:var(--warn);background:rgba(255,197,61,.1);border:2px solid rgba(255,197,61,.35)}
+.st.bad{color:var(--bad);background:rgba(255,122,122,.1);border:2px solid rgba(255,122,122,.35)}
+/* pastilles moteurs */
+.pills{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;width:800px}
+.pill{font-weight:700;font-size:40px;padding:14px 28px;border-radius:999px;white-space:nowrap}
+.pill.ok{color:var(--ok);background:rgba(62,203,127,.1);border:2px solid rgba(62,203,127,.4)}
+.pill.bad{color:var(--bad);background:rgba(255,122,122,.1);border:2px solid rgba(255,122,122,.4)}
+.pill.neu{color:var(--ink);background:var(--glass);border:2px solid var(--line2)}
+.pill.warn{color:var(--warn);background:rgba(255,197,61,.1);border:2px solid rgba(255,197,61,.4)}
+/* annonce citée */
+.quote{font-weight:500;font-size:50px;line-height:1.45;color:var(--ink2)}
+.quote mark{background:rgba(255,122,122,.2);color:var(--ink);border-radius:10px;padding:0 8px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.quote mark.ok{background:rgba(62,203,127,.18)}
+/* ticket de frais */
+.tk .row{font-size:44px}
+.tk .row span:last-child{font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.tk .tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:22px;padding-top:26px;border-top:3px dashed var(--line2)}
+.tk .tot span{font-weight:700;font-size:40px}
+.tk .tot b{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.02em;white-space:nowrap;font-variant-numeric:tabular-nums}
+/* verdict */
+.vd{display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center}
+.vd .chip{font-family:'Clash Display';font-weight:600;font-size:84px;letter-spacing:-.02em;padding:16px 48px;border-radius:999px;white-space:nowrap}
+.vd .chip.ok{color:var(--ok);background:rgba(62,203,127,.12);border:3px solid rgba(62,203,127,.45)}
+.vd .chip.warn{color:var(--warn);background:rgba(255,197,61,.1);border:3px solid rgba(255,197,61,.4)}
+.vd .chip.bad{color:var(--bad);background:rgba(255,122,122,.1);border:3px solid rgba(255,122,122,.45)}
+.vd .sub{font-weight:500;font-size:46px;line-height:1.3;color:var(--ink2)}
+.vd .sub b{color:var(--ink);font-weight:700}
+/* cote : fourchette du marché + annonce */
+.cote .bar{position:relative;height:30px;border-radius:15px;margin:96px 10px 28px;background:linear-gradient(90deg,rgba(62,203,127,.5),rgba(255,197,61,.5) 50%,rgba(255,122,122,.55))}
+.cote .mk{position:absolute;top:50%;transform:translate(-50%,-50%)}
+.cote .mk i{display:block;width:6px;height:72px;border-radius:3px;background:var(--ink)}
+.cote .dot{position:absolute;top:50%;width:52px;height:52px;border-radius:50%;background:var(--o);border:6px solid #17100b;box-shadow:0 0 30px rgba(255,90,31,.8);transform:translate(-50%,-50%)}
+.cote .tag{position:absolute;bottom:58px;transform:translateX(-50%);white-space:nowrap;font-weight:700;font-size:36px}
+.cote .ends{display:flex;justify-content:space-between;font-weight:500;font-size:32px;color:var(--ink3)}
+/* conversation */
+.chat{display:flex;flex-direction:column;gap:22px;width:800px}
+.bub{max-width:660px;padding:26px 34px;border-radius:36px;font-weight:500;font-size:46px;line-height:1.3;text-align:left}
+.bub.v{align-self:flex-start;background:var(--glass);border:2px solid var(--line2);border-bottom-left-radius:10px;color:var(--ink)}
+.bub.m{align-self:flex-end;background:rgba(255,90,31,.16);border:2px solid rgba(255,90,31,.45);border-bottom-right-radius:10px;color:var(--ink)}
+.who{font-weight:500;font-size:28px;color:var(--ink3);margin-bottom:4px}
+.bub.m .who{color:var(--o3)}
+/* notification d'alerte */
+.nt{display:flex;gap:30px;align-items:flex-start}
+.nt .ic{flex:none;width:100px;height:100px;border-radius:28px;border:2px solid var(--line2);background:#15110d;display:grid;place-items:center}
+.nt .ic img{width:84%}
+.nt .h{display:flex;justify-content:space-between;font-weight:500;font-size:30px;color:var(--ink3)}
+.nt .t1{font-weight:700;font-size:42px;margin-top:6px;line-height:1.2}
+.nt .t2{font-weight:500;font-size:38px;color:var(--ink2);margin-top:8px}
+/* grand chiffre */
+.big{font-family:'Clash Display';font-weight:600;font-size:260px;letter-spacing:-.04em;line-height:.95;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bigcap{font-weight:500;font-size:46px;color:var(--ink2);margin-top:10px}
+/* avant / maintenant */
+.vs{display:flex;gap:24px;width:800px}
+.vs .carte{width:388px;padding:36px 34px}
+.vs h4{font-family:'Clash Display';font-weight:600;font-size:46px;margin-bottom:18px}
+.vs .a h4{color:var(--ink3)}.vs .b h4{color:var(--o2)}.vs .b{border-color:rgba(255,90,31,.4)}
+.vs p{font-weight:500;font-size:36px;line-height:1.3;color:var(--ink2);padding:14px 0;border-top:2px solid var(--line)}
+.vs p:first-of-type{border-top:0;padding-top:0}
+/* frise horaire */
+.tl{display:flex;flex-direction:column;width:800px;text-align:left}
+.tl .e{display:flex;gap:30px;padding-bottom:34px;position:relative}
+.tl .e::before{content:'';position:absolute;left:23px;top:50px;bottom:0;width:4px;background:var(--line2)}
+.tl .e:last-child{padding-bottom:0}.tl .e:last-child::before{display:none}
+.tl .d{flex:none;width:50px;height:50px;border-radius:50%;border:4px solid var(--o);background:#17100b;margin-top:4px}
+.tl .e.x .d{border-color:var(--bad)}.tl .e.v .d{border-color:var(--ok)}
+.tl .hh{font-family:'Clash Display';font-weight:600;font-size:46px;color:var(--o2)}
+.tl .e.x .hh{color:var(--bad)}.tl .e.v .hh{color:var(--ok)}
+.tl .tt{font-weight:500;font-size:46px;line-height:1.25;color:var(--ink2);margin-top:2px}
+/* bas d'image */
+.swipe{position:absolute;left:140px;top:1340px;width:800px;display:flex;justify-content:center}
+.swipe span{font-weight:700;font-size:38px;color:var(--ink);border:2px solid var(--line2);background:var(--glass);border-radius:999px;padding:14px 34px}
+.relance{position:absolute;left:140px;top:1350px;width:800px;display:flex;justify-content:center}
+.relance span{font-weight:700;font-size:34px;line-height:1.25;color:var(--o3);border:2px solid rgba(255,90,31,.35);background:rgba(255,90,31,.08);border-radius:999px;padding:14px 32px;text-align:center;max-width:800px}
+/* vraie voiture détourée (photo Pexels, crédit en bas d'image) */
+.car{position:relative;width:800px;display:flex;justify-content:center;margin-top:6px}
+.car img{width:100%;height:auto;display:block;filter:drop-shadow(0 44px 38px rgba(0,0,0,.6))}
+.car::after{content:'';position:absolute;left:8%;right:8%;bottom:-26px;height:70px;z-index:-1;background:radial-gradient(ellipse at center,rgba(255,90,31,.32),transparent 70%)}
+.car.md{width:600px}
+.credit{position:absolute;left:140px;top:1428px;width:800px;text-align:center;font-weight:500;font-size:20px;line-height:1.35;color:var(--ink3);opacity:.75;text-wrap:balance}
+/* image 5 */
+.end .tile{width:150px;height:150px;border-radius:42px}
+.cta{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.01em;line-height:1.25;white-space:nowrap}
+.cta .k{display:inline-block;background:var(--o);color:#160904;border-radius:24px;padding:6px 30px 2px;box-shadow:0 24px 60px -20px rgba(255,90,31,.85)}
+.guide{font-weight:500;font-size:44px;line-height:1.3;color:var(--ink2)}
+.guide .it{font-size:1.18em}
+/* téléphone retrouvé dans l'histoire (objet du récit, pas une interface du produit) : coque bleu nuit, écran LCD vert */
+.nokia{width:640px;padding:30px 34px 40px;border-radius:70px 70px 56px 56px;background:linear-gradient(180deg,#34456a,#1d2843);
+  border:2px solid rgba(255,255,255,.1);box-shadow:0 70px 120px -50px rgba(0,0,0,.95),inset 0 3px 0 rgba(255,255,255,.14)}
+.nokia .nb{font-weight:900;font-size:30px;letter-spacing:.3em;color:rgba(226,233,245,.7);text-align:center;margin:0 0 22px .3em}
+.lcd{position:relative;border-radius:24px;background:linear-gradient(170deg,#b3c48b,#9bb176);padding:20px 30px 18px;color:#1c2911;text-align:left;
+  overflow:hidden;box-shadow:inset 0 8px 22px rgba(0,0,0,.38)}
+.lcd::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(0deg,rgba(28,41,17,.07) 0 2px,transparent 2px 6px),repeating-linear-gradient(90deg,rgba(28,41,17,.07) 0 2px,transparent 2px 6px)}
+.lcd .top{display:flex;justify-content:space-between;align-items:flex-end;height:54px}
+.lcd .bars{display:flex;gap:7px;align-items:flex-end}
+.lcd .bars i{display:block;width:13px;background:#1c2911}
+.lcd .bars i.off{background:transparent;border:3px solid #1c2911}
+.lcd .bat{display:flex;align-items:flex-end;gap:10px;font-weight:900;font-size:26px}
+.lcd .hd{font-weight:900;font-size:44px;text-align:center;margin-top:6px}
+.lcd .tm{font-family:'Clash Display';font-weight:700;font-size:168px;text-align:center;line-height:1.05;letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.lcd .msg{font-weight:700;font-size:60px;line-height:1.2;margin:22px 0 10px}
+.lcd .sub{font-weight:700;font-size:34px;text-align:center;opacity:.85}
+.lcd .msg + .sub{text-align:left}
+.lcd .ft{display:flex;justify-content:space-between;font-weight:900;font-size:32px;margin-top:20px;padding-top:12px;border-top:3px solid rgba(28,41,17,.45)}
+/* image de fin « partage » : la morale + à qui l'envoyer */
+.share{font-family:'Clash Display';font-weight:600;font-size:76px;letter-spacing:-.01em;line-height:1.25;white-space:nowrap}
+.share .k{display:inline-block;background:var(--o);color:#160904;border-radius:24px;padding:6px 30px 2px;box-shadow:0 24px 60px -20px rgba(255,90,31,.85)}
+.sharesub{font-weight:500;font-size:48px;line-height:1.3;color:var(--ink2);margin-top:-18px}
+.sign{font-weight:500;font-size:34px;color:var(--ink3)}
+.sign b{font-family:'Clash Display';font-weight:600;color:var(--ink2)}
+/* ——— visuels ajoutés (même charte) ——— */
+/* photo plein cadre en haut de l'image 1, fondue dans le fond */
+.hero{position:absolute;left:0;top:0;width:1080px;height:960px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,#000 52%,transparent 100%);mask-image:linear-gradient(180deg,#000 52%,transparent 100%)}
+.hero img{width:100%;height:100%;object-fit:cover;filter:saturate(1.06) contrast(1.05)}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,10,9,.5) 0%,rgba(11,10,9,0) 24%)}
+/* autocollant de prix sur la photo */
+.ptag{position:absolute;display:flex;flex-direction:column;align-items:flex-start;padding:18px 40px 24px;background:#f4f1ec;color:#160904;
+  border-radius:30px;transform:rotate(-7deg);box-shadow:0 36px 70px -24px rgba(0,0,0,.85)}
+.ptag s,.strike{position:relative;text-decoration:none;white-space:nowrap}
+.ptag s{font-weight:700;font-size:42px;color:#8f847b}
+.ptag s::after,.strike::after{content:'';position:absolute;left:-6px;right:-6px;top:50%;height:6px;margin-top:-3px;background:var(--bad);transform:rotate(-7deg);border-radius:3px}
+.ptag b{font-family:'Clash Display';font-weight:700;font-size:104px;line-height:1;letter-spacing:-.02em;white-space:nowrap}
+/* annonce façon capture claire, légèrement inclinée, avec une annotation */
+.lwrap{position:relative;width:780px}
+.listing{position:relative;width:780px;border-radius:40px;background:#f4f1ec;color:#17120e;overflow:hidden;text-align:left;transform:rotate(-2deg);
+  box-shadow:0 70px 120px -50px rgba(0,0,0,.95)}
+.listing .lph{position:relative;height:380px}
+.listing .lph img{display:block;width:100%;height:100%;object-fit:cover}
+/* voiture détourée dans l'annonce : fond clair de studio, voiture entière */
+.listing .lph.cut{background:radial-gradient(ellipse 80% 70% at 50% 60%,#ffffff,#ddd6cd)}
+.listing .lph.cut img{object-fit:contain;padding:26px 40px 18px}
+.listing .cnt{position:absolute;right:22px;bottom:20px;font-weight:700;font-size:26px;color:#fff;background:rgba(0,0,0,.55);border-radius:999px;padding:6px 18px}
+.listing .in{padding:28px 40px 32px}
+.listing .lt{font-weight:700;font-size:44px;line-height:1.15}
+.listing .lm{font-weight:500;font-size:32px;color:#6d635b;margin-top:6px}
+.listing .lp{font-family:'Clash Display';font-weight:700;font-size:76px;margin-top:12px;letter-spacing:-.02em;line-height:1}
+.listing .ll{font-weight:500;font-size:28px;color:#8a7f76;margin-top:12px}
+.note{position:absolute;display:flex;align-items:center;gap:6px;font-family:'Instrument Serif';font-style:italic;font-size:70px;color:var(--o);white-space:nowrap}
+.note svg{width:96px;height:64px;flex:none}
+/* chrono : anneau qui se remplit + prix du moment */
+.chrono{display:flex;align-items:center;gap:48px;width:800px}
+.ring{position:relative;flex:none;width:260px;height:260px}
+.ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring .t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .t b{font-family:'Clash Display';font-weight:600;font-size:80px;line-height:1;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.ring .t span{font-weight:500;font-size:26px;color:var(--ink3);margin-top:8px}
+.cp{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px}
+.cp .l{font-weight:500;font-size:32px;color:var(--ink3)}
+.cp .v{font-family:'Clash Display';font-weight:600;font-size:116px;line-height:1;letter-spacing:-.02em;white-space:nowrap;color:var(--o2)}
+.cp .olds{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline}
+.cp .olds .strike{font-weight:700;font-size:38px;color:var(--ink3)}
+.cp .plus{font-weight:700;font-size:36px;color:var(--ok);white-space:nowrap}
+/* bulle « … » : il ne dit rien */
+.dots{display:inline-flex;gap:14px;padding:12px 6px 6px}
+.dots i{width:20px;height:20px;border-radius:50%;background:var(--o3)}
+.dots i:nth-child(2){opacity:.6}.dots i:nth-child(3){opacity:.3}
+/* ce qu'il pense pendant ce temps */
+.thought{position:relative;width:800px;padding:30px 44px 36px;border:3px dashed rgba(244,241,236,.24);border-radius:64px;text-align:left;margin-top:26px}
+.thought::before,.thought::after{content:'';position:absolute;border:3px dashed rgba(244,241,236,.24);border-radius:50%}
+.thought::before{width:34px;height:34px;right:60px;top:-50px}
+.thought::after{width:18px;height:18px;right:34px;top:-82px}
+.thought .tlab{font-weight:500;font-size:30px;color:var(--ink3);margin-bottom:4px}
+.thought .tx{font-family:'Instrument Serif';font-style:italic;font-size:62px;line-height:1.12;color:var(--ink)}
+/* format mème : ce que voit le vendeur / ce qui se passe vraiment */
+.split{display:flex;gap:22px;width:800px;align-items:stretch}
+.sc{flex:1;border-radius:40px;padding:30px 32px 34px;text-align:left}
+.sc.a{background:var(--panel);border:2px solid var(--line2)}
+.sc.b{background:rgba(255,90,31,.1);border:3px dashed rgba(255,90,31,.5)}
+.sc .sl{font-weight:500;font-size:30px;color:var(--ink3);margin-bottom:14px}
+.sc.b .sl{color:var(--o3)}
+.sc.a .sx{font-family:'Clash Display';font-weight:600;font-size:50px;line-height:1.1;letter-spacing:-.01em}
+.sc.b .sx{font-family:'Instrument Serif';font-style:italic;font-size:60px;line-height:1.08}
+/* bulle « … » posée sur la photo de l'image 1 */
+.hb{position:absolute;max-width:none;background:rgba(24,15,10,.92)!important;box-shadow:0 30px 60px -24px rgba(0,0,0,.8)}
+/* grande bulle « … » de la dernière image */
+.bigdots{display:flex;gap:30px;padding:48px 66px;border-radius:90px 90px 24px 90px;background:rgba(255,90,31,.16);border:3px solid rgba(255,90,31,.5)}
+.bigdots i{width:50px;height:50px;border-radius:50%;background:var(--o3)}
+.bigdots i:nth-child(2){opacity:.6}.bigdots i:nth-child(3){opacity:.3}
+/* grand chiffre orange */
+.big.o{background:linear-gradient(100deg,var(--o),var(--o3) 70%);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em}
+/* bilan */
+.stats{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;width:800px}
+.stat{min-width:0}
+.stat{border:2px solid var(--line);border-radius:40px;background:var(--panel);padding:32px 36px 34px;text-align:left}
+.stat.w{grid-column:span 2;border-color:rgba(255,90,31,.4);background:rgba(255,90,31,.08)}
+.stat b{display:block;font-family:'Clash Display';font-weight:600;font-size:112px;line-height:1;letter-spacing:-.02em;white-space:nowrap}
+.stat.w b{color:var(--o2)}
+.stat span{display:block;font-weight:500;font-size:36px;color:var(--ink3);margin-top:12px}
+.stat.w{display:flex;justify-content:space-between;align-items:center;gap:24px}
+.stat .side{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.stat .side .strike{display:inline-block;margin:0;font-weight:700;font-size:38px;color:var(--ink3)}
+.stat .side em{font-style:normal;font-family:'Clash Display';font-weight:600;font-size:52px;color:var(--ink);white-space:nowrap}
+.hist{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 20px;width:800px}
+.hist .strike{font-weight:700;font-size:40px;color:var(--ink3)}
+.hist .ar{font-weight:500;color:var(--ink3);font-size:36px}
+.hist b{font-family:'Clash Display';font-weight:600;font-size:60px;color:var(--o2);white-space:nowrap}
+
+/* ════════ Mode clair ════════
+   La DA de base (Clash Display, Satoshi, mot en Instrument Serif italique orange, pastilles, cartes, grille, halo),
+   recolorée avec le thème clair du site public (web/src/app/globals.css, .cadre-site[data-theme="clair"]). */
+:root{--bg0:#f7f2ea;--bg1:#efe7dc;--ink:#1c1612;--ink2:rgba(28,22,18,.8);--ink3:rgba(28,22,18,.62);--line:rgba(28,22,18,.1);--line2:rgba(28,22,18,.2);
+  --glass:rgba(28,22,18,.04);--panel:rgba(255,255,255,.86);--o:#ff5a1f;--o2:#c2410c;--o3:#e0571a;--ok:#137036;--warn:#8a5306;--bad:#c81e1e;
+  --sh:0 40px 80px -48px rgba(70,40,15,.42),0 6px 16px -8px rgba(70,40,15,.12)}
+#s{background:linear-gradient(160deg,#fbf8f3,var(--bg1) 60%,#fbf8f3)}
+#grid{opacity:.55}
+.nb{display:inline;margin-left:.2em}
+.it{background-image:linear-gradient(100deg,var(--o),var(--o2) 60%,var(--o3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tile{background:#1c1612;border-color:#1c1612}
+.kicker{background:rgba(255,255,255,.7);border-color:var(--line2);box-shadow:0 10px 24px -16px rgba(70,40,15,.3)}
+.carte{background:var(--panel);border-color:var(--line);box-shadow:var(--sh)}
+.st.ok,.pill.ok{color:var(--ok);background:rgba(19,112,54,.08);border-color:rgba(19,112,54,.35)}
+.st.warn,.pill.warn{color:var(--warn);background:rgba(138,83,6,.08);border-color:rgba(138,83,6,.35)}
+.st.bad,.pill.bad{color:var(--bad);background:rgba(200,30,30,.07);border-color:rgba(200,30,30,.35)}
+.pill.neu{background:rgba(255,255,255,.75)}
+.vd .chip.ok{color:var(--ok);background:rgba(19,112,54,.08);border-color:rgba(19,112,54,.4)}
+.vd .chip.warn{color:var(--warn);background:rgba(138,83,6,.08);border-color:rgba(138,83,6,.4)}
+.vd .chip.bad{color:var(--bad);background:rgba(200,30,30,.07);border-color:rgba(200,30,30,.4)}
+.quote mark{background:rgba(200,30,30,.12);color:var(--ink)}
+.quote mark.ok{background:rgba(19,112,54,.12)}
+.cote .dot{border-color:#fff}
+.bub.v{background:#fff;border-color:var(--line2);box-shadow:var(--sh)}
+.bub.m{background:rgba(255,90,31,.1);border-color:rgba(255,90,31,.45)}
+.bub.m .who{color:var(--o2)}
+.hb{background:rgba(255,255,255,.95)!important}
+.thought,.thought::before,.thought::after{border-color:rgba(28,22,18,.26)}
+.listing{background:#fff;box-shadow:0 60px 110px -50px rgba(70,40,15,.55),0 0 0 2px var(--line)}
+.tl .d{background:#fff}
+.stat{box-shadow:var(--sh)}
+.swipe span{background:#fff;border-color:var(--line2);box-shadow:var(--sh)}
+.hero::after{background:linear-gradient(180deg,rgba(247,242,234,.45) 0%,rgba(247,242,234,0) 24%)}
+.cta .k,.share .k{color:#1c0b03}
+/* ════════ Conversion ════════ */
+/* l'offre rappelée dans l'en-tête de chaque image de contenu */
+.brand .offre{margin-left:8px;font-weight:700;font-size:26px;color:var(--o2);border:2px solid rgba(255,90,31,.45);background:rgba(255,90,31,.08);border-radius:999px;padding:6px 18px;white-space:nowrap}
+/* dernière image : la carte de l'offre */
+.offer{width:800px;border-radius:44px;background:#fff;box-shadow:var(--sh),0 0 0 2px rgba(255,90,31,.35);padding:40px 48px 44px;text-align:left;position:relative;overflow:hidden}
+.offer::before{content:'';position:absolute;inset:0 0 auto 0;height:12px;background:linear-gradient(90deg,var(--o),var(--o3))}
+.offer .hd{display:flex;align-items:center;gap:30px}
+.offer .n{font-family:'Clash Display';font-weight:600;font-size:200px;line-height:.8;letter-spacing:-.05em;background:linear-gradient(100deg,var(--o),var(--o2));-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em}
+.offer .l1{font-family:'Clash Display';font-weight:600;font-size:66px;line-height:1;letter-spacing:-.01em}
+.offer .l2{font-weight:700;font-size:32px;color:var(--ok);margin-top:12px}
+.offer .gets{margin-top:30px;border-top:2px dashed var(--line2);padding-top:22px;display:flex;flex-direction:column;gap:14px}
+.offer .gets div{display:flex;align-items:center;gap:20px;font-weight:500;font-size:40px;color:var(--ink2)}
+.offer .gets i{flex:none;width:46px;height:46px;border-radius:50%;background:rgba(19,112,54,.1);border:2px solid rgba(19,112,54,.4);color:var(--ok);font-style:normal;font-weight:900;font-size:26px;display:grid;place-items:center}
+.ou{font-weight:700;font-size:34px;color:var(--ink3);margin-top:-18px}
+
+/* ════════ 2027 ════════
+   Fond aurore (orange, pêche, abricot) avec grain ; surfaces en verre (flou, reflet du haut, liseré blanc) ;
+   pastille « en direct » façon Dynamic Island ; tuiles (bento) ; pass ; bouton à ombre dure pour l'action. */
+#glow{filter:saturate(1.08)}
+#grid{opacity:.4;-webkit-mask-image:radial-gradient(ellipse 70% 45% at 50% 38%,#000 20%,transparent 75%)}
+#grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.9;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4  0 0 0 0 .25  0 0 0 0 .12  0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.glass,.kicker,.brand,.carte,.swipe span,.bento .tile2{background:rgba(255,255,255,.52)!important;-webkit-backdrop-filter:blur(26px) saturate(170%);backdrop-filter:blur(26px) saturate(170%);
+  border:1.5px solid rgba(255,255,255,.85)!important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),0 30px 60px -36px rgba(120,50,10,.45),0 2px 8px -4px rgba(120,50,10,.12)!important}
+.brand{left:50%!important;width:auto!important;transform:translateX(-50%);padding:10px 14px 10px 10px;border-radius:999px;gap:14px!important}
+.brand .tile{width:58px;height:58px;border-radius:18px}
+.brand b{font-size:34px}
+.brand .offre{margin-left:2px}
+.title{letter-spacing:-.032em}
+.title .it{font-size:1.08em;letter-spacing:-.005em}
+.kicker.k1{font-size:42px}
+/* pastille d'analyse « en direct » */
+.island{display:inline-flex;align-items:center;gap:20px;background:#120d0a;color:#f7f2ea;border-radius:999px;padding:14px 30px 14px 14px;
+  box-shadow:0 26px 50px -24px rgba(30,12,4,.6);font-weight:700;font-size:34px;white-space:nowrap}
+.island .ic{width:58px;height:58px;border-radius:50%;background:#2a1d15;display:grid;place-items:center}
+.island .ic img{width:70%}
+.island .rg{width:46px;height:46px;flex:none}
+.island .ok{color:#3ecb7f}
+.island small{display:block;font-weight:500;font-size:24px;color:rgba(247,242,234,.6);margin-top:2px}
+.lwrap .island.onlisting{position:absolute;left:50%;top:-54px;transform:translateX(-50%) rotate(1.5deg);z-index:3}
+/* annonce : le passage relevé par l'analyse, surligné */
+.listing .ll mark{background:linear-gradient(transparent 12%,rgba(255,90,31,.28) 12%,rgba(255,90,31,.28) 92%,transparent 92%);color:#17120e;padding:0 4px;border-radius:4px}
+/* tuiles */
+.bento{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;width:800px;text-align:left}
+.bento .tile2{border-radius:40px;padding:30px 34px 32px;min-width:0;position:relative;overflow:hidden}
+.bento .tile2.w{grid-column:span 2}
+.bento .lb{font-weight:700;font-size:30px;color:var(--ink3)}
+.bento .vl{font-family:'Clash Display';font-weight:600;font-size:110px;line-height:.95;letter-spacing:-.035em;margin-top:10px;white-space:nowrap}
+.bento .tile2.w .vl{font-size:132px}
+.bento .sb{font-weight:500;font-size:30px;color:var(--ink2);margin-top:12px;line-height:1.25}
+.bento .vl.ok{color:var(--ok)}.bento .vl.o{background-image:linear-gradient(100deg,var(--o),var(--o2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bento .tile2.hl{background:linear-gradient(140deg,rgba(255,255,255,.7),rgba(255,214,190,.55))!important}
+.bento .ring{position:absolute;right:24px;top:50%;width:150px;height:150px;transform:translateY(-50%)}
+.bento .tile2.rg{min-height:240px}
+.bento .tile2.rg .lb,.bento .tile2.rg .sb{max-width:calc(100% - 160px)}
+.bento .ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:'Clash Display';font-weight:600;font-size:44px;letter-spacing:-.02em;color:var(--ok)}
+/* l'offre en pass */
+.pass{position:relative;width:780px;border-radius:52px;padding:34px 44px 38px;text-align:left;color:#1c0b03;overflow:hidden;
+  background:radial-gradient(120% 90% at 0% 0%,#ffb38a 0%,rgba(255,179,138,0) 55%),linear-gradient(150deg,#ff5a1f,#ff7a3d 55%,#ff9a5c);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.55),0 50px 90px -40px rgba(200,60,10,.65),0 4px 12px -4px rgba(120,40,5,.25);
+  -webkit-mask:radial-gradient(circle 26px at 0 63%,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 26px at 100% 63%,#0000 97%,#000) right/51% 100% no-repeat;
+  mask:radial-gradient(circle 26px at 0 63%,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 26px at 100% 63%,#0000 97%,#000) right/51% 100% no-repeat}
+.pass::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.32) 45%,rgba(255,255,255,0) 60%);pointer-events:none}
+.pass .top{display:flex;justify-content:space-between;align-items:center}
+.pass .top .mq{display:flex;align-items:center;gap:14px;font-family:'Clash Display';font-weight:600;font-size:36px}
+.pass .top .mq span{width:52px;height:52px;border-radius:16px;background:#1c1612;display:grid;place-items:center}
+.pass .top .mq img{width:84%}
+.pass .top em{font-style:normal;font-weight:700;font-size:26px;background:rgba(255,255,255,.35);border-radius:999px;padding:8px 18px}
+.pass .mid{display:flex;align-items:flex-end;gap:26px;margin-top:26px}
+.pass .n{font-family:'Clash Display';font-weight:600;font-size:230px;line-height:.78;letter-spacing:-.06em;color:#fff;text-shadow:0 10px 30px rgba(150,40,0,.25)}
+.pass .l1{font-family:'Clash Display';font-weight:600;font-size:66px;line-height:.98;letter-spacing:-.015em;padding-bottom:6px}
+.pass .perf{margin:34px 0 26px;border-top:5px dotted rgba(28,11,3,.35)}
+.pass .bot{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.pass .bot .lb{font-weight:700;font-size:26px;opacity:.75}
+.pass .bot .cd{font-family:'Clash Display';font-weight:600;font-size:64px;letter-spacing:.02em;line-height:1}
+.pass .bot .nc{font-weight:700;font-size:26px;text-align:right;line-height:1.25}
+.gets2{display:flex;flex-direction:column;gap:12px;width:760px;text-align:left}
+.gets2 div{display:flex;align-items:center;gap:18px;font-weight:500;font-size:38px;color:var(--ink2)}
+.gets2 i{flex:none;width:44px;height:44px;border-radius:50%;background:rgba(19,112,54,.1);border:2px solid rgba(19,112,54,.4);color:var(--ok);font-style:normal;font-weight:900;font-size:24px;display:grid;place-items:center}
+/* le bouton d'action : ombre dure, il se voit au premier coup d'œil */
+.btn{display:inline-flex;align-items:center;gap:18px;font-family:'Clash Display';font-weight:600;font-size:60px;letter-spacing:-.01em;white-space:nowrap;
+  background:#1c1612;color:#fff;border-radius:30px;padding:22px 44px;box-shadow:9px 9px 0 #ff5a1f}
+.btn b{color:#ff8a4c;font-weight:600}
+/* montants de la valeur : gros chiffres, c'est ce qu'on doit voir */
+.carte .rows .st{font-family:'Clash Display';font-weight:600;font-size:54px;letter-spacing:-.02em;padding:4px 24px 2px}
+.carte .rows .row{font-size:44px;padding:24px 0}
+/* pastille de texte (ce à quoi sert la ligne) : plus discrète qu'un montant */
+.carte .rows .st.txt{font-family:'Satoshi';font-weight:700;font-size:30px;letter-spacing:0;padding:8px 18px}
+.vs .carte{padding:34px 32px}
+.vs h4{font-size:44px;line-height:1.05}
+.vs p{font-size:44px}
+.vs p b{font-family:'Clash Display';font-weight:600;font-size:1.6em;line-height:1.1;color:var(--ink)}
+.vs .b p b{color:var(--ok)}
+
+/* ════════ Touches à la main (SVG, discrètes) ════════ */
+/* trait de feutre sous le mot en italique des titres */
+.title .it{position:relative;display:inline-block}
+.title .it::after{content:'';position:absolute;left:4%;right:2%;bottom:-.04em;height:.15em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 18' preserveAspectRatio='none'%3E%3Cpath d='M3 12 C 40 4, 78 15, 118 8 S 196 13, 237 5' fill='none' stroke='%23ff5a1f' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;opacity:.75;transform:rotate(-1.2deg)}
+/* cercle tracé à la main autour d'un grand chiffre */
+.bigw{position:relative;display:inline-block}
+.bigw{margin-bottom:10px}
+.bigw .cerc{position:absolute;left:-9%;right:-9%;top:-12%;bottom:-10%;width:118%;height:122%;pointer-events:none;color:var(--o);opacity:.85}
+/* étiquette collée sur la photo de l'annonce */
+.stk{position:absolute;left:22px;top:22px;display:inline-flex;align-items:center;gap:10px;background:#fff;color:#17120e;font-weight:700;font-size:26px;
+  padding:9px 18px 9px 14px;border-radius:999px;transform:rotate(-5deg);box-shadow:0 10px 22px -10px rgba(0,0,0,.5)}
+.stk::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--o)}
+/* flèche dessinée qui amène l'œil sur le bouton */
+.btnw{position:relative;display:inline-block}
+.btnw .fl{position:absolute;left:-150px;top:-78px;width:150px;height:110px;color:var(--o);opacity:.9}
+
+/* ════════ Éléments graphiques (dessinés en code, aucune image générée) ════════ */
+/* icônes au trait (tracés Lucide, licence ISC) */
+.ico{display:block;flex:none;width:1em;height:1em}
+.list .n .ico{width:44px;height:44px}
+.row .lbl{display:flex;align-items:center;gap:22px;min-width:0}
+.row .ic2{flex:none;width:66px;height:66px;border-radius:20px;display:grid;place-items:center;background:rgba(255,90,31,.1);color:var(--o2);box-shadow:inset 0 0 0 2px rgba(255,90,31,.22)}
+.row .ic2 .ico{width:34px;height:34px}
+/* échelle de prix : où se place l'annonce par rapport au marché */
+.ruler{padding:34px 44px 30px}
+.rl{position:relative;height:370px;margin:0 30px}
+.rl .tr{position:absolute;left:-30px;right:-30px;top:177px;height:16px;border-radius:8px;background:linear-gradient(90deg,rgba(28,22,18,.07),rgba(28,22,18,.15))}
+.rl .bd{position:absolute;top:159px;height:52px;border-radius:16px;border:2.5px solid rgba(19,112,54,.55);
+  background:repeating-linear-gradient(-45deg,rgba(19,112,54,.2) 0 10px,rgba(19,112,54,.09) 10px 20px)}
+.rl .bd.bad{border-color:rgba(200,30,30,.5);background:repeating-linear-gradient(-45deg,rgba(200,30,30,.18) 0 10px,rgba(200,30,30,.07) 10px 20px)}
+.rl .bdl{position:absolute;top:219px;transform:translateX(-50%);font-family:'Instrument Serif';font-style:italic;font-size:46px;color:var(--ok);white-space:nowrap}
+.rl .bdl.bad{color:var(--bad)}
+.rl .pt{position:absolute;top:185px;width:0;height:0}
+.rl .pt i{position:absolute;left:-17px;top:-17px;width:34px;height:34px;border-radius:50%;background:#fff;border:8px solid var(--ink);box-shadow:0 6px 14px -4px rgba(70,40,15,.4);z-index:2}
+.rl .pt.o i{border-color:var(--o)}.rl .pt.ok i{border-color:var(--ok)}.rl .pt.bad i{border-color:var(--bad)}
+.rl .pt::before{content:'';position:absolute;left:-1.5px;width:3px;height:44px;background:var(--line2)}
+.rl .pt.h::before{top:-62px}.rl .pt.b::before{top:18px}
+.rl .tx{position:absolute;display:flex;flex-direction:column;align-items:center;white-space:nowrap;text-align:center}
+.rl .pt.h .tx{bottom:66px;flex-direction:column-reverse}.rl .pt.b .tx{top:66px}
+.rl .tx b{font-family:'Clash Display';font-weight:600;font-size:64px;letter-spacing:-.02em;line-height:1}
+.rl .pt.o .tx b{color:var(--o2)}.rl .pt.ok .tx b{color:var(--ok)}.rl .pt.bad .tx b{color:var(--bad)}
+.rl .tx small{font-weight:700;font-size:30px;color:var(--ink3);margin-top:8px}
+.rl .pt.h .tx small{margin:0 0 8px}
+/* jauge du moteur (note sur 10) */
+.gauges{display:flex;gap:22px;width:800px;justify-content:center}
+.gauges .carte.gauge{width:auto;flex:1;min-width:380px;max-width:600px;padding:34px 26px 32px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.gauge svg{width:100%;max-width:420px;height:auto;display:block}
+.gauges .carte.gauge:only-child{min-width:560px}.gauge:only-child svg{max-width:480px}.gauge:only-child .gv{font-size:140px;margin-top:-118px}
+.gauge .gv{font-family:'Clash Display';font-weight:600;font-size:118px;letter-spacing:-.03em;line-height:1;margin-top:-100px}
+.gauge .gv small{font-size:.42em;color:var(--ink3);letter-spacing:0}
+.gauge .gv.ok{color:var(--ok)}.gauge .gv.warn{color:var(--warn)}.gauge .gv.bad{color:var(--bad)}
+.gauge .gl{font-weight:700;font-size:38px;margin-top:16px;line-height:1.2}
+.gauge .gs{font-weight:500;font-size:31px;color:var(--ink3);margin-top:6px;line-height:1.25}
+/* barre empilée : où part le prix de revente */
+.stack{width:800px;text-align:left}
+.sk-top{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:30px;color:var(--ink3);margin:0 6px 16px}
+.sk-top b{font-family:'Clash Display';font-weight:600;font-size:48px;letter-spacing:-.02em;color:var(--ink)}
+.sk-bar{display:flex;height:124px;border-radius:28px;overflow:hidden;gap:5px;padding:6px;background:rgba(255,255,255,.6);box-shadow:var(--sh),inset 0 0 0 1.5px rgba(255,255,255,.9)}
+.sk-bar > span{display:flex;align-items:center;justify-content:center;min-width:18px;border-radius:20px;font-family:'Clash Display';font-weight:600;font-size:42px;color:#fff;white-space:nowrap;overflow:hidden}
+.sk-bar > span.sk-f3,.sk-bar > span.sk-f2{color:#5a2a10}
+.sk-bar em{font-style:normal}
+.sk-a{background:linear-gradient(160deg,#4a3a2e,#2a201a)}
+.sk-f{background:linear-gradient(160deg,#ff9a5c,#ff6a2b)}.sk-f2{background:linear-gradient(160deg,#ffc29c,#ffa66e)}.sk-f3{background:linear-gradient(160deg,#ffdcc4,#ffc5a0)}
+.sk-m{background:linear-gradient(160deg,#25a259,#137036)}.sk-p{background:linear-gradient(160deg,#e04545,#b01818)}
+.sk-leg{display:flex;flex-direction:column;gap:0;margin:22px 6px 0}
+.sk-leg div{display:flex;align-items:center;gap:18px;font-weight:500;font-size:38px;color:var(--ink2);min-width:0;padding:12px 0;border-top:2px solid var(--line)}
+.sk-leg div:first-child{border-top:0}
+.sk-leg i{flex:none;width:28px;height:28px;border-radius:9px}
+.sk-leg b{margin-left:auto;font-family:'Clash Display';font-weight:600;font-size:44px;letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+.sk-leg .m b{color:var(--ok)}.sk-leg .p b{color:var(--bad)}
+/* barres comparées */
+.bars2{width:800px;display:flex;flex-direction:column;gap:30px;text-align:left}
+.br .bl{font-weight:700;font-size:36px;color:var(--ink2);margin:0 0 12px 4px}
+.br .bt{position:relative;height:100px;border-radius:26px;background:rgba(28,22,18,.06);box-shadow:inset 0 0 0 1.5px rgba(28,22,18,.05)}
+.br .bf{position:absolute;left:0;top:0;bottom:0;min-width:26px;border-radius:26px;box-shadow:0 18px 34px -20px rgba(70,40,15,.6)}
+.br .bf.ok{background:linear-gradient(90deg,#1a8a47,#2bb164)}.br .bf.bad{background:linear-gradient(90deg,#b01818,#e04545)}
+.br .bf.o{background:linear-gradient(90deg,#ff5a1f,#ff9a5c)}.br .bf.neu{background:linear-gradient(90deg,#6b5d52,#9a8b7f)}
+.br .bv{position:absolute;top:50%;transform:translateY(-50%);font-family:'Clash Display';font-weight:600;font-size:62px;letter-spacing:-.02em;white-space:nowrap}
+.br .bv.ok{color:var(--ok)}.br .bv.bad{color:var(--bad)}.br .bv.o{color:var(--o2)}
+/* tirages photo des vraies annonces, scotchés */
+.prints{display:flex;justify-content:center;align-items:flex-start;width:800px;padding-top:26px}
+.print{position:relative;flex:none;background:#fff;padding:14px 14px 0;border-radius:8px;box-shadow:0 44px 70px -36px rgba(70,40,15,.6),0 2px 6px rgba(70,40,15,.12)}
+.print .ph{overflow:hidden;border-radius:3px}
+.print img{display:block;width:100%;object-fit:cover}
+.stamp.bas{top:auto;bottom:-42px;right:26px;transform:rotate(-7deg)}
+.print .cap{font-family:'Instrument Serif';font-style:italic;font-size:46px;line-height:1;color:var(--ink);padding:16px 4px 18px;text-align:center;white-space:nowrap}
+.print::before{content:'';position:absolute;left:50%;top:-22px;width:130px;height:44px;transform:translateX(-50%) rotate(-5deg);z-index:2;
+  background:rgba(255,232,206,.78);box-shadow:0 2px 5px rgba(70,40,15,.08);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.prints.n1 .print{width:600px}.prints.n1 .print img{height:380px}
+.prints.n3 .print{width:300px;margin:0 -20px}.prints.n3 .print img{height:250px}.prints.n3 .print .cap{font-size:36px}
+.prints.n3 .print::before{width:96px;height:36px;top:-18px}
+.prints.n3 .print .cap{font-size:33px}
+.prints.n3 .print .stamp{font-size:27px;border-width:4px;padding:5px 12px 2px;bottom:84px}
+/* tampon encreur posé sur un élément (verdict) */
+.stamp{position:absolute;right:20px;top:-38px;z-index:6;transform:rotate(-9deg);font-family:'Clash Display';font-weight:700;font-size:46px;letter-spacing:.04em;
+  text-transform:uppercase;white-space:nowrap;line-height:1.1;padding:8px 24px 4px;border:6px solid currentColor;border-radius:18px;color:var(--ok);
+  background:rgba(255,255,255,.35);opacity:.93;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.2 0 0 0 1.95'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.2 0 0 0 1.95'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")}
+.stamp.bad{color:var(--bad)}.stamp.warn{color:#a8620a}.stamp.o{color:var(--o2)}
+.print .stamp{right:auto;left:50%;top:auto;bottom:96px;transform:translateX(-50%) rotate(-12deg);font-size:36px;border-width:5px;padding:6px 16px 3px;background:rgba(255,255,255,.78)}
+.bigw .stamp{top:-58px;right:-56px}
+/* bas des images de contenu : progression + suite (zone de la légende TikTok, rien d'essentiel) */
+.credit{top:1488px}
+.suite{position:absolute;left:140px;top:1560px;width:800px;display:flex;flex-direction:column;align-items:center;gap:26px}
+.suite .pts{display:flex;gap:14px}.suite .pts i{width:18px;height:18px;border-radius:9px;background:rgba(28,22,18,.18)}
+.suite .pts i.on{width:54px;background:var(--o)}
+.suite .go{font-weight:700;font-size:38px;color:var(--ink);background:#fff;border:2px solid var(--line2);border-radius:999px;padding:14px 34px;box-shadow:var(--sh)}
+/* ════════ Mise à l'échelle du bloc ════════
+   Le bloc de contenu est mis en page sur 800/z px puis agrandi de z : les éléments prennent sa largeur au lieu de 800 px fixes. */
+#safe>.inner .carte,#safe>.inner .list,#safe>.inner .pills,#safe>.inner .chat,#safe>.inner .vs,#safe>.inner .tl,#safe>.inner .car,#safe>.inner .thought,
+#safe>.inner .split,#safe>.inner .stats,#safe>.inner .hist,#safe>.inner .chrono,#safe>.inner .offer,#safe>.inner .bento,#safe>.inner .gauges,
+#safe>.inner .stack,#safe>.inner .bars2,#safe>.inner .prints,#safe>.inner .body{width:100%!important;max-width:none}
+#safe>.inner .vs .carte{width:auto!important;flex:1 1 0;min-width:0}
+#safe>.inner .gauges .carte.gauge{width:auto!important;flex:1 1 0;min-width:0}
+#safe>.inner .gauges .carte.gauge:only-child{flex:0 1 auto;width:72%!important}
+#safe>.inner .bub{max-width:84%}
+#safe>.inner .lwrap{width:97.5%}#safe>.inner .listing{width:100%}
+#safe>.inner .pass{width:97.5%}#safe>.inner .gets2{width:95%}
+#safe>.inner .prints.n1 .print{width:75%}#safe>.inner .prints.n3 .print{width:32.4%;margin:0 .4%}
+/* fin « abonnement » */
+.nextc .list{gap:22px}.nextc .list .t{font-size:46px}
+.ask{max-width:100%;text-align:left;font-weight:700;font-size:44px;line-height:1.25;color:var(--ink);background:#fff;border:2px solid var(--line2);
+  border-radius:40px 40px 40px 10px;padding:24px 36px 28px;box-shadow:var(--sh)}
+.ask .who{display:block;font-weight:500;font-size:28px;color:var(--o2);margin-bottom:6px}
+#safe>.inner .ask{width:100%}
+</style>
+</head>
+<body>
+<div id="s"><div id="glow"></div><div id="grid"></div><div id="grain"></div></div>
+<script type="module">
+const q = new URLSearchParams(location.search);
+const DATA = await (await fetch('carousels.json')).json();
+const C = DATA.carousels[+q.get('c')]; const N = +q.get('s'); const SL = C.slides[N]; const LAST = N === C.slides.length - 1;
+const S = document.getElementById('s');
+const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (parent) parent.appendChild(e); return e; };
+// balisage : *mot* = serif italique orange, **gras**, [r]rouge[/r], [g]vert[/g], ==surligné== (annonce), \n = ligne
+// espace fine dessinée (span) : Clash Display n'a pas le caractère « espace fine insécable » (6 700 € s'affichait 6700€)
+const NB = '<span class="nb"></span>';
+const md = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/(\d) (?=\d{3}(\D|$))/g, '$1' + NB).replace(/ (€|h\b|%|km|ch\b)/g, NB + '$1').replace(/ ([?!:;»])/g, NB + '$1').replace(/« /g, '«' + NB)
+  .replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<span class="it">$1</span>')
+  .replace(/\[r\](.+?)\[\/r\]/g, '<span class="r">$1</span>').replace(/\[g\](.+?)\[\/g\]/g, '<span class="g">$1</span>')
+  .replace(/==(.+?)==/g, '<mark>$1</mark>').replace(/\+\+(.+?)\+\+/g, '<mark class="ok">$1</mark>');
+const SYM = '../assets/brand/official/utopicar-symbole-site.svg';
+// halo orange : position différente à chaque image, pour que le glissement se sente
+const G = [['50% -8%', .16], ['105% 30%', .11], ['-5% 70%', .11], ['100% 105%', .13], ['50% 110%', .18]][Math.min(N, 4)];
+const AU = [[['12% 4%', '255,90,31', .26], ['92% 22%', '255,179,138', .55], ['30% 96%', '255,140,80', .2]],
+  [['95% 8%', '255,90,31', .22], ['6% 46%', '255,190,150', .5], ['80% 98%', '255,120,60', .2]],
+  [['4% 10%', '255,170,120', .5], ['96% 54%', '255,90,31', .2], ['40% 100%', '255,200,160', .45]],
+  [['50% 0%', '255,90,31', .22], ['0% 80%', '255,180,140', .5], ['100% 70%', '255,120,60', .18]]][N % 4];
+document.getElementById('glow').style.background = AU.map(([p, c, a]) => `radial-gradient(ellipse 62% 36% at ${p}, rgba(${c},${a}), transparent 70%)`).join(',');
+
+if (SL.glow) document.getElementById('glow').style.background = `radial-gradient(ellipse 90% 50% at ${SL.glow[0]}, rgba(255,90,31,${SL.glow[1]}), transparent 72%)`;
+// photo plein cadre (image 1), avec l'étiquette de prix collée dessus
+if (SL.hero) {
+  el('div', 'hero', S, `<img src="${SL.hero.src}" style="object-position:${SL.hero.pos || '50% 50%'}">`);
+  if (SL.hero.tag) { const t = el('div', 'ptag', S, `<s>${md(SL.hero.tag[0])}</s><b>${md(SL.hero.tag[1])}</b>`); t.style.left = (SL.hero.tx ?? 560) + 'px'; t.style.top = (SL.hero.ty ?? 330) + 'px'; }
+  if (SL.hero.bub) { const b = el('div', 'bub m hb', S, `<div class="who">${md(SL.hero.bub[2] || 'Toi')}</div><span class="dots"><i></i><i></i><i></i></span>`); b.style.left = SL.hero.bub[0] + 'px'; b.style.top = SL.hero.bub[1] + 'px'; }
+}
+if (N > 0 && !LAST) el('div', 'brand', S,`<span class="tile"><img src="${SYM}"></span><b>utopicar</b><span class="pg">${N + 1}/${C.slides.length}</span>` +
+  (C.offer && C.offer.pastille ? `<span class="offre">${md(C.offer.pastille)}</span>` : ''));
+const box = el('div', '', S); box.id = 'safe';
+
+// pastille d'analyse « en direct » : anneau qui tourne (en cours) ou coche verte (terminé)
+function island(c) {
+  const ring = c.state === 'ok' ? '<span class="ok" style="font-size:40px">✓</span>'
+    : '<svg class="rg" viewBox="0 0 46 46"><circle cx="23" cy="23" r="19" fill="none" stroke="rgba(247,242,234,.18)" stroke-width="5"/><circle cx="23" cy="23" r="19" fill="none" stroke="#ff5a1f" stroke-width="5" stroke-linecap="round" stroke-dasharray="78 120" transform="rotate(-90 23 23)"/></svg>';
+  return `<span class="ic"><img src="${SYM}"></span><span>${md(c.t)}${c.sub ? `<small>${md(c.sub)}</small>` : ''}</span>${ring}`;
+}
+// icônes au trait (tracés Lucide, licence ISC) : une par idée, jamais décoratives seules
+const ICONS = {
+  cle: '<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>',
+  doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
+  euro: '<path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>',
+  chat: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  plafond: '<path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/>',
+  check: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  x: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+  alerte: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  route: '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+  tel: '<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>',
+  photo: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  calc: '<rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/><path d="M16 14v4"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
+  goutte: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+  moteur: '<path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/>',
+  temp: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+  power: '<path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/>',
+  voyant: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
+  outil: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  cal: '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+  image: '<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+  eclat: '<path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>',
+  jauge: '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+  prix: '<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1"/>',
+  bouclier: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  carte: '<rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/>',
+  banque: '<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2 20 7H4z"/>',
+  lien: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  loupe: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  horloge: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  pneu: '<circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/>',
+  sms: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+};
+const ico = (n) => ICONS[n] ? `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>` : '';
+// tampon encreur posé sur le dernier élément ajouté (verdict, « oublié », « faux »…)
+function comp(c, parent) {
+  comp0(c, parent);
+  if (c.stamp) { const e = parent.lastElementChild; if (getComputedStyle(e).position === 'static') e.style.position = 'relative';
+    const host = c.k === 'big' ? e.querySelector('.bigw') : e; el('div', 'stamp free ' + (c.stamp[1] || 'ok'), host, md(c.stamp[0])); }
+}
+function comp0(c, parent) {
+  const k = c.k;
+  // échelle de prix : points (valeur, texte, libellé, ton, h = au-dessus / b = dessous) et bande (la marge)
+  if (k === 'ruler') {
+    const w = el('div', 'carte ruler', parent); if (c.lab) el('div', 'lab', w, md(c.lab));
+    const r = el('div', 'rl', w); el('div', 'tr', r);
+    const pos = (v) => ((v - c.min) / (c.max - c.min) * 100);
+    if (c.band) { const [a, b, t, tone] = c.band; const d = el('div', 'bd ' + (tone || ''), r); d.style.left = pos(a) + '%'; d.style.width = (pos(b) - pos(a)) + '%';
+      if (t) { const l = el('div', 'bdl ' + (tone || ''), r, md(t)); l.style.left = ((pos(a) + pos(b)) / 2) + '%'; } }
+    for (const [v, vt, lab, tone, side] of c.points) { const p = el('div', 'pt ' + (tone || '') + ' ' + (side || 'h'), r, `<i></i><div class="tx"><b>${md(vt)}</b><small>${md(lab)}</small></div>`); p.style.left = pos(v) + '%'; }
+    return;
+  }
+  if (k === 'gauges') {
+    const w = el('div', 'gauges', parent);
+    for (const [n, lab, sub] of c.items) {
+      const tone = n >= 7 ? 'ok' : n >= 5 ? 'warn' : 'bad', col = { ok: '#137036', warn: '#c27a0e', bad: '#c81e1e' }[tone], L = Math.PI * 100;
+      const th = Math.PI * (1 - n / 10), x = 120 + 100 * Math.cos(th), y = 120 - 100 * Math.sin(th);
+      const ticks = Array.from({ length: 11 }, (_, i) => { const a = Math.PI * (1 - i / 10); return `<line x1="${(120 + 124 * Math.cos(a)).toFixed(1)}" y1="${(120 - 124 * Math.sin(a)).toFixed(1)}" x2="${(120 + 132 * Math.cos(a)).toFixed(1)}" y2="${(120 - 132 * Math.sin(a)).toFixed(1)}" stroke="rgba(28,22,18,.28)" stroke-width="3" stroke-linecap="round"/>`; }).join('');
+      el('div', 'carte gauge', w, `<svg viewBox="-16 -16 272 150">${ticks}<path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="rgba(28,22,18,.09)" stroke-width="22" stroke-linecap="round"/>` +
+        `<path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="${col}" stroke-width="22" stroke-linecap="round" stroke-dasharray="${(L * n / 10).toFixed(1)} 999"/>` +
+        `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="15" fill="#fff" stroke="${col}" stroke-width="7"/></svg>` +
+        `<div class="gv ${tone}">${n}<small>/10</small></div><div class="gl">${md(lab)}</div>${sub ? `<div class="gs">${md(sub)}</div>` : ''}`);
+    }
+    return;
+  }
+  // barre empilée : le prix de revente découpé (achat, frais, marge)
+  if (k === 'stack') {
+    const w = el('div', 'stack', parent);
+    el('div', 'sk-top', w, `<span>${md(c.lab || '')}</span><b>${md(c.tot)}</b>`);
+    const bar = el('div', 'sk-bar', w), leg = el('div', 'sk-leg', w);
+    for (const [lab, v, vt, cls] of c.segs) {
+      const s = el('span', 'sk-' + cls, bar, c.inside === false ? '' : `<em>${md(vt)}</em>`); s.style.flex = `${v} 1 0`;
+      el('div', cls === 'm' ? 'm' : cls === 'p' ? 'p' : '', leg, `<i class="sk-${cls}"></i><span>${md(lab)}</span><b>${md(vt)}</b>`);
+    }
+    return;
+  }
+  if (k === 'bars') {
+    const w = el('div', 'bars2', parent), max = Math.max(...c.items.map(i => Math.abs(i[1])));
+    for (const [lab, v, vt, tone] of c.items) {
+      const r = el('div', 'br', w); r.dataset.v = v; el('div', 'bl', r, md(lab)); const t = el('div', 'bt', r);
+      const pct = Math.max(4, Math.abs(v) / max * (c.room || 64)); const f = el('div', 'bf ' + (tone || 'o'), t); f.style.width = pct + '%';
+      const b = el('div', 'bv ' + (tone || 'o'), t, md(vt)); b.style.left = `calc(${pct}% + 22px)`;
+    }
+    return;
+  }
+  // tirages photo scotchés : la vraie annonce, avec une légende manuscrite et un tampon facultatif
+  if (k === 'prints') {
+    const w = el('div', 'prints n' + c.items.length, parent);
+    // z : zoom dans la photo (coupe les filigranes de plateforme dans les coins)
+    c.items.forEach(([src, pos, cap, st, z], i) => {
+      const p = el('div', 'print', w, `<div class="ph"><img src="${src}" style="object-position:${pos || '50% 50%'};transform-origin:${pos || '50% 50%'};transform:scale(${z || 1})"></div>${cap ? `<div class="cap">${md(cap)}</div>` : ''}`);
+      p.style.transform = `rotate(${(c.rot || [-4, 2.5, -2])[i]}deg)`; p.style.zIndex = c.items.length - Math.abs(1 - i);
+      if (st) el('div', 'stamp free ' + (st[1] || 'ok'), p, md(st[0]));
+    });
+    return;
+  }
+  if (k === 'island') { el('div', 'island', parent, island(c)); return; }
+  if (k === 'bento') {
+    const w = el('div', 'bento', parent);
+    for (const t of c.items) {
+      // tuile à anneau (note du moteur) : la note dans l'anneau, le libellé à côté
+      const val = t.ring != null ? '' : `<div class="vl ${t.tone || ''}">${md(t.v)}</div>`;
+      const d = el('div', 'tile2' + (t.w ? ' w' : '') + (t.hl ? ' hl' : '') + (t.ring != null ? ' rg' : ''), w, `<div class="lb">${md(t.l)}</div>${val}${t.s ? `<div class="sb">${md(t.s)}</div>` : ''}`);
+      if (t.ring != null) { const C2 = 2 * Math.PI * 50; el('div', 'ring', d, `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(19,112,54,.15)" stroke-width="11"/><circle cx="60" cy="60" r="50" fill="none" stroke="#137036" stroke-width="11" stroke-linecap="round" stroke-dasharray="${(C2 * t.ring).toFixed(1)} ${C2.toFixed(1)}" transform="rotate(-90 60 60)"/></svg><b>${md(t.v)}</b>`); }
+    }
+    return;
+  }
+  // 3e élément facultatif : une icône à la place du numéro (liste qui n'est pas une suite d'étapes)
+  if (k === 'list') { const w = el('div', 'list', parent); c.items.forEach((it, i) => { const [t, sm, icn] = Array.isArray(it) ? it : [it]; el('div', 'li', w, `<span class="n">${icn ? ico(icn) : c.start != null ? c.start + i : i + 1}</span><span class="t">${md(t)}${sm ? `<small>${md(sm)}</small>` : ''}</span>`); }); return; }
+  if (k === 'pills') { const w = el('div', 'pills', parent); for (const [t, tone] of c.items) el('span', 'pill ' + (tone || 'neu'), w, (tone === 'ok' ? '✓ ' : tone === 'bad' ? '✕ ' : '') + md(t)); return; }
+  // « … » seul dans une bulle = trois points : il ne dit rien
+  // 3e élément facultatif : nom propre à cette bulle (ex. « Le vendeur · 0:12 »)
+  if (k === 'chat') { const w = el('div', 'chat', parent); for (const [who, t, lab] of c.items) el('div', 'bub ' + who, w, `<div class="who">${md(lab || (who === 'v' ? (c.v || 'Le vendeur') : (c.m || 'Toi')))}</div>${t === '…' ? '<span class="dots"><i></i><i></i><i></i></span>' : md(t)}`); return; }
+  if (k === 'listing') {
+    const w = el('div', 'lwrap', parent); const d = el('div', 'listing', w);
+    el('div', 'lph' + (c.cut ? ' cut' : ''), d, `<img src="${c.src}" style="object-position:${c.pos || '50% 50%'}"><span class="cnt">1/${c.n || 8}</span>`);
+    // annonce réduite à l'essentiel quand m et l sont vides : photo, modèle, prix
+    el('div', 'in', d, `<div class="lt">${md(c.t)}</div>${c.m ? `<div class="lm">${md(c.m)}</div>` : ''}<div class="lp">${md(c.p)}</div>${c.l ? `<div class="ll">${md(c.l)}</div>` : ''}`);
+    if (c.note) {
+      const arrow = '<svg viewBox="0 0 96 64"><path d="M92 14C70 52 38 58 10 38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M10 38L32 34M10 38L20 58" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>';
+      const n = el('div', 'note', d, `${arrow}<span>${md(c.note)}</span>`); n.style.left = (c.nx ?? 330) + 'px'; n.style.top = (c.ny ?? 520) + 'px';
+    }
+    if (c.vraie) el('span', 'stk free', d.querySelector('.lph'), 'Vraie annonce');
+    // pastille d'analyse posée sur l'annonce, comme une notification qui arrive
+    if (c.island) { el('div', 'island onlisting', w, island(c.island)); w.style.marginTop = '40px'; }
+    if (c.ph) d.querySelector('.lph').style.height = c.ph + 'px';
+    return;
+  }
+  if (k === 'chrono') {
+    const C2 = 2 * Math.PI * 112, w = el('div', 'chrono', parent);
+    el('div', 'ring', w, `<svg viewBox="0 0 260 260"><circle cx="130" cy="130" r="112" fill="none" stroke="rgba(244,241,236,.12)" stroke-width="18"/>` +
+      `<circle cx="130" cy="130" r="112" fill="none" stroke="#ff5a1f" stroke-width="18" stroke-linecap="round" stroke-dasharray="${(C2 * c.p).toFixed(1)} ${C2.toFixed(1)}"/></svg>` +
+      `<div class="t"><b>${md(c.t)}</b><span>${md(c.cap || 'sans un mot')}</span></div>`);
+    el('div', 'cp', w, `<span class="l">${md(c.lab || 'Prix du vendeur')}</span><span class="v">${md(c.price)}</span>` +
+      `<span class="olds">${(c.olds || []).map(o => `<span class="strike">${md(o)}</span>`).join('')}${c.plus ? `<span class="plus">${md(c.plus)}</span>` : ''}</span>`);
+    return;
+  }
+  // la pensée grossit d'une image à l'autre (c.size) : la panique monte
+  if (k === 'thought') { el('div', 'thought', parent, `<div class="tlab">${md(c.lab || 'Dans sa tête :')}</div><div class="tx"${c.size ? ` style="font-size:${c.size}px"` : ''}>${md(c.t)}</div>`); return; }
+  if (k === 'split') { const w = el('div', 'split', parent); for (const [cls, [lab, t]] of [['a', c.a], ['b', c.b]]) el('div', 'sc ' + cls, w, `<div class="sl">${md(lab)}</div><div class="sx">${md(t)}</div>`); return; }
+  // case large : la valeur à gauche, la suite des prix (barrés sauf le dernier) à droite
+  if (k === 'stats') { const w = el('div', 'stats', parent); for (const [v, l, wide, side] of c.items) el('div', 'stat' + (wide ? ' w' : ''), w,
+    `<div><b>${md(v)}</b><span>${md(l)}</span></div>` + (side ? `<div class="side">${side.map((p, i) => i < side.length - 1 ? `<span class="strike">${md(p)}</span>` : `<em>${md(p)}</em>`).join('')}</div>` : '')); return; }
+  if (k === 'hist') { const w = el('div', 'hist', parent); c.items.forEach((p, i) => { if (i) el('span', 'ar', w, '→'); el(i === c.items.length - 1 ? 'b' : 'span', i === c.items.length - 1 ? '' : 'strike', w, md(p)); }); return; }
+  if (k === 'tl') { const w = el('div', 'tl', parent); for (const [h, t, tone] of c.items) el('div', 'e ' + (tone || ''), w, `<span class="d"></span><div><div class="hh">${md(h)}</div><div class="tt">${md(t)}</div></div>`); return; }
+  if (k === 'big') { const w = el('div', '', parent); const bw = el('div', 'bigw', w); el('div', 'big' + (c.tone ? ' ' + c.tone : ''), bw, md(c.v));
+    // cercle à la main, pas tout à fait fermé
+    el('div', 'free', bw, '<svg class="cerc" viewBox="0 0 300 160" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M168 14 C 90 6, 14 30, 12 78 C 10 128, 92 152, 168 148 C 246 144, 292 116, 288 74 C 285 34, 228 10, 140 18"/></svg>');
+    if (c.cap) el('div', 'bigcap', w, md(c.cap)); return; }
+  if (k === 'nokia') {
+    const w = el('div', 'nokia', parent); el('div', 'nb', w, 'NOKIA'); const s = el('div', 'lcd', w);
+    const sig = [18, 28, 38, 48].map(h => `<i style="height:${h}px"></i>`).join('');
+    const bat = [0, 1, 2, 3].map(i => `<i class="${i < (c.batt ?? 4) ? '' : 'off'}" style="height:${18 + i * 10}px"></i>`).join('');
+    el('div', 'top', s, `<span class="bars">${sig}</span><span class="bat"><span class="bars">${bat}</span></span>`);
+    if (c.head) el('div', 'hd', s, md(c.head));
+    if (c.time) el('div', 'tm', s, md(c.time));
+    if (c.msg) el('div', 'msg', s, md(c.msg));
+    if (c.sub) el('div', 'sub', s, md(c.sub));
+    if (c.foot) el('div', 'ft', s, `<span>${md(c.foot[0])}</span><span>${md(c.foot[1])}</span>`);
+    return;
+  }
+  if (k === 'vs') { const w = el('div', 'vs', parent); for (const [cls, h, items] of [['a', c.a[0], c.a[1]], ['b', c.b[0], c.b[1]]]) { const d = el('div', 'carte ' + cls, w); el('h4', '', d, md(h)); for (const t of items) el('p', '', d, md(t)); } return; }
+  const card = el('div', 'carte' + (k === 'ticket' ? ' tk' : '') + (k === 'cote' ? ' cote' : ''), parent);
+  if (c.lab) el('div', 'lab', card, md(c.lab));
+  if (k === 'rows') { const w = el('div', 'rows', card); for (const [t, st, tone, icn] of c.items) el('div', 'row', w, `<span class="lbl">${icn ? `<span class="ic2">${ico(icn)}</span>` : ''}<span>${md(t)}</span></span>${st ? `<span class="st ${tone || 'ok'}">${md(st)}</span>` : ''}`); }
+  if (k === 'ticket') { const w = el('div', 'rows', card); for (const [t, v] of c.items) el('div', 'row', w, `<span>${md(t)}</span><span>${md(v)}</span>`); el('div', 'tot', card, `<span>${md(c.totLab || 'Total')}</span><b class="${c.tone || ''}">${md(c.tot)}</b>`); }
+  if (k === 'quote') el('div', 'quote', card, md(c.t));
+  if (k === 'verdict') { const w = el('div', 'vd', card); el('span', 'chip ' + c.tone, w, md(c.v)); if (c.sub) el('div', 'sub', w, md(c.sub)); }
+  if (k === 'notif') { const w = el('div', 'nt', card); el('span', 'ic', w, `<img src="${SYM}">`); el('div', '', w, `<div class="h"><span>${md(c.h || 'utopicar · alerte')}</span><span>${md(c.time || 'à l\'instant')}</span></div><div class="t1">${md(c.t1)}</div><div class="t2">${md(c.t2)}</div>`); }
+  if (k === 'cote') {
+    const pos = (v) => ((v - c.min) / (c.max - c.min) * 100).toFixed(2) + '%';
+    const bar = el('div', 'bar', card);
+    el('span', 'mk', bar, '<i></i>').style.left = pos(c.cote);
+    el('span', 'tag', bar, `Cote ${md(c.coteTxt)}`).style.left = pos(c.cote);
+    el('span', 'dot', bar).style.left = pos(c.prix);
+    const t2 = el('span', 'tag', bar, `<span style="color:var(--o2)">Annonce ${md(c.prixTxt)}</span>`); t2.style.left = pos(c.prix); t2.style.bottom = 'auto'; t2.style.top = '64px';
+    el('div', 'ends', card, `<span>${md(c.minTxt)}</span><span>${md(c.maxTxt)}</span>`).style.marginTop = '86px';
+  }
+}
+
+if (LAST) {
+  box.classList.add('end');
+  if (SL.bigdots) el('div', 'bigdots', box, '<i></i><i></i><i></i>');
+  else if (!(C.offer && C.offer.pass)) el('span', 'tile', box, `<img src="${SYM}">`);   // le pass porte déjà le logo
+  if (SL.title) { const t = el('div', 'title', box, md(SL.title)); t.dataset.size = SL.size || 92; }
+  if (C.offer && C.offer.pass) {
+    // fin « conversion » 2027 : le pass (3 analyses, sans carte, ton code), ce que tu reçois, puis le bouton d'action
+    const o = C.offer, w = el('div', 'pass', box);
+    el('div', 'top', w, `<span class="mq"><span><img src="${SYM}"></span>utopicar</span><em>${md(o.badge)}</em>`);
+    el('div', 'mid', w, `<span class="n">${md(o.n)}</span><span class="l1">${md(o.l1)}</span>`);
+    el('div', 'perf', w);
+    el('div', 'bot', w, `<div><div class="lb">${md(o.codeLab)}</div><div class="cd">${md(o.word)}</div></div><div class="nc">${md(o.l2)}</div>`);
+    el('div', 'gets2', box, o.gets.map(g => `<div><i>✓</i><span>${md(g)}</span></div>`).join(''));
+    const bw = el('div', 'btnw', box); el('div', 'btn', bw, `<span>${md(o.btn)}</span>`);
+    el('div', 'free', bw, '<svg class="fl" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12 C 22 70, 70 96, 132 92"/><path d="M132 92 L 110 80 M132 92 L 114 106"/></svg>');
+    if (o.ou) el('div', 'ou', box, md(o.ou));
+  } else if (C.follow) {
+    // fin « abonnement » : ce qui arrive dans le prochain épisode, le bouton, puis la question qui fait commenter
+    const f = C.follow;
+    if (f.items && f.items.length) { const w = el('div', 'carte nextc', box); el('div', 'lab', w, md(f.lab || 'Dans le prochain épisode')); const l = el('div', 'list', w);
+      f.items.forEach(([t, icn]) => el('div', 'li', l, `<span class="n">${ico(icn || 'check')}</span><span class="t">${md(t)}</span>`)); }
+    const bw = el('div', 'btnw', box); el('div', 'btn', bw, `<span>${md(f.btn || 'Abonne-toi pour la suite')}</span>`);
+    el('div', 'free', bw, '<svg class="fl" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12 C 22 70, 70 96, 132 92"/><path d="M132 92 L 110 80 M132 92 L 114 106"/></svg>');
+    if (f.ask) el('div', 'ask', box, `<span class="who">Ta réponse en commentaire</span>${md(f.ask)}`);
+  } else if (C.offer) {
+    // fin « conversion » : ce que la personne reçoit, sans carte bancaire, puis une seule action (TikTok : c'est elle qui écrit)
+    const o = C.offer, w = el('div', 'offer', box);
+    el('div', 'hd', w, `<span class="n">${md(o.n)}</span><div><div class="l1">${md(o.l1)}</div><div class="l2">${md(o.l2)}</div></div>`);
+    el('div', 'gets', w, o.gets.map(g => `<div><i>✓</i><span>${md(g)}</span></div>`).join(''));
+    el('div', 'cta', box, `${md(o.lead)} <span class="k">${md(o.word)}</span> ${md(o.tail)}`);
+    if (o.ou) el('div', 'ou', box, md(o.ou));
+  } else if (C.share) {
+    // fin « partage » : le geste demandé est l'envoi à un proche, pas un commentaire
+    el('div', 'share', box, `${md(C.share.lead)} <span class="k">${md(C.share.k)}</span>`);
+    if (C.share.sub) el('div', 'sharesub', box, md(C.share.sub));
+    el('div', 'sign', box, `<b>utopicar</b>${C.share.sign ? ` · ${md(C.share.sign)}` : ''}`);
+  } else {
+    el('div', 'cta', box, `Commente <span class="k">${C.word}</span>`);
+    // C.after : la promesse propre au mot (ex. MESSAGE pour l'outil) ; sinon le guide
+    el('div', 'guide', box, C.after ? md(C.after) : `je t'envoie le guide<br><span class="it">${md(C.guide)}</span>`);
+  }
+} else {
+  if (SL.kicker) el('div', N === 0 ? 'kicker k1' : 'kicker', box, `<span>${md(SL.kicker)}</span>`);   // un seul bloc : la pastille est en flex, chaque espace dessiné y deviendrait un élément
+  if (SL.title) { const t = el('div', 'title', box, md(SL.title)); t.dataset.size = SL.size || (N === 0 ? 150 : 104); }
+  if (SL.body) el('div', 'body', box, md(SL.body));
+  for (const c of SL.comp || []) comp(c, box);
+  if (SL.body2) el('div', 'body', box, md(SL.body2));
+  if (SL.compFirst && box.querySelector('.title')) { const first = box.lastElementChild; box.insertBefore(first, box.querySelector('.kicker') || box.querySelector('.title')); }
+  // la voiture : celle de l'image (SL.car = {src, credit}) ou celle du carrousel ; en grand seule sous l'accroche,
+  // plus petite à côté d'un autre visuel
+  const CARX = SL.car && typeof SL.car === 'object' ? SL.car : (C.car && (N === 0 || !(SL.comp || []).length) && SL.car !== false ? C.car : null);
+  if (CARX) {
+    const w = el('div', N === 0 && !(SL.comp || []).length ? 'car' : 'car md', box, `<img src="${CARX.src}">`);
+    await w.querySelector('img').decode();
+  }
+  // bas d'image : crédit photo et source des chiffres, sur une ligne
+  const credit = [CARX && CARX.credit, SL.credit].filter(Boolean).join(' · ');
+  if (credit) el('div', 'credit', S, md(credit));
+  if (N === 0) el('div', 'swipe', S, `<span>${md(SL.swipe || 'Glisse →')}</span>`);
+  // bas des images de contenu (zone de la légende TikTok) : où on en est, et la suite
+  else el('div', 'suite', S, `<span class="pts">${C.slides.map((_, i) => `<i class="${i === N ? 'on' : ''}"></i>`).join('')}</span><span class="go">Glisse →</span>`);
+  // pas de pastille « Image 4 : … » (retirée à la demande de l'utilisateur)
+}
+// zone sûre : le bas s'arrête au-dessus de la ligne de source (y 1428) sur les images de contenu
+const TOP = SL.top || (N > 0 && !LAST ? 330 : 236), BOT = N === 0 ? 1306 : 1470;
+box.style.top = TOP + 'px'; box.style.height = (BOT - TOP) + 'px';
+await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+await document.fonts.ready;
+for (const f of ["600 100px 'Clash Display'", "500 40px 'Satoshi'", "700 40px 'Satoshi'", "italic 400 100px 'Instrument Serif'"]) await document.fonts.load(f);
+// largeur réelle du texte (une ligne trop longue déborde des deux côtés quand elle est centrée)
+const textW = (e) => { const r = document.createRange(); r.selectNodeContents(e); return Math.max(e.scrollWidth, r.getBoundingClientRect().width); };
+function fit(e, base, max = 790) { e.style.fontSize = base + 'px'; for (let i = 0; i < 3; i++) { const w = textW(e); if (w <= max) break; e.style.fontSize = (parseFloat(e.style.fontSize) * max / w * 0.995).toFixed(1) + 'px'; } }
+const H = BOT - TOP;
+// tout le contenu dans un bloc intérieur, mis à l'échelle pour remplir la zone sûre :
+// le bloc est mis en page sur une largeur 800/z puis agrandi de z (il fait toujours 800 px de large à l'écran).
+// z > 1 : l'image était vide, tout grossit ; z < 1 : le contenu dépassait, tout rétrécit.
+const inner = el('div', 'inner', null); inner.style.cssText = 'position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:inherit;transform-origin:0 0';
+while (box.firstChild) inner.appendChild(box.firstChild); box.appendChild(inner); box.style.display = 'block';
+document.querySelectorAll('.kicker, .pill, .st, .bento .vl, .island, .print .cap, .print .stamp').forEach(t => t.dataset.fs = parseFloat(getComputedStyle(t).fontSize));
+document.querySelectorAll('.sk-bar > span').forEach(s => s.dataset.html = s.innerHTML);
+function passe(W) {
+  inner.style.width = W + 'px';
+  document.querySelectorAll('.title').forEach(t => fit(t, +t.dataset.size, W - 10));
+  // échelle de prix : chaque étiquette centrée sur son point, mais gardée dans la carte
+  document.querySelectorAll('.rl').forEach(r => { const RW = r.clientWidth; r.querySelectorAll('.pt').forEach(p => { const tx = p.querySelector('.tx'), w = tx.offsetWidth, x = p.offsetLeft;
+    tx.style.left = Math.min(Math.max(-w / 2, -x - 26), RW - x - w + 26) + 'px'; });
+    // deux étiquettes du même côté qui se touchent : on écarte la seconde, puis la première si la carte s'arrête
+    for (const side of ['h', 'b']) {
+      const L = [...r.querySelectorAll('.pt.' + side)].map(p => ({ x: p.offsetLeft, tx: p.querySelector('.tx') })).sort((a, b) => a.x - b.x);
+      for (let i = 1; i < L.length; i++) { const a = L[i - 1], b = L[i], la = parseFloat(a.tx.style.left), lb = parseFloat(b.tx.style.left);
+        const over = a.x + la + a.tx.offsetWidth + 22 - (b.x + lb); if (over <= 0) continue;
+        const room = Math.max(0, RW + 26 - (b.x + lb + b.tx.offsetWidth)), sb = Math.min(over, room);
+        b.tx.style.left = (lb + sb) + 'px'; if (over > sb) a.tx.style.left = (la - (over - sb)) + 'px'; }
+    } });
+  // barres comparées : la plus longue laisse la place à son montant
+  document.querySelectorAll('.bars2').forEach(b => { const rows = [...b.querySelectorAll('.br')], vals = rows.map(r => Math.abs(+r.dataset.v)), max = Math.max(...vals);
+    const tw = rows[0].querySelector('.bt').clientWidth, txt = Math.max(...rows.map(r => r.querySelector('.bv').offsetWidth)), avail = Math.max(80, tw - txt - 44);
+    rows.forEach((r, i) => { const f = Math.max(30, vals[i] / max * avail); r.querySelector('.bf').style.width = f + 'px'; r.querySelector('.bv').style.left = (f + 20) + 'px'; }); });
+  // pastille d'analyse, légendes et tampons des tirages : tiennent dans leur place
+  document.querySelectorAll('.island').forEach(t => fit(t, +t.dataset.fs, W - 30));
+  document.querySelectorAll('.print .cap').forEach(t => fit(t, +t.dataset.fs, t.parentElement.clientWidth - 20));
+  document.querySelectorAll('.print .stamp').forEach(t => fit(t, +t.dataset.fs, t.parentElement.clientWidth - 30));
+  // barre empilée : le montant n'est écrit dans le segment que s'il y tient (sinon il reste dans la légende)
+  document.querySelectorAll('.sk-bar > span').forEach(s => { s.innerHTML = s.dataset.html; const r = document.createRange(); r.selectNodeContents(s); if (r.getBoundingClientRect().width > s.clientWidth - 28) s.textContent = ''; });
+  document.querySelectorAll('.cta, .share').forEach(t => fit(t, 76, W - 10));
+  // pastille de verdict : tient dans la carte ; grand chiffre : tient dans la colonne
+  document.querySelectorAll('.vd .chip').forEach(t => fit(t, 84, W - 110));
+  document.querySelectorAll('.kicker').forEach(t => fit(t, +t.dataset.fs, W - 80));
+  document.querySelectorAll('.big').forEach(t => fit(t, 260, W - 20));
+  // chiffres des tuiles : chacun tient dans sa tuile (l'anneau du moteur garde sa place)
+  document.querySelectorAll('.bento .vl').forEach(t => { const c = t.closest('.tile2'), cs = getComputedStyle(c);
+    fit(t, +t.dataset.fs, c.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (c.querySelector('.ring') ? 130 : 4)); });
+  document.querySelectorAll('.btn').forEach(t => fit(t, 60, W - 40));
+  document.querySelectorAll('.stat b').forEach(t => { const c = t.closest('.stat'), cs = getComputedStyle(c);
+    fit(t, 112, c.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (c.querySelector('.side') ? 260 : 4)); });
+  document.querySelectorAll('.pill, .st').forEach(t => { t.style.fontSize = t.dataset.fs + 'px'; if (t.offsetWidth > W - 100) fit(t, +t.dataset.fs, W - 110); });
+  // dans une ligne, le montant laisse au moins la moitié de la place au libellé
+  document.querySelectorAll('.row').forEach(r => { const st = r.querySelector('.st'); if (st) fit(st, +st.dataset.fs, r.clientWidth * 0.42); });
+  return inner.offsetHeight;
+}
+// remplissage visé : 90 % de la zone (l'image 1 garde sa composition : agrandissement limité)
+const ZMAX = N === 0 ? 1.12 : 1.7, CIBLE = (SL.fill || 0.9) * H;
+let z = 1, hh = passe(800);
+if (hh > H || hh < CIBLE) for (let i = 0; i < 8; i++) {
+  const nz = Math.min(ZMAX, Math.max(0.5, (z + CIBLE / hh) / 2));
+  if (Math.abs(nz - z) < 0.004) break;
+  z = nz; hh = passe(800 / z);
+}
+// trop serré (un montant qui chevauche son libellé, une ligne qui déborde) : on agrandit moins
+// échelle de prix : une étiquette qui sort de la carte ou en chevauche une autre = trop serré
+const rlSerre = () => [...inner.querySelectorAll('.rl')].some(r => { const W = r.clientWidth;
+  const L = [...r.querySelectorAll('.pt')].map(p => { const t = p.querySelector('.tx'), x = p.offsetLeft + t.offsetLeft; return { a: x, b: x + t.offsetWidth, s: p.classList.contains('h') ? 'h' : 'b' }; });
+  return L.some(l => l.a < -36 || l.b > W + 36) || L.some((l, i) => L.some((m, j) => j > i && l.s === m.s && l.a < m.b + 10 && m.a < l.b + 10)); });
+const serre = () => rlSerre() || [...inner.querySelectorAll('.row, .row .lbl, .li, .sk-leg > div, .bub, .vs .carte, .gauge, .tl .e, .br, .tk .tot')].some(e => e.scrollWidth > e.clientWidth + 2);
+while (z > 1 && serre()) { z = Math.max(1, z - 0.05); hh = passe(800 / z); }
+if (hh * z > H) { z = H / hh; hh = passe(800 / z); if (hh * z > H) z = H / hh; }
+// encore trop court (2 éléments, peu de lignes) : on écarte les éléments plutôt que de grossir encore
+if (inner.children.length > 1 && hh * z < CIBLE * 0.97) {
+  const g = parseFloat(getComputedStyle(inner).rowGap) || 46;
+  inner.style.gap = (g + Math.min(120, (CIBLE - hh * z) / z / (inner.children.length - 1))) + 'px'; hh = inner.offsetHeight;
+}
+inner.style.transform = `scale(${z.toFixed(4)})`;
+inner.style.top = (SL.align === 'flex-start' ? 0 : Math.max(0, (H - hh * z) / 2)) + 'px';
+window.zoom = z;
+// (l'annonce inclinée et son annotation débordent volontairement de quelques pixels : on ne contrôle que le texte)
+window.overflow = hh * z > H + 2 || [...box.querySelectorAll('*')].filter(e => !e.closest('.lwrap') && !e.closest('.prints') && !e.closest('.free') && e.tagName !== 'IMG').some(e => e.getBoundingClientRect().right > 942 || e.getBoundingClientRect().left < 138);
+window.ready = true;
+</script>
+</body>
+</html>

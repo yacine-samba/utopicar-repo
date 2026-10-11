@@ -1,0 +1,212 @@
+"""Vague 4 : V051 à V070. Faits : Code de commerce L110-1 et L121-1 (acheter pour revendre, par habitude), travail dissimulé
+(Code du travail L8221-3 et L8224-1), URSSAF 12,3 % du prix de vente en micro-entreprise (2026), HistoVec (kilométrage des CT
+depuis 2021), sculptures des pneus : 1,6 mm minimum, rouler avec un CT dépassé : 135 €. Cas d'école : hypothèses écrites."""
+from series import (S, ROWS, PILLS, TICKET, VS, CHAT, LIST, TL, QUOTE, BIG, RULER, GAUGES, STACK, BARS, STAMP, HERO, car,
+                    COUTS, JUR, T_DEB, T_PIEGE, T_ARG, PREUVE, DEMO)
+from app20 import PREUVES
+from vague2 import VF, NOPAS
+from vague3 import CAS, EX
+GOLF = "Exemple calculé par l'outil sur des données de démonstration"
+
+VAGUE4 = [
+# ——— S1 · Ta 1re voiture, épisodes 6 et 7 ———
+car('V051', 'la-visite', "S1 Ta 1re voiture, épisode 6/10", "La visite d'une voiture d'occasion : 20 minutes, dans cet ordre",
+    "Moteur froid d'abord, puis le tour de la voiture, l'intérieur et les papiers. Épisode 6 sur 10.", T_DEB, [
+  HERO('coffre-homme', "Ta 1re voiture, épisode 6", "20 minutes sur place.\nDans *cet ordre*.", pos='40% 45%'),
+  S(title="Les *20 minutes*.", comp=[TL(("0 min", "capot froid : il ne l'a pas fait chauffer"), ("5 min", "le tour : carrosserie, pneus, vitres"),
+                                        ("10 min", "l'intérieur : compteur, voyants, sièges"), ("15 min", "les papiers : carte grise, CT, factures", 'v'))]),
+  S(title="Les papiers\n*avec toi*.", comp=[LIST(("La carte grise", "le nom = celui du vendeur", 'carte'), ("Le CT", "date et défaillances", 'check'),
+                                                  ("Les factures", "distribution surtout", 'doc'))]),
+  S(title="Tu *repars* si…", comp=[ROWS(("Le moteur est chaud", "à ton arrivée", 'bad txt', 'temp'), ("Les noms ne collent pas", "carte grise et vendeur", 'bad txt', 'x'),
+                                         ("Pas de papiers", "« je les cherche »", 'bad txt', 'doc'))])],
+  ("Épisode 7 :\n*l'essai*.", "Dans l'épisode 7", (("10 minutes au volant, ce que tu écoutes", 'route'),),
+   "Tu fais quoi en premier quand tu arrives ?")),
+car('V052', 'l-essai', "S1 Ta 1re voiture, épisode 7/10", "L'essai d'une voiture d'occasion : 10 minutes, ce que tu écoutes",
+    "Démarrage, embrayage, freinage, direction, bruits. Ce qui doit te faire dire non. Épisode 7 sur 10.", T_DEB, [
+  HERO('volant-soleil', "Ta 1re voiture, épisode 7", "10 minutes d'essai.\nCe que tu *écoutes*.", pos='35% 50%'),
+  S(title="Les *5 tests*.", comp=[LIST(("Le démarrage à froid", "pas de bruit métallique", 'power'), ("L'embrayage", "il ne patine pas en montée", 'outil'),
+                                       ("Le freinage", "la voiture reste droite", 'alerte'), ("La direction", "pas de jeu, pas de vibration", 'route'),
+                                       ("Les vitesses", "elles passent sans craquer", 'moteur'))]),
+  S(title="Les bruits\n*à fuir*.", comp=[ROWS(("Claquement à froid", "moteur ?", 'bad txt', 'moteur'), ("Sifflement en accélérant", "turbo ?", 'warn txt', 'temp'),
+                                              ("Grincement en freinant", "freins", 'warn txt', 'alerte'))]),
+  S(title="Ta *phrase*.", comp=[CHAT(["m", "On peut faire 10 minutes avec un peu d'autoroute ? Je préfère l'avoir entendue à froid et à chaud."])])],
+  ("Épisode 8 :\n*la négo*.", "Dans l'épisode 8", (("Elle est à 6 700 €, tu proposes 6 250 €", 'chat'),),
+   "Tu fais combien de minutes d'essai, d'habitude ?")),
+# ——— S2 · L'annonce décodée ———
+car('V053', 'jamais-accidentee', "S2 L'annonce décodée, phrase 6", "« Jamais accidentée » dans une annonce : comment le vérifier",
+    "L'HistoVec ne montre que les accidents graves déclarés. Le reste se voit : teintes, écarts entre les éléments, traces de peinture.", T_DEB, [
+  HERO('eponge-carrosserie', "L'annonce décodée", "« Jamais accidentée. »\n*Vérifie* quand même.", pos='45% 50%'),
+  S(title="L'HistoVec\n*ne dit pas tout*.", body="Il montre les procédures « véhicule endommagé ». Pas les petits chocs réparés au garage du coin."),
+  S(title="Ce que tu\n*regardes*.", comp=[LIST(("Les teintes", "une portière plus claire que l'autre", 'eclat'), ("Les écarts", "entre capot, ailes et portières", 'loupe'),
+                                               ("Les traces de peinture", "sur les joints et les plastiques", 'image'))]),
+  S(title="Ta *phrase*.", comp=[CHAT(["m", "Une pièce a été repeinte ? Ce n'est pas grave, je veux juste savoir laquelle et pourquoi."])])],
+  ("Épisode suivant :\n*« CT OK »*.", "Dans le prochain épisode", (("Daté de quand, avec quelles défaillances ?", 'check'),),
+   "Tu sais repérer une pièce repeinte ? Oui ou non ?")),
+car('V054', 'ct-ok', "S2 L'annonce décodée, phrase 7", "« CT OK » dans une annonce : la date et les défaillances à lire",
+    "Moins de 6 mois pour vendre, le résultat, et les défaillances mineures : elles disent ce qui arrive bientôt.", T_DEB, [
+  HERO('checklist-gilet', "L'annonce décodée", "« CT OK. »\nDaté de *quand* ?", pos='60% 50%'),
+  S(title="3 choses\nà *lire*.", comp=[LIST(("La date", "moins de 6 mois pour vendre", 'cal'), ("Le résultat", "favorable ou contre-visite", 'check'),
+                                            ("Les défaillances mineures", "ce qui arrive bientôt", 'alerte'))], credit="Code de la route, art. R323-22"),
+  S(title="Les mineures\n*comptent*.", body="Pas de contre-visite, mais une liste : pneus, freins, rotules. C'est ton budget des prochains mois."),
+  S(title="Ta *phrase*.", comp=[CHAT(["m", "Vous pouvez m'envoyer une photo du procès-verbal du CT ? La page avec les défaillances, même mineures."])])],
+  ("Épisode suivant :\n*« Révisée »*.", "Dans le prochain épisode", (("Révisée quand, et qu'est-ce qui a été fait ?", 'outil'),),
+   "Tu lis les défaillances mineures du CT ? Oui ou non ?")),
+# ——— S3 · Vrai ou faux ———
+car('V055', 'commercant', "S3 Vrai ou faux, n°6", "Acheter des voitures pour les revendre, souvent : tu deviens commerçant ? Vrai ou faux",
+    "Vrai : acheter pour revendre, par habitude, c'est un acte de commerce (Code de commerce, L110-1 et L121-1). Déclare-toi.", T_ARG, [
+  HERO('etiquette-nuit', "Vrai ou faux ?", "Acheter pour revendre,\nsouvent : tu es *commerçant*.", pos='50% 45%'),
+  VF(),
+  S(title="*Vrai*.", body="Acheter pour revendre, par habitude, c'est un acte de commerce.", credit="Code de commerce, art. L110-1 et L121-1"),
+  S(title="Donc tu\n*te déclares*.", comp=[LIST(("Micro-entreprise", "création en ligne, gratuite", 'doc'), ("URSSAF", "12,3 % de tes ventes", 'banque'),
+                                                ("Sinon", "travail dissimulé : 3 ans, 45 000 €", 'alerte'))],
+    credit="Code du travail, art. L8221-3 et L8224-1. " + JUR)],
+  ("Vrai ou faux\n*n°7*.", "La prochaine affirmation", (("« Le kilométrage de l'HistoVec remonte à 2021. »", 'jauge'),),
+   "Vrai ou faux ? Réponds maintenant, la réponse arrive au prochain épisode.")),
+car('V056', 'histovec-2021', "S3 Vrai ou faux, n°7", "Le kilométrage de l'HistoVec ne remonte qu'à 2021 ? Vrai ou faux",
+    "Vrai : l'HistoVec montre le kilométrage des CT depuis 2021. Avant, il te faut les factures et les anciens PV de CT.", T_DEB, [
+  HERO('compteur-vintage', "Vrai ou faux ?", "Le kilométrage de l'HistoVec\nremonte à *2021*.", pos='50% 50%'),
+  VF(),
+  S(title="*Vrai*.", body="Le kilométrage relevé à chaque CT est dans l'HistoVec depuis 2021."),
+  S(title="Avant 2021,\n*demande* ça.", comp=[LIST(("Les anciens PV de CT", "le kilométrage est dessus", 'check'), ("Les factures d'entretien", "date et kilométrage", 'doc'),
+                                                   ("Le carnet", "tamponné", 'outil'))])],
+  ("Vrai ou faux\n*n°8*.", "La prochaine affirmation", (("« Le voyant s'est éteint : c'est réparé. »", 'voyant'),),
+   "Vrai ou faux ? Réponds maintenant, la réponse arrive au prochain épisode.")),
+# ——— S4 · Les arnaques ———
+car('V057', 'arnaque-doublette', "S4 Les arnaques, n°6", "La doublette : une fausse plaque copiée sur une vraie voiture identique",
+    "Le numéro de série gravé sur la voiture doit être celui de la carte grise (case E). Sinon, tu pars.", T_PIEGE, [
+  HERO('deux-voitures-nuit', "Arnaque n°6", "Même modèle, même plaque.\n*Deux voitures*.", pos='55% 60%'),
+  S(title="Le *scénario*.", comp=[TL(("L'annonce", "plaque et papiers d'une vraie voiture"), ("La voiture", "volée, avec une plaque copiée", 'x'),
+                                     ("Toi", "tu l'achètes, la carte grise bloque", 'x'))]),
+  S(title="La *règle*.", comp=[LIST(("Le numéro de série", "case E de la carte grise", 'carte'), ("Le même, sur la voiture", "pare-brise et châssis", 'loupe'),
+                                    ("L'HistoVec", "généré par le titulaire", 'doc'))]),
+  S(title="Les *signaux*.", comp=[STAMP(ROWS(("Numéro illisible", "stop", 'bad txt', 'loupe'), ("Carte grise en photo seulement", "stop", 'bad txt', 'image'),
+                                              ("Prix très bas", "alerte", 'bad txt', 'prix'), lab="Si tu vois ça"), "Arnaque", 'bad')])],
+  ("Arnaque n°7 :\n*le vendeur*.", "Dans le prochain épisode", (("La carte grise n'est pas à son nom", 'carte'),),
+   "Tu compares le numéro de série avec la carte grise ? Oui ou non ?", NOPAS)),
+car('V058', 'carte-grise-pas-a-son-nom', "S4 Les arnaques, n°7", "Le vendeur n'est pas le titulaire de la carte grise : stop",
+    "Le nom sur la carte grise doit être celui de la personne en face de toi, pièce d'identité à l'appui. Sinon, tu ne paies pas.", T_PIEGE, [
+  HERO('homme-telephone-rue', "Arnaque n°7", "La carte grise\nn'est *pas à son nom*.", pos='45% 40%'),
+  S(title="Le *scénario*.", comp=[CHAT(["v", "C'est la voiture de mon cousin, il m'a laissé les papiers."], ["m", "…"])]),
+  S(title="La *règle*.", comp=[LIST(("Le nom de la carte grise", "case C.1", 'carte'), ("Sa pièce d'identité", "le même nom", 'doc'),
+                                    ("Le titulaire signe", "le certificat de cession", 'chat'))]),
+  S(title="Si ce n'est\n*pas lui*.", comp=[ROWS(("Pas le titulaire", "tu ne paies pas", 'bad txt', 'x'), ("« Il signera plus tard »", "non", 'bad txt', 'horloge'))], credit=JUR)],
+  ("Arnaque n°8 :\n*le transporteur*.", "Dans le prochain épisode", (("« Je suis à l'étranger, je vous la fais livrer »", 'route'),),
+   "On t'a déjà vendu « la voiture du cousin » ? Raconte.", NOPAS)),
+# ——— S5 · La marge ———
+car('V059', 'marge-urssaf', "S5 La marge, leçon 6/10", "L'URSSAF dans ta marge : 12,3 % du prix de vente, pas de la marge",
+    "Achetée 10 000 €, revendue 12 000 € : 1 476 € pour l'URSSAF en micro-entreprise. Il te reste 524 €, avant les autres frais.", T_ARG, [
+  S(kicker="La marge, leçon 6", title="Revendue 12 000 €.\nL'URSSAF : *1 476 €*.", comp=[BIG("12,3 %", cap="du prix de vente,\npas de la marge.", tone='r')], swipe="Glisse →",
+    credit="Micro-entreprise, achat-revente, 2026"),
+  S(title="Le *calcul*.", comp=[STACK("12 000 €", ("Achat", 10000, "10 000 €", 'a'), ("URSSAF, 12,3 %", 1476, "1 476 €", 'p'), ("Il te reste", 524, "524 €", 'm'), lab="Prix de vente")],
+    credit="Avant les autres frais"),
+  S(title="Sur la\n*vente*.", body="12,3 % de 12 000 €, pas de tes 2 000 € d'écart. C'est la ligne que les débutants oublient."),
+  S(title="Dans ta\n*formule*.", comp=[ROWS(("Prix de vente", "× 12,3 %", 'warn txt', 'banque'), ("À enlever", "avant de calculer ta marge", 'warn txt', 'calc'))])],
+  ("Leçon 7 :\n*ta marge minimum*.", "Dans la leçon 7", (("Le chiffre sous lequel tu n'achètes pas", 'plafond'),),
+   "Tu comptais l'URSSAF sur la marge ou sur la vente ?")),
+car('V060', 'marge-minimum', "S5 La marge, leçon 7/10", "Ta marge minimum : le chiffre sous lequel tu n'achètes pas",
+    "Sur l'exemple de la Golf : revente 9 800 €, frais 1 500 €, marge minimum 800 €. Elle paie ton temps et ton risque.", T_ARG, [
+  S(kicker="La marge, leçon 7", title="Ta marge minimum :\n*800 €*.", comp=[BIG("800 €", cap="sous ce chiffre,\ntu n'achètes pas.", tone='g')], swipe="Glisse →",
+    credit=GOLF),
+  S(title="Elle *paie*.", comp=[LIST(("Ton temps", "annonces, appels, trajets, visites", 'horloge'), ("Ton risque", "la panne que tu n'as pas vue", 'alerte'),
+                                     ("Les jours d'attente", "la voiture qui ne part pas", 'cal'))]),
+  S(title="Sur la\n*Golf*.", comp=[STACK("9 800 €", ("Ton prix max", 7500, "7 500 €", 'a'), ("Frais", 1500, "1 500 €", 'f'), ("Ta marge minimum", 800, "800 €", 'm'), lab="Revente")],
+    credit=GOLF),
+  S(title="Ta *règle*.", comp=[ROWS(("Fixée avant", "pas pendant la négo", 'ok txt', 'cal'), ("Même chiffre", "à chaque voiture", 'ok txt', 'check'))])],
+  ("Leçon 8 :\n*ton prix max*.", "Dans la leçon 8", (("Revente − frais − marge minimum", 'calc'),),
+   "C'est quoi ta marge minimum à toi ?")),
+# ——— S6 · Les mots du métier ———
+car('V061', 'courroie-ou-chaine', "S6 Les mots du métier, n°6", "Courroie ou chaîne de distribution : pas le même budget",
+    "La courroie se change selon les kilomètres ou les années, 400 à 800 € selon le moteur. La chaîne dure plus, sauf sur certains moteurs.", T_DEB, [
+  HERO('inspection-homme', "Les mots du métier", "Courroie ou chaîne :\n*pas le même budget*.", pos='55% 45%'),
+  S(title="La\n*courroie*.", comp=[LIST(("Elle se change", "selon les km ou les années", 'cal'), ("400 à 800 €", "selon le moteur", 'euro'), ("Sans facture", "tu la comptes à refaire", 'doc'))],
+    credit=COUTS),
+  S(title="La\n*chaîne*.", comp=[LIST(("Elle dure plus longtemps", None, 'moteur'), ("Sauf certains moteurs", "1.4 TSI de 2008 à 2012", 'alerte'), ("Un bruit à froid", "à faire vérifier", 'temp'))],
+    credit=COUTS),
+  S(title="Ta *question*.", comp=[CHAT(["m", "C'est une courroie ou une chaîne ? Et la dernière intervention, c'était à combien de kilomètres ?"])])],
+  ("Mot n°7 :\n*le volant moteur*.", "Dans le prochain épisode", (("Celui qu'on change souvent avec l'embrayage", 'outil'),),
+   "Ta voiture, c'est courroie ou chaîne ?")),
+car('V062', 'volant-moteur', "S6 Les mots du métier, n°7", "Le volant moteur bi-masse : ce qui fait grimper la facture d'embrayage",
+    "Sur beaucoup de moteurs récents, il se change souvent avec l'embrayage. Demande le devis complet avant ton offre.", T_DEB, [
+  S(kicker="Les mots du métier", title="« Embrayage à faire. »\nEt le *volant moteur* ?", comp=[BIG("600 € et +", cap="un embrayage, avant\nle volant moteur.", tone='r')],
+    swipe="Glisse →", credit=COUTS),
+  S(title="C'est\n*quoi* ?", body="Une pièce entre le moteur et l'embrayage, qui absorbe les vibrations. On le trouve sur beaucoup de moteurs récents."),
+  S(title="Le *piège*.", comp=[LIST(("Il s'use avec l'embrayage", None, 'outil'), ("Il se change souvent avec", "la facture grimpe", 'euro'), ("Signe", "claquements au ralenti", 'temp'))]),
+  S(title="Ta *phrase*.", comp=[CHAT(["m", "L'embrayage est à faire : vous avez un devis ? Avec ou sans le volant moteur ?"])])],
+  ("Mot n°8 :\n*« véhicule endommagé »*.", "Dans le prochain épisode", (("Ce que la mention veut dire à l'HistoVec", 'alerte'),),
+   "On t'a déjà annoncé « juste l'embrayage » ? Raconte.")),
+# ——— S7 · Les phrases à dire ———
+car('V063', 'dernier-prix', "S7 Les phrases à dire, n°6", "« C'est quoi votre dernier prix ? » : pourquoi tu ne poses pas cette question",
+    "Elle laisse le vendeur choisir le chiffre. Toi, tu proposes un prix précis, avec une raison.", T_DEB, [
+  HERO('billets-10', "Les phrases à dire", "« C'est quoi votre\n*dernier prix* ? »", pos='50% 50%'),
+  S(title="Le *problème*.", body="C'est lui qui donne le chiffre. Et il donnera le plus haut qu'il peut."),
+  S(title="Fais *l'inverse*.", comp=[CHAT(["m", "Je vous propose 6 250 €. Le choc est à reprendre et le CT a plus de 6 mois."])]),
+  S(title="La *différence*.", comp=[VS(("« Votre dernier prix ? »", ["Il choisit", "6 600 €"]), ("« Je vous propose… »", ["Tu choisis", "**6 250 €**"]))], credit="Exemple")],
+  ("Phrase n°7 :\n*dire non*.", "Dans le prochain épisode", (("Refuser sans fermer la porte", 'x'),),
+   "Tu poses cette question, toi ? Oui ou non ?")),
+car('V064', 'dire-non', "S7 Les phrases à dire, n°7", "Dire non au vendeur sans fermer la porte : la phrase",
+    "Trop cher, défaut de trop, papiers qui manquent : tu dis non poliment, et tu laisses ton numéro. Certains rappellent.", T_DEB, [
+  HERO('volant-nuit', "Les phrases à dire", "Dire *non*.\nSans fermer la porte.", pos='45% 40%'),
+  S(title="Quand tu\n*dis non*.", comp=[LIST(("Au-dessus de ton prix max", None, 'plafond'), ("Un défaut de trop", None, 'alerte'), ("Des papiers qui manquent", None, 'doc'))]),
+  S(title="Ta *phrase*.", comp=[CHAT(["m", "Merci pour la visite. À ce prix, je ne peux pas. Si ça change, vous avez mon numéro."])]),
+  S(title="Pourquoi\nça *marche*.", comp=[TL(("Samedi", "tu dis non, poliment"), ("Mardi", "la voiture n'est pas vendue"), ("Mercredi", "il te rappelle", 'v'))], credit="Exemple")],
+  ("Phrase n°8 :\n*le rendez-vous*.", "Dans le prochain épisode", (("Où et quand, pour voir sans risque", 'cal'),),
+   "Un vendeur t'a déjà rappelé après un non ?")),
+# ——— S8 · Revendre mieux ———
+car('V065', 'repondre-10-minutes', "S8 Revendre mieux, n°6", "Revendre ta voiture : répondre aux acheteurs en 10 minutes",
+    "Notifications activées, réponses préparées, et une question pour trier les curieux. Copie la réponse type.", T_ARG, [
+  HERO('chrono-telephone', "Revendre mieux", "Un message à 18 h 02.\nTu réponds à *18 h 12*.", pos='50% 50%'),
+  S(title="Prépare tes\n*réponses*.", comp=[LIST(("Toujours disponible ?", "oui + quand la voir", 'chat'), ("Dernier prix ?", "après la visite", 'prix'),
+                                                 ("Des défauts ?", "ceux de l'annonce, avec photos", 'alerte'))]),
+  S(title="La réponse\n*type*.", comp=[QUOTE("Bonjour, oui elle est disponible. Visible ==samedi matin ou dimanche==. Le CT et les factures sont là. Vous êtes intéressé pour quand ?",
+                                             lab="À copier :")]),
+  S(title="Ce qui\n*trie*.", body="« Vous êtes intéressé pour quand ? » Les curieux ne répondent pas.")],
+  ("Épisode suivant :\n*l'essai*.", "Dans le prochain épisode", (("Quand c'est un inconnu qui conduit ta voiture", 'route'),),
+   "Tu mets combien de temps à répondre à un acheteur ?")),
+car('V066', 'essai-acheteur', "S8 Revendre mieux, n°7", "L'essai quand tu revends : un inconnu au volant de ta voiture",
+    "Tu montes à côté, tu prends une photo de son permis, les papiers restent avec toi. Pas d'essai seul.", T_ARG, [
+  HERO('essai-conductrice', "Revendre mieux", "Un inconnu\nau volant de *ta* voiture.", pos='60% 50%'),
+  S(title="Les *règles*.", comp=[LIST(("Tu montes à côté", "toujours", 'chat'), ("Photo de son permis", "avant de démarrer", 'doc'), ("Les papiers restent avec toi", None, 'carte'))]),
+  S(title="Jamais\n*ça*.", comp=[ROWS(("« Je fais un tour seul »", "non", 'bad txt', 'x'), ("Les clés laissées sur le contact", "non", 'bad txt', 'cle'))]),
+  S(title="Ta *phrase*.", comp=[CHAT(["m", "Avec plaisir. Je monte avec vous et je prends une photo de votre permis, c'est pour l'assurance."])])],
+  ("Épisode suivant :\n*les papiers à remettre*.", "Dans le prochain épisode", (("CT, cession, non-gage, code", 'doc'),),
+   "Tu as déjà laissé un acheteur partir seul ?")),
+# ——— S9 · GO ou NO GO, cas d'école ———
+CAS('V067', 'cas-ecole-sans-facture', 3, 4500, 5800, 1100, 400,
+    lambda pmax, f: [
+      S(title="*NO GO*\nà 4 500 €.", body="La distribution sans facture pèse 600 € dans les frais.",
+        comp=[STACK("5 800 €", ("Ton prix max", pmax, f(pmax), 'a'), ("Frais, dont distribution 600 €", 1100, "1 100 €", 'f'), ("Ta marge minimum", 400, "400 €", 'm'), lab="Revente estimée")],
+        credit=EX),
+      S(title=f"*GO*\nà {f(pmax)}.", comp=[CHAT(["m", "Sans facture de distribution, je dois la compter. Je peux vous proposer 4 300 €."])])],
+    "GO ou NO GO : affichée 4 500 €, sans facture de distribution",
+    "Cas d'école : revente estimée 5 800 €, frais 500 € plus 600 € de distribution, marge minimum 400 €. Ton prix max ?",
+    ("Épisode suivant :\n*cas d'école n°4*.", "Le prochain verdict", (("Une voiture en contre-visite", 'outil'),), "Tu avais trouvé 4 300 € ? Dis-le.")),
+CAS('V068', 'cas-ecole-contre-visite', 4, 2900, 4200, 750, 400,
+    lambda pmax, f: [
+      S(title="*GO*.", body="150 € sous ton prix max, contre-visite comprise.",
+        comp=[STACK("4 200 €", ("Achat", 2900, "2 900 €", 'a'), ("Frais, dont contre-visite 300 €", 750, "750 €", 'f'), ("Ta marge", 550, "550 €", 'm'), lab="Revente estimée")],
+        credit=EX),
+      S(title="Mais *vérifie*.", comp=[LIST(("Le PV du CT", "les défaillances à réparer", 'check'), ("Le devis", "avant d'acheter", 'doc'), ("Le délai", "2 mois après le contrôle", 'cal'))])],
+    "GO ou NO GO : affichée 2 900 €, en contre-visite",
+    "Cas d'école : revente estimée 4 200 €, frais 450 € plus 300 € de réparations, marge minimum 400 €. Ton prix max ?",
+    ("Épisode suivant :\n*cas d'école n°5*.", "Le prochain verdict", (("Une voiture avec un gros kilométrage", 'jauge'),), "Tu avais dit GO ? Dis-le.")),
+# ——— S10 · Les chiffres à connaître ———
+car('V069', 'pneu-1-6-mm', "S10 Les chiffres à connaître, n°6", "1,6 mm : la profondeur minimale des sculptures d'un pneu",
+    "En dessous, le pneu est hors la loi. Les témoins d'usure dans les rainures te le montrent sans outil.", T_DEB, [
+  HERO('pneu-asphalte', "Le chiffre à connaître", "*1,6 mm* :\nla limite d'un pneu.", pos='45% 50%'),
+  S(comp=[BIG("1,6 mm", cap="la profondeur minimale\ndes sculptures.", tone='o')], credit="Réglementation française"),
+  S(title="Sans\n*outil*.", comp=[LIST(("Les témoins d'usure", "des petits plots dans les rainures", 'loupe'), ("Au niveau du témoin", "pneu à changer", 'pneu'),
+                                       ("Les 2 pneus d'un essieu", "on les change ensemble", 'outil'))]),
+  S(title="Dans ta\n*marge*.", comp=[ROWS(("Pneus avant usés", "250 à 350 €", 'warn', 'pneu'))], body2="Chiffré sur une vraie Yaris, à partir des photos.", credit=PREUVE)],
+  ("Chiffre n°7 :\n*135 €*.", "Dans le prochain épisode", (("Rouler avec un CT dépassé", 'alerte'),),
+   "Tu regardes les pneus avant d'acheter ? Oui ou non ?")),
+car('V070', 'ct-depasse-135', "S10 Les chiffres à connaître, n°7", "Rouler avec un contrôle technique dépassé : 135 €",
+    "Et la voiture peut être immobilisée. Avant d'aller voir une voiture, demande la date du CT.", T_DEB, [
+  HERO('pv-pare-brise', "Le chiffre à connaître", "CT dépassé :\n*135 €*.", pos='50% 45%'),
+  S(comp=[BIG("135 €", cap="l'amende pour un CT\nqui n'est plus valable.", tone='r')], credit="Amende forfaitaire de 4e classe"),
+  S(title="Pour toi\nqui *achètes*.", comp=[LIST(("Demande la date du CT", "avant de te déplacer", 'cal'), ("CT dépassé", "le vendeur doit le refaire pour vendre", 'check'),
+                                                   ("Ou tu le comptes", "dans ton prix", 'euro'))]),
+  S(title="Pour toi\nqui *revends*.", comp=[ROWS(("CT de moins de 6 mois", "obligatoire", 'ok txt', 'check'), ("Sinon", "vente bloquée", 'bad txt', 'x'))],
+    credit="Code de la route, art. R323-22")],
+  ("Chiffre n°8 :\n*2 ans*.", "Dans le prochain épisode", (("Pour agir sur un vice caché", 'loupe'),),
+   "Tu as déjà roulé avec un CT dépassé ? Sois honnête.")),
+]

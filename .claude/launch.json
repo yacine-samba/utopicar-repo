@@ -1,0 +1,61 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web-onboarding",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/ysamb/Documents/Claude/utopicar-repo/.claude/worktrees/onboarding/web",
+        "--",
+        "--port",
+        "3011"
+      ],
+      "port": 3011
+    },
+    {
+      "name": "web-pages-cote",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/ysamb/Documents/Claude/utopicar-repo/.claude/worktrees/pages-cote/web",
+        "--",
+        "--port",
+        "3012"
+      ],
+      "port": 3012
+    },
+    {
+      "name": "web-revue",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/ysamb/Documents/Claude/utopicar-repo/.claude/worktrees/revue/web",
+        "--",
+        "--port",
+        "3013"
+      ],
+      "port": 3013
+    },
+    {
+      "name": "web-app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/ysamb/Documents/Claude/utopicar-repo/.claude/worktrees/app/web",
+        "--",
+        "--port",
+        "3014"
+      ],
+      "port": 3014
+    }
+  ]
+}

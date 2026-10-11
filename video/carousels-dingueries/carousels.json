@@ -1,0 +1,149 @@
+{
+ "carousels": [
+  {
+   "id": "DG01",
+   "slug": "tu-ne-dis-pas-un-mot",
+   "share": {
+    "lead": "Envoie ça à",
+    "k": "ton pote",
+    "sub": "qui parle trop.",
+    "sign": ""
+   },
+   "slides": [
+    {
+     "hero": {
+      "src": "../assets/demo/clio-2.webp",
+      "pos": "50% 40%",
+      "tag": [
+       "5 900 €",
+       "4 600 €"
+      ],
+      "tx": 520,
+      "ty": 290,
+      "bub": [
+       730,
+       560
+      ]
+     },
+     "top": 800,
+     "kicker": "POV : ta 1re visite",
+     "title": "Tu ne dis pas\nun *mot*."
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "Bon… 5 500.",
+         "Le vendeur · 0:12"
+        ],
+        [
+         "m",
+         "…"
+        ],
+        [
+         "v",
+         "5 200, dernier prix.",
+         "Le vendeur · 1:40"
+        ],
+        [
+         "m",
+         "…"
+        ],
+        [
+         "v",
+         "4 700 et je fais le plein !",
+         "Le vendeur · 3:58"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      },
+      {
+       "k": "thought",
+       "t": "J'ai oublié mon prénom.",
+       "lab": "Dans ta tête :",
+       "size": 64
+      }
+     ],
+     "glow": [
+      "105% 25%",
+      0.24
+     ]
+    },
+    {
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "m",
+         "Je… je peux réfléchir ?",
+         "Toi, enfin"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      },
+      {
+       "k": "big",
+       "v": "4 600 €",
+       "cap": "répond le vendeur.",
+       "tone": "o"
+      }
+     ],
+     "glow": [
+      "50% 95%",
+      0.45
+     ]
+    },
+    {
+     "title": "Une semaine après,\ntu la *revends*.",
+     "comp": [
+      {
+       "k": "chat",
+       "items": [
+        [
+         "v",
+         "…",
+         "L'acheteur"
+        ],
+        [
+         "m",
+         "Bon… 5 500."
+        ],
+        [
+         "v",
+         "…",
+         "L'acheteur"
+        ],
+        [
+         "m",
+         "4 600 et je fais le plein !"
+        ]
+       ],
+       "v": "Le vendeur",
+       "m": "Toi"
+      },
+      {
+       "k": "verdict",
+       "v": "Marge : 0 €",
+       "tone": "bad"
+      }
+     ],
+     "glow": [
+      "-5% 60%",
+      0.26
+     ]
+    },
+    {
+     "title": "Le premier\nqui parle *perd*.",
+     "bigdots": true
+    }
+   ],
+   "car": null
+  }
+ ]
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Avatar 1 · « Moins 1 200 € sur une voiture impeccable »</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:900;src:url(../assets/fonts-site/Satoshi-900.woff2) format('woff2')}
+@font-face{font-family:Serif;font-style:italic;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+:root{--ink:#f4f1ec;--o:#ff5a1f;--o2:#ff8a4c;--bad:#ff6b5e;--panel:rgba(14,10,8,.8)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0b0a09}
+#stage{position:absolute;inset:0;overflow:hidden;color:var(--ink);font-family:Satoshi;-webkit-font-smoothing:antialiased}
+#cam{position:absolute;inset:0;transform-origin:561px 870px}
+#cam img{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#fadeT{position:absolute;left:0;top:0;width:1080px;height:760px;background:linear-gradient(rgba(9,7,6,.86),rgba(9,7,6,.62) 46%,rgba(9,7,6,0))}
+.abs{position:absolute;left:0;top:0}
+/* zone haute (accroches, cartes, CTA) : colonne 140 → 940, y 250 → 650 */
+.hook{left:0;width:1080px;text-align:center}
+.big{font:700 228px/1 Clash;letter-spacing:-.03em;color:var(--o);white-space:nowrap}
+.sub{font:700 60px/1.1 Satoshi;white-space:nowrap}
+.it{font-family:Serif;font-style:italic;font-weight:400;color:var(--o2)}
+.chip{font:700 46px/1 Satoshi;white-space:nowrap;padding:20px 30px 20px 26px;border-radius:999px;background:var(--panel);border:2px solid rgba(255,107,94,.55);display:flex;align-items:center;gap:16px}
+.chip i{font-style:normal;color:var(--bad);font:700 48px/1 Clash}
+.card{left:140px;width:800px;border-radius:28px;background:#fff;padding:18px;box-shadow:0 40px 80px rgba(0,0,0,.55)}
+.card img{display:block;width:764px}
+.note{left:0;width:1080px;text-align:center;font:500 24px Satoshi;color:rgba(244,241,236,.72)}
+.press{position:absolute;border-radius:50%;background:rgba(255,255,255,.55)}
+.pas{left:0;width:1080px;text-align:center;font:700 170px/1 Clash;letter-spacing:-.02em;white-space:nowrap}
+.cta{left:0;width:1080px;text-align:center}
+.cta .l1{font:600 92px/1 Clash;white-space:nowrap}
+.kw{display:inline-block;background:var(--o);color:#160904;border-radius:24px;padding:12px 34px 6px;font:700 110px/1 Clash;letter-spacing:-.01em;box-shadow:0 24px 60px -18px rgba(255,90,31,.9)}
+.kw2{display:inline-block;border:3px solid rgba(244,241,236,.5);border-radius:20px;padding:8px 24px 4px;font:600 64px/1 Clash;color:var(--ink)}
+.cta .l3{font:700 52px/1.1 Satoshi;color:var(--ink)}
+/* sous-titres, poitrine : centrés sur x = 540, colonne 140 → 940 */
+#cap{position:absolute;left:140px;width:800px;top:1215px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px}
+#cap span{font:900 66px/1.15 Satoshi;color:#fff;padding:4px 16px 8px;border-radius:16px;background:var(--panel);white-space:nowrap}
+#cap span.hl{color:var(--o2)}
+#cap span.em{font:400 84px/1 Serif;font-style:italic;color:var(--o2);padding:6px 18px 10px}
+</style>
+</head>
+<body>
+<div id="stage"><div id="cam"><img id="av" alt=""></div><div id="fadeT"></div></div>
+<script src="../lib/motion.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
