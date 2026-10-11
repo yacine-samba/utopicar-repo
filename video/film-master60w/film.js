@@ -21,7 +21,9 @@
   const BODY = fixW(VT.mots), HKA = fixW(VT.hooks.A.mots), HKB = fixW(VT.hooks.B.mots);
   const Wt = (key, after = 0, list = BODY) => { const k = norm(key), w = list.find((w) => w.s >= after - 0.01 && w.n.startsWith(k)); if (!w) console.error('mot absent', key, after); return w ? w.s : after; };
   const BT = (n) => GR.ancre + n * GR.beat;
-  const pulse = (t) => { if (t < 0 || (t >= BT(8) && t < BT(10))) return 0; const x = (t - GR.ancre) / GR.beat, n = Math.floor(x); return Math.exp(-((x - n) * GR.beat) / 0.11) * ((((n % 4) + 4) % 4) === 0 ? 1 : 0.55); };
+  // la musique (scripts/audio-master60w.py) garde un temps de silence avant « Hop ! » : ses premiers temps de mesure tombent
+  // sur les temps 0, 4, 8… jusqu'au temps 48, puis sur 49, 53, 57… ; arrêt sur « Ah. » (temps 8 → 10) et avant le logo final
+  const pulse = (t) => { if (t < 0 || (t >= BT(8) && t < BT(10)) || (t >= BT(48) && t < BT(49)) || (t >= BT(93) && t < BT(94))) return 0; const x = (t - GR.ancre) / GR.beat, n = Math.floor(x), m = n >= 49 ? n - 49 : n; return Math.exp(-((x - n) * GR.beat) / 0.11) * ((((m % 4) + 4) % 4) === 0 ? 1 : 0.55); };
   // interpolation exponentielle
   const eOut = (p) => (p <= 0 ? 0 : p >= 1 ? 1 : 1 - Math.pow(2, -10 * p));
   const eIn = (p) => (p <= 0 ? 0 : p >= 1 ? 1 : Math.pow(2, 10 * p - 10));
@@ -189,10 +191,14 @@
   }
 
   // ---------- scènes : un écran plein chacune ; transition d'entrée : coupe, cercle, volet diagonal ----------
+  // repères sonores : le film publie ses propres événements (window.cues) pour le mixage (scripts/mix-master60w.py)
+  const CUES = [], cue = (t, k, g = 1) => { if (t >= 0 && t < DUR) CUES.push({ t: +t.toFixed(3), k, g }); };
   const SC = [];
   function scene(a, b, bg, tin = { type: 'cut' }, push = 0.03) {
     const el = mk('div', 'scene', ST, { background: bg }), cam = mk('div', 'cam', el);
-    const s = { a, b, el, cam, tin, push, imp: [], paint: () => {} }; SC.push(s); return s;
+    const s = { a, b, el, cam, tin, push, imp: [], paint: () => {} }; SC.push(s);
+    if (tin.type === 'slab' || tin.type === 'circle') cue(a, 'whoosh', 0.8);
+    return s;
   }
   function paintScene(s, t) {
     const vis = t >= s.a - 0.001 && t < s.b + (s.keep ?? 0.75);
@@ -220,6 +226,7 @@
       const k4 = KT(s.cam, 96, 300, 150, 'Tu peux la payer…');
       const card = lst(s.cam), mark = card.querySelector('.p i');
       const cur = cursor(s.cam, [[-1, 2100, 1000], [1.25, 1440, 380], [1.7, 1300, 790], [2.5, 1320, 800]], [Wt('payer', 2, HKA)]);
+      cue(Wt('payer', 2, HKA), 'click');
       s.paint = (t) => {
         ktP(k1, t, [-0.62, -0.52], 'rise', 1.66, 'up', { acc: [Wt('ta', 0, HKA), Wt('premiere', 0, HKA)] });
         ktP(k2, t, [-0.42, -0.42], 'rise', 1.7, 'up', { acc: [Wt('voiture', 0, HKA)] });
@@ -231,6 +238,7 @@
       };
     }
     { const s = scene(tDeux, T0, 'var(--o)'); s.imp.push([tDeux + 0.18, 18]);
+      cue(tDeux, 'impact'); cue(tDeux + 0.36, 'pop', 0.7); cue(tFois, 'whoosh', 0.6); cue(tFois + 0.4, 'pop', 0.7);
       const k1 = KT(s.cam, 96, 150, 380, [['Deux', { c: '#fff' }]]), k2 = KT(s.cam, 110, 520, 400, [['fois.', { i: 1, c: 'var(--k)' }]]);
       const t1 = mk('div', 'tag a', s.cam, null, '7 190 €<small>le prix affiché</small>');
       const t2 = mk('div', 'tag a', s.cam, { borderColor: 'var(--k)' }, '7 190 €<small>une 2e fois en réparations ?</small>');
@@ -257,6 +265,7 @@
     const OKP = [[1180, 220], [1520, 170], [1820, 300], [1340, 420], [1660, 520], [1150, 600], [1480, 700], [1800, 760], [1250, 860], [1600, 330], [1880, 520], [1380, 980]];
     const pill = mk('div', 'a', s.cam, { padding: '18px 30px', borderRadius: '999px', background: 'rgba(251,249,245,.1)', border: '1.5px solid rgba(251,249,245,.2)', color: '#fff', font: '700 36px Satoshi', whiteSpace: 'nowrap' });
     const tMsg = Wt('matin', 1.5, HKB) + 0.3;
+    cue(Wt('50', 0.8, HKB), 'roll'); for (let i = 0; i < 12; i++) cue(tMsg + i * GR.beat / 4, 'sent', i % 2 ? 0.45 : 0.6);
     mk('div', 'men a', s.el, { left: '96px', top: '940px', color: '#fff' }, 'Option Messages de Benef Pro : un premier message automatique par annonce');
     s.paint = (t) => {
       let st = 0; for (let n = -8; n < 0; n++) st += E(t, BT(n), 0.38);
@@ -306,6 +315,7 @@
     const tType = a + 0.38, tClick = tType + chars.length * 0.012 + 0.12;
     const P = (t) => ({ x: 960, y: 620 + 360 * (1 - E(t, a, 0.5)), c: 1, p: 1, rx: 14 + 20 * (1 - E(t, a, 0.5)), ry: 0, r: -2 });
     const cur = cursor(s.cam, [[a - 0.5, 1700, 1100], [a + 0.05, 1640, 960], [tType - 0.02, 560, 640], [tClick - 0.02, 1560, 650]], [tClick], true);
+    cue(a, 'whoosh', 0.7); cue(tType, 'type'); cue(tClick, 'click');
     s.paint = (t) => {
       ktP(k1, t, [a, Wt('colle', 7) + 0.11]);
       k2.box.style.left = (96 + k1.box.offsetWidth + 46) + 'px'; ktP(k2, t, Wt('annonce', 7.6));
@@ -322,11 +332,13 @@
   { const a = VT.marks.ah.t, s = scene(a, VT.marks.non.t, 'var(--k)', { type: 'cut' }, 0.09);
     const sp = mk('div', 'a', s.cam, { width: '110px', height: '110px', borderRadius: '50%', border: '12px solid rgba(255,90,31,.25)', borderTopColor: 'var(--o)', left: '905px', top: '330px', transform: 'rotate(140deg)' });
     const k = KT(s.cam, 0, 520, 150, [['Ah.', { c: '#6b625b' }]]);
+    cue(a - 0.06, 'tapestop');
     s.paint = (t) => { k.box.style.left = (960 - k.box.offsetWidth / 2) + 'px'; ktP(k, t, a, 'blur'); };
   }
   // « Non. »
   { const a = VT.marks.non.t, s = scene(a, VT.marks.n1650.t, 'var(--r)'); s.imp.push([a + 0.2, 26]);
     const k = KT(s.cam, 70, 300, 760, [['Non.', { c: '#fff' }]]);
+    cue(a, 'impact', 1.1); cue(a + 0.5, 'thud', 0.8);
     const f = crop(s.cam, 'fiche-208', { W: 1050, x: 0, y: 0, w: 1050, h: 700 }, 620, { background: '#fff' });
     s.paint = (t) => {
       ktP(k, t, a, 'slam');
@@ -342,6 +354,7 @@
     const ring = mk('div', 'hl a', fiche, { left: '14px', top: (948 * fiche.k) + 'px', width: (1022 * fiche.k) + 'px', height: (172 * fiche.k) + 'px', transformOrigin: '50% 50%' });
     const kz = KT(s.cam, 90, 300, 430, [['Bizarre.', { i: 1 }]]);
     const tTr = Wt('travaux', a);
+    cue(a, 'roll'); cue(a + 0.1, 'whoosh', 0.5); cue(tTr, 'pop', 0.8); cue(tBz + 0.3, 'whoosh', 0.45);
     const cur = cursor(s.cam, [[a, 2100, 900], [tTr + 0.1, 1580, 640], [tBz - 0.1, 1600, 650], [tBz + 0.4, 1330, 420]]);
     s.paint = (t) => {
       pose(R.box, t, (tt) => (tt > tBz + 0.4 ? null : { x: 0, y: -E(tt, tBz - 0.14, 0.3, eIn) * 600, o: 1 - E(tt, tBz - 0.05, 0.2) }));
@@ -358,6 +371,7 @@
   // « UTOPICAR, tu colles l'annonce… » : cercle orange depuis le curseur, logo animé
   { const a = VT.marks.utopicar.t, s = scene(a, VT.marks.bam.t, 'var(--o)', { type: 'circle', x: 1330, y: 420, d: 0.5 });
     const L = logo(s.cam, 960, 470, 1100);
+    cue(a + 0.06, 'pop', 0.8); cue(a + 0.25, 'whoosh', 0.7); cue(a + 0.5, 'pop', 0.6);
     const kc = brk(s.cam, 0, 720, [['Tu', { c: '#fff' }], ['colles', { c: '#fff' }], ["l'annonce…", { c: 'var(--k)' }]], '#fff', 54);
     s.paint = (t) => { L(t, a + 0.05); kc.box.style.left = (960 - kc.box.offsetWidth / 2) + 'px'; ktP(kc, t, [Wt('tu', a), Wt('colles', a), Wt('annonce', 15.5)]); };
   }
@@ -372,6 +386,7 @@
     });
     const kr = brk(s.cam, 100, 840, [['[ ce', {}], ["qu'il te reste,", {}], ['frais déduits', { c: 'var(--o)' }], [']', {}]]);
     const cur = cursor(s.cam, [[a, 2000, 1000], [tC[0] - 0.02, 400, 720], [tC[1] - 0.02, 940, 720], [tC[2] - 0.02, 1370, 712]], tC);
+    cue(a, 'impact'); tC.forEach((tc) => cue(tc, 'click'));
     s.paint = (t) => {
       ktP(kb, t, a, 'slam');
       lineOn.style.transform = `scaleX(${(E(t, tC[0], 0.4) * 0.5 + E(t, tC[1], 0.4) * 0.5).toFixed(4)})`;
@@ -393,6 +408,7 @@
     const kb = brk(s.cam, 100, 720, [['[ au-delà, tu', {}], ["perds de l'argent", { c: 'var(--o)' }], [']', {}]], '#fff');
     const photo = mk('div', 'card a', s.cam, { width: '760px', height: '520px' }, `<img src="${PH}mercedes-profil.jpg" style="width:100%;height:100%;object-fit:cover;position:static">`);
     const mx = crop(s.cam, 'merc-argent', { W: 1074, x: 66, y: 1960, w: 942, h: 286 }, 740);
+    cue(a, 'whoosh', 0.7); cue(tP, 'whoosh', 0.5); cue(tP + 0.2, 'roll');
     s.paint = (t) => {
       ktP(k0, t, [a, Wt('mercedes', a) + 0.11, Wt('?', 19.6)], 'rise', tP - 0.1);
       ktP(kg, t, tP + 0.05); strike.style.width = (kg.box.offsetWidth) + 'px'; strike.style.transform = `scaleX(${E(t, t165, 0.3).toFixed(3)})`;
@@ -414,6 +430,7 @@
       const e = mk('div', 'tag a', s.cam, i === 1 ? { borderColor: 'var(--o)', borderWidth: '5px' } : null, `${p}<small>${l}</small>`); Object.assign(e, { X: x, Y: y, R: r }); return e;
     });
     const tAh = Wt('ah', 23.5), tOu = Wt('ouais', 23.5);
+    cue(tTr, 'impact', 0.9); tT.forEach((tt) => cue(tt + 0.3, 'pop'));
     const cur = cursor(s.cam, [[a, 2000, 1050], [tOu + 0.1, 1450, 760], [tOu + 1, 1460, 770]]);
     s.paint = (t) => {
       ktP(ka, t, a, 'rise', tTr - 0.25);
@@ -427,6 +444,7 @@
   // 02 · « Quinze voitures en stock ? »
   { const a = VT.marks.quinze.t, s = scene(a, VT.marks.pfff.t, 'var(--k)'); s.imp.push([a + 0.2, 12]);
     const rows = [...Array(7)].map((_, r) => mk('div', 'out a', s.cam, { top: (-40 + r * 160) + 'px' }, "APRÈS L'ACHAT · ".repeat(6)));
+    cue(a, 'impact', 0.7); cue(a, 'whoosh', 0.6);
     const slab = mk('div', 'a', s.cam, { padding: '40px 70px', background: 'var(--o)', borderRadius: '30px' });
     mk('div', '', slab, { font: '700 44px Satoshi', color: '#fff', opacity: 0.85, marginBottom: '10px' }, "02 · Après l'achat");
     const k1 = KT(slab, 0, 0, 170, [['15 voitures', { c: '#fff' }]], { position: 'relative' }), k2 = KT(slab, 0, 0, 170, [['en stock ?', { i: 1, c: 'var(--k)' }]], { position: 'relative' });
@@ -440,6 +458,7 @@
   { const a = VT.marks.pfff.t, s = scene(a, VT.marks.carnet.t, 'var(--w)');
     const kp = KT(s.cam, 160, 250, 520, [['Pfff…', { i: 1, c: '#ddd4c8' }]]);
     const P = ['Clio IV', '308', 'Captur', 'A3', 'Yaris', 'Golf VI', '207', 'C4 Picasso', 'Mégane III', 'Fiesta', 'Auris', 'C3', 'Sandero', 'Clio III', 'Twingo II'];
+    P.forEach((_, i) => cue(a + i * GR.beat / 4 - 0.25 + 0.3, 'pop', 0.35));
     const pu = P.map((m, i) => { const e = mk('div', 'puce a', s.cam, null, `<b>●</b>${m}`); const c = i % 5, r = Math.floor(i / 5); Object.assign(e, { X: 560 + c * 260 + (r % 2) * 60, Y: 560 + r * 120 + ((i * 37) % 40), R: ((i * 53) % 15) - 7 }); return e; });
     men(s, 'Données de démonstration');
     s.paint = (t) => {
@@ -456,6 +475,9 @@
     const scr = calc.querySelector('.e');
     const TB = ['Annonce Clio', 'Cote 308', 'Carte grise : simulateur', 'Assurance', 'Annonce A3', 'Contrôle technique', 'Pneus prix', 'Annonce Captur', 'Messages', 'Tableur marges', 'Cote Captur', 'Banque', 'Annonce Polo', 'Calendrier']
       .map((x, i) => { const e = mk('div', 'tab a', desk, null, x); Object.assign(e, { X: (i % 4) * 270 + ((i * 53) % 40), Y: Math.floor(i / 4) * 80 + ((i * 29) % 30), R: ((i * 7) % 9) - 4 }); return e; });
+    cue(a + 0.3, 'thud'); cue(tCa + 0.3, 'thud'); [0.27, 0.54, 0.8].forEach((d) => cue(tCa + d, 'click', 0.4));
+    for (let i = 0; i < 14; i++) cue(t14 + i * 0.075 + 0.3, 'pop', 0.25);
+    cue(tHop - 0.62, 'suck');
     const drop = (e, t0, x, y, r) => (tt) => { if (tt < t0) return null; const p = E(tt, t0, 0.3); return { x, y: y - 500 * (1 - p), r: r + 14 * (1 - p), s: 1 + 0.5 * (1 - p) }; };
     s.paint = (t) => {
       ktP(k1, t, a, 'drop'); ktP(k2, t, tCa, 'drop'); ktP(k3, t, [t14, Wt('onglets', a)], 'drop');
@@ -472,6 +494,7 @@
     const rays = mk('div', 'a', s.cam, { width: '1920px', height: '1080px', background: 'repeating-conic-gradient(from 0deg at 960px 540px,rgba(255,255,255,.17) 0deg 1.2deg,transparent 1.2deg 9deg)', webkitMaskImage: 'radial-gradient(circle at 960px 540px,transparent 280px,#000 760px)' });
     const k = KT(s.cam, 0, 0, 520, [['Hop', { c: '#fff' }], ['!', { c: '#fff' }]]);
     const tEx = Wt('!', a + 0.1), tOut = Wt('tu', a + 0.4);
+    cue(a, 'impact', 1.1); cue(tOut - 0.2, 'whoosh', 0.8);
     s.paint = (t) => {
       rays.style.transform = `rotate(${((t - a) * 14).toFixed(2)}deg)`;
       k.box.style.left = (960 - k.box.offsetWidth / 2) + 'px'; k.box.style.top = (540 - k.box.offsetHeight / 2) + 'px';
@@ -503,6 +526,7 @@
     const hl = mk('div', 'hl a', card, { left: (230 * card.k) + 'px', top: (318 * card.k) + 'px', width: (300 * card.k) + 'px', height: (78 * card.k) + 'px' });
     const kb = brk(s.cam, 100, 840, [['[', {}], ['Baisse le prix.', { c: 'var(--o)' }], [']', {}]]);
     const cur = cursor(s.cam, [[a, 2000, 1050], [t63 + 0.3, 1520, 820], [tB - 0.05, 1306, 712]], [tB], true);
+    cue(t63 - 0.05, 'roll'); cue(tB, 'click');
     men(s, 'Données de démonstration');
     s.paint = (t) => {
       ktP(k1, t, [a + 0.5, VT.marks.n308.t, Wt('dort', a), Wt('depuis', a)]);
@@ -523,6 +547,7 @@
     const rings = [0, 1, 2].map(() => mk('div', 'a rip', s.cam, { width: '200px', height: '200px' }));
     const nf = mk('div', 'notif a', s.cam, null, '<div class="ic"><svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#1a1310" stroke-width="2.4" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><div><div class="t">Audi A3 Sportback · −18 % sous la cote</div><div class="s">Nouvelle annonce · à analyser avant les autres</div></div>');
     const bell = nf.querySelector('.ic svg');
+    cue(tD, 'ding'); cue(tD, 'impact', 0.6); cue(tAl, 'click');
     const cur = cursor(s.cam, [[a, 2000, 1060], [tAl - 0.05, 1540, 610], [tAl + 0.8, 1560, 640]], [tAl]);
     men(s, 'Données de démonstration', '#fff');
     s.paint = (t) => {
@@ -546,6 +571,7 @@
     const row = mk('div', 'hl a', mg, { left: (30 * mg.k) + 'px', width: (1014 * mg.k) + 'px', height: (74 * mg.k) + 'px' });
     const bub = mk('div', 'bub a', s.cam, null, 'Renault Mégane III<small>marge prévue + 1 410 €</small>');
     const tV = [Wt('voiture', tM), Wt('par', tM), Wt('voiture', tM + 0.4)];
+    cue(a + 0.1, 'whoosh', 0.5); cue(tM, 'roll'); cue(tV[2], 'pop');
     men(s, 'Données de démonstration');
     s.paint = (t) => {
       ktP(k1, t, [Wt('ta', a), Wt('vraie', a), tM]); ktP(k2, t, tV);
@@ -565,6 +591,7 @@
     const ks = KT(s.cam, 90, 320, 250, [['Starter.', { c: '#fff' }]]), kp = KT(s.cam, 100, 620, 90, [['14,99 € / mois', { c: 'var(--k)' }]]);
     const card = crop(s.cam, 'offre-starter', { W: 1050, x: 0, y: 0, w: 1050, h: 740 }, 600, { background: '#fff' });
     const cur = cursor(s.cam, [[a - 0.4, 700, 700], [tClick - 0.02, 240, 190]], [tClick], true);
+    cue(tClick, 'click'); cue(tS, 'whoosh', 0.6);
     men(s, 'Exemples chiffrés, pas une promesse de gain', '#fff');
     s.paint = (t) => {
       pose(sg, t, (tt) => { const p = E(tt, a, 0.35); return { x: 0, y: -40 * (1 - p), o: p }; });
@@ -582,6 +609,7 @@
     const gauge = mk('div', 'gauge a', s.cam, null, '<div class="h"><span>+ 670 € de marge</span><b>= 0 mois</b></div><div class="bar"><i style="width:100%"></i></div><div class="s">Exemple calculé : achetée 5 000 €, 630 € de frais, revendue 6 300 €</div>');
     const gb = gauge.querySelector('.bar i'), gm = gauge.querySelector('b'); gm.style.display = 'inline-block';
     const tG = [Wt('bien', a), Wt('achetee', a), Wt('tu', 46), tTrois];
+    tG.forEach((tg) => cue(tg, 'pop', 0.55)); cue(tAns, 'pop');
     men(s, 'Exemples chiffrés, pas une promesse de gain');
     s.paint = (t) => {
       ktP(k1, t, [Wt('une', a), Wt('voiture', a)]); ktP(k2, t, [Wt('tu', 46), tTrois, tAns, tAns + 0.12]);
@@ -598,6 +626,7 @@
     const st_ = crop(s.cam, 'offre-starter', { W: 1050, x: 0, y: 0, w: 1050, h: 740 }, 520, { background: '#fff', opacity: 0.5 });
     const pro = crop(s.cam, 'offre-pro', { W: 1050, x: 0, y: 0, w: 1050, h: 740 }, 640, { background: '#fff' });
     const cur = cursor(s.cam, [[a - 0.3, 400, 200], [tParc - 0.02, 560, 190]], [tParc], true);
+    cue(tParc, 'click'); cue(tParc + 0.05, 'whoosh', 0.6); cue(tPro, 'impact');
     men(s, 'Exemples chiffrés, pas une promesse de gain', '#fff');
     s.paint = (t) => {
       const [s0, s1] = sg.sp, ind = Motion.indicator(t, [[0, s0.offsetLeft, s0.offsetLeft + s0.offsetWidth], [tParc, s1.offsetLeft, s1.offsetLeft + s1.offsetWidth]]);
@@ -617,6 +646,7 @@
     const c1 = chk('Sans carte bancaire'), c2 = chk('utopicar.fr');
     const tClick = tSans - 0.08;
     const cur = cursor(s.cam, [[a, 2000, 1000], [tClick - 0.02, 1430, 460], [tLien + 0.4, 1500, 560]], [tClick]);
+    cue(tClick, 'click'); cue(tSans, 'pop'); cue(tLien, 'pop');
     men(s, 'Exemples chiffrés, pas une promesse de gain');
     s.paint = (t) => {
       ktP(k1, t, a + 0.02); ktP(k2, t, [t3, Wt('jours', t3)]);
@@ -641,6 +671,7 @@
     const L = logo(s.cam, 960, 430, 1000);
     const cta = mk('div', 'pill a', s.cam, { background: '#fff', color: 'var(--ink)', fontSize: '52px', padding: '30px 56px' }, '<b style="color:var(--o)">3 jours offerts</b> · utopicar.fr');
     const tCl = END + 1.2;
+    cue(a + 0.06, 'pop', 0.8); cue(a + 0.25, 'whoosh', 0.7); cue(a + 0.5, 'pop', 0.6); cue(END, 'pop', 0.7); cue(tCl, 'click');
     const cur = cursor(s.cam, [[END, 1700, 1100], [tCl - 0.02, 1150, 712], [tCl + 1.2, 1220, 760]], [tCl]);
     men(s, 'Exemples chiffrés, pas une promesse de gain', '#fff');
     s.paint = (t) => {
@@ -653,6 +684,7 @@
   // ---------- seek ----------
   window.seek = (t) => { for (const s of SC) paintScene(s, t); };
   window.filmDur = DUR;
+  window.cues = CUES.sort((x, y) => x.t - y.t);
   window.seek(0);
   window.filmReady = true;
 })();
