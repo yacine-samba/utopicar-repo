@@ -51,9 +51,9 @@ export type JournalAdmin = { id: number; action: string; cible: string | null; d
 const debutMois = () => new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1)).toISOString();
 const ilYa12Mois = () => new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString();
 
-/** Même règle que credits_solde : solde à zéro si le dernier achat ou cadeau a plus de 12 mois. */
-function soldeCredits(lignes: { delta: number; created_at: string }[]) {
-  const dernier = lignes.filter((l) => l.delta > 0).reduce((m, l) => (l.created_at > m ? l.created_at : m), "");
+/** Même règle que credits_solde : solde à zéro si le dernier achat ou cadeau a plus de 12 mois (un remboursement ne compte pas). */
+function soldeCredits(lignes: { delta: number; motif?: string; created_at: string }[]) {
+  const dernier = lignes.filter((l) => l.delta > 0 && l.motif !== "remboursement").reduce((m, l) => (l.created_at > m ? l.created_at : m), "");
   if (!dernier || dernier < ilYa12Mois()) return 0;
   return Math.max(0, lignes.reduce((s, l) => s + l.delta, 0));
 }
@@ -65,7 +65,7 @@ export async function donneesAdmin() {
     sb.from("profils").select("id, email, prenom, famille, formule_offerte, offerte_jusqu_au, illimite, created_at").order("created_at", { ascending: false }).limit(500),
     sb.from("abonnements").select("user_id, offre, statut, periode_fin"),
     sb.from("achats").select("user_id, produit").like("produit", "guide%"),
-    sb.from("credits").select("user_id, delta, created_at"),
+    sb.from("credits").select("user_id, delta, motif, created_at"),
     sb.from("usages").select("user_id").gte("created_at", debutMois()),
     sb.from("rapports").select("user_id"),
     sb.from("options_comptes").select("user_id, statut, offerte").eq("option", "messages"),
