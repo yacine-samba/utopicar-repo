@@ -13,6 +13,29 @@ const echapper = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export type ResultatCC = { annonces: AnnonceCC[]; total: number };
 
+/** Portes de l'annonce : la case Leboncoin, sinon le texte (« 5 portes », « 3p »). null : non précisé. */
+function portesDe(l: LigneMarche): "3" | "5" | null {
+  if (l.portes != null) return l.portes <= 3 ? "3" : "5";
+  const m = l.tx.match(/\b([2345])\s?(?:portes?|p)\b/);
+  return m ? (Number(m[1]) <= 3 ? "3" : "5") : null;
+}
+
+/** Là où une annonce dit la couleur de la carrosserie : le titre et la version, « couleur : gris », et le résumé
+    Leboncoin « berline, noir, 5 cv ». Pas toute la description (« intérieur noir », « jantes noires » tromperaient). */
+function texteCouleur(l: LigneMarche) {
+  const d = sansAccent(l.texte ?? "");
+  const dite = [...d.matchAll(/\b(?:couleur|teinte|peinture|coloris)\s*:?\s*([a-z -]{2,25})/g)].map((m) => m[1]);
+  const resume = [...d.matchAll(/\b(?:berline|citadine|break|suv|4x4|coupe|cabriolet|monospace|ludospace)\s*,\s*([a-z -]{2,20})\s*,/g)].map((m) => m[1]);
+  return [sansAccent(`${l.titre} ${l.version ?? ""}`), ...dite, ...resume].join(" ");
+}
+
+/** Couleur demandée écrite dans l'annonce (« oui »), une autre couleur écrite sans elle (« autre »), ou rien (null). */
+function couleurDe(l: LigneMarche, c: (typeof COULEURS)[number]): "oui" | "autre" | null {
+  const t = texteCouleur(l);
+  if (c.rx.test(t)) return "oui";
+  return COULEURS.some((x) => x.id !== c.id && x.rx.test(t)) ? "autre" : null;
+}
+
 /** Sans cote Utopicar (trop peu d'annonces comparables) : le milieu de la fourchette de prix que Leboncoin affiche sur l'annonce,
     quand la collecte l'a gardée. Confiance faible : c'est l'estimation de Leboncoin, pas une mesure sur le marché. */
 function estimationLeboncoin(l: LigneMarche): AnnonceCC["cote"] {
@@ -46,9 +69,9 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
     if (f.anneeMin && (l.annee ?? 0) < f.anneeMin) return false;
     if (f.prixMax && l.prix > f.prixMax) return false;
     if (f.kmMax && (l.km == null || l.km > f.kmMax)) return false;
-    // portes et couleur : seulement quand l'annonce les donne (on ne devine pas)
-    if (f.portes && (l.portes == null || (f.portes === "3" ? l.portes > 3 : l.portes < 4))) return false;
-    if (couleur && !couleur.rx.test(l.tx)) return false;
+    // portes et couleur : écartées seulement quand l'annonce en donne d'autres ; non précisées, elles restent (signalées sur la carte)
+    if (f.portes && portesDe(l) != null && portesDe(l) !== f.portes) return false;
+    if (couleur && couleurDe(l, couleur) === "autre") return false;
     if (f.vendeur === "pro" && !l.pro) return false;
     if (f.vendeur === "particulier" && l.pro) return false;
     if (!dansDepartements(l.lieu, deps)) return false;
@@ -70,10 +93,15 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
       gen: l.genLabel || genObj?.label || "",
       cote,
       verdict: verdictPrix(cote?.pct, PIEGES.test(l.tx)),
+      aVerifier: [
+        ...(f.portes && portesDe(l) == null ? ["Portes non précisées"] : []),
+        ...(couleur && couleurDe(l, couleur) == null ? ["Couleur non précisée"] : []),
+      ],
     };
   });
-  // les meilleures affaires d'abord ; les annonces à creuser (sans cote, piège, prix trop beau) à la fin
-  const rang = (a: AnnonceCC) => (a.verdict === "creuser" ? -10 : a.cote?.pct ?? -9);
+  // les annonces qui confirment tous les critères d'abord, puis les meilleures affaires ;
+  // les annonces à creuser (sans cote, piège, prix trop beau) à la fin
+  const rang = (a: AnnonceCC) => (a.verdict === "creuser" ? -10 : a.cote?.pct ?? -9) - (a.aVerifier?.length ? 5 : 0);
   annonces.sort((a, b) => rang(b) - rang(a));
   return { annonces: annonces.slice(0, limite), total: annonces.length };
 }

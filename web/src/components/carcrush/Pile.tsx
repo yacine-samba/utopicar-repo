@@ -137,6 +137,15 @@ export function Pile({ id, annonces, choixInitiaux, onFavoris, onNouvelle }: {
               <p className="text-sm">
                 <EcartCote cote={cur.cote} />
               </p>
+              {!!cur.aVerifier?.length && (
+                <p className="flex flex-wrap gap-1.5">
+                  {cur.aVerifier.map((x) => (
+                    <span key={x} className="rounded-full border border-warn/50 px-2.5 py-0.5 text-xs font-bold text-warn">
+                      À vérifier : {x.toLowerCase()}
+                    </span>
+                  ))}
+                </p>
+              )}
               <dl className="grid grid-cols-4 gap-1.5 text-center">
                 {[
                   ["Année", cur.annee ?? "?"],

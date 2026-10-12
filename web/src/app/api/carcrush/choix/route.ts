@@ -20,6 +20,7 @@ const Annonce = z.object({
   gen: z.string().max(80),
   cote: z.object({ P: z.number(), ecart: z.number().nullable(), pct: z.number().nullable(), conf: z.enum(["forte", "moyenne", "faible"]), source: z.enum(["utopicar", "leboncoin"]).optional() }).nullable(),
   verdict: z.enum(["excellente", "bonne", "negocier", "creuser", "eviter"]),
+  aVerifier: z.array(z.string().max(40)).max(4).optional(),
 });
 const Choix = z.object({ recherche: z.uuid(), annonce: Annonce, choix: z.enum(["garde", "passe"]) });
 const Retrait = z.object({ recherche: z.uuid(), annonce: z.string().min(1).max(80) });
