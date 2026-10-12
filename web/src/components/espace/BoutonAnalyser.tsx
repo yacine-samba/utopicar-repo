@@ -41,10 +41,11 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
       <button
         type="button"
         onClick={() => setOuvert(true)}
-        className={cx("btn btn-o w-full justify-start gap-3", className)}
+        title={libelle}
+        className={cx("btn btn-o w-full justify-start gap-3 lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:px-0", className)}
       >
         <Ico nom="analyser" className={cx("shrink-0", icone)} />
-        {libelle}
+        <span className="lg:group-data-[replie=true]/menu:sr-only">{libelle}</span>
       </button>
       {ouvert &&
         // rendu à la racine de la page : dans le menu (position sticky), la fenêtre passait sous le contenu

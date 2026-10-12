@@ -5,12 +5,13 @@ import { redirect } from "next/navigation";
 import { compteCourant, type Compte } from "@/lib/compte";
 import { comptesActifs } from "@/lib/supabase/config";
 import { familleEspace, navEspace, nomFormule, texteRestantes } from "@/lib/espace";
-import { Logo } from "@/components/site/Logo";
+import { Logo, Symbole } from "@/components/site/Logo";
 import { Ico } from "@/components/espace/Icones";
 import { NavCote, NavMobile } from "@/components/espace/NavEspace";
 import { CommandeK, SeuilMarge } from "@/components/espace/OutilsEspace";
 import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { AnalysesEnFond } from "@/components/espace/AnalysesEnFond";
+import { CadreEspace } from "@/components/espace/CadreEspace";
 import { PreferencesEspace } from "@/components/espace/Preferences";
 import { ProfilDepuisNavigateur } from "@/components/espace/ProfilDepuisNavigateur";
 import { ProfilAnalyseFournisseur } from "@/components/analyse/ProfilAnalyse";
@@ -23,11 +24,11 @@ export const dynamic = "force-dynamic";
 function PiedNav({ c }: { c: Compte }) {
   return (
     <div className="grid gap-3">
-      <Link href="/app/compte" className="group flex items-center gap-3 rounded-2xl border border-line px-2.5 py-2 transition hover:border-o/40 hover:bg-glass" title="Profil et paramètres">
+      <Link href="/app/compte" className="group flex items-center gap-3 rounded-2xl border border-line px-2.5 py-2 transition hover:border-o/40 hover:bg-glass lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:border-transparent lg:group-data-[replie=true]/menu:px-0" title={`Profil et paramètres · ${nomFormule(c)}`}>
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-o/15 font-display font-semibold text-o2" aria-hidden="true">
           {(c.prenom || c.email).slice(0, 1).toUpperCase()}
         </span>
-        <span className="min-w-0 flex-1">
+        <span className="min-w-0 flex-1 lg:group-data-[replie=true]/menu:sr-only">
           <span className="flex items-center gap-2">
             <span className="truncate text-sm font-medium">{c.prenom || "Mon compte"}</span>
             <span className="shrink-0 rounded-full border border-o/40 bg-o/10 px-2 py-px text-[11px] font-medium text-o2">{nomFormule(c)}</span>
@@ -37,12 +38,12 @@ function PiedNav({ c }: { c: Compte }) {
         </span>
       </Link>
       <div className="grid gap-0.5 text-sm">
-        <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-ink-3 hover:bg-glass hover:text-ink">
-          <Ico nom="site" className="size-4" /> Retour au site
+        <Link href="/" title="Retour au site" className="flex items-center gap-3 rounded-xl px-3 py-2 text-ink-3 hover:bg-glass hover:text-ink lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:px-0">
+          <Ico nom="site" className="size-4" /> <span className="lg:group-data-[replie=true]/menu:sr-only">Retour au site</span>
         </Link>
         <form action="/auth/deconnexion" method="post">
-          <button type="submit" className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-ink-3 hover:bg-glass hover:text-ink">
-            <Ico nom="sortie" className="size-4" /> Se déconnecter
+          <button type="submit" title="Se déconnecter" className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-ink-3 hover:bg-glass hover:text-ink lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:px-0">
+            <Ico nom="sortie" className="size-4" /> <span className="lg:group-data-[replie=true]/menu:sr-only">Se déconnecter</span>
           </button>
         </form>
       </div>
@@ -70,22 +71,25 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
     <ProfilAnalyseFournisseur initial={c.profilAnalyse}>
     <ProfilDepuisNavigateur />
     <AnalysesEnFond mode={benef && c.offre.famille === "benef" ? "benef" : "particulier"} actif={!benef || c.offre.famille === "benef"} maxPhotos={c.offre.photos} ville={c.ville}>
-    <div className="min-h-dvh lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
-      <aside className="sticky top-0 hidden h-dvh flex-col gap-5 overflow-y-auto border-r border-line bg-bg0/60 px-4 py-5 lg:flex">
-        <Link href="/app" className="px-1" aria-label="Mon espace, accueil">
-          <Logo sous={benef ? "Benef" : undefined} />
-        </Link>
-        <BoutonAnalyser className="min-h-9 gap-2 whitespace-nowrap px-3.5 py-1.5 text-[13px] shadow-[0_8px_22px_-14px_rgb(255_90_31/0.9)]" icone="size-4" />
-        <div className="grid flex-1 content-start gap-3">
-          <NavCote entrees={entrees} />
-          <div className="grid gap-2">
-            {benef && <SeuilMarge />}
-            <CommandeK entrees={entrees} />
+    <CadreEspace
+      menu={
+        <>
+          <Link href="/app" className="px-1 lg:group-data-[replie=true]/menu:px-0" aria-label="Mon espace, accueil">
+            <span className="lg:group-data-[replie=true]/menu:hidden"><Logo sous={benef ? "Benef" : undefined} /></span>
+            <span className="hidden size-9 place-items-center overflow-hidden rounded-xl border border-line-2 bg-[#15110d] text-[#f4f1ec] lg:group-data-[replie=true]/menu:grid"><Symbole className="h-auto w-[84%]" /></span>
+          </Link>
+          <BoutonAnalyser className="min-h-9 gap-2 whitespace-nowrap px-3.5 py-1.5 text-[13px] shadow-[0_8px_22px_-14px_rgb(255_90_31/0.9)]" icone="size-4" />
+          <div className="grid w-full flex-1 content-start gap-3">
+            <NavCote entrees={entrees} />
+            <div className="grid gap-2 lg:group-data-[replie=true]/menu:hidden">
+              {benef && <SeuilMarge />}
+              <CommandeK entrees={entrees} />
+            </div>
           </div>
-        </div>
-        <PiedNav c={c} />
-      </aside>
-
+          <PiedNav c={c} />
+        </>
+      }
+    >
       <div className="min-w-0">
         <NavMobile
           entrees={entrees}
@@ -111,7 +115,7 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
           {children}
         </main>
       </div>
-    </div>
+    </CadreEspace>
     </AnalysesEnFond>
     </ProfilAnalyseFournisseur>
     </PreferencesEspace>

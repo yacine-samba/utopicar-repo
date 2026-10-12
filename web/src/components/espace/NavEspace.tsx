@@ -20,15 +20,16 @@ export function NavCote({ entrees }: { entrees: EntreeNav[] }) {
             key={e.href}
             href={e.href}
             aria-current={actif ? "page" : undefined}
+            title={e.label}
             className={cx(
-              "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition",
+              "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:px-0",
               actif ? "bg-o/12 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass hover:text-ink",
             )}
           >
             <Ico nom={e.icone} className={cx("size-[18px] shrink-0", actif ? "text-o2" : "text-ink-3 group-hover:text-ink-2")} />
-            <span className="flex-1">{e.label}</span>
+            <span className="flex-1 lg:group-data-[replie=true]/menu:sr-only">{e.label}</span>
             {e.verrou && (
-              <span className="rounded-full border border-line-2 px-2 py-px text-[11px] text-ink-3" title={`Inclus dans ${e.verrou}`}>
+              <span className="rounded-full border border-line-2 px-2 py-px text-[11px] text-ink-3 lg:group-data-[replie=true]/menu:sr-only" title={`Inclus dans ${e.verrou}`}>
                 {e.verrou}
               </span>
             )}
