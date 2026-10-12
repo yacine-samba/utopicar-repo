@@ -735,6 +735,412 @@
     };
   };
 
+  // =====================================================================================================
+  // BO1 à BO3 · Débuts « bénéfice d'abord », v2 (retour du 11 oct. 2026 : « moins de texte, plus de visuels, plus
+  // original »). Grammaire relevée sur Behance, dans la DA UTOPICAR : collage MINI JCW (voiture découpée en autocollant,
+  // ombre en trame, disque de couleur, plan au trait avec la pièce en couleur), widgets chiffrés de FinData.
+  // 0 s la voiture-autocollant tombe sur le disque orange, « POV ta 1re revente » ; l'étiquette de prix se balance
+  // (achat) puis se retourne (revente) ; l'étoile verte « +978 € » claque sur le drop ; le scanner UTOPICAR passe, la
+  // voiture devient un plan au trait, deux repères (moteur fiable, à vérifier) ; « Ton prix max » monte sur le coup final.
+  // Vraies annonces sous le marché (base UTOPICAR, oct. 2026), calcul de l'outil : revente normale = médiane des
+  // comparables × 0,95 ; bénéfice = revente − prix − carte grise − 20 € ; prix max = revente − frais − 750 €.
+  // =====================================================================================================
+  const BO = {
+    BO1: { w: 'polo', n: 'polo5', cw: 900, buy: '5 000 €', rev: '6 150 €', ben: '+978 €', pm: '5 228 €', vf: 'embrayage', pins: [[0.84, 0.44, 1], [0.7, 0.7, 0]] },
+    BO2: { w: 'clio', n: 'clio3', cw: 980, buy: '3 990 €', rev: '5 100 €', ben: '+938 €', pm: '4 178 €', vf: 'injecteurs', pins: [[0.5, 0.38, 1], [0.7, 0.55, 0]] },
+    BO3: { w: 'twingo', n: 'twingo', cw: 800, buy: '3 000 €', rev: '4 000 €', ben: '+828 €', pm: '3 078 €', vf: 'courroie', pins: [[0.3, 0.42, 1], [0.66, 0.58, 0]] },
+  };
+  const BO_CSS = `
+.bo-dots{position:absolute;inset:-60px;background:radial-gradient(circle,rgba(251,249,245,.07) 2px,transparent 2.5px) 0 0/30px 30px}
+.bo-disc{position:absolute;left:0;top:0;width:840px;height:840px;border-radius:50%;background:var(--o)}
+.bo-car{position:absolute;left:0;top:0}
+.bo-car img{display:block;width:100%;position:relative}
+.bo-car .ln{position:absolute;left:0;top:0}
+.bo-car .ht{position:absolute;inset:0;background:radial-gradient(circle,#0e0b09 40%,transparent 44%) 0 0/15px 15px}
+.bo-sw{position:absolute;left:0;top:0;width:400px;transform-origin:50% 0}
+.bo-sw .str{position:absolute;left:198px;top:0;width:4px;background:rgba(251,249,245,.9);border-radius:2px}
+.bo-tg{position:absolute;left:10px;width:380px;height:300px;transform-style:preserve-3d}
+.bo-tg .fc{position:absolute;inset:0;backface-visibility:hidden;clip-path:polygon(24% 0,76% 0,100% 18%,100% 100%,0 100%,0 18%);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:38px;color:var(--ink)}
+.bo-tg .fc:before{content:'';position:absolute;left:170px;top:22px;width:40px;height:40px;border-radius:50%;background:#141110}
+.bo-tg .fc small{font:700 28px Satoshi;letter-spacing:.14em;text-transform:uppercase;opacity:.62}
+.bo-tg .fc b{font:600 78px/1.05 Clash;letter-spacing:-.03em;white-space:nowrap}
+.bo-tg .fr{background:#efe6d8}
+.bo-tg .bk{background:var(--o);color:#1a1310;transform:rotateY(180deg)}
+.bo-star{position:absolute;left:0;top:0;width:600px;height:600px}
+.bo-star svg{position:absolute;inset:0;overflow:visible;filter:drop-shadow(0 40px 50px rgba(0,0,0,.45))}
+.bo-star .lb{position:absolute;left:0;right:0;top:350px;text-align:center;font:400 54px Instrument;font-style:italic;color:#0e0b09}
+.bo-pin{position:absolute;width:0;height:0}
+.bo-pin .dot{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;border:5px solid #fff;display:flex;align-items:center;justify-content:center;font:900 28px Satoshi;color:#fff;box-shadow:0 10px 24px rgba(0,0,0,.4)}
+.bo-pin .rg{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;border:4px solid}
+.bo-pin .ld{position:absolute;left:-2px;width:4px;background:#fff;border-radius:2px}
+.bo-pin .lab{position:absolute;white-space:nowrap;padding:16px 26px;border-radius:999px;font:700 36px Satoshi;box-shadow:0 20px 40px -14px rgba(0,0,0,.55)}
+.bo-pin.ok .dot,.bo-pin.ok .lab{background:#3ccf7a;color:#0e0b09}.bo-pin.ok .rg{border-color:#3ccf7a}
+.bo-pin.wa .dot,.bo-pin.wa .lab{background:var(--o);color:#1a1310}.bo-pin.wa .rg{border-color:var(--o)}
+.bo-scan{position:absolute;top:-90px;width:8px;margin-left:-4px;border-radius:4px;background:var(--o);box-shadow:0 0 30px 8px rgba(255,90,31,.7),0 0 90px 30px rgba(255,90,31,.25)}
+.bo-scan span{position:absolute;left:50%;top:-58px;transform:translateX(-50%);padding:8px 18px;border-radius:999px;background:var(--o);color:#1a1310;font:700 26px Satoshi;letter-spacing:.06em;white-space:nowrap}
+.bo-bar{position:absolute;left:0;top:0;width:830px;height:140px;border-radius:999px;background:#fff;display:flex;align-items:center;gap:16px;padding:0 14px 0 20px;box-shadow:0 40px 80px -24px rgba(0,0,0,.65)}
+.bo-bar img{width:96px;height:96px;border-radius:20px;flex:none}
+.bo-bar .tx{flex:1;overflow:hidden;white-space:nowrap;font:700 38px Satoshi;color:var(--ink)}.bo-bar .tx i{font-style:normal;opacity:.45;font-weight:500}
+.bo-bar .go{flex:none;padding:26px 30px;border-radius:999px;background:var(--o);color:#1a1310;font:700 36px Satoshi}
+.bo-pm{position:absolute;left:0;top:0;width:780px;padding:26px 40px 30px;border-radius:40px;background:#fff;color:var(--ink);box-shadow:0 50px 100px -30px rgba(0,0,0,.6)}
+.bo-pm .hd{display:flex;justify-content:space-between;align-items:center;font:500 30px Satoshi;color:rgba(28,22,18,.6)}
+.bo-pm .hd b{color:var(--o);font-weight:700}.bo-pm .hd i{font-style:normal;font:700 26px Satoshi;color:#fff;background:var(--ink);border-radius:999px;padding:8px 18px}
+.bo-pm .rw{position:relative;height:118px;margin-top:10px;font:700 40px Satoshi;display:flex;align-items:center}
+`;
+  const star = (n, R, r) => { let d = ''; for (let i = 0; i < 2 * n; i++) { const a = -Math.PI / 2 + (i * Math.PI) / n, q = i % 2 ? r : R; d += (i ? 'L' : 'M') + (300 + q * Math.cos(a)).toFixed(1) + ' ' + (300 + q * Math.sin(a)).toFixed(1); } return d + 'Z'; };
+  for (const id of Object.keys(BO)) SPECS[id] = () => {
+    if (!document.getElementById('bo-css')) { const st = mk('style', '', document.head, null, BO_CSS); st.id = 'bo-css'; }
+    // avec la voix de Simon, chaque geste tombe sur son mot ; sans voix (mots vides), le minutage de l'animatic
+    const vo = BODY.length > 0, d = BO[id], CY = 960;
+    // ordre « bénéfice d'abord » (voix : « Fais 978 de bénef avec ça ! Polo, 5 000. Revendue 6 150… ») : l'étoile verte claque
+    // dès l'image 0 et le compteur s'arrête sur « 978 », puis l'étiquette (achat), son revers (revente), le scanner, le prix max
+    const tStar = -0.15, tLand = vo ? T('de', T(d.ben.replace(/\D/g, ''))) : 0.7;   // le compteur s'arrête quand Simon finit le nombre
+    const tTag = vo ? T(d.w) - 0.16 : 1.5, tCorner = Math.max(tTag - 0.4, tLand + 0.45), tFlip0 = 2.25;
+    const tPaste = vo ? T('colles') - 0.15 : 2.9, tGo = vo ? T('utopicar') + 0.1 : 3.3;
+    // l'analyse est la source : après le clic, le scanner passe, la barre devient « Analyse UTOPICAR ✓ », puis chaque
+    // résultat tombe sur son mot (revente : l'étiquette se retourne, moteur fiable, à vérifier, prix max)
+    const tFlip = vo ? T('reven', tGo) - 0.04 : tFlip0, tBadge = vo ? T('analys', tGo) - 0.1 : 3.4;
+    const tOut = vo ? tGo : 2.85, tTagOut = vo ? T('moteur', tGo) - 0.25 : tOut, tS0 = vo ? tGo + 0.15 : 3.45, dS = vo ? 0.7 : 0.95, tPM = vo ? T('prix', tGo) - 0.4 : 4.5;
+    const tW = vo ? [T('fiable'), T(d.vf)] : [0, 0];
+    const s = S(-1, DUR + 1, '#141110', { type: 'cut' }, 0.03); s.imp.push([0.15, 18], [tLand, 26], [MU.hit, 14]);
+    s.el.insertBefore(mk('div', 'bo-dots', s.el), s.cam);
+    const disc = mk('div', 'bo-disc a', s.cam);
+    // ---------- la voiture-autocollant (photo, plan au trait, ombre en trame, repères, scanner) ----------
+    const box = mk('div', 'bo-car a', s.cam, { width: d.cw + 'px' });
+    const src = `../assets/hooks-cut/${d.n}-sticker.png`;
+    const ht = mk('div', 'ht', box, { WebkitMask: `url(${src}) 0 0/100% 100% no-repeat`, mask: `url(${src}) 0 0/100% 100% no-repeat` });
+    const ph = mk('img', '', box); ph.src = src;
+    const ln = mk('img', 'ln', box); ln.src = `../assets/hooks-cut/${d.n}-line.png`;
+    const scan = mk('div', 'bo-scan', box, null, '<span>UTOPICAR</span>');
+    const pins = d.pins.map(([fx, fy, ok]) => {
+      const up = fy < 0.6, right = fx > 0.6, L = up ? 120 : 90;
+      const p = mk('div', 'bo-pin ' + (ok ? 'ok' : 'wa'), box, { left: fx * 100 + '%', top: fy * 100 + '%' });
+      const ld = mk('div', 'ld', p, up ? { bottom: '0px' } : { top: '0px' });
+      const rg = mk('div', 'rg', p), dot = mk('div', 'dot', p, null, ok ? '✓' : '!');
+      const lab = mk('div', 'lab', p, { [right ? 'right' : 'left']: '-34px', [up ? 'bottom' : 'top']: L + 'px' }, ok ? 'Moteur fiable' : `À vérifier : ${d.vf}`);
+      return { fx, up, right, L, p, ld, rg, dot, lab, tc: null };
+    });
+    // ---------- contexte, étiquette, étoile, prix max ----------
+    const pov = mk('div', 'pill a', s.cam, { background: 'var(--o)', color: '#1a1310', fontSize: '30px', padding: '8px 18px', letterSpacing: '.12em' }, 'POV');
+    const k1 = L1(s.cam, 140, 300, 92, 'Ta 1re revente', '#fff'); k1.box.style.textShadow = '0 6px 28px rgba(0,0,0,.6)';
+    const sw = mk('div', 'bo-sw a', s.cam), LS = 470;
+    mk('div', 'str', sw, { height: LS + 30 + 'px' });
+    const tg = mk('div', 'bo-tg', sw, { top: LS + 'px' }, `<div class="fc fr"><small>achat</small><b>${d.buy}</b></div><div class="fc bk"><small>UTOPICAR · revente</small><b>${d.rev}</b></div>`);
+    const st = mk('div', 'bo-star a', s.cam, null, `<svg viewBox="0 0 600 600"><path d="${star(14, 300, 252)}" fill="#3ccf7a" stroke="#fff" stroke-width="14" stroke-linejoin="round"/></svg><div class="lb">de bénef</div>`);
+    const RB = ROLL(st, 0, 196, 136, '+000 €', d.ben, '#0e0b09'); RB.box.style.left = (300 - RB.box.offsetWidth / 2) + 'px';
+    // « Tu colles l'annonce dans UTOPICAR » : la barre d'analyse monte, le lien s'écrit, clic sur « Analyser »
+    const bar = mk('div', 'bo-bar a', s.cam, null, `<img src="../assets/brand/official/utopicar-icone-orange.svg"><div class="tx"><span class="ba">Annonce <i>· ${d.w[0].toUpperCase() + d.w.slice(1)} · ${d.buy}</i></span><span class="bb">Analyse <b style="color:var(--o)">UTOPICAR</b> ✓</span></div><div class="go">Analyser</div>`);
+    const bA = bar.querySelector('.ba'), bB = bar.querySelector('.bb');
+    const btx = bar.querySelector('.tx'), bgo = bar.querySelector('.go');
+    cue(tPaste, 'whoosh', 0.5); cue(tPaste + 0.25, 'type', 0.7); cue(tGo, 'click', 1);
+    const pm = mk('div', 'bo-pm a', s.cam, null, '<div class="hd"><span>Analyse <b>UTOPICAR</b></span><i>⏱ 1 min</i></div><div class="rw">Ton prix max</div>');
+    const RP = ROLL(pm.querySelector('.rw'), 0, 4, 110, '0 000 €', d.pm, 'var(--o)'); RP.box.style.left = (700 - RP.box.offsetWidth) + 'px';
+    // ---------- sons ----------
+    cue(0.1, 'thud', 1); cue(tTag, 'whoosh', 0.45); cue(tTag + 0.36, 'click', 0.7);
+    cue(tFlip, 'whoosh', 0.5); cue(tFlip + 0.22, 'pop', 0.7); cue(0.02, 'roll', 1); cue(tLand, 'impact', 0.9); cue(tCorner, 'whoosh', 0.6);
+    cue(vo ? tTagOut : tOut, 'whoosh', 0.7); cue(tS0, 'roll', 0.5); cue(tBadge, 'ding', 0.5); cue(tPM - 0.05, 'whoosh', 0.6); cue(tPM + 0.05, 'roll', 0.8);
+    // instant où le scanner passe sur chaque repère
+    const scanF = (t) => eIO(clamp((t - tS0) / dS, 0, 1));
+    pins.forEach((q, i) => { for (let t = tS0; t < tS0 + dS + 0.01; t += 1 / 240) if ((-50 + (d.cw + 100) * scanF(t)) / d.cw >= q.fx) { q.tc = t; break; } q.tc = Math.max(q.tc, tW[i] - 0.05); cue(q.tc, 'pop', 0.8); });
+    s.P.push((t) => {
+      // fond : disque orange qui respire avec la musique, s'efface pendant l'analyse
+      const pd = E(t, -0.3, 0.55);
+      pose(disc, t, () => ({ x: 540, y: CY, c: 1, s: (0.35 + 0.65 * pd) * (1 + 0.015 * pulse(t)), o: 1 - 0.75 * E(t, tS0 - 0.1, 0.6) }));
+      // voiture : déjà là à l'image 0, elle claque (zoom × 1,4 → 1) à 0,15 s, flotte, se redresse pour l'analyse
+      const pf = E(t, -0.12, 0.27, eIn), land = Math.max(0, t - 0.15), rs = E(t, tOut, 0.6, eIO);
+      pose(box, t, () => ({ x: 530, y: lerp(CY + 120, CY, pf) + 6 * Math.sin(land * 1.6) - 40 * rs, c: 1, r: lerp(-9, -3, pf) + 0.6 * Math.sin(land * 1.2) + 3 * rs, s: (1 + 0.4 * (1 - pf)) * (1 + 0.05 * bump(t, 0.15, 0.12)) * (1 + 0.05 * rs) }));
+      ht.style.transform = `translate(${(22 - 10 * rs).toFixed(1)}px,${(30 - 10 * rs).toFixed(1)}px)`;
+      // scanner : la photo laisse place au plan au trait
+      const ps = scanF(t), bx = -50 + (d.cw + 100) * ps, f = clamp(bx / d.cw, 0, 1) * 100;
+      ph.style.clipPath = `inset(0 0 0 ${f.toFixed(2)}%)`; ln.style.clipPath = `inset(0 ${(100 - f).toFixed(2)}% 0 0)`; ht.style.opacity = (1 - 0.7 * ps).toFixed(3);
+      scan.style.display = t > tS0 - 0.05 && t < tS0 + dS + 0.25 ? '' : 'none';
+      scan.style.left = bx.toFixed(1) + 'px'; scan.style.height = box.offsetHeight + 180 + 'px'; scan.style.opacity = (1 - E(t, tS0 + dS, 0.22)).toFixed(3);
+      for (const q of pins) {
+        const on = t >= q.tc - 0.01; q.p.style.display = on ? '' : 'none'; if (!on) continue;
+        const u = t - q.tc;
+        q.dot.style.transform = `scale(${clamp(spring(u, 'snappy'), 0, 2).toFixed(3)})`;
+        const rp = (u % 0.9) / 0.9; q.rg.style.transform = `scale(${(1 + 1.8 * rp).toFixed(3)})`; q.rg.style.opacity = (0.9 * (1 - rp)).toFixed(3);
+        q.ld.style.height = (q.L * E(t, q.tc + 0.06, 0.25)).toFixed(1) + 'px';
+        const pl = E(t, q.tc + 0.18, 0.35);
+        q.lab.style.opacity = Math.min(1, pl * 3).toFixed(3); q.lab.style.transform = `translateY(${((q.up ? 30 : -30) * (1 - pl)).toFixed(1)}px) scale(${(0.7 + 0.3 * spring(u - 0.18, 'snappy')).toFixed(3)})`;
+        q.lab.style.transformOrigin = `${q.right ? '100%' : '0%'} ${q.up ? '100%' : '0%'}`;
+      }
+      // contexte
+      slamAt(pov, t, -0.5, 190, 255, -3); ktP(k1, t, [-0.6, -0.5, -0.45], 'rise');
+      // étiquette : descend au bout de sa ficelle, se balance, se retourne, remonte
+      const pt = E(t, tTag, 0.42), po = E(t, tTagOut - 0.05, 0.4, eIn), u0 = Math.max(0, t - tTag - 0.3), u1 = Math.max(0, t - tFlip);
+      const th = 11 * Math.exp(-2.4 * u0) * Math.sin(7.5 * u0 + 0.6) * (t > tTag + 0.3 ? 1 : 0) + 7 * Math.exp(-3 * u1) * Math.sin(9 * u1) * (t > tFlip ? 1 : 0);
+      pose(sw, t, () => (t < tTag - 0.05 ? null : { x: 520, y: -40 - 900 * (1 - pt) - 1100 * po, r: th - 4 }));
+      const fl = E(t, tFlip, 0.42, eOut);
+      tg.style.transform = `perspective(1400px) rotateY(${(180 * fl).toFixed(2)}deg) scale(${(1 + 0.08 * Math.sin(Math.PI * fl)).toFixed(4)})`;
+      // étoile verte : claque à tStar, le bénéfice roule jusqu'au drop, puis part se coller en haut à gauche
+      const mv = E(t, tCorner, 0.5, eIO);
+      pose(st, t, (tt) => (tt < tStar - 0.01 ? null : { x: lerp(540, 255, mv), y: lerp(CY + 20, 520, mv), c: 1, r: lerp(-8, -12, mv) + 2 * Math.sin(Math.max(0, tt - tLand) * 1.4), s: (1 + 1.2 * (1 - E(tt, tStar, 0.3))) * (1 + 0.1 * bump(tt, tLand, 0.2)) * lerp(1, 0.4, mv) }));
+      st.querySelector('svg').style.transform = `rotate(${(t * 12).toFixed(2)}deg)`;
+      rollP(RB, t, 0, tLand - 0.12, 0.04);
+      // barre d'analyse : monte, le lien s'écrit, clic, puis elle descend quand le scanner part
+      pose(bar, t, (tt) => (tt < tPaste - 0.05 || tt > tPM + 0.45 ? null : { x: 530, y: lerp(1500, 1330, E(tt, tPaste, 0.45)) + 40 * E(tt, tPM - 0.1, 0.4), c: 1, r: -1.5 * (1 - E(tt, tPaste, 0.5)), s: 1 + 0.06 * bump(tt, tBadge, 0.2), o: 1 - E(tt, tPM - 0.05, 0.3) }));
+      const sw2 = t >= tBadge; bA.style.display = sw2 ? 'none' : ''; bB.style.display = sw2 ? '' : 'none'; bgo.textContent = sw2 ? '⏱ 1 min' : 'Analyser';
+      btx.style.clipPath = `inset(0 ${(100 - 100 * E(t, tPaste + 0.25, 0.55, (p) => p)).toFixed(1)}% 0 0)`;
+      pm.querySelector('.hd i').style.transform = `scale(${(1 + 0.25 * bump(t, vo ? T('minute', tPM) - 0.1 : 99, 0.25)).toFixed(3)})`;
+      bgo.style.transform = `scale(${(1 - 0.12 * bump(t, tGo, 0.12)).toFixed(3)})`; bgo.style.background = t >= tGo ? '#1c1612' : ''; bgo.style.color = t >= tGo ? '#fff' : '';
+      // carte « Ton prix max » : monte, le prix roule jusqu'au coup final
+      rise(pm, t, tPM, 530, 1340, -1.5);
+      rollP(RP, t, tPM + 0.08, MU.hit - tPM - 0.2, 0.05);
+    });
+    // vidéo complète (avec la voix) : « Trois analyses offertes avec le code TIKTOK. Lien en bio ! », carton orange et logo
+    if (vo) { const tF = T('trois', tPM); endCard(tF - 0.12, 'var(--o)', [['3 analyses', 250, 170, '#fff', false, tF], ['offertes', 430, 190, 'var(--ink)', true, T('offertes', tF)], ['avec le code TIKTOK', 640, 80, '#fff', false, T('code', tF)]],
+      'Code <b style="color:var(--o)">TIKTOK</b> · lien en bio', tF + 0.35, { type: 'circle', x: 530, y: 1340 }); }
+  };
+
+  // =====================================================================================================
+  // S1V1 à S2V7 · les 14 vidéos des semaines du 12 et du 19 oct. 2026 (concept « l'analyse sort tout », planches
+  // video/renders/maquette-hooks/planche-7-videos*.png). Un seul moteur, une config par vidéo : voitures-autocollants,
+  // étoiles de bénéfice, étiquettes, barre UTOPICAR (« tu colles l'annonce »), scanner, repères, carte prix max,
+  // tampons, bulles, compteur, ticket, puis le carton « 3 analyses offertes · code TIKTOK » avec le logo.
+  // Chaque geste est calé sur un mot de Simon (T). Chiffres : vraies annonces de la base du marché, formule de l'outil
+  // (bilan.ts) hors travaux probables, d'où la mention à l'écran.
+  // =====================================================================================================
+  const SEM_CSS = `
+.sm-tk{position:absolute;left:0;top:0;width:830px;padding:26px 40px 30px;border-radius:40px;background:#fff;color:var(--ink);box-shadow:0 50px 100px -30px rgba(0,0,0,.6)}
+.sm-tk .h{display:flex;justify-content:space-between;align-items:center;font:500 30px Satoshi;color:rgba(28,22,18,.6);margin-bottom:6px}.sm-tk .h b{color:var(--o);font-weight:700}
+.sm-tk .h i{font-style:normal;font:700 26px Satoshi;color:#fff;background:var(--ink);border-radius:999px;padding:8px 18px}
+.sm-tk .r{display:flex;justify-content:space-between;padding:14px 0;border-bottom:2px dashed rgba(28,22,18,.13);font:500 38px Satoshi;color:rgba(28,22,18,.75);white-space:nowrap}.sm-tk .r b{font:600 44px Clash;color:var(--ink)}
+.sm-tk .t{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;font:700 40px Satoshi;white-space:nowrap}.sm-tk .t b{font:700 100px/1 Clash;letter-spacing:-.03em}
+.sm-odo{position:absolute;left:0;top:0;width:800px;height:300px;border-radius:40px;background:#0b0908;border:8px solid #2a2420;box-shadow:0 40px 80px -20px rgba(0,0,0,.7)}
+.sm-odo small{position:absolute;right:40px;bottom:46px;font:700 44px Satoshi;color:#ffb38f}
+.sm-big{position:absolute;left:0;top:0;font:600 92px/1 Clash;letter-spacing:-.03em;white-space:nowrap;background:rgba(20,17,16,.82);padding:14px 26px 18px;border-radius:26px;box-shadow:0 20px 40px -14px rgba(0,0,0,.6)}
+.sm-vs{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;background:#fff;color:var(--ink);font:700 64px Clash;display:flex;align-items:center;justify-content:center;box-shadow:0 20px 40px rgba(0,0,0,.5)}
+.sm-demo{position:absolute;left:140px;top:410px;font:700 26px Satoshi;color:rgba(255,255,255,.7);background:rgba(0,0,0,.45);padding:8px 16px;border-radius:12px;white-space:nowrap}
+.sm-strike{position:absolute;left:30px;right:30px;bottom:86px;height:10px;border-radius:5px;background:var(--r);transform-origin:0 50%}
+`;
+  const zero = (v) => v.replace(/\d/g, '0');
+  const TA = (keys, after = 0) => { for (const w of BODY) if (w.s >= after - 0.01 && keys.some((k) => { const kn = norm(k); return /^\d{1,2}$/.test(kn) ? w.n === kn : w.n.startsWith(kn); })) return w.s; return after; };   // « 3 » seul : pas « 3100 »
+  const SEM = {};
+  function semaine(c) {
+    if (!document.getElementById('bo-css')) { const st = mk('style', '', document.head, null, BO_CSS); st.id = 'bo-css'; }
+    if (!document.getElementById('sm-css')) { const st = mk('style', '', document.head, null, SEM_CSS); st.id = 'sm-css'; }
+    const s = S(-1, DUR + 1, '#141110', { type: 'cut' }, 0.03), P = [];
+    s.el.insertBefore(mk('div', 'bo-dots', s.el), s.cam);
+    const tGo = TA(['utopicar'], c.goAfter ?? 0) + 0.1, tPaste = TA(['coll'], c.goAfter ?? 0) - 0.15, tF = (() => { const a = TA(['trois'], tGo + 0.5); return a > tGo + 0.5 ? a : TA(['3'], tGo + 0.5); })();   // « trois » d'abord : « 3 000 » ne déclenche pas la fin
+    const tBadge = c.badge ?? tGo + 0.7, tS0 = c.scanT ?? tGo + 0.15, dS = 0.7, scanF = (t) => eIO(clamp((t - tS0) / dS, 0, 1));
+    s.imp.push([0.15, 16], [tGo, 20]);
+    // fond : disque (orange ; rouge quand le verdict est négatif), qui s'efface pendant l'analyse
+    const disc = mk('div', 'bo-disc a', s.cam);
+    P.push((t) => { const pd = E(t, -0.3, 0.55); disc.style.background = c.red && t >= c.red ? 'var(--r)' : 'var(--o)';
+      pose(disc, t, () => ({ x: 540, y: 960, c: 1, s: (0.35 + 0.65 * pd) * (1 + 0.015 * pulse(t)), o: 1 - (c.noFade ? 0 : 0.75 * E(t, tS0 - 0.1, 0.6)) })); });
+    // contexte (image 0)
+    const pov = mk('div', 'pill a', s.cam, { background: 'var(--o)', color: '#1a1310', fontSize: '30px', padding: '8px 18px', letterSpacing: '.12em' }, 'POV');
+    const k1 = L1(s.cam, 140, 300, 92, c.title || 'Ta 1re revente', '#fff'); k1.box.style.textShadow = '0 6px 28px rgba(0,0,0,.6)';
+    P.push((t) => { slamAt(pov, t, -0.5, 190, 255, -3); ktP(k1, t, [-0.6, -0.5, -0.45, -0.4], 'rise'); });
+    // voitures
+    const cars = (c.cars || []).map((k) => {
+      const box = mk('div', 'bo-car a', s.cam, { width: k.cw + 'px' }), src = `../assets/hooks-cut/${k.n}-sticker.png`;
+      const ht = mk('div', 'ht', box, { WebkitMask: `url(${src}) 0 0/100% 100% no-repeat`, mask: `url(${src}) 0 0/100% 100% no-repeat` });
+      const ph = mk('img', '', box); ph.src = src; const ln = mk('img', 'ln', box); ln.src = `../assets/hooks-cut/${k.n}-line.png`;
+      const scan = k.scan ? mk('div', 'bo-scan', box, null, '<span>UTOPICAR</span>') : null;
+      const pins = (k.pins || []).map(([fx, fy, kind, lab, w]) => {
+        const up = fy < 0.6, right = fx > 0.6, L = up ? 120 : 90;
+        const p = mk('div', 'bo-pin ' + kind, box, { left: fx * 100 + '%', top: fy * 100 + '%' });
+        const ld = mk('div', 'ld', p, up ? { bottom: '0px' } : { top: '0px' }), rg = mk('div', 'rg', p), dot = mk('div', 'dot', p, null, kind === 'ok' ? '✓' : kind === 'ko' ? '✕' : '!');
+        const lb = mk('div', 'lab', p, { [right ? 'right' : 'left']: '-34px', [up ? 'bottom' : 'top']: L + 'px' }, lab);
+        let tc = w - 0.05; if (k.scan) for (let t = tS0; t < tS0 + dS + 0.01; t += 1 / 240) if ((-50 + (k.cw + 100) * scanF(t)) / k.cw >= fx) { tc = Math.max(t, w - 0.05); break; }
+        cue(tc, 'pop', 0.8); return { up, right, L, p, ld, rg, dot, lb, tc };
+      });
+      if (k.from === 'slam') cue(k.tin + 0.05, 'thud', 1); else cue(k.tin, 'whoosh', 0.6);
+      if (k.tout != null) cue(k.tout, 'whoosh', 0.5);
+      if (k.scan) cue(tS0, 'roll', 0.5);
+      P.push((t) => {
+        const slam = k.from === 'slam', pf = slam ? E(t, k.tin - 0.12, 0.27, eIn) : E(t, k.tin, 0.45), po = k.tout != null ? E(t, k.tout, 0.42, eIn) : 0;
+        const hide = t < k.tin - (slam ? 0.2 : 0.05) || po >= 1;
+        pose(box, t, () => { if (hide) return null; let x = k.x, y = k.y, sc = 1, r = k.r ?? -3; const u = Math.max(0, t - k.tin);
+          if (slam) { y = lerp(k.y + 120, k.y, pf); sc = 1 + 0.4 * (1 - pf); r = lerp(r - 6, r, pf); }
+          else if (k.from === 'left') x = lerp(-800, k.x, pf); else if (k.from === 'right') x = lerp(1880, k.x, pf); else y = lerp(-900, k.y, pf);
+          if (k.to === 'left') x -= 1500 * po; else if (k.to === 'right') x += 1500 * po; else if (k.to === 'up') y -= 1800 * po; else y += 1600 * po;
+          const rs = k.scan ? E(t, tS0 - 0.3, 0.5, eIO) : 0;
+          return { x, y: y + 6 * Math.sin(u * 1.6) - 30 * rs, c: 1, r: r + 0.6 * Math.sin(u * 1.2) + (k.scan ? 3 * rs : 0), s: sc * (1 + 0.05 * bump(t, k.tin + 0.15, 0.12)) * (k.s ?? 1) };
+        });
+        if (hide) return;
+        const f = k.line ? 100 : k.scan ? clamp((-50 + (k.cw + 100) * scanF(t)) / k.cw, 0, 1) * 100 : 0;
+        ph.style.clipPath = `inset(0 0 0 ${f.toFixed(2)}%)`; ln.style.clipPath = `inset(0 ${(100 - f).toFixed(2)}% 0 0)`; ht.style.opacity = (1 - 0.007 * f).toFixed(3);
+        ht.style.transform = 'translate(20px,28px)';
+        if (scan) { const bx = -50 + (k.cw + 100) * scanF(t); scan.style.display = t > tS0 - 0.05 && t < tS0 + dS + 0.25 ? '' : 'none'; scan.style.left = bx.toFixed(1) + 'px'; scan.style.height = box.offsetHeight + 180 + 'px'; scan.style.opacity = (1 - E(t, tS0 + dS, 0.22)).toFixed(3); }
+        for (const q of pins) {
+          const on = t >= q.tc - 0.01; q.p.style.display = on ? '' : 'none'; if (!on) continue; const u = t - q.tc;
+          q.dot.style.transform = `scale(${clamp(spring(u, 'snappy'), 0, 2).toFixed(3)})`;
+          const rp = (u % 0.9) / 0.9; q.rg.style.transform = `scale(${(1 + 1.8 * rp).toFixed(3)})`; q.rg.style.opacity = (0.9 * (1 - rp)).toFixed(3);
+          q.ld.style.height = (q.L * E(t, q.tc + 0.06, 0.25)).toFixed(1) + 'px';
+          const pl = E(t, q.tc + 0.18, 0.35); q.lb.style.opacity = Math.min(1, pl * 3).toFixed(3);
+          q.lb.style.transform = `translateY(${((q.up ? 30 : -30) * (1 - pl)).toFixed(1)}px) scale(${(0.7 + 0.3 * spring(u - 0.18, 'snappy')).toFixed(3)})`; q.lb.style.transformOrigin = `${q.right ? '100%' : '0%'} ${q.up ? '100%' : '0%'}`;
+        }
+      });
+      return box;
+    });
+    // étiquettes de prix (ficelle, balancement, retournement, prix barré)
+    for (const g of c.tags || []) {
+      const sw = mk('div', 'bo-sw a', s.cam), LS = g.ls ?? 470; mk('div', 'str', sw, { height: LS + 30 + 'px' });
+      const tg = mk('div', 'bo-tg', sw, { top: LS + 'px' }, `<div class="fc fr"><small>${g.front[0]}</small><b>${g.front[1]}</b></div>` + (g.back ? `<div class="fc bk"><small>${g.back[0]}</small><b>${g.back[1]}</b></div>` : ''));
+      const sk = g.strike ? mk('div', 'sm-strike', tg.firstChild) : null;
+      cue(g.t, 'whoosh', 0.45); cue(g.t + 0.36, 'click', 0.7); if (g.flip) { cue(g.flip, 'whoosh', 0.5); cue(g.flip + 0.22, 'pop', 0.7); } if (g.strike) cue(g.strike, 'pop', 0.8); if (g.out) cue(g.out, 'whoosh', 0.6);
+      P.push((t) => {
+        const pt = E(t, g.t, 0.42), po = g.out ? E(t, g.out - 0.05, 0.4, eIn) : 0, u0 = Math.max(0, t - g.t - 0.3), u1 = g.flip ? Math.max(0, t - g.flip) : 0;
+        const th = 11 * Math.exp(-2.4 * u0) * Math.sin(7.5 * u0 + 0.6) * (t > g.t + 0.3 ? 1 : 0) + (g.flip ? 7 * Math.exp(-3 * u1) * Math.sin(9 * u1) * (t > g.flip ? 1 : 0) : 0);
+        pose(sw, t, () => (t < g.t - 0.05 ? null : { x: g.x ?? 520, y: -40 - 900 * (1 - pt) - 1100 * po, r: th - 4 }));
+        const fl = g.flip ? E(t, g.flip, 0.42) : 0;
+        tg.style.transform = `perspective(1400px) rotateY(${(180 * fl).toFixed(2)}deg) scale(${(1 + 0.08 * Math.sin(Math.PI * fl)).toFixed(4)})`;
+        if (sk) sk.style.transform = `rotate(-8deg) scaleX(${E(t, g.strike, 0.3).toFixed(3)})`;
+      });
+    }
+    // étoiles de bénéfice (roulent jusqu'au mot, puis se collent dans un coin ou sortent)
+    for (const z of c.stars || []) {
+      const st = mk('div', 'bo-star a', s.cam, null, `<svg viewBox="0 0 600 600"><path d="${star(14, 300, 252)}" fill="${z.color || '#3ccf7a'}" stroke="#fff" stroke-width="14" stroke-linejoin="round"/></svg><div class="lb">${z.lab ?? 'de bénef'}</div>`);
+      const RB = ROLL(st, 0, 196, z.size ?? 136, z.land != null ? zero(z.v) : z.v, z.v, '#0e0b09'); RB.box.style.left = (300 - RB.box.offsetWidth / 2) + 'px';
+      if (z.strike) mk('div', 'sm-strike', st, { left: '110px', right: '110px', bottom: 'auto', top: '262px' });
+      cue(Math.max(0.02, z.t), 'pop', 0.9); if (z.land != null) { cue(Math.max(0.02, z.t + 0.02), 'roll', 1); cue(z.land, 'impact', 0.9); s.imp.push([z.land, 24]); }
+      if (z.corner) cue(z.corner.t, 'whoosh', 0.6);
+      P.push((t) => {
+        const mv = z.corner ? E(t, z.corner.t, 0.5, eIO) : 0, po = z.out ? E(t, z.out, 0.4, eIn) : 0, cx = z.corner?.x ?? 255, cy = z.corner?.y ?? 520, cs = z.corner?.s ?? 0.4;
+        pose(st, t, (tt) => (tt < z.t - 0.01 || po >= 1 ? null : { x: lerp(z.x ?? 540, cx, mv), y: lerp(z.y ?? 980, cy, mv) + 1400 * po, c: 1, r: lerp(z.r ?? -8, -12, mv) + 2 * Math.sin(Math.max(0, tt - (z.land ?? z.t)) * 1.4),
+          s: (1 + 1.2 * (1 - E(tt, z.t, 0.28))) * (1 + 0.1 * bump(tt, z.land ?? z.t + 0.2, 0.2)) * lerp(z.s ?? 1, cs, mv) }));
+        st.querySelector('svg').style.transform = `rotate(${(t * 12).toFixed(2)}deg)`;
+        if (z.land != null) rollP(RB, t, Math.max(0, z.t), Math.max(0.3, z.land - z.t - 0.12), 0.04);
+        if (z.strike) st.lastChild.style.transform = `rotate(-8deg) scaleX(${E(t, z.strike, 0.3).toFixed(3)})`;
+      });
+    }
+    // barre UTOPICAR : « tu colles l'annonce », clic sur Analyser, puis « Analyse UTOPICAR ✓ » jusqu'à la carte
+    if (c.bar !== false) {
+      const bar = mk('div', 'bo-bar a', s.cam, null, `<img src="../assets/brand/official/utopicar-icone-orange.svg"><div class="tx"><span class="ba">Annonce <i>· ${c.ann}</i></span><span class="bb">Analyse <b style="color:var(--o)">UTOPICAR</b> ✓</span></div><div class="go">Analyser</div>`);
+      const btx = bar.querySelector('.tx'), bgo = bar.querySelector('.go'), bA = bar.querySelector('.ba'), bB = bar.querySelector('.bb'), tOff = c.barOff ?? (c.card ? c.card.t : tF - 0.3);
+      cue(tPaste, 'whoosh', 0.5); cue(tPaste + 0.25, 'type', 0.7); cue(tGo, 'click', 1); cue(tBadge, 'ding', 0.5);
+      P.push((t) => {
+        pose(bar, t, (tt) => (tt < tPaste - 0.05 || tt > tOff + 0.45 ? null : { x: 530, y: lerp(1500, c.barY ?? 1330, E(tt, tPaste, 0.45)) + 40 * E(tt, tOff - 0.1, 0.4), c: 1, r: -1.5 * (1 - E(tt, tPaste, 0.5)), s: 1 + 0.06 * bump(tt, tBadge, 0.2), o: 1 - E(tt, tOff - 0.05, 0.3) }));
+        btx.style.clipPath = `inset(0 ${(100 - 100 * E(t, tPaste + 0.25, 0.55, (p) => p)).toFixed(1)}% 0 0)`;
+        const sw2 = t >= tBadge; bA.style.display = sw2 ? 'none' : ''; bB.style.display = sw2 ? '' : 'none'; bgo.textContent = sw2 ? '⏱ 1 min' : 'Analyser';
+        bgo.style.transform = `scale(${(1 - 0.12 * bump(t, tGo, 0.12)).toFixed(3)})`; bgo.style.background = t >= tGo ? '#1c1612' : ''; bgo.style.color = t >= tGo ? '#fff' : '';
+      });
+    }
+    // carte « Ton prix max » (ou autre chiffre final)
+    if (c.card) {
+      const k = c.card, pm = mk('div', 'bo-pm a', s.cam, null, `<div class="hd"><span>Analyse <b>UTOPICAR</b></span><i>⏱ 1 min</i></div><div class="rw">${k.lab}</div>`);
+      const RP = ROLL(pm.querySelector('.rw'), 0, 4, 110, zero(k.v), k.v, k.color || 'var(--o)'); RP.box.style.left = (700 - RP.box.offsetWidth) + 'px';
+      cue(k.t - 0.05, 'whoosh', 0.6); cue(k.t + 0.05, 'roll', 0.8);
+      P.push((t) => { rise(pm, t, k.t, 530, k.y ?? 1340, -1.5); rollP(RP, t, k.t + 0.08, Math.max(0.3, k.hit - k.t - 0.2), 0.05); });
+    }
+    // tampons, grands textes, VS, compteur, ticket, bulles, mention démo
+    for (const m of c.stamps || []) { const e = stamp(s.cam, m.txt, m.color, m.size ?? 120); cue(m.t, 'impact', 0.7); s.imp.push([m.t, 18]); P.push((t) => { if (m.out && t > m.out) { e.style.display = 'none'; return; } slamAt(e, t, m.t, m.x, m.y, m.r ?? -8); }); }
+    for (const b of c.bigs || []) { const e = mk('div', 'sm-big a', s.cam, { color: b.color || '#fff', fontSize: (b.size ?? 92) + 'px' }, b.txt); cue(b.t, 'pop', 0.6);
+      P.push((t) => pose(e, t, (tt) => (tt < b.t - 0.02 || (b.out && tt > b.out + 0.3) ? null : { x: b.x ?? 140, y: (b.y ?? 1400) + 60 * (1 - E(tt, b.t, 0.4)) + (b.out ? 900 * E(tt, b.out, 0.3, eIn) : 0), o: E(tt, b.t, 0.25) * 1.5, s: 1 + 0.05 * bump(tt, b.t + 0.3, 0.2) }))); }
+    if (c.vs) { const e = mk('div', 'sm-vs a', s.cam, null, 'VS'); cue(c.vs.t, 'pop', 0.8); P.push((t) => { if (c.vs.out && t > c.vs.out) { e.style.display = 'none'; return; } slamAt(e, t, c.vs.t, 540, c.vs.y ?? 960, 0); }); }
+    if (c.odo) {
+      const o = c.odo, e = mk('div', 'sm-odo a', s.cam, null, '<small>km</small>'), R = ROLL(e, 40, 52, 170, zero(o.km), o.km, '#ffb38f');
+      R.box.style.left = (330 - R.box.offsetWidth / 2) + 'px'; R.box.style.textShadow = '0 0 30px rgba(255,90,31,.6)'; cue(o.t + 0.02, 'roll', 0.9);
+      P.push((t) => { pose(e, t, (tt) => (tt < o.t - 0.05 || (o.out && tt > o.out + 0.4) ? null : { x: 540, y: (o.y ?? 760) + (o.out ? 1500 * E(tt, o.out, 0.4, eIn) : 0), c: 1, r: -2, s: (o.s ?? 1) * (1 + 0.3 * (1 - E(tt, o.t, 0.3))) })); rollP(R, t, o.t + 0.05, o.d ?? 0.9, 0.05); });
+    }
+    if (c.ticket) {
+      const k = c.ticket, tk = mk('div', 'sm-tk a', s.cam, null, `<div class="h"><span>Analyse <b>UTOPICAR</b></span><i>⏱ 1 min</i></div>` + k.rows.map(([a, b]) => `<div class="r"><span>${a}</span><b>${b}</b></div>`).join('') + `<div class="t"><span>${k.tot[0]}</span><b style="color:${k.tot[2] || 'var(--o)'}">${k.tot[1]}</b></div>`);
+      const rows = [...tk.querySelectorAll('.r')], tot = tk.querySelector('.t');
+      k.rows.forEach((r) => cue(r[2], 'pop', 0.55)); cue(k.tot[3], 'impact', 0.8); cue(k.t - 0.05, 'whoosh', 0.6);
+      P.push((t) => { rise(tk, t, k.t, 530, k.y ?? 1300, -1.5);
+        rows.forEach((el, i) => { const p = E(t, k.rows[i][2], 0.32); el.style.opacity = (0.16 + 0.84 * p).toFixed(3); el.style.transform = `translateX(${(26 * (1 - p)).toFixed(1)}px)`; });
+        const p = E(t, k.tot[3], 0.3); tot.style.opacity = p.toFixed(3); tot.style.transform = `scale(${(1 + 0.3 * (1 - p) + 0.07 * bump(t, k.tot[3] + 0.3, 0.18)).toFixed(3)})`; tot.style.transformOrigin = '100% 50%'; });
+    }
+    for (const b of c.msgs || []) { const f = bubble(s.cam, b.y, b.txt, b.me, b.t); P.push((t) => { if (b.out && t > b.out) { f(-99); return; } f(t); }); }
+    if (c.demo) mk('div', 'sm-demo a', s.cam, { left: '140px', top: '410px' }, c.demo);
+    s.P.push((t) => P.forEach((f) => f(t)));
+    // fin : « 3 analyses offertes avec le code TIKTOK », logo
+    endCard(tF - 0.12, 'var(--o)', [['3 analyses', 250, 170, '#fff', false, tF], ['offertes', 430, 190, 'var(--ink)', true, TA(['offert'], tF)], ['avec le code TIKTOK', 640, 80, '#fff', false, TA(['code'], tF)]],
+      'Code <b style="color:var(--o)">TIKTOK</b> · lien en bio', tF + 0.35, { type: 'circle', x: 530, y: c.endY ?? 1340 });
+    return { cars, tGo, tF };
+  }
+  const MEN = 'Exemple calculé avec l\'outil, hors travaux';
+  // ---------- semaine du 12 oct. ----------
+  SEM.S1V1 = () => {   // « Jusqu'à 2 048 de bénef avec ces 5 voitures » : compte à rebours, la n° 1 en dernier
+    const L = [['twingo', 760, 'Twingo', '+698 €', 'twingo'], ['corsa', 900, 'Corsa', '+1 564 €', 'corsa'], ['polo5', 900, 'Polo', '+1 598 €', 'polo'], ['clio3g', 900, 'Clio', '+1 748 €', 'essence'], ['clio3', 900, 'Clio', '+2 048 €', 'diesel']];
+    const ts = L.map(([, , , , w], i) => (i === 3 ? TA(['clio'], 9) : i === 4 ? TA(['diesel'], 12) - 0.4 : TA([w], 2.5)) - 0.15);
+    const lands = [TA(['698']), TA(['1564']), TA(['1598']), TA(['1748']), TA(['2048'], 13)].map((x) => x + 0.45);
+    const tC = TA(['coll'], 15);
+    return { ann: 'Clio · 2 500 €', goAfter: 15, demo: MEN,
+      cars: L.map(([n, cw], i) => ({ n, cw, x: 530, y: 940, r: i % 2 ? 3 : -3, tin: ts[i], tout: i < 4 ? ts[i + 1] - 0.05 : undefined, from: i === 0 ? 'slam' : i % 2 ? 'right' : 'left', to: i % 2 ? 'left' : 'right' })),
+      stars: [{ v: '+2 048 €', t: -0.15, land: TA(['de'], 0.6), x: 540, y: 1000, corner: { t: ts[0] - 0.35, x: 255, y: 520, s: 0.38 }, lab: 'jusqu\'à' },
+        ...L.map(([, , , v], i) => ({ v, t: lands[i] - 0.55, land: lands[i], x: 800, y: 1230, s: 0.55, out: i < 4 ? ts[i + 1] - 0.05 : tC - 0.3, r: 6 }))],
+      bigs: L.map(([, , nom], i) => ({ txt: `<span style="color:var(--o)">${5 - i}</span> · ${nom}${i === 3 ? ' essence' : i === 4 ? ' diesel' : ''}`, x: 140, y: 1290, t: ts[i] + 0.1, out: i < 4 ? ts[i + 1] - 0.05 : tC - 0.3, size: 80 })),
+      stamps: [{ txt: 'N° 1', color: 'var(--o)', x: 760, y: 830, t: TA(['numero'], 10) , r: 8, size: 110, out: tC - 0.3 }], bar: true, barOff: TA(['trois', '3'], 17) - 0.3 };
+  };
+  SEM.S1V2 = () => ({ ann: 'Twingo · 2 800 €', demo: MEN,   // deux Twingo : la moins chère rapporte moins
+    cars: [{ n: 'twingo', cw: 470, x: 290, y: 760, r: -6, tin: -0.1, from: 'slam', tout: TA(['comment']) - 0.1, to: 'left' },
+      { n: 'twingo', cw: 470, x: 790, y: 760, r: 6, tin: TA(['celle']) - 0.2, from: 'right', tout: TA(['coll']) - 0.4, to: 'up' },
+      { n: 'twingo', cw: 760, x: 530, y: 780, r: 0, tin: TA(['coll']) - 0.3, from: 'up', scan: true, pins: [[0.3, 0.42, 'ok', 'Moteur fiable', TA(['fiable'])], [0.66, 0.58, 'wa', 'À vérifier : embrayage', TA(['embray'])]] }],
+    stars: [{ v: '+298 €', t: TA(['298']) - 0.5, land: TA(['298']) + 0.4, x: 290, y: 1290, s: 0.55, color: '#cfc7bd', out: TA(['comment']) - 0.1 },
+      { v: '+1 098 €', t: TA(['1098']) - 0.5, land: TA(['1098']) + 0.45, x: 790, y: 1290, s: 0.55, corner: { t: TA(['coll']) - 0.4, x: 255, y: 520, s: 0.4 } }],
+    vs: { t: TA(['celle']) - 0.1, y: 880, out: TA(['coll']) - 0.4 }, card: { lab: 'Ton prix max', v: '3 100 €', t: TA(['prix'], 9) - 0.4, hit: TA(['3100']) + 0.3 } });
+  SEM.S1V3 = () => ({ ann: 'Clio · 2 500 €', demo: MEN,   // 192 000 km et +2 048 €
+    cars: [{ n: 'clio3', cw: 900, x: 530, y: 830, tin: -0.1, from: 'slam', scan: true, pins: [[0.5, 0.38, 'ok', 'Moteur fiable', TA(['fiable'])], [0.7, 0.55, 'wa', 'À vérifier : injecteurs', TA(['inject'])]] }],
+    odo: { km: '192 000', t: -0.1, y: 1350, s: 0.7, d: 1.0, out: TA(['2048']) - 0.3 },
+    stars: [{ v: '+2 048 €', t: TA(['2048']) - 0.2, land: TA(['de'], 2.6) + 0.1, x: 540, y: 1000, corner: { t: TA(['coll']) - 0.5, x: 255, y: 520, s: 0.4 } }],
+    card: { lab: 'Ton prix max', v: '3 750 €', t: TA(['prix'], 8) - 0.4, hit: TA(['3750']) + 0.3 } });
+  SEM.S1V4 = () => ({ ann: 'Polo · 4 500 €', demo: MEN,   // Polo trop chère de 350 €
+    cars: [{ n: 'polo5', cw: 880, x: 530, y: 860, tin: -0.1, from: 'slam', scan: true, pins: [[0.62, 0.62, 'ok', 'Boîte manuelle : ok', TA(['manuel'])]] }],
+    tags: [{ front: ['achat', '4 500 €'], x: 520, t: 0.15, strike: TA(['max'], 6) + 0.2 }],
+    stamps: [{ txt: '+350 € trop chère', color: 'var(--r)', x: 540, y: 1330, t: TA(['trop']) + 0.1, r: -4, size: 84, out: TA(['coll']) - 0.3 }],
+    card: { lab: 'Ton prix max', v: '4 150 €', t: TA(['prix'], 6) - 0.4, hit: TA(['4150']) + 0.3 } });
+  SEM.S1V5 = () => ({ ann: '208 · 3 990 €', red: TA(['fuir']) - 0.4,   // 208 PureTech : à fuir
+    cars: [{ n: 'p208i', cw: 820, x: 530, y: 830, tin: -0.1, from: 'slam', scan: true, pins: [[0.3, 0.36, 'ko', 'Moteur PureTech : à fuir', TA(['pure', 'motor']) + 0.1]] }],
+    tags: [{ front: ['achat', '3 990 €'], x: 520, t: 0.2, out: TA(['coll']) - 0.2 }],
+    bigs: [{ txt: 'Courroie <span style="color:var(--r)">dans l\'huile</span>', x: 140, y: 1150, t: TA(['courroie']) - 0.1, size: 70, out: TA(['trois', '3'], 9) - 0.4 }],
+    stamps: [{ txt: 'PASSE', color: 'var(--r)', x: 540, y: 880, t: TA(['passe'], 8) - 0.05, r: -8, size: 170 }], barOff: TA(['passe'], 8) - 0.2 });
+  SEM.S1V6 = () => ({ ann: 'Clio 4 · 3 000 €',   // Clio 4 à 3 000 : trop beau ?
+    cars: [{ n: 'clio4', cw: 900, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.45, 0.4, 'wa', 'Pourquoi ce prix ?', TA(['pourquoi'])]] }],
+    tags: [{ front: ['achat', '3 000 €'], x: 520, t: 0.25, out: TA(['coll']) - 0.2 }],
+    bigs: [{ txt: 'Les mêmes : <span style="color:var(--o)">6 800 €</span>', x: 140, y: 1190, t: TA(['memes']) - 0.1, size: 80, out: TA(['coll']) - 0.3 }],
+    stamps: [{ txt: 'Trop beau ?', color: '#fff', x: 540, y: 1370, t: TA(['trop']) - 0.05, r: -6, size: 110, out: TA(['coll']) - 0.3 }],
+    ticket: { t: TA(['vois']) - 0.3, rows: [['Voir la voiture', '✓', TA(['voiture'], 7)], ['Carte grise', '✓', TA(['carte'], 7)]], tot: ['Avant de payer', 'Rien', 'var(--r)', TA(['payer'])], y: 1270 }, barOff: TA(['vois']) - 0.3 });
+  SEM.S1V7 = () => ({ ann: 'Clio · 3 250 €', demo: MEN,   // 3 250 € en poche
+    bigs: [{ txt: '<span style="color:var(--o)">3 250 €</span> en poche', x: 140, y: 1290, t: -0.1, size: 96, out: TA(['coll']) - 0.3 }],
+    cars: [{ n: 'clio3g', cw: 880, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.42, 0.4, 'ok', 'Moteur fiable', TA(['fiable'])], [0.7, 0.62, 'wa', 'À prévoir : distribution', TA(['distrib'])]] }],
+    stars: [{ v: '+798 €', t: TA(['fait']) - 0.2, land: TA(['de'], 3) + 0.1, x: 760, y: 780, s: 0.6, corner: { t: TA(['coll']) - 0.5, x: 255, y: 520, s: 0.4 } }],
+    card: { lab: 'Ton prix max', v: '3 250 €', t: TA(['prix'], 7) - 0.4, hit: TA(['3250'], 8) + 0.3 }, bigs2: true,
+    stamps: [{ txt: 'Pas 1 € de plus', color: '#fff', x: 540, y: 1150, t: TA(['pas'], 9) - 0.05, r: -5, size: 80 }] });
+  // ---------- semaine du 19 oct. ----------
+  SEM.S2V1 = () => ({ ann: 'Polo · données de démo', demo: 'Données de démonstration', red: TA(['186']) - 0.2,   // 1 sur 10 : compteur trafiqué
+    odo: { km: '86 000', t: -0.1, y: 820, d: 0.8, out: TA(['coll']) - 0.4 },
+    stamps: [{ txt: '1 sur 10', color: 'var(--r)', x: 540, y: 1250, t: TA(['10', 'dix']) - 0.05, r: -7, size: 130, out: TA(['coll']) - 0.4 }, { txt: 'PASSE', color: 'var(--r)', x: 540, y: 1150, t: TA(['passe'], 9) - 0.05, r: -8, size: 170 }],
+    cars: [{ n: 'polo6', cw: 860, x: 530, y: 780, tin: TA(['coll']) - 0.3, from: 'up', scan: true, pins: [[0.32, 0.4, 'ko', 'Compteur : 186 000 ≠ 86 000', TA(['186'])]] }],
+    bigs: [{ txt: 'HistoVec d\'abord', x: 140, y: 1330, t: TA(['passe'], 9) + 0.3, size: 80 }], barOff: TA(['passe'], 9) - 0.2 });
+  SEM.S2V2 = () => ({ ann: 'Twingo auto · 7 490 €', demo: MEN, red: TA(['quick']) - 0.2,   // boîte automatique : −2 242 €
+    cars: [{ n: 'twingo', cw: 780, x: 530, y: 830, r: 0, tin: -0.1, from: 'slam', scan: true, tout: TA(['dsg']) - 0.6, to: 'left', pins: [[0.5, 0.82, 'ko', 'Boîte Quickshift : à éviter', TA(['quick'])]] },
+      { n: 'polo5', cw: 860, x: 530, y: 830, tin: TA(['dsg']) - 0.5, from: 'right', line: true, pins: [[0.6, 0.66, 'ko', 'DSG : à éviter', TA(['eviter'], TA(['dsg']))]] }],
+    tags: [{ front: ['achat', '7 490 €'], x: 520, t: 0.2, out: TA(['coll']) - 0.2 }],
+    stars: [{ v: '−2 242 €', t: TA(['moins']) - 0.3, land: TA(['2242']) + 0.4, x: 540, y: 1000, color: '#ff4d4d', lab: 'à la revente', corner: { t: TA(['dsg']) - 0.6, x: 255, y: 520, s: 0.4 } }],
+    bigs: [{ txt: 'Prends-la en <span style="color:var(--g)">manuelle</span>', x: 140, y: 1330, t: TA(['prend']) - 0.1, size: 76 }], barOff: TA(['prend']) - 0.3 });
+  SEM.S2V3 = () => ({ ann: 'Clio · 2 000 €', demo: MEN, goAfter: 10,   // ce qui te reste vraiment
+    cars: [{ n: 'clio3', cw: 900, x: 530, y: 780, tin: -0.1, from: 'slam' }],
+    stars: [{ v: '+1 750 €', t: TA(['1750']) - 0.4, land: TA(['1750']) + 0.45, x: 540, y: 940, lab: 'de bénef ?', strike: TA(['non']), out: TA(['carte']) - 0.1 }],
+    ticket: { t: TA(['carte']) - 0.3, y: 1190, rows: [['Revente − achat', '+1 750 €', TA(['carte']) - 0.1], ['Carte grise', '−152 €', TA(['grise'])], ['Frais fixes', '−150 €', TA(['frais'])], ['Distribution à prévoir', '−? €', TA(['distrib'])]], tot: ['Il te reste', '+1 448 €', 'var(--ok,#137036)', TA(['1448'])] },
+    bar: true, barY: 1330, barOff: TA(['trois', '3'], 13) - 0.3, scanT: 99 });
+  SEM.S2V4 = () => ({ ann: 'Polo · 6 200 €', demo: MEN,   // « dernier prix »
+    cars: [{ n: 'polo5', cw: 860, x: 530, y: 860, tin: -0.1, from: 'slam', tout: TA(['coll']) - 0.3, to: 'down' }],
+    msgs: [{ txt: '6 200 €, dernier prix.', me: false, y: 520, t: TA(['dernier']) - 0.15, out: TA(['coll']) - 0.3 }],
+    ticket: { t: TA(['ouvre']) - 0.4, y: 1000, rows: [['Tu ouvres à', '3 850 €', TA(['3850'])], ['Tu vises', '4 000 €', TA(['vise'])]], tot: ['Ton prix max', '4 100 €', 'var(--o)', TA(['4100'])] },
+    stamps: [{ txt: 'Au-dessus : passe', color: '#fff', x: 540, y: 600, t: TA(['passe'], 7) - 0.05, r: -6, size: 100 }], barOff: TA(['ouvre']) - 0.4 });
+  SEM.S2V5 = () => ({ ann: 'Clio · 4 990 €', demo: MEN, red: TA(['perd']) - 0.2,   // petit kilométrage, gros piège
+    cars: [{ n: 'clio3', cw: 880, x: 530, y: 830, tin: -0.1, from: 'slam', scan: true }],
+    odo: { km: '86 000', t: TA(['86']) - 0.2, y: 1330, s: 0.6, d: 0.7, out: TA(['coll']) - 0.4 },
+    tags: [{ front: ['achat', '4 990 €'], x: 520, t: TA(['main']) - 0.1, strike: TA(['max'], 9) + 0.1 }],
+    stars: [{ v: '−1 192 €', t: TA(['perd']) - 0.3, land: TA(['192'], 8) + 0.4, x: 540, y: 1000, color: '#ff4d4d', lab: 'à ce prix', corner: { t: TA(['ton'], 9.5) - 0.3, x: 255, y: 520, s: 0.4 } }],
+    bigs: [{ txt: 'Revente : <span style="color:var(--o)">4 100 €</span>', x: 140, y: 1150, t: TA(['revente']) - 0.1, size: 70, out: TA(['perd']) - 0.3 }],
+    card: { lab: 'Ton prix max', v: '3 000 €', t: TA(['ton'], 9.5) - 0.3, hit: TA(['000'], 11) + 0.3 } });
+  SEM.S2V6 = () => ({ ann: 'Clio 4 · 7 000 €', demo: MEN,   // la vraie affaire
+    cars: [{ n: 'clio4', cw: 900, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.45, 0.4, 'ok', 'Moteur fiable', TA(['fiable'])], [0.72, 0.62, 'ok', '42 350 km, 1re main', TA(['revente'])]] }],
+    tags: [{ front: ['achat', '7 000 €'], x: 520, t: TA(['main']) - 0.1, back: ['UTOPICAR · revente', '8 750 €'], flip: TA(['8'], 6.8) - 0.1, out: TA(['plus']) - 0.2 }],
+    stars: [{ v: '+1 448 €', t: TA(['plus']) - 0.3, land: TA(['1448']) + 0.45, x: 540, y: 1000 }],
+    stamps: [{ txt: 'FONCE', color: '#3ccf7a', x: 540, y: 1330, t: TA(['fonce']) - 0.05, r: -8, size: 150 }], barOff: TA(['fonce']) - 0.2 });
+  SEM.S2V7 = () => ({ ann: 'messages d\'exemple', demo: 'Messages d\'exemple', red: TA(['arnaque']) - 0.3, noFade: true,   // les 3 messages d'un arnaqueur
+    msgs: [{ txt: 'Je suis à l\'étranger 🙏', me: false, y: 540, t: 0.0, out: TA(['coll']) - 0.3 }, { txt: 'Je vous la fais livrer', me: false, y: 760, t: TA(['fais']) - 0.25, out: TA(['coll']) - 0.3 }, { txt: 'Un petit acompte ?', me: false, y: 980, t: TA(['un']) - 0.15, out: TA(['coll']) - 0.3 }],
+    ticket: { t: TA(['arnaque']) - 0.5, y: 900, rows: [['Vendeur à l\'étranger', '⚠', TA(['arnaque']) - 0.3], ['Livraison sans visite', '⚠', TA(['arnaque']) - 0.1], ['Acompte avant visite', '⚠', TA(['arnaque']) + 0.1]], tot: ['Verdict', 'Arnaque', 'var(--r)', TA(['classique'])] },
+    bigs: [{ txt: 'Rien avant d\'avoir <span style="color:var(--o)">vu</span>', x: 140, y: 1260, t: TA(['paie']) - 0.1, size: 76 }], barOff: TA(['arnaque']) - 0.5 });
+  for (const id of Object.keys(SEM)) SPECS[id] = () => semaine(SEM[id]());
+
   if (!SPECS[ID]) throw new Error('vidéo inconnue : ' + ID);
   await SPECS[ID]();   // FI3 charge les images de sa vidéo avant le premier seek
   // intro des séries : la première scène finit à la deuxième

@@ -367,3 +367,44 @@ en 55 s, quelque chose de neuf sur chaque temps. Rendu 1080p de 60 s : ≈ 4 min
   - après, les rendre de nouveau et les comparer au pixel (master60 : 29/29 identiques).
 - **Même son pour les deux formats** : les repères ne dépendent que du temps. `render.mjs` prend le même
   `audio/mix-<projet>-<A|B>.wav`.
+
+## 17. Collage autocollant et scanner (débuts BO, semaines d'oct.)
+
+Grammaire relevée sur Behance (collage MINI JCW, FinData), dans la DA UTOPICAR : peu de texte, chaque chiffre porté
+par un objet.
+
+- **Deux calques alignés par voiture** : `scripts/sticker-plan.py <noms>` (copie dans le skill ; à lancer depuis `video/`, après `cutout.py`) écrit
+  `<nom>-sticker.png` (voiture + liseré blanc de 18 px) et `<nom>-line.png` (plan au trait : arêtes Canny dans la
+  silhouette + contour de 6 px). Même toile, même marge : ils se superposent au pixel.
+- **Ombre en trame** : un `div` en `radial-gradient` de points, masqué par le PNG de l'autocollant
+  (`mask: url(sticker.png) 0 0/100% 100%`), décalé de 20 px × 28 px. Le masque CSS exige un serveur HTTP (le rendu
+  en a un).
+- **Scanner** : une barre orange lumineuse traverse la voiture ; la photo est coupée par
+  `clip-path: inset(0 0 0 f%)` et le plan au trait par `inset(0 (100−f)% 0 0)`, `f` suivant la barre. Les repères
+  (pastille, trait, étiquette) apparaissent quand la barre les franchit, au plus tôt sur leur mot.
+- **Étiquette de prix** : carton sur une ficelle qui pend du haut du cadre, balancement amorti, retournement en
+  `rotateY` (recto achat, verso revente), trait rouge en `scaleX` pour barrer un prix.
+- **Étoile de bénéfice** : polygone à 28 branches avec liseré blanc, compteur à rouleaux à l'intérieur ; elle claque
+  (× 2,2 → 1), roule jusqu'au mot, puis se colle en petit en haut à gauche pour rester visible.
+- **Pastille sombre** derrière tout texte posé sur un fond coloré (le disque orange mange un chiffre orange).
+- **Photos** : une vraie photo Pexels par voiture, cohérente avec l'annonce (génération, pas de GTI pour un 1.2),
+  logos et plaques floutés (`scripts/blur-boxes.py`) puis contrôlés sur un recadrage zoomé. Une voiture coupée ou
+  floutée au mauvais endroit se reconstruit par symétrie depuis sa moitié propre.
+
+## 18. Production en série calée sur la voix (14 vidéos d'un coup)
+
+- **Un moteur, une config** : `semaine(c)` lit une config par vidéo (voitures, étiquettes, étoiles, barre, carte,
+  tampons, textes, compteur, ticket, bulles, mention démo). Chaque instant est un mot de la voix :
+  `TA(['coll'])`, `TA(['utopicar'])`, `TA(['trois', '3'])`. Mot-clé numérique de 1 ou 2 chiffres : égalité stricte
+  (« 3 » ne doit pas trouver « 3 100 »).
+- **Voix** : une prise par vidéo, toutes lancées d'un coup, un seul `creative_get_flow_run_status` (gros résultat
+  JSON, lu avec Python), téléchargement immédiat. `vo-c7-pose.py` resserre les silences et accélère × 1,1. Si Whisper
+  saute un passage (liste de chiffres), retranscrire le passage seul avec VAD et recoller les mots.
+- **Musique calée sur les mots** : `build-c7.py` calcule pour chaque vidéo l'arrêt de bande (0,5 s avant « tu
+  colles »), le drop (le clic sur « Utopicar »), le coup final (le chiffre ou le verdict) et la durée (dernier mot +
+  carton).
+- **Contrôle avant le rendu final** : 4 à 5 images fixes par vidéo (0,1 s, arrêt, drop, coup final, fin) sur une
+  seule planche, avec la ligne y = 1 480 tracée. Toute la série se corrige d'un coup avant les 30 minutes de rendu.
+- **Fabrication** : `video/scripts/semaines.sh [ids]` enchaîne repères, mixage, rendu avec flou de bougé et
+  `qa_video.py`. En tâche de fond, suivi par un moniteur sur le journal. Pour l'arrêter, tuer le PID du script, jamais
+  tous les `node.exe`.

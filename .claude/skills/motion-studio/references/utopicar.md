@@ -45,6 +45,24 @@ hors zones interdites) ou remplace-les par de vrais chiffres vérifiés et autor
 - Accent film depuis la v5 : l'orange du logo `#FF5A1F` (texte dessus `#1A1310`). Le jaune reste celui des vrais
   boutons capturés — ne pas le repeindre.
 - CTA historique : « Commente GARAGE pour recevoir l'accès. » — pas de handle, pas d'URL à l'écran (outil privé).
+- CTA actuel des vidéos TikTok (oct. 2026) : « Trois analyses offertes avec le code TIKTOK », carton orange + logo +
+  pastille « Code TIKTOK · lien en bio ». Le code n'existe qu'une fois la branche `claude/code-tiktok` déployée
+  (migration `20261011120000_codes_offerts.sql`) : le vérifier avant toute publication. Aucun essai « 3 jours
+  offerts » n'existe : vérifier `offres.ts` avant tout CTA d'offre.
+
+## Chiffres d'une annonce réelle (vidéos « l'analyse sort tout »)
+- Source : `marche_annonces` (Supabase, lecture seule) et `public.cote_marche(marque, modele, annee, km, energie)`.
+  La base couvre surtout Renault, Volkswagen, Opel, BMW, Audi ; Yaris, Jazz, 207, C3 manquent (collecte locale
+  nécessaire, jamais d'Apify).
+- Formule de l'outil (`web/src/lib/analyse/bilan.ts`) : revente en 1 à 2 mois = médiane × 0,96 (arrondi 50) ; frais =
+  carte grise (CV × 68,95 €, ÷ 2 après 10 ans, + 13,76 €) + 150 € de frais fixes + travaux probables ; prix max =
+  revente − frais − 750 €, arrondi aux 50 € inférieurs ; offre = prix max × 0,94 ; objectif = milieu des deux.
+- Sans la vraie analyse, les travaux probables manquent : mention « Exemple calculé avec l'outil, hors travaux ».
+- Modèles « fiables » et points à vérifier : listes `FIABLES` et `EVITER_GLOBAL` de `fiabilite.ts` (la vidéo dit ce
+  que l'analyse dira). Signaux d'arnaque : `vigilance.ts` (compteur lu sur photo, vendeur à l'étranger, acompte,
+  livraison, paiement par coupon).
+- Vérifier chaque fait dans l'annonce elle-même (boîte, énergie, puissance) avant de l'écrire à l'écran.
+- Cotes détaillées réservées aux abonnés : on montre le résultat d'une analyse d'annonce, jamais un tableau de cotes.
 
 ## Ce qui a marché avec ce public (v2 → v6)
 - Chiffre qui tranche en grand (7 500 €, − 1 200 €, 1 450 € sous la cote) avec surligneur.

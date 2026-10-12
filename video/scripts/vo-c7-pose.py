@@ -16,12 +16,15 @@ from faster_whisper import WhisperModel
 
 SR, RESPI, D = 48000, 0.26, 'audio/vo-c7'
 MAXV = 19.0      # voix posée la plus longue (s) : avec le carton de fin, la vidéo tient en 20 s
-CHOIX = {'A01': 'A01-riIzFaIBI0Mr7cu3XfqQ', 'A02': 'A02-oMjM1I0oV22N7fv5tZuS', 'A03': 'A03-yw3T4LOfM2BVqd26GhtC',
+CHOIX = {'BO1': 'BO1-0WFHj1vowq0I16YAhtXk', 'A01': 'A01-riIzFaIBI0Mr7cu3XfqQ', 'A02': 'A02-oMjM1I0oV22N7fv5tZuS', 'A03': 'A03-yw3T4LOfM2BVqd26GhtC',
          'A04': 'A04-nHQsTNusoCjPEmHB3RNB', 'A05': 'A05-7Q63qkM9njXNMyXD9eSe', 'A06': 'A06-7yn5gdp4TDpuq1sdBcE1',
          'A07': 'A07-eB1wSqxwLhiMxG8E5ept', 'PS1': 'PS1-imM817FTKxWtMDJg6Eb3', 'PS2': 'PS2-czjz141OTKyHEiTDv6fM', 'FI1': 'FI1-ugx5MlWqn8XV1oU4ZxbH', 'FI2': 'FI2-WCIV9YvLFE2gQQW7yfy8', 'FI3': 'FI3-ytAS2TKPNnkmWkqCIVBl'}
-RESPI_ID = {'PS1': 0.42, 'PS2': 0.34, 'FI1': 0.3, 'FI2': 0.3, 'FI3': 0.28}
-VITESSE_MAX = {'FI3': 1.2}   # FI3 : moins de 8 s ; × 1,2 au plus (au-delà, « trop rapide », journal de la recette 47)
-MAXV_ID = {'PS2': 20.6, 'FI1': 7.1, 'FI2': 7.1, 'FI3': 7.6}   # FI1 : vidéo de moins de 8 s   # PS2 : film de 22 s environ, carton compris   # PS1 (problème → solution, ≈ 22 s) : les pauses et le soupir portent la chute, on les laisse respirer
+RESPI_ID = {'BO1': 0.26, 'PS1': 0.42, 'PS2': 0.34, 'FI1': 0.3, 'FI2': 0.3, 'FI3': 0.28}
+VITESSE_MAX = {'BO1': 1.2, 'FI3': 1.2}   # FI3 : moins de 8 s ; × 1,2 au plus (au-delà, « trop rapide », journal de la recette 47)
+MAXV_ID = {'BO1': 14.5, 'PS2': 20.6, 'FI1': 7.1, 'FI2': 7.1, 'FI3': 7.6}   # FI1 : vidéo de moins de 8 s   # PS2 : film de 22 s environ, carton compris   # PS1 (problème → solution, ≈ 22 s) : les pauses et le soupir portent la chute, on les laisse respirer
+# vidéos des semaines du 12 et du 19 oct. (S1V1 à S2V7) : une prise chacune, × 1,1 pour l'énergie
+for _k, _v in json.load(open(os.path.join(D, 'choix-semaines.json'), encoding='utf8')).items():
+    CHOIX[_k] = _v; RESPI_ID[_k] = 0.28; VITESSE_MAX[_k] = 1.1; MAXV_ID[_k] = 1.0
 import sys
 ONLY = sys.argv[1].split(',') if len(sys.argv) > 1 else None
 load = lambda n: librosa.load(os.path.join(D, n + '.mp3'), sr=SR, mono=True)[0]
