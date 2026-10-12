@@ -278,7 +278,7 @@ export function Details({ c, maj }: P) {
             </button>
           ))}
         </div>
-        <p className="mt-2 text-[13px] text-ink-3">Seules les annonces qui écrivent cette couleur sont gardées.</p>
+        <p className="mt-2 text-[13px] text-ink-3">Les annonces d&apos;une autre couleur sont écartées ; celles qui ne la précisent pas restent, signalées « à vérifier ».</p>
       </fieldset>
       <fieldset>
         <Legende>Vendeur</Legende>

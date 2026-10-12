@@ -41,15 +41,18 @@ export function PastilleVerdict({ v, className }: { v: Verdict; className?: stri
   return <span className={cx("inline-flex items-center rounded-full border bg-bg0/75 px-3 py-0.5 text-[13px] font-bold backdrop-blur", TONS[d.ton], className)}>{d.l}</span>;
 }
 
-export function EcartCote({ cote }: { cote: { ecart: number | null } | null }) {
-  if (!cote || cote.ecart == null) return <span className="text-ink-3">Pas assez d&apos;annonces pour la cote</span>;
+export function EcartCote({ cote }: { cote: { ecart: number | null; source?: "utopicar" | "leboncoin" } | null }) {
+  if (!cote || cote.ecart == null) return <span className="text-ink-3">Ni cote ni estimation pour cette annonce</span>;
   const sous = cote.ecart >= 0;
   return (
     <span className={cx("inline-flex items-center gap-1.5 font-bold", sous ? "text-ok" : "text-o2")}>
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d={sous ? "M12 5v14M6 13l6 6 6-6" : "M12 19V5M6 11l6-6 6 6"} />
       </svg>
-      {sous ? `${eur(cote.ecart)} sous la cote` : `${eur(-cote.ecart)} au-dessus de la cote`}
+      {/* sans cote Utopicar : l'estimation de Leboncoin, nommée comme telle */}
+      {cote.source === "leboncoin"
+        ? sous ? `${eur(cote.ecart)} sous l'estimation Leboncoin` : `${eur(-cote.ecart)} au-dessus de l'estimation Leboncoin`
+        : sous ? `${eur(cote.ecart)} sous la cote` : `${eur(-cote.ecart)} au-dessus de la cote`}
     </span>
   );
 }
