@@ -17,6 +17,7 @@ const Annonce = z.object({
   lieu: z.string().max(80).nullable(),
   url: z.string().max(500).nullable(),
   photo: z.string().max(600).nullable(),
+  photos: z.array(z.string().max(600)).max(3).optional(),
   gen: z.string().max(80),
   cote: z.object({ P: z.number(), ecart: z.number().nullable(), pct: z.number().nullable(), conf: z.enum(["forte", "moyenne", "faible"]), source: z.enum(["utopicar", "leboncoin"]).optional() }).nullable(),
   verdict: z.enum(["excellente", "bonne", "negocier", "creuser", "eviter"]),

@@ -299,7 +299,9 @@ function coteRow(c: any, it: any) {
     version: cut(att(/^u_car_version$/i), 160) || null, finition: cut(att(/^u_car_finition$/i), 80) || null, mec: mec ? `${mec[2]}-${mec[1]}` : null, portes: po && po < 8 ? po : null,
     lbc_min: pmin && pmin > 100 ? pmin : null, lbc_max: pmax && pmax > 100 ? pmax : null, lbc_pos: cut(att(/^car_price_positioning$/i), 40) || null,
     // vignette de l'annonce (lien Leboncoin, rien n'est stocké) : affichée dans la recherche et son historique
-    photo: r.photos[0]?.startsWith('https://') ? withRule(r.photos[0], 'ad-small').slice(0, 600) : null };
+    photo: r.photos[0]?.startsWith('https://') ? withRule(r.photos[0], 'ad-small').slice(0, 600) : null,
+    // les 3 premières photos en taille moyenne (liens Leboncoin) : la pile CarCrush les fait défiler
+    photos: (() => { const p = r.photos.filter((u: string) => u.startsWith('https://')).slice(0, 3).map((u: string) => withRule(u, 'ad-image').slice(0, 600)); return p.length ? p : null; })() };
 }
 async function startCote(c: any, R: Record<string, string>) {
   const f = c.filtres || {};

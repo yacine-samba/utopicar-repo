@@ -13,6 +13,16 @@ const echapper = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export type ResultatCC = { annonces: AnnonceCC[]; total: number };
 
+/** Photo Leboncoin en taille moyenne (la vignette « ad-small » est floue sur une carte plein écran). */
+const enGrand = (u: string) => u.replace(/([?&]rule=)ad-small\b/, "$1ad-image");
+
+/** Les 3 premières photos de l'annonce, sinon sa vignette seule. */
+function photosDe(l: LigneMarche): string[] {
+  const p = (Array.isArray(l.photos) ? l.photos : []).filter((u) => typeof u === "string" && u.startsWith("https://"));
+  if (!p.length && l.photo?.startsWith("https://")) p.push(l.photo);
+  return p.slice(0, 3).map(enGrand);
+}
+
 /** Portes de l'annonce : la case Leboncoin, sinon le texte (« 5 portes », « 3p »). null : non précisé. */
 function portesDe(l: LigneMarche): "3" | "5" | null {
   if (l.portes != null) return l.portes <= 3 ? "3" : "5";
@@ -83,13 +93,14 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
   if (limite <= 0) return { annonces: [], total: gardees.length };
   const annonces: AnnonceCC[] = gardees.map((l) => {
     const doute = !!f.gen && !l.gen;
+    const photos = photosDe(l);
     const e = cotes.estimer(doute ? { ...l, gen: genC } : l);
     const cote = e && e.P
       ? { P: Math.round(e.P), ecart: e.ecart == null ? null : Math.round(e.ecart), pct: e.pct, conf: doute ? ("faible" as const) : e.conf, source: "utopicar" as const }
       : estimationLeboncoin(l);
     return {
       id: l.id, titre: (l.titre || "Annonce").slice(0, 140), prix: l.prix, annee: l.annee, km: l.km, ch: l.ch, energie: l.energie, boite: l.boite,
-      pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l), photo: l.photo?.startsWith("https://") ? l.photo : null,
+      pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l), photo: photos[0] ?? null, photos,
       gen: l.genLabel || genObj?.label || "",
       cote,
       verdict: verdictPrix(cote?.pct, PIEGES.test(l.tx)),
