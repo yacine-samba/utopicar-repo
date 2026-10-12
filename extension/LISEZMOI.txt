@@ -1,4 +1,4 @@
-Utopicar, extension Chrome et Edge (version 4.4)
+Utopicar, extension Chrome et Edge (version 4.5)
 
 Installation ou mise à jour (2 minutes)
 1. Décompressez ce dossier quelque part où il restera (ex. Documents/utopicar-extension).
@@ -41,11 +41,23 @@ Toujours disponible
   annonces rejoignent la base du marché (formule Benef Pro). Tout est aussi copié (Ctrl+V en secours). Bouton « Arrêter » pour stopper :
   ce qui a déjà été lu est gardé. Si Leboncoin affiche une vérification, le relevé s'arrête et garde
   ce qui a été lu.
+- « Relever toutes les cotes » : l'extension cherche elle-même chaque marque et chaque modèle du catalogue
+  Utopicar, dans les trois énergies, l'une après l'autre : Audi A1 essence, Audi A1 diesel, Audi A1 hybride,
+  puis Audi A3 essence, et ainsi de suite. Choisissez les marques (toutes par défaut) et le nombre d'annonces
+  lues par recherche (35, 105, 350 ou toutes). Chaque recherche est envoyée à Utopicar dès qu'elle est lue :
+  les annonces rejoignent la base du marché et la cote de chaque génération est recalculée dans cette énergie.
+  Pause de 5 à 10 secondes entre deux recherches, et de 1 à 2 minutes toutes les 25 recherches.
+  Il faut un onglet Leboncoin (l'extension en ouvre un en fond s'il n'y en a pas) et rester connecté à Utopicar.
+  « Pause », « Reprendre » et « Abandonner » à tout moment ; l'avancement est gardé : après une vérification
+  Leboncoin (validez-la vous-même, puis « Reprendre »), une déconnexion ou un redémarrage du navigateur, le relevé
+  reprend à la recherche où il s'était arrêté. « Voir le bilan » ouvre la Cote d'Utopicar : cote de référence de
+  chaque génération par énergie, et les annonces relevées les plus sous leur cote.
 - Raccourci clavier : Alt+Maj+U ouvre l'extension.
 
 Bon usage
 - Les règles de Leboncoin interdisent la collecte automatique en masse. L'extension lit seulement ce
   que vous choisissez (10 annonces au maximum par lecture), à un rythme humain, depuis votre propre
-  navigateur. Gardez ce rythme : pas de lectures enchaînées toute la journée.
+  navigateur. Gardez ce rythme : pas de lectures enchaînées toute la journée. Le relevé de toutes les cotes
+  enchaîne des centaines de recherches : lancez-le par marques, de temps en temps, plutôt que tout le catalogue d'un coup.
 
 Sites pris en charge pour les photos : Leboncoin, La Centrale, AutoScout24, ParuVendu.
