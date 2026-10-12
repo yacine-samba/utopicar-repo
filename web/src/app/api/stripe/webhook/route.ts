@@ -35,7 +35,9 @@ export async function POST(req: Request) {
       case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted":
-        await synchroniser(ev.data.object);
+        // Stripe ne garantit pas l'ordre des événements : on relit l'abonnement tel qu'il est maintenant,
+        // pour qu'un vieux « updated » arrivé après la résiliation ne le réactive pas.
+        await synchroniser(await stripe().subscriptions.retrieve(ev.data.object.id).catch(() => ev.data.object));
         break;
     }
   } catch (e) {

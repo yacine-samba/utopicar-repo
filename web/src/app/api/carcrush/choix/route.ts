@@ -15,8 +15,9 @@ const Annonce = z.object({
   boite: z.string().max(40).nullable(),
   pro: z.boolean(),
   lieu: z.string().max(80).nullable(),
-  url: z.string().max(500).nullable(),
-  photo: z.string().max(600).nullable(),
+  // liens rendus tels quels dans les coups de cœur : https seulement (pas de « javascript: » glissé par un appel forgé)
+  url: z.string().max(500).regex(/^https:\/\//).nullable(),
+  photo: z.string().max(600).regex(/^https:\/\//).nullable(),
   gen: z.string().max(80),
   cote: z.object({ P: z.number(), ecart: z.number().nullable(), pct: z.number().nullable(), conf: z.enum(["forte", "moyenne", "faible"]) }).nullable(),
   verdict: z.enum(["excellente", "bonne", "negocier", "creuser", "eviter"]),

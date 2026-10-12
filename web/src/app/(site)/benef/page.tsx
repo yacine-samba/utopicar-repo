@@ -15,7 +15,7 @@ import { fournisseursActifs } from "@/lib/fournisseurs";
 import { BENEF, GUIDE } from "@/lib/offres";
 
 export const metadata: Metadata = {
-  title: "Benef : l'achat-revente automobile, chiffré avant de vous déplacer",
+  title: "Benef : l'achat-revente auto chiffré avant d'acheter",
   description: "Pour vous lancer dans l'achat-revente de voitures ou développer votre activité : marge nette, prix d'offre, historique, tableau de bord et gestion du parc.",
 };
 

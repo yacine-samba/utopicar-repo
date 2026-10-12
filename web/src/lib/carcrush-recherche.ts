@@ -55,7 +55,7 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
     const cote = e && e.P ? { P: Math.round(e.P), ecart: e.ecart == null ? null : Math.round(e.ecart), pct: e.pct, conf: doute ? ("faible" as const) : e.conf } : null;
     return {
       id: l.id, titre: (l.titre || "Annonce").slice(0, 140), prix: l.prix, annee: l.annee, km: l.km, ch: l.ch, energie: l.energie, boite: l.boite,
-      pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l), photo: l.photo?.startsWith("https://") ? l.photo : null,
+      pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l)?.replace(/^http:\/\//, "https://") ?? null, photo: l.photo?.startsWith("https://") ? l.photo : null,
       gen: l.genLabel || genObj?.label || "",
       cote,
       verdict: verdictPrix(cote?.pct, PIEGES.test(l.tx)),
