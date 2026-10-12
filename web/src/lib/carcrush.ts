@@ -64,7 +64,7 @@ export const PALIERS = [
 
 export const credits = (n: number) => `${n} crédit${n > 1 ? "s" : ""}`;
 
-/** Verdict de prix d'une annonce, d'après son écart à la cote Utopicar (le vocabulaire des analyses). */
+/** Verdict de prix d'une annonce, d'après son écart à la cote Utopicar ou à l'estimation Leboncoin (le vocabulaire des analyses). */
 export type Verdict = "excellente" | "bonne" | "negocier" | "creuser" | "eviter";
 export const VERDICTS: Record<Verdict, { l: string; ton: "ok" | "o" | "warn" | "bad" }> = {
   excellente: { l: "Très bonne affaire", ton: "ok" },
@@ -87,7 +87,8 @@ export function verdictPrix(pct: number | null | undefined, douteux: boolean): V
 export type AnnonceCC = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; ch: number | null; energie: string | null; boite: string | null;
   pro: boolean; lieu: string | null; url: string | null; photo: string | null; gen: string;
-  cote: { P: number; ecart: number | null; pct: number | null; conf: "forte" | "moyenne" | "faible" } | null;
+  /** source : la cote Utopicar (annonces comparables), ou à défaut l'estimation de prix que Leboncoin affiche sur l'annonce */
+  cote: { P: number; ecart: number | null; pct: number | null; conf: "forte" | "moyenne" | "faible"; source?: "utopicar" | "leboncoin" } | null;
   verdict: Verdict;
 };
 

@@ -13,6 +13,15 @@ const echapper = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export type ResultatCC = { annonces: AnnonceCC[]; total: number };
 
+/** Sans cote Utopicar (trop peu d'annonces comparables) : le milieu de la fourchette de prix que Leboncoin affiche sur l'annonce,
+    quand la collecte l'a gardée. Confiance faible : c'est l'estimation de Leboncoin, pas une mesure sur le marché. */
+function estimationLeboncoin(l: LigneMarche): AnnonceCC["cote"] {
+  const lo = l.lbc_min, hi = l.lbc_max;
+  if (!lo || !hi || lo < 300 || hi < lo || hi > lo * 2) return null;
+  const P = Math.round((lo + hi) / 2);
+  return { P, ecart: P - l.prix, pct: (P - l.prix) / P, conf: "faible", source: "leboncoin" };
+}
+
 /** Annonces en ligne qui répondent aux critères, triées des meilleures affaires aux moins bonnes. null : modèle inconnu. */
 export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<ResultatCC | null> {
   const mm = await marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, null, true);
@@ -52,7 +61,9 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
   const annonces: AnnonceCC[] = gardees.map((l) => {
     const doute = !!f.gen && !l.gen;
     const e = cotes.estimer(doute ? { ...l, gen: genC } : l);
-    const cote = e && e.P ? { P: Math.round(e.P), ecart: e.ecart == null ? null : Math.round(e.ecart), pct: e.pct, conf: doute ? ("faible" as const) : e.conf } : null;
+    const cote = e && e.P
+      ? { P: Math.round(e.P), ecart: e.ecart == null ? null : Math.round(e.ecart), pct: e.pct, conf: doute ? ("faible" as const) : e.conf, source: "utopicar" as const }
+      : estimationLeboncoin(l);
     return {
       id: l.id, titre: (l.titre || "Annonce").slice(0, 140), prix: l.prix, annee: l.annee, km: l.km, ch: l.ch, energie: l.energie, boite: l.boite,
       pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l), photo: l.photo?.startsWith("https://") ? l.photo : null,
