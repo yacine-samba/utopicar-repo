@@ -141,6 +141,8 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 | `video/scripts/audio-master60w.py` | Mix de référence : musique ElevenLabs montée sur la grille, bruitages aux repères du film, voix devant |
 | `scripts/ref-motion.py` | Fluidité d'une référence ou de notre rendu : `python3 scripts/ref-motion.py a.mp4 b.mp4 --out dossier` |
 | `scripts/ref-frames.py` | Sur chaque référence (et sur nos prises de voix) : `python3 scripts/ref-frames.py ref.mp4 --step 0.1` |
+| `scripts/sticker-plan.py` | Voiture détourée → autocollant à liseré blanc + plan au trait alignés (collage, scanner) : `techniques.md` § 17 |
+| `scripts/blur-boxes.py` | Flouter logos et plaques d'une photo par zones, recadrage optionnel |
 | `scripts/cutout.py` | Détourer une photo réelle + contour vectoriel pour un liseré de lumière : `python3 scripts/cutout.py photo.jpg dossier/` |
 | `scripts/mixkit.py` | Vidéos libres : `search … --sheet planche.jpg`, `get <ids> --out …`, `seq clip.mp4 dossier --start --dur` |
 | `video/scripts/sheet.mjs` | Planches toutes les 0,1 s d'un film : `CUT=<projet> node video/scripts/sheet.mjs 0 10` |
