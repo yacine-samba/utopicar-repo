@@ -12,18 +12,21 @@ import { PreuveAnimee } from "../accueil/PreuveAnimee";
 
 /** Écran commun inscription / connexion. À l'inscription : le parcours en 3 temps (on en est au premier)
     et, sur ordinateur, la carte animée qui montre ce qu'on obtient juste après. */
-export async function PageCompte({ mode, params }: { mode: "inscription" | "connexion"; params: { next?: string; offre?: string; erreur?: string } }) {
+export async function PageCompte({ mode, params }: { mode: "inscription" | "connexion"; params: { next?: string; offre?: string; erreur?: string; code?: string } }) {
   const suite = suiteSure(params.next, "/app");
   if (await compteCourant()) redirect(suite);
   const offre = params.offre && params.offre in OFFRES ? OFFRES[params.offre as OffreId] : null;
-  const autre = `/${mode === "inscription" ? "connexion" : "inscription"}?next=${encodeURIComponent(suite)}${offre ? `&offre=${offre.id}` : ""}`;
+  const code = (params.code ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 30);
+  const autre = `/${mode === "inscription" ? "connexion" : "inscription"}?next=${encodeURIComponent(suite)}${offre ? `&offre=${offre.id}` : ""}${params.code ? `&code=${encodeURIComponent(params.code)}` : ""}`;
   return (
     <div className="wrap grid gap-8 py-10 sm:py-14 lg:grid-cols-[1fr_440px] lg:items-start lg:gap-10">
       <div className="max-w-xl">
         <span className="kicker">{mode === "inscription" ? "Compte gratuit" : "Bon retour"}</span>
         <h1 className="h-sec mt-5">{mode === "inscription" ? <>Créez votre compte <span className="it">en 30 secondes</span></> : <>Connectez-vous <span className="it">à votre compte</span></>}</h1>
         <p className="mt-4 text-lg text-ink-2">
-          {offre
+          {mode === "inscription" && code
+            ? `Avec le code ${code} : vos analyses Benef offertes (marge nette, prix d'offre, prix max) s'ajoutent dès la création du compte, sans carte bancaire.`
+            : offre
             ? `Ensuite, vous pourrez choisir la formule ${offre.nom}.`
             : mode === "inscription"
               ? "Votre première analyse est offerte, sans carte bancaire."
@@ -58,7 +61,7 @@ export async function PageCompte({ mode, params }: { mode: "inscription" | "conn
           </p>
         )}
         {comptesActifs() && <div className="mb-5"><ConnexionSociale fournisseurs={await fournisseursActifs()} suite={suite} inscription={mode === "inscription"} /></div>}
-        <FormulaireCompte mode={mode} suite={suite} actif={comptesActifs()} />
+        <FormulaireCompte mode={mode} suite={suite} actif={comptesActifs()} codeInitial={code || undefined} />
         <p className="mt-6 border-t border-line pt-5 text-center text-sm text-ink-3">
           {mode === "inscription" ? "Déjà un compte ?" : "Pas encore de compte ?"}{" "}
           <Link href={autre} className="font-medium text-o2 underline underline-offset-4">

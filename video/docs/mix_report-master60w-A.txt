@@ -1,0 +1,16 @@
+master60w A · -14.1 LUFS intégrés, true peak -3.5 dBTP
+bruitages posés : 91 · retirés pour collision : 9 (pop@15.00, whoosh@24.59, pop@29.82, pop@29.89, pop@29.96, pop@30.41, whoosh@47.93, pop@49.72, pop@54.62)
+écart voix / musique par phrase : min 5.5 dB, médiane 11.0 dB (15 phrases)
+attaque drop « Hop ! »           prévue  30.48 s, mesurée  30.47 s (-5 ms)
+attaque logo (pleine bande)      prévue  14.94 s, mesurée  14.94 s (-1 ms)
+attaque « Ah. » (premier temps)  prévue   8.52 s, mesurée   8.52 s (+2 ms)
+attaque coup final               prévue  54.59 s, mesurée  54.58 s (-6 ms)
+RMS ouverture        mix  -16.2  musique  -27.1 dBFS
+RMS annonce          mix  -18.7  musique  -25.7 dBFS
+RMS silence « Ah. »  mix  -23.6  musique -130.2 dBFS
+RMS étouffée         mix  -15.7  musique  -30.6 dBFS
+RMS logo → onglets   mix  -16.5  musique  -25.3 dBFS
+RMS temps d'arrêt    mix  -15.9  musique  -33.9 dBFS
+RMS drop → appeler   mix  -16.2  musique  -24.2 dBFS
+RMS arrêt final      mix  -17.5  musique  -37.1 dBFS
+RMS logo final       mix  -26.4  musique  -28.3 dBFS

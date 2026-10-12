@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>master60 · maquette « wow »</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:Instrument;font-style:italic;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+/* écrans pleins : blanc chaud, noir chaud, orange UTOPICAR ; rouge seulement pour le verdict « Non. » */
+:root{--w:#fbf9f5;--k:#0e0b09;--o:#ff5a1f;--r:#c81e1e;--ink:#1c1612;--beige:#efe6d8;--ok:#137036}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000}
+#f{position:absolute;inset:0;overflow:hidden;font-family:Satoshi;color:var(--ink);-webkit-font-smoothing:antialiased}
+.a{position:absolute;left:0;top:0}
+.g{font:700 200px/0.92 Clash;letter-spacing:-.045em;word-spacing:.14em;white-space:nowrap}
+.i{font-family:Instrument;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.brk{font:500 40px Satoshi;white-space:nowrap;opacity:.85}
+.brk b{color:var(--o);font-weight:700}
+.men{font:500 22px Satoshi;white-space:nowrap;opacity:.6}
+.card{border-radius:36px;overflow:hidden;box-shadow:0 50px 90px -30px rgba(28,22,18,.45),0 0 0 1px rgba(28,22,18,.06)}
+.card img{position:absolute;display:block}
+.lst{width:560px;border-radius:44px;overflow:hidden;background:#fff;box-shadow:0 60px 110px -30px rgba(28,22,18,.45),0 0 0 1px rgba(28,22,18,.06)}
+.lst img{display:block;width:100%}
+.lst .b{padding:26px 34px 32px}
+.lst .m{font:600 40px Clash;white-space:nowrap}
+.lst .s{font:500 26px Satoshi;opacity:.6;margin-top:6px}
+.lst .p{position:relative;display:inline-block;font:600 92px/1 Clash;margin-top:18px}
+.lst .p i{position:absolute;left:-8px;right:-8px;bottom:4px;height:26px;border-radius:8px;background:rgba(255,90,31,.55);z-index:-1}
+.tag{padding:16px 28px;border-radius:24px;background:#fff;border:3px solid rgba(255,90,31,.6);font:600 64px Clash;white-space:nowrap;box-shadow:0 30px 60px -20px rgba(28,22,18,.4)}
+.tag small{display:block;font:500 24px Satoshi;opacity:.6}
+.ann{position:absolute;width:300px;height:170px;border-radius:26px;padding:20px 24px;background:#1b1612;border:1.5px solid rgba(244,241,236,.1);color:#f4f1ec}
+.ann .m{font:700 26px Satoshi;white-space:nowrap;overflow:hidden}
+.ann .s{font:500 20px Satoshi;opacity:.5;margin-top:4px;white-space:nowrap}
+.ann .p{font:600 40px Clash;margin-top:16px;white-space:nowrap}
+.cur{width:64px;height:82px;filter:drop-shadow(0 8px 12px rgba(0,0,0,.3))}
+.rip{border-radius:50%;border:6px solid var(--o)}
+.pill{padding:18px 34px;border-radius:999px;font:700 40px Satoshi;white-space:nowrap}
+.step{display:flex;align-items:center;gap:20px;padding:26px 36px;border-radius:30px;background:#fff;border:2px solid rgba(28,22,18,.08);font:700 46px Satoshi;white-space:nowrap;box-shadow:0 30px 60px -24px rgba(28,22,18,.35)}
+.step i{font-style:normal;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:900 34px Satoshi;color:#fff;background:var(--ok)}
+.step.on{border:4px solid var(--o)}
+.step.on i{background:var(--o)}
+.note{width:520px;height:600px;border-radius:14px;background:#f8f1e3;color:#2b2420;padding:56px 46px;font:400 40px/60px Instrument;font-style:italic;
+  background-image:repeating-linear-gradient(transparent 0 58px,rgba(70,90,160,.25) 58px 60px);box-shadow:0 40px 80px -20px rgba(0,0,0,.45)}
+.note s{color:#a63a2a}
+.calc{width:330px;height:480px;border-radius:36px;background:#2a2622;box-shadow:0 40px 80px -20px rgba(0,0,0,.6);padding:30px}
+.calc .e{height:110px;border-radius:16px;background:#9fb59a;color:#1b2418;font:600 60px Clash;text-align:right;padding:18px 20px}
+.calc .k{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+.calc .k span{height:56px;border-radius:14px;background:#3b3631}.calc .k span.o{background:var(--o)}
+.tab{width:330px;height:76px;border-radius:22px 22px 0 0;background:#fff;border:1.5px solid rgba(28,22,18,.12);border-bottom:0;padding:20px 26px;font:500 26px Satoshi;white-space:nowrap;overflow:hidden;box-shadow:0 -6px 24px rgba(0,0,0,.12)}
+.puce{padding:16px 26px;border-radius:20px;background:#fff;border:1.5px solid rgba(28,22,18,.1);font:700 34px Satoshi;white-space:nowrap;box-shadow:0 24px 40px -18px rgba(28,22,18,.35)}
+.puce b{color:var(--o);margin-right:10px}
+.notif{width:900px;padding:34px 40px;border-radius:40px;display:flex;gap:30px;align-items:center;background:#fff;box-shadow:0 50px 100px -30px rgba(0,0,0,.7)}
+.notif .ic{flex:none;width:110px;height:110px;border-radius:28px;background:var(--o);display:flex;align-items:center;justify-content:center}
+.notif .t{font:700 42px Satoshi}.notif .s{font:500 30px Satoshi;opacity:.65;margin-top:6px}
+.gauge{width:960px;padding:40px 46px;border-radius:40px;background:#fff;box-shadow:0 40px 80px -30px rgba(28,22,18,.4)}
+.gauge .h{display:flex;justify-content:space-between;align-items:baseline;font:600 64px Clash;white-space:nowrap}
+.gauge .h b{color:var(--ok);font-weight:600}
+.gauge .bar{height:38px;border-radius:999px;background:rgba(28,22,18,.07);margin-top:26px;overflow:hidden}
+.gauge .bar i{display:block;height:100%;width:75%;border-radius:999px;background:linear-gradient(90deg,var(--o),#ff8a4c)}
+.gauge .s{font:500 26px Satoshi;opacity:.55;margin-top:18px;white-space:nowrap}
+.seg{display:flex;padding:10px;border-radius:999px;background:#fff;box-shadow:0 20px 40px -16px rgba(0,0,0,.35)}
+.seg span{padding:20px 40px;border-radius:999px;font:700 40px Satoshi;white-space:nowrap;color:rgba(28,22,18,.6)}
+.seg span.on{background:var(--k);color:#fff}
+.hl{border:5px solid var(--o);border-radius:22px;background:rgba(255,90,31,.08)}
+.bub{padding:20px 30px;border-radius:24px;background:var(--ink);color:#fff;font:700 38px Satoshi;white-space:nowrap;box-shadow:0 30px 50px -20px rgba(0,0,0,.5)}
+.bub small{display:block;font:500 26px Satoshi;opacity:.7}
+.out{font:700 150px/1.02 Clash;letter-spacing:-.03em;color:transparent;-webkit-text-stroke:2px rgba(251,249,245,.22);white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="f"></div>
+<script src="maquette.js"></script>
+</body>
+</html>

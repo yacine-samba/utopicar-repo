@@ -1,0 +1,101 @@
+﻿jour;id;série;titre;hashtags;dossier
+1;V001;S1 Ta 1re voiture, épisode 1/10;Ta 1re voiture à revendre avec 3 000 € : combien sur la voiture;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V001-budget-3000
+2;V013;S2 L'annonce décodée, phrase 1;« Prix ferme » dans une annonce : comment proposer quand même;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V013-prix-ferme
+3;V003;S3 Vrai ou faux, n°1;« Vendue en l'état » : le vendeur n'est plus responsable de rien ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V003-vendue-en-l-etat
+4;V004;S4 Les arnaques, n°1;L'arnaque à l'acompte : « envoyez 300 € pour la réserver »;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V004-arnaque-acompte
+5;V005;S5 La marge, leçon 1/10;Marge brute, marge nette : 1 300 € d'écart, il te reste 539 €;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V005-marge-brute-nette
+6;V006;S6 Les mots du métier, n°1;Le prix réel d'une voiture d'occasion : le prix affiché, plus les réparations;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V006-prix-reel
+7;V007;S7 Les phrases à dire, n°1;Le premier message au vendeur : arrête « toujours dispo ? »;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V007-premier-message
+8;V008;S8 Revendre mieux, n°1;Revendre ta voiture : les 8 photos de l'annonce, dans l'ordre;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V008-huit-photos
+9;V027;S9 GO ou NO GO, n°1;GO ou NO GO : Renault Clio IV 0.9 TCe 90 à 6 700 €, 57 840 km;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V027-go-nogo-clio
+10;V010;S10 Les chiffres à connaître, n°1;Vendre une voiture : le contrôle technique doit dater de moins de 6 mois;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V010-ct-six-mois
+11;V011;S1 Ta 1re voiture, épisode 2/10;Ta 1re voiture à revendre : choisis le moteur avant le modèle;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V011-le-moteur
+12;V002;S2 L'annonce décodée, phrase 2;« Distribution faite » dans une annonce : sans facture, ça ne vaut rien;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V002-distribution-faite
+13;V015;S3 Vrai ou faux, n°2;Petit kilométrage = bonne affaire ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V015-petit-kilometrage
+14;V017;S4 Les arnaques, n°2;L'arnaque à la capture de virement quand tu vends ta voiture;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V017-arnaque-capture
+15;V019;S5 La marge, leçon 2/10;La carte grise dans ta marge : 186 € pour une Clio de 5 CV en Île-de-France;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V019-marge-carte-grise
+16;V021;S6 Les mots du métier, n°2;Le non-gage (certificat de situation administrative) : gratuit, en 2 minutes;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V021-non-gage
+17;V023;S7 Les phrases à dire, n°2;Demander l'HistoVec au vendeur sans le vexer : la phrase;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V023-demander-histovec
+18;V025;S8 Revendre mieux, n°2;Le titre d'annonce qui fait cliquer quand tu revends ta voiture;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V025-titre-annonce
+19;V009;S9 GO ou NO GO, n°2;GO ou NO GO : Peugeot 208 PureTech à 7 190 €, 116 789 km;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V009-go-nogo-208
+20;V029;S10 Les chiffres à connaître, n°2;15 jours pour déclarer la vente de ta voiture;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V029-quinze-jours
+21;V012;S1 Ta 1re voiture, épisode 3/10;Trouver les bonnes annonces de voitures d'occasion : filtres et alertes;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V012-trouver-les-annonces
+22;V014;S2 L'annonce décodée, phrase 3;« Première main » dans une annonce : la vérifier en une minute;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V014-premiere-main
+23;V016;S3 Vrai ou faux, n°3;Un CT sans défaut, c'est une voiture sans défaut ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V016-ct-sans-defaut
+24;V018;S4 Les arnaques, n°3;Le faux lien « paiement sécurisé » reçu par SMS quand tu vends;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V018-arnaque-lien-sms
+25;V020;S5 La marge, leçon 3/10;Le contrôle technique dans ta marge : 78 € en moyenne, et la contre-visite;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V020-marge-ct
+26;V022;S6 Les mots du métier, n°3;Le code de cession : ce que le vendeur doit te donner le jour de la vente;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V022-code-de-cession
+27;V024;S7 Les phrases à dire, n°3;« Vous avez les factures ? » : la question qui révèle l'entretien;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V024-demander-factures
+28;V026;S8 Revendre mieux, n°3;La description d'annonce en 5 lignes, défauts compris;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V026-description-5-lignes
+29;V028;S9 GO ou NO GO, n°3;GO ou NO GO : Toyota Yaris III à 10 999 €, garantie 12 mois;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V028-go-nogo-yaris
+30;V030;S10 Les chiffres à connaître, n°3;1 mois pour mettre la carte grise à ton nom, sinon 135 €;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V030-un-mois-carte-grise
+31;V031;S1 Ta 1re voiture, épisode 4/10;Trier 30 annonces de voitures en 10 minutes : ce que tu lis d'abord;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V031-trier-10-minutes
+32;V033;S2 L'annonce décodée, phrase 4;« Voyant allumé, juste un capteur » : ce que dit vraiment l'annonce;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V033-voyant-capteur
+33;V035;S3 Vrai ou faux, n°4;Plus une voiture d'occasion est chère, plus elle est fiable ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V035-chere-fiable
+34;V037;S4 Les arnaques, n°4;L'arnaque au faux chèque de banque du samedi soir;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V037-arnaque-cheque-banque
+35;V039;S5 La marge, leçon 4/10;Le trajet dans ta marge : 300 km pour voir une voiture, 120 €;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V039-marge-trajet
+36;V041;S6 Les mots du métier, n°4;L'HistoVec : le rapport officiel et gratuit sur l'historique d'une voiture;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V041-histovec
+37;V043;S7 Les phrases à dire, n°4;Faire ton offre au vendeur : un chiffre précis, une raison, un ton calme;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V043-faire-son-offre
+38;V045;S8 Revendre mieux, n°4;Revendre ta voiture : prix affiché et prix plancher, la marge entre les deux;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V045-prix-plancher
+39;V047;S9 GO ou NO GO, cas d'école n°1;GO ou NO GO : citadine affichée 3 400 €, revente estimée 4 000 €;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V047-cas-ecole-3400
+40;V049;S10 Les chiffres à connaître, n°4;Acheter une voiture à un particulier : 0 jour de rétractation;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V049-zero-retractation
+41;V032;S1 Ta 1re voiture, épisode 5/10;Appeler le vendeur : 5 questions avant de faire 200 km;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V032-appel-5-questions
+42;V034;S2 L'annonce décodée, phrase 5;« Cause départ » dans une annonce : le vendeur a une date limite;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V034-cause-depart
+43;V036;S3 Vrai ou faux, n°5;Acheter une voiture gagée, c'est sans risque ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V036-voiture-gagee
+44;V038;S4 Les arnaques, n°5;Compteur trafiqué : 89 000 km dans l'annonce, 162 000 au dernier CT;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V038-arnaque-compteur
+45;V040;S5 La marge, leçon 5/10;Les réparations dans ta marge : un choc sur l'aile chiffré 425 €;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V040-marge-reparations
+46;V042;S6 Les mots du métier, n°5;La contre-visite au contrôle technique : 2 mois pour réparer;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V042-contre-visite
+47;V044;S7 Les phrases à dire, n°5;« Pourquoi vous la vendez ? » : les réponses à creuser;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V044-pourquoi-vous-la-vendez
+48;V046;S8 Revendre mieux, n°5;Nettoyer ta voiture avant les photos de l'annonce : la liste;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V046-nettoyage
+49;V048;S9 GO ou NO GO, cas d'école n°2;GO ou NO GO : affichée 5 200 €, revente estimée 6 500 €;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V048-cas-ecole-5200
+50;V050;S10 Les chiffres à connaître, n°5;4 ans : l'âge du premier contrôle technique, puis tous les 2 ans;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V050-quatre-ans-premier-ct
+51;V051;S1 Ta 1re voiture, épisode 6/10;La visite d'une voiture d'occasion : 20 minutes, dans cet ordre;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V051-la-visite
+52;V053;S2 L'annonce décodée, phrase 6;« Jamais accidentée » dans une annonce : comment le vérifier;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V053-jamais-accidentee
+53;V055;S3 Vrai ou faux, n°6;Acheter des voitures pour les revendre, souvent : tu deviens commerçant ? Vrai ou faux;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V055-commercant
+54;V057;S4 Les arnaques, n°6;La doublette : une fausse plaque copiée sur une vraie voiture identique;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V057-arnaque-doublette
+55;V059;S5 La marge, leçon 6/10;L'URSSAF dans ta marge : 12,3 % du prix de vente, pas de la marge;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V059-marge-urssaf
+56;V061;S6 Les mots du métier, n°6;Courroie ou chaîne de distribution : pas le même budget;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V061-courroie-ou-chaine
+57;V063;S7 Les phrases à dire, n°6;« C'est quoi votre dernier prix ? » : pourquoi tu ne poses pas cette question;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V063-dernier-prix
+58;V065;S8 Revendre mieux, n°6;Revendre ta voiture : répondre aux acheteurs en 10 minutes;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V065-repondre-10-minutes
+59;V067;S9 GO ou NO GO, cas d'école n°3;GO ou NO GO : affichée 4 500 €, sans facture de distribution;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V067-cas-ecole-sans-facture
+60;V069;S10 Les chiffres à connaître, n°6;1,6 mm : la profondeur minimale des sculptures d'un pneu;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V069-pneu-1-6-mm
+61;V052;S1 Ta 1re voiture, épisode 7/10;L'essai d'une voiture d'occasion : 10 minutes, ce que tu écoutes;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V052-l-essai
+62;V054;S2 L'annonce décodée, phrase 7;« CT OK » dans une annonce : la date et les défaillances à lire;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V054-ct-ok
+63;V056;S3 Vrai ou faux, n°7;Le kilométrage de l'HistoVec ne remonte qu'à 2021 ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V056-histovec-2021
+64;V058;S4 Les arnaques, n°7;Le vendeur n'est pas le titulaire de la carte grise : stop;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V058-carte-grise-pas-a-son-nom
+65;V060;S5 La marge, leçon 7/10;Ta marge minimum : le chiffre sous lequel tu n'achètes pas;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V060-marge-minimum
+66;V062;S6 Les mots du métier, n°7;Le volant moteur bi-masse : ce qui fait grimper la facture d'embrayage;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V062-volant-moteur
+67;V064;S7 Les phrases à dire, n°7;Dire non au vendeur sans fermer la porte : la phrase;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V064-dire-non
+68;V066;S8 Revendre mieux, n°7;L'essai quand tu revends : un inconnu au volant de ta voiture;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V066-essai-acheteur
+69;V068;S9 GO ou NO GO, cas d'école n°4;GO ou NO GO : affichée 2 900 €, en contre-visite;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V068-cas-ecole-contre-visite
+70;V070;S10 Les chiffres à connaître, n°7;Rouler avec un contrôle technique dépassé : 135 €;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V070-ct-depasse-135
+71;V071;S1 Ta 1re voiture, épisode 8/10;Négocier ta 1re voiture : elle est à 6 700 €, tu proposes 6 250 €;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V071-la-nego
+72;V074;S2 L'annonce décodée, phrase 8;« Révisée » dans une annonce : la facture dit quoi ?;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V074-revisee
+73;V077;S3 Vrai ou faux, n°8;Le voyant moteur s'est éteint : c'est réparé ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V077-voyant-eteint
+74;V080;S4 Les arnaques, n°8;« Je suis à l'étranger, le transporteur vous livre » : l'arnaque;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V080-arnaque-transporteur
+75;V083;S5 La marge, leçon 8/10;Ton prix max avant d'appeler : revente − frais − marge minimum;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V083-marge-prix-max
+76;V086;S6 Les mots du métier, n°8;« Véhicule endommagé » sur l'HistoVec : ce que la mention veut dire;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V086-vehicule-endommage
+77;V089;S7 Les phrases à dire, n°8;Fixer le rendez-vous avec le vendeur : où et quand, la phrase;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V089-rendez-vous
+78;V092;S8 Revendre mieux, n°8;Revendre ta voiture : les papiers à remettre à l'acheteur;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V092-papiers-a-remettre
+79;V095;S9 GO ou NO GO, cas d'école n°5;GO ou NO GO : affichée 3 900 €, 210 000 km, embrayage à prévoir;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V095-cas-ecole-gros-km
+80;V098;S10 Les chiffres à connaître, n°8;Vice caché : 2 ans pour agir, à partir de la découverte;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V098-vice-cache-2-ans
+81;V072;S1 Ta 1re voiture, épisode 9/10;Acheter ta voiture : les 4 papiers, ou tu repars sans elle;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V072-les-papiers
+82;V075;S2 L'annonce décodée, phrase 9;« Petit frottement » dans une annonce : regarde toutes les photos;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V075-petit-frottement
+83;V078;S3 Vrai ou faux, n°9;L'âge d'un pneu se lit sur son flanc ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V078-age-pneu
+84;V081;S4 Les arnaques, n°9;Une voiture 40 % sous le prix du marché : la raison d'abord;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V081-arnaque-prix-trop-bas
+85;V084;S5 La marge, leçon 9/10;Le temps dans ta marge : la voiture qui ne part pas te coûte;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V084-marge-temps
+86;V087;S6 Les mots du métier, n°9;Le certificat de cession : le papier que vous signez à deux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V087-certificat-de-cession
+87;V090;S7 Les phrases à dire, n°9;Le paiement quand tu achètes : la phrase et l'ordre des étapes;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V090-le-paiement
+88;V093;S8 Revendre mieux, n°9;Revendre ta voiture : quand baisser le prix de l'annonce;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V093-baisser-le-prix
+89;V096;S9 GO ou NO GO, cas d'école n°6;GO ou NO GO : petit budget, affichée 1 800 €;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V096-cas-ecole-petit-budget
+90;V099;S10 Les chiffres à connaître, n°9;Acheter chez un pro : 2 ans de garantie légale de conformité, en principe;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V099-garantie-pro
+91;V073;S1 Ta 1re voiture, épisode 10/10;Revendre ta 1re voiture : achetée 6 250 €, elle doit partir à 7 550 €;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V073-la-revente
+92;V076;S2 L'annonce décodée, phrase 10;« Pas sérieux s'abstenir » : ce que la phrase dit du vendeur;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V076-pas-serieux
+93;V079;S3 Vrai ou faux, n°10;Une voiture en contre-visite peut se vendre ? Vrai ou faux;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V079-contre-visite-vendre
+94;V082;S4 Les arnaques, n°10;L'arnaque au trop-perçu quand tu vends : « remboursez la différence »;#arnaque #voitureoccasion #leboncoin;renders/carousels-debutants/V082-arnaque-trop-percu
+95;V085;S5 La marge, leçon 10/10;La formule complète de ta marge en achat-revente, à enregistrer;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V085-marge-formule
+96;V088;S6 Les mots du métier, n°10;Les annonces comparables : comment se calcule un prix du marché;#achatreventevoiture #debutant #voitureoccasion;renders/carousels-debutants/V088-les-comparables
+97;V091;S7 Les phrases à dire, n°10;Quand c'est toi qui revends : défendre ton prix face à l'acheteur;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V091-quand-tu-revends
+98;V094;S8 Revendre mieux, n°10;Le jour de la vente de ta voiture : l'ordre des étapes;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V094-jour-de-la-vente
+99;V097;S9 GO ou NO GO, cas d'école n°7;GO ou NO GO : on t'offre 7 100 € pour ta Clio, ton plancher est à 7 311 €;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V097-cas-ecole-ta-revente
+100;V100;S10 Les chiffres à connaître, n°10;2 annonces auto gratuites par an sur Leboncoin, la 3e est payante;#achatrevente #revenucomplementaire #voitureoccasion;renders/carousels-debutants/V100-deux-annonces-gratuites

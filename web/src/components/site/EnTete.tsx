@@ -40,7 +40,9 @@ export async function EnTete() {
                 Se connecter
               </Link>
               <Link href="/analyse" className="btn btn-o btn-sm whitespace-nowrap">
-                Analyser<span className="hidden sm:inline">&nbsp;une annonce</span>
+                <span>
+                  Analyser<span className="hidden sm:inline"> une annonce</span>
+                </span>
               </Link>
             </>
           )}

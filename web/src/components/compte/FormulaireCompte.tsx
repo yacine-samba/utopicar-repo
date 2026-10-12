@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
 import { connecter, emailValide, fonctionCompte, inscrire } from "@/lib/compte-client";
 import { inputCls } from "../ui";
+import { CodeInscription } from "./CodeOffert";
 
 type Mode = "inscription" | "connexion";
 
-export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: string; actif: boolean }) {
+export function FormulaireCompte({ mode, suite, actif, codeInitial }: { mode: Mode; suite: string; actif: boolean; codeInitial?: string }) {
   const router = useRouter();
   const id = useId();
   const [email, setEmail] = useState("");
@@ -115,6 +116,7 @@ export function FormulaireCompte({ mode, suite, actif }: { mode: Mode; suite: st
           <span aria-hidden="true">{mdp.length >= 8 ? "✓" : "○"}</span> 8 caractères au moins{mdp.length > 0 && mdp.length < 8 ? ` (encore ${8 - mdp.length})` : ""}
         </span>
       </div>
+      {mode === "inscription" && <CodeInscription initial={codeInitial} />}
       {mode === "inscription" && (
         <label className="flex items-start gap-3 text-sm text-ink-2">
           <input ref={refCgu} type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} className="mt-0.5 size-5 shrink-0 cursor-pointer accent-[#ff5a1f]" />

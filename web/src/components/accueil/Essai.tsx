@@ -15,11 +15,12 @@ import { Patience } from "../analyse/Patience";
 import { InscriptionInline } from "../compte/InscriptionInline";
 import type { Fournisseur } from "../compte/ConnexionSociale";
 import { CarteApercu, type Contenu } from "./CarteApercu";
+import { origineDepuisExtension } from "@/lib/analyse/import";
 import { carteDepuisApercu, carteDepuisExemple, type CarteAnalyse } from "./PreuveAnimee";
 import { EVT_CARTE } from "./CarteHero";
 
 /** Prévient la carte de l'en-tête (CarteHero) : elle montre l'annonce scannée, ou revient à l'exemple. */
-const montrer = (c: CarteAnalyse | null) => dispatchEvent(new CustomEvent(EVT_CARTE, { detail: c }));
+const montrer = (c: CarteAnalyse | null | "charge") => dispatchEvent(new CustomEvent(EVT_CARTE, { detail: c }));
 
 /* Le hero devient le produit : un champ, un vrai aperçu en 2 secondes sans compte, et l'inscription dans la même carte
    quand la personne veut le rapport complet. Trois exemples pour ceux qui n'ont pas d'annonce sous la main. */
@@ -154,14 +155,16 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     requestAnimationFrame(() => titreCarte.current?.focus({ preventScroll: true }));
   }
 
-  async function apercu(t: string, og: Origine | null, source: "texte" | "lien") {
+  async function apercu(t: string, og: Origine | null, source: "texte" | "lien", photo: string | null = null) {
     setTexte(t);
     setOrigine(og);
     ouvrirCarte(null);
+    montrer("charge");
     try {
       const r = await fetch("/api/analyse/apercu", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texte: t }) });
       if (r.status === 429) {
         setEtat("vide");
+        montrer(null);
         setErreur(ERREURS_IMPORT.trop);
         track("apercu_limite");
         return;
@@ -169,15 +172,17 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       const a = r.ok ? ((await r.json()) as Apercu) : null;
       if (!a) {
         setEtat("vide");
+        montrer(null);
         setErreur("L'aperçu n'a pas abouti. Vérifiez que le texte contient bien le titre, le prix et la description.");
         return;
       }
       setContenu({ type: "apercu", a });
       setFini(true);
-      montrer(carteDepuisApercu(a, og?.liens.find((u) => u.startsWith("https://")) ?? null));
+      montrer(carteDepuisApercu(a, photo ?? og?.liens.find((u) => u.startsWith("http")) ?? null));
       track("apercu_vu", { source, cote: !!a.cote });
     } catch {
       setEtat("vide");
+      montrer(null);
       setErreur("Connexion impossible. Vérifiez votre réseau et réessayez.");
     }
   }
@@ -187,6 +192,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     if (!SUPABASE_URL) return setErreur(ERREURS_IMPORT.config);
     setEtat("lecture");
     setErreur(null);
+    montrer("charge");
     try {
       const { data } = await supabaseNavigateur().auth.getSession();
       const jeton = data.session?.access_token;
@@ -198,14 +204,16 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       const j = await r.json().catch(() => null);
       if (!r.ok || !j?.ok) {
         setEtat("vide");
+        montrer(null);
         setErreur(ERREURS_IMPORT[j?.erreur as string] ?? ERREURS_IMPORT.apify);
         if (j?.erreur === "trop") track("apercu_limite");
         return;
       }
       const t = texteDepuisImport(j);
-      await apercu(t, { lien: j.url, liens: Array.isArray(j.liens) ? j.liens : [], vendeur: j.vendeur ?? null }, "lien");
+      await apercu(t, { lien: j.url, liens: Array.isArray(j.liens) ? j.liens : [], vendeur: j.vendeur ?? null }, "lien", Array.isArray(j.photos) && typeof j.photos[0] === "string" ? j.photos[0] : null);
     } catch {
       setEtat("vide");
+      montrer(null);
       setErreur("Connexion impossible. Vérifiez votre réseau et réessayez.");
     }
   }
@@ -221,7 +229,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     if (lienImportable(v)) return void importer(v);
     if (/^https?:\/\//i.test(v)) return setErreur(ERREURS_IMPORT.lien);
     if (v.length < 30) return setErreur("Collez le texte complet de l'annonce : titre, prix, kilométrage et description.");
-    void apercu(v, null, "texte");
+    void apercu(v, null, "texte", origineDepuisExtension(v)?.liens[0] ?? null);
   }
 
   function exemple(cle: string) {
@@ -286,7 +294,14 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
               className={cx(inputCls, "min-h-14 resize-none text-base leading-snug sm:min-h-[52px]")}
             />
             <button type="submit" disabled={etat === "lecture"} className="btn btn-o sm:self-start">
-              {etat === "lecture" ? "Lecture de l'annonce…" : "Analyser"}
+              {etat === "lecture" ? (
+                <span className="flex items-center justify-center gap-2.5">
+                  <span className="size-5 shrink-0 animate-spin rounded-full border-[2.5px] border-current border-t-transparent motion-reduce:animate-none" aria-hidden="true" />
+                  Lecture…
+                </span>
+              ) : (
+                "Analyser"
+              )}
             </button>
           </div>
           {erreur && (

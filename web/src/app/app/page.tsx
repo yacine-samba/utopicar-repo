@@ -19,7 +19,6 @@ import { COLONNES_RECHERCHE, type Recherche } from "@/lib/recherches";
 import { phraseAccueil } from "@/lib/orientation";
 import { CartePremiersPas } from "@/components/espace/PremiersPasCompte";
 import { BienvenueCompte } from "@/components/espace/BienvenueCompte";
-import { titreVehicule } from "@/lib/titre";
 import { estPiege } from "@/lib/vehicules/pieges";
 import { Affaires, AgeStock, Chiffre, EnTeteTableau as EnTeteComplet, EtapesParc, eur, Journee, Marche, Outil, TitreSection, type Action, type EtapeParc, type Opportunite } from "@/components/espace/Tableau";
 
@@ -337,66 +336,6 @@ async function TableauComplet({ c }: { c: Compte }) {
           </div>
         </>
       )}
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section aria-labelledby="tb-best" className="grid content-start gap-3">
-          <div className="flex items-baseline justify-between gap-3">
-            <h2 id="tb-best" className="font-display text-lg font-semibold">Les meilleures affaires de la semaine</h2>
-            <Link href="/app/rapports" className="shrink-0 whitespace-nowrap text-sm text-o2 underline-offset-4 hover:underline">Rapports</Link>
-          </div>
-          {semaineGo?.length ? (
-            <ul className="grid gap-2">
-              {semaineGo.map((r) => (
-                <li key={r.id}>
-                  <Link href={`/app/rapports/${r.id}`} className="carte flex items-center justify-between gap-3 p-3 transition hover:border-o/40">
-                    <span className="min-w-0">
-                      <span className="block truncate font-medium">{titreVehicule(r.titre)}</span>
-                      <span className="text-xs text-ink-3">{r.verdict} · prix {eur(r.prix)}{r.note != null ? ` · ${r.note}/100` : ""}</span>
-                    </span>
-                    <b className={`num shrink-0 ${(r.marge ?? 0) >= 0 ? "text-ok" : "text-bad"}`}>{r.marge != null ? `${r.marge >= 0 ? "+" : ""}${eur(r.marge)}` : "—"}</b>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="carte p-5 text-sm text-ink-2">Rien au-dessus de votre seuil cette semaine. Cherchez sous la cote dans la recherche, ou analysez une annonce.</p>
-          )}
-        </section>
-
-        <section aria-labelledby="tb-alertes" className="grid content-start gap-3">
-          <div className="flex items-baseline justify-between gap-2">
-            <h2 id="tb-alertes" className="font-display text-lg font-semibold">À surveiller dans le parc</h2>
-            <span className="text-sm text-ink-3">{alertes.length ? `${alertes.filter((a) => a.lvl === "bad").length} critique(s), ${alertes.length} au total` : ""}</span>
-          </div>
-          {alertes.length ? (
-            <ul className="grid gap-2">
-              {alertes.slice(0, 6).map((a, i) => (
-                <li key={i}>
-                  <Link href={`/app/parc/${a.v.id}`} className={`carte flex gap-3 p-3 text-sm transition hover:border-o/40 ${a.lvl === "bad" ? "border-bad/35" : "border-warn/30"}`}>
-                    <span className={`w-1 shrink-0 rounded-full ${a.lvl === "bad" ? "bg-bad" : "bg-warn"}`} aria-hidden="true" />
-                    <span>
-                      <b className="block font-medium">{a.v.immat ? `${a.v.immat} · ` : ""}{a.v.titre}</b>
-                      <span className="text-ink-2">{a.txt}</span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="carte p-5 text-sm text-ink-2">Aucune alerte : durées de stock, prix d&apos;achat et marges sont dans les clous.</p>
-          )}
-        </section>
-      </div>
-
-      <section aria-labelledby="tb-analyses">
-        <h2 id="tb-analyses" className="mb-3 font-display text-lg font-semibold">Analyses du mois</h2>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Kpi l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} s={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} ton={!c.illimite && c.restantes <= 3 ? "warn" : undefined} />
-          <Kpi l="Bonnes affaires repérées" v={String(go.length)} s={`sur ${n} annonce${n > 1 ? "s" : ""}`} />
-          <Kpi l="Marge moyenne des bonnes affaires" v={eur(go.length ? go.reduce((s, r) => s + (r.marge ?? 0), 0) / go.length : null)} s="estimée avant achat" />
-          <Kpi l="Marge réalisée ce mois" v={eur(st.margeMois)} s="voitures vendues ce mois" />
-        </div>
-      </section>
 
       <section aria-labelledby="tb-outils">
         <TitreSection id="tb-outils">Vos outils</TitreSection>

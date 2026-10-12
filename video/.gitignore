@@ -21,6 +21,8 @@ renders/_parts/
 audio/stems-mo4/
 assets/stock/
 film-mo5da/seq/
+film-avatar1/frames/
+film-avatar1/check/
 audio/stems-mo5/
 film-mo6/seq/
 renders/_sheet*/
@@ -57,3 +59,11 @@ film-mo10/seq/
 audio/vo-mo10/vo-placed-take*.wav
 renders/draft-mo10-*.mp4
 assets/stock/mo10/
+renders/storyboard-master60/
+renders/stills-master60/
+renders/storyboard-master60-blanc/
+renders/*.log
+renders/err.txt
+renders/maquette-master60/
+renders/stills-master60w/
+renders/w*-part*.log

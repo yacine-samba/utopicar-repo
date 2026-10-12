@@ -79,6 +79,12 @@ const U = Math.min(SZ[0], SZ[1]) / 1080;          // unité typographique : 88 p
 - Desktop : deux colonnes (texte à gauche, UI à droite), chiffres géants à gauche, curseur plus petit.
 - Tailles de texte mesurées **sur le texte lui-même** (range / span inline), jamais sur un bloc pleine largeur —
   c'est le bug `fit()` qui a laissé « 14 820 € » et le CTA sous les boutons TikTok.
+- **Un seul film, deux formats (master60)** : `h(valeur 16:9, valeur 9:16)` pour chaque position. Le titre trop large
+  est réduit à la colonne en mesurant la boîte rendue, et le CTA suit ce que dit la voix dans chaque format
+  (`techniques.md` § 16).
+- **La poussée de caméra élargit tout** : un zoom de `p` depuis le centre `c` envoie un bord posé en `x` à
+  `c + (x − c)(1 + p)`. master60 : titres posés à x = 96 vus à x ≈ 70 avec 3 % de poussée. On pose donc les bords à
+  `c + (limite − c) / (1 + p)` : 128 au lieu de 96 en 16:9, jusqu'à 910 au lieu de 940 en 9:16.
 
 ## 4. Architecture du film (contrat de rendu)
 

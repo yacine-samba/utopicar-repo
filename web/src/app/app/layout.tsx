@@ -14,6 +14,7 @@ import { AnalysesEnFond } from "@/components/espace/AnalysesEnFond";
 import { CadreEspace } from "@/components/espace/CadreEspace";
 import { PreferencesEspace } from "@/components/espace/Preferences";
 import { ProfilDepuisNavigateur } from "@/components/espace/ProfilDepuisNavigateur";
+import { CodeEnAttente } from "@/components/compte/CodeOffert";
 import { ProfilAnalyseFournisseur } from "@/components/analyse/ProfilAnalyse";
 
 export const metadata: Metadata = { title: { default: "Mon espace", template: "%s · Mon espace Utopicar" }, robots: { index: false } };
@@ -70,6 +71,7 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
     <PreferencesEspace favoris={c.favoris}>
     <ProfilAnalyseFournisseur initial={c.profilAnalyse}>
     <ProfilDepuisNavigateur />
+    <CodeEnAttente />
     <AnalysesEnFond mode={benef && c.offre.famille === "benef" ? "benef" : "particulier"} actif={!benef || c.offre.famille === "benef"} maxPhotos={c.offre.photos} ville={c.ville}>
     <CadreEspace
       menu={

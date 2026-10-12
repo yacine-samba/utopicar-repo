@@ -75,22 +75,31 @@ CAROUSELS = [dict(id=f'D1{l}', slug='accroche-' + l.lower(), famille=f, offer=OF
              for l, f, k, t, n in ACCROCHES]
 
 from app20 import APP20
-CAROUSELS += APP20
-# un dossier par post : post.txt (titre TikTok, légende, 3 hashtags) à côté des images
-for c in APP20:
+from app20b import APP20B
+CAROUSELS += APP20 + APP20B
+# un dossier par post : post.txt (titre TikTok, légende, 3 hashtags) à côté des images ; ce que le post teste, pour le suivi
+for c in APP20 + APP20B:
     d = os.path.join(VIDEO, 'renders', 'carousels-conversion', f"{c['id']}-{c['slug']}"); os.makedirs(d, exist_ok=True)
     open(os.path.join(d, 'post.txt'), 'w', encoding='utf-8').write(
         '\n'.join(["TITRE", c['titre'], "", "LÉGENDE", c['legende'],
-                   "3 jours de Benef offerts, sans carte bancaire : lien dans ma bio.", "", ' '.join(c['tags'])]) + '\n')
+                   "3 jours de Benef offerts, sans carte bancaire : lien dans ma bio.", "", ' '.join(c['tags'])]
+                  + (["", "TEST (ne pas publier)", c['test']] if c.get('test') else [])) + '\n')
 
 # contrôle : mots lisibles par image (titres, textes, annonce, pastilles ; pas la ligne de source)
+# codes à ne pas compter : tons, côtés de l'échelle, segments, chemins de photo, cadrages, icônes
+CODE = re.compile(r"^((ok|warn|bad|neu|o|h|b|a|f|f2|f3|m|p)( txt| bas)?|img/.*|photos/.*|\d+% \d+%)$")
+ICONES = set(re.findall(r"^  (\w+): '", open(os.path.join(HERE, 'slide.html'), encoding='utf-8').read(), re.M))
 def mots(sl, c, last):
     t = ' '.join(str(sl.get(k) or '') for k in ('kicker', 'title', 'body', 'body2'))
     for x in sl.get('comp') or []:
         t += ' ' + ' '.join(str(x.get(k) or '') for k in ('t', 'p', 'm', 'l', 'note', 'v', 'cap', 'sub'))
         if x.get('island'): t += ' ' + x['island']['t']
-        for it in x.get('items') or []: t += ' ' + ' '.join(str(v) for v in (it if isinstance(it, list) else [it]) if v not in ('ok', 'warn', 'bad', 'neu'))
-        if x.get('lab'): t += ' ' + x['lab']
+        # éléments graphiques : on ne compte que le texte lu (pas les valeurs numériques, tons, icônes ni chemins de photo)
+        for it in (x.get('items') or []) + (x.get('points') or []) + (x.get('segs') or []):
+            t += ' ' + ' '.join(v for v in (it if isinstance(it, list) else [it]) if isinstance(v, str) and not CODE.match(v) and v not in ICONES)
+        for key in ('lab', 'tot'):
+            if x.get(key): t += ' ' + x[key]
+        if x.get('stamp'): t += ' ' + x['stamp'][0]
     if last and c.get('offer'):
         o = c['offer']; t += ' ' + ' '.join([o['n'], o['l1'], o['word'], o['l2'], o['btn'], o['ou'], o['badge'], *o['gets']])
     return len(re.findall(r"[\wÀ-ÿ€']+", re.sub(r'[*=+]', '', t)))
