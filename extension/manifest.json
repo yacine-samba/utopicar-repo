@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Utopicar",
-  "version": "4.5.0",
-  "description": "Envoie une annonce complète (texte, critères, photos), lit en entier les annonces cochées relève toute une recherche Leboncoin ou les cotes de chaque marque, modèle et énergie, et l'ouvre directement sur utopicar.fr.",
+  "version": "4.6.0",
+  "description": "Envoie une annonce complète (texte, critères, photos), lit en entier les annonces cochées relève toute une recherche Leboncoin ou les cotes de toutes les marques, modèles et énergies de Leboncoin, et l'ouvre directement sur utopicar.fr.",
   "action": {
     "default_popup": "popup.html",
     "default_title": "Utopicar",

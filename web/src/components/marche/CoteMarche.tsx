@@ -16,7 +16,8 @@ type Place = { nom: string; gen: string; profil: Profil; estimation: CoteAnnonce
 const eur = (v: number | null | undefined) => (v == null ? "—" : `${Math.round(v).toLocaleString("fr-FR")} €`);
 const n = (s: string) => (s.trim() && /^\d+$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
 
-export function CoteMarche({ cat, extension }: { cat: CatMarque[]; extension: boolean }) {
+/** `dernierReleve` : bilan du dernier relevé automatique des cotes (extension), affiché avec le relevé collé. */
+export function CoteMarche({ cat, extension, dernierReleve = null }: { cat: CatMarque[]; extension: boolean; dernierReleve?: Bilan | null }) {
   const [onglet, setOnglet] = useState<"releve" | "voiture">(extension ? "releve" : "voiture");
   // relevé de toute une recherche : vient de l'extension, réservée au compte illimité
   if (!extension) return <PlacerVoiture cat={cat} />;
@@ -31,7 +32,7 @@ export function CoteMarche({ cat, extension }: { cat: CatMarque[]; extension: bo
         ))}
       </div>
       <div hidden={onglet !== "releve"}>
-        <CollerReleve actif={onglet === "releve"} />
+        <CollerReleve actif={onglet === "releve"} cat={cat} dernier={dernierReleve} />
       </div>
       <div hidden={onglet !== "voiture"}>
         <PlacerVoiture cat={cat} />
@@ -40,7 +41,7 @@ export function CoteMarche({ cat, extension }: { cat: CatMarque[]; extension: bo
   );
 }
 
-function CollerReleve({ actif }: { actif: boolean }) {
+function CollerReleve({ actif, cat, dernier }: { actif: boolean; cat: CatMarque[]; dernier: Bilan | null }) {
   const [brut, setBrut] = useState("");
   const [enregistrer, setEnregistrer] = useState(true);
   const [etat, setEtat] = useState("");
@@ -48,14 +49,14 @@ function CollerReleve({ actif }: { actif: boolean }) {
   const [res, setRes] = useState<Releve | null>(null);
   const [g, setG] = useState(0);
   const [sous, setSous] = useState(false);
-  const [bilan, setBilan] = useState<Bilan | null>(null);
+  const [bilan, setBilan] = useState<Bilan | null>(dernier);
   const zone = useRef<HTMLTextAreaElement>(null);
 
-  // Bilan du relevé automatique des cotes : déjà enregistré et calculé au fil du relevé, il s'affiche tel quel.
+  // Bilan du relevé automatique des cotes : ses annonces sont déjà dans la base du marché, il s'affiche tel quel.
   function montrerBilan(t: string) {
     const b = lireBilan(t);
-    setBilan(b);
-    setEtat(b ? "" : "Bilan illisible : rouvrez-le depuis l'extension (« Voir le bilan »).");
+    if (b) setBilan(b);
+    setEtat(b ? "" : "Bilan illisible : rouvrez-le depuis l'extension (« Voir le bilan »), après avoir mis l'extension à jour.");
   }
 
   async function calculer(txt = brut) {
@@ -109,7 +110,7 @@ function CollerReleve({ actif }: { actif: boolean }) {
         <div className="grid gap-1">
           <h2 className="font-display text-lg font-semibold">Relevé Leboncoin</h2>
           <p className="text-sm text-ink-2">
-            Sur une recherche Leboncoin, icône Utopicar puis « Relever toute la recherche » (jusqu&apos;à 3 500 annonces) : cette page s&apos;ouvre toute seule et chaque annonce est reconnue (marque, modèle, génération) et placée sur sa cote. « Relever toutes les cotes » fait de même pour chaque marque et chaque modèle, en essence, diesel puis hybride, et affiche ici son bilan. Si la page ne s&apos;ouvre pas, collez le relevé ici avec <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl</kbd> + <kbd className="rounded border border-line-2 px-1.5 text-xs">V</kbd>.
+            Sur une recherche Leboncoin, icône Utopicar puis « Relever toute la recherche » (jusqu&apos;à 3 500 annonces) : cette page s&apos;ouvre toute seule et chaque annonce est reconnue (marque, modèle, génération) et placée sur sa cote. « Relever toutes les cotes » relève toutes les marques et tous les modèles de Leboncoin, en essence, diesel, hybride et électrique, puis affiche ici son bilan. Si la page ne s&apos;ouvre pas, collez le relevé ici avec <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl</kbd> + <kbd className="rounded border border-line-2 px-1.5 text-xs">V</kbd>.
           </p>
           <p className="mt-1 flex flex-wrap items-center gap-3 text-sm text-ink-3">
             <a href="/app/extension" className="btn btn-sm min-h-9 px-4">Installer l&apos;extension Utopicar</a>
@@ -149,7 +150,7 @@ function CollerReleve({ actif }: { actif: boolean }) {
         </div>
       </div>
 
-      {bilan && <BilanBalayage bilan={bilan} />}
+      {bilan && <BilanBalayage bilan={bilan} cat={cat} />}
 
       {res && (
         <section aria-labelledby="cr-res" className="grid gap-5">
