@@ -91,21 +91,23 @@ async function extractList(maxPages){
 
 
 /* Une page de résultats Leboncoin (numéro p) lue depuis l'onglet de l'utilisateur : données complètes, sans défilement.
-   Appelée page par page par l'arrière-plan pour relever toute une recherche. */
-async function lbcPage(p){
-  var u=new URL(location.href);if(p>1)u.searchParams.set('page',p);else u.searchParams.delete('page');
+   Appelée page par page par l'arrière-plan pour relever toute une recherche ; `adresse` : une autre recherche que celle
+   de l'onglet (relevé automatique des cotes : marque, modèle, énergie). */
+async function lbcPage(p,adresse){
+  var u=new URL(adresse||location.href);if(p>1)u.searchParams.set('page',p);else u.searchParams.delete('page');
   var res;try{res=await fetch(u.toString(),{credentials:'include',headers:{'Accept':'text/html'}});}catch(e){return {err:'réseau'};}
+  if(res.status===429)return {err:'Leboncoin ralentit les recherches (429)',lent:true};
   var h=await res.text();
   if(res.status===403||/captcha-delivery|datadome/i.test(h.slice(0,20000))&&!/__NEXT_DATA__/.test(h))return {blocked:true};
   var m=h.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);if(!m)return {err:'page illisible'};
   var sd;try{var pp=JSON.parse(m[1]).props.pageProps;sd=pp.searchData||(pp.initialProps&&pp.initialProps.searchData)||{};}catch(e){return {err:'page illisible'};}
   var items=(sd.ads||[]).concat(sd.ads_alu||[]).map(function(a){
-    var A=a.attributes||[],g=function(k){var x=A.filter(function(z){return z&&z.key===k;})[0];return x?(x.value_label||x.value||''):'';};
+    var A=a.attributes||[],at=function(k){return A.filter(function(z){return z&&z.key===k;})[0];},g=function(k){var x=at(k);return x?(x.value_label||x.value||''):'';},code=function(k){var x=at(k);return x?String(x.value||''):'';};
     var loc=a.location||{},pr=Array.isArray(a.price)?a.price[0]:a.price;
     var km=String(g('mileage')).replace(/\D/g,''),an=g('regdate'),en=g('fuel'),bo=g('gearbox'),ch=String(g('horse_power_din')).replace(/\D/g,'');
     var pro=!!(a.owner&&a.owner.type==='pro');
     var x=[a.subject||'',pr!=null?'Prix : '+pr+' €':'',an?'Année : '+an:'',km?'Kilométrage : '+km+' km':'',en?'Énergie : '+en:'',bo?'Boîte de vitesse : '+bo:'',ch?'Puissance : '+ch+' ch':'',(loc.city||loc.zipcode)?'Située à '+(loc.city||'')+' '+(loc.zipcode||''):'',pro?'Vendeur professionnel':'Particulier',String(a.body||'').replace(/\s+/g,' ').slice(0,200)].filter(Boolean).join('\n');
-    return {u:String(a.url||('https://www.leboncoin.fr/ad/voitures/'+a.list_id)).split('?')[0],t:String(a.subject||'').slice(0,140),x:x,f:{prix:pr,annee:an?+an:null,km:km?+km:null,energie:en,boite:bo,ville:loc.city||'',cp:loc.zipcode||'',pro:pro,ch:ch?+ch:null}};
+    return {u:String(a.url||('https://www.leboncoin.fr/ad/voitures/'+a.list_id)).split('?')[0],t:String(a.subject||'').slice(0,140),x:x,f:{prix:pr,annee:an?+an:null,km:km?+km:null,energie:en,boite:bo,ville:loc.city||'',cp:loc.zipcode||'',pro:pro,ch:ch?+ch:null,mq:code('u_car_brand'),md:code('u_car_model')}};
   });
-  return {items:items,total:sd.total||sd.total_all||null,max_pages:sd.max_pages||null,title:document.title,url:location.href};
+  return {items:items,total:sd.total||sd.total_all||null,max_pages:sd.max_pages||null,title:document.title,url:u.toString()};
 }

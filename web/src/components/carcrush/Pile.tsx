@@ -22,7 +22,13 @@ export function Pile({ id, annonces, choixInitiaux, onFavoris, onNouvelle }: {
   const [sortie, setSortie] = useState<ChoixCC | null>(null);
   const [erreur, setErreur] = useState("");
   const depart = useRef(0);
+  // appui commencé sur la photo : un appui sans glisser change de photo (droite : suivante, gauche : précédente)
+  const surPhoto = useRef<DOMRect | null>(null);
   const carte = useRef<HTMLElement>(null);
+  const [vue, setVue] = useState({ id: "", i: 0 });
+  const photos = cur ? (cur.photos?.length ? cur.photos : cur.photo ? [cur.photo] : []) : [];
+  const iPhoto = vue.id === cur?.id ? Math.min(vue.i, Math.max(0, photos.length - 1)) : 0;
+  const voirPhoto = (i: number) => cur && setVue({ id: cur.id, i: (i + photos.length) % photos.length });
 
   // la carte du dessus reçoit le focus : les flèches du clavier décident tout de suite
   useEffect(() => {
@@ -57,15 +63,18 @@ export function Pile({ id, annonces, choixInitiaux, onFavoris, onNouvelle }: {
   const down = (e: PointerEvent<HTMLElement>) => {
     if (sortie || (e.target as HTMLElement).closest("a,button")) return;
     depart.current = e.clientX;
+    surPhoto.current = (e.target as HTMLElement).closest("[data-photo]")?.getBoundingClientRect() ?? null;
     e.currentTarget.setPointerCapture(e.pointerId);
     setGlisse(true);
   };
   const move = (e: PointerEvent<HTMLElement>) => glisse && setDx(e.clientX - depart.current);
-  const up = () => {
+  const up = (e: PointerEvent<HTMLElement>) => {
     if (!glisse) return;
     if (dx > SEUIL) decider("garde");
     else if (dx < -SEUIL) decider("passe");
     else {
+      const r = surPhoto.current;
+      if (r && Math.abs(e.clientX - depart.current) < 8 && photos.length > 1) voirPhoto(iPhoto + (e.clientX < r.left + r.width / 3 ? -1 : 1));
       setGlisse(false);
       setDx(0);
     }
@@ -118,9 +127,25 @@ export function Pile({ id, annonces, choixInitiaux, onFavoris, onNouvelle }: {
             )}
             style={{ transform }}
           >
-            <div className="relative h-[46%] shrink-0">
-              <PhotoAnnonce src={cur.photo} className="absolute inset-0" />
-              <span className="absolute left-3 top-3 rounded-full bg-bg0/75 px-2.5 py-1 text-xs font-bold backdrop-blur">{cur.pro ? "Professionnel" : "Particulier"}</span>
+            <div className="relative h-[46%] shrink-0" data-photo="">
+              <PhotoAnnonce src={photos[iPhoto] ?? null} className="absolute inset-0" />
+              {/* photos suivantes chargées d'avance : le défilement est immédiat */}
+              {photos.slice(1).map((u) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={u} src={u} alt="" aria-hidden="true" className="hidden" />
+              ))}
+              {/* ombre légère en haut : les barres de photos et l'étiquette restent lisibles sur une photo claire */}
+              <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/50 to-transparent" />
+              {photos.length > 1 && (
+                <div className="absolute inset-x-2 top-1 flex gap-1">
+                  {photos.map((u, i) => (
+                    <button key={u} type="button" onClick={() => voirPhoto(i)} aria-label={`Photo ${i + 1} sur ${photos.length}`} aria-pressed={i === iPhoto} className="flex h-6 flex-1 items-center">
+                      <span className={cx("h-[3px] w-full rounded-full", i === iPhoto ? "bg-ink" : "bg-ink/35")} />
+                    </button>
+                  ))}
+                </div>
+              )}
+              <span className="absolute left-3 top-8 rounded-full bg-bg0/75 px-2.5 py-1 text-xs font-bold backdrop-blur">{cur.pro ? "Professionnel" : "Particulier"}</span>
               <span aria-hidden="true" className="absolute left-4 top-14 -rotate-12 rounded-2xl border-[3px] border-o bg-bg0/80 px-3.5 py-1 font-display text-3xl font-semibold text-o2" style={{ opacity: opGarde }}>
                 Je garde
               </span>
@@ -137,6 +162,15 @@ export function Pile({ id, annonces, choixInitiaux, onFavoris, onNouvelle }: {
               <p className="text-sm">
                 <EcartCote cote={cur.cote} />
               </p>
+              {!!cur.aVerifier?.length && (
+                <p className="flex flex-wrap gap-1.5">
+                  {cur.aVerifier.map((x) => (
+                    <span key={x} className="rounded-full border border-warn/50 px-2.5 py-0.5 text-xs font-bold text-warn">
+                      À vérifier : {x.toLowerCase()}
+                    </span>
+                  ))}
+                </p>
+              )}
               <dl className="grid grid-cols-4 gap-1.5 text-center">
                 {[
                   ["Année", cur.annee ?? "?"],
