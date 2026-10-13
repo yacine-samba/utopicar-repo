@@ -923,17 +923,18 @@
     if (!document.getElementById('sm-css')) { const st = mk('style', '', document.head, null, SEM_CSS); st.id = 'sm-css'; }
     const s = S(-1, DUR + 1, '#141110', { type: 'cut' }, 0.03), P = [];
     s.el.insertBefore(mk('div', 'bo-dots', s.el), s.cam);
-    const tGo = TA(['utopicar'], c.goAfter ?? 0) + 0.1, tPaste = TA(['coll'], c.goAfter ?? 0) - 0.15, tF = (() => { const a = TA(['trois'], tGo + 0.5); return a > tGo + 0.5 ? a : TA(['3'], tGo + 0.5); })();   // « trois » d'abord : « 3 000 » ne déclenche pas la fin
+    const tGo = (c.goT ?? TA(['utopicar', 'utopic', 'utopik'], c.goAfter ?? 0)) + 0.1, tPaste = TA(['coll'], c.goAfter ?? 0) - 0.15, tF = c.endT ?? (() => { const a = TA(['trois'], tGo + 0.5); return a > tGo + 0.5 ? a : TA(['3'], tGo + 0.5); })();   // « trois » d'abord : « 3 000 » ne déclenche pas la fin
     const tBadge = c.badge ?? tGo + 0.7, tS0 = c.scanT ?? tGo + 0.15, dS = 0.7, scanF = (t) => eIO(clamp((t - tS0) / dS, 0, 1));
     s.imp.push([0.15, 16], [tGo, 20]);
     // fond : disque (orange ; rouge quand le verdict est négatif), qui s'efface pendant l'analyse
     const disc = mk('div', 'bo-disc a', s.cam);
-    P.push((t) => { const pd = E(t, -0.3, 0.55); disc.style.background = c.red && t >= c.red ? 'var(--r)' : 'var(--o)';
+    P.push((t) => { const pd = E(t, -0.3, 0.55); disc.style.background = c.disc ? c.disc(t) : c.red && t >= c.red ? 'var(--r)' : 'var(--o)';
       pose(disc, t, () => ({ x: 540, y: 960, c: 1, s: (0.35 + 0.65 * pd) * (1 + 0.015 * pulse(t)), o: 1 - (c.noFade ? 0 : 0.75 * E(t, tS0 - 0.1, 0.6)) })); });
     // contexte (image 0)
     const pov = mk('div', 'pill a', s.cam, { background: 'var(--o)', color: '#1a1310', fontSize: '30px', padding: '8px 18px', letterSpacing: '.12em' }, 'POV');
     const k1 = L1(s.cam, 140, 300, 92, c.title || 'Ta 1re revente', '#fff'); k1.box.style.textShadow = '0 6px 28px rgba(0,0,0,.6)';
-    P.push((t) => { slamAt(pov, t, -0.5, 190, 255, -3); ktP(k1, t, [-0.6, -0.5, -0.45, -0.4], 'rise'); });
+    if (c.pov === false) pov.style.display = 'none';
+    P.push((t) => { if (c.pov !== false) slamAt(pov, t, -0.5, 190, 255, -3); ktP(k1, t, [-0.6, -0.5, -0.45, -0.4], 'rise', c.titleOut ?? null, 'up'); });
     // voitures
     const cars = (c.cars || []).map((k) => {
       const box = mk('div', 'bo-car a', s.cam, { width: k.cw + 'px' }), src = `../assets/hooks-cut/${k.n}-sticker.png`;
@@ -1047,9 +1048,11 @@
     }
     for (const b of c.msgs || []) { const f = bubble(s.cam, b.y, b.txt, b.me, b.t); P.push((t) => { if (b.out && t > b.out) { f(-99); return; } f(t); }); }
     if (c.demo) mk('div', 'sm-demo a', s.cam, { left: '140px', top: '410px' }, c.demo);
+    if (c.extra) c.extra(s, P, { tGo, tF });   // scènes propres à une vidéo (recherche automatique, e-mail…)
     s.P.push((t) => P.forEach((f) => f(t)));
     // fin : « 3 analyses offertes avec le code TIKTOK », logo
-    endCard(tF - 0.12, 'var(--o)', [['3 analyses', 250, 170, '#fff', false, tF], ['offertes', 430, 190, 'var(--ink)', true, TA(['offert'], tF)], ['avec le code TIKTOK', 640, 80, '#fff', false, TA(['code'], tF)]],
+    if (c.end) endCard(tF - 0.12, 'var(--o)', c.end.lines(tF), c.end.pill, tF + 0.35, { type: 'circle', x: 530, y: c.endY ?? 1340 });
+    else endCard(tF - 0.12, 'var(--o)', [['3 analyses', 250, 170, '#fff', false, tF], ['offertes', 430, 190, 'var(--ink)', true, TA(['offert'], tF)], ['avec le code TIKTOK', 640, 80, '#fff', false, TA(['code'], tF)]],
       'Code <b style="color:var(--o)">TIKTOK</b> · lien en bio', tF + 0.35, { type: 'circle', x: 530, y: c.endY ?? 1340 });
     return { cars, tGo, tF };
   }
@@ -1139,6 +1142,91 @@
     msgs: [{ txt: 'Je suis à l\'étranger 🙏', me: false, y: 540, t: 0.0, out: TA(['coll']) - 0.3 }, { txt: 'Je vous la fais livrer', me: false, y: 760, t: TA(['fais']) - 0.25, out: TA(['coll']) - 0.3 }, { txt: 'Un petit acompte ?', me: false, y: 980, t: TA(['un']) - 0.15, out: TA(['coll']) - 0.3 }],
     ticket: { t: TA(['arnaque']) - 0.5, y: 900, rows: [['Vendeur à l\'étranger', '⚠', TA(['arnaque']) - 0.3], ['Livraison sans visite', '⚠', TA(['arnaque']) - 0.1], ['Acompte avant visite', '⚠', TA(['arnaque']) + 0.1]], tot: ['Verdict', 'Arnaque', 'var(--r)', TA(['classique'])] },
     bigs: [{ txt: 'Rien avant d\'avoir <span style="color:var(--o)">vu</span>', x: 140, y: 1260, t: TA(['paie']) - 0.1, size: 76 }], barOff: TA(['arnaque']) - 0.5 });
+  // ---------- présentation en 5 vidéos (oct. 2026) : fin « Achète juste. Revends mieux. » + logo + lien en bio ----------
+  const FIN = { lines: (tF) => [['Achète juste.', 260, 130, '#fff', false, tF], ['Revends mieux.', 420, 130, 'var(--ink)', true, tF + 0.3]], pill: 'lien en bio' };
+  const DEMO_P = 'Données de démonstration';
+  // annonce collectée par une recherche suivie (carte sombre + verdict)
+  const ANN = [['Volkswagen Golf VII', '2016 · 112 000 km', '9 490 €', 'GO', 'var(--ok)', '+1 180 €'], ['Volkswagen Golf VII', '2015 · 168 000 km', '8 990 €', 'NO GO', 'var(--r)', ''],
+    ['Volkswagen Golf VII', '2017 · 96 000 km', '11 200 €', 'GO', 'var(--ok)', '+940 €'], ['Volkswagen Golf VII', '2014 · 201 000 km', '7 450 €', 'NO GO', 'var(--r)', ''],
+    ['Volkswagen Golf VII', '2016 · 134 000 km', '9 990 €', 'NO GO', 'var(--r)', ''], ['Volkswagen Golf VII', '2018 · 88 000 km', '12 490 €', 'GO', 'var(--ok)', '+1 310 €'],
+    ['Volkswagen Golf VII', '2015 · 145 000 km', '8 750 €', 'NO GO', 'var(--r)', ''], ['Volkswagen Golf VII', '2016 · 121 000 km', '9 200 €', 'NO GO', 'var(--r)', '']];
+  const annCard = (cam, a, showV) => mk('div', 'a', cam, { width: '800px', padding: '22px 30px', borderRadius: '28px', background: '#1b1612', color: '#f4f1ec', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 24px 44px -16px rgba(0,0,0,.7)', border: '1.5px solid rgba(244,241,236,.1)' },
+    `<div><div style="font:700 34px Satoshi">${a[0]}</div><div style="font:500 26px Satoshi;opacity:.55;margin-top:4px">${a[1]} · ${a[2]}</div></div>` + (showV ? `<div style="text-align:right"><b class="vd" style="font:700 28px Satoshi;padding:10px 18px;border-radius:14px;background:${a[4]};color:#fff;white-space:nowrap">${a[3]}</b>${a[5] ? `<div class="mg" style="font:700 30px Satoshi;color:#3ccf7a;margin-top:10px">${a[5]}</div>` : ''}</div>` : ''));
+  const rechCard = (cam) => mk('div', 'a', cam, { width: '800px', padding: '28px 34px', borderRadius: '32px', background: '#fff', color: 'var(--ink)', boxShadow: '0 40px 80px -30px rgba(0,0,0,.6)' },
+    `<div style="display:flex;justify-content:space-between;font:500 28px Satoshi;opacity:.6"><span>Recherche suivie · <b style="color:var(--o)">UTOPICAR</b></span><span>⟳</span></div><div style="font:700 46px Satoshi;margin-top:6px">Volkswagen Golf VII</div><div style="display:flex;gap:14px;margin-top:16px;font:600 28px Satoshi"><span style="padding:8px 18px;border-radius:999px;background:rgba(28,22,18,.07)">toutes les heures</span><span style="padding:8px 18px;border-radius:999px;background:rgba(19,112,54,.12);color:var(--ok)">● active</span></div>`);
+  const mailCard = (cam) => mk('div', 'a', cam, { width: '820px', borderRadius: '34px', background: '#fff', color: 'var(--ink)', overflow: 'hidden', boxShadow: '0 50px 90px -30px rgba(0,0,0,.65)' },
+    `<div style="display:flex;gap:18px;align-items:center;padding:26px 32px;border-bottom:1px solid rgba(28,22,18,.08)"><img src="../assets/brand/official/utopicar-icone-orange.svg" style="width:64px;height:64px;border-radius:16px"><div><div style="font:500 28px Satoshi;opacity:.55"><b style="opacity:1;color:var(--ink)">UTOPICAR</b> · 07:00</div><div style="font:700 38px Satoshi;margin-top:2px">3 annonces GO ce matin</div></div></div>`
+    + [['Golf VII · 2016 · 9 490 €', '+1 180 €'], ['Golf VII · 2017 · 11 200 €', '+940 €'], ['Golf VII · 2018 · 12 490 €', '+1 310 €']].map(([m, g]) => `<div class="ml" style="display:flex;justify-content:space-between;align-items:center;padding:20px 32px;border-bottom:1px solid rgba(28,22,18,.06);font:500 30px Satoshi"><span>${m}</span><b style="color:var(--ok)">${g}</b></div>`).join(''));
+  SEM.P1 = () => ({ ann: '208 · 7 190 €', demo: DEMO_P, pov: false, title: 'Ce prix ment.', end: FIN, endT: TA(['passe'], 16) + 0.75,   // le prix affiché cache la vraie facture
+    cars: [{ n: 'p208', cw: 860, x: 530, y: 860, tin: -0.1, from: 'slam', pins: [[0.3, 0.3, 'wa', 'Courroie à changer', TA(['courroie'])], [0.24, 0.78, 'wa', 'Pneus à prévoir', TA(['pneu'])], [0.8, 0.72, 'wa', 'Carte grise', TA(['carte'])]] }],
+    tags: [{ front: ['affiché', '7 190 €'], back: ['vraie facture', '8 840 €'], flip: TA(['8'], 9) - 0.15, x: 790, t: 0.6, out: TA(['coll']) - 0.2 }],
+    card: { lab: 'Ton prix max', v: '6 300 €', t: TA(['ton'], 13) - 0.3, hit: TA(['300'], 14) + 0.3 },
+    stamps: [{ txt: 'Au-dessus : PASSE', color: '#fff', x: 540, y: 1130, t: TA(['dessus']) - 0.05, r: -6, size: 90 }] });
+  SEM.P2 = () => ({ ann: 'Clio 4 · 6 900 €', demo: DEMO_P, pov: false, title: 'Tu l\'aurais achetée ?', end: FIN, endT: TA(['5900']) + 0.9, red: TA(['rate']) - 0.05,   // le oui qui coûte 1 650 €
+    cars: [{ n: 'clio4', cw: 880, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.24, 0.45, 'ko', 'Embrayage à changer', TA(['utopic'])], [0.76, 0.66, 'wa', 'Pneus + vidange', TA(['utopic'])]] }],
+    tags: [{ front: ['annonce', '6 900 €'], x: 520, t: TA(['clio']) - 0.1, out: TA(['coll']) - 0.2 }],
+    stamps: [{ txt: 'OUI ✓', color: '#3ccf7a', x: 540, y: 1250, t: TA(['oui']) - 0.05, r: -6, size: 130, out: TA(['rate']) - 0.05 },
+      { txt: '−1 650 € de travaux', color: '#fff', x: 540, y: 1250, t: TA(['1650']) - 0.05, r: -5, size: 80, out: TA(['coll']) - 0.3 }],
+    card: { lab: 'Négocie à', v: '5 900 €', t: TA(['verdict']) - 0.3, hit: TA(['5900']) + 0.3 } });
+  SEM.P3 = () => {   // trois annonces, une seule rapporte
+    const c1 = TA(['celle']), c2 = TA(['celle'], c1 + 0.5), c3 = TA(['celle'], c2 + 0.5);
+    return { ann: 'Clio · 4 990 €', demo: DEMO_P, pov: false, title: '3 annonces. 1 seule rapporte.', end: FIN, endT: TA(['minute']) + 0.8,
+      cars: [{ n: 'twingo', cw: 640, x: 530, y: 840, r: -3, tin: -0.1, from: 'slam', tout: c2 - 0.1, to: 'left' },
+        { n: 'polo5', cw: 860, x: 530, y: 840, r: 3, tin: c2 - 0.05, from: 'right', tout: c3 - 0.1, to: 'left' },
+        { n: 'clio3g', cw: 880, x: 530, y: 840, r: -2, tin: c3 - 0.05, from: 'right', scan: true, pins: [[0.45, 0.4, 'ok', 'Moteur fiable', TA(['utopic'])], [0.72, 0.64, 'ok', 'Marge : +1 240 €', TA(['utopic'])]] }],
+      stamps: [{ txt: 'NON', color: 'var(--r)', x: 540, y: 1250, t: TA(['non']) - 0.05, r: -8, size: 150, out: c2 - 0.1 }, { txt: 'NON PLUS', color: 'var(--r)', x: 540, y: 1250, t: TA(['non'], c2) - 0.05, r: 6, size: 130, out: c3 - 0.1 }],
+      stars: [{ v: '+1 240 €', t: TA(['plus'], c3) - 0.2, land: TA(['1240']) + 0.45, x: 760, y: 1220, s: 0.7, corner: { t: TA(['coll']) - 0.5, x: 255, y: 520, s: 0.4 } }] };
+  };
+  SEM.P4 = () => {   // pendant que tu dormais : la recherche suivie tourne seule, l'e-mail de 7 h
+    const tR = TA(['recherche']), tH = TA(['heures']), t7 = TA(['7'], 7), tM = TA(['mail']), tT = TA(['trois'], 9), tA = TA(['appeler']);
+    return { bar: false, pov: false, title: 'Pendant que tu dormais…', demo: DEMO_P, end: FIN, endT: tA + 0.85, goT: tT - 0.1, scanT: 99, titleOut: tR - 0.2,
+      disc: (t) => (t < t7 - 0.1 ? '#22305e' : 'var(--o)'),
+      extra: (s, P) => {
+        const clk = mk('div', 'sm-big a', s.cam, { color: '#fff', fontSize: '150px', background: 'rgba(20,17,16,.6)' }, '03:12');
+        const rc = rechCard(s.cam), cards = ANN.slice(0, 4).map((a) => annCard(s.cam, a, true)), ml = mailCard(s.cam), rows = [...ml.querySelectorAll('.ml')];
+        const tc = cards.map((_, i) => tH - 0.3 + i * 0.26);
+        cue(0.4, 'pop', 0.7); cue(tR - 0.05, 'whoosh', 0.6); cue(tR + 0.35, 'click', 0.8); tc.forEach((x) => cue(x, 'pop', 0.6)); cue(t7, 'roll', 0.8); cue(tM - 0.05, 'ding', 1); rows.forEach((_, i) => cue(tT + 0.15 + i * 0.25, 'pop', 0.7));
+        P.push((t) => {
+          const hm = t < t7 ? Math.min(6 * 60 + 59, 3 * 60 + 12 + Math.floor(E(t, 0.6, t7 - 0.8, (p) => p) * (3 * 60 + 47))) : 7 * 60;
+          clk.textContent = `${String(Math.floor(hm / 60)).padStart(2, '0')}:${String(hm % 60).padStart(2, '0')}`; clk.style.color = t >= t7 ? 'var(--o)' : '#fff';
+          pose(clk, t, (tt) => (tt > tM + 0.3 ? null : { x: 540, y: (tt < tR - 0.2 ? 960 : 560) + 40 * (1 - E(tt, -0.4, 0.4)), c: 1, s: (tt < tR - 0.2 ? 1.25 : 0.62) * (1 + 0.12 * bump(tt, t7, 0.2)), o: 1 - E(tt, tM, 0.25) }));
+          pose(rc, t, (tt) => (tt < tR - 0.05 || tt > tM + 0.3 ? null : { x: 540, y: 820 + 300 * (1 - E(tt, tR, 0.45)), c: 1, r: -1.5, o: E(tt, tR, 0.3) * 2 * (1 - E(tt, tM, 0.25)), s: 1 + 0.04 * bump(tt, tR + 0.35, 0.14) }));
+          cards.forEach((e, i) => pose(e, t, (tt) => { if (tt < tc[i] - 0.02 || tt > tM + 0.3) return null; const p = E(tt, tc[i], 0.35), k = cards.filter((_, j) => tc[j] <= tt).length - 1 - i;
+            return { x: 540, y: lerp(2000, 1040 + k * 112, p), c: 1, r: (i % 2 ? 1.5 : -1.5) * (1 - p), o: 1 - E(tt, tM, 0.25) }; }));
+          pose(ml, t, (tt) => (tt < tM - 0.05 ? null : { x: 540, y: lerp(-500, 940, E(tt, tM, 0.45)), c: 1, r: -1.5, s: 1 + 0.05 * bump(tt, tT, 0.2) }));
+          rows.forEach((r, i) => { const p = E(t, tT + 0.15 + i * 0.25, 0.3); r.style.opacity = (0.15 + 0.85 * p).toFixed(3); r.style.transform = `translateX(${(30 * (1 - p)).toFixed(1)}px)`; });
+        });
+      },
+      stamps: [{ txt: 'Appelle.', color: '#fff', x: 540, y: 1360, t: TA(['plus'], 11) - 0.05, r: -6, size: 110 }] };
+  };
+  SEM.P5 = () => {   // tu scrolles encore ? la recherche suivie trie à ta place
+    const tD = TA(['deux']), tMe = TA(['mets']), tR = TA(['recherche']), tTr = TA(['trie']), tMa = TA(['mauvaise']), tG = TA(['g'], 8), tMg = TA(['marge']);
+    return { bar: false, pov: false, title: 'Tu scrolles encore ?', demo: DEMO_P, end: FIN, endT: TA(['choisi']) + 0.85, goT: TA(['utopicar', 'utopic']), scanT: 99, titleOut: tMe - 0.1,
+      extra: (s, P) => {
+        const L = [...ANN, ...ANN].map((a) => { const e = annCard(s.cam, a, false); s.cam.insertBefore(e, s.cam.children[1]); return e; });   // derrière le titre
+        const timer = mk('div', 'sm-big a', s.cam, { color: '#fff', fontSize: '84px' }, '');
+        const rc = rechCard(s.cam), sorted = ANN.slice(0, 6).map((a) => annCard(s.cam, a, true));
+        const tOut = sorted.map((_, i) => tMa + 0.12 * i), keep = ANN.slice(0, 6).map((a) => a[3] === 'GO');
+        const goIdx = keep.map((k, i) => (k ? i : -1)).filter((i) => i >= 0);
+        cue(0.1, 'whoosh', 0.5); cue(tD - 0.05, 'pop', 0.8); cue(tMe - 0.05, 'impact', 0.8); cue(tR, 'whoosh', 0.6); cue(tR + 0.4, 'click', 0.8); cue(tTr, 'roll', 0.7);
+        tOut.forEach((x, i) => { if (!keep[i]) cue(x, 'whoosh', 0.4); }); cue(tG, 'pop', 0.9); cue(tMg, 'pop', 0.8);
+        P.push((t) => {
+          // le fil d'annonces qui défile de plus en plus vite, puis s'arrête net sur « Mets »
+          const sc = t < tMe ? 260 * t + 900 * Math.pow(Math.max(0, t - 1), 2) : 0;
+          L.forEach((e, i) => pose(e, t, (tt) => { if (tt >= tMe) return null; const ss = tt < tMe ? 260 * tt + 900 * Math.pow(Math.max(0, tt - 1), 2) : 0; return { x: 540, y: 620 + i * 132 - (ss % (ANN.length * 132)), c: 1, o: 0.95 }; }));
+          const h = Math.min(134, Math.floor(E(t, tD, 0.9, (p) => p) * 134));
+          timer.textContent = `⏱ ${Math.floor(h / 60)} h ${String(h % 60).padStart(2, '0')} de scroll`;
+          pose(timer, t, (tt) => (tt < tD - 0.05 || tt > tMe ? null : { x: 140, y: 1330 + 50 * (1 - E(tt, tD, 0.35)), o: E(tt, tD, 0.25) * 2 }));
+          pose(rc, t, (tt) => (tt < tR - 0.05 ? null : { x: 540, y: 560 + 260 * (1 - E(tt, tR, 0.45)), c: 1, r: -1.5, o: E(tt, tR, 0.3) * 2, s: 1 + 0.04 * bump(tt, tR + 0.4, 0.14) }));
+          sorted.forEach((e, i) => pose(e, t, (tt) => { if (tt < tTr - 0.1 + i * 0.06) return null; const p = E(tt, tTr - 0.1 + i * 0.06, 0.35);
+            let y = lerp(2000, 820 + i * 120, p), x = 540;
+            if (!keep[i]) x += 1300 * E(tt, tOut[i], 0.35, eIn);
+            else { const k = goIdx.indexOf(i); y = lerp(y, 860 + k * 175, E(tt, tG - 0.2, 0.45)); }
+            return { x, y, c: 1, r: !keep[i] ? 8 * E(tt, tOut[i], 0.35, eIn) : 0, s: keep[i] ? 1 + 0.06 * E(tt, tG - 0.2, 0.45) : 1 }; }));
+          sorted.forEach((e, i) => { const mg = e.querySelector('.mg'); if (mg) mg.style.opacity = E(t, tMg - 0.1, 0.3).toFixed(3); });
+        });
+      } };
+  };
   for (const id of Object.keys(SEM)) SPECS[id] = () => semaine(SEM[id]());
 
   if (!SPECS[ID]) throw new Error('vidéo inconnue : ' + ID);

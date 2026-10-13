@@ -43,8 +43,18 @@ for _id in ['S1V1', 'S1V2', 'S1V3', 'S1V4', 'S1V5', 'S1V6', 'S1V7', 'S2V1', 'S2V
         k, a = HITW[_id]; ht = _T(W, [k], a) + 0.3
     MU[_id] = {'stop': round(st, 2), 'muf': None, 'pivot': round(pv, 2), 'hit': round(ht, 2), 'dur': round(end + 1.25, 2)}
     json.dump(MU, open('audio/c7-musique.json', 'w', encoding='utf8'), indent=1)
+# présentation en 5 vidéos (oct. 2026) : arrêt avant « tu colles » (ou la chute), drop sur « Utopicar » (P4 : « Trois annonces »),
+# coup final sur le chiffre ou la dernière phrase ; carton muet de 2,4 s (logo, « lien en bio »)
+PREZ = {'P1': (['coll'], 0, ['utopic'], 0, ['300'], 14, 0.3), 'P2': (['coll'], 0, ['utopic'], 0, ['5900'], 0, 0.3),
+        'P3': (['coll'], 0, ['utopic'], 0, ['minute'], 0, 0.2), 'P4': (['un'], 8, ['trois'], 9, ['appeler'], 0, 0.2),
+        'P5': (['mets'], 0, ['utopic'], 0, ['g'], 8, 0.3)}
+for _id, (ks, ka, kp, kpa, kh, kha, dh) in PREZ.items():
+    W = json.load(open(f'audio/vo-c7/{_id}.words.json', encoding='utf8')); end = max(w['e'] for w in W)
+    pv = _T(W, kp, kpa) + (0.0 if _id == 'P4' else 0.1)
+    MU[_id] = {'stop': round(_T(W, ks, ka) - 0.45, 2), 'muf': None, 'pivot': round(pv, 2), 'hit': round(_T(W, kh, kha) + dh, 2), 'dur': round(end + 2.4, 2)}
+json.dump(MU, open('audio/c7-musique.json', 'w', encoding='utf8'), indent=1)
 POSTER = {'dico2': 1.9, 'A01': 1.6, 'A02': 3.2, 'A03': 1.9, 'A04': 2.1, 'A05': 2.2, 'A06': 2.1, 'A07': 2.0, 'PS1': 3.4, 'PS2': 8.8, 'FI1': 0.0, 'FI2': 0.0, 'FI3': 0.0, 'BO1': 0.9, 'BO2': 2.2, 'BO3': 2.2}
-for _id in [k for k in MU if k.startswith('S')]: POSTER[_id] = 0.9
+for _id in [k for k in MU if k.startswith('S') or k in PREZ]: POSTER[_id] = 0.9
 json.dump({'version': 1, 'style': 'Motions de 15 à 20 s (dictionnaire du vendeur, carrousels A01 à A07) dans la grammaire master60w ; HOOK = id de la vidéo',
            'fps': 30, 'bpm': 112, 'size': [1080, 1920], 'dur': 20.0,
            'hooks': {k: {'dur': v['dur'], 'poster': POSTER[k]} for k, v in MU.items()}},
