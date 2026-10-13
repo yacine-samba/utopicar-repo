@@ -16,6 +16,7 @@ import { fournisseursActifs } from "@/lib/fournisseurs";
 import { JsonLdFaq } from "@/components/site/JsonLd";
 import { GainsAbonnement } from "@/components/site/GainsAbonnement";
 import { PARTICULIERS } from "@/lib/offres";
+import { CompteurInscrits } from "@/components/site/CompteurInscrits";
 
 /* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
    Une seule action (coller une annonce), la preuve visible tout de suite (vraie annonce, verdict joué en 2 s), de vrais chiffres,
@@ -68,6 +69,7 @@ export default async function Accueil() {
                 </li>
               ))}
             </ul>
+            <CompteurInscrits className="mt-3 justify-center lg:justify-start" />
           </div>
           <CarteHero defaut={CARTE_ACCUEIL} />
         </div>

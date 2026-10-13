@@ -6,6 +6,7 @@ import { Faq } from "@/components/site/Faq";
 import { OngletsTarifs } from "@/components/site/OngletsTarifs";
 import { compteCourant } from "@/lib/compte";
 import { BENEF, GUIDE, PARTICULIERS } from "@/lib/offres";
+import { CompteurInscrits } from "@/components/site/CompteurInscrits";
 
 export const metadata: Metadata = {
   title: "Tarifs : analyse d'annonce de voiture d'occasion, première offerte",
@@ -24,6 +25,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           Payez seulement <span className="it">ce qui vous sert</span>
         </h1>
         <p className="mt-4 text-lg text-ink-2">Sans engagement, résiliable à tout moment depuis votre compte. Prix toutes taxes comprises.</p>
+        <CompteurInscrits className="mt-3 justify-center" />
         {paiement === "annule" && (
           <p role="status" className="mx-auto mt-6 w-fit rounded-2xl border border-warn/40 bg-warn/10 px-4 py-2 text-warn">
             Paiement annulé : rien n&apos;a été débité.

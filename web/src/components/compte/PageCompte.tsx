@@ -9,6 +9,7 @@ import { ConnexionSociale } from "./ConnexionSociale";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { TroisTemps } from "../accueil/TroisTemps";
 import { PreuveAnimee } from "../accueil/PreuveAnimee";
+import { CompteurInscrits } from "../site/CompteurInscrits";
 
 /** Écran commun inscription / connexion. À l'inscription : le parcours en 3 temps (on en est au premier)
     et, sur ordinateur, la carte animée qui montre ce qu'on obtient juste après. */
@@ -35,6 +36,7 @@ export async function PageCompte({ mode, params }: { mode: "inscription" | "conn
         {mode === "inscription" && (
           <div className="mt-7">
             <TroisTemps etapes={[["compte", "Votre compte"], ["lien", "Collez une annonce"], ["verdict", "Votre verdict"]]} actif={0} />
+            <CompteurInscrits className="mt-4" />
           </div>
         )}
         {mode === "inscription" && (
