@@ -6,7 +6,7 @@ import { compteCourant, type Compte } from "@/lib/compte";
 import { comptesActifs } from "@/lib/supabase/config";
 import { familleEspace, navEspace, nomFormule, texteRestantes } from "@/lib/espace";
 import { centimes, formuleSuivante, prixParAnalyse } from "@/lib/offres";
-import { Logo, Symbole } from "@/components/site/Logo";
+import { Logo } from "@/components/site/Logo";
 import { Ico } from "@/components/espace/Icones";
 import { NavCote, NavMobile } from "@/components/espace/NavEspace";
 import { CommandeK, SeuilMarge } from "@/components/espace/OutilsEspace";
@@ -23,30 +23,33 @@ export const metadata: Metadata = { title: { default: "Mon espace", template: "%
 // Espace personnel : toujours rendu à la demande (session, formule, quotas).
 export const dynamic = "force-dynamic";
 
-/** Bas du menu : le profil, avec la formule à côté. Un clic ouvre les paramètres (formule, mot de passe, guides…). */
+/** Bas du menu : le profil, avec la formule à côté. Un clic ouvre les paramètres (formule, mot de passe, guides…).
+    Menu replié : l'avatar seul, et les intitulés en bulle au survol. */
 function PiedNav({ c }: { c: Compte }) {
+  const ligne = "a-bulle flex min-h-9 items-center gap-3 rounded-xl px-3 py-2 text-ink-3 hover:bg-glass hover:text-ink lg:group-data-[replie=true]/menu:size-11 lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:p-0";
   return (
-    <div className="grid gap-3">
-      <Link href="/app/compte" className="group flex items-center gap-3 rounded-2xl border border-line px-2.5 py-2 transition hover:border-o/40 hover:bg-glass lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:border-transparent lg:group-data-[replie=true]/menu:px-0" title={`Profil et paramètres · ${nomFormule(c)}`}>
+    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-3 lg:group-data-[replie=true]/menu:justify-items-center">
+      <Link href="/app/compte" className="a-bulle group flex min-w-0 items-center gap-3 rounded-2xl border border-line px-2.5 py-2 transition hover:border-o/40 hover:bg-glass lg:group-data-[replie=true]/menu:border-transparent lg:group-data-[replie=true]/menu:p-1">
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-o/15 font-display font-semibold text-o2" aria-hidden="true">
           {(c.prenom || c.email).slice(0, 1).toUpperCase()}
         </span>
-        <span className="min-w-0 flex-1 lg:group-data-[replie=true]/menu:sr-only">
-          <span className="flex items-center gap-2">
+        <span className="grid min-w-0 flex-1 gap-0.5 lg:group-data-[replie=true]/menu:hidden">
+          <span className="flex min-w-0 items-center gap-2">
             <span className="truncate text-sm font-medium">{c.prenom || "Mon compte"}</span>
-            <span className="shrink-0 rounded-full border border-o/40 bg-o/10 px-2 py-px text-[11px] font-medium text-o2">{nomFormule(c)}</span>
+            <span className="max-w-[60%] shrink-0 truncate rounded-full border border-o/40 bg-o/10 px-2 py-px text-[11px] font-medium text-o2">{nomFormule(c)}</span>
           </span>
-          <span className="block truncate text-xs text-ink-3">{c.email}</span>
-          <span className="block truncate text-xs text-ink-3">{texteRestantes(c)}</span>
+          <span className="truncate text-xs text-ink-3">{c.email}</span>
+          <span className="truncate text-xs text-ink-3">{texteRestantes(c)}</span>
         </span>
+        <span className="bulle-seule">Profil et paramètres · {nomFormule(c)}</span>
       </Link>
-      <div className="grid gap-0.5 text-sm">
-        <Link href="/" title="Retour au site" className="flex items-center gap-3 rounded-xl px-3 py-2 text-ink-3 hover:bg-glass hover:text-ink lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:px-0">
-          <Ico nom="site" className="size-4" /> <span className="lg:group-data-[replie=true]/menu:sr-only">Retour au site</span>
+      <div className="grid gap-0.5 text-sm lg:group-data-[replie=true]/menu:justify-items-center">
+        <Link href="/" className={ligne}>
+          <Ico nom="site" className="size-4 shrink-0" /> <span className="bulle">Retour au site</span>
         </Link>
         <form action="/auth/deconnexion" method="post">
-          <button type="submit" title="Se déconnecter" className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-ink-3 hover:bg-glass hover:text-ink lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:px-0">
-            <Ico nom="sortie" className="size-4" /> <span className="lg:group-data-[replie=true]/menu:sr-only">Se déconnecter</span>
+          <button type="submit" className={`${ligne} w-full text-left`}>
+            <Ico nom="sortie" className="size-4 shrink-0" /> <span className="bulle">Se déconnecter</span>
           </button>
         </form>
       </div>
@@ -80,13 +83,14 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
     <CodeEnAttente />
     <AnalysesEnFond mode={benef && c.offre.famille === "benef" ? "benef" : "particulier"} actif={!benef || c.offre.famille === "benef"} maxPhotos={c.offre.photos} ville={c.ville} suite={suite}>
     <CadreEspace
+      logo={
+        <Link href="/app" className="block px-1" aria-label="Mon espace, accueil">
+          <Logo sous={benef ? "Benef" : undefined} />
+        </Link>
+      }
       menu={
         <>
-          <Link href="/app" className="px-1 lg:group-data-[replie=true]/menu:px-0" aria-label="Mon espace, accueil">
-            <span className="lg:group-data-[replie=true]/menu:hidden"><Logo sous={benef ? "Benef" : undefined} /></span>
-            <span className="hidden size-9 place-items-center overflow-hidden rounded-xl border border-line-2 bg-[#15110d] text-[#f4f1ec] lg:group-data-[replie=true]/menu:grid"><Symbole className="h-auto w-[84%]" /></span>
-          </Link>
-          <BoutonAnalyser className="min-h-9 gap-2 whitespace-nowrap px-3.5 py-1.5 text-[13px] shadow-[0_8px_22px_-14px_rgb(255_90_31/0.9)]" icone="size-4" />
+          <BoutonAnalyser className="min-h-10 gap-2 whitespace-nowrap px-3.5 py-1.5 text-[13px] shadow-[0_8px_22px_-14px_rgb(255_90_31/0.9)]" icone="size-4" />
           <div className="grid w-full flex-1 content-start gap-3">
             <NavCote entrees={entrees} />
             <div className="grid gap-2 lg:group-data-[replie=true]/menu:hidden">

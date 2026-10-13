@@ -1,6 +1,6 @@
 import type { Icone } from "@/lib/espace";
 
-const TRACES: Record<Icone | "plus" | "fermer" | "sortie" | "site" | "lien" | "historique" | "replier" | "deplier", string> = {
+const TRACES: Record<Icone | "plus" | "fermer" | "sortie" | "site" | "lien" | "historique" | "replier" | "deplier" | "panneau", string> = {
   accueil: "M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5",
   analyser: "M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Zm5.3-2.2L21 21M7.5 10.5l2 2 4-4",
   rapports: "M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm7 0v5h5M9 13h6M9 17h6",
@@ -25,6 +25,7 @@ const TRACES: Record<Icone | "plus" | "fermer" | "sortie" | "site" | "lien" | "h
   estimation: "M5 3h14v18H5V3Zm3 4h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h8",
   admin: "M12 3 5 6v5c0 4.5 3 8.3 7 9.5 4-1.2 7-5 7-9.5V6l-7-3Zm-3 9 2 2 4-4",
   replier: "M14.5 6 8.5 12l6 6",
+  panneau: "M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6Zm5.5-2v16",
   deplier: "M9.5 6l6 6-6 6",
   lien: "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
 };
