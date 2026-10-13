@@ -1501,17 +1501,17 @@
   const mailCard = (cam) => mk('div', 'a', cam, { width: '820px', borderRadius: '34px', background: '#fff', color: 'var(--ink)', overflow: 'hidden', boxShadow: '0 50px 90px -30px rgba(0,0,0,.65)' },
     `<div style="display:flex;gap:18px;align-items:center;padding:26px 32px;border-bottom:1px solid rgba(28,22,18,.08)"><img src="../assets/brand/official/utopicar-icone-orange.svg" style="width:64px;height:64px;border-radius:16px"><div><div style="font:500 28px Satoshi;opacity:.55"><b style="opacity:1;color:var(--ink)">UTOPICAR</b> · 07:00</div><div style="font:700 38px Satoshi;margin-top:2px">3 annonces GO ce matin</div></div></div>`
     + [['Golf VII · 2016 · 9 490 €', '+1 180 €'], ['Golf VII · 2017 · 11 200 €', '+940 €'], ['Golf VII · 2018 · 12 490 €', '+1 310 €']].map(([m, g]) => `<div class="ml" style="display:flex;justify-content:space-between;align-items:center;padding:20px 32px;border-bottom:1px solid rgba(28,22,18,.06);font:500 30px Satoshi"><span>${m}</span><b style="color:var(--ok)">${g}</b></div>`).join(''));
-  SEM.P1 = () => ({ ann: '208 · 7 190 €', demo: DEMO_P, pov: false, title: 'Ce prix ment.', end: FIN, endT: TA(['passe'], 16) + 0.75,   // le prix affiché cache la vraie facture
+  SEM.P1 = () => ({ ann: '208 · 7 190 €', demo: DEMO_P, pov: false, title: 'Ce prix ment.', end: FIN, endT: TA(['passe'], TA(['dessus'])) + 0.75,   // le prix affiché cache la vraie facture
     cars: [{ n: 'p208', cw: 860, x: 530, y: 860, tin: -0.1, from: 'slam', pins: [[0.12, 0.42, 'wa', 'Courroie à changer', TA(['courroie'])], [0.24, 0.78, 'wa', 'Pneus à prévoir', TA(['pneu'])], [0.8, 0.72, 'wa', 'Carte grise', TA(['carte'])]] }],
-    tags: [{ front: ['affiché', '7 190 €'], back: ['vraie facture', '8 840 €'], flip: TA(['8'], 9) - 0.15, x: 470, t: 0.6, out: TA(['coll']) - 0.2 }],
-    card: { lab: 'Ton prix max', v: '6 300 €', t: TA(['ton'], 13) - 0.3, hit: TA(['300'], 14) + 0.3 },
+    tags: [{ front: ['affiché', '7 190 €'], back: ['vraie facture', '8 840 €'], flip: TA(['8840', '8'], TA(['facture'])) - 0.15, x: 470, t: 0.6, out: TA(['coll']) - 0.2 }],
+    card: { lab: 'Ton prix max', v: '6 300 €', t: TA(['ton'], TA(['utopic'])) - 0.3, hit: TA(['6300', '300'], TA(['max'])) + 0.3 },
     stamps: [{ txt: 'Au-dessus : PASSE', color: '#fff', x: 540, y: 1130, t: TA(['dessus']) - 0.05, r: -4, size: 70 }] });   // 70 : à 90 le tampon débordait de la colonne 140 → 940
-  SEM.P2 = () => ({ ann: 'Clio 4 · 6 900 €', demo: DEMO_P, pov: false, title: 'Tu l\'aurais achetée ?', end: FIN, endT: TA(['5900']) + 0.9, red: TA(['rate']) - 0.35,   // le oui qui coûte 1 650 €
+  SEM.P2 = () => ({ ann: 'Clio 4 · 6 900 €', demo: DEMO_P, pov: false, title: 'Tu l\'aurais achetée ?', end: FIN, endT: TA(['5900', '5'], TA(['verdict'])) + 0.9, red: TA(['rate']) - 0.05,   // le oui qui coûte 1 650 €
     cars: [{ n: 'clio4', cw: 880, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.24, 0.45, 'wa', 'Embrayage à changer', TA(['utopic'])], [0.76, 0.66, 'wa', 'Pneus + vidange', TA(['utopic'])]] }],
     tags: [{ front: ['annonce', '6 900 €'], x: 470, t: TA(['clio']) - 0.1, out: TA(['coll']) - 0.2 }],
-    stamps: [{ txt: 'OUI ✓', color: '#3ccf7a', x: 540, y: 1250, t: TA(['oui']) - 0.05, r: -6, size: 130, out: TA(['rate']) - 0.35 },   // whisper place « raté » 0,3 s et « 1 650 » 0,7 s après la voix réelle (mesuré à l'énergie et en retranscrivant le segment seul)
-      { txt: '−1 650 € de travaux', color: '#fff', x: 540, y: 1250, t: TA(['1650']) - 0.7, r: -5, size: 74, out: TA(['coll']) - 0.3 }],
-    card: { lab: 'Négocie à', v: '5 900 €', t: TA(['verdict']) - 0.3, hit: TA(['5900']) + 0.3 } });
+    stamps: [{ txt: 'OUI ✓', color: '#3ccf7a', x: 540, y: 1250, t: TA(['oui']) - 0.05, r: -6, size: 130, out: TA(['rate']) - 0.05 },
+      { txt: '−1 650 € de travaux', color: '#fff', x: 540, y: 1250, t: TA(['1650']) - 0.05, r: -5, size: 74, out: TA(['coll']) - 0.3 }],
+    card: { lab: 'Négocie à', v: '5 900 €', t: TA(['verdict']) - 0.3, hit: TA(['5900', '5'], TA(['verdict'])) + 0.3 } });   // repères ancrés sur le mot précédent : valables pour la prise v3 et la prise v4 (« 5 900 » ou « 5 » « 900 »)
   SEM.P3 = () => {   // trois annonces, une seule rapporte
     const c1 = TA(['celle']), c2 = TA(['celle'], c1 + 0.5), c3 = TA(['celle'], c2 + 0.5);
     return { ann: 'Clio · 4 990 €', demo: DEMO_P, pov: false, title: '3 annonces. 1 seule rapporte.', end: FIN, endT: TA(['minute']) + 0.8,
@@ -1522,7 +1522,7 @@
       stars: [{ v: '+1 240 €', t: TA(['plus'], c3) - 0.2, land: TA(['1240']) + 0.45, x: 640, y: 1230, s: 0.7, corner: { t: TA(['coll']) - 0.5, x: 255, y: 575, s: 0.4 } }] };
   };
   SEM.P4 = () => {   // pendant que tu dormais : la recherche suivie tourne seule, l'e-mail de 7 h
-    const tR = TA(['recherche']), tH = TA(['heures']), t7 = TA(['7'], 7), tM = TA(['mail']), tT = TA(['trois'], 9), tA = TA(['appeler']);
+    const tR = TA(['recherche']), tH = TA(['heures']), t7 = TA(['7h', 'sept', '7'], TA(['heures'])), tM = TA(['mail']), tT = TA(['trois', '3'], TA(['mail'])), tA = TA(['appeler']);
     return { bar: false, pov: false, title: 'Pendant que tu dormais…', demo: DEMO_P, end: FIN, endT: tA + 0.85, goT: tT - 0.1, scanT: 99, titleOut: tR - 0.2,
       disc: (t) => (t < t7 - 0.1 ? '#22305e' : 'var(--o)'),
       extra: (s, P) => {
@@ -1541,10 +1541,10 @@
           rows.forEach((r, i) => { const p = E(t, tT + 0.15 + i * 0.25, 0.3); r.style.opacity = (0.15 + 0.85 * p).toFixed(3); r.style.transform = `translateX(${(30 * (1 - p)).toFixed(1)}px)`; });
         });
       },
-      stamps: [{ txt: 'Appelle.', color: '#fff', x: 540, y: 1360, t: TA(['plus'], 11) - 0.05, r: -6, size: 110 }] };
+      stamps: [{ txt: 'Appelle.', color: '#fff', x: 540, y: 1360, t: TA(['plus'], tT) - 0.05, r: -6, size: 110 }] };
   };
   SEM.P5 = () => {   // tu scrolles encore ? la recherche suivie trie à ta place
-    const tD = TA(['deux']), tMe = TA(['mets']), tR = TA(['recherche']), tTr = TA(['trie']), tMa = TA(['mauvaise']), tG = TA(['g'], 8), tMg = TA(['marge']);
+    const tD = TA(['deux']), tMe = TA(['mets']), tR = TA(['recherche']), tTr = TA(['trie', 'trit'], tMe), tMa = TA(['mauvaise']), tG = TA(['g'], tMa), tMg = TA(['marge']);
     return { bar: false, pov: false, title: 'Tu scrolles encore ?', demo: DEMO_P, end: FIN, endT: TA(['choisi']) + 0.85, goT: TA(['utopicar', 'utopic']), scanT: 99, titleOut: tMe - 0.1,
       extra: (s, P) => {
         const feed = mk('div', 'a', null, { width: '1080px', height: '1000px', top: '480px', overflow: 'hidden', WebkitMaskImage: 'linear-gradient(transparent 0,#000 90px,#000 880px,transparent 1000px)' }); s.cam.insertBefore(feed, s.cam.children[1]);   // fenêtre du fil, sous le titre, au-dessus de la bande du bas

@@ -45,8 +45,8 @@ for _id in ['S1V1', 'S1V2', 'S1V3', 'S1V4', 'S1V5', 'S1V6', 'S1V7', 'S2V1', 'S2V
     json.dump(MU, open('audio/c7-musique.json', 'w', encoding='utf8'), indent=1)
 # présentation en 5 vidéos (oct. 2026) : arrêt avant « tu colles » (ou la chute), drop sur « Utopicar » (P4 : « Trois annonces »),
 # coup final sur le chiffre ou la dernière phrase ; carton muet de 2,4 s (logo, « lien en bio »)
-PREZ = {'P1': (['coll'], 0, ['utopic'], 0, ['300'], 14, 0.3), 'P2': (['coll'], 0, ['utopic'], 0, ['5900'], 0, 0.3),
-        'P3': (['coll'], 0, ['utopic'], 0, ['minute'], 0, 0.2), 'P4': (['un'], 8, ['trois'], 9, ['appeler'], 0, 0.2),
+PREZ = {'P1': (['coll'], 0, ['utopic'], 0, ['6300', '300'], 11, 0.3), 'P2': (['coll'], 0, ['utopic'], 0, ['5900', '5'], 11, 0.3),   # prises eleven_v4 (13 oct.)
+        'P3': (['coll'], 0, ['utopic'], 0, ['minute'], 0, 0.2), 'P4': (['un'], 8, ['trois', '3'], 9, ['appeler'], 0, 0.2),
         'P5': (['mets'], 0, ['utopic'], 0, ['g'], 8, 0.3)}
 for _id, (ks, ka, kp, kpa, kh, kha, dh) in PREZ.items():
     W = json.load(open(f'audio/vo-c7/{_id}.words.json', encoding='utf8')); end = max(w['e'] for w in W)

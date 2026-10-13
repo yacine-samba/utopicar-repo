@@ -13,6 +13,7 @@ def _p(*a, **k):
     k.pop('metadata_errors', None); return _o(*a, **k)
 av.open = _p
 from faster_whisper import WhisperModel
+sys_path = os.path.dirname(os.path.abspath(__file__)); import sys; sys.path.insert(0, sys_path); from words_snap import snap
 
 SR, RESPI, D = 48000, 0.26, 'audio/vo-c7'
 MAXV = 19.0      # voix posée la plus longue (s) : avec le carton de fin, la vidéo tient en 20 s
@@ -65,5 +66,7 @@ for k, y in src.items():
         os.remove(tmp); z = librosa.load(os.path.join(D, k + '.wav'), sr=SR)[0]; print(f'{k}: accéléré × {sp:.3f}')
     segs, _ = M.transcribe(os.path.join(D, k + '.wav'), language='fr', word_timestamps=True, vad_filter=False)
     W = [{'w': w.word.strip(), 's': round(w.start, 3), 'e': round(w.end, 3)} for s in segs for w in s.words]
+    W, _mv = snap(os.path.join(D, k + '.wav'), W)   # débuts de mots recalés sur l'attaque réelle de la voix (scripts/words_snap.py)
+    if _mv: print(f'{k}: recalés ' + ', '.join(_mv))
     json.dump(W, open(os.path.join(D, k + '.words.json'), 'w', encoding='utf8'), ensure_ascii=False, indent=0)
     print(f'{k}: {len(y) / SR:5.2f} s → {len(z) / SR:5.2f} s · ' + ' '.join(f"{w['w']}[{w['s']:.2f}]" for w in W))
