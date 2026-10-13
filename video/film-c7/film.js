@@ -1309,7 +1309,8 @@
         const f = k.line ? 100 : k.scan ? clamp((-50 + (k.cw + 100) * scanF(t)) / k.cw, 0, 1) * 100 : 0;
         ph.style.clipPath = `inset(0 0 0 ${f.toFixed(2)}%)`; ln.style.clipPath = `inset(0 ${(100 - f).toFixed(2)}% 0 0)`; ht.style.opacity = (1 - 0.007 * f).toFixed(3);
         ht.style.transform = 'translate(20px,28px)';
-        if (scan) { const bx = -50 + (k.cw + 100) * scanF(t); scan.style.display = t > tS0 - 0.05 && t < tS0 + dS + 0.25 ? '' : 'none'; scan.style.left = bx.toFixed(1) + 'px'; scan.style.height = box.offsetHeight + 180 + 'px'; scan.style.opacity = (1 - E(t, tS0 + dS, 0.22)).toFixed(3); }
+        if (scan) { const bx = -50 + (k.cw + 100) * scanF(t); scan.style.display = t > tS0 - 0.05 && t < tS0 + dS + 0.25 ? '' : 'none'; scan.style.left = bx.toFixed(1) + 'px'; scan.style.height = box.offsetHeight + 180 + 'px'; scan.style.opacity = (1 - E(t, tS0 + dS, 0.22)).toFixed(3);
+          const ax = k.x - k.cw / 2 + bx; scan.firstChild.style.transform = `translateX(calc(-50% + ${(clamp(ax, 230, 850) - ax).toFixed(1)}px))`; }   // l'étiquette reste dans la colonne 140 → 940
         for (const q of pins) {
           const on = t >= q.tc - 0.01; q.p.style.display = on ? '' : 'none'; if (!on) continue; const u = t - q.tc;
           q.dot.style.transform = `scale(${clamp(spring(u, 'snappy'), 0, 2).toFixed(3)})`;
@@ -1504,12 +1505,12 @@
     cars: [{ n: 'p208', cw: 860, x: 530, y: 860, tin: -0.1, from: 'slam', pins: [[0.12, 0.42, 'wa', 'Courroie à changer', TA(['courroie'])], [0.24, 0.78, 'wa', 'Pneus à prévoir', TA(['pneu'])], [0.8, 0.72, 'wa', 'Carte grise', TA(['carte'])]] }],
     tags: [{ front: ['affiché', '7 190 €'], back: ['vraie facture', '8 840 €'], flip: TA(['8'], 9) - 0.15, x: 470, t: 0.6, out: TA(['coll']) - 0.2 }],
     card: { lab: 'Ton prix max', v: '6 300 €', t: TA(['ton'], 13) - 0.3, hit: TA(['300'], 14) + 0.3 },
-    stamps: [{ txt: 'Au-dessus : PASSE', color: '#fff', x: 540, y: 1130, t: TA(['dessus']) - 0.05, r: -6, size: 90 }] });
-  SEM.P2 = () => ({ ann: 'Clio 4 · 6 900 €', demo: DEMO_P, pov: false, title: 'Tu l\'aurais achetée ?', end: FIN, endT: TA(['5900']) + 0.9, red: TA(['rate']) - 0.05,   // le oui qui coûte 1 650 €
+    stamps: [{ txt: 'Au-dessus : PASSE', color: '#fff', x: 540, y: 1130, t: TA(['dessus']) - 0.05, r: -4, size: 70 }] });   // 70 : à 90 le tampon débordait de la colonne 140 → 940
+  SEM.P2 = () => ({ ann: 'Clio 4 · 6 900 €', demo: DEMO_P, pov: false, title: 'Tu l\'aurais achetée ?', end: FIN, endT: TA(['5900']) + 0.9, red: TA(['rate']) - 0.35,   // le oui qui coûte 1 650 €
     cars: [{ n: 'clio4', cw: 880, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.24, 0.45, 'wa', 'Embrayage à changer', TA(['utopic'])], [0.76, 0.66, 'wa', 'Pneus + vidange', TA(['utopic'])]] }],
     tags: [{ front: ['annonce', '6 900 €'], x: 470, t: TA(['clio']) - 0.1, out: TA(['coll']) - 0.2 }],
-    stamps: [{ txt: 'OUI ✓', color: '#3ccf7a', x: 540, y: 1250, t: TA(['oui']) - 0.05, r: -6, size: 130, out: TA(['rate']) - 0.05 },
-      { txt: '−1 650 € de travaux', color: '#fff', x: 540, y: 1250, t: TA(['1650']) - 0.05, r: -5, size: 80, out: TA(['coll']) - 0.3 }],
+    stamps: [{ txt: 'OUI ✓', color: '#3ccf7a', x: 540, y: 1250, t: TA(['oui']) - 0.05, r: -6, size: 130, out: TA(['rate']) - 0.35 },   // whisper place « raté » 0,3 s et « 1 650 » 0,7 s après la voix réelle (mesuré à l'énergie et en retranscrivant le segment seul)
+      { txt: '−1 650 € de travaux', color: '#fff', x: 540, y: 1250, t: TA(['1650']) - 0.7, r: -5, size: 74, out: TA(['coll']) - 0.3 }],
     card: { lab: 'Négocie à', v: '5 900 €', t: TA(['verdict']) - 0.3, hit: TA(['5900']) + 0.3 } });
   SEM.P3 = () => {   // trois annonces, une seule rapporte
     const c1 = TA(['celle']), c2 = TA(['celle'], c1 + 0.5), c3 = TA(['celle'], c2 + 0.5);
