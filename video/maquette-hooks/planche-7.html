@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Planche 7 vidéos · semaine du 12 oct.</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:Instrument;font-style:italic;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+:root{--o:#ff5a1f;--ink:#1c1612;--g:#3ccf7a;--r:#e5484d}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:2400px;background:#0e0b09;color:#fbf9f5;font-family:Satoshi;-webkit-font-smoothing:antialiased}
+.hd{padding:60px 70px 30px}.hd h1{font:600 64px Clash;letter-spacing:-.02em}.hd h1 em{font-style:normal;color:var(--o)}
+.hd p{font:500 26px/1.45 Satoshi;opacity:.75;max-width:2200px;margin-top:14px}
+.struct{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}.struct span{padding:10px 18px;border-radius:999px;background:#1f1a17;font:700 22px Satoshi}.struct b{color:var(--o)}
+.row{display:flex;gap:34px;padding:34px 70px;border-top:1px solid rgba(255,255,255,.08)}
+.fr{position:relative;width:302px;height:537px;border-radius:26px;overflow:hidden;flex:none;background:#141110;box-shadow:0 20px 40px rgba(0,0,0,.5)}
+.fr .in{position:absolute;left:0;top:0;width:1080px;height:1920px;transform:scale(.2796);transform-origin:0 0;overflow:hidden;font-family:Satoshi}
+.fr .t{position:absolute;left:10px;bottom:10px;padding:4px 10px;border-radius:8px;background:rgba(0,0,0,.65);font:700 16px Satoshi;color:#fff}
+.tx{flex:1;min-width:0}
+.tx .day{font:700 22px Satoshi;letter-spacing:.14em;text-transform:uppercase;color:var(--o)}
+.tx h2{font:600 46px/1.05 Clash;letter-spacing:-.02em;margin:8px 0 12px}
+.tx .vo{font:400 30px/1.3 Instrument;font-style:italic;color:#fff;margin-bottom:12px}
+.tx ul{list-style:none;font:500 21px/1.45 Satoshi;color:rgba(251,249,245,.82)}
+.tx li{margin:3px 0}.tx li b{color:#fff}.tx .w{color:#ffb38f}
+/* éléments des images (repère 1080 × 1920) */
+.dots{position:absolute;inset:0;background:radial-gradient(circle,rgba(251,249,245,.07) 2px,transparent 2.5px) 0 0/30px 30px}
+.disc{position:absolute;border-radius:50%}
+.pov{position:absolute;left:140px;top:236px}.pov i{display:inline-block;font:700 30px Satoshi;font-style:normal;letter-spacing:.12em;color:#1a1310;background:var(--o);border-radius:999px;padding:8px 18px}
+.pov div{font:600 92px/1 Clash;letter-spacing:-.03em;color:#fff;margin-top:14px;text-shadow:0 6px 28px rgba(0,0,0,.6);white-space:nowrap}
+.car{position:absolute}.car img{display:block;width:100%}
+.star{position:absolute;width:600px;height:600px}
+.star svg{position:absolute;inset:0;overflow:visible;filter:drop-shadow(0 40px 50px rgba(0,0,0,.45))}
+.star b{position:absolute;left:0;right:0;top:200px;text-align:center;font:700 136px/1 Clash;letter-spacing:-.04em;color:#0e0b09}
+.star i{position:absolute;left:0;right:0;top:350px;text-align:center;font:400 54px Instrument;font-style:italic;color:#0e0b09}
+.tag{position:absolute;width:380px;height:300px;clip-path:polygon(24% 0,76% 0,100% 18%,100% 100%,0 100%,0 18%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:38px;color:var(--ink)}
+.tag:before{content:'';position:absolute;left:170px;top:22px;width:40px;height:40px;border-radius:50%;background:#141110}
+.tag small{font:700 28px Satoshi;letter-spacing:.14em;text-transform:uppercase;opacity:.62}.tag b{font:600 78px/1.05 Clash;letter-spacing:-.03em;white-space:nowrap}
+.str{position:absolute;width:4px;background:rgba(251,249,245,.9)}
+.bar{position:absolute;left:125px;top:1260px;width:830px;height:140px;border-radius:999px;background:#fff;display:flex;align-items:center;gap:16px;padding:0 14px 0 20px;box-shadow:0 40px 80px -24px rgba(0,0,0,.65)}
+.bar img{width:96px;height:96px;border-radius:20px}.bar .x{flex:1;font:700 38px Satoshi;color:var(--ink);white-space:nowrap;overflow:hidden}.bar .x i{font-style:normal;opacity:.45;font-weight:500}.bar .x u{text-decoration:none;color:var(--o)}
+.bar .go{padding:26px 30px;border-radius:999px;background:var(--ink);color:#fff;font:700 36px Satoshi}
+.pin{position:absolute;width:0;height:0}.pin .d{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;border:5px solid #fff;display:flex;align-items:center;justify-content:center;font:900 28px Satoshi}
+.pin .l{position:absolute;white-space:nowrap;padding:16px 26px;border-radius:999px;font:700 36px Satoshi;box-shadow:0 20px 40px -14px rgba(0,0,0,.55)}
+.pin .k{position:absolute;left:-2px;width:4px;background:#fff}
+.ok .d,.ok .l{background:var(--g);color:#0e0b09}.wa .d,.wa .l{background:var(--o);color:#1a1310}.ko .d,.ko .l{background:var(--r);color:#fff}
+.card{position:absolute;left:125px;top:1250px;width:830px;padding:26px 40px 30px;border-radius:40px;background:#fff;color:var(--ink);box-shadow:0 50px 100px -30px rgba(0,0,0,.6)}
+.card .h{display:flex;justify-content:space-between;align-items:center;font:500 30px Satoshi;color:rgba(28,22,18,.6)}.card .h b{color:var(--o)}.card .h i{font-style:normal;font:700 26px Satoshi;color:#fff;background:var(--ink);border-radius:999px;padding:8px 18px}
+.card .r{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font:700 40px Satoshi}.card .r b{font:700 110px/1.05 Clash;letter-spacing:-.04em}
+.stamp{position:absolute;font:700 120px/1 Clash;border:12px solid;border-radius:26px;padding:10px 34px;white-space:nowrap;letter-spacing:-.03em}
+.big{position:absolute;left:140px;font:600 92px/1 Clash;letter-spacing:-.03em;white-space:nowrap}
+.end{position:absolute;inset:0;background:var(--o)}
+.end .a{position:absolute;left:140px;top:250px;font:700 170px/.95 Clash;color:#fff;letter-spacing:-.045em}.end .b{position:absolute;left:140px;top:430px;font:400 190px Instrument;font-style:italic;color:var(--ink)}
+.end .c{position:absolute;left:140px;top:650px;font:700 80px Clash;color:#fff;letter-spacing:-.03em}
+.end img{position:absolute;left:260px;top:1130px;width:560px}
+.end .p{position:absolute;left:540px;top:1360px;transform:translateX(-50%);padding:24px 42px;border-radius:999px;background:#fff;color:var(--ink);font:700 40px Satoshi;white-space:nowrap}.end .p b{color:var(--o)}
+.num{position:absolute;font:700 340px/1 Clash;color:rgba(255,255,255,.95);letter-spacing:-.05em}
+.vs{position:absolute;left:465px;top:880px;width:150px;height:150px;border-radius:50%;background:#fff;color:var(--ink);font:700 64px Clash;display:flex;align-items:center;justify-content:center}
+.foot{padding:40px 70px 70px;font:500 22px/1.5 Satoshi;color:rgba(251,249,245,.6)}
+</style></head><body>
+<div class="hd">
+  <h1>Semaine du 12 oct. · <em>7 vidéos, une seule structure</em>, 7 sujets</h1>
+  <p>Même ossature que la Polo validée (v4, 15,6 s), sujet différent chaque jour. Toutes les voitures viennent de la liste fiable de l'outil (Clio III, Twingo II, Polo, Yaris, Jazz) sauf la 208 PureTech, montrée justement comme celle à fuir. Chiffres : vraies annonces de particuliers relevées dans la base du marché UTOPICAR (3 au 9 oct. 2026), calcul de l'outil (bilan.ts : revente en 1 à 2 mois = médiane des comparables × 0,96 ; bénéfice = revente − prix − carte grise − 150 € de frais fixes ; prix max = revente − frais − 750 €, arrondi aux 50 € inférieurs). Les travaux probables (distribution, embrayage…) s'ajoutent dans la vraie analyse : chaque chiffre est à confirmer en passant l'annonce dans l'app avant tournage.</p>
+  <div class="struct"><span>0 s <b>chiffre + voiture</b> + « POV Ta 1re revente »</span><span>« Comment ? » <b>colle l'annonce</b> dans UTOPICAR</span><span><b>l'analyse sort</b> revente · fiabilité · à vérifier · prix max</span><span><b>verdict</b> (pas toujours oui)</span><span>3 analyses offertes · <b>code TIKTOK</b> + logo</span></div>
+</div>
+<div id="rows"></div>
+<div class="foot">Photos : Pexels, marques et plaques floutées, détourées en local. À remplacer avant production : la Polo 4 (photo de Polo récente), la 208 (photo de GTI, incohérente avec un 1.2 82 ch), la Clio 4 (photo de Clio 3), la Yaris (Yaris III). Yaris II et Jazz : la base du marché n'a pas encore assez d'annonces pour les chiffrer ; il faut une collecte locale (Leboncoin, sur le PC) avant de produire la vidéo du lundi.</div>
+<script>
+const C = '../assets/hooks-cut/', ICON = '../assets/brand/official/utopicar-icone-orange.svg', LOGO = '../assets/brand/official/utopicar-logo-horizontal-fond-clair.svg';
+const starPath = (() => { let d = ''; for (let i = 0; i < 28; i++) { const a = -Math.PI / 2 + i * Math.PI / 14, q = i % 2 ? 252 : 300; d += (i ? 'L' : 'M') + (300 + q * Math.cos(a)).toFixed(1) + ' ' + (300 + q * Math.sin(a)).toFixed(1); } return d + 'Z'; })();
+const E = {
+  bg: (c = 'var(--o)', o = 1, x = 540, y = 960, r = 420) => `<div class="dots"></div><div class="disc" style="left:${x - r}px;top:${y - r}px;width:${2 * r}px;height:${2 * r}px;background:${c};opacity:${o}"></div>`,
+  pov: (t = 'Ta 1re revente') => `<div class="pov"><i>POV</i><div>${t}</div></div>`,
+  car: (n, x, y, w, line = false, r = -3) => `<div class="car" style="left:${x - w / 2}px;top:${y}px;width:${w}px;transform:rotate(${r}deg)"><img src="${C}${n}-${line ? 'line' : 'sticker'}.png"></div>`,
+  star: (v, x, y, s = 1, c = 'var(--g)', l = 'de bénef', r = -8) => `<div class="star" style="left:${x - 300}px;top:${y - 300}px;transform:rotate(${r}deg) scale(${s})"><svg viewBox="0 0 600 600"><path d="${starPath}" fill="${c}" stroke="#fff" stroke-width="14" stroke-linejoin="round"/></svg><b>${v}</b><i>${l}</i></div>`,
+  tag: (lab, p, x, y, back = false, r = -4) => `<div class="str" style="left:${x - 2}px;top:-40px;height:${y + 70}px;transform-origin:50% 0;transform:rotate(${r}deg)"></div><div class="tag" style="left:${x - 190}px;top:${y}px;background:${back ? 'var(--o)' : '#efe6d8'};color:${back ? '#1a1310' : 'var(--ink)'};transform:rotate(${r}deg)"><small>${lab}</small><b>${p}</b></div>`,
+  bar: (x, go = '⏱ 1 min') => `<div class="bar"><img src="${ICON}"><div class="x">${x}</div><div class="go">${go}</div></div>`,
+  pin: (x, y, k, l, up = true, right = false) => `<div class="pin ${k}" style="left:${x}px;top:${y}px"><div class="k" style="${up ? 'bottom' : 'top'}:0;height:${up ? 120 : 90}px"></div><div class="d">${k === 'ok' ? '✓' : k === 'ko' ? '✕' : '!'}</div><div class="l" style="${right ? 'right' : 'left'}:-34px;${up ? 'bottom' : 'top'}:${up ? 120 : 90}px">${l}</div></div>`,
+  card: (lab, v, c = 'var(--o)') => `<div class="card"><div class="h"><span>Analyse <b>UTOPICAR</b></span><i>⏱ 1 min</i></div><div class="r">${lab}<b style="color:${c}">${v}</b></div></div>`,
+  stamp: (t, c, x, y, r = -8, s = 120) => `<div class="stamp" style="left:${x}px;top:${y}px;color:${c};border-color:${c};font-size:${s}px;transform:rotate(${r}deg)">${t}</div>`,
+  big: (t, y, c = '#fff', s = 92) => `<div class="big" style="top:${y}px;color:${c};font-size:${s}px">${t}</div>`,
+  num: (t, x, y) => `<div class="num" style="left:${x}px;top:${y}px">${t}</div>`,
+  vs: () => `<div class="vs">VS</div>`,
+  end: () => `<div class="end"><div class="a">3 analyses</div><div class="b">offertes</div><div class="c">avec le code TIKTOK</div><img src="${LOGO}"><div class="p">Code <b>TIKTOK</b> · lien en bio</div></div>`,
+};
+const V = [
+  { day: 'Lundi 12', titre: 'Un max de bénef avec ces 5 voitures', vo: '« Jusqu\'à 1 748 de bénef avec ces 5 voitures. Toutes fiables pour débuter. Comment je les trouve ? Je colle l\'annonce dans UTOPICAR. »',
+    li: ['<b>Concept :</b> compte à rebours 5 → 1, une voiture-autocollant et son étoile de bénéfice par seconde, la n° 1 en dernier.',
+      '<b>Twingo II</b> 1.2 16V 2013, 183 000 km, 2 850 € → revente 3 850, <b>+698 €</b>',
+      '<b>Polo V</b> 1.2 TDI 75 2011, 167 819 km, 3 500 € → revente 5 400, <b>+1 598 €</b>',
+      '<b>Clio III</b> 1.2 16V 75 2012, 106 297 km, 3 650 € → revente 5 700, <b>+1 748 €</b>',
+      '<span class="w"><b>Yaris II</b> et <b>Jazz</b> : à chiffrer après une collecte locale (pas assez d\'annonces dans la base).</span>',
+      '<b>Relance :</b> « Et la n° 1… » avant la Clio. Fin : code TIKTOK.'],
+    f: [[E.bg() + E.pov() + E.car('twingo', 330, 760, 460, false, -8) + E.car('yaris', 720, 700, 520, false, 6) + E.car('jazz', 540, 1050, 560, false, -2) + E.num('5', 760, 330), '0 s'],
+        [E.bg() + E.pov() + E.car('clio3', 540, 720, 900) + E.star('+1 748 €', 540, 980) + E.stamp('N° 1', 'var(--o)', 380, 1360, -6, 120), 'la n° 1'],
+        [E.bg('var(--o)', .22) + E.pov() + E.car('clio3', 540, 680, 900, true) + E.pin(760, 860, 'ok', 'Moteur fiable', true, true) + E.pin(420, 980, 'wa', 'À vérifier : distribution', false) + E.bar('Analyse <u>UTOPICAR</u> ✓'), 'l\'analyse']] },
+  { day: 'Mardi 13', titre: '300 € de plus… et 800 € de bénef en plus', vo: '« Cette Twingo à 2 500 : 298 de bénef. Celle-là, à 2 800 : 1 098. Comment savoir ? L\'analyse UTOPICAR. »',
+    li: ['<b>Concept :</b> deux annonces côte à côte, la moins chère n\'est pas la plus rentable (croyance → vérité).',
+      '<b>Twingo II</b> 1.2 60 ch 2007, 147 000 km, 2 500 € (courroie neuve) → revente 3 100, <b>+298 €</b>',
+      '<b>Twingo II</b> 1.2 16V 2011, 107 000 km, 2 800 € → revente 4 200, <b>+1 098 €</b>',
+      '<b>Verdict :</b> la 2011, prix max 3 100 €. À vérifier (outil) : embrayage, rouille du hayon.'],
+    f: [[E.bg('#1f1a17') + E.pov() + E.car('twingo', 300, 760, 440, false, -6) + E.car('twingo', 780, 760, 440, false, 6) + E.vs() + E.star('+298 €', 300, 1290, .55, '#cfc7bd') + E.star('+1 098 €', 780, 1290, .55), '0 s'],
+        [E.bg('var(--o)', .22) + E.pov() + E.car('twingo', 540, 640, 760, true, 0) + E.pin(380, 900, 'ok', 'Moteur fiable') + E.pin(700, 1110, 'wa', 'À vérifier : embrayage', false, true) + E.bar('Analyse <u>UTOPICAR</u> ✓'), 'l\'analyse'],
+        [E.bg() + E.pov() + E.car('twingo', 540, 650, 760, false, 0) + E.star('+1 098 €', 300, 560, .45) + E.card('Ton prix max', '3 100 €'), 'verdict']] },
+  { day: 'Mercredi 14', titre: '192 000 km… et 2 048 € de bénef', vo: '« 192 000 kilomètres. Et pourtant : 2 048 de bénef sur cette Clio. Tu colles l\'annonce dans UTOPICAR… »',
+    li: ['<b>Concept :</b> croyance « gros kilométrage = piège ». L\'analyse dit ce qui compte vraiment.',
+      '<b>Clio III</b> 1.5 dCi 75 2012, 192 000 km, 2 500 € (« distribution ok » annoncé) → revente 4 850, <b>+2 048 €</b>, prix max 3 750 €',
+      '<b>Analyse :</b> moteur de la liste fiable (1.5 dCi 75) ; à vérifier : injecteurs et fumée au démarrage ; facture de distribution à demander.',
+      '<b>Image 0 :</b> compteur 192 000 qui défile sur la voiture, puis l\'étoile verte.'],
+    f: [[E.bg() + E.pov() + E.car('clio3', 540, 720, 900) + E.stamp('192 000 km', '#fff', 170, 520, -6, 110), '0 s'],
+        [E.bg('var(--o)', .22) + E.pov() + E.car('clio3', 540, 680, 900, true) + E.pin(470, 870, 'ok', 'Moteur fiable') + E.pin(720, 990, 'wa', 'À vérifier : injecteurs', false, true) + E.bar('Analyse <u>UTOPICAR</u> ✓') + E.star('+2 048 €', 255, 560, .4), 'l\'analyse'],
+        [E.bg('var(--o)', .22) + E.pov() + E.car('clio3', 540, 680, 900, true) + E.star('+2 048 €', 255, 560, .4) + E.card('Ton prix max', '3 750 €'), 'prix max']] },
+  { day: 'Jeudi 15', titre: 'Cette Polo est trop chère de 350 €', vo: '« Cette Polo à 4 500 ? Trop chère de 350 balles. L\'analyse te donne ton prix max : 4 150. Au-dessus, tu passes. »',
+    li: ['<b>Concept :</b> la bonne voiture au mauvais prix. Ici le verdict est « négocie », pas « fonce ».',
+      '<b>Polo IV</b> TDI 90 2009, 146 000 km, 4 500 € → revente 5 250, <b>+448 €</b> seulement au prix affiché',
+      '<b>Prix max 4 150 €</b> : l\'étiquette 4 500 se fait barrer, la carte prix max roule jusqu\'à 4 150.',
+      '<span class="w">Photo à remplacer : il faut une Polo IV (2005-2009).</span>'],
+    f: [[E.bg() + E.pov() + E.car('polo6', 540, 760, 860) + E.tag('achat', '4 500 €', 760, 470, false, -5) + E.stamp('+350 € trop chère', 'var(--r)', 120, 1420, -4, 84), '0 s'],
+        [E.bg('var(--o)', .22) + E.pov() + E.car('polo6', 540, 700, 860, true) + E.pin(330, 900, 'ok', 'Moteur fiable') + E.pin(760, 1040, 'wa', 'À vérifier : embrayage', false, true) + E.bar('Analyse <u>UTOPICAR</u> ✓'), 'l\'analyse'],
+        [E.bg() + E.pov() + E.car('polo6', 540, 680, 860) + E.tag('achat', '<s>4 500 €</s>', 760, 470, false, -5) + E.card('Ton prix max', '4 150 €'), 'négocie']] },
+  { day: 'Vendredi 16', titre: 'Elle a l\'air parfaite. L\'analyse dit : fuis.', vo: '« 208 à 3 990, propre, pas chère… Tu colles l\'annonce dans UTOPICAR : moteur PureTech, à fuir. La courroie baigne dans l\'huile. »',
+    li: ['<b>Concept :</b> le verdict tombe du mauvais côté : la vidéo qui évite une perte (famille « perte », la plus forte).',
+      '<b>208</b> 1.2 PureTech 82 2013, 190 000 km, 3 990 € (annonce réelle de particulier)',
+      '<b>Analyse :</b> PureTech 3 cylindres dans la liste « à éviter » de l\'outil (courroie dans l\'huile, consommation d\'huile). Pas de bénéfice affiché : on ne chiffre pas une voiture à fuir.',
+      '<b>Fin alternative :</b> « Les bonnes : Clio III, Yaris, Jazz » en trois autocollants, puis code TIKTOK.',
+      '<span class="w">Photo à remplacer : 208 I essence, pas une GTI.</span>'],
+    f: [[E.bg() + E.pov() + E.car('p208', 540, 760, 900) + E.tag('achat', '3 990 €', 760, 470, false, -5), '0 s'],
+        [E.bg('var(--r)', .25) + E.pov() + E.car('p208', 540, 690, 900, true) + E.pin(560, 890, 'ko', 'Moteur PureTech : à fuir') + E.bar('Analyse <u>UTOPICAR</u> ✓'), 'l\'analyse'],
+        [E.bg('var(--r)', .25) + E.pov() + E.car('p208', 540, 690, 900, true) + E.stamp('PASSE', 'var(--r)', 300, 1000, -8, 170), 'verdict']] },
+  { day: 'Samedi 17', titre: 'Une Clio 4 à 3 000 € : trop beau ?', vo: '« Clio 4 à 3 000. Les mêmes se vendent 6 800. Avant de foncer, tu colles l\'annonce dans UTOPICAR. Première question à poser : pourquoi ce prix ? »',
+    li: ['<b>Concept :</b> le piège du prix trop bas. On n\'accuse pas l\'annonce : on montre quoi vérifier.',
+      '<b>Clio IV</b> 1.5 dCi 90 2016, 169 000 km, 3 000 € ; annonces comparables ≈ 6 830 € (−56 %)',
+      '<b>Analyse :</b> question de l\'outil « Pourquoi ce prix, nettement sous le marché ? », plus carte grise au nom du vendeur, CT, voir la voiture avant tout paiement.',
+      '<b>Bénéfice théorique</b> +3 110 € affiché barré, avec « seulement si tout est vérifié ».',
+      '<span class="w">Photo à remplacer : Clio IV.</span>'],
+    f: [[E.bg() + E.pov() + E.car('clio3', 540, 760, 900) + E.tag('achat', '3 000 €', 760, 470, false, -5) + E.big('−56 % ?', 1400, '#fff', 120), '0 s'],
+        [E.bg('var(--o)', .22) + E.pov() + E.car('clio3', 540, 680, 900, true) + E.pin(540, 880, 'wa', 'Pourquoi ce prix ?') + E.bar('Analyse <u>UTOPICAR</u> ✓'), 'l\'analyse'],
+        [E.bg('var(--o)', .22) + E.pov() + E.car('clio3', 540, 680, 900, true) + E.star('<s>+3 110 €</s>', 540, 980, .8, '#cfc7bd', 'si tout est vérifié') , 'verdict']] },
+  { day: 'Dimanche 18', titre: 'Ta 1re revente avec 3 250 €', vo: '« 3 250 en poche ? Cette Clio te fait 798 de bénef. Tu colles l\'annonce dans UTOPICAR : moteur fiable, distribution à prévoir, prix max 3 250. »',
+    li: ['<b>Concept :</b> le budget du débutant en premier, la voiture ensuite.',
+      '<b>Clio III</b> 1.2 16V 75 2008, 105 000 km, 3 250 € → revente 4 350, <b>+798 €</b>, prix max 3 250 € (le prix affiché : pas un euro de plus)',
+      '<b>Analyse :</b> à vérifier (outil) : distribution tous les 120 000 km, donc à prévoir bientôt : facture ou négociation.',
+      '<b>Image 0 :</b> billets de 3 250 € en autocollant, la Clio tombe dessus.'],
+    f: [[E.bg() + E.pov() + E.car('clio3', 540, 680, 900) + E.star('+798 €', 800, 600, .5) + E.big('3 250 € en poche', 1380, 'var(--o)', 96), '0 s'],
+        [E.bg('var(--o)', .22) + E.pov() + E.car('clio3', 540, 680, 900, true) + E.pin(470, 870, 'ok', 'Moteur fiable') + E.pin(720, 990, 'wa', 'À prévoir : distribution', false, true) + E.bar('Analyse <u>UTOPICAR</u> ✓'), 'l\'analyse'],
+        [E.end(), 'fin']] },
+];
+document.getElementById('rows').innerHTML = V.map((v, i) => `<div class="row">${v.f.map(([h, t]) => `<div class="fr"><div class="in">${h}</div><div class="t">${t}</div></div>`).join('')}<div class="tx"><div class="day">${v.day} · vidéo ${i + 1}</div><h2>${v.titre}</h2><div class="vo">${v.vo}</div><ul>${v.li.map((x) => `<li>${x}</li>`).join('')}</ul></div></div>`).join('');
+Promise.all([...document.images].map((im) => im.decode().catch(() => {}))).then(() => document.fonts.ready).then(() => setTimeout(() => (window.ready = true), 300));
+</script></body></html>

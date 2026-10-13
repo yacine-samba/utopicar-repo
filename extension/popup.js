@@ -61,19 +61,76 @@ $('#again').addEventListener('click', async () => { const r = await chrome.runti
 $('#go').addEventListener('click', async () => { await chrome.runtime.sendMessage({type:'utp-open'}); window.close(); });
 $('#reopen').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type:'utp-renvoyer'}); if (r && r.ok) window.close(); else status((r && r.err) || 'Rien à rouvrir.', 'bad'); });
 
+/* ---- relevé automatique des cotes ---- */
+const SITE = 'https://www.utopicar.fr';
+let cat = [], marquesChoisies = null;   // null : toutes
+const PAGES_EFF = {1: 1, 3: 2, 10: 4, 100: 8};   // pages lues en moyenne (beaucoup de recherches tiennent en une page)
+function nbModeles(){ return cat.filter(b => !marquesChoisies || marquesChoisies.has(b.k)).reduce((s, b) => s + b.m.length, 0); }
+function majChoix(){
+  const n = nbModeles(), nb = marquesChoisies ? marquesChoisies.size : cat.length;
+  $('#balResume').textContent = !cat.length ? 'Toutes les marques' : marquesChoisies && nb < cat.length ? `${nb} marque${nb > 1 ? 's' : ''} sur ${cat.length} · ${n} modèles` : `Toutes les marques · ${n} modèles`;
+  const rech = n * 3, sec = rech * (14 + 3.5 * PAGES_EFF[+$('#balPages').value]);
+  $('#balDuree').textContent = n ? `${rech} recherches (${n} modèles × 3 énergies) : comptez environ ${sec < 3600 ? Math.max(1, Math.round(sec / 60)) + ' min' : Math.round(sec / 360) / 10 + ' h'}.` : 'Choisissez au moins une marque.';
+  $('#balGo').disabled = !n;
+}
+function renderMarques(){
+  $('#balMarques').innerHTML = cat.map(b => `<label><input type="checkbox" data-k="${esc(b.k)}" ${!marquesChoisies || marquesChoisies.has(b.k) ? 'checked' : ''}>${esc(b.n)}</label>`).join('');
+  majChoix();
+}
+$('#balMarques').addEventListener('change', () => {
+  const k = [...document.querySelectorAll('#balMarques input:checked')].map(x => x.dataset.k);
+  marquesChoisies = k.length === cat.length ? null : new Set(k); majChoix();
+});
+$('#balTout').addEventListener('click', () => { marquesChoisies = null; renderMarques(); });
+$('#balAucune').addEventListener('click', () => { marquesChoisies = new Set(); renderMarques(); });
+$('#balPages').addEventListener('change', majChoix);
+async function chargerCatalogue(){
+  try { const r = await fetch(SITE + '/api/catalogue'); if (r.ok) cat = await r.json(); } catch(e){}
+  if (cat.length) renderMarques(); else $('#balDuree').textContent = 'Catalogue Utopicar injoignable : vérifiez la connexion.';
+}
+
+function showBal(b){
+  const enCours = !!(b && b.actif), pause = enCours && !!b.pause;
+  $('#balBar').style.display = enCours ? 'block' : 'none';
+  if (b && b.n) $('#balBar').firstElementChild.style.width = Math.round(100 * b.i / b.n) + '%';
+  $('#balMsg').textContent = b && b.msg || '';
+  $('#balMsg').style.color = pause && b.pause !== 'arret' ? 'var(--perte)' : '';
+  $('#balPause').style.display = enCours && !pause ? 'block' : 'none';
+  $('#balReprendre').style.display = pause ? 'block' : 'none';
+  $('#balAbandon').style.display = enCours ? 'block' : 'none';
+  $('#balBilan').style.display = b && b.i ? 'block' : 'none';
+  $('#balGo').style.display = enCours ? 'none' : 'grid';
+  $('#balGoT').textContent = b && b.i ? 'Lancer un nouveau relevé des cotes' : 'Lancer le relevé des cotes';
+  $('#balChoix').style.display = $('#balPages').parentElement.style.display = $('#balDuree').style.display = enCours ? 'none' : '';
+}
+$('#balGo').addEventListener('click', async () => {
+  const marques = marquesChoisies ? [...marquesChoisies] : null;
+  $('#balGo').disabled = true; $('#balMsg').textContent = 'Démarrage…';
+  const r = await chrome.runtime.sendMessage({type: 'utp-bal-start', marques, pages: +$('#balPages').value});
+  $('#balGo').disabled = false;
+  if (!r || !r.ok) $('#balMsg').textContent = (r && r.err) || 'Lancement impossible.';
+});
+$('#balPause').addEventListener('click', () => chrome.runtime.sendMessage({type: 'utp-bal-pause'}).then(() => { $('#balMsg').textContent = 'Pause après la recherche en cours…'; }));
+$('#balReprendre').addEventListener('click', () => chrome.runtime.sendMessage({type: 'utp-bal-reprendre'}).then(r => { if (!r || !r.ok) $('#balMsg').textContent = (r && r.err) || 'Reprise impossible.'; }));
+$('#balAbandon').addEventListener('click', () => { if (confirm('Arrêter définitivement ce relevé ? Ce qui a été relevé reste dans la base du marché.')) chrome.runtime.sendMessage({type: 'utp-bal-abandon'}); });
+$('#balBilan').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type: 'utp-bal-bilan'}); if (r && r.ok) window.close(); else $('#balMsg').textContent = (r && r.err) || 'Pas de bilan.'; });
+
 function showJob(j){
   if (!j) return;
   const bar = $('#bar');
   if (j.running){ bar.style.display = 'block'; bar.firstElementChild.style.width = Math.round(100 * (j.done || 0) / Math.max(1, j.total || 1)) + '%'; status(j.msg || 'Lecture en cours…'); $('#stop').style.display = j.kind === 'batch' || j.kind === 'releve' ? 'block' : 'none'; $('#batch').disabled = true; $('#ad').disabled = true; }
   else { bar.style.display = 'none'; $('#stop').style.display = 'none'; if (j.msg) status(j.msg, j.status === 'bad' ? 'bad' : 'ok'); $('#ad').disabled = false; updBatch(); }
 }
-chrome.storage.onChanged.addListener((ch, area) => { if (area === 'session' && ch.job) showJob(ch.job.newValue); if (area === 'local' && ch.lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; } });
+chrome.storage.onChanged.addListener((ch, area) => { if (area === 'session' && ch.job) showJob(ch.job.newValue); if (area === 'local' && ch.bal) showBal(ch.bal.newValue); if (area === 'local' && ch.lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; } });
 
 (async () => {
   tab = await currentTab(); const u = tab && tab.url || '';
   const isAd = /\/ad\/|annonce-|\/offres\/[^/]+-[0-9a-f-]{8,}|\/detail/i.test(u);
   const { job } = await chrome.storage.session.get('job');
   const { lastMeta } = await chrome.storage.local.get('lastMeta');
+  const { bal } = await chrome.storage.local.get('bal');
+  if (bal && !bal.actif){ if (bal.marques) marquesChoisies = new Set(bal.marques); if (bal.pages) $('#balPages').value = String(bal.pages); }
+  showBal(bal); chargerCatalogue();
   if (lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; }
   if (isAd){ $('#ad').classList.add('main'); }
   else if (/^https?:/.test(u)){

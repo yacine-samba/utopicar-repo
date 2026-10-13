@@ -17,9 +17,34 @@ MU = {
     'FI1':   {'stop': 2.5, 'muf': None, 'pivot': 3.84, 'hit': 6.78, 'dur': 7.9},
     'FI2':   {'stop': 4.0, 'muf': None, 'pivot': 4.32, 'hit': 6.54, 'dur': 7.8},
     'FI3':   {'stop': 2.42, 'muf': None, 'pivot': 4.56, 'hit': 6.94, 'dur': 7.95},
+    'BO1':   {'stop': 3.1, 'muf': None, 'pivot': 4.74, 'hit': 11.35, 'dur': 15.6},
+    'BO2':   {'stop': 1.45, 'muf': None, 'pivot': 1.95, 'hit': 4.3, 'dur': 5.6},
+    'BO3':   {'stop': 1.45, 'muf': None, 'pivot': 1.95, 'hit': 4.3, 'dur': 5.6},
 }
-json.dump(MU, open('audio/c7-musique.json', 'w', encoding='utf8'), indent=1)
-POSTER = {'dico2': 1.9, 'A01': 1.6, 'A02': 3.2, 'A03': 1.9, 'A04': 2.1, 'A05': 2.2, 'A06': 2.1, 'A07': 2.0, 'PS1': 3.4, 'PS2': 8.8, 'FI1': 0.0, 'FI2': 0.0, 'FI3': 0.0}
+
+# vidéos des semaines du 12 et du 19 oct. : repères calculés sur les mots de Simon (arrêt avant « tu colles », drop sur le clic
+# « Utopicar », coup final sur le chiffre ou le verdict), durée = dernier mot + carton
+import unicodedata, re
+def _n(w): return re.sub(r'[^a-z0-9]', '', unicodedata.normalize('NFD', w.lower()).encode('ascii', 'ignore').decode())
+def _T(W, keys, after=0.0):
+    for w in W:
+        if w['s'] >= after - 0.01 and any(_n(w['w']).startswith(k) for k in keys): return w['s']
+    raise SystemExit(f'mot absent {keys} après {after}')
+HITW = {'S1V2': ('3100', 0), 'S1V3': ('3750', 0), 'S1V4': ('4150', 0), 'S1V5': ('passe', 8), 'S1V6': ('payer', 0), 'S1V7': ('3250', 8), 'S2V1': ('passe', 9),
+        'S2V2': ('prend', 0), 'S2V4': ('4100', 0), 'S2V5': ('000', 11), 'S2V6': ('fonce', 0), 'S2V7': ('classique', 0)}
+for _id in ['S1V1', 'S1V2', 'S1V3', 'S1V4', 'S1V5', 'S1V6', 'S1V7', 'S2V1', 'S2V2', 'S2V3', 'S2V4', 'S2V5', 'S2V6', 'S2V7']:
+    W = json.load(open(f'audio/vo-c7/{_id}.words.json', encoding='utf8'))
+    end = max(w['e'] for w in W)
+    if _id == 'S1V1': st, pv, ht = _T(W, ['numero'], 10) - 0.45, _T(W, ['2048'], 13), _T(W, ['utopicar'], 15) + 0.1
+    elif _id == 'S2V3': st, pv, ht = _T(W, ['non']) - 0.1, _T(W, ['1448']), _T(W, ['utopicar'], 10) + 0.1
+    else:
+        g = 10 if _id == 'S2V3' else 0
+        st, pv = _T(W, ['coll']) - 0.5, _T(W, ['utopicar']) + 0.1
+        k, a = HITW[_id]; ht = _T(W, [k], a) + 0.3
+    MU[_id] = {'stop': round(st, 2), 'muf': None, 'pivot': round(pv, 2), 'hit': round(ht, 2), 'dur': round(end + 1.25, 2)}
+    json.dump(MU, open('audio/c7-musique.json', 'w', encoding='utf8'), indent=1)
+POSTER = {'dico2': 1.9, 'A01': 1.6, 'A02': 3.2, 'A03': 1.9, 'A04': 2.1, 'A05': 2.2, 'A06': 2.1, 'A07': 2.0, 'PS1': 3.4, 'PS2': 8.8, 'FI1': 0.0, 'FI2': 0.0, 'FI3': 0.0, 'BO1': 0.9, 'BO2': 2.2, 'BO3': 2.2}
+for _id in [k for k in MU if k.startswith('S')]: POSTER[_id] = 0.9
 json.dump({'version': 1, 'style': 'Motions de 15 à 20 s (dictionnaire du vendeur, carrousels A01 à A07) dans la grammaire master60w ; HOOK = id de la vidéo',
            'fps': 30, 'bpm': 112, 'size': [1080, 1920], 'dur': 20.0,
            'hooks': {k: {'dur': v['dur'], 'poster': POSTER[k]} for k, v in MU.items()}},

@@ -14,6 +14,8 @@ export type Ligne = {
   en_ligne?: boolean | null;
   /** vignette de l'annonce (Leboncoin), quand la collecte l'a gardée */
   photo?: string | null;
+  /** jusqu'à 3 photos de l'annonce (liens Leboncoin), quand la collecte les a gardées */
+  photos?: string[] | null;
   /** critères Leboncoin : version exacte, finition, 1re mise en circulation (AAAA-MM), portes, estimation Leboncoin */
   version?: string | null; finition?: string | null; mec?: string | null; portes?: number | null; lbc_min?: number | null; lbc_max?: number | null; lbc_pos?: string | null;
 };

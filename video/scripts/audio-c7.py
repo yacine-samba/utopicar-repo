@@ -48,11 +48,12 @@ def follow(x, att, rel, step=16):
 # ---------- voix ----------
 vo = librosa.load(A('vo-c7', ID + '.wav'), sr=SR, mono=True)[0][:N]
 vo = bp(np.pad(vo, (0, N - len(vo))), 80, 14000)
-ev = follow(np.abs(vo), 0.01, 0.12)
-ref = np.percentile(ev[ev > 1e-3], 60)
-vo = vo * np.clip((ref / np.maximum(ev, 1e-6)) ** 0.3, db(-4), db(6))          # compression douce
-vo = vo + bp(vo, 2000, 5000, 2) * (db(3) - 1)                                     # présence 2–5 kHz
-vo = vo / (np.abs(vo).max() + 1e-9) * db(-3)
+if np.abs(vo).max() > 1e-6:   # sans voix (test d'animation) : rien à traiter
+    ev = follow(np.abs(vo), 0.01, 0.12)
+    ref = np.percentile(ev[ev > 1e-3], 60)
+    vo = vo * np.clip((ref / np.maximum(ev, 1e-6)) ** 0.3, db(-4), db(6))          # compression douce
+    vo = vo + bp(vo, 2000, 5000, 2) * (db(3) - 1)                                     # présence 2–5 kHz
+    vo = vo / (np.abs(vo).max() + 1e-9) * db(-3)
 
 # ---------- musique ----------
 SRC_D0 = 0.008
@@ -93,7 +94,7 @@ mus = (mus + swell) * lvl[:, None]
 mlow = bp(mus, None, 150); mus = (mus - mlow) + mlow * db(-6)                   # téléphone : basse allégée
 mus = bp(mus, 40, None, 2)
 # la musique cède la place à la voix, sauf sur le drop et le coup final
-venv = follow(np.abs(vo), 0.005, 0.03); venv /= np.percentile(venv[venv > 1e-4], 90)
+venv = follow(np.abs(vo), 0.005, 0.03); venv /= (np.percentile(venv[venv > 1e-4], 90) if (venv > 1e-4).any() else 1)
 duck = follow(np.clip(venv * 2.5, 0, 1), 0.02, 0.45)
 punch = np.zeros(N)
 for t0 in [x for x in (T_BAM, T_HIT) if x is not None]:
@@ -175,15 +176,18 @@ for ch in range(2): fx[:, ch] += fftconvolve(fx[:, ch], ir)[:N] * db(-15)
 # ---------- somme, compression douce, loudness ----------
 # niveau de la musique fixé par l'écart voix / musique mesuré par phrase (médiane visée 11 dB, la voix passe devant)
 rms = lambda x: 20 * np.log10(np.sqrt((x ** 2).mean()) + 1e-9)
-words = WORDS
-lines, cur = [], [words[0]]
-for w in words[1:]:
-    if w['s'] - cur[-1]['e'] < 0.25: cur.append(w)
-    else: lines.append(cur); cur = [w]
-lines.append(cur)
-SPANS = [(int(l[0]['s'] * SR), int(l[-1]['e'] * SR)) for l in lines if l[-1]['e'] - l[0]['s'] > 0.15]
-gap = lambda m: [rms(vo[a:b]) - rms(m[a:b]) for a, b in SPANS]
-mus_st = mus * db(np.median(gap(mus)) - 11)
+if WORDS:
+    words = WORDS
+    lines, cur = [], [words[0]]
+    for w in words[1:]:
+        if w['s'] - cur[-1]['e'] < 0.25: cur.append(w)
+        else: lines.append(cur); cur = [w]
+    lines.append(cur)
+    SPANS = [(int(l[0]['s'] * SR), int(l[-1]['e'] * SR)) for l in lines if l[-1]['e'] - l[0]['s'] > 0.15]
+    gap = lambda m: [rms(vo[a:b]) - rms(m[a:b]) for a, b in SPANS]
+    mus_st = mus * db(np.median(gap(mus)) - 11)
+else:   # test d'animation sans voix : musique au premier plan
+    mus_st = mus * db(-1)
 vo_st = np.stack([vo, vo], 1)
 mix = vo_st + mus_st + fx
 # rembobinage (PS2) : le mix déjà joué, relu à l'envers et en accéléré (lent, rapide, lent), comme une bande qu'on rembobine
@@ -228,8 +232,9 @@ sf.write(A('stems-c7', f'{ID}-sans-musique.wav'), nm, SR, subtype='PCM_24')
 # ---------- rapport mesuré ----------
 rep = [f'c7 {ID} · {meter.integrated_loudness(mix):.1f} LUFS intégrés, true peak {tp(mix):.1f} dBTP',
        f'bruitages posés : {len(kept)} · retirés pour collision : {len(dropped)} (' + ', '.join(f"{c['k']}@{c['t']:.2f}" for c in dropped) + ')']
-gaps = gap(mus_st)
-rep.append(f'écart voix / musique par phrase : min {min(gaps):.1f} dB, médiane {np.median(gaps):.1f} dB ({len(gaps)} phrases)')
+if WORDS:
+    gaps = gap(mus_st)
+    rep.append(f'écart voix / musique par phrase : min {min(gaps):.1f} dB, médiane {np.median(gaps):.1f} dB ({len(gaps)} phrases)')
 ons = librosa.onset.onset_detect(y=mus_st.mean(1), sr=SR, hop_length=128, units='time', backtrack=False)
 for nm_, t_ in [x for x in [('premier temps (image 0)', 0.0), ('drop', T_BAM), ('coup final (carton)', T_HIT)] if x[1] is not None]:
     o = ons[np.argmin(np.abs(ons - t_))]; rep.append(f'attaque {nm_:24s} prévue {t_:6.2f} s, mesurée {o:6.2f} s ({(o - t_) * 1000:+.0f} ms)')

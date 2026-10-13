@@ -87,6 +87,8 @@ export function verdictPrix(pct: number | null | undefined, douteux: boolean): V
 export type AnnonceCC = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; ch: number | null; energie: string | null; boite: string | null;
   pro: boolean; lieu: string | null; url: string | null; photo: string | null; gen: string;
+  /** jusqu'à 3 photos, la première étant `photo` */
+  photos?: string[];
   /** source : la cote Utopicar (annonces comparables), ou à défaut l'estimation de prix que Leboncoin affiche sur l'annonce */
   cote: { P: number; ecart: number | null; pct: number | null; conf: "forte" | "moyenne" | "faible"; source?: "utopicar" | "leboncoin" } | null;
   verdict: Verdict;

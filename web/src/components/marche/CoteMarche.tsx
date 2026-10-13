@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useExtension } from "@/lib/extension";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque, CoteAnnonce, PointCote } from "@/lib/vehicules/types";
+import { BilanBalayage, lireBilan, type Bilan } from "./BilanBalayage";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
 import { NuageCote } from "./NuageCote";
 
@@ -47,7 +48,15 @@ function CollerReleve({ actif }: { actif: boolean }) {
   const [res, setRes] = useState<Releve | null>(null);
   const [g, setG] = useState(0);
   const [sous, setSous] = useState(false);
+  const [bilan, setBilan] = useState<Bilan | null>(null);
   const zone = useRef<HTMLTextAreaElement>(null);
+
+  // Bilan du relevé automatique des cotes : déjà enregistré et calculé au fil du relevé, il s'affiche tel quel.
+  function montrerBilan(t: string) {
+    const b = lireBilan(t);
+    setBilan(b);
+    setEtat(b ? "" : "Bilan illisible : rouvrez-le depuis l'extension (« Voir le bilan »).");
+  }
 
   async function calculer(txt = brut) {
     if (txt.trim().length < 10) return setEtat("Collez d'abord un relevé (Ctrl+V).");
@@ -67,6 +76,7 @@ function CollerReleve({ actif }: { actif: boolean }) {
 
   // Relevé envoyé par l'extension (bouton « Relever la page » sur Leboncoin) : calculé dès l'ouverture.
   useExtension("releve", (e) => {
+    if (actif && e.brut.startsWith("UTPBALAYAGE")) return montrerBilan(e.brut);
     if (!actif || !e.brut.startsWith("UTPRELEVE")) return;
     setBrut(e.brut);
     calculer(e.brut);
@@ -77,9 +87,10 @@ function CollerReleve({ actif }: { actif: boolean }) {
     if (!actif) return;
     const f = (e: ClipboardEvent) => {
       const t = e.clipboardData?.getData("text") ?? "";
-      if (!t.startsWith("UTPRELEVE")) return;
+      if (!t.startsWith("UTPRELEVE") && !t.startsWith("UTPBALAYAGE")) return;
       if (document.activeElement === zone.current) return; // la zone de texte gère elle-même son collage
       e.preventDefault();
+      if (t.startsWith("UTPBALAYAGE")) return montrerBilan(t);
       setBrut(t);
       calculer(t);
     };
@@ -98,7 +109,7 @@ function CollerReleve({ actif }: { actif: boolean }) {
         <div className="grid gap-1">
           <h2 className="font-display text-lg font-semibold">Relevé Leboncoin</h2>
           <p className="text-sm text-ink-2">
-            Sur une recherche Leboncoin, icône Utopicar puis « Relever toute la recherche » (jusqu&apos;à 3 500 annonces) : cette page s&apos;ouvre toute seule et chaque annonce est reconnue (marque, modèle, génération) et placée sur sa cote. Si elle ne s&apos;ouvre pas, collez le relevé ici avec <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl</kbd> + <kbd className="rounded border border-line-2 px-1.5 text-xs">V</kbd>.
+            Sur une recherche Leboncoin, icône Utopicar puis « Relever toute la recherche » (jusqu&apos;à 3 500 annonces) : cette page s&apos;ouvre toute seule et chaque annonce est reconnue (marque, modèle, génération) et placée sur sa cote. « Relever toutes les cotes » fait de même pour chaque marque et chaque modèle, en essence, diesel puis hybride, et affiche ici son bilan. Si la page ne s&apos;ouvre pas, collez le relevé ici avec <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl</kbd> + <kbd className="rounded border border-line-2 px-1.5 text-xs">V</kbd>.
           </p>
           <p className="mt-1 flex flex-wrap items-center gap-3 text-sm text-ink-3">
             <a href="/app/extension" className="btn btn-sm min-h-9 px-4">Installer l&apos;extension Utopicar</a>
@@ -113,7 +124,10 @@ function CollerReleve({ actif }: { actif: boolean }) {
           onChange={(e) => setBrut(e.target.value)}
           onPaste={(e) => {
             const t = e.clipboardData.getData("text");
-            if (t.startsWith("UTPRELEVE")) {
+            if (t.startsWith("UTPBALAYAGE")) {
+              e.preventDefault();
+              montrerBilan(t);
+            } else if (t.startsWith("UTPRELEVE")) {
               e.preventDefault();
               setBrut(t);
               calculer(t);
@@ -134,6 +148,8 @@ function CollerReleve({ actif }: { actif: boolean }) {
           <p className="text-sm text-ink-3" role="status">{etat}</p>
         </div>
       </div>
+
+      {bilan && <BilanBalayage bilan={bilan} />}
 
       {res && (
         <section aria-labelledby="cr-res" className="grid gap-5">

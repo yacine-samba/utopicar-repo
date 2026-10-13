@@ -1,4 +1,4 @@
-# Leçons des films UTOPICAR (v1 → v9, MO1 → MO10, master60)
+# Leçons des films UTOPICAR (v1 → v9, MO1 → MO10, master60, semaines d'oct.)
 
 À relire avant de construire. Chaque ligne est arrivée pour de vrai.
 
@@ -82,6 +82,16 @@
 | master60 | Titres desktop posés à x = 96, vus à x ≈ 70 dans le MP4 | La poussée de caméra (zoom depuis le centre) élargit tout : prévoir la marge (`motion-craft.md` § 3) |
 | master60 | Aplats vides de 0,2 à 0,4 s à deux coupes (`qa_video.py`) | Le premier élément entre à la frame de coupe ; la coupe tombe sur le mot qui amène l'élément |
 | master60 | `matplotlib` absent, `sleep` bloqué dans Bash | Spectrogrammes en PIL (`music-pick.py`) ; rendus en tâche de fond, attendre la notification de fin |
+| Débuts BO | « Manque d'originalité » : fiche d'annonce + ticket de 5 lignes | Moins de texte : chaque chiffre porté par un objet (étiquette qui se retourne, étoile, repères sur la voiture) ; grammaire relevée sur Behance avant de redessiner |
+| BO1 | « Boîte DSG » et « Quickshift » à l'écran alors que les 3 annonces étaient en boîte manuelle | Vérifier chaque point « à vérifier » dans l'annonce (colonne `boite` de `marche_annonces`) et dans la liste de l'outil (`web/src/lib/analyse/fiabilite.ts`) |
+| Polo v2 → v4 | « Fais 978 de bénef avec ça » (pronom sans objet), puis « 3 analyses offertes » sans avoir montré ce qu'est une analyse | Objet nommé dans la 1re phrase ; le produit produit chaque résultat à l'écran (« tu colles l'annonce », barre, clic, scanner) avant le CTA |
+| Planches | Chiffres calculés de mémoire (× 0,95, 20 € de frais) : l'outil fait × 0,96, 150 € de frais, prix max arrondi aux 50 € inférieurs | Lire la formule dans le code du produit (`bilan.ts`) avant de chiffrer ; mention « hors travaux » quand une partie manque |
+| Semaines oct. | Textes posés à y ≥ 1 480 : dans la bande du bas couverte par TikTok, 14 rendus à refaire | Bas de chaque texte ≤ 1 480 dès la config ; planche de contrôle avec la ligne 1 480 tracée avant le rendu final |
+| Semaines oct. | Carton de fin déclenché par « 3 100 » au lieu de « Trois » (mot cherché par préfixe) | Mot-clé numérique court : égalité stricte ; chercher « trois » d'abord, « 3 » ensuite |
+| Semaines oct. | Whisper saute des passages entiers (liste de chiffres dite vite) | Retranscrire le passage seul (VAD, sans contexte) et recoller les mots dans le `.words.json` |
+| Semaines oct. | Chiffre orange posé sur le disque orange : illisible | Pastille sombre derrière tout texte posé sur un fond coloré |
+| Semaines oct. | `taskkill /IM node.exe` pour arrêter un rendu : tous les node du PC tués, serveur de dev compris | N'arrêter que ses propres processus (PID du script de rendu) |
+| Twingo BO3 | Flou de la photo sur le pare-brise, détourage avec un pavé flou ; puis raccord visible | Reconstruire la voiture par symétrie depuis la moitié propre ; vérifier chaque flou sur un recadrage zoomé |
 
 ## Ce qui a marché (à reprendre)
 
@@ -117,3 +127,15 @@
   - **Formats** : le 9:16 vient du même code, et le 16:9 est resté identique au pixel près.
 
   Recettes : `techniques.md` § 15–16, `sound-design.md` § 9.
+- Oct. 2026, concept « l'analyse sort tout » : la Polo v4 validée (« ok on enregistre ça »), puis 14 vidéos produites
+  en une passe (semaines du 12 et du 19 oct.). Ce qui a marché :
+  - **Image** : voiture-autocollant (liseré blanc, ombre en trame, disque orange), étiquette de prix sur sa ficelle qui
+    se retourne (achat → revente), étoile verte qui roule jusqu'au mot, barre UTOPICAR « tu colles l'annonce » qui
+    devient « Analyse UTOPICAR ✓ », scanner qui change la photo en plan au trait, repères qui tombent sur leur mot,
+    carte « Ton prix max » sur le coup final, carton « 3 analyses offertes · code TIKTOK » avec le logo.
+  - **Fabrication** : un seul moteur (`semaine()` dans `film-c7/_specs.js`) et une config par vidéo ; repères
+    musicaux calculés sur les mots de Simon (`build-c7.py`) ; `video/scripts/semaines.sh` mixe, rend et contrôle tout.
+  - **Sujets** : peur de se faire avoir (compteur, arnaque), perte chiffrée (boîte auto, petit kilométrage), erreur de
+    calcul (frais, « dernier prix »), puis la récompense ; verdicts variés (fonce, négocie, passe, prudence).
+
+  Recettes : `techniques.md` § 17–18.
