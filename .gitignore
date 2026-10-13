@@ -2,3 +2,4 @@ node_modules/
 .vercel
 supabase/.temp
 supabase/.branches
+.taste-skill/
