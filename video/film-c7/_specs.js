@@ -1175,7 +1175,7 @@
         { n: 'polo5', cw: 860, x: 530, y: 840, r: 3, tin: c2 - 0.05, from: 'right', tout: c3 - 0.1, to: 'left' },
         { n: 'clio3g', cw: 880, x: 530, y: 840, r: -2, tin: c3 - 0.05, from: 'right', scan: true, pins: [[0.45, 0.4, 'ok', 'Moteur fiable', TA(['utopic'])], [0.72, 0.64, 'ok', 'Marge : +1 240 €', TA(['utopic'])]] }],
       stamps: [{ txt: 'NON', color: 'var(--r)', x: 540, y: 1250, t: TA(['non']) - 0.05, r: -8, size: 150, out: c2 - 0.1 }, { txt: 'NON PLUS', color: 'var(--r)', x: 540, y: 1250, t: TA(['non'], c2) - 0.05, r: 6, size: 130, out: c3 - 0.1 }],
-      stars: [{ v: '+1 240 €', t: TA(['plus'], c3) - 0.2, land: TA(['1240']) + 0.45, x: 760, y: 1220, s: 0.7, corner: { t: TA(['coll']) - 0.5, x: 255, y: 520, s: 0.4 } }] };
+      stars: [{ v: '+1 240 €', t: TA(['plus'], c3) - 0.2, land: TA(['1240']) + 0.45, x: 640, y: 1230, s: 0.7, corner: { t: TA(['coll']) - 0.5, x: 255, y: 575, s: 0.4 } }] };
   };
   SEM.P4 = () => {   // pendant que tu dormais : la recherche suivie tourne seule, l'e-mail de 7 h
     const tR = TA(['recherche']), tH = TA(['heures']), t7 = TA(['7'], 7), tM = TA(['mail']), tT = TA(['trois'], 9), tA = TA(['appeler']);
