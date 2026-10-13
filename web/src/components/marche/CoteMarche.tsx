@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useExtension } from "@/lib/extension";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque, CoteAnnonce, PointCote } from "@/lib/vehicules/types";
-import { BilanBalayage, lireBilan, type Bilan } from "./BilanBalayage";
+import { BilanAncienView, type BilanAncien } from "./BilanAncien";
+import { BilanBalayage, estAncien, lireBilan, type Bilan } from "./BilanBalayage";
 import { ChoixVehicule, type Choix } from "./ChoixVehicule";
 import { NuageCote } from "./NuageCote";
 
@@ -17,7 +18,7 @@ const eur = (v: number | null | undefined) => (v == null ? "—" : `${Math.round
 const n = (s: string) => (s.trim() && /^\d+$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
 
 /** `dernierReleve` : bilan du dernier relevé automatique des cotes (extension), affiché avec le relevé collé. */
-export function CoteMarche({ cat, extension, dernierReleve = null }: { cat: CatMarque[]; extension: boolean; dernierReleve?: Bilan | null }) {
+export function CoteMarche({ cat, extension, dernierReleve = null }: { cat: CatMarque[]; extension: boolean; dernierReleve?: Bilan | BilanAncien | null }) {
   const [onglet, setOnglet] = useState<"releve" | "voiture">(extension ? "releve" : "voiture");
   // relevé de toute une recherche : vient de l'extension, réservée au compte illimité
   if (!extension) return <PlacerVoiture cat={cat} />;
@@ -41,7 +42,7 @@ export function CoteMarche({ cat, extension, dernierReleve = null }: { cat: CatM
   );
 }
 
-function CollerReleve({ actif, cat, dernier }: { actif: boolean; cat: CatMarque[]; dernier: Bilan | null }) {
+function CollerReleve({ actif, cat, dernier }: { actif: boolean; cat: CatMarque[]; dernier: Bilan | BilanAncien | null }) {
   const [brut, setBrut] = useState("");
   const [enregistrer, setEnregistrer] = useState(true);
   const [etat, setEtat] = useState("");
@@ -49,14 +50,14 @@ function CollerReleve({ actif, cat, dernier }: { actif: boolean; cat: CatMarque[
   const [res, setRes] = useState<Releve | null>(null);
   const [g, setG] = useState(0);
   const [sous, setSous] = useState(false);
-  const [bilan, setBilan] = useState<Bilan | null>(dernier);
+  const [bilan, setBilan] = useState<Bilan | BilanAncien | null>(dernier);
   const zone = useRef<HTMLTextAreaElement>(null);
 
   // Bilan du relevé automatique des cotes : ses annonces sont déjà dans la base du marché, il s'affiche tel quel.
   function montrerBilan(t: string) {
     const b = lireBilan(t);
     if (b) setBilan(b);
-    setEtat(b ? "" : "Bilan illisible : rouvrez-le depuis l'extension (« Voir le bilan »), après avoir mis l'extension à jour.");
+    setEtat(b ? "" : "Bilan illisible : rouvrez-le depuis l'extension (« Voir le bilan »). Si l'extension est ancienne, mettez-la à jour (4.6).");
   }
 
   async function calculer(txt = brut) {
@@ -150,7 +151,7 @@ function CollerReleve({ actif, cat, dernier }: { actif: boolean; cat: CatMarque[
         </div>
       </div>
 
-      {bilan && <BilanBalayage bilan={bilan} cat={cat} />}
+      {bilan && (estAncien(bilan) ? <BilanAncienView bilan={bilan} /> : <BilanBalayage bilan={bilan} cat={cat} />)}
 
       {res && (
         <section aria-labelledby="cr-res" className="grid gap-5">

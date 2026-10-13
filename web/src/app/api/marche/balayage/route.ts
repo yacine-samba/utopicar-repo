@@ -22,19 +22,43 @@ const Annonce = z.object({
   mq: z.string().max(60),
   md: z.string().max(80).nullish(),
 });
+type Annonce = z.infer<typeof Annonce>;
 const Corps = z.object({ items: z.array(Annonce).max(5000) });
+// extension 4.5 : lot par recherche, annonces telles que lues sur Leboncoin (u, t, f)
+const Ancien = z.object({
+  base: z.string().max(80).optional(), energie: z.string().max(40).optional(),
+  items: z.array(z.object({ u: z.string().max(300), t: z.string().max(200).optional(), f: z.record(z.string(), z.unknown()).optional() })).max(5000),
+});
 
 const plat = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+
+/** Annonce de l'extension 4.5 (u, t, f) vers le format ci-dessus ; null si elle n'a ni identifiant ni prix. */
+function depuisAncien(x: { u: string; t?: string; f?: Record<string, unknown> }): Annonce | null {
+  const f = x.f ?? {};
+  const id = (x.u.match(/(\d{6,14})/) ?? [])[1];
+  const n = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? Math.round(v) : null);
+  const prix = n(f.prix);
+  const energie = typeof f.energie === "string" ? f.energie : "";
+  if (!id || prix == null || prix < 500 || prix > 300000) return null;
+  return {
+    i: id, t: String(x.t ?? "").slice(0, 200), p: prix, a: n(f.annee), k: n(f.km), e: energie,
+    b: typeof f.boite === "string" ? f.boite : null, c: n(f.ch), pro: f.pro === true, cp: typeof f.cp === "string" ? f.cp : null,
+    mq: typeof f.mq === "string" && f.mq ? f.mq : "?", md: typeof f.md === "string" ? f.md : null,
+  };
+}
 
 export async function POST(req: Request) {
   const c = await compteCourant();
   if (!c) return Response.json({ erreur: "Connectez-vous sur utopicar.fr pour envoyer le relevé." }, { status: 401 });
   if (!c.illimite) return Response.json({ erreur: "Le relevé des cotes est réservé au compte illimité." }, { status: 403 });
-  const r = Corps.safeParse(await req.json().catch(() => null));
-  if (!r.success) return Response.json({ erreur: "Lot invalide." }, { status: 400 });
-  if (!r.data.items.length) return Response.json({ enregistrees: 0 });
+  const corps = await req.json().catch(() => null);
+  const r = Corps.safeParse(corps);
+  const ancien = r.success ? null : Ancien.safeParse(corps);
+  if (!r.success && !ancien?.success) return Response.json({ erreur: "Lot invalide." }, { status: 400 });
+  const lot: Annonce[] = r.success ? r.data.items : (ancien?.data?.items ?? []).map(depuisAncien).filter((x): x is Annonce => x !== null);
+  if (!lot.length) return Response.json({ enregistrees: 0 });
 
-  const p = r.data.items.map((x) => {
+  const p = lot.map((x) => {
     const titre = plat(x.t);
     const nomme = x.md ? titre.includes(plat(x.md)) : titre.includes(plat(x.mq));
     return {

@@ -5,6 +5,7 @@ import { supabaseServeur } from "@/lib/supabase/serveur";
 import { catalogue } from "@/lib/vehicules/catalogue";
 import { CoteMarche } from "@/components/marche/CoteMarche";
 import type { Bilan } from "@/components/marche/BilanBalayage";
+import type { BilanAncien } from "@/components/marche/BilanAncien";
 
 export const metadata: Metadata = { title: "Cote" };
 
@@ -14,7 +15,8 @@ export default async function Page() {
   if (!c.illimite) redirect("/app/estimation");
   // dernier relevé automatique des cotes (extension) : son bilan, avec les recherches coupées à 100 pages
   const { data: rel } = await (await supabaseServeur()).from("releves_auto").select("bilan").order("created_at", { ascending: false }).limit(1).maybeSingle();
-  const dernier = (rel?.bilan as Bilan | undefined)?.v === 2 ? (rel!.bilan as Bilan) : null;
+  const brut = rel?.bilan as Bilan | BilanAncien | undefined;
+  const dernier = brut?.v === 2 || brut?.v === 1 ? brut : null;
   return (
     <div className="grid gap-6">
       <div className="max-w-3xl">
