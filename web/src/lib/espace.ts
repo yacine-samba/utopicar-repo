@@ -49,7 +49,7 @@ export function navEspace(c: Compte): EntreeNav[] {
   ];
 }
 
-export const nomFormule = (c: Compte) => (c.illimite ? "Accès illimité" : c.offre.famille === "benef" ? `Benef ${c.offre.nom}` : c.offre.nom);
+export const nomFormule = (c: Compte) => (c.illimite ? "Accès illimité" : c.code ? "Essai Benef" : c.offre.famille === "benef" ? `Benef ${c.offre.nom}` : c.offre.nom);
 /** « 12 analyses restantes ce mois », ou « Analyses illimitées ». */
 export const texteRestantes = (c: Compte) =>
   c.illimite

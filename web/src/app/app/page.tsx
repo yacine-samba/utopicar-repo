@@ -389,7 +389,12 @@ async function TableauBenef({ c }: { c: Compte }) {
           Analyses du mois
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Tuile l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} sous={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} alerte={!c.illimite && c.restantes <= 3} />
+          {c.code ? (
+            // analyses offertes par un code (TIKTOK…) : le quota Découverte (1) n'a pas de sens ici
+            <Tuile l="Analyses offertes" v={String(c.codeBenef)} sous={c.codeBenef ? `restante${c.codeBenef > 1 ? "s" : ""}, au niveau Benef Starter` : "toutes utilisées"} alerte={c.codeBenef <= 1} lien={{ href: "/tarifs#benef", l: "Voir les formules" }} />
+          ) : (
+            <Tuile l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} sous={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} alerte={!c.illimite && c.restantes <= 3} />
+          )}
           <Tuile l="Bonnes affaires repérées" v={String(go.length)} sous={`sur ${n} annonce${n > 1 ? "s" : ""} analysée${n > 1 ? "s" : ""}`} />
           <Tuile l="Marge moyenne des bonnes affaires" v={eur(marges.length ? marges.reduce((s, x) => s + x, 0) / marges.length : null)} sous="estimée avant achat" />
           <Tuile l="Meilleure affaire" v={eur(meilleure?.marge ?? null)} sous={meilleure?.titre ?? "aucune ce mois"} />
