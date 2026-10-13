@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { cx, inputCls } from "@/lib/cx";
 import type { CatMarque } from "@/lib/vehicules/types";
+import type { BilanAncien } from "./BilanAncien";
 
 /* Bilan du relevé automatique des cotes (extension « Relever toutes les cotes ») : toutes les marques et tous les modèles
    de Leboncoin, en essence, diesel, hybride et électrique. Chaque recherche avec son nombre de résultats ; celles que
@@ -31,15 +32,18 @@ const NOM_EN: Record<string, string> = { essence: "essence", diesel: "diesel", h
 const MAX_LIGNES = 300;
 const date = (t: number) => new Date(t).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" });
 
-/** Bilan lu dans l'envoi de l'extension (« UTPBALAYAGE{…} ») ; null s'il est illisible ou d'une ancienne version. */
-export function lireBilan(brut: string): Bilan | null {
+/** Bilan lu dans l'envoi de l'extension (« UTPBALAYAGE{…} ») : format 2 (4.6) ou 1 (4.5) ; null s'il est illisible. */
+export function lireBilan(brut: string): Bilan | BilanAncien | null {
   try {
-    const o = JSON.parse(brut.trim().slice("UTPBALAYAGE".length)) as Bilan;
-    return o?.v === 2 && Array.isArray(o.lignes) ? o : null;
+    const o = JSON.parse(brut.trim().slice("UTPBALAYAGE".length)) as Bilan | BilanAncien;
+    if (o?.v === 2 && Array.isArray((o as Bilan).lignes)) return o as Bilan;
+    if (o?.v === 1 && Array.isArray((o as BilanAncien).resultats)) return o as BilanAncien;
+    return null;
   } catch {
     return null;
   }
 }
+export const estAncien = (b: Bilan | BilanAncien): b is BilanAncien => "resultats" in b;
 
 export function BilanBalayage({ bilan, cat }: { bilan: Bilan; cat: CatMarque[] }) {
   const [filtre, setFiltre] = useState("");
