@@ -25,6 +25,8 @@ MAXV_ID = {'BO1': 14.5, 'PS2': 20.6, 'FI1': 7.1, 'FI2': 7.1, 'FI3': 7.6}   # FI1
 # vidéos des semaines du 12 et du 19 oct. (S1V1 à S2V7) : une prise chacune, × 1,1 pour l'énergie
 for _k, _v in json.load(open(os.path.join(D, 'choix-semaines.json'), encoding='utf8')).items():
     CHOIX[_k] = _v; RESPI_ID[_k] = 0.28; VITESSE_MAX[_k] = 1.1; MAXV_ID[_k] = 1.0
+# P1 à P5 : prises eleven_v4 (la voix de base de l'utilisateur, 13 oct.), déjà vives : vitesse d'origine, comme master60
+for _k in ('P1', 'P2', 'P3', 'P4', 'P5'): MAXV_ID[_k] = 99.0
 import sys
 ONLY = sys.argv[1].split(',') if len(sys.argv) > 1 else None
 load = lambda n: librosa.load(os.path.join(D, n + '.mp3'), sr=SR, mono=True)[0]
