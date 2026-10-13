@@ -62,57 +62,37 @@ $('#go').addEventListener('click', async () => { await chrome.runtime.sendMessag
 $('#reopen').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type:'utp-renvoyer'}); if (r && r.ok) window.close(); else status((r && r.err) || 'Rien à rouvrir.', 'bad'); });
 
 /* ---- relevé automatique des cotes ---- */
-const SITE = 'https://www.utopicar.fr';
-let cat = [], marquesChoisies = null;   // null : toutes
-const PAGES_EFF = {1: 1, 3: 2, 10: 4, 100: 8};   // pages lues en moyenne (beaucoup de recherches tiennent en une page)
-function nbModeles(){ return cat.filter(b => !marquesChoisies || marquesChoisies.has(b.k)).reduce((s, b) => s + b.m.length, 0); }
-function majChoix(){
-  const n = nbModeles(), nb = marquesChoisies ? marquesChoisies.size : cat.length;
-  $('#balResume').textContent = !cat.length ? 'Toutes les marques' : marquesChoisies && nb < cat.length ? `${nb} marque${nb > 1 ? 's' : ''} sur ${cat.length} · ${n} modèles` : `Toutes les marques · ${n} modèles`;
-  const rech = n * 3, sec = rech * (14 + 3.5 * PAGES_EFF[+$('#balPages').value]);
-  $('#balDuree').textContent = n ? `${rech} recherches (${n} modèles × 3 énergies) : comptez environ ${sec < 3600 ? Math.max(1, Math.round(sec / 60)) + ' min' : Math.round(sec / 360) / 10 + ' h'}.` : 'Choisissez au moins une marque.';
-  $('#balGo').disabled = !n;
-}
-function renderMarques(){
-  $('#balMarques').innerHTML = cat.map(b => `<label><input type="checkbox" data-k="${esc(b.k)}" ${!marquesChoisies || marquesChoisies.has(b.k) ? 'checked' : ''}>${esc(b.n)}</label>`).join('');
-  majChoix();
-}
-$('#balMarques').addEventListener('change', () => {
-  const k = [...document.querySelectorAll('#balMarques input:checked')].map(x => x.dataset.k);
-  marquesChoisies = k.length === cat.length ? null : new Set(k); majChoix();
-});
-$('#balTout').addEventListener('click', () => { marquesChoisies = null; renderMarques(); });
-$('#balAucune').addEventListener('click', () => { marquesChoisies = new Set(); renderMarques(); });
-$('#balPages').addEventListener('change', majChoix);
-async function chargerCatalogue(){
-  try { const r = await fetch(SITE + '/api/catalogue'); if (r.ok) cat = await r.json(); } catch(e){}
-  if (cat.length) renderMarques(); else $('#balDuree').textContent = 'Catalogue Utopicar injoignable : vérifiez la connexion.';
-}
-
+const nb = v => Number(v || 0).toLocaleString('fr-FR');
 function showBal(b){
-  const enCours = !!(b && b.actif), pause = enCours && !!b.pause;
-  $('#balBar').style.display = enCours ? 'block' : 'none';
-  if (b && b.n) $('#balBar').firstElementChild.style.width = Math.round(100 * b.i / b.n) + '%';
+  const enCours = !!(b && b.actif), pause = enCours && !!b.pause, envoi = b && b.envoi && b.envoi.etat === 'en cours';
+  $('#balBar').style.display = enCours || envoi ? 'block' : 'none';
+  const pct = envoi ? b.envoi.envoyees / Math.max(1, b.lues) : b && b.nMarques ? b.marquesFaites / b.nMarques : 0;
+  $('#balBar').firstElementChild.style.width = Math.round(100 * pct) + '%';
   $('#balMsg').textContent = b && b.msg || '';
   $('#balMsg').style.color = pause && b.pause !== 'arret' ? 'var(--perte)' : '';
+  $('#balStats').textContent = b && b.prepare ? `Marques ${nb(b.marquesFaites)} / ${nb(b.nMarques)} · ${nb(b.recherches)} recherches · ${nb(b.lues)} annonces lues · ${nb(b.coupees)} coupée(s) à 100 pages` + (b.envoi && b.envoi.etat === 'fini' ? ' · envoyées à Utopicar' : '') : '';
   $('#balPause').style.display = enCours && !pause ? 'block' : 'none';
   $('#balReprendre').style.display = pause ? 'block' : 'none';
   $('#balAbandon').style.display = enCours ? 'block' : 'none';
-  $('#balBilan').style.display = b && b.i ? 'block' : 'none';
-  $('#balGo').style.display = enCours ? 'none' : 'grid';
-  $('#balGoT').textContent = b && b.i ? 'Lancer un nouveau relevé des cotes' : 'Lancer le relevé des cotes';
-  $('#balChoix').style.display = $('#balPages').parentElement.style.display = $('#balDuree').style.display = enCours ? 'none' : '';
+  $('#balEnvoyer').style.display = b && b.lues && !envoi && (!enCours || pause) ? 'block' : 'none';
+  $('#balEnvoyer').textContent = b && b.envoi && b.envoi.etat === 'fini' ? 'Renvoyer le bilan' : 'Envoyer à Utopicar';
+  $('#balBilan').style.display = b && b.recherches ? 'block' : 'none';
+  $('#balGo').style.display = enCours || envoi ? 'none' : 'grid';
+  $('#balFiltreL').style.display = enCours || envoi ? 'none' : '';
+  $('#balGoT').textContent = b && b.recherches ? 'Lancer un nouveau relevé des cotes' : 'Lancer le relevé des cotes';
 }
 $('#balGo').addEventListener('click', async () => {
-  const marques = marquesChoisies ? [...marquesChoisies] : null;
+  const { bal } = await chrome.storage.local.get('bal');
+  if (bal && bal.lues && !(bal.envoi && bal.envoi.etat === 'fini') && !confirm(`Le relevé précédent (${nb(bal.lues)} annonces) n'a pas été envoyé à Utopicar. Le remplacer quand même ?`)) return;
   $('#balGo').disabled = true; $('#balMsg').textContent = 'Démarrage…';
-  const r = await chrome.runtime.sendMessage({type: 'utp-bal-start', marques, pages: +$('#balPages').value});
+  const r = await chrome.runtime.sendMessage({type: 'utp-bal-start', marques: $('#balFiltre').value});
   $('#balGo').disabled = false;
   if (!r || !r.ok) $('#balMsg').textContent = (r && r.err) || 'Lancement impossible.';
 });
-$('#balPause').addEventListener('click', () => chrome.runtime.sendMessage({type: 'utp-bal-pause'}).then(() => { $('#balMsg').textContent = 'Pause après la recherche en cours…'; }));
+$('#balPause').addEventListener('click', () => chrome.runtime.sendMessage({type: 'utp-bal-pause'}).then(() => { $('#balMsg').textContent = 'Pause après la page en cours…'; }));
 $('#balReprendre').addEventListener('click', () => chrome.runtime.sendMessage({type: 'utp-bal-reprendre'}).then(r => { if (!r || !r.ok) $('#balMsg').textContent = (r && r.err) || 'Reprise impossible.'; }));
-$('#balAbandon').addEventListener('click', () => { if (confirm('Arrêter définitivement ce relevé ? Ce qui a été relevé reste dans la base du marché.')) chrome.runtime.sendMessage({type: 'utp-bal-abandon'}); });
+$('#balAbandon').addEventListener('click', () => { if (confirm('Arrêter définitivement ce relevé ? Les annonces déjà relevées restent dans l\'extension et peuvent être envoyées à Utopicar.')) chrome.runtime.sendMessage({type: 'utp-bal-abandon'}); });
+$('#balEnvoyer').addEventListener('click', () => { $('#balMsg').textContent = 'Envoi à Utopicar…'; chrome.runtime.sendMessage({type: 'utp-bal-envoyer'}).then(r => { if (r && !r.ok && r.err) $('#balMsg').textContent = r.err; }); });
 $('#balBilan').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type: 'utp-bal-bilan'}); if (r && r.ok) window.close(); else $('#balMsg').textContent = (r && r.err) || 'Pas de bilan.'; });
 
 function showJob(j){
@@ -129,8 +109,7 @@ chrome.storage.onChanged.addListener((ch, area) => { if (area === 'session' && c
   const { job } = await chrome.storage.session.get('job');
   const { lastMeta } = await chrome.storage.local.get('lastMeta');
   const { bal } = await chrome.storage.local.get('bal');
-  if (bal && !bal.actif){ if (bal.marques) marquesChoisies = new Set(bal.marques); if (bal.pages) $('#balPages').value = String(bal.pages); }
-  showBal(bal); chargerCatalogue();
+  showBal(bal);
   if (lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; }
   if (isAd){ $('#ad').classList.add('main'); }
   else if (/^https?:/.test(u)){

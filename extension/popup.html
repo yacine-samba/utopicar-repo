@@ -40,17 +40,14 @@
   .bal h2{margin:0;font-size:13.5px;font-weight:750}
   .bal p{margin:0;font-size:12px;color:var(--muted)}
   .bal label{font-size:12.5px;display:flex;align-items:center;gap:6px}
-  .bal select{font:inherit;font-size:12.5px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:#fff}
-  .bal details summary{cursor:pointer;font-size:12.5px;color:var(--side)}
-  .marques{display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;max-height:150px;overflow-y:auto;margin-top:6px}
   #balMsg{font-size:12.5px}
-  .bal .liens{font-size:12px;color:var(--muted);margin-top:6px}
-  .bal .liens a{color:var(--side);text-decoration:underline;cursor:pointer}
+  #balStats{font-size:12px;color:var(--muted)}
+  .bal input{font:inherit;font-size:12.5px;padding:5px 7px;border:1px solid var(--line);border-radius:6px;flex:1;min-width:0}
   footer{padding:0 14px 12px;font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
-<header><img class="mark" src="icons/48.png" alt=""><div><b>Utopicar</b><span>Envoyer vers utopicar.fr · v4.5</span></div></header>
+<header><img class="mark" src="icons/48.png" alt=""><div><b>Utopicar</b><span>Envoyer vers utopicar.fr · v4.6</span></div></header>
 <main>
   <button id="ad"><b>Envoyer cette annonce</b><small>Description, tous les critères et jusqu'à 20 photos : l'analyse s'ouvre sur Utopicar</small></button>
   <div class="picker" id="picker">
@@ -61,19 +58,14 @@
   <button id="list"><b>Relever toute la recherche</b><small>Toutes les pages de résultats (jusqu&apos;à 3 500 annonces, le maximum de Leboncoin), placées sur leur cote dans Utopicar</small></button>
   <section class="bal" aria-labelledby="balT">
     <h2 id="balT">Relever toutes les cotes</h2>
-    <p>Chaque marque, chaque modèle, en essence, puis diesel, puis hybride (Audi A1 essence, Audi A1 diesel, Audi A1 hybride, puis Audi A3…). Les annonces rejoignent la base du marché et la cote de chaque génération est recalculée au fil du relevé. Gardez Utopicar connecté.</p>
-    <details id="balChoix"><summary id="balResume">Toutes les marques</summary>
-      <div class="liens"><a id="balTout">toutes</a> · <a id="balAucune">aucune</a></div>
-      <div class="marques" id="balMarques"></div>
-    </details>
-    <label>Annonces par recherche
-      <select id="balPages"><option value="1">35 (1 page)</option><option value="3">105 (3 pages)</option><option value="10" selected>350 (10 pages)</option><option value="100">toutes (jusqu'à 3 500)</option></select>
-    </label>
-    <p id="balDuree"></p>
+    <p>Toutes les marques de Leboncoin, chaque modèle, et pour chaque modèle l'essence, le diesel, l'hybride et l'électrique, page après page (500 € et plus, 250 000 km au plus). Au-delà de 100 pages, Leboncoin n'affiche plus rien : le nombre total de résultats est noté dans la Cote. À la fin, tout part sur Utopicar.</p>
+    <label id="balFiltreL">Seulement ces marques <input id="balFiltre" placeholder="facultatif : Audi, Renault"></label>
     <div class="bar" id="balBar" style="display:none"><i></i></div>
+    <div id="balStats"></div>
     <div id="balMsg" role="status"></div>
     <button id="balGo" class="main"><b id="balGoT">Lancer le relevé des cotes</b><small>Tourne en arrière-plan : vous pouvez fermer cette fenêtre</small></button>
-    <div class="row"><button id="balPause" class="lite" style="display:none">Pause</button><button id="balReprendre" class="lite" style="display:none">Reprendre</button><button id="balBilan" class="lite" style="display:none">Voir le bilan</button><button id="balAbandon" class="lite" style="display:none">Abandonner</button></div>
+    <div class="row"><button id="balPause" class="lite" style="display:none">Pause</button><button id="balReprendre" class="lite" style="display:none">Reprendre</button><button id="balAbandon" class="lite" style="display:none">Abandonner</button></div>
+    <div class="row"><button id="balEnvoyer" class="lite" style="display:none">Envoyer à Utopicar</button><button id="balBilan" class="lite" style="display:none">Voir le bilan</button></div>
   </section>
   <div class="bar" id="bar"><i></i></div>
   <div id="status" role="status"></div>
