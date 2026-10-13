@@ -1159,12 +1159,12 @@
     + [['Golf VII · 2016 · 9 490 €', '+1 180 €'], ['Golf VII · 2017 · 11 200 €', '+940 €'], ['Golf VII · 2018 · 12 490 €', '+1 310 €']].map(([m, g]) => `<div class="ml" style="display:flex;justify-content:space-between;align-items:center;padding:20px 32px;border-bottom:1px solid rgba(28,22,18,.06);font:500 30px Satoshi"><span>${m}</span><b style="color:var(--ok)">${g}</b></div>`).join(''));
   SEM.P1 = () => ({ ann: '208 · 7 190 €', demo: DEMO_P, pov: false, title: 'Ce prix ment.', end: FIN, endT: TA(['passe'], 16) + 0.75,   // le prix affiché cache la vraie facture
     cars: [{ n: 'p208', cw: 860, x: 530, y: 860, tin: -0.1, from: 'slam', pins: [[0.12, 0.42, 'wa', 'Courroie à changer', TA(['courroie'])], [0.24, 0.78, 'wa', 'Pneus à prévoir', TA(['pneu'])], [0.8, 0.72, 'wa', 'Carte grise', TA(['carte'])]] }],
-    tags: [{ front: ['affiché', '7 190 €'], back: ['vraie facture', '8 840 €'], flip: TA(['8'], 9) - 0.15, x: 520, t: 0.6, out: TA(['coll']) - 0.2 }],
+    tags: [{ front: ['affiché', '7 190 €'], back: ['vraie facture', '8 840 €'], flip: TA(['8'], 9) - 0.15, x: 470, t: 0.6, out: TA(['coll']) - 0.2 }],
     card: { lab: 'Ton prix max', v: '6 300 €', t: TA(['ton'], 13) - 0.3, hit: TA(['300'], 14) + 0.3 },
     stamps: [{ txt: 'Au-dessus : PASSE', color: '#fff', x: 540, y: 1130, t: TA(['dessus']) - 0.05, r: -6, size: 90 }] });
   SEM.P2 = () => ({ ann: 'Clio 4 · 6 900 €', demo: DEMO_P, pov: false, title: 'Tu l\'aurais achetée ?', end: FIN, endT: TA(['5900']) + 0.9, red: TA(['rate']) - 0.05,   // le oui qui coûte 1 650 €
-    cars: [{ n: 'clio4', cw: 880, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.24, 0.45, 'ko', 'Embrayage à changer', TA(['utopic'])], [0.76, 0.66, 'wa', 'Pneus + vidange', TA(['utopic'])]] }],
-    tags: [{ front: ['annonce', '6 900 €'], x: 520, t: TA(['clio']) - 0.1, out: TA(['coll']) - 0.2 }],
+    cars: [{ n: 'clio4', cw: 880, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.24, 0.45, 'wa', 'Embrayage à changer', TA(['utopic'])], [0.76, 0.66, 'wa', 'Pneus + vidange', TA(['utopic'])]] }],
+    tags: [{ front: ['annonce', '6 900 €'], x: 470, t: TA(['clio']) - 0.1, out: TA(['coll']) - 0.2 }],
     stamps: [{ txt: 'OUI ✓', color: '#3ccf7a', x: 540, y: 1250, t: TA(['oui']) - 0.05, r: -6, size: 130, out: TA(['rate']) - 0.05 },
       { txt: '−1 650 € de travaux', color: '#fff', x: 540, y: 1250, t: TA(['1650']) - 0.05, r: -5, size: 80, out: TA(['coll']) - 0.3 }],
     card: { lab: 'Négocie à', v: '5 900 €', t: TA(['verdict']) - 0.3, hit: TA(['5900']) + 0.3 } });
