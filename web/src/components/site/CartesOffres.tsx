@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { OFFRES, prixTxt, type OffreId } from "@/lib/offres";
+import { centimes, GARANTIE, OFFRES, prixParAnalyse, prixTxt, type OffreId } from "@/lib/offres";
 import { BoutonAbonner } from "./BoutonAbonner";
 import { cx } from "@/lib/cx";
 import { CreditsDiscrets } from "./CarteCredits";
@@ -15,14 +15,18 @@ export function CartesOffres({ ids, actuelle, credits = false }: { ids: OffreId[
         const cetteOffre = actuelle === id;
         return (
           <li key={id} className={cx("carte relative flex flex-col p-6 sm:p-7", o.miseEnAvant && "border-o/50 shadow-[0_30px_80px_-40px_rgba(255,90,31,.7)]")}>
-            {o.miseEnAvant && <span className="absolute -top-3 left-6 rounded-full bg-o px-3 py-1 text-xs font-semibold text-[#160904]">Le plus choisi</span>}
+            {o.miseEnAvant && <span className="absolute -top-3 left-6 rounded-full bg-o px-3 py-1 text-xs font-semibold text-[#160904]">Conseillé</span>}
             <h3 className="font-display text-xl font-semibold">{o.nom}</h3>
             <p className="mt-1 text-sm text-ink-3">{o.accroche}</p>
             <p className="mt-5 flex items-baseline gap-1.5">
               <b className="num font-display text-4xl font-semibold">{prixTxt(o.prix)}</b>
-              <span className="text-ink-3">{o.prix ? "par mois" : "pour toujours"}</span>
+              <span className="text-ink-3">{o.prix ? "par mois" : `pour ${o.analyses} analyse${o.analyses > 1 ? "s" : ""} offerte${o.analyses > 1 ? "s" : ""}`}</span>
             </p>
-            <p className="mt-1 text-sm text-ink-3">{o.prix ? "Sans engagement, résiliable à tout moment" : "Sans carte bancaire"}</p>
+            {(() => {
+              const pa = prixParAnalyse(o);
+              return pa ? <p className="num mt-1 text-sm font-medium text-ok">soit {centimes(pa)} l&apos;analyse</p> : null;
+            })()}
+            <p className="mt-1 text-sm text-ink-3">{o.prix ? `Sans engagement${GARANTIE ? `, remboursé sous ${GARANTIE.jours} jours` : ", résiliable à tout moment"}` : "Sans carte bancaire, sans abonnement"}</p>
             <ul className="mt-6 grid flex-1 content-start gap-2.5 text-[15px]">
               {o.points.map((p) => (
                 <li key={p} className="flex gap-2.5">

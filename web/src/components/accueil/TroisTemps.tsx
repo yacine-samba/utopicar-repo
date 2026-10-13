@@ -10,6 +10,7 @@ const ICONES = {
   balance: "M12 4v16M5 20h14M6 8l-3 6a3 3 0 0 0 6 0L6 8Zm12 0-3 6a3 3 0 0 0 6 0l-3-6ZM6 8h12",
   verdict: "M5 12.5 10 17 19 7",
   compte: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0",
+  carte: "M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 3h18M7 15h4",
 };
 
 /** `actif` : l'étape mise en avant (la dernière par défaut, le résultat ; la première sur la page d'inscription, « vous êtes ici »). */

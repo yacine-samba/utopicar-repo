@@ -25,18 +25,29 @@ export async function CartePremiersPas({ c }: { c: Compte }) {
       { l: "Choisir la suite : Essentiel ou des crédits", fait: c.illimite || c.offre.prix > 0 || c.credits > 0, href: "/app/compte#formule", bouton: "Voir les formules" },
     ];
   } else if (!formule) {
-    const [analyse, recherche] = await Promise.all([rapport("benef"), compter("recherches")]);
+    const analyse = await rapport("benef");
     etapes = [
-      { l: "Choisir votre formule Benef", fait: false, href: "/app/compte#formule", bouton: "Choisir" },
+      { l: "Choisir votre formule Benef", fait: false, href: "/tarifs#benef", bouton: "Choisir" },
       { l: "Chiffrer une annonce", fait: analyse, href: "/app/analyser", bouton: "Chiffrer" },
-      { l: "Lancer une recherche de marché", fait: recherche, href: "/app/recherche", bouton: "Rechercher" },
+      { l: "Régler votre bénéfice minimum", fait: c.profilAnalyse.rempli, href: "/app/compte#analyse", bouton: "Régler" },
+    ];
+  } else if (c.code) {
+    // analyses offertes par un code (TIKTOK…) : les essayer, régler son objectif, puis choisir une formule
+    const analyse = await rapport("benef");
+    etapes = [
+      { l: "Chiffrer une annonce avec vos analyses offertes", fait: analyse, href: "/app/analyser", bouton: "Chiffrer" },
+      { l: "Régler votre bénéfice minimum", fait: c.profilAnalyse.rempli, href: "/app/compte#analyse", bouton: "Régler" },
+      { l: "Choisir votre formule Benef", fait: false, href: "/tarifs#benef", bouton: "Voir les formules" },
     ];
   } else {
     const pro = c.illimite || c.offre.id === "pro";
-    const [analyse, recherche, parc] = await Promise.all([rapport("benef"), compter("recherches"), pro ? compter("parc") : Promise.resolve(!!reglages.guide_ouvert)]);
+    const [analyse, recherche, parc] = await Promise.all([rapport("benef"), c.offre.recherche ? compter("recherches") : Promise.resolve(false), pro ? compter("parc") : Promise.resolve(!!reglages.guide_ouvert)]);
     etapes = [
       { l: "Chiffrer une annonce", fait: analyse, href: "/app/analyser", bouton: "Chiffrer" },
-      { l: "Lancer une recherche de marché", fait: recherche, href: "/app/recherche", bouton: "Rechercher" },
+      // la recherche de marché n'existe qu'avec Pro : sinon, régler son objectif (la note et la marge en dépendent)
+      c.offre.recherche
+        ? { l: "Lancer une recherche de marché", fait: recherche, href: "/app/recherche", bouton: "Rechercher" }
+        : { l: "Régler votre bénéfice minimum", fait: c.profilAnalyse.rempli, href: "/app/compte#analyse", bouton: "Régler" },
       pro
         ? { l: "Ajouter une voiture au parc", fait: parc, href: "/app/parc", bouton: "Mon parc" }
         : { l: "Lire le guide de la première revente", fait: parc, href: "/app/guides?guide=premiere-revente", bouton: "Lire le guide" },

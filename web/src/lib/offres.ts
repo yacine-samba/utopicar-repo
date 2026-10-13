@@ -111,5 +111,20 @@ export const pack = (id: string | null | undefined) => PACKS.find((p) => p.id ==
 export const NIVEAU_CREDIT = { detail: "detail" as Detail, photos: 3 };
 export const prixUnite = (p: Pack) => p.prix / p.credits;
 
+/** Garantie du premier mois d'abonnement : remboursé sur simple e-mail dans ce délai, sans justification.
+    Affichée sur les tarifs, l'inscription, le paiement Stripe et dans les conditions de vente. null : plus de garantie nulle part. */
+export const GARANTIE: { jours: number } | null = { jours: 14 };
+
+/** Prix d'une analyse comprise dans la formule (0,50 € pour Essentiel). */
+export const prixParAnalyse = (o: Offre) => (o.prix > 0 && o.analyses > 0 && Number.isFinite(o.analyses) ? o.prix / o.analyses : null);
+export const centimes = (v: number) => `${v.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\u00a0€`;
+
+/** Quand les analyses sont épuisées : la formule à proposer (moins chère à l'analyse que les crédits), ou null au sommet. */
+export function formuleSuivante(id: OffreId | string, famille: Famille): Offre | null {
+  const suite: Partial<Record<string, OffreId>> = famille === "benef" ? { gratuit: "starter", essentiel: "starter", starter: "croissance", croissance: "pro" } : { gratuit: "essentiel" };
+  const s = suite[id];
+  return s ? OFFRES[s] : null;
+}
+
 /** Statuts Stripe qui donnent accès. */
 export const STATUTS_ACTIFS = ["active", "trialing", "past_due"];

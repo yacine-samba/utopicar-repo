@@ -1,5 +1,6 @@
 import type Stripe from "stripe";
-import { stripe } from "@/lib/stripe";
+import { stripe, urlSite } from "@/lib/stripe";
+import { relancerAchat } from "@/lib/admin";
 import { track } from "@vercel/analytics/server";
 import { enregistrerCredits, enregistrerGuide, synchroniser } from "@/lib/stripe-synchro";
 
@@ -32,6 +33,15 @@ export async function POST(req: Request) {
         await enregistrerGuide(ev.data.object);
         await enregistrerCredits(ev.data.object);
         break;
+      // Paiement d'abonnement ouvert puis abandonné (la session expire 24 h après) : un seul rappel par e-mail.
+      // À cocher dans Stripe : Développeurs › Webhooks › cet endpoint › événement checkout.session.expired.
+      case "checkout.session.expired": {
+        const s = ev.data.object;
+        if (s.mode === "subscription" && s.metadata?.user_id && s.metadata?.offre) {
+          await relancerAchat(urlSite(req), s.metadata.user_id, s.metadata.offre).catch((e) => console.error("relance achat", e));
+        }
+        break;
+      }
       case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted":

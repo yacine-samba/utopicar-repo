@@ -36,13 +36,13 @@ export function navEspace(c: Compte): EntreeNav[] {
     { href: "/app", label: "Tableau de bord", court: "Accueil", icone: "accueil", mobile: true },
     { href: "/app/analyser", label: "Analyser une annonce", court: "Analyser", icone: "analyser", mobile: true, verrou: benef ? undefined : "Starter" },
     { href: "/app/rapports", label: "Rapports", court: "Rapports", icone: "rapports", mobile: true, verrou: benef ? undefined : "Starter" },
-    { href: "/app/parc", label: "Parc", court: "Parc", icone: "parc", mobile: true, verrou: o.parc ? undefined : "Pro" },
+    { href: "/app/parc", label: "Parc", court: "Parc", icone: "parc", mobile: o.parc, verrou: o.parc ? undefined : "Pro" },
     { href: "/app/recherche", label: "Recherche", court: "Recherche", icone: "recherche", verrou: o.recherche ? undefined : "Pro" },
     { href: "/app/messages", label: "Messages Leboncoin", court: "Messages", icone: "messages", verrou: c.messages ? undefined : "Option Pro" },
     ...favoris,
     c.illimite
       ? { href: "/app/cote", label: "Cote du marché", court: "Cote", icone: "cote" }
-      : { href: "/app/estimation", label: "Estimer une cote", court: "Estimer", icone: "estimation", verrou: benef ? undefined : "Starter" },
+      : { href: "/app/estimation", label: "Estimer une cote", court: "Estimer", icone: "estimation", verrou: benef ? undefined : "Starter", mobile: !o.parc && benef },
     ...extension,
     ...admin,
     compte,

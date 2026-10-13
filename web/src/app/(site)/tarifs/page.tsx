@@ -5,7 +5,11 @@ import { BoutonAbonner } from "@/components/site/BoutonAbonner";
 import { Faq } from "@/components/site/Faq";
 import { OngletsTarifs } from "@/components/site/OngletsTarifs";
 import { compteCourant } from "@/lib/compte";
-import { BENEF, GUIDE, PARTICULIERS } from "@/lib/offres";
+import { BENEF, GARANTIE, GUIDE, OFFRES, PARTICULIERS, prixTxt, type OffreId } from "@/lib/offres";
+import { CompteurInscrits } from "@/components/site/CompteurInscrits";
+import { Rassurance } from "@/components/site/Rassurance";
+import { TableauFormules } from "@/components/site/TableauFormules";
+import { BarreTarifs } from "@/components/site/BarreTarifs";
 
 export const metadata: Metadata = {
   title: "Tarifs : analyse d'annonce de voiture d'occasion, première offerte",
@@ -13,8 +17,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/tarifs" },
 };
 
-export default async function Tarifs({ searchParams }: { searchParams: Promise<{ paiement?: string }> }) {
-  const { paiement } = await searchParams;
+export default async function Tarifs({ searchParams }: { searchParams: Promise<{ paiement?: string; produit?: string }> }) {
+  const { paiement, produit } = await searchParams;
+  // retour d'un paiement annulé : la formule choisie, pour la reprendre d'un clic
+  const repris = produit && produit in OFFRES && OFFRES[produit as OffreId].prix > 0 && !OFFRES[produit as OffreId].cachee ? OFFRES[produit as OffreId] : null;
   const compte = await compteCourant();
   return (
     <div className="wrap py-14">
@@ -24,18 +30,37 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           Payez seulement <span className="it">ce qui vous sert</span>
         </h1>
         <p className="mt-4 text-lg text-ink-2">Sans engagement, résiliable à tout moment depuis votre compte. Prix toutes taxes comprises.</p>
+        <CompteurInscrits className="mt-3 justify-center" />
         {paiement === "annule" && (
-          <p role="status" className="mx-auto mt-6 w-fit rounded-2xl border border-warn/40 bg-warn/10 px-4 py-2 text-warn">
-            Paiement annulé : rien n&apos;a été débité.
-          </p>
+          <div role="status" className="mx-auto mt-6 grid max-w-xl gap-3 rounded-2xl border border-warn/40 bg-warn/10 p-4 text-left">
+            <p className="text-ink">
+              <b>Paiement annulé : rien n&apos;a été débité.</b>{" "}
+              {repris ? `Vous pouvez reprendre ${repris.famille === "benef" ? "Benef " : ""}${repris.nom} là où vous l'avez laissé.` : "Vous pouvez reprendre quand vous voulez."}
+            </p>
+            {repris && (
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="w-full sm:w-auto">
+                  <BoutonAbonner produit={repris.id} className="btn btn-o btn-sm w-full">
+                    Reprendre {repris.nom}, {prixTxt(repris.prix)} par mois
+                  </BoutonAbonner>
+                </div>
+                <span className="text-sm text-ink-2">
+                  Sans engagement{GARANTIE ? `, remboursé sous ${GARANTIE.jours} jours si ça ne vous convient pas` : ""}. Une question ? <a href="/legal#contact" className="text-o2 underline underline-offset-4">Écrivez-nous</a>.
+                </span>
+              </div>
+            )}
+          </div>
         )}
       </div>
+      <Rassurance className="mx-auto mt-8 max-w-4xl" />
       <OngletsTarifs
         particuliers={
           <section aria-labelledby="t-part">
             <h2 id="t-part" className="text-center font-display text-2xl font-semibold">Vous achetez une voiture pour vous</h2>
             <p className="mx-auto mb-8 mt-1 max-w-2xl text-center text-ink-3">Simple et pédagogique : ce que vaut l&apos;annonce, ce qu&apos;elle va vous coûter, ce qu&apos;il faut vérifier.</p>
             <CartesOffres ids={PARTICULIERS} actuelle={compte?.offre.id} credits />
+            <TableauFormules ids={PARTICULIERS} className="mt-12" />
+            <BarreTarifs id="essentiel" cible="t-part" actuelle={compte?.offre.id} />
           </section>
         }
         benef={
@@ -47,6 +72,8 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
               Rapports pour professionnels, marge et prix d&apos;offre. <Link href="/benef" className="text-o2 underline underline-offset-4">Découvrir Benef</Link>
             </p>
             <CartesOffres ids={BENEF} actuelle={compte?.offre.id} />
+            <TableauFormules ids={BENEF} className="mt-12" />
+            <BarreTarifs id="croissance" cible="t-benef" actuelle={compte?.offre.id} />
           </section>
         }
       />
@@ -83,7 +110,14 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
             { q: "Que se passe-t-il quand j'ai utilisé mes analyses du mois ?", r: <p>Elles reviennent le 1er du mois suivant. En attendant, vous pouvez continuer avec des crédits à l&apos;unité, ou passer à la formule supérieure à tout moment.</p> },
             { q: "Comment marchent les crédits ?", r: <p>Un crédit vaut une analyse détaillée avec 3 photos. Vous les payez une fois, sans abonnement, et ils restent valables 12 mois après votre dernier achat. Ils ne servent que lorsque les analyses de votre formule sont épuisées.</p> },
             { q: "Le paiement est-il sécurisé ?", r: <p>Le paiement est géré par Stripe. Utopicar ne voit ni ne conserve jamais vos coordonnées bancaires.</p> },
-            { q: "Ai-je droit à un remboursement ?", r: <p>Les analyses étant fournies immédiatement, le délai de rétractation ne s&apos;applique pas une fois le service utilisé, comme l&apos;indiquent les <Link href="/legal#vente" className="text-o2 underline underline-offset-4">conditions de vente</Link>. En cas de problème, écrivez-nous : nous trouvons toujours une solution.</p> },
+            {
+              q: "Ai-je droit à un remboursement ?",
+              r: GARANTIE ? (
+                <p>Oui. Votre premier mois d&apos;abonnement est remboursé en entier si vous le demandez par e-mail dans les {GARANTIE.jours} jours qui suivent le paiement, sans avoir à vous justifier. Les crédits à l&apos;unité et les guides, fournis tout de suite, ne sont pas remboursables une fois utilisés (voir les <Link href="/legal#vente" className="text-o2 underline underline-offset-4">conditions de vente</Link>).</p>
+              ) : (
+                <p>Les analyses étant fournies immédiatement, le délai de rétractation ne s&apos;applique pas une fois le service utilisé, comme l&apos;indiquent les <Link href="/legal#vente" className="text-o2 underline underline-offset-4">conditions de vente</Link>. En cas de problème, écrivez-nous : nous trouvons toujours une solution.</p>
+              ),
+            },
           ]}
           premiereOuverte={false}
         />

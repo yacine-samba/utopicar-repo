@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { compteBenef } from "@/lib/benef";
 import { familleEspace, texteRestantes } from "@/lib/espace";
-import { BENEF } from "@/lib/offres";
+import { BENEF, centimes, formuleSuivante, prixParAnalyse } from "@/lib/offres";
 import { OutilBenef } from "@/components/benef/OutilBenef";
 import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
 import { CartesOffres } from "@/components/site/CartesOffres";
@@ -18,6 +18,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
   const lien = sp.lien ?? lienPartage(sp.url, sp.texte, sp.titre) ?? undefined;
   const partageIllisible = !sp.lien && !lien && !!(sp.url || sp.texte);
   const o = c.offre;
+  const suite = c.illimite ? null : formuleSuivante(o.id, familleEspace(c));
 
   if (familleEspace(c) === "benef") {
     if (o.famille !== "benef")
@@ -60,7 +61,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
           <p className="text-sm text-ink-3">
             {c.restantes > 0 ? `${texteRestantes(c)}.` : "Plus d'analyse disponible pour le moment."}{" "}
             {c.restantes === 0 ? (
-              <Link href="/app/credits" className="text-o2 underline underline-offset-4">Acheter des crédits</Link>
+              <>
+                {suite && <Link href={`/app/payer?produit=${suite.id}`} className="font-medium text-o2 underline underline-offset-4">Passer à {suite.nom}{prixParAnalyse(suite) ? `, ${centimes(prixParAnalyse(suite)!)} l'analyse` : ""}</Link>}
+                {suite && " ou "}
+                <Link href="/app/credits" className="text-o2 underline underline-offset-4">{suite ? "acheter des crédits" : "Acheter des crédits"}</Link>
+              </>
             ) : (
               o.prix === 0 && <Link href="/app/compte#formule" className="text-o2 underline underline-offset-4">Voir les formules</Link>
             )}

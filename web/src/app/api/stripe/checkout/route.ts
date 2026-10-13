@@ -1,9 +1,9 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
-import { GUIDE, OFFRES, OPTION_MESSAGES, pack, PACKS, STATUTS_ACTIFS, type OffreId } from "@/lib/offres";
+import { GARANTIE, GUIDE, OFFRES, OPTION_MESSAGES, pack, PACKS, STATUTS_ACTIFS, type OffreId } from "@/lib/offres";
 import { comptesActifs } from "@/lib/supabase/config";
 import { supabaseService } from "@/lib/supabase/service";
-import { lienPortail, paiementsActifs, prixParCle, stripe, urlSite } from "@/lib/stripe";
+import { codesPromoActifs, lienPortail, paiementsActifs, prixParCle, stripe, urlSite } from "@/lib/stripe";
 
 // Sérénité n'est plus proposée : elle ne peut plus être souscrite.
 const Corps = z.object({ produit: z.enum(["essentiel", "starter", "croissance", "pro", "guide", "messages", ...PACKS.map((p) => p.id)] as [string, ...string[]]) });
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
       client_reference_id: compte.id,
       line_items: [{ price: prix.id, quantity: 1 }],
       metadata: { user_id: compte.id, produit: "credits", pack: p.id, credits: String(p.credits) },
-      allow_promotion_codes: true,
+      allow_promotion_codes: await codesPromoActifs(),
       locale: "fr",
       success_url: `${site}/app/credits?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${site}/app/credits?paiement=annule`,
@@ -100,11 +100,11 @@ export async function POST(req: Request) {
     line_items: [{ price: prix.id, quantity: 1 }],
     metadata: { user_id: compte.id, offre: id },
     subscription_data: { metadata: { user_id: compte.id, offre: id } },
-    allow_promotion_codes: true,
+    allow_promotion_codes: await codesPromoActifs(),
     locale: "fr",
     success_url: `${site}/app/compte?paiement=ok&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${site}/tarifs?paiement=annule`,
-    custom_text: { submit: { message: "Sans engagement : résiliable à tout moment depuis votre compte. L'accès commence tout de suite." } },
+    cancel_url: `${site}/tarifs?paiement=annule&produit=${id}#${o.famille === "benef" ? "benef" : "particuliers"}`,
+    custom_text: { submit: { message: `Sans engagement : résiliable à tout moment depuis votre compte. L'accès commence tout de suite.${GARANTIE ? ` Satisfait ou remboursé ${GARANTIE.jours} jours sur le premier mois.` : ""}` } },
   });
   return Response.json({ url: s.url });
 }
