@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { compteCourant, type Compte } from "@/lib/compte";
 import { comptesActifs } from "@/lib/supabase/config";
 import { familleEspace, navEspace, nomFormule, texteRestantes } from "@/lib/espace";
+import { centimes, formuleSuivante, prixParAnalyse } from "@/lib/offres";
 import { Logo, Symbole } from "@/components/site/Logo";
 import { Ico } from "@/components/espace/Icones";
 import { NavCote, NavMobile } from "@/components/espace/NavEspace";
@@ -12,6 +13,7 @@ import { CommandeK, SeuilMarge } from "@/components/espace/OutilsEspace";
 import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { AnalysesEnFond } from "@/components/espace/AnalysesEnFond";
 import { CadreEspace } from "@/components/espace/CadreEspace";
+import { RepriseAchat } from "@/components/espace/RepriseAchat";
 import { PreferencesEspace } from "@/components/espace/Preferences";
 import { ProfilDepuisNavigateur } from "@/components/espace/ProfilDepuisNavigateur";
 import { CodeEnAttente } from "@/components/compte/CodeOffert";
@@ -66,13 +68,17 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
   if (!c) redirect("/connexion?next=/app");
   const entrees = navEspace(c);
   const benef = familleEspace(c) === "benef";
+  // analyses épuisées : la formule suivante (moins chère à l'analyse que les crédits), payée en un clic
+  const fs = c.illimite ? null : formuleSuivante(c.offre.id, benef ? "benef" : "particulier");
+  const pa = fs ? prixParAnalyse(fs) : null;
+  const suite = fs ? { l: `Passer à ${fs.nom}${pa ? ` (${centimes(pa)} l'analyse)` : ""}`, href: `/app/payer?produit=${fs.id}` } : null;
 
   return (
     <PreferencesEspace favoris={c.favoris}>
     <ProfilAnalyseFournisseur initial={c.profilAnalyse}>
     <ProfilDepuisNavigateur />
     <CodeEnAttente />
-    <AnalysesEnFond mode={benef && c.offre.famille === "benef" ? "benef" : "particulier"} actif={!benef || c.offre.famille === "benef"} maxPhotos={c.offre.photos} ville={c.ville}>
+    <AnalysesEnFond mode={benef && c.offre.famille === "benef" ? "benef" : "particulier"} actif={!benef || c.offre.famille === "benef"} maxPhotos={c.offre.photos} ville={c.ville} suite={suite}>
     <CadreEspace
       menu={
         <>
@@ -114,6 +120,7 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
           }
         />
         <main id="contenu" tabIndex={-1} className="mx-auto w-full max-w-6xl px-4 pb-32 pt-6 outline-none sm:px-6 lg:px-10 lg:pb-16 lg:pt-10">
+          <RepriseAchat actuelle={c.offre.id} abonne={!!c.abonnement && ["active", "trialing", "past_due"].includes(c.abonnement.statut)} />
           {children}
         </main>
       </div>

@@ -71,3 +71,18 @@ export async function lienPortail(customer: string, site: string) {
 export function urlSite(req: Request) {
   return (process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin).replace(/\/$/, "");
 }
+
+/** Le champ « code promo » de Stripe ne s'affiche que s'il existe au moins un code promo actif : sinon il fait sortir
+    du paiement pour aller chercher un code qui n'existe pas. Vérifié au plus toutes les 10 minutes ; en cas d'erreur, affiché. */
+let codesPromo: { t: number; v: boolean } | null = null;
+export async function codesPromoActifs(): Promise<boolean> {
+  if (codesPromo && Date.now() - codesPromo.t < 10 * 60_000) return codesPromo.v;
+  try {
+    const l = await stripe().promotionCodes.list({ active: true, limit: 1 });
+    codesPromo = { t: Date.now(), v: l.data.length > 0 };
+  } catch (e) {
+    console.error("codes promo stripe", e);
+    return true;
+  }
+  return codesPromo.v;
+}

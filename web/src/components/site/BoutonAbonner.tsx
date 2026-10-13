@@ -2,8 +2,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { track } from "@vercel/analytics";
+import { retenirAchat } from "../espace/RepriseAchat";
 
-/** Lance le paiement Stripe ; renvoie vers l'inscription si personne n'est connecté. */
+/** Lance le paiement Stripe. Sans compte : inscription, puis le paiement s'ouvre tout seul (/app/payer), sans recliquer. */
 export function BoutonAbonner({ produit, children, className = "btn btn-o w-full" }: { produit: string; children: React.ReactNode; className?: string }) {
   const router = useRouter();
   const [charge, setCharge] = useState(false);
@@ -18,10 +19,11 @@ export function BoutonAbonner({ produit, children, className = "btn btn-o w-full
           setCharge(true);
           setMsg("");
           track("paiement_lance", { produit });
+          retenirAchat(produit);
           try {
             const r = await fetch("/api/stripe/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ produit }) });
             const j = await r.json().catch(() => ({}));
-            if (r.status === 401) return router.push(`/inscription?next=${encodeURIComponent(location.pathname + location.hash)}&offre=${produit}`);
+            if (r.status === 401) return router.push(`/inscription?next=${encodeURIComponent(`/app/payer?produit=${produit}`)}&offre=${produit}`);
             if (j.url) return location.assign(j.url);
             setMsg(j.erreur || "Le paiement n'a pas pu démarrer. Réessayez.");
           } catch {

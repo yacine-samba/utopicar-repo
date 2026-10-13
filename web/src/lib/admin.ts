@@ -1,7 +1,7 @@
 import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 import { supabaseService } from "./supabase/service";
-import { OFFRES, STATUTS_ACTIFS, type OffreId } from "./offres";
+import { GARANTIE, OFFRES, STATUTS_ACTIFS, prixTxt, type OffreId } from "./offres";
 import { GUIDES, guidesOuverts, type GuideId } from "./guides";
 
 /* Page Administration (/app/admin) : lecture de tous les comptes et des inscrits au guide, cadeaux, envoi des guides.
@@ -303,4 +303,41 @@ export async function justesseAnalyse(): Promise<Justesse | null> {
     return null;
   }
   return data as Justesse;
+}
+
+// ------------------------------------------------------------------ relance d'un paiement d'abonnement abandonné
+
+/** Un seul rappel par compte et par mois, 24 h après un paiement d'abonnement ouvert puis fermé sans payer
+    (événement Stripe checkout.session.expired). Rien si un abonnement est actif entre-temps. Renvoie true si envoyé. */
+export async function relancerAchat(site: string, userId: string, offreId: string) {
+  if (!(offreId in OFFRES)) return false;
+  const o = OFFRES[offreId as OffreId];
+  if (!o.prix || o.cachee) return false;
+  const svc = supabaseService();
+  const [{ data: abo }, { data: p }, { data: u }] = await Promise.all([
+    svc.from("abonnements").select("statut").eq("user_id", userId).maybeSingle(),
+    svc.from("profils").select("prenom, reglages").eq("id", userId).maybeSingle(),
+    svc.auth.admin.getUserById(userId),
+  ]);
+  if (abo && STATUTS_ACTIFS.includes(abo.statut)) return false;
+  const email = u?.user?.email;
+  const regl = (p?.reglages as Record<string, unknown> | null) ?? {};
+  const derniere = typeof regl.relance_achat === "string" ? Date.parse(regl.relance_achat) : 0;
+  if (!email || Date.now() - derniere < 30 * 864e5) return false;
+  const nom = `${o.famille === "benef" ? "Benef " : ""}${o.nom}`;
+  const lien = `${site}/app/payer?produit=${o.id}`;
+  const garantie = GARANTIE ? `, satisfait ou remboursé ${GARANTIE.jours} jours sur le premier mois` : "";
+  const texte = `${p?.prenom ? `${esc(p.prenom)}, vous` : "Vous"} avez ouvert le paiement de ${esc(nom)} hier sans aller au bout : rien n'a été débité.<br><br>Avant votre prochain appel à un vendeur, une analyse vous dit si l'annonce vaut son prix, le prix à proposer et les défauts connus du moteur.`;
+  const bas = `${esc(nom)} : ${esc(prixTxt(o.prix))} par mois, sans engagement${esc(garantie)}. C'est le seul rappel que nous vous enverrons.`;
+  const cfg = await reglages();
+  await envoyer(
+    cfg,
+    "Utopicar",
+    email,
+    `Une seule voiture mal achetée coûte plus qu'un an de ${nom}`,
+    gabarit("Utopicar", `Votre formule ${nom} n'est pas encore active`, texte, `Activer ${nom}`, lien, bas),
+    `Vous avez ouvert le paiement de ${nom} hier sans aller au bout : rien n'a été débité.\n\nAvant votre prochain appel à un vendeur, une analyse vous dit si l'annonce vaut son prix, le prix à proposer et les défauts connus du moteur.\n\nActiver ${nom} : ${lien}\n\n${nom} : ${prixTxt(o.prix)} par mois, sans engagement${garantie}. C'est le seul rappel que nous vous enverrons.`,
+  );
+  await svc.from("profils").update({ reglages: { ...regl, relance_achat: new Date().toISOString() } }).eq("id", userId);
+  return true;
 }
