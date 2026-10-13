@@ -1203,7 +1203,8 @@
     const tD = TA(['deux']), tMe = TA(['mets']), tR = TA(['recherche']), tTr = TA(['trie']), tMa = TA(['mauvaise']), tG = TA(['g'], 8), tMg = TA(['marge']);
     return { bar: false, pov: false, title: 'Tu scrolles encore ?', demo: DEMO_P, end: FIN, endT: TA(['choisi']) + 0.85, goT: TA(['utopicar', 'utopic']), scanT: 99, titleOut: tMe - 0.1,
       extra: (s, P) => {
-        const L = [...ANN, ...ANN].map((a) => { const e = annCard(s.cam, a, false); s.cam.insertBefore(e, s.cam.children[1]); return e; });   // derrière le titre
+        const feed = mk('div', 'a', null, { width: '1080px', height: '1000px', top: '480px', overflow: 'hidden', WebkitMaskImage: 'linear-gradient(transparent 0,#000 90px,#000 880px,transparent 1000px)' }); s.cam.insertBefore(feed, s.cam.children[1]);   // fenêtre du fil, sous le titre, au-dessus de la bande du bas
+        const L = [...ANN, ...ANN].map((a) => annCard(feed, a, false));
         const timer = mk('div', 'sm-big a', s.cam, { color: '#fff', fontSize: '84px' }, '');
         const rc = rechCard(s.cam), sorted = ANN.slice(0, 6).map((a) => annCard(s.cam, a, true));
         const tOut = sorted.map((_, i) => tMa + 0.12 * i), keep = ANN.slice(0, 6).map((a) => a[3] === 'GO');
@@ -1213,7 +1214,7 @@
         P.push((t) => {
           // le fil d'annonces qui défile de plus en plus vite, puis s'arrête net sur « Mets »
           const sc = t < tMe ? 260 * t + 900 * Math.pow(Math.max(0, t - 1), 2) : 0;
-          L.forEach((e, i) => pose(e, t, (tt) => { if (tt >= tMe) return null; const ss = tt < tMe ? 260 * tt + 900 * Math.pow(Math.max(0, tt - 1), 2) : 0; return { x: 540, y: 620 + i * 132 - (ss % (ANN.length * 132)), c: 1, o: 0.95 }; }));
+          L.forEach((e, i) => pose(e, t, (tt) => { if (tt >= tMe) return null; const ss = tt < tMe ? 260 * tt + 900 * Math.pow(Math.max(0, tt - 1), 2) : 0; return { x: 540, y: 140 + i * 132 - (ss % (ANN.length * 132)), c: 1, o: 0.95 }; }));
           const h = Math.min(134, Math.floor(E(t, tD, 0.9, (p) => p) * 134));
           timer.textContent = `⏱ ${Math.floor(h / 60)} h ${String(h % 60).padStart(2, '0')} de scroll`;
           pose(timer, t, (tt) => (tt < tD - 0.05 || tt > tMe ? null : { x: 140, y: 1330 + 50 * (1 - E(tt, tD, 0.35)), o: E(tt, tD, 0.25) * 2 }));
