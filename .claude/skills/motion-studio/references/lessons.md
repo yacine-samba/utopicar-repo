@@ -139,3 +139,8 @@
     calcul (frais, « dernier prix »), puis la récompense ; verdicts variés (fonce, négocie, passe, prudence).
 
   Recettes : `techniques.md` § 17–18.
+- Oct. 2026, P1–P5 (présentation, 5 vidéos) : la voix de base de Simon est **eleven_v4**, à vitesse d'origine
+  (déjà vive ; la v3 demandait × 1,1). Faster-whisper place certains mots qui suivent un silence 0,4 à 0,7 s trop
+  tard (« raté », « 1 650 ») : `video/scripts/words_snap.py` recale chaque début de mot sur l'attaque réelle de la
+  voix, appliqué automatiquement par `vo-c7-pose.py`. Les repères du film s'ancrent sur le mot précédent
+  (`TA(['5900', '5'], TA(['verdict']))`), jamais sur une seconde fixe : changer de prise ne casse plus le calage.
