@@ -70,3 +70,14 @@ TABLES.lbc_boites = [{ user_id: UID, conversations: [
   { id: 'c1', nom: 'Karim', annonce: 'Renault Clio IV 1.5 dCi 90 Business', annonce_id: 'demo-clio-1', dernier: 'Oui toujours dispo ! CT de 3 mois, je vous envoie les factures.', le: '2026-10-14T07:41:00+02:00', non_lus: 1 },
   { id: 'c2', nom: 'Sophie', annonce: 'Renault Clio IV 1.5 dCi 90 Zen', annonce_id: 'demo-clio-2', dernier: 'Bonjour, oui elle est disponible. Visible ce week-end.', le: '2026-10-14T07:12:00+02:00', non_lus: 1 }],
   non_lus: 2, total: 2, maj: '2026-10-14T07:45:00+02:00', demande: null, run_id: null, erreur: null }];
+
+// ---------- parc (Pro) : six voitures de l'achat à la vente ; deux vendues en octobre → marge réalisée du mois ----------
+const V = (n, o) => ({ id: `00000000-0000-4000-c000-00000000000${n}`, user_id: UID, rapport_id: null, immat: null, notes: null, photos: [], finition: null, premiere_immat: null, cv: null, couleur: null, created_at: '2026-09-20T10:00:00Z', updated_at: '2026-10-13T18:00:00Z', ...o });
+TABLES.parc = [
+  V(1, { titre: 'Renault Clio IV 1.5 dCi 90 Business', statut: 'vendu', prix_achat: 5000, frais: 630, prix_vente: 6300, date_achat: '2026-09-22', date_vente: '2026-10-06', annee: 2016, km: 128000, energie: 'Diesel', boite: 'Manuelle' }),
+  V(2, { titre: 'Volkswagen Polo V 1.2 TSI 90', statut: 'vendu', prix_achat: 4300, frais: 410, prix_vente: 5590, date_achat: '2026-09-28', date_vente: '2026-10-11', annee: 2014, km: 117000, energie: 'Essence', boite: 'Manuelle' }),
+  V(3, { titre: 'Toyota Yaris III 1.33 VVT-i', statut: 'en_vente', prix_achat: 6900, frais: 380, prix_vente: null, date_achat: '2026-10-02', date_vente: null, annee: 2015, km: 96000, energie: 'Essence', boite: 'Manuelle' }),
+  V(4, { titre: 'Peugeot 208 1.2 PureTech 82', statut: 'preparation', prix_achat: 5200, frais: 520, prix_vente: null, date_achat: '2026-10-08', date_vente: null, annee: 2017, km: 88000, energie: 'Essence', boite: 'Manuelle' }),
+  V(5, { titre: 'Renault Clio IV 1.5 dCi 75 Zen', statut: 'achete', prix_achat: 6950, frais: 0, prix_vente: null, date_achat: '2026-10-13', date_vente: null, annee: 2018, km: 88500, energie: 'Diesel', boite: 'Manuelle' }),
+  V(6, { titre: 'Dacia Sandero 0.9 TCe 90', statut: 'repere', prix_achat: null, frais: 0, prix_vente: null, date_achat: null, date_vente: null, annee: 2016, km: 74000, energie: 'Essence', boite: 'Manuelle' }),
+];

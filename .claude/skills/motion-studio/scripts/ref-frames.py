@@ -87,13 +87,21 @@ scenes = sorted(set(scenes) | set(cuts))
 
 # ---------- 3. voix : mots horodatés, hauteur, énergie ----------
 import librosa
-wav = P('audio.wav'); subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', SRC, '-ac', '1', '-ar', '22050', wav], check=True)
+# vidéo muette (boucle de site, animation d'interface) : piste de silence, l'analyse sonore reste vide
+HAS_AUDIO = any(s['codec_type'] == 'audio' for s in probe['streams'])
+wav = P('audio.wav'); wav48 = P('audio48.wav')
+for out, ar in ((wav, 22050), (wav48, 48000)):
+    src = ['-i', SRC] if HAS_AUDIO else ['-f', 'lavfi', '-t', f'{DUR:.3f}', '-i', f'anullsrc=r={ar}:cl=mono']
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', *src, '-ac', '1' if out == wav else '2', '-ar', str(ar), out], check=True)
 y, sr = librosa.load(wav, sr=22050)
+if not HAS_AUDIO: print('pas de piste son : analyse sonore ignorée')
 words = []; LANG = '—'
-if not A.no_voice:
+if not A.no_voice and HAS_AUDIO:
     from faster_whisper import WhisperModel
     m = WhisperModel('small', device='cpu', compute_type='int8')
-    segs, info = m.transcribe(wav, language=None if A.lang == 'auto' else A.lang, word_timestamps=True, vad_filter=True)
+    # tableau 16 kHz plutôt que le chemin : évite le décodage PyAV de faster-whisper (incompatible selon les versions)
+    y16 = librosa.load(wav, sr=16000)[0].astype(np.float32)
+    segs, info = m.transcribe(y16, language=None if A.lang == 'auto' else A.lang, word_timestamps=True, vad_filter=True)
     LANG = f'{info.language} ({info.language_probability:.0%})'; print('langue de la voix :', LANG)
     for s in segs:
         for w in s.words: words.append({'w': w.word.strip(), 't0': round(w.start, 3), 't1': round(w.end, 3)})
@@ -130,7 +138,7 @@ for t in on:
 tempo, beats = librosa.beat.beat_track(y=yh + yp, sr=sr, units='time')
 tempo = float(np.atleast_1d(tempo)[0])
 import pyloudnorm as pyln
-y48, _ = librosa.load(SRC, sr=48000, mono=False)
+y48, _ = librosa.load(wav48, sr=48000, mono=False)
 meter = pyln.Meter(48000); lufs = meter.integrated_loudness(y48.T if y48.ndim > 1 else y48)
 
 # ---------- 5. planches toutes les --step s, et chaque coupe image par image ----------
@@ -150,7 +158,7 @@ for s0 in range(0, len(thumbs), per_sheet):
         t = (s0 + j) * A.step; x = 4 + (j % per_row) * (tw + 4); yy = 4 + (j // per_row) * (th + 20)
         S.paste(Image.open(os.path.join(tmp, f)), (x, yy + 18))
         cut_here = any(abs(c / FPS - t) < A.step / 2 for c in cuts)
-        d.text((x, yy + 1), f'{t:.1f}s' + ('  ✂' if cut_here else ''), fill='#FF6A3D' if cut_here else '#E8D58A', font=FONT)
+        d.text((x, yy + 1), (f'{t:.2f}s' if A.step < 0.1 else f'{t:.1f}s') + ('  ✂' if cut_here else ''), fill='#FF6A3D' if cut_here else '#E8D58A', font=FONT)
     S.save(P('sheets', f'sheet_{s0 // per_sheet + 1:02d}.jpg'), quality=88)
 for f in thumbs: os.remove(os.path.join(tmp, f))
 os.rmdir(tmp)

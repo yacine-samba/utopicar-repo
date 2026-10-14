@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>présentation utopicar v3</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:Instrument;font-style:italic;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+/* jetons de l'app (thème sombre de l'espace) */
+:root{--bg0:#0b0a09;--bg1:#17100b;--ink:#f4f1ec;--ink2:#f4f1eccc;--ink3:#f4f1ec9e;--line:#f4f1ec1a;--line2:#f4f1ec33;--o:#ff5a1f;--o2:#ff8a4c;--ok:#3ecb7f;--warn:#ffc53d;--bad:#ff7a7a;--nuit:#0b1226;--cream:#f7f2ea;--k:#1c1612}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:absolute;inset:0;overflow:hidden;font-family:Satoshi;color:var(--ink);-webkit-font-smoothing:antialiased}
+.a{position:absolute;left:0;top:0}
+.lay{position:absolute;inset:0;overflow:hidden}
+.ecr{position:absolute;left:0;top:0;overflow:hidden;border-radius:44px;background:var(--bg0);box-shadow:0 0 0 2px #f4f1ec1f,0 50px 90px -40px #000;transform-origin:0 0}
+.ecr iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:var(--bg0)}
+.men{font:500 24px Satoshi;white-space:nowrap;color:var(--ink3)}
+.ctx{font:700 28px Satoshi;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.pill{padding:14px 28px;border-radius:999px;font:700 30px Satoshi;white-space:nowrap}
+/* texte cinétique : mots dans un masque, lettres qui montent */
+.kt{position:absolute;left:0;top:0;white-space:nowrap;font:600 150px/0.95 Clash;letter-spacing:-.035em}
+.kt .w{display:inline-block;vertical-align:top;padding:.06em .05em .22em;margin:-.06em -.05em -.22em;margin-right:.08em}
+.kt .w.m{overflow:hidden}
+.kt .w:last-child{margin-right:-.05em}
+.kt .c{display:inline-block;transform-origin:50% 80%}
+.kt .i{font-family:Instrument;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.roll{position:absolute;left:0;top:0;white-space:nowrap;font:600 150px/1 Clash;letter-spacing:-.035em;display:flex;align-items:flex-start}
+.roll .col{display:inline-block;height:1em;clip-path:inset(0 -.35em)}
+.roll .col .strip{display:block}
+.roll .col .strip span{display:block;height:1em;text-align:center}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<svg width="0" height="0" style="position:absolute"><defs id="fx"></defs></svg>
+<script src="../lib/motion.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+presentev3 · -14.0 LUFS, true peak -3.9 dBTP · bruitages 68 posés, 3 retirés
+écart voix / musique par phrase : min 9.6 dB, médiane 11.0 dB (9 phrases)
+plus long blanc dans la voix : 0.40 s
