@@ -38,6 +38,9 @@ hors zones interdites) ou remplace-les par de vrais chiffres vérifiés et autor
   Actuellement `video/assets/brand/logo.svg` est **un retracé** d'une image : demander le fichier source.
   Sur fond sombre, la tuile disparaît : lui donner un liseré clair (`0 0 0 3px rgba(255,255,255,.16)`) ou la poser sur
   un fond clair.
+- **La marque s'écrit toujours « utopicar », en minuscules** (règle de l'utilisateur, 14 oct. 2026) : titres, mots-chocs,
+  étiquettes, libellés d'interface recopiés (« Fiche utopicar », « Voir mes alertes sur utopicar »), mentions. Seul le logo
+  officiel s'affiche tel quel.
 - Mot-symbole : « UTOPICAR », Archivo 800, largeur 125 %, interlettrage +0,02 em.
 - Police : Archivo (unique, display et UI), servie localement (`assets/site/Archivo-latin.woff2`, italique, TTF 800/125).
 - Couleurs du site : encre `#0C0F14`, fond `#F2F4F7`, papier `#FFFFFF`, jaune `#FFC928` (boutons), gain `#0A8F55` /

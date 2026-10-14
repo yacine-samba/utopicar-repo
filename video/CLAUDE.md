@@ -49,6 +49,7 @@
    −3,5 dBTP), son des 2 premières secondes, équilibre pour haut-parleur de téléphone. Un FAIL bloque la livraison.
 
 ## Spécifique UTOPICAR
+- La marque s'écrit toujours « utopicar », en minuscules, partout à l'écran (sauf le logo officiel, tel quel).
 - L'UI filmée est le vrai fichier assets/site/utopicar-live.html, chargé dans Chromium
   avec une fausse base démo (window.claude mocké). Aucune donnée réelle du parc.
 - Les chiffres affichés sont ceux que calcule l'outil lui-même à partir des données démo.

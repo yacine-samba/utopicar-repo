@@ -8,7 +8,7 @@ P = [  # (temps prévu, réplique de Simon, mouvement / technique)
     ('0,0 s', '« Cette 208 à 7 190 € ? »', 'Image 0 : objet + chiffre. Étiquette percée (son trou = le point orange porteur), caméra 3D qui pousse et tourne, fond = la même photo floutée (2.5D).'),
     ('2,4 s', '« Elle va t\'en coûter 8 840. »', 'Le prix roule 7 190 → 8 840 en rouge ; la goutte « +1 650 € travaux » naît dans l\'étiquette et se détache (liquide, pont).'),
     ('4,8 s', '« Tu colles l\'annonce… »', 'Zoom-éclair ×28 en 0,28 s à travers le trou de l\'étiquette, flou de bougé : on débouche sur l\'orange. Aucune coupe.'),
-    ('5,6 s', '« …dans Utopicar : »', 'Le trou s\'étire en champ (bords sur deux ressorts), l\'URL s\'écrit, clic : le bouton s\'écrase puis rebondit.'),
+    ('5,6 s', '« …dans utopicar : »', 'Le trou s\'étire en champ (bords sur deux ressorts), l\'URL s\'écrit, clic : le bouton s\'écrase puis rebondit.'),
     ('7,2 s', '« en deux secondes, »', 'Le champ devient la vraie fiche du site (capture 3×) : la carte prend la hauteur du contenu, image par image.'),
     ('8,2 s', '« la cote, les travaux, le vrai prix… et le verdict. Passe. »', 'Un surlignage par mot (mesuré au pixel). « Passe. » sort d\'un masque, en rouge.'),
     ('11,0 s', '« Et les bonnes affaires ? Arrête de scroller. »', 'La fiche se replie en point ; le mur d\'annonces défile (flou), le point tombe en arc et l\'arrête net.'),
@@ -16,12 +16,12 @@ P = [  # (temps prévu, réplique de Simon, mouvement / technique)
     ('16,0 s', '« Toi, tu dors. Lui, il bosse. »', 'Humour : coupe de couleur nuit sur le temps fort, horloge qui tourne, l\'onde continue.'),
     ('18,0 s', '« Une annonce passe sous la cote ? »', 'Une case sort du mur ×2,6 avec liseré blanc, les autres s\'éteignent ; pastille « 1 450 € sous la cote ».'),
     ('19,8 s', '« Tu reçois un mail. T\'as plus qu\'à appeler. »', 'La case se déplie en vrai e-mail d\'alerte (modèle du produit) ; curseur, clic sur l\'annonce.'),
-    ('22,5 s', '« Utopicar. Achète juste, revends mieux. »', 'L\'e-mail se replie en point → flèche du logo (SVG officiel) ; « lien en bio ». Boucle : le point repart vers l\'image 0.'),
+    ('22,5 s', '« utopicar. Achète juste, revends mieux. »', 'L\'e-mail se replie en point → flèche du logo (SVG officiel) ; « lien en bio ». Boucle : le point repart vers l\'image 0.'),
 ]
 TW, TH, CH, M = 340, 604, 250, 28
 W = M + 6 * (TW + M); H = 150 + 2 * (TH + CH + M) + 20
 o = Image.new('RGB', (W, H), (18, 16, 15)); d = ImageDraw.Draw(o)
-d.text((M, 34), 'Présentation UTOPICAR avec Simon · planche (porte 3) · 9:16, 30 s max', font=ImageFont.truetype(FB, 34), fill=(255, 255, 255))
+d.text((M, 34), 'Présentation utopicar avec Simon · planche (porte 3) · 9:16, 30 s max', font=ImageFont.truetype(FB, 34), fill=(255, 255, 255))
 d.text((M, 86), 'Un seul objet porteur du début à la fin : le point orange (trou de l\'étiquette → champ → fiche → point → onde → pépite → e-mail → logo). Tracés bleus = mouvement. Rouge pointillé = zones sûres.',
        font=ImageFont.truetype(F, 19), fill=(200, 195, 190))
 fb, fi, fr = ImageFont.truetype(FB, 19), ImageFont.truetype(FI, 17), ImageFont.truetype(F, 15)

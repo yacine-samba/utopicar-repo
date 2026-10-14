@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>Planche · présentation UTOPICAR avec Simon</title>
+<title>Planche · présentation utopicar avec Simon</title>
 <style>
 @font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
 @font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
@@ -75,7 +75,7 @@ const mail = async () => {   // vrai modèle supabase/functions/veille (mailNouv
   const html = `<div style="max-width:560px;margin:0 auto;font:14px Arial,sans-serif;color:#1d1d1f">
     <p style="font-size:18px;margin:0 0 4px"><b>1 nouvelle annonce</b></p><p style="margin:0 0 12px;color:#555">Recherche « Clio IV diesel »</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${card}</table>
-    <p style="margin:18px 0"><a style="background:#ff5a1f;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold">Voir mes alertes sur Utopicar</a></p></div>`;
+    <p style="margin:18px 0"><a style="background:#ff5a1f;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold">Voir mes alertes sur utopicar</a></p></div>`;
   const box = mk('div', 'a', null, { width: '600px', padding: '26px 20px 8px', background: '#fff', borderRadius: '26px', boxShadow: '0 50px 90px -30px rgba(28,22,18,.5),0 0 0 1px rgba(28,22,18,.06)', transformOrigin: '0 0' }, html);
   return box;
 };
@@ -121,7 +121,7 @@ const logo = async (w, x, y) => { const d = mk('img', 'a', null, { width: w + 'p
     title('Colle <span class="i" style="color:var(--k)">l\'annonce.</span>', 300, 132);
     const p = at(mk('div', 'a', null, { width: '860px', height: '132px', borderRadius: '999px', background: '#fff', boxShadow: '0 40px 80px -30px rgba(26,19,16,.55)', display: 'flex', alignItems: 'center', padding: '0 14px 0 44px', gap: '20px' },
       `<div style="flex:1;font:500 34px Satoshi;color:#1c1612;white-space:nowrap;overflow:hidden">…/annonce/peugeot-208-1-2-puretech<span style="display:inline-block;width:3px;height:38px;background:#ff5a1f;vertical-align:middle;margin-left:4px"></span></div><div style="flex:none;height:104px;padding:0 40px;border-radius:999px;background:#1a1310;color:#fff;display:flex;align-items:center;font:600 38px Clash">Analyser</div>`), 110, 880);
-    at(mk('div', 'a g', null, { fontSize: '64px', color: '#1a1310', width: '1080px', textAlign: 'center' }, 'dans Utopicar'), 0, 1090);
+    at(mk('div', 'a g', null, { fontSize: '64px', color: '#1a1310', width: '1080px', textAlign: 'center' }, 'dans utopicar'), 0, 1090);
     anno(['M 540 1320 C 700 1300, 840 1180, 860 1040'], [[120, 1380, 'le trou s\'étire en champ : bords sur deux ressorts'], [120, 1420, 'clic : le bouton s\'écrase (1,18 / 0,72) puis rebondit']]);
   }
   if (F === 5) {   // le champ devient la fiche du vrai site, qui grandit avec son contenu
