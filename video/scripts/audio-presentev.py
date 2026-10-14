@@ -1,7 +1,7 @@
 """Présentation utopicar avec Simon : voix eleven_v4 devant, musique de presente30 recalée sur la voix, bruitages
 ElevenLabs du master60 posés aux repères publiés par le film (window.cues, window.T → audio/cues-presentev.json).
 Musique : audio/presente30/eleven/musique-SUMYsl1ZLq0kvbuCQLXI.mp3 (pop hip-hop instrumental, 119,96 BPM) :
-- de 0 à « Et » : le morceau calé pour qu'un premier temps tombe sur « Passe. » ;
+- de 0 à « Et » : le morceau calé pour qu'un premier temps tombe sur « À éviter. » ;
 - « Et les bonnes affaires ? » : la musique s'étouffe (passe-bas), arrêt de bande sur « scroller » ;
 - drop (mesure 16) sur « Ta recherche » ; la nuit (« Toi, tu dors ») filtrée ; coup final (mesure 23) sur « utopicar ».
 Niveau : écart voix / musique médian de 11 dB par phrase (la voix passe devant), bruitages cédant 4 dB à la voix.
@@ -44,7 +44,7 @@ def put(t0, t1, s0, fi=0.003, fo=0.003, dst=None):
     if fo: k = int(fo * SR); seg[-k:] *= np.cos(np.linspace(0, np.pi / 2, k))[:, None]
     dst[a:b] += seg
 tStop = T['scroller'] + 0.02
-put(0, tStop, D(6) - T['passe'], fi=0.002, fo=0.02)          # un premier temps sur « Passe. »
+put(0, tStop, D(6) - T['eviter'], fi=0.002, fo=0.02)          # un premier temps sur « Passe. »
 # « Et les bonnes affaires ? » : passe-bas qui se referme jusqu'à l'arrêt
 a, b = int(T['et'] * SR), int(tStop * SR)
 low = bp(mus[a:b], None, 900, 2); m = np.linspace(0, 1, b - a)[:, None] ** 0.7; mus[a:b] = mus[a:b] * (1 - m) + low * m
@@ -53,8 +53,8 @@ a, b = int(T['toi'] * SR), int(T['une'] * SR)                                   
 mus[a:b] = bp(mus[a:b], None, 700, 2) * db(-2)
 put(T['uto2'] - 0.01, DUR, HIT - 0.01, fi=0.003, fo=0)                          # coup final sur « utopicar »
 mus *= curve([(0, 1), (DUR - 1.2, 1), (DUR - 0.15, db(-10)), (DUR, 0)])[:, None]
-# « Passe. » tombe sur un premier temps : la musique s'efface sous le mot (−7 dB), la voix passe devant
-tp_ = T['passe']; mus *= curve([(0, 1), (tp_ - 0.06, 1), (tp_ - 0.01, db(-7)), (tp_ + 0.42, db(-7)), (tp_ + 0.6, 1), (DUR, 1)])[:, None]
+# « À éviter. » tombe sur un premier temps : la musique s'efface sous le mot (−7 dB), la voix passe devant
+tp_ = T['eviter']; mus *= curve([(0, 1), (tp_ - 0.06, 1), (tp_ - 0.01, db(-7)), (tp_ + 0.42, db(-7)), (tp_ + 0.6, 1), (DUR, 1)])[:, None]
 mlow = bp(mus, None, 150); mus = (mus - mlow) + mlow * db(-11); mus = bp(mus, 60, None, 2)
 mus = mus + bp(mus, 1500, 5000, 2) * (db(3) - 1)          # téléphone : présence remontée
 # niveau de la musique fixé par l'écart voix / musique mesuré par phrase (médiane 11 dB)

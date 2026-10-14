@@ -1,6 +1,7 @@
-// Présentation utopicar avec Simon (eleven_v4), 9:16 — planche validée (planche-presente-v/), grammaire motion-pro :
-// un seul objet porteur, le point orange : trou de l'étiquette → champ → fiche du vrai site → point → onde dans le mur
-// d'annonces → pépite → vrai e-mail d'alerte → flèche du logo → retour à l'étiquette de l'image 0 (boucle).
+// Présentation utopicar avec Simon (eleven_v4), 9:16, grammaire motion-pro : un seul objet porteur, le point orange :
+// trou de l'étiquette → carte « écran » de la VRAIE app (web/, lancée en local sur une base de démonstration, captures 3×
+// dans assets/presente-v/app/) : annonce collée → rapport de la 208 → liste de recherche → alerte e-mail → messages de la
+// nuit → l'annonce sous la cote → vrai e-mail d'alerte → point → flèche du logo → retour à l'étiquette (boucle).
 // Contrat : window.seek(t) peint l'image t, sans état entre les images ; tous les instants viennent des mots de la voix
 // (audio/vo-presentev/vo.words.json). Flou de bougé : window.shutter / window.samples, rendu MB=8.
 (async function () {
@@ -8,8 +9,7 @@
   const W = 1080, H = 1920, ST = document.getElementById('stage');
   const J = async (u) => (await fetch(u)).json();
   const WORDS = await J('../audio/vo-presentev/vo.words.json');
-  const SEQ = await J('../assets/presente-v/seq/seq.json');
-  const MUR = (await J('../assets/master60/annonces-mur.json')).annonces;
+  const RECT = await J('../assets/presente-v/app/rects.json');   // positions des blocs dans les captures (px CSS)
   const LOGO = await (await fetch('../assets/brand/official/utopicar-logo-horizontal-fond-sombre.svg')).text();
   await Promise.all(['700 200px Clash', '600 60px Clash', '700 40px Satoshi', '500 30px Satoshi', 'italic 200px Instrument'].map((f) => document.fonts.load(f)));
 
@@ -19,10 +19,10 @@
   const TA = (keys, after = 0) => { for (const w of BODY) if (w.s >= after - 0.01 && keys.some((k) => { const kn = norm(k); return /^\d{1,2}$/.test(kn) ? w.n === kn : w.n.startsWith(kn); })) return w.s; throw new Error('mot absent : ' + keys + ' après ' + after); };
   const VEND = Math.max(...WORDS.map((w) => w.e));
   const T = {};
-  T.p208 = TA(['208']); T.p7190 = TA(['7190']); T.coute = TA(['couter']); T.p8840 = TA(['8840']);
-  T.tu = TA(['tu'], 4); T.colles = TA(['colles']); T.dans = TA(['dans'], T.colles); T.uto = TA(['utopicar'], T.dans);
-  T.deux = TA(['deux'], T.uto); T.cote = TA(['cote'], T.deux); T.trav = TA(['travaux']); T.vrai = TA(['vrai']); T.verdict = TA(['verdict']); T.passe = TA(['passe'], T.verdict);
-  T.et = TA(['et'], T.passe); T.bonnes = TA(['bonnes'], T.et); T.arrete = TA(['arrete']); T.scroller = TA(['scroller']);
+  T.p208 = TA(['208']); T.p7190 = TA(['7190']); T.revente = TA(['revente']); T.perds = TA(['perds']); T.p2688 = TA(['2688', '2'], T.perds);
+  T.colles = TA(['colles']); T.dans = TA(['dans'], T.colles); T.uto = TA(['utopicar'], T.dans);
+  T.en = TA(['en'], T.uto); T.minute = TA(['minute']); T.cote = TA(['cote'], T.minute); T.trav = TA(['travaux']); T.marge = TA(['marge']); T.verdict = TA(['verdict']); T.eviter = TA(['eviter']);
+  T.et = TA(['et'], T.eviter); T.bonnes = TA(['bonnes'], T.et); T.arrete = TA(['arrete']); T.scroller = TA(['scroller']);
   T.rech = TA(['recherche'], T.scroller); T.tourne = TA(['tourne']); T.plus = TA(['plusieurs']); T.jour = TA(['jour']);
   T.toi = TA(['toi']); T.dors = TA(['dors']); T.lui = TA(['lui']); T.bosse = TA(['bosse']);
   T.une = TA(['une'], T.bosse); T.sous = TA(['sous'], T.une); T.cote2 = TA(['cote'], T.sous); T.recois = TA(['recois']); T.mail = TA(['mail'], T.recois);
@@ -93,10 +93,10 @@
   const win = (a, b) => FAST.push([a, b]);
 
   // ---------- fond : coupes de couleur sur les temps forts (jamais de fondu) ----------
-  const bgAt = (t) => (t < T.colles + 0.1 ? 'var(--k)' : t < T.passe ? 'var(--o)' : t < T.et ? 'var(--w)' : t < T.toi ? 'var(--k)' : t < T.une ? 'var(--nuit)' : t < T.recois ? 'var(--k)' : t < T.uto2 ? 'var(--w)' : 'var(--k)');
+  const bgAt = (t) => (t < T.colles + 0.1 ? 'var(--k)' : t < T.toi ? 'var(--o)' : t < T.une ? 'var(--nuit)' : t < T.recois ? 'var(--o)' : t < T.uto2 ? 'var(--w)' : 'var(--k)');
 
   // =====================================================================================================
-  // A · 0 → « Tu colles » : la 208, l'étiquette percée, le prix qui ment ; zoom-éclair à travers le trou
+  // A · 0 → « Tu colles » : la 208, l'étiquette percée ; 7 190 € → « à la revente : −2 688 € » ; zoom-éclair dans le trou
   // =====================================================================================================
   const A = mk('div', 'lay', CAM);
   const flou = mk('img', 'a', A, { width: '1080px', height: '1920px', opacity: 0.55 }); flou.src = '../assets/presente-v/208-flou.jpg';
@@ -109,224 +109,186 @@
   const HX = 612, HY = 684;                    // centre du trou à l'écran (= le point orange porteur)
   const str = mk('div', 'a', A, { width: '3px', height: HY + 'px', background: 'rgba(255,255,255,.75)', left: (HX - 1.5) + 'px', top: '0px', transformOrigin: '50% 100%' });
   const tag = mk('div', 'a', A, { width: '470px', height: '236px', left: (HX - 235) + 'px', top: (HY - 44) + 'px', borderRadius: '30px', background: '#fff', transformOrigin: '235px 44px',
-    WebkitMaskImage: 'radial-gradient(circle at 235px 44px, transparent 22px, #000 23px)', boxShadow: '0 40px 80px -30px rgba(0,0,0,.6)', padding: '78px 0 0 40px' });
-  const tagSub = mk('div', '', tag, { font: '700 24px Satoshi', letterSpacing: '.16em', opacity: 0.55, color: 'var(--ink)' }, 'ANNONCE');
-  const tagRoll = ROLL(tag, 104, '7 190 €', '8 840 €', 'var(--ink)'); Object.assign(tagRoll.box.style, { position: 'relative', marginTop: '6px' });
-  tagRoll.cols.forEach((c) => (c.fd = c.fd));
-  // le prix affiché : 7 190 (rouleaux posés sur 7 1 9 0)
-  const PRIX0 = [7, 1, 9, 0]; tagRoll.cols.forEach((c, k) => { c.fd = PRIX0[k]; });
-  // goutte « +1 650 € » : formes pleines dans le filtre « goo », texte au-dessus (jamais de texte dans le filtre)
-  const goo = mk('div', 'a', A, { left: (HX - 120) + 'px', top: (HY + 150) + 'px', width: '240px', height: '320px', filter: 'url(#goo)' });
-  const gNeck = mk('div', 'a', goo, { left: '100px', top: '0px', width: '40px', height: '60px', borderRadius: '20px', background: 'var(--r)' });
-  const gDrop = mk('div', 'a', goo, { left: '30px', top: '0px', width: '180px', height: '180px', borderRadius: '50%', background: 'var(--r)' });
-  const gTxt = mk('div', 'a', A, { width: '240px', textAlign: 'center', font: '700 46px/1 Clash', color: '#fff', letterSpacing: '-.03em', left: (HX - 120) + 'px' }, '+1 650 €<div style="font:700 20px Satoshi;letter-spacing:.12em;opacity:.85;margin-top:8px">TRAVAUX</div>');
-  cue(0, 'impact', 0.9); cue(T.p7190 - 0.05, 'pop', 0.7); cue(T.p8840 - 0.08, 'roll', 1); cue(T.p8840 + 0.45, 'thud', 0.8);
+    WebkitMaskImage: 'radial-gradient(circle at 235px 44px, transparent 22px, #000 23px)', boxShadow: '0 40px 80px -30px rgba(0,0,0,.6)', padding: '78px 0 0 36px' });
+  const tagSub = mk('div', '', tag, { font: '700 24px Satoshi', letterSpacing: '.16em', opacity: 0.6, color: 'var(--ink)', whiteSpace: 'nowrap' }, 'ANNONCE');
+  const tagRow = mk('div', '', tag, { display: 'flex', alignItems: 'flex-start', marginTop: '6px', height: '104px' });
+  const minus = mk('span', '', tagRow, { font: '700 104px/1 Clash', letterSpacing: '-.04em', color: 'var(--r)', display: 'inline-block', overflow: 'hidden', whiteSpace: 'pre' }, '−');
+  const tagRoll = ROLL(tagRow, 104, '7 190 €', '2 688 €', 'var(--ink)'); Object.assign(tagRoll.box.style, { position: 'relative' });
+  const PRIX0 = [7, 1, 9, 0]; tagRoll.cols.forEach((c, k) => { c.fd = PRIX0[k]; });   // le prix affiché : 7 190
+  const tRoll = T.p2688 - 0.12;
+  cue(0, 'impact', 0.9); cue(T.p7190 - 0.05, 'pop', 0.7); cue(T.perds - 0.04, 'pop', 0.6); cue(tRoll, 'roll', 1); cue(tRoll + 0.7, 'thud', 0.8);
   const tZ = T.colles - 0.24;                   // zoom-éclair : ×28 en 0,28 s autour du trou
   win(tZ - 0.05, tZ + 0.4); cue(tZ - 0.02, 'whoosh', 1); cue(tZ + 0.3, 'impact', 0.7);
   const zoomS = (t) => 1 + 27 * E(t, tZ, 0.3, eIn);
   function paintA(t, tl) {   // tl : temps local (la boucle repeint A avec tl < 0, juste avant l'image 0)
     const vis = show(A, tl < tZ + 0.32); if (!vis) return;
-    const sw = 7 * Math.exp(-Math.max(0, tl + 0.4) * 0.45) * Math.sin((tl + 0.4) * 3.4) + 2.5 * bump(tl, T.p8840 - 0.05, 0.3) * Math.sin(tl * 9);  // pendule amorti, relancé par le prix
+    const sw = 7 * Math.exp(-Math.max(0, tl + 0.4) * 0.45) * Math.sin((tl + 0.4) * 3.4) + 2.5 * bump(tl, tRoll, 0.3) * Math.sin(tl * 9);  // pendule amorti, relancé par le prix
     const Z = zoomS(tl);
-    // caméra de la scène : poussée lente + orbite 3D de la voiture ; pendant le zoom tout grossit vers le trou
     const push = 1 + 0.08 * eIO(clamp((tl + 0.6) / 5.6, 0, 1)) + 0.02 * clamp((tl + 0.6) / 5.6, 0, 1);
     A.style.transformOrigin = `${HX}px ${HY}px`; A.style.transform = `scale(${(push * (1 + 0.6 * E(tl, tZ, 0.3, eIn))).toFixed(4)})`;
     tf(flou, -30 * clamp((tl + 0.6) / 5.6, 0, 1), 0, { s: 1.08 + 0.08 * clamp((tl + 0.6) / 5.6, 0, 1) });   // le fond glisse 3 fois moins vite que la voiture
     { const q = clamp((tl + 0.6) / 5.6, 0, 1); tf(carW, 50 + 90 * q - 45, 770 - 20 * q + 8 * Math.sin(tl * 0.7), { p: 1, ry: 26 - 36 * q, rx: 4 * Math.sin(tl * 0.5), r: -1.5 + 3 * q }); }
-    // titre : sort du masque juste avant l'image 0 ; il s'efface vers le haut avant le zoom
     ktP(kA, tl, -0.32, tZ - 0.15);
-    ctx.style.opacity = (tl < tZ - 0.1 ? 1 : 0);
-    menA.style.opacity = (tl < tZ - 0.1 ? 1 : 0);
-    // étiquette : oscille, puis grossit ×28 autour du trou
+    ctx.style.opacity = (tl < tZ - 0.1 ? 1 : 0); menA.style.opacity = (tl < tZ - 0.1 ? 1 : 0);
     str.style.transform = `rotate(${(-sw * 0.25).toFixed(2)}deg)`;
-    tag.style.transform = `rotate(${(-7 + sw + 11 * E(tl, T.p8840 - 0.05, 0.4)).toFixed(2)}deg) scale(${Z.toFixed(3)})`;
-    const red = tl >= T.p8840 - 0.02; tagSub.textContent = red ? 'PRIX RÉEL' : 'ANNONCE'; tagSub.style.color = red ? 'var(--r)' : 'var(--ink)';
-    tagRoll.box.style.color = red ? 'var(--r)' : 'var(--ink)';
-    rollP(tagRoll, tl, T.p8840 - 0.08, 0.7, 0.07);
-    // goutte : naît dans l'étiquette, s'étire (pont), se détache, tombe en arc et rebondit légèrement
-    const gp = E(tl, T.p8840 + 0.1, 0.55), gd = SP(tl, T.p8840 + 0.1, 'default');
-    const gy = 40 + 170 * gd, nk = clamp(1 - E(tl, T.p8840 + 0.45, 0.2), 0, 1);
-    show(goo, tl > T.p8840 + 0.05 && tl < tZ); show(gTxt, tl > T.p8840 + 0.3 && tl < tZ);
-    gDrop.style.transform = `translateY(${gy.toFixed(1)}px) scale(${(0.35 + 0.65 * gp).toFixed(3)},${(0.35 + 0.65 * gp + 0.12 * bump(tl, T.p8840 + 0.5, 0.2)).toFixed(3)})`;
-    gNeck.style.transform = `scaleY(${(1 + 2.2 * gd * nk).toFixed(3)})`; gNeck.style.opacity = nk.toFixed(3);
-    gTxt.style.top = (HY + 150 + gy + 52) + 'px'; gTxt.style.opacity = E(tl, T.p8840 + 0.3, 0.2).toFixed(3);
+    tag.style.transform = `rotate(${(-7 + sw + 11 * E(tl, tRoll, 0.4)).toFixed(2)}deg) scale(${Z.toFixed(3)})`;
+    // « À la revente » : l'étiquette change de sens, le prix roule jusqu'à la perte, le signe moins se glisse devant
+    const red = tl >= T.revente - 0.02; tagSub.textContent = red ? 'À LA REVENTE' : 'ANNONCE'; tagSub.style.color = red ? 'var(--r)' : 'var(--ink)';
+    tagRoll.box.style.color = tl >= tRoll ? 'var(--r)' : 'var(--ink)';
+    minus.style.width = (48 * E(tl, tRoll + 0.2, 0.35)).toFixed(1) + 'px';
+    rollP(tagRoll, tl, tRoll, 0.7, 0.07);
   }
 
   // =====================================================================================================
-  // B · « Tu colles l'annonce dans utopicar » : on débouche dans le trou (orange) ; le champ naît du point
+  // B · la carte « écran » : la VRAIE app. Elle naît du trou, change de contenu par masque, ne coupe jamais.
   // =====================================================================================================
   const B = mk('div', 'lay', CAM);
-  const kB = KT(B, 300, 132, [['Colle', {}], ["l'annonce.", { i: 1, c: 'var(--k)' }]]);
-  const kB2 = KT(B, 1090, 64, 'dans utopicar', '#1a1310');
-  const field = mk('div', 'a', B, { background: '#fff', boxShadow: '0 40px 80px -30px rgba(26,19,16,.55)', overflow: 'hidden' });
-  const url = mk('div', 'a', field, { left: '44px', top: '43px', font: '500 34px Satoshi', color: '#1c1612', whiteSpace: 'nowrap' });
-  const URL = '…/annonce/peugeot-208-1-2-puretech'; const urlC = [...URL].map((ch) => mk('span', '', url, null, ch));
-  const caret = mk('span', '', url, { display: 'inline-block', width: '3px', height: '38px', background: 'var(--o)', verticalAlign: 'middle', marginLeft: '4px' });
-  const btn = mk('div', 'a', field, { height: '104px', width: '220px', borderRadius: '999px', background: '#1a1310', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '600 38px Clash', top: '14px' }, 'Analyser');
-  // la fiche du vrai site : séquence 30 i/s capturée en 3×, la carte prend la hauteur du contenu
-  const card = mk('div', 'a', B, { overflow: 'hidden', background: '#fff' });
-  const cimg = mk('img', 'a', card, { width: '680px' });
-  const SEQI = SEQ.map((_, i) => { const im = new Image(); im.src = `../assets/presente-v/seq/f${String(i).padStart(3, '0')}.jpg`; return im; });
-  await Promise.all(SEQI.map((im) => im.decode().catch(() => {})));
-  const HL = [0, 1, 2, 3].map(() => mk('div', 'a', card, { border: '6px solid var(--o)', borderRadius: '16px', left: '10px', width: '660px' }));
-  const kB3 = KT(B, 300, 132, '2 secondes.');
-  const kB4 = KT(B, 290, 160, 'Passe.', 'var(--r)');
-  const menB = mk('div', 'a men', B, { width: '1080px', textAlign: 'center', top: '1446px' }, 'Données de démonstration');
-  // géométrie du champ puis de la carte : bords sur deux ressorts (le bord avant part, le bord arrière suit)
-  const tF = T.colles + 0.05, tClick = T.uto + 0.42, tCard = tClick + 0.14;
-  const SEQ0 = T.deux + 0.45 - 1.16;            // la fiche du site passe de la liste de contrôle à la fiche complète vers « secondes »
-  const seqK = (t) => clamp(Math.floor((t - SEQ0) * 30), 0, SEQ.length - 1);
-  const cardH = (t) => (CW / 360) * SEQ[seqK(t)].h;    // 360 px CSS → 680 px
-  const CW = 680, CX0 = 200, CY0 = 470;
-  // lignes de la fiche (séparateurs mesurés au pixel sur la dernière image de la séquence, en px de la carte 720)
-  const ROWS = [[433, 548], [555, 700], [708, 822], [832, 976]].map(([a, b]) => [a * CW / 720, b * CW / 720]);   // séparateurs à 551 · 704 · 825 (carte de 720)
-  cue(tF, 'whoosh', 0.7); cue(tClick, 'click', 1); cue(tCard + 0.05, 'whoosh', 0.7); win(tCard - 0.02, tCard + 0.35);
-  for (let i = 0; i < 18; i += 3) cue(tF + 0.25 + i * 0.03, 'type', 0.5);
-  cue(T.cote - 0.03, 'pop', 0.8); cue(T.trav - 0.03, 'pop', 0.8); cue(T.vrai - 0.03, 'pop', 0.8); cue(T.verdict - 0.03, 'pop', 0.9); cue(T.passe - 0.02, 'impact', 1.1);
-  function rectAt(t) {   // rectangle de l'objet porteur pendant B (x, y, w, h, rayon)
-    // point (centre du trou) → champ
-    const P0 = { x: 540, y: 946, w: 0, h: 0, r: 66 }, F1 = { x: 140, y: 880, w: 800, h: 132, r: 66 };
-    const lead = SP(t, tF, 'snappy'), trail = SP(t, tF + 0.06, 'default');
-    let L = lerp(P0.x, F1.x, lead), R = lerp(P0.x, F1.x + F1.w, trail), Tt = lerp(P0.y - 6, F1.y, trail), Bb = lerp(P0.y + 6, F1.y + F1.h, lead), rad = F1.r;
-    if (t >= tCard) {   // champ → carte : le haut part le premier, le bas suit (et suit ensuite la hauteur du contenu)
+  const KX = 800 / 390;                                  // px du film par px CSS des captures (390 px de large, 3×)
+  const CR = { x: 140, y: 520, w: 800, h: 920 };         // carte posée dans la colonne 140 → 940 (bas à 1 440 : au-dessus des 440 px réservés)
+  const card = mk('div', 'a', B, { overflow: 'hidden', background: '#0b0908', boxShadow: '0 60px 120px -30px rgba(0,0,0,.65),0 0 0 2px rgba(255,255,255,.1)' });
+  const CAPS = {};
+  for (const n of ['analyser', 'rapport', 'recherche', 'alerte-off', 'alerte-on', 'messages']) {
+    const lay = mk('div', 'a', card, { width: '800px' }); const im = mk('img', 'a', lay, { width: '800px' }); im.src = `../assets/presente-v/app/${n}.png`;
+    CAPS[n] = { lay, im };
+  }
+  await Promise.all(Object.values(CAPS).map((c) => c.im.decode().catch(() => {})));
+  // surlignages (dans le calque du rapport : ils défilent avec lui) ; bords sur deux ressorts
+  const hlBox = (lay, r, col) => mk('div', 'a', lay, { left: ((r.x - 5) * KX) + 'px', top: ((r.y - 5) * KX) + 'px', width: ((r.w + 10) * KX) + 'px', height: ((r.h + 10) * KX) + 'px', border: `7px solid ${col}`, borderRadius: '30px', transformOrigin: '0 50%' });
+  const HL = { prix: hlBox(CAPS.rapport.lay, RECT.rapport.prix, 'var(--o)'), trav: hlBox(CAPS.rapport.lay, RECT.rapport.travaux, 'var(--o)'), marge: hlBox(CAPS.rapport.lay, RECT.rapport.marge, 'var(--o)'), verdict: hlBox(CAPS.rapport.lay, RECT.rapport.verdict, 'var(--r)') };
+  // interrupteur « Alerte e-mail » : la partie allumée de la capture, dévoilée de gauche à droite
+  const SWR = RECT.alerte.interrupteur;
+  const swOn = mk('div', 'a', CAPS['alerte-off'].lay, { left: ((SWR.x - 2) * KX) + 'px', top: ((SWR.y - 2) * KX) + 'px', width: ((SWR.w + 4) * KX) + 'px', height: ((SWR.h + 4) * KX) + 'px', overflow: 'hidden' });
+  const swIm = mk('img', 'a', swOn, { width: '800px', left: (-(SWR.x - 2) * KX) + 'px', top: (-(SWR.y - 2) * KX) + 'px' }); swIm.src = '../assets/presente-v/app/alerte-on.png';
+  // titres
+  const kB1 = KT(B, 290, 132, [['Colle', {}], ["l'annonce.", { i: 1, c: 'var(--k)' }]]);
+  const kB2 = KT(B, 290, 132, 'En une minute.');
+  const kB3 = KT(B, 280, 160, 'À éviter.', 'var(--k)');
+  const kB4 = KT(B, 300, 110, 'Les bonnes affaires ?'), kB5 = KT(B, 300, 110, 'Arrête de scroller.');
+  const kB6 = KT(B, 236, 104, 'Ta recherche'), kB7 = KT(B, 340, 112, [['tourne seule.', { i: 1, c: 'var(--k)' }]]);
+  const kB8 = KT(B, 236, 118, 'Toi, tu dors.'), kB9 = KT(B, 346, 124, [['Lui, il bosse.', { i: 1, c: 'var(--o)' }]]);
+  const kB10 = KT(B, 300, 120, 'Sous la cote ?');
+  const pro = mk('div', 'a pill', B, { font: '700 30px Satoshi', padding: '12px 26px', background: 'var(--k)', color: '#fff', border: '2px solid rgba(255,90,31,.8)' }, 'Benef Pro');
+  const menB = mk('div', 'a men', B, { width: '1080px', textAlign: 'center', top: '1450px' }, 'Données de démonstration');
+  // instants
+  const tCard = tZ + 0.22;                      // la carte naît du point, au fond du trou
+  const tPaste = T.dans - 0.05;                 // le texte de l'annonce se colle
+  const tRap = T.en - 0.08;                     // le rapport remplace le formulaire
+  const tList = T.et - 0.05, tStop = T.scroller + 0.02;
+  const tAl = T.rech - 0.12, tSw = T.tourne - 0.02;
+  const tMsg = T.toi - 0.06;
+  const tGem = T.une - 0.05;
+  cue(tCard, 'whoosh', 0.7); cue(tPaste, 'type', 0.8); cue(tPaste + 0.25, 'type', 0.6); cue(T.uto + 0.3, 'click', 1);
+  cue(tRap, 'whoosh', 0.6); cue(T.cote - 0.03, 'pop', 0.8); cue(T.trav - 0.03, 'pop', 0.8); cue(T.marge - 0.03, 'pop', 0.9); cue(T.eviter - 0.03, 'impact', 1.1);
+  cue(tList, 'whoosh', 0.9); cue(tStop - 0.02, 'tapestop', 1); cue(tStop, 'thud', 1);
+  cue(tAl, 'whoosh', 0.6); cue(tSw, 'click', 1); cue(T.plus, 'pop', 0.5); cue(T.jour, 'pop', 0.5);
+  cue(T.toi - 0.02, 'whoosh', 0.7); cue(T.lui, 'pop', 0.6); cue(T.bosse, 'sent', 0.8); cue(T.bosse + 0.2, 'sent', 0.7);
+  cue(tGem, 'pop', 0.9); cue(T.cote2 - 0.03, 'ding', 0.6);
+  win(tZ + 0.15, tCard + 0.45); win(tList, tStop + 0.12); win(tRap - 0.02, tRap + 0.3); win(T.eviter - 0.55, T.eviter);
+  // contenu affiché : [capture, défilement (px CSS), hauteur visible (px CSS)]
+  const RP = RECT.rapport;
+  const scrollRap = (t) => {   // haut du rapport → les trois blocs (cote, travaux, marge) → le verdict
+    const s0 = 0, s1 = Math.round(RP.travaux.y - 70), s2 = Math.round(RP.verdict.y - 120);
+    return s0 + (s1 - s0) * SP(t, T.minute - 0.15, 'default') + (s2 - s1) * SP(t, T.verdict - 0.2, 'default');
+  };
+  // zoom dans le rapport : sur le bloc de chaque mot (cote, travaux, marge), puis sur le verdict
+  const centre = (r) => ({ fx: 195, fy: r.y + r.h / 2 });   // centré sur la largeur de la page : le bloc entier reste dans la carte
+  function zoomRap(t) {
+    const P = [[T.cote - 0.12, RP.prix], [T.trav - 0.12, RP.travaux], [T.marge - 0.12, RP.marge], [T.verdict - 0.05, RP.verdict]];
+    let k = -1; P.forEach(([t0], i) => { if (t >= t0) k = i; });
+    const z = 1 + 0.12 * SP(t, T.cote - 0.12, 'default') - 0.04 * SP(t, T.verdict - 0.05, 'default');
+    if (k < 0) return { z: 1, ...centre(RP.prix) };
+    const a = centre(P[Math.max(0, k - 1)][1]), b = centre(P[k][1]), q = k === 0 ? 1 : SP(t, P[k][0], 'default');
+    return { z, fx: lerp(a.fx, b.fx, q), fy: lerp(a.fy, b.fy, q) };
+  }
+  const LIST0 = 6300, LIST1 = RECT.recherche.carte1.y - 30;   // au-dessus de la carte 1 : rien de cadré au-dessus (lien vers une plateforme tierce)
+  const scrollList = (t) => {   // la liste file vers le haut, de plus en plus vite, et s'arrête net sur « scroller » (léger dépassement)
+    if (t < tStop) return LIST0 + (LIST1 - LIST0) * Math.pow(clamp((t - tList) / (tStop - tList), 0, 1), 1.25);
+    const u = t - tStop; return LIST1 - 34 * Math.sin(Math.PI * clamp(u / 0.3, 0, 1)) * Math.exp(-u * 3) - 9 * u;
+  };
+  function contenu(t) {
+    if (t < tRap) return { n: 'analyser', s: RECT.form.champ.y - 40, h: RECT.form.champ.h + 46 };   // le champ seul : l'aide en dessous nomme des plateformes
+    if (t < tList) return { n: 'rapport', s: scrollRap(t), h: CR.h / KX };
+    if (t < tAl) return { n: 'recherche', s: scrollList(t), h: CR.h / KX };
+    if (t < tMsg) return { n: 'alerte-off', s: RECT.alerte.carte.y - 40 + 14 * (t - tAl), h: CR.h / KX };
+    if (t < tGem) return { n: 'messages', s: RECT.messages.envois.y - 330 + 160 * SP(t, T.lui - 0.1, 'default') + 8 * (t - tMsg), h: CR.h / KX };
+    return { n: 'recherche', s: RECT.recherche.carte1.y, h: RECT.recherche.carte1.h };
+  }
+  const SWAPS = [tRap, tList, tAl, tMsg, tGem];
+  function rectCarte(t) {   // la carte : naît du point, prend la hauteur de son contenu, devient la pépite, puis l'e-mail
+    const c = contenu(t), hh = Math.min(CR.h, c.h * KX);
+    let R = { x: CR.x, y: CR.y, w: CR.w, h: hh, r: 44 };
+    if (t < tCard + 0.6) {   // naissance : point → carte (bords sur deux ressorts)
       const a = SP(t, tCard, 'snappy'), b = SP(t, tCard + 0.06, 'default');
-      L = lerp(F1.x, CX0, a); R = lerp(F1.x + F1.w, CX0 + CW, b); Tt = lerp(F1.y, CY0, a); Bb = lerp(F1.y + F1.h, CY0 + cardH(t), b); rad = lerp(66, 30, a);
+      const L = lerp(HX - 23, CR.x, a), Rr = lerp(HX + 23, CR.x + CR.w, b), T0 = lerp(HY - 23, CR.y, b), B0 = lerp(HY + 23, CR.y + hh, a);
+      R = { x: L, y: T0, w: Rr - L, h: B0 - T0, r: lerp(23, 44, a) };
     }
-    return { x: L, y: Tt, w: Math.max(0, R - L), h: Math.max(0, Bb - Tt), r: rad };
+    if (t >= tGem) {   // la carte se resserre sur l'annonce sous la cote : elle devient cette carte de résultat
+      const g = RECT.recherche.carte1, a = SP(t, tGem, 'snappy'), b = SP(t, tGem + 0.06, 'default');
+      const tw = (g.w + 8) * KX * 0.98, th = (g.h + 8) * KX * 0.98, tx = 540 - tw / 2, ty = 900 - th / 2;
+      const L = lerp(CR.x, tx, a), Rr = lerp(CR.x + CR.w, tx + tw, b), T0 = lerp(CR.y, ty, b), B0 = lerp(CR.y + CR.h, ty + th, a);
+      R = { x: L, y: T0, w: Rr - L, h: B0 - T0, r: lerp(44, 40, a) };
+    }
+    return R;
   }
   function paintB(t) {
-    const vis = show(B, t >= tZ + 0.1 && t < T.et - 0.02); if (!vis) return;
-    // on débouche dans le trou : la scène B est dévoilée par un cercle qui grandit depuis le trou
+    const vis = show(B, t >= tZ + 0.1 && t < T.recois + 0.05); if (!vis) return;
     const rv = 22 * zoomS(t) + 2400 * E(t, tZ + 0.18, 0.22, eIn); B.style.clipPath = rv < 2300 ? `circle(${rv.toFixed(0)}px at ${HX}px ${HY}px)` : '';
-    B.style.transformOrigin = '540px 900px'; B.style.transform = `scale(${(1 + 0.03 * clamp((t - tZ) / (T.et - tZ), 0, 1)).toFixed(4)})`;
-    ktP(kB, t, [T.colles, T.colles + 0.12], T.deux - 0.36);
-    ktP(kB2, t, T.dans, tCard);
-    ktP(kB3, t, T.deux, T.verdict - 0.1);
-    ktP(kB4, t, T.passe, T.et + 0.05);
-    menB.style.color = t >= T.passe ? 'rgba(28,22,18,.75)' : 'rgba(26,19,16,.75)'; show(menB, t > T.cote - 0.2 && t < T.et + 0.1);
-    const r = rectAt(t), fieldMode = t < tCard;
-    show(field, fieldMode && t > tF); show(card, !fieldMode);
-    // à « Et » : la carte se replie en point (C reprend le point)
-    if (fieldMode) {
-      Object.assign(field.style, { width: r.w + 'px', height: r.h + 'px', borderRadius: r.r + 'px' }); tf(field, r.x, r.y);
-      const n = Math.floor(clamp((t - (tF + 0.25)) / 0.55, 0, 1) * urlC.length); urlC.forEach((c, i) => (c.style.visibility = i < n ? '' : 'hidden'));
-      caret.style.opacity = (Math.floor(t * 4) % 2 || n < urlC.length) ? 1 : 0; url.style.opacity = E(t, tF + 0.2, 0.15).toFixed(3);
-      const sq = bump(t, tClick - 0.02, 0.1);   // écraser-étirer au clic
-      btn.style.left = (r.w - 234) + 'px'; btn.style.opacity = E(t, tF + 0.3, 0.2).toFixed(3);
-      btn.style.transform = `scale(${(1 + 0.18 * sq).toFixed(3)},${(1 - 0.28 * sq).toFixed(3)})`;
-    } else {
-      Object.assign(card.style, { width: r.w + 'px', height: r.h + 'px', borderRadius: r.r + 'px' });
-      const fl = E(t, tCard + 0.3, 0.8);   // la carte posée flotte en 3D (rien ne s'arrête)
-      tf(card, r.x, r.y + fl * 14 * Math.sin((t - tCard) * 1.3), { p: 1, ry: fl * 8 * Math.sin((t - tCard) * 1.1), rx: fl * 5 * Math.sin((t - tCard) * 0.9 + 1), r: fl * 1.2 * Math.sin((t - tCard) * 0.8) });
-      card.style.boxShadow = '0 60px 110px -30px rgba(26,19,16,.55)';
-      cimg.src = SEQI[seqK(t)].src; cimg.style.opacity = E(t, tCard + 0.08, 0.15).toFixed(3);
-      // surlignages : un par mot ; bords sur deux ressorts depuis la gauche
-      [T.cote, T.trav, T.vrai, T.verdict].forEach((tw, i) => {
-        const [y0, y1] = ROWS[i], a = SP(t, tw - 0.04, 'snappy'), b = SP(t, tw + 0.02, 'default');
-        show(HL[i], t > tw - 0.05);
-        Object.assign(HL[i].style, { top: (y0 * 1) + 'px', height: (y1 - y0) + 'px', width: (660 * a) + 'px', borderColor: i === 3 ? 'var(--r)' : 'var(--o)', opacity: (0.35 + 0.65 * b).toFixed(2) });
-      });
+    B.style.transformOrigin = '540px 900px'; B.style.transform = `scale(${(1 + 0.03 * Math.sin((t - tZ) * 0.35)).toFixed(4)})`;
+    // titres
+    ktP(kB1, t, [T.colles, T.colles + 0.12], T.en - 0.36); ktP(kB2, t, T.en, T.verdict - 0.3); ktP(kB3, t, T.eviter, T.et - 0.15);
+    ktP(kB4, t, T.bonnes, T.arrete - 0.36); ktP(kB5, t, T.arrete, T.rech - 0.36);
+    ktP(kB6, t, T.rech, T.toi - 0.36); ktP(kB7, t, T.tourne, T.toi - 0.36);
+    ktP(kB8, t, T.toi, T.une - 0.36); ktP(kB9, t, T.lui, T.une - 0.36);
+    ktP(kB10, t, T.sous, T.recois - 0.12);
+    // carte : géométrie, flottement 3D, contenu
+    const R = rectCarte(t), c = contenu(t), fl = E(t, tCard + 0.5, 0.8) * (1 - E(t, tGem, 0.2));
+    Object.assign(card.style, { width: R.w + 'px', height: R.h + 'px', borderRadius: R.r + 'px' });
+    card.style.boxShadow = t >= tGem ? '0 60px 120px -20px rgba(0,0,0,.8),0 0 0 6px #fff' : '0 60px 120px -30px rgba(0,0,0,.65),0 0 0 2px rgba(255,255,255,.1)';
+    tf(card, R.x, R.y + fl * 10 * Math.sin((t - tCard) * 1.2), { p: 1, ry: fl * 6 * Math.sin((t - tCard) * 0.9), rx: fl * 3 * Math.sin((t - tCard) * 0.7 + 1), r: (t >= tGem ? -2.5 * SP(t, tGem, 'default') : 0) });
+    // le contenu change par masque : le nouveau monte du bas, l'ancien part vers le haut
+    const sw = SWAPS.filter((x) => t >= x).pop() ?? -9, ps = E(t, sw, 0.32, eIO);
+    const prevT = sw - 0.001, prev = sw > 0 ? contenu(prevT) : null;
+    for (const [n, cp] of Object.entries(CAPS)) {
+      const on = n === c.n, wasOn = prev && n === prev.n && ps < 1 && !on;
+      if (!show(cp.lay, on || wasOn)) continue;
+      const cc = on ? c : prev, dy = on ? (1 - ps) * R.h * (prev ? 1 : 0) : -ps * R.h * 0.35;
+      const zc = on && n === 'rapport' ? zoomRap(t) : null;
+      cp.lay.style.transformOrigin = zc ? `${(zc.fx * KX).toFixed(1)}px ${(zc.fy * KX).toFixed(1)}px` : '0 0';
+      cp.lay.style.transform = `translate(${t >= tGem && on ? (-(RECT.recherche.carte1.x - 4) * KX) : 0}px, ${(-cc.s * KX + dy).toFixed(1)}px)${zc ? ` scale(${zc.z.toFixed(4)})` : ''}`;
+      cp.lay.style.opacity = on ? 1 : (1 - ps).toFixed(3);
     }
-  }
-
-  // =====================================================================================================
-  // C · le mur d'annonces : la fiche se replie en point, le mur défile, le point l'arrête ; l'onde, la nuit, la pépite
-  // =====================================================================================================
-  const C = mk('div', 'lay', CAM);
-  const wall = mk('div', 'a', C, { width: '1080px', height: '1920px', WebkitMaskImage: 'linear-gradient(#000 1340px, transparent 1560px)' });
-  const COLS = 3, ROWSN = 16, CWl = 250, CHl = 126, GX = 25, GY = 22, X0 = 540 - (COLS * CWl + (COLS - 1) * GX) / 2;
-  const cells = [];
-  for (let r = 0; r < ROWSN; r++) for (let c = 0; c < COLS; c++) {
-    const m = MUR[(r * COLS + c * 7) % MUR.length];
-    const e = mk('div', 'cell', wall, null, `<div class="m">${m.marque} ${m.modele}</div><div class="s">${m.annee} · ${m.km.toLocaleString('fr-FR').replace(/ /g, ' ')} km</div><div class="p">${m.prix.toLocaleString('fr-FR').replace(/ /g, ' ')} €</div>`);
-    cells.push({ e, c, r, x: X0 + c * (CWl + GX), y: r * (CHl + GY) });
-  }
-  const shade = mk('div', 'a', C, { width: '1080px', height: '640px', background: 'linear-gradient(var(--k) 62%, transparent)' });
-  const kC1 = KT(C, 300, 110, 'Les bonnes affaires ?');
-  const kC2 = KT(C, 300, 110, 'Arrête de scroller.');
-  const kC3 = KT(C, 270, 112, 'Ta recherche'), kC4 = KT(C, 390, 120, [['tourne seule.', { i: 1, c: 'var(--o)' }]]);
-  const kC5 = KT(C, 470, 140, 'Toi, tu dors.'), kC6 = KT(C, 640, 150, [['Lui, il bosse.', { i: 1, c: 'var(--o)' }]]);
-  const kC7 = KT(C, 300, 120, 'Sous la cote ?');
-  const ring = mk('div', 'a', C, { width: '200px', height: '200px', borderRadius: '50%', border: '6px solid rgba(255,90,31,.3)', borderTopColor: 'var(--o)', borderRightColor: 'var(--o)' });
-  const pillJ = mk('div', 'a pill', C, { font: '700 32px Satoshi', color: '#fff', background: 'rgba(14,11,9,.88)', border: '2px solid rgba(255,90,31,.6)' }, 'plusieurs fois par jour');
-  const clock = ROLL(C, 150, '00:00', '03:12', '#fff'); clock.box.style.textShadow = '0 10px 30px rgba(0,0,0,.4)';
-  const CLK0 = [2, 3, 4, 7]; clock.cols.forEach((c, k) => { c.fd = CLK0[k]; });
-  const gem = mk('div', 'cell', C, { width: '560px', height: '300px', padding: '34px 40px', borderRadius: '40px', border: '6px solid #fff', boxShadow: '0 60px 120px -20px rgba(0,0,0,.8)' },
-    `<div class="m" style="font-size:44px">Renault Clio IV</div><div class="s" style="font-size:30px;margin-top:8px">2016 · 112 000 km · Diesel</div><div class="p" style="font-size:72px;margin-top:20px">6 400 €</div>`);
-  const pillC = mk('div', 'a pill', C, { background: 'var(--ok)', color: '#fff', fontSize: '36px' }, '1 450 € sous la cote');
-  const menC = mk('div', 'a men', C, { color: 'rgba(244,241,236,.85)', background: 'rgba(14,11,9,.85)', padding: '6px 16px', borderRadius: '10px', left: '540px', top: '1440px' }, 'Données de démonstration');
-  const DOT = mk('div', 'a', ST, { background: 'var(--o)' });     // le point porteur (au-dessus de tout)
-  const DX = 540, DY = 1000;
-  // défilement du mur : accélère depuis « Et », s'arrête net sur « scroller » (léger dépassement, ressort)
-  const tStop = T.scroller + 0.02;
-  const scrollY = (t) => { if (t < T.et) return 0; const v = (tt) => 900 * Math.pow(clamp(tt - T.et, 0, 9), 2) * 0.9 + 600 * clamp(tt - T.et, 0, 9);
-    if (t < tStop) return v(t); return v(tStop) + 60 * SP(t, tStop, 'default') + 38 * Math.max(0, t - tStop - 0.4); };   // il dérive ensuite lentement (rien ne s'arrête)
-  win(T.et, tStop + 0.15);
-  cue(T.et - 0.02, 'whoosh', 0.8); cue(tStop - 0.02, 'tapestop', 1); cue(tStop, 'thud', 1);
-  const waves = [T.tourne, T.plus, T.jour, T.lui, T.bosse];
-  waves.forEach((w, i) => cue(w, 'roll', i < 3 ? 0.55 : 0.4));
-  cue(T.toi - 0.02, 'whoosh', 0.7); cue(T.une, 'pop', 0.9); cue(T.cote2 - 0.03, 'ding', 0.9);
-  // point porteur : géométrie selon le temps
-  function dotAt(t) {
-    if (t >= T.et - 0.02 && t < T.et + 0.5) {   // la carte se replie en point (bords sur deux ressorts)
-      const r = rectAt(T.et - 0.02), a = SP(t, T.et - 0.02, 'snappy'), b = SP(t, T.et + 0.04, 'default');
-      const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
-      const L = lerp(r.x, cx - 30, a), R = lerp(r.x + r.w, cx + 30, b), Tt = lerp(r.y, cy - 30, b), Bb = lerp(r.y + r.h, cy + 30, a);
-      return { x: L, y: Tt, w: R - L, h: Bb - Tt, rad: 30, col: a < 0.55 ? '#fff' : 'var(--o)', o: 1 };   // la fiche (blanche) devient le point orange
-    }
-    if (t >= T.et + 0.5 && t < tStop + 0.6) {   // le point monte puis tombe en arc et arrête le mur (écraser à l'impact)
-      const r = rectAt(T.et - 0.02), sx = r.x + r.w / 2, sy = r.y + r.h / 2;
-      const q = clamp((t - (T.et + 0.5)) / (tStop - (T.et + 0.5)), 0, 1), qq = eIn(q) * 0.7 + q * 0.3;
-      const x = lerp(sx, DX, qq), y = lerp(sy, DY, qq) - 260 * Math.sin(Math.PI * q);
-      const im = bump(t, tStop - 0.01, 0.12), v = Math.abs(qq - (eIn(clamp(q - 0.02, 0, 1)) * 0.7 + (q - 0.02) * 0.3));
-      const st = clamp(v * 25, 0, 0.6) * (1 - im);
-      return { x: x - 30, y: y - 30, w: 60 * (1 + st + 0.18 * im), h: 60 * (1 - st * 0.5 - 0.28 * im), rad: 30, col: 'var(--o)', o: 1 };
-    }
-    if (t >= tStop + 0.6 && t < T.une + 0.1) return { x: DX - 30, y: DY - 30, w: 60, h: 60, rad: 30, col: 'var(--o)', o: 1, s: 1 + 0.12 * Math.max(...waves.map((w) => bump(t, w, 0.18))) };
-    return null;
-  }
-  function paintC(t) {
-    const vis = show(C, t >= T.et - 0.05 && t < T.recois + 0.6); if (!vis) return;
-    C.style.transformOrigin = '540px 1000px'; C.style.transform = `scale(${(1 + 0.06 * clamp((t - tStop) / (T.recois - tStop), 0, 1)).toFixed(4)})`;
-    const sY = scrollY(t), span = ROWSN * (CHl + GY);
-    const night = t >= T.toi && t < T.une, gemOn = t >= T.une;
-    cells.forEach((k) => {
-      let y = ((k.y - sY) % span + span) % span + 380, s = 1, o = 0.85, bc = 'rgba(244,241,236,.09)';
-      const cx = k.x + CWl / 2, cy = y + CHl / 2, d = Math.hypot(cx - DX, cy - DY);
-      // ondes : retard = distance × 0,0015 s ; une onde par passage de la recherche
-      let wv = 0; for (const w of waves) { const a = t - w - d * 0.0015; if (a > 0 && a < 0.6) wv = Math.max(wv, Math.sin(Math.PI * a / 0.6)); }
-      s = 1 + 0.16 * wv; bc = `rgba(255,90,31,${(0.12 + 0.8 * wv).toFixed(2)})`; o = (night ? 0.35 : 0.85) * (0.75 + 0.25 * wv);
-      if (gemOn) o *= 1 - 0.7 * E(t, T.une, 0.3);
-      k.e.style.borderColor = bc; tf(k.e, k.x, y, { s, o });
+    // collage de l'annonce : le texte apparaît de haut en bas dans le champ
+    const fr = RECT.form.champ;
+    CAPS.analyser.im.style.clipPath = t < tPaste ? `inset(0 0 ${(100 - 100 * (fr.y + 34) / 1570).toFixed(2)}% 0)` : `inset(0 0 ${(100 - 100 * (fr.y + 34 + (fr.h - 34) * E(t, tPaste, 0.45, eIO)) / 1570).toFixed(2)}% 0)`;
+    // clic « Analyser » : la carte s'écrase puis rebondit (écraser-étirer)
+    const sq = bump(t, T.uto + 0.28, 0.1); if (sq > 0) card.style.transform += ` scale(${(1 + 0.04 * sq).toFixed(3)},${(1 - 0.06 * sq).toFixed(3)})`;
+    // surlignages sur leur mot
+    [['prix', T.cote], ['trav', T.trav], ['marge', T.marge], ['verdict', T.eviter]].forEach(([k, tw]) => {
+      const e = HL[k], a = SP(t, tw - 0.05, 'snappy'), b = SP(t, tw + 0.01, 'default');
+      show(e, t > tw - 0.06); e.style.transform = `scaleX(${clamp(a, 0, 1.05).toFixed(3)})`; e.style.opacity = (0.4 + 0.6 * b).toFixed(2);
     });
-    shade.style.background = `linear-gradient(${bgAt(t)} 62%, transparent)`;
-    ktP(kC1, t, T.bonnes, T.arrete - 0.36); ktP(kC2, t, T.arrete, T.rech - 0.36);
-    ktP(kC3, t, T.rech, T.toi - 0.36); ktP(kC4, t, T.tourne, T.toi - 0.36);
-    ktP(kC5, t, T.toi, T.une - 0.36); ktP(kC6, t, T.lui, T.une - 0.36);
-    ktP(kC7, t, T.sous, T.recois - 0.1);
-    // anneau qui tourne autour du point : un tour = un passage
-    const rOn = t > T.rech - 0.1 && t < T.une;
-    show(ring, rOn); if (rOn) { const ang = 360 * (t - T.rech) / 0.9; tf(ring, DX - 100, DY - 100, { r: ang, o: E(t, T.rech - 0.1, 0.3) * (1 - E(t, T.une - 0.25, 0.2)) }); }
-    show(pillJ, t > T.plus - 0.05 && t < T.toi); tf(pillJ, 540, DY + 170, { c: 1, s: 0.6 + 0.4 * SP(t, T.plus - 0.05, 'default'), o: E(t, T.plus - 0.05, 0.15) });
-    show(clock.box, night); if (night) { rollP(clock, t, T.toi + 0.2, 1.6, 0.12); tf(clock.box, 540, 1250, { c: 1, o: E(t, T.toi, 0.2) }); }
-    show(gem, gemOn && t < T.recois + 0.05); show(pillC, t > T.cote2 - 0.05 && t < T.recois);
-    if (gemOn) { const a = SP(t, T.une, 'default'), b = SP(t, T.une + 0.06, 'heavy');
-      tf(gem, lerp(DX, 540, b), lerp(DY, 900, b), { c: 1, s: 0.18 + 0.82 * a, r: -3 * a }); tf(pillC, 540, 1110, { c: 1, r: -3, s: 0.6 + 0.4 * SP(t, T.cote2 - 0.05, 'snappy'), o: E(t, T.cote2 - 0.05, 0.12) }); }
-    show(menC, gemOn); tf(menC, 0, 0, { c: 0 }); menC.style.transform = 'translateX(-50%)';
+    // l'interrupteur s'allume sur « tourne »
+    swOn.style.clipPath = `inset(0 ${(100 - 100 * E(t, tSw, 0.25)).toFixed(1)}% 0 0)`;
+    // pastille Benef Pro : recherche suivie et messages
+    const pOn = t > tAl + 0.15 && t < tGem - 0.1; show(pro, pOn);
+    if (pOn) pro.textContent = t < tMsg ? 'Benef Pro' : 'Benef Pro · option Messages';
+    if (pOn) tf(pro, 940 - pro.offsetWidth, 456 - 14 * (1 - SP(t, tAl + 0.15, 'snappy')), { o: E(t, tAl + 0.15, 0.15) * (1 - E(t, tGem - 0.3, 0.15)), s: 1 + 0.05 * bump(t, tSw, 0.2) });
+    menB.style.color = t >= T.toi && t < T.une ? 'rgba(244,241,236,.8)' : 'rgba(26,19,16,.8)'; show(menB, t > tRap && t < T.recois);
   }
 
   // =====================================================================================================
-  // D · « Tu reçois un mail » : la pépite se déplie en vrai e-mail d'alerte ; clic sur « appeler »
+  // C · « Tu reçois un mail » : la carte de résultat se déplie en vrai e-mail d'alerte (modèle de supabase/functions/veille)
   // =====================================================================================================
   const Dd = mk('div', 'lay', CAM);
   const kD = KT(Dd, 290, 120, 'Tu reçois', 'var(--ink)'), kD2 = KT(Dd, 410, 130, [['un mail.', { i: 1, c: 'var(--o)' }]], 'var(--ink)');
+  // mêmes chiffres que la carte de résultat de l'app (annonce de démonstration 7 650 €, cote 9 950 €)
   const MAILH = `<div style="max-width:560px;margin:0 auto;font:14px Arial,sans-serif;color:#1d1d1f">
-    <p style="font-size:18px;margin:0 0 4px"><b>1 nouvelle annonce</b></p><p style="margin:0 0 12px;color:#555">Recherche « Clio IV diesel »</p>
+    <p style="font-size:18px;margin:0 0 4px"><b>1 nouvelle annonce</b></p><p style="margin:0 0 12px;color:#555">Recherche « Renault Clio 4 »</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:10px 0;border-bottom:1px solid #e5e5e5"><table role="presentation" cellpadding="0" cellspacing="0"><tr>
     <td style="padding-right:12px;vertical-align:top"><img src="../assets/presente-v/clio4-mail.jpg" width="120" style="border-radius:6px;display:block;width:120px;height:auto" alt=""></td>
-    <td style="vertical-align:top;font:14px/1.45 Arial,sans-serif;color:#1d1d1f"><a id="lien" style="color:#15307f;font-weight:bold;text-decoration:none">Renault Clio IV 1.5 dCi 90 Limited</a><br>
-    <b style="font-size:16px">6 400 €</b><br><span style="color:#555">2016 · 112 000 km · Diesel · Manuelle</span><br><span style="color:#777">Lyon 69003</span><br>
-    <span style="color:#0a7a43;font-weight:bold">1 450 € sous la cote</span> <span style="color:#777">(cote 7 850 € sur 23 annonces)</span></td></tr></table></td></tr></table>
+    <td style="vertical-align:top;font:14px/1.45 Arial,sans-serif;color:#1d1d1f"><a id="lien" style="color:#15307f;font-weight:bold;text-decoration:none">Renault Clio IV 1.5 dCi 75 Zen</a><br>
+    <b style="font-size:16px">7 650 €</b><br><span style="color:#555">2018 · 88 500 km · Diesel · Manuelle</span><br><span style="color:#777">Villeurbanne 69100</span><br>
+    <span style="color:#0a7a43;font-weight:bold">2 300 € sous la cote</span> <span style="color:#777">(cote 9 950 € sur 220 annonces)</span></td></tr></table></td></tr></table>
     <p style="margin:18px 0"><a style="background:#ff5a1f;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold">Voir mes alertes sur utopicar</a></p></div>`;
   const mailBox = mk('div', 'a', Dd, { overflow: 'hidden', background: '#fff', boxShadow: '0 50px 90px -30px rgba(28,22,18,.5),0 0 0 1px rgba(28,22,18,.06)' });
   const mailIn = mk('div', 'a', mailBox, { width: '500px', padding: '26px 20px 8px', transformOrigin: '0 0', transform: 'scale(1.72)' }, MAILH);
@@ -339,21 +301,18 @@
   function paintD(t) {
     const vis = show(Dd, t >= T.recois - 0.05 && t < T.uto2 + 0.5); if (!vis) return;
     ktP(kD, t, T.recois, T.uto2 - 0.1); ktP(kD2, t, T.mail, T.uto2 - 0.1);
-    // la pépite (560×300 au centre) se déplie en e-mail : bords sur deux ressorts
-    const g = { x: 540 - 280, y: 900 - 150, w: 560, h: 300 }, a = SP(t, T.recois, 'snappy'), b = SP(t, T.recois + 0.06, 'default');
+    const g = rectCarte(T.recois - 0.05), a = SP(t, T.recois, 'snappy'), b = SP(t, T.recois + 0.06, 'default');
     let L = lerp(g.x, MX, a), R = lerp(g.x + g.w, MX + MW, b), Tt = lerp(g.y, MY, b), Bb = lerp(g.y + g.h, MY + MH, a);
-    // repli final en point (vers le centre du logo)
     if (t >= T.uto2 - 0.12) { const c = SP(t, T.uto2 - 0.12, 'snappy'), d = SP(t, T.uto2 - 0.06, 'default'), cx = 540, cy = 760;
       L = lerp(L, cx - 30, c); R = lerp(R, cx + 30, d); Tt = lerp(Tt, cy - 30, d); Bb = lerp(Bb, cy + 30, c); }
-    Object.assign(mailBox.style, { width: (R - L) + 'px', height: (Bb - Tt) + 'px', borderRadius: (t >= T.uto2 - 0.12 ? lerp(26, 30, E(t, T.uto2 - 0.12, 0.2)) : 26) + 'px' });
+    Object.assign(mailBox.style, { width: (R - L) + 'px', height: (Bb - Tt) + 'px', borderRadius: (t >= T.uto2 - 0.12 ? 30 : 26) + 'px' });
     mailBox.style.background = t >= T.uto2 - 0.06 ? 'var(--o)' : '#fff';
     mailIn.style.opacity = (E(t, T.recois + 0.12, 0.2) * (1 - E(t, T.uto2 - 0.14, 0.08))).toFixed(3);
     const fl = E(t, T.recois + 0.4, 0.8);
     tf(mailBox, L, Tt + fl * 12 * Math.sin((t - T.recois) * 1.4), { p: 1, ry: fl * 9 * Math.sin((t - T.recois) * 1.1), rx: fl * 4 * Math.sin((t - T.recois) * 0.9), r: fl * 1 * Math.sin((t - T.recois) * 0.7) });
     Dd.style.transformOrigin = '540px 900px'; Dd.style.transform = `scale(${(1 + 0.05 * clamp((t - T.recois) / (T.uto2 - T.recois), 0, 1)).toFixed(4)})`;
     show(menD, t < T.uto2 - 0.1);
-    // curseur : arrive en arc sur le titre de l'annonce, clic sur « appeler »
-    const lr = lien.getBoundingClientRect(), tx = MX + (lr.left - mailBox.getBoundingClientRect().left) + 0.55 * lr.width, ty = MY + (lr.top - mailBox.getBoundingClientRect().top) + 0.6 * lr.height;
+    const lr = lien.getBoundingClientRect(), mr = mailBox.getBoundingClientRect(), tx = MX + (lr.left - mr.left) + 0.55 * lr.width, ty = MY + (lr.top - mr.top) + 0.6 * lr.height;
     const q = E(t, T.appeler - 0.55, 0.5, eIO), cx = lerp(1000, tx, q), cy = lerp(1500, ty, q) - 120 * Math.sin(Math.PI * q);
     show(CURS, t > T.appeler - 0.6 && t < T.uto2 - 0.1); tf(CURS, cx - 6, cy - 4, { s: 1 - 0.16 * bump(t, T.appeler - 0.05, 0.11) });
     const ra = t - T.appeler; show(rip, ra > 0 && ra < 0.6); if (ra > 0) { const qq = eOut(ra / 0.55); tf(rip, tx, ty, { c: 1, s: 0.2 + 1.5 * qq, o: 1 - qq }); }
@@ -414,22 +373,21 @@
     return { x: lerp(540, HX, q) - 22, y: lerp(760, HY, q) - 22 - 180 * Math.sin(Math.PI * q), w: 44, h: 44, rad: 22, col: 'var(--o)', o: 1 };
   }
 
-  // ---------- caméra, point porteur, seek ----------
+  // ---------- caméra, point de la boucle, seek ----------
+  const DOT = mk('div', 'a', ST, { background: 'var(--o)' });
   function paintDot(t) {
-    const d = dotAt(t) || paintLoop(t);
+    const d = paintLoop(t);
     if (!show(DOT, !!d)) return;
     Object.assign(DOT.style, { width: d.w + 'px', height: d.h + 'px', borderRadius: Math.min(d.rad, d.w / 2, d.h / 2) + 'px', background: d.col });
-    tf(DOT, d.x, d.y, { s: d.s ?? 1, o: d.o });
+    tf(DOT, d.x, d.y, { o: d.o });
   }
   window.seek = (t) => {
     BG.style.background = t >= DUR - 0.3 ? 'var(--k)' : bgAt(t);
-    // caméra : orbite lente permanente + poussée (amplitude réduite : textes dans la colonne 140 → 940)
     const orb = `perspective(2200px) rotateY(${(1.6 * Math.sin(t * 0.42)).toFixed(3)}deg) rotateX(${(1.1 * Math.sin(t * 0.31 + 1)).toFixed(3)}deg)`;
     CAM.style.transform = `${orb} scale(${(1.0 + 0.012 * Math.sin(t * 0.5)).toFixed(4)})`;
-    // A : début, puis la boucle repeint l'image 0 (temps local juste avant 0) dévoilée depuis le point
     if (t >= DUR - 0.3) { paintA(t, t - DUR); const q = E(t, DUR - 0.3, 0.27, eIO); A.style.clipPath = `circle(${(22 + 2300 * q).toFixed(0)}px at ${HX}px ${HY}px)`; }
     else { A.style.clipPath = ''; paintA(t, t); }
-    paintB(t); paintC(t); paintD(t); paintE(t); paintDot(t);
+    paintB(t); paintD(t); paintE(t); paintDot(t);
   };
   // flou de bougé : obturateur 180° partout, 360° sur les gestes rapides
   const inWin = (t) => FAST.some(([a, b]) => t >= a && t <= b);
