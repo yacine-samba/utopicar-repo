@@ -457,3 +457,46 @@ par un objet.
 - **Mur de 400** : cases qui apparaissent en onde depuis la case d'origine (retard = distance × 0,03 s), bascule 3D,
   onde de couleur, tri en bandes (positions interpolées vers l'ordre trié), pépite ×2,6 avec liseré blanc.
 - **Boucle** : la dernière image reproduit la première (même point orange, même place, étiquette de contexte présente).
+
+## 22. Le film EST l'interface : composants de l'app recodés (présentation v4)
+
+Demande de l'utilisateur (oct. 2026), après une version « vraie app dans un téléphone » : « on ne montre pas
+l'interface, on est dans l'interface, comme dans les références ». Grammaire 1600.agency (Juicebox, lemlist) :
+l'écran entier est l'app, chaque élément est recodé et s'anime de A à Z, la caméra passe d'un écran à l'autre sans
+coupe. Code de référence : `video/film-presentev4/film.js`.
+
+- **Fidèle, pas imaginé.** Les textes et chiffres viennent des pages de l'app figées sur la base démo
+  (`scripts/app-demo/figer.mjs`, puis `innerText`). Les couleurs, rayons, ombres et polices viennent de sa feuille de
+  style (`--color-*`, `.carte`, `.btn-o`), et les courbes aussi : `--ease-doux` cubic-bezier(.2,.8,.2,1),
+  `--ease-ressort` (.34,1.56,.64,1), images clés `remplit`, `surligne`, `ping`, `anneau`. Le film bouge comme l'app.
+- **Échelle.** Une carte de 364 px dans l'app en fait 800 dans le film (×2,2), dans la colonne 140 → 940. Valeurs
+  en Clash 86–100 px, libellés en Satoshi 37 px, textes secondaires 29 px au moins.
+- **Chaque élément devient le suivant.** L'annonce se retourne en « Ça rapporte ? », puis plonge dans le champ où on
+  la colle. Le bouton se replie en chrono « 60 s », qui se remplit en une minute. Les cartes de note se rangent en
+  pile, qui devient le verdict. Un balayage à gauche mène au rapport de la Clio, puis aux prix et à la ligne PLAFOND.
+  Une liste file puis s'arrête net sur la meilleure annonce, qui mène à la recherche enregistrée et à son
+  interrupteur. Viennent ensuite la nuit (horloge géante), les messages à leur heure, l'annonce sous la cote, la
+  notification et l'e-mail en tiroir. Les étapes du parc mènent à « Vendues », qui s'ouvre en marge du mois, puis au
+  logo tapé.
+- **Pile qui grandit** (`pile()`) : le groupe reste centré. La caméra est serrée sur le premier élément (×1,15 au
+  plus, pour ne pas sortir de la zone sûre) et recule à mesure que les suivants arrivent, sur des ressorts.
+- **Paroles en typographie.** Chaque mot arrive flou (9 px), monte de 34 px et se pose net 0,09 s avant d'être dit.
+  La phrase part (flou, ease-in de 0,12 s) avant que la suivante n'apparaisse. Mots clés en couleur ; phrases chocs
+  en géant, de 118 à 170 px. Taille ajustée pour tenir sur deux lignes au plus.
+- **Espaces insécables** dans tout texte recodé (`nb()`), pour ne jamais lire « 7 / 650 € » ni « (+30 / %) ».
+- **Rien ne s'arrête.** Poussée de caméra sur les plans qui tiennent (accroche, parc), flottement des cartes posées
+  (±6 px, ±0,4°), deux-points de l'horloge qui clignotent.
+- **Mesures** :
+
+  | | Brouillon | Film livré (MB=8) | Films 1600 |
+  |---|---|---|---|
+  | Images en mouvement | 52 % | 53 % | 57–77 % |
+  | Plan figé le plus long | 3,87 s | 2,9 s | 3,0–3,5 s |
+  | Coupes | 0 | 0 | |
+  | Durée médiane d'un geste | 0,37 s | | |
+  | Gestes en ressort | 58 % | | 51–71 % |
+  | Vitesse p50 / p90 | 7,2 / 30 %/s | 6,1 / 28 %/s | 6–9 / 18–49 %/s |
+  | À-coups | | 0,25 | 0,06–0,14 |
+
+  Les à-coups restent au-dessus des références : compteurs, arrêt net de la liste, secousse sur « À éviter ».
+  Piste pour le prochain film : des arrêts sur ressort plutôt que des arrêts francs.

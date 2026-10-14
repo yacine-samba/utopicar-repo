@@ -10,6 +10,7 @@ Bruitages : un seul son principal à la fois (priorités), suites qui montent (p
 clavier découpées une par une dans les prises « type » pour le logo et « lien en bio », souffle d'aspiration dont la
 crête tombe sur l'arrêt de la liste.
 usage (depuis video/) : node scripts/cues-presentev3.mjs && python3 scripts/audio-presentev3.py → audio/mix-presentev3.wav
+       version « dans l'interface » : CUT=presentev4 node scripts/cues-presentev3.mjs && CUT=presentev4 python3 scripts/audio-presentev3.py
 """
 import os, json
 import numpy as np, librosa, soundfile as sf, pyloudnorm as pyln
@@ -19,7 +20,8 @@ from scipy.ndimage import minimum_filter1d
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 A = lambda *p: os.path.join(ROOT, 'audio', *p)
 SR = 48000
-CJ = json.load(open(A('cues-presentev3.json')))
+CUT = os.environ.get('CUT', 'presentev3')
+CJ = json.load(open(A(f'cues-{CUT}.json')))
 CUES, DUR = CJ['cues'], CJ['dur']
 N = int(round(DUR * SR))
 EL = A('master60w', 'eleven')
@@ -188,11 +190,11 @@ for _ in range(4):
     mix = limit(mix, -5.0)
 tp = lambda x: 20 * np.log10(np.abs(resample_poly(x, 4, 1, axis=0)).max())
 mix *= db(min(-14 - meter.integrated_loudness(mix), -3.5 - tp(mix)))      # dernier réglage : −14 LUFS sans dépasser −3,5 dBTP
-os.makedirs(A('stems-presentev3'), exist_ok=True)
-sf.write(A('mix-presentev3.wav'), mix, SR, subtype='PCM_24')
+os.makedirs(A(f'stems-{CUT}'), exist_ok=True)
+sf.write(A(f'mix-{CUT}.wav'), mix, SR, subtype='PCM_24')
 g = db(gain)
-for name, x in [('voix', vo_st), ('musique', mus_st), ('bruitages', fx)]: sf.write(A('stems-presentev3', f'{name}.wav'), x * g, SR, subtype='PCM_24')
-rep = [f'presentev3 · {meter.integrated_loudness(mix):.1f} LUFS, true peak {tp(mix):.1f} dBTP · bruitages {len(kept)} posés, {len(dropped)} retirés']
+for name, x in [('voix', vo_st), ('musique', mus_st), ('bruitages', fx)]: sf.write(A(f'stems-{CUT}', f'{name}.wav'), x * g, SR, subtype='PCM_24')
+rep = [f'{CUT} · {meter.integrated_loudness(mix):.1f} LUFS, true peak {tp(mix):.1f} dBTP · bruitages {len(kept)} posés, {len(dropped)} retirés']
 gg = [rms(vo_st[a_:b_, 0]) - rms(mus_st[a_:b_].mean(1)) for a_, b_ in SPANS]
 rep.append(f'écart voix / musique par phrase : min {min(gg):.1f} dB, médiane {np.median(gg):.1f} dB ({len(gg)} phrases)')
 # voix continue : aucun blanc > 0,4 s dans la piste voix (qa-delivery § 10)
@@ -200,4 +202,4 @@ e50 = [rms(vo[i_:i_ + int(0.05 * SR)]) for i_ in range(int(0.1 * SR), int(WORDS[
 run_, mx_ = 0, 0
 for v_ in e50: run_ = run_ + 1 if v_ < -50 else 0; mx_ = max(mx_, run_)
 rep.append(f'plus long blanc dans la voix : {mx_ * 0.05:.2f} s')
-open(os.path.join(ROOT, 'docs', 'mix_report-presentev3.txt'), 'w').write('\n'.join(rep) + '\n'); print('\n'.join(rep))
+open(os.path.join(ROOT, 'docs', f'mix_report-{CUT}.txt'), 'w').write('\n'.join(rep) + '\n'); print('\n'.join(rep))

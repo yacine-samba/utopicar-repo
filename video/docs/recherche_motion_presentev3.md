@@ -98,34 +98,55 @@ pour les cartes, `snappy` pour boutons et pastilles. Pas de rebond sur la typogr
 - Une coupure de musique avant le drop.
 - La dernière syllabe presque sans musique.
 
-## 4. Application au film (`film-presentev3/`)
+## 4. Application au film (`film-presentev4/`, « dans l'interface »)
 
-- **Le vrai produit.** Les pages de l'app (même code que la production, base de démonstration) sont figées en HTML
-  (`scripts/app-demo/figer.mjs`) puis chargées dans le film. Chaque bloc qui compte est extrait de sa page au pixel
-  près : cote, travaux, marge, verdict, offre, plafond, alerte, messages, étapes du parc, marge par voiture, marge du
-  mois. Il sort du téléphone en grande carte 3D, net à toutes les tailles car c'est du vrai DOM.
-- **Un seul plan.** Le téléphone ne disparaît jamais entre deux parties : les pages glissent dedans (« push » d'iOS,
-  ou retour), et la caméra s'approche puis recule sur des ressorts. Sur « Colle l'annonce », plongée ×1,25 sur le
-  champ de texte ; sur « arrête de scroller », le téléphone grossit pendant que la liste file.
-- **Causalité.** Le doigt touche « Analyser » (bouton ×0,95) et le rapport arrive 0,3 s après. L'anneau de note se
-  remplit dans le téléphone, puis la carte sort avec la même valeur, sans recompter. La place du bloc reste vide dans
-  l'écran. La notification naît de l'île du téléphone (pastille noire, puis bannière) sur « sous la cote », puis
-  s'ouvre en e-mail sur « tu reçois ».
-- **Sous-titres.**
-  - Calés sur la voix mot à mot (`audio/vo-presentev3/vo.words.json`), à 270 px du haut, en 74 px.
-  - Mots clés en Clash, de la couleur de la partie.
-  - Chaque mot entre flou, monte de 26 px et se pose net 0,07 s avant d'être dit.
-  - Deux phrases ne sont jamais à l'écran ensemble.
-- **Fonds.** Trois halos en dégradé radial, de la couleur de la partie : orange pour l'accroche, rouge pour la perte et
-  « À éviter », vert pour la bonne affaire et la marge, bleu nuit pour « tu dors ». Ils glissent en 0,35 s, sans
-  fondu entre plans.
+Une première version (`film-presentev3/`) montrait la vraie app figée dans un téléphone, avec des blocs qui en
+sortaient. L'utilisateur l'a écartée : « on ne montre pas l'interface, on est dans l'interface, comme dans les
+références ». La version livrée suit donc la grammaire de Juicebox et de lemlist.
+
+- **L'écran entier est l'app.** Chaque composant d'utopicar est recodé à l'échelle du film (×2,2) : annonce, champ
+  « L'annonce », bouton « Analyser l'annonce », cartes « Bon prix ? / Des travaux ? / Ça rapporte ? », verdict avec
+  anneau de note, cartes d'offre et plafond, liste de la recherche, recherche enregistrée et son interrupteur,
+  messages de la nuit, notification, e-mail d'alerte, étapes du parc, marge du mois, marge par voiture.
+  - Les textes et les chiffres sont ceux de la base de démonstration, lus dans les pages de l'app (rien d'inventé).
+  - Les couleurs, rayons, ombres et polices sont ceux de sa feuille de style.
+  - Les courbes aussi : `ease-doux`, `ease-ressort`, et les animations `remplit`, `surligne`, `ping`, `anneau`.
+- **Aucune coupe.** Chaque élément devient le suivant :
+  - l'annonce se retourne en perte, puis plonge dans le champ où on la colle ;
+  - le bouton devient le chrono « une minute » ;
+  - les trois cartes de note se rangent en pile, qui devient le verdict ;
+  - un balayage mène à la bonne affaire, qui mène aux prix et au tampon PLAFOND ;
+  - la liste file puis s'arrête net sur la meilleure annonce, qui mène à la recherche qui tourne seule ;
+  - vient la nuit : l'horloge géante défile pendant que les messages partent à leur heure ;
+  - l'annonce sous la cote mène à la notification, qui s'ouvre en e-mail ;
+  - les étapes du parc mènent à « Vendues », qui s'ouvre en marge du mois, puis au logo tapé dans sa pastille.
+- **Caméra.** Les piles grandissent au centre et la caméra recule à mesure. Gros plan sur l'interrupteur, poussée
+  sur l'accroche et sur le parc, légère orbite permanente, flottement des cartes posées. Flou de bougé réel (MB=8)
+  sur les gestes rapides.
+- **Les paroles en typographie.** Tous les mots de la voix apparaissent, calés mot à mot sur `vo.words.json` : chacun
+  arrive flou, monte et se pose net 0,09 s avant d'être dit. Les mots clés sont en couleur ; les phrases chocs sont
+  géantes (« À éviter. », « arrête de scroller. », « Toi, tu dors. », « ta vraie marge. »). Une phrase ne tient
+  jamais sur plus de deux lignes.
+- **Fonds.** Le fond de l'app (lueur orange, dégradé bg0 → bg1) prend la couleur de la partie : rouge pour la perte et
+  « À éviter », vert pour la bonne affaire et la marge, bleu nuit pour « tu dors », aube pour la notification.
 - **Son.**
-  - La voix passe devant (−11 dB de musique en médiane par phrase).
-  - Musique de presente30 recalée : un premier temps sur « À éviter » ; passe-bas puis arrêt de bande quand la liste
-    s'arrête ; drop sur « Ta recherche » ; « utopicar » sur le premier temps de la mesure 21.
-  - Bruitages ElevenLabs déjà payés : pops qui montent sur une gamme, ticks des étapes, frappes de clavier découpées
-    une à une pour le logo, aspiration dont la crête tombe sur l'arrêt de la liste.
+  - La voix de Simon passe devant (−11 dB de musique en médiane par phrase).
+  - La musique de presente30 est recalée : un premier temps sur « À éviter », passe-bas puis arrêt de bande quand la
+    liste s'arrête, drop sur « Ta recherche », « utopicar » sur le premier temps de la mesure 21.
+  - Bruitages ElevenLabs déjà payés : pops qui montent sur une gamme, ticks des étapes et du chrono, frappes de
+    clavier découpées une à une pour le logo, aspiration dont la crête tombe sur l'arrêt de la liste.
   - Master à −14 LUFS et −3,5 dBTP.
+
+### Mesures du film livré (`renders/9x16-presentev4.mp4`)
+
+- **Format** : 33,1 s, 1080×1920, 30 i/s, H.264.
+- **Son** : −14,0 LUFS et −3,7 dBTP sur le MP4 encodé, avec du son dès les 2 premières secondes.
+- **Mouvement** : 53 % du temps, plan figé le plus long 2,9 s (films 1600 : 57 à 77 %, 3,0 à 3,5 s), aucune coupe.
+- **Vitesse** : médiane 6,1 % du cadre par seconde, 28 % au 90e centile (1600 : 6 à 9 et 18 à 49).
+- **À-coups** : 0,25, au-dessus des références (0,06 à 0,14). En cause : les compteurs, l'arrêt net de la liste et la
+  secousse sur « À éviter ».
+- **Zones sûres** : seuls des passages en mouvement en sortent (balayages, ligne PLAFOND, sorties à gauche). Aucun
+  texte n'y reste.
 
 ## 5. Limites
 
