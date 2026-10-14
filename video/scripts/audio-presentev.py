@@ -53,6 +53,8 @@ a, b = int(T['toi'] * SR), int(T['une'] * SR)                                   
 mus[a:b] = bp(mus[a:b], None, 700, 2) * db(-2)
 put(T['uto2'] - 0.01, DUR, HIT - 0.01, fi=0.003, fo=0)                          # coup final sur « utopicar »
 mus *= curve([(0, 1), (DUR - 1.2, 1), (DUR - 0.15, db(-10)), (DUR, 0)])[:, None]
+# « Passe. » tombe sur un premier temps : la musique s'efface sous le mot (−7 dB), la voix passe devant
+tp_ = T['passe']; mus *= curve([(0, 1), (tp_ - 0.06, 1), (tp_ - 0.01, db(-7)), (tp_ + 0.42, db(-7)), (tp_ + 0.6, 1), (DUR, 1)])[:, None]
 mlow = bp(mus, None, 150); mus = (mus - mlow) + mlow * db(-11); mus = bp(mus, 60, None, 2)
 mus = mus + bp(mus, 1500, 5000, 2) * (db(3) - 1)          # téléphone : présence remontée
 # niveau de la musique fixé par l'écart voix / musique mesuré par phrase (médiane 11 dB)

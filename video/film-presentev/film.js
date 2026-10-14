@@ -92,7 +92,7 @@
   const win = (a, b) => FAST.push([a, b]);
 
   // ---------- fond : coupes de couleur sur les temps forts (jamais de fondu) ----------
-  const bgAt = (t) => (t < T.colles - 0.2 ? 'var(--k)' : t < T.passe ? 'var(--o)' : t < T.et ? 'var(--w)' : t < T.toi ? 'var(--k)' : t < T.une ? 'var(--nuit)' : t < T.recois ? 'var(--k)' : t < T.uto2 ? 'var(--w)' : 'var(--k)');
+  const bgAt = (t) => (t < T.colles + 0.1 ? 'var(--k)' : t < T.passe ? 'var(--o)' : t < T.et ? 'var(--w)' : t < T.toi ? 'var(--k)' : t < T.une ? 'var(--nuit)' : t < T.recois ? 'var(--k)' : t < T.uto2 ? 'var(--w)' : 'var(--k)');
 
   // =====================================================================================================
   // A · 0 → « Tu colles » : la 208, l'étiquette percée, le prix qui ment ; zoom-éclair à travers le trou
@@ -164,21 +164,21 @@
   const btn = mk('div', 'a', field, { height: '104px', width: '220px', borderRadius: '999px', background: '#1a1310', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '600 38px Clash', top: '14px' }, 'Analyser');
   // la fiche du vrai site : séquence 30 i/s capturée en 3×, la carte prend la hauteur du contenu
   const card = mk('div', 'a', B, { overflow: 'hidden', background: '#fff' });
-  const cimg = mk('img', 'a', card, { width: '720px' });
+  const cimg = mk('img', 'a', card, { width: '680px' });
   const SEQI = SEQ.map((_, i) => { const im = new Image(); im.src = `../assets/presente-v/seq/f${String(i).padStart(3, '0')}.jpg`; return im; });
   await Promise.all(SEQI.map((im) => im.decode().catch(() => {})));
-  const HL = [0, 1, 2, 3].map(() => mk('div', 'a', card, { border: '6px solid var(--o)', borderRadius: '16px', left: '10px', width: '700px' }));
+  const HL = [0, 1, 2, 3].map(() => mk('div', 'a', card, { border: '6px solid var(--o)', borderRadius: '16px', left: '10px', width: '660px' }));
   const kB3 = KT(B, 300, 132, '2 secondes.');
   const kB4 = KT(B, 290, 160, 'Passe.', 'var(--r)');
-  const menB = mk('div', 'a men', B, { width: '1080px', textAlign: 'center', top: '462px' }, 'Données de démonstration');
+  const menB = mk('div', 'a men', B, { width: '1080px', textAlign: 'center', top: '1446px' }, 'Données de démonstration');
   // géométrie du champ puis de la carte : bords sur deux ressorts (le bord avant part, le bord arrière suit)
   const tF = T.colles + 0.05, tClick = T.uto + 0.42, tCard = tClick + 0.14;
-  const SEQ0 = T.deux + 0.5 - 1.1;            // la fiche du site passe de la liste de contrôle à la fiche complète vers « secondes »
+  const SEQ0 = T.deux + 0.45 - 1.16;            // la fiche du site passe de la liste de contrôle à la fiche complète vers « secondes »
   const seqK = (t) => clamp(Math.floor((t - SEQ0) * 30), 0, SEQ.length - 1);
-  const cardH = (t) => 2 * SEQ[seqK(t)].h;    // 360 px CSS → 720 px
-  const CW = 720, CX0 = 180, CY0 = 470;
+  const cardH = (t) => (CW / 360) * SEQ[seqK(t)].h;    // 360 px CSS → 680 px
+  const CW = 680, CX0 = 200, CY0 = 470;
   // lignes de la fiche (séparateurs mesurés au pixel sur la dernière image de la séquence, en px de la carte 720)
-  const ROWS = window.ROWS_FICHE || [[438, 548], [552, 698], [702, 818], [826, 966]];
+  const ROWS = [[433, 548], [555, 700], [708, 822], [832, 976]].map(([a, b]) => [a * CW / 720, b * CW / 720]);   // séparateurs à 551 · 704 · 825 (carte de 720)
   cue(tF, 'whoosh', 0.7); cue(tClick, 'click', 1); cue(tCard + 0.05, 'whoosh', 0.7); win(tCard - 0.02, tCard + 0.35);
   for (let i = 0; i < 18; i += 3) cue(tF + 0.25 + i * 0.03, 'type', 0.5);
   cue(T.cote - 0.03, 'pop', 0.8); cue(T.trav - 0.03, 'pop', 0.8); cue(T.vrai - 0.03, 'pop', 0.8); cue(T.verdict - 0.03, 'pop', 0.9); cue(T.passe - 0.02, 'impact', 1.1);
@@ -194,10 +194,10 @@
     return { x: L, y: Tt, w: Math.max(0, R - L), h: Math.max(0, Bb - Tt), r: rad };
   }
   function paintB(t) {
-    const vis = show(B, t >= tZ + 0.1 && t < T.et + 0.5); if (!vis) return;
+    const vis = show(B, t >= tZ + 0.1 && t < T.et - 0.02); if (!vis) return;
     // on débouche dans le trou : la scène B est dévoilée par un cercle qui grandit depuis le trou
-    const rv = 22 * zoomS(t); B.style.clipPath = rv < 2300 ? `circle(${rv.toFixed(0)}px at ${HX}px ${HY}px)` : '';
-    ktP(kB, t, [T.colles, T.colles + 0.12], T.deux - 0.2);
+    const rv = 22 * zoomS(t) + 2400 * E(t, tZ + 0.18, 0.22, eIn); B.style.clipPath = rv < 2300 ? `circle(${rv.toFixed(0)}px at ${HX}px ${HY}px)` : '';
+    ktP(kB, t, [T.colles, T.colles + 0.12], T.deux - 0.36);
     ktP(kB2, t, T.dans, tCard);
     ktP(kB3, t, T.deux, T.verdict - 0.1);
     ktP(kB4, t, T.passe, T.et + 0.05);
@@ -222,7 +222,7 @@
       [T.cote, T.trav, T.vrai, T.verdict].forEach((tw, i) => {
         const [y0, y1] = ROWS[i], a = SP(t, tw - 0.04, 'snappy'), b = SP(t, tw + 0.02, 'default');
         show(HL[i], t > tw - 0.05);
-        Object.assign(HL[i].style, { top: (y0 * 1) + 'px', height: (y1 - y0) + 'px', width: (700 * a) + 'px', borderColor: i === 3 ? 'var(--r)' : 'var(--o)', opacity: (0.35 + 0.65 * b).toFixed(2) });
+        Object.assign(HL[i].style, { top: (y0 * 1) + 'px', height: (y1 - y0) + 'px', width: (660 * a) + 'px', borderColor: i === 3 ? 'var(--r)' : 'var(--o)', opacity: (0.35 + 0.65 * b).toFixed(2) });
       });
     }
   }
@@ -252,7 +252,7 @@
   const gem = mk('div', 'cell', C, { width: '560px', height: '300px', padding: '34px 40px', borderRadius: '40px', border: '6px solid #fff', boxShadow: '0 60px 120px -20px rgba(0,0,0,.8)' },
     `<div class="m" style="font-size:44px">Renault Clio IV</div><div class="s" style="font-size:30px;margin-top:8px">2016 · 112 000 km · Diesel</div><div class="p" style="font-size:72px;margin-top:20px">6 400 €</div>`);
   const pillC = mk('div', 'a pill', C, { background: 'var(--ok)', color: '#fff', fontSize: '36px' }, '1 450 € sous la cote');
-  const menC = mk('div', 'a men', C, { color: 'rgba(244,241,236,.8)', width: '1080px', textAlign: 'center', top: '1432px' }, 'Données de démonstration');
+  const menC = mk('div', 'a men', C, { color: 'rgba(244,241,236,.85)', background: 'rgba(14,11,9,.85)', padding: '6px 16px', borderRadius: '10px', left: '540px', top: '1440px' }, 'Données de démonstration');
   const DOT = mk('div', 'a', ST, { background: 'var(--o)' });     // le point porteur (au-dessus de tout)
   const DX = 540, DY = 1000;
   // défilement du mur : accélère depuis « Et », s'arrête net sur « scroller » (léger dépassement, ressort)
@@ -270,7 +270,7 @@
       const r = rectAt(T.et - 0.02), a = SP(t, T.et - 0.02, 'snappy'), b = SP(t, T.et + 0.04, 'default');
       const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
       const L = lerp(r.x, cx - 30, a), R = lerp(r.x + r.w, cx + 30, b), Tt = lerp(r.y, cy - 30, b), Bb = lerp(r.y + r.h, cy + 30, a);
-      return { x: L, y: Tt, w: R - L, h: Bb - Tt, rad: lerp(30, 30, a), col: 'var(--o)', o: 1 };
+      return { x: L, y: Tt, w: R - L, h: Bb - Tt, rad: 30, col: a < 0.55 ? '#fff' : 'var(--o)', o: 1 };   // la fiche (blanche) devient le point orange
     }
     if (t >= T.et + 0.5 && t < tStop + 0.6) {   // le point monte puis tombe en arc et arrête le mur (écraser à l'impact)
       const r = rectAt(T.et - 0.02), sx = r.x + r.w / 2, sy = r.y + r.h / 2;
@@ -297,19 +297,19 @@
       k.e.style.borderColor = bc; tf(k.e, k.x, y, { s, o });
     });
     shade.style.background = `linear-gradient(${bgAt(t)} 62%, transparent)`;
-    ktP(kC1, t, T.bonnes, T.arrete - 0.12); ktP(kC2, t, T.arrete, T.rech - 0.12);
-    ktP(kC3, t, T.rech, T.toi - 0.12); ktP(kC4, t, T.tourne, T.toi - 0.12);
-    ktP(kC5, t, T.toi, T.une - 0.12); ktP(kC6, t, T.lui, T.une - 0.12);
+    ktP(kC1, t, T.bonnes, T.arrete - 0.36); ktP(kC2, t, T.arrete, T.rech - 0.36);
+    ktP(kC3, t, T.rech, T.toi - 0.36); ktP(kC4, t, T.tourne, T.toi - 0.36);
+    ktP(kC5, t, T.toi, T.une - 0.36); ktP(kC6, t, T.lui, T.une - 0.36);
     ktP(kC7, t, T.sous, T.recois - 0.1);
     // anneau qui tourne autour du point : un tour = un passage
     const rOn = t > T.rech - 0.1 && t < T.une;
     show(ring, rOn); if (rOn) { const ang = 360 * (t - T.rech) / 0.9; tf(ring, DX - 100, DY - 100, { r: ang, o: E(t, T.rech - 0.1, 0.3) * (1 - E(t, T.une - 0.25, 0.2)) }); }
     show(pillJ, t > T.plus - 0.05 && t < T.toi); tf(pillJ, 540, DY + 170, { c: 1, s: 0.6 + 0.4 * SP(t, T.plus - 0.05, 'default'), o: E(t, T.plus - 0.05, 0.15) });
-    show(clock.box, night); if (night) { rollP(clock, t, T.toi + 0.2, 1.6, 0.12); tf(clock.box, 540, 960, { c: 1, o: E(t, T.toi, 0.2) }); }
+    show(clock.box, night); if (night) { rollP(clock, t, T.toi + 0.2, 1.6, 0.12); tf(clock.box, 540, 1250, { c: 1, o: E(t, T.toi, 0.2) }); }
     show(gem, gemOn && t < T.recois + 0.05); show(pillC, t > T.cote2 - 0.05 && t < T.recois);
     if (gemOn) { const a = SP(t, T.une, 'default'), b = SP(t, T.une + 0.06, 'heavy');
       tf(gem, lerp(DX, 540, b), lerp(DY, 900, b), { c: 1, s: 0.18 + 0.82 * a, r: -3 * a }); tf(pillC, 540, 1110, { c: 1, r: -3, s: 0.6 + 0.4 * SP(t, T.cote2 - 0.05, 'snappy'), o: E(t, T.cote2 - 0.05, 0.12) }); }
-    show(menC, gemOn);
+    show(menC, gemOn); tf(menC, 0, 0, { c: 0 }); menC.style.transform = 'translateX(-50%)';
   }
 
   // =====================================================================================================
