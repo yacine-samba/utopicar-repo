@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Planche · présentation UTOPICAR avec Simon</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:Instrument;font-style:italic;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+:root{--w:#fbf9f5;--k:#0e0b09;--o:#ff5a1f;--r:#d93a3a;--ink:#1c1612;--ok:#0a8f55;--nuit:#1d2a52;--anno:#29c4e8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#f{position:absolute;inset:0;overflow:hidden;font-family:Satoshi;color:var(--ink);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+.g{font:700 132px/0.95 Clash;letter-spacing:-.045em;white-space:nowrap}
+.i{font-family:Instrument;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.ctx{font:700 30px Satoshi;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.men{font:500 24px Satoshi;white-space:nowrap;opacity:.6}
+.dot{width:46px;height:46px;border-radius:50%;background:var(--o)}
+.cell{position:absolute;width:212px;height:118px;border-radius:20px;padding:16px 18px;background:#1b1612;border:1.5px solid rgba(244,241,236,.09);color:#f4f1ec}
+.cell .m{font:700 21px Satoshi;white-space:nowrap;overflow:hidden}
+.cell .s{font:500 16px Satoshi;opacity:.5;margin-top:3px;white-space:nowrap}
+.cell .p{font:600 30px Clash;margin-top:10px;white-space:nowrap}
+.pill{padding:20px 38px;border-radius:999px;font:700 40px Satoshi;white-space:nowrap}
+svg.anno{position:absolute;inset:0;width:1080px;height:1920px;pointer-events:none}
+svg.anno path,svg.anno circle.l{fill:none;stroke:var(--anno);stroke-width:5;stroke-dasharray:16 12;stroke-linecap:round}
+svg.anno text{fill:var(--anno);font:700 26px Satoshi}
+</style>
+</head>
+<body>
+<div id="f"></div>
+<script>
+// Planche (porte 3) : une image clé par plan, composée avec les vrais éléments (photo de l'annonce, fiche du vrai site
+// capturée en 3×, vrai modèle de l'e-mail d'alerte, logo officiel). Les tracés bleus pointillés indiquent le mouvement.
+const F = +(new URLSearchParams(location.search).get('f') || 1);
+const f = document.getElementById('f'), NS = 'http://www.w3.org/2000/svg';
+const mk = (tag, cls, parent, css, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (css) Object.assign(e.style, css); if (html != null) e.innerHTML = html; (parent || f).appendChild(e); return e; };
+const at = (e, x, y, extra = '') => { e.style.left = x + 'px'; e.style.top = y + 'px'; if (extra) e.style.transform = extra; return e; };
+const anno = (paths = [], labels = []) => { const s = document.createElementNS(NS, 'svg'); s.setAttribute('class', 'anno'); s.setAttribute('viewBox', '0 0 1080 1920');
+  s.innerHTML = '<defs><marker id="h" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:#29c4e8;stroke:none"/></marker></defs>'
+    + paths.map((d) => `<path d="${d}" marker-end="url(#h)"/>`).join('') + ''; f.appendChild(s); };
+const bg = (c) => (f.style.background = c);
+const ctx = (c = 'rgba(244,241,236,.7)') => at(mk('div', 'a ctx', null, { color: c, width: '1080px', textAlign: 'center' }, 'Achat-revente auto'), 0, 236);
+const title = (html, y, size = 132, color = '#fff') => at(mk('div', 'a g', null, { fontSize: size + 'px', color, width: '1080px', textAlign: 'center' }, html), 0, y);
+const demo = (c = 'rgba(244,241,236,.85)') => at(mk('div', 'a men', null, { color: c, width: '1080px', textAlign: 'center' }, 'Données de démonstration'), 0, 1432);
+// étiquette percée : le trou est un masque (jamais un disque peint), c'est l'objet porteur
+const tag = (x, y, r, price, sub, col = 'var(--ink)', bgc = '#fff') => {
+  const t = mk('div', 'a', null, { width: '470px', height: '236px', borderRadius: '30px', background: bgc, padding: '78px 40px 0 40px',
+    WebkitMaskImage: 'radial-gradient(circle at 235px 44px, transparent 22px, #000 23px)', boxShadow: '0 40px 80px -30px rgba(0,0,0,.6)' },
+    `<div style="font:700 24px Satoshi;letter-spacing:.16em;color:${col};opacity:.55">${sub}</div><div style="font:700 104px/1 Clash;letter-spacing:-.04em;color:${col};white-space:nowrap;margin-top:6px">${price}</div>`);
+  return at(t, x, y, `rotate(${r}deg)`);
+};
+const car = (w, x, y, ry = 16) => at(mk('img', 'a', null, { width: w + 'px', filter: 'drop-shadow(0 50px 40px rgba(0,0,0,.55))' }), x, y, `perspective(1500px) rotateY(${ry}deg)`);
+const MUR = [['Opel Corsa', '2014 · 98 580 km', '6 500 €'], ['Renault Clio IV', '2016 · 112 000 km', '7 900 €'], ['Peugeot 208', '2015 · 134 000 km', '6 200 €'], ['VW Polo', '2013 · 151 000 km', '5 400 €'], ['Ford Fiesta', '2017 · 88 000 km', '8 300 €'], ['Toyota Yaris', '2012 · 120 000 km', '5 900 €'], ['Renault Twingo', '2015 · 76 000 km', '5 600 €'], ['Citroën C3', '2016 · 101 000 km', '6 900 €']];
+const wall = (opts = {}) => { const cells = []; const { blur = 0, dim = 1, wave = null, y0 = 300 } = opts;
+  for (let r = 0; r < 12; r++) for (let c = 0; c < 4; c++) { const k = (r * 4 + c) % MUR.length, [m, s, p] = MUR[k];
+    const x = 50 + c * 250, y = y0 + r * 140 - 100;
+    const e = mk('div', 'cell', null, { left: x + 'px', top: y + 'px', opacity: dim }, `<div class="m">${m}</div><div class="s">${s}</div><div class="p">${p}</div>`);
+    if (blur) e.style.filter = `blur(0px) url(#vb)`;
+    if (wave) { const d = Math.hypot(x + 106 - wave[0], y + 59 - wave[1]); const b = Math.exp(-((d - wave[2]) ** 2) / (2 * 90 ** 2)); e.style.transform = `scale(${(1 + 0.18 * b).toFixed(3)})`; e.style.borderColor = `rgba(255,90,31,${(0.15 + 0.85 * b).toFixed(2)})`; e.style.opacity = (dim * (0.55 + 0.45 * b)).toFixed(2); }
+    cells.push(e); }
+  if (blur) { const s = document.createElementNS(NS, 'svg'); s.setAttribute('width', 0); s.setAttribute('height', 0); s.style.position = 'absolute';
+    s.innerHTML = `<filter id="vb" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="0 ${blur}"/></filter>`; f.appendChild(s); }
+  return cells; };
+const mail = async () => {   // vrai modèle supabase/functions/veille (mailNouvelles), données de démonstration
+  const card = `<tr><td style="padding:10px 0;border-bottom:1px solid #e5e5e5"><table role="presentation" cellpadding="0" cellspacing="0"><tr>
+    <td style="padding-right:12px;vertical-align:top"><img src="../assets/presente-v/clio4-mail.jpg" width="120" style="border-radius:6px;display:block;width:120px;height:auto" alt=""></td>
+    <td style="vertical-align:top;font:14px/1.45 Arial,sans-serif;color:#1d1d1f">
+      <a style="color:#15307f;font-weight:bold;text-decoration:none">Renault Clio IV 1.5 dCi 90 Limited</a><br>
+      <b style="font-size:16px">6 400 €</b><br><span style="color:#555">2016 · 112 000 km · Diesel · Manuelle</span><br>
+      <span style="color:#777">Lyon 69003</span><br><span style="color:#0a7a43;font-weight:bold">1 450 € sous la cote</span> <span style="color:#777">(cote 7 850 € sur 23 annonces)</span>
+    </td></tr></table></td></tr>`;
+  const html = `<div style="max-width:560px;margin:0 auto;font:14px Arial,sans-serif;color:#1d1d1f">
+    <p style="font-size:18px;margin:0 0 4px"><b>1 nouvelle annonce</b></p><p style="margin:0 0 12px;color:#555">Recherche « Clio IV diesel »</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${card}</table>
+    <p style="margin:18px 0"><a style="background:#ff5a1f;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:bold">Voir mes alertes sur Utopicar</a></p></div>`;
+  const box = mk('div', 'a', null, { width: '600px', padding: '26px 20px 8px', background: '#fff', borderRadius: '26px', boxShadow: '0 50px 90px -30px rgba(28,22,18,.5),0 0 0 1px rgba(28,22,18,.06)', transformOrigin: '0 0' }, html);
+  return box;
+};
+const logo = async (w, x, y) => { const d = mk('img', 'a', null, { width: w + 'px' }); d.src = '../assets/brand/official/utopicar-logo-horizontal-fond-sombre.svg'; await d.decode(); return at(d, x, y); };
+
+(async () => {
+  await Promise.all(['700 132px Clash', '600 60px Clash', '700 40px Satoshi', '500 30px Satoshi', 'italic 100px Instrument'].map((x) => document.fonts.load(x)));
+  const flou = () => at(mk('img', 'a', null, { width: '1080px', height: '1920px', opacity: .55 }), 0, 0);
+  if (F === 1) {   // image 0 : l'objet, le chiffre, la perte qui arrive
+    bg('var(--k)'); const fl = flou(); fl.src = '../assets/presente-v/208-flou.jpg';
+    ctx(); title('Ce prix ment.', 300);
+    const c = car(960, 60, 760, 18); c.src = '../assets/hooks-cut/208-annonce-cut.png';
+    mk('div', 'a', null, { left: '612px', top: '470px', width: '3px', height: '210px', background: 'rgba(255,255,255,.7)' });
+    tag(402, 640, -7, '7 190 €', 'ANNONCE');
+    demo();
+    anno(['M 980 1500 C 900 1360, 880 1300, 840 1250'], [[640, 1560, 'caméra : poussée + orbite 3D, ne s\'arrête jamais']]);
+  }
+  if (F === 2) {   // le prix roule, la goutte « +1 650 € » se détache
+    bg('var(--k)'); const fl = flou(); fl.src = '../assets/presente-v/208-flou.jpg'; fl.style.transform = 'scale(1.08)';
+    ctx(); title('Ce prix ment.', 300);
+    const c = car(1040, 20, 780, 8); c.src = '../assets/hooks-cut/208-annonce-cut.png';
+    mk('div', 'a', null, { left: '600px', top: '440px', width: '3px', height: '220px', background: 'rgba(255,255,255,.7)' });
+    tag(380, 610, 4, '8 840 €', 'PRIX RÉEL', 'var(--r)');
+    // goutte reliée par un pont (filtre « goo » dans le film)
+    const g = mk('div', 'a', null, { left: '470px', top: '840px', width: '240px', height: '240px', filter: 'url(#goo)' });
+    mk('div', 'a', g, { left: '100px', top: '0', width: '40px', height: '80px', borderRadius: '20px', background: 'var(--r)' });
+    mk('div', 'a', g, { left: '30px', top: '60px', width: '180px', height: '180px', borderRadius: '50%', background: 'var(--r)' });
+    at(mk('div', 'a', null, { width: '240px', textAlign: 'center', font: '700 46px/1 Clash', color: '#fff', letterSpacing: '-.03em' }, '+1 650 €<div style="font:700 20px Satoshi;letter-spacing:.12em;opacity:.8;margin-top:8px">TRAVAUX</div>'), 470, 952);
+    const s = document.createElementNS(NS, 'svg'); s.setAttribute('width', 0); s.setAttribute('height', 0); s.style.position = 'absolute';
+    s.innerHTML = '<filter id="goo"><feGaussianBlur stdDeviation="14"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 26 -11"/></filter>'; f.appendChild(s);
+    demo();
+    anno(['M 760 700 C 860 760, 860 860, 760 900'], [[790, 690, '7 190 → 8 840 (rouleaux)'], [120, 1140, 'la goutte naît dans l\'étiquette (liquide)']]);
+  }
+  if (F === 3) {   // zoom-éclair à travers le trou de l'étiquette
+    bg('var(--o)');
+    bg('#fff');   // l'étiquette remplit l'écran (×28 autour de son trou) : blanc de l'étiquette, l'orange au centre, le prix géant flou
+    at(mk('div', 'a', null, { width: '900px', height: '900px', borderRadius: '50%', background: 'var(--o)', boxShadow: '0 0 60px 30px rgba(255,90,31,.35)', filter: 'blur(5px)' }), 90, 480);
+    at(mk('div', 'a g', null, { fontSize: '520px', color: 'rgba(28,22,18,.5)', filter: 'blur(22px)' }), -260, 1380).textContent = '7 190';
+    anno(['M 540 960 m -120 -120 l -160 -160', 'M 540 960 m 120 -120 l 160 -160', 'M 540 960 m -120 120 l -160 160', 'M 540 960 m 120 120 l 160 160'], [[230, 1380, 'zoom ×28 en 0,28 s, flou de bougé : on traverse le trou']]);
+  }
+  if (F === 4) {   // le trou devient le champ : on colle l'annonce
+    bg('var(--o)');
+    title('Colle <span class="i" style="color:var(--k)">l\'annonce.</span>', 300, 132);
+    const p = at(mk('div', 'a', null, { width: '860px', height: '132px', borderRadius: '999px', background: '#fff', boxShadow: '0 40px 80px -30px rgba(26,19,16,.55)', display: 'flex', alignItems: 'center', padding: '0 14px 0 44px', gap: '20px' },
+      `<div style="flex:1;font:500 34px Satoshi;color:#1c1612;white-space:nowrap;overflow:hidden">…/annonce/peugeot-208-1-2-puretech<span style="display:inline-block;width:3px;height:38px;background:#ff5a1f;vertical-align:middle;margin-left:4px"></span></div><div style="flex:none;height:104px;padding:0 40px;border-radius:999px;background:#1a1310;color:#fff;display:flex;align-items:center;font:600 38px Clash">Analyser</div>`), 110, 880);
+    at(mk('div', 'a g', null, { fontSize: '64px', color: '#1a1310', width: '1080px', textAlign: 'center' }, 'dans Utopicar'), 0, 1090);
+    anno(['M 540 1320 C 700 1300, 840 1180, 860 1040'], [[120, 1380, 'le trou s\'étire en champ : bords sur deux ressorts'], [120, 1420, 'clic : le bouton s\'écrase (1,18 / 0,72) puis rebondit']]);
+  }
+  if (F === 5) {   // le champ devient la fiche du vrai site, qui grandit avec son contenu
+    bg('var(--o)');
+    title('2 secondes.', 300, 132);
+    const im = at(mk('img', 'a', null, { width: '860px', borderRadius: '34px', boxShadow: '0 50px 100px -30px rgba(26,19,16,.6)' }), 110, 640, 'perspective(1600px) rotateX(8deg)'); im.src = '../assets/presente-v/fiche-300.png';
+    mk('div', 'a', null, { left: '110px', top: '640px', width: '860px', height: '700px', borderRadius: '34px', border: '5px dashed rgba(26,19,16,.35)' });
+    anno(['M 540 1060 L 540 1290'], [[300, 1390, 'la carte prend la hauteur de la fiche, image par image']]);
+  }
+  if (F === 6) {   // la fiche complète, lignes surlignées sur leur mot, verdict
+    bg('var(--w)'); 
+    title('<span style="color:var(--r)">Passe.</span>', 300, 150);
+    const wr = at(mk('div', 'a', null, { width: '680px', height: (680 * 1557 / 1104) + 'px' }), 200, 500, 'perspective(1600px) rotateY(-9deg) rotateX(4deg)');
+    const im = mk('img', 'a', wr, { left: 0, top: 0, width: '680px', borderRadius: '28px', boxShadow: '0 60px 110px -30px rgba(28,22,18,.5)' }); im.src = '../assets/presente-v/fiche-6000.png';
+    // surlignages : lignes de la fiche, séparateurs mesurés au pixel sur la capture (0,538 · 0,686 · 0,803)
+    for (const [y0, y1] of [[0.425, 0.535], [0.541, 0.683], [0.689, 0.8]]) mk('div', 'a', wr, { left: '10px', top: (y0 * 959) + 'px', width: '660px', height: ((y1 - y0) * 959) + 'px', borderRadius: '14px', border: '5px solid var(--o)' });
+    at(mk('div', 'a men', null, { color: 'rgba(28,22,18,.75)', width: '1080px', textAlign: 'center' }, 'Données de démonstration'), 0, 462);
+    anno(['M 1000 1000 C 1040 1100, 1040 1180, 960 1240'], [[150, 470, 'cote · travaux · vrai prix : un surlignage par mot']]);
+  }
+  if (F === 7) {   // la fiche se replie en point, qui tombe dans le mur d'annonces et l'arrête net
+    bg('var(--k)'); wall({ blur: 26, dim: .85 });
+    mk('div', 'a', null, { left: 0, top: 0, width: '1080px', height: '560px', background: 'linear-gradient(var(--k) 70%, transparent)' });
+    title('Arrête de scroller.', 300, 104);
+    at(mk('div', 'a dot', null, { width: '70px', height: '70px', boxShadow: '0 0 0 10px rgba(255,90,31,.25)' }), 505, 905);
+    anno(['M 540 520 C 380 640, 420 820, 520 900', 'M 1040 1500 L 1040 700'], [[120, 1560, 'le mur défile (flou), le point tombe en arc et l\'arrête : écrasement'], [820, 690, 'défile']]);
+  }
+  if (F === 8) {   // la recherche tourne seule : une onde traverse le mur, plusieurs fois par jour
+    bg('var(--k)'); wall({ dim: .8, wave: [540, 930, 260] });
+    mk('div', 'a', null, { left: 0, top: 0, width: '1080px', height: '560px', background: 'linear-gradient(var(--k) 70%, transparent)' });
+    title('Ta recherche', 300, 112); title('<span class="i" style="color:var(--o)">tourne seule.</span>', 420, 112);
+    const r = mk('div', 'a', null, { left: '440px', top: '830px', width: '200px', height: '200px', borderRadius: '50%', border: '6px solid rgba(255,90,31,.35)', borderTopColor: 'var(--o)', borderRightColor: 'var(--o)' });
+    at(mk('div', 'a dot', null, { width: '60px', height: '60px' }), 510, 900);
+    at(mk('div', 'a pill', null, { font: '700 32px Satoshi', color: '#fff', background: 'rgba(14,11,9,.85)', border: '2px solid rgba(255,90,31,.6)' }, 'plusieurs fois par jour'), 340, 1060);
+    anno([], [[150, 1560, 'onde dans la grille : retard = distance au point ; un tour = un passage']]);
+  }
+  if (F === 9) {   // humour : toi tu dors, lui il bosse
+    bg('var(--nuit)'); wall({ dim: .35, wave: [540, 930, 420] });
+    mk('div', 'a', null, { left: 0, top: 0, width: '1080px', height: '1920px', background: 'radial-gradient(circle at 540px 760px, rgba(29,42,82,.2), rgba(29,42,82,.85) 60%)' });
+    title('Toi, tu dors.', 520, 140); title('<span class="i" style="color:var(--o)">Lui, il bosse.</span>', 690, 150);
+    at(mk('div', 'a', null, { font: '700 140px Clash', color: '#fff', width: '1080px', textAlign: 'center', letterSpacing: '-.03em' }, '03:12'), 0, 960);
+    at(mk('div', 'a dot', null, { width: '60px', height: '60px' }), 510, 1200);
+    anno([], [[120, 1560, 'fond nuit sur le temps fort (coupe de couleur, pas de fondu) ; les mots sortent d\'un masque']]);
+  }
+  if (F === 10) {   // une annonce passe sous la cote : la pépite sort du mur
+    bg('var(--k)'); const cs = wall({ dim: .28 });
+    mk('div', 'a', null, { left: 0, top: 0, width: '1080px', height: '560px', background: 'linear-gradient(var(--k) 70%, transparent)' });
+    title('Sous la cote ?', 300, 120);
+    const p = at(mk('div', 'cell', null, { width: '560px', height: '300px', padding: '34px 40px', borderRadius: '40px', border: '6px solid #fff', background: '#1b1612', boxShadow: '0 60px 120px -20px rgba(0,0,0,.8)' },
+      `<div class="m" style="font-size:44px">Renault Clio IV</div><div class="s" style="font-size:30px;margin-top:8px">2016 · 112 000 km · Diesel</div><div class="p" style="font-size:72px;margin-top:20px">6 400 €</div>`), 260, 760, 'rotate(-3deg)');
+    at(mk('div', 'a pill', null, { background: 'var(--ok)', color: '#fff', fontSize: '36px' }, '1 450 € sous la cote'), 340, 1110, 'rotate(-3deg)');
+    demo();
+    anno(['M 300 1300 C 260 1180, 260 1100, 300 1040'], [[120, 1560, 'la case sort du mur ×2,6, liseré blanc ; les autres s\'éteignent']]);
+  }
+  if (F === 11) {   // la pépite se déplie en vrai e-mail d'alerte
+    bg('var(--w)'); 
+    title('Tu reçois', 300, 120, 'var(--ink)'); title('<span class="i" style="color:var(--o)">un mail.</span>', 420, 130, 'var(--ink)');
+    const m = await mail(); m.style.width = '500px'; at(m, 110, 620, 'scale(1.72)');
+    at(mk('div', 'a', null, { width: '0', height: '0', borderLeft: '26px solid transparent', borderRight: '26px solid transparent', borderBottom: '60px solid #1a1310' }), 820, 820, 'rotate(-28deg)');
+    demo('rgba(28,22,18,.75)');
+    anno([], [[120, 1560, 'vrai modèle de l\'e-mail (veille) · « T\'as plus qu\'à appeler » : clic']]);
+  }
+  if (F === 12) {   // fin : tout se replie en point, le point devient la flèche du logo
+    bg('var(--k)');
+    await logo(760, 160, 700);
+    title('Achète juste.', 960, 110); title('<span class="i" style="color:var(--o)">Revends mieux.</span>', 1080, 120);
+    at(mk('div', 'a pill', null, { background: '#fff', color: 'var(--ink)' }, 'lien en bio'), 410, 1260);
+    anno(['M 540 1500 C 760 1460, 880 1200, 800 760'], [[120, 1560, 'boucle : le point repart vers l\'étiquette de l\'image 0']]);
+  }
+  document.title = 'ok';
+})();
+</script>
+</body>
+</html>

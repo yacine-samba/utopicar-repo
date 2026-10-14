@@ -69,3 +69,14 @@ hors zones interdites) ou remplace-les par de vrais chiffres vérifiés et autor
 - Curseur qui manipule la vraie UI ; pastille flottante « 1 450 € sous la cote ».
 - Ton direct, tutoiement : « Et ta marge ? Au pif. », « Tu as 60 secondes ? ».
 - Retour de l'utilisateur sur la v1 : « ça va trop vite, beaucoup d'info » → une idée par plan, 2–4 s par idée.
+
+## Captures du site pour les vidéos (oct. 2026)
+
+- Pages du site exportées dans `video/assets/master60/ui/` (accueil animé, rapport, tableau, offres). Pour une vidéo, on
+  copie la page d'accueil animée et on remplace seulement l'objet d'exemple (titre, prix, infos, verdict, phrase,
+  lignes chiffrées) par les chiffres de la vraie annonce, calcul prudent de l'outil.
+- Retirer avant capture : l'en-tête « Fiche Utopicar · en 2 secondes, sans compte », toute mention « exemple ».
+- Capture HD (3×) : `techniques.md` § 20.
+- Appel à l'action vidéo : mot-clé **ANALYSE** en commentaire (DM avec lien + code) et « 3 analyses offertes · code
+  TIKTOK » écrit. **Le code doit être en ligne avant publication** (branche `claude/code-tiktok` non fusionnée en oct.
+  2026).

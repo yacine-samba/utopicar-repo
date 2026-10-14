@@ -36,6 +36,14 @@ ce skill-ci reste celui de la fabrication.
   connexion (Vimeo privé, etc.), on demande le fichier — on ne contourne pas l'accès.
 - **Dépenser des crédits seulement avec accord.** Voix, musique et bruitages ElevenLabs coûtent des crédits :
   `estimate_only` d'abord, puis accord de l'utilisateur.
+- **Grille obligatoire avant tout script (vidéo courte).** Remplir et montrer les 8 cases, avec le minutage ; une case vide =
+  pas de production : (1) hook visuel + sonore à l'image 0 (objet + chiffre + perte) ; (2) contexte ≤ 3 s, voix et écran
+  (pour qui) ; (3) promesse + structure visible + boucle ouverte ; (4) valeur actionnable (le geste précis, pas seulement
+  le quoi) ; (5) relance toutes les 3–4 s ; (6) preuve par le produit (c'est lui qui révèle) ; (7) conversion en lead
+  (mot-clé en commentaire → DM avec lien + code, dit et écrit) ; (8) raison d'enregistrer ou de partager, fin qui relance.
+- **Vrai avant beau.** Chaque chiffre recalculé avec la formule du produit (hypothèse prudente), chaque fait technique
+  vérifié par recherche, chaque verdict cohérent avec les chiffres affichés : `qa-delivery.md` « Vérifications de fond ».
+- **Écran propre.** Pas d'emoji, pas de « exemple », pas de source à l'écran ; l'humour passe par les mots-chocs.
 - **Valider aux bons moments.** Quatre portes de validation (brief, script + voix, storyboard, premier montage) évitent
   de rendre trois fois un film de 60 s pour une question qu'on aurait pu poser avant.
 
@@ -94,7 +102,7 @@ Musique et bruitages générés par ElevenLabs (master60) :
 
 ### Phase 5 — Construction
 
-Lire `references/fluidite.md` : caméra qui ne s'arrête jamais, chaîne sans coupe, flou de bougé réel (`MB=8`), fluidité mesurée avec `scripts/ref-motion.py` et comparée aux références.
+Lire `references/motion-pro.md` puis `references/fluidite.md` : caméra qui ne s'arrête jamais, chaîne sans coupe, flou de bougé réel (`MB=8`), fluidité mesurée avec `scripts/ref-motion.py` et comparée aux références.
 
 Puis `references/techniques.md` : caméra à point focal, écriture à la lumière lettre par lettre, compteurs à
 rouleaux, palettes, verre et lueurs, photo réelle détourée et abîmée par calques, radiographie, raccords par la forme,
@@ -129,6 +137,7 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 | `references/motion-craft.md` | Phases 3 et 5 : références, style, formats et zones sûres, architecture du film, règles d'animation |
 | `references/sound.md` | Phase 4 : musique, grille, bruitages, mix voix, mastering, téléphone |
 | `references/qa-delivery.md` | Phases 6 et 7 : grille de notes, contrôles, matrice de livraison, git, envoi |
+| `references/motion-pro.md` | **Avant d'animer quoi que ce soit** : ce qui fait « Canva », les 12 principes After Effects traduits en code (objet porteur, bords sur deux ressorts, écraser-étirer, masques, liquide, onde dans une grille), rythme du hook |
 | `references/fluidite.md` | Phases 3 et 5 : ce qui rend un motion fluide (mesuré), règles, pièges, rendu avec flou de bougé |
 | `references/sound-design.md` | Phase 4 : sound design et mixage d'ingénieur du son (repérage, priorités, bandes, ducking, calage vérifié) |
 | `references/techniques.md` | Phases 3 et 5 : toutes les recettes de construction (caméra, écriture à la lumière, compteurs, photo réelle, radiographie, raccords, boucle, rendu, voix, son, écrans pleins et sous-titres géants, un film pour deux formats) avec le code de référence |
@@ -142,6 +151,8 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 | `scripts/ref-motion.py` | Fluidité d'une référence ou de notre rendu : `python3 scripts/ref-motion.py a.mp4 b.mp4 --out dossier` |
 | `scripts/ref-frames.py` | Sur chaque référence (et sur nos prises de voix) : `python3 scripts/ref-frames.py ref.mp4 --step 0.1` |
 | `scripts/sticker-plan.py` | Voiture détourée → autocollant à liseré blanc + plan au trait alignés (collage, scanner) : `techniques.md` § 17 |
+| `scripts/ui-seq-hd.mjs` | Capture HD (3×) du vrai site, image par image, pour une carte qui suit le contenu (`techniques.md` § 20) |
+| `scripts/ui-bounds.py` | Bornes du contenu de chaque capture → `bounds.json` |
 | `scripts/blur-boxes.py` | Flouter logos et plaques d'une photo par zones, recadrage optionnel |
 | `scripts/cutout.py` | Détourer une photo réelle + contour vectoriel pour un liseré de lumière : `python3 scripts/cutout.py photo.jpg dossier/` |
 | `scripts/mixkit.py` | Vidéos libres : `search … --sheet planche.jpg`, `get <ids> --out …`, `seq clip.mp4 dossier --start --dur` |

@@ -92,6 +92,25 @@
 | Semaines oct. | Chiffre orange posé sur le disque orange : illisible | Pastille sombre derrière tout texte posé sur un fond coloré |
 | Semaines oct. | `taskkill /IM node.exe` pour arrêter un rendu : tous les node du PC tués, serveur de dev compris | N'arrêter que ses propres processus (PID du script de rendu) |
 | Twingo BO3 | Flou de la photo sur le pare-brise, détourage avec un pavé flou ; puis raccord visible | Reconstruire la voiture par symétrie depuis la moitié propre ; vérifier chaque flou sur un recadrage zoomé |
+| Top 3 / 14 vidéos | Bénéfices « trop beaux » : revente à la médiane, travaux probables oubliés ; 5 vidéos sur 13 passaient en perte une fois recalculées | Chiffrer avec l'hypothèse **prudente** du produit (bas de fourchette, travaux, frais, marge) ; si le sujet ne tient plus, réécrire l'angle (« le piège ») plutôt que garder un chiffre flatteur |
+| Top 3 | « Polo 1.6 TDI la plus fiable » : faux | Tout fait technique dit à l'écran (moteur, génération, boîte) se vérifie par recherche + dans la source du produit avant le script |
+| Top 3 | La voix lit « 1,4 » « un virgule quatre » | Écrire les nombres comme on les dit (« un litre quatre », « six mille six cent cinquante ») dans le texte envoyé au TTS |
+| Top 3 | Bégaiements « code code » après resserrage des silences | Marges de découpe qui se chevauchent : ne jamais reprendre un bout déjà pris (`a = max(prev_b, a - pre)`), ignorer les segments vides |
+| Top 3 | Flous « chelou » sur logos et phares | Ne flouter que ce qui l'exige (plaque), sur la photo originale, contrôle sur recadrage zoomé |
+| Top 3 | Interface « exemple » à l'écran, rapport qui contredisait le verdict | Capturer la vraie UI avec les données du cas montré, retirer les libellés de démo, et vérifier que fiche, tampon et voix disent la même chose |
+| 13 vidéos | Tampon « J'ACHÈTE » alors que le prix dépassait le prix max de la fiche | Le verdict à l'écran découle des chiffres affichés, pas du ton voulu (« NÉGOCIE » si prix > max) |
+| 13 vidéos | Photo d'une autre génération que celle annoncée (Polo 5 pour une Polo 4) | Pas de photo exacte = changer de sujet ou le signaler avant production, jamais en douce |
+| Capital an 1 | Repère présenté comme une loi (« 3 à 6 cartes grises »), total valable seulement pour le haut de fourchette | Dire « repère » quand ce n'est pas un texte ; afficher l'hypothèse du calcul (6 voitures) ; vérifier les taux officiels (12,3 % URSSAF) avant le rendu |
+| Toutes | Emojis, mentions « exemple », sources à l'écran jugés cheap | Mots-chocs en texte seul ; sources dans le brief, pas à l'écran (sauf obligation légale) |
+| Hooks HK1–HK3 | « C'est du Canva, pas du motion design » : pastilles, anneaux, halos, bandeaux, étiquettes qui tombent | Lire `motion-pro.md` et regarder des références avant d'animer ; un seul objet porteur qui se transforme, du vide, des bords sur deux ressorts |
+| Hooks | Animé sans relire le skill ni chercher de références | Toujours : skill → 2–3 références décomposées image par image → construction → mesure `ref-motion.py` contre les références |
+| NEGO | « La voix de Simon s'arrête » : silences ajoutés (0,6–0,9 s) + arrêt de musique au même endroit = vide total | Jamais de silence ajouté dans la voix ; ce sont les images qui débordent sur la phrase suivante ; vérifier la piste voix (aucun blanc > 0,4 s) |
+| ETT | Un texte créé (`KT`) mais jamais animé reste visible par défaut et se superpose (« Prix max » sur « −350 € ») | Supprimer l'élément, pas seulement son animation ; planche de contrôle à chaque scène |
+| ETT | Cadre de surlignage posé « à l'œil » en % : décalé de la ligne | Mesurer la boîte au pixel sur la capture (couleur de fond de la ligne), convertir en % de la carte |
+| ETT | En-tête « Fiche Utopicar · en 2 secondes, sans compte » jugé inutile | Retirer les libellés de l'interface qui n'apportent rien dans la vidéo, dans la page avant capture |
+| Téléphones | Fiche incrustée dans des clips Mixkit à écran vert : « trop mal foutu » (720p agrandi, carte plaquée) | Utiliser le site source capturé en HD (3×) dans une carte en code ; la vidéo de stock seulement si elle est nette en 1080×1920 |
+| Vidéos d'oct. | « On en a marre de voir ta Polo » | Varier la voiture d'une vidéo à l'autre (base : Clio, 207, Fiesta, Twingo…), vérifier la génération sur la photo |
+| Conversion | Promesses « 30 % / 40 % de conversion » | Séparer ce qui se mesure : part des spectateurs qui voient le mot-clé (≈ 30–45 % possible) et commentaires mot-clé ÷ vues (1–3 % = très bon) ; ce sont des estimations tant que les stats ne sont pas lues |
 
 ## Ce qui a marché (à reprendre)
 
@@ -139,6 +158,28 @@
     calcul (frais, « dernier prix »), puis la récompense ; verdicts variés (fonce, négocie, passe, prudence).
 
   Recettes : `techniques.md` § 17–18.
+- Oct. 2026, modèle court « Top 3 » puis 14 vidéos de 15–20 s : validé après une dizaine d'itérations. Ce qui a marché :
+  - **Ouverture** : petite étiquette de contexte (pour qui) + titre sur deux lignes + objet détouré qui claque, avant 0,5 s.
+  - **Autodérision** : le mot drôle de la voix claque en grosse pastille qui tremble puis s'envole ; l'humour court sur
+    toute la vidéo, pas seulement au début.
+  - **Objet plein cadre** : photo qui zoome en continu, plaque d'identité qui se déplie (lettres qui montent, détails
+    un à un, compteur qui roule), étapes chiffrées sur leur mot (barré → valeur, pastille couleur du verdict).
+  - **Vraie interface** capturée en séquence d'images et rejouée dans un téléphone 3D avec curseur et clics, puis un
+    tampon de verdict ; fin fixe.
+  - **Mouvement continu** : marquee géant en contour, points qui dérivent, halo qui respire, traînées de vitesse,
+    anneaux d'impact : 67–72 % d'images en mouvement au lieu de 37 %.
+
+  Recettes : `techniques.md` § 19, vérifications : `qa-delivery.md` « Vérifications de fond ».
+- Oct. 2026, film complet « Et la tienne ? » v4 (ETT) en grammaire pro, après recherche (prompt-motion.com, Dribbble,
+  Material 3, IBM Carbon, références mesurées). Ce qui a marché :
+  - **un seul objet porteur** du début à la fin : point orange → étiquette percée → zoom-éclair à travers son trou →
+    Clio en 2.5D → prix qui roule → goutte « −350 € » → fiche qui naît du prix → case parmi 400 → pépite → « Ton annonce »
+    → point orange (boucle parfaite, pas de carton final) ;
+  - **mesures** : ouverture 86 % d'images en mouvement, à-coups 0,078 (références 0,02–0,08) ; film entier 69 %, plan
+    figé max 1,07 s après poussée de caméra continue (`S(…, 0.05)`) et flottements 3D ;
+  - **site source en HD** (capture 3×) dans une carte qui prend la hauteur du contenu à chaque image.
+
+  Recettes : `techniques.md` § 20–21, `motion-pro.md`.
 - Oct. 2026, P1–P5 (présentation, 5 vidéos) : la voix de base de Simon est **eleven_v4**, à vitesse d'origine
   (déjà vive ; la v3 demandait × 1,1). Faster-whisper place certains mots qui suivent un silence 0,4 à 0,7 s trop
   tard (« raté », « 1 650 ») : `video/scripts/words_snap.py` recale chaque début de mot sur l'attaque réelle de la

@@ -408,3 +408,52 @@ par un objet.
 - **Fabrication** : `video/scripts/semaines.sh [ids]` enchaîne repères, mixage, rendu avec flou de bougé et
   `qa_video.py`. En tâche de fond, suivi par un moniteur sur le journal. Pour l'arrêter, tuer le PID du script, jamais
   tous les `node.exe`.
+
+## 19. Format court 15–20 s piloté par la voix (modèle générique)
+
+- **Squelette en 4 scènes**, chacune déclenchée par un mot de la voix : hook (contexte + titre + objet) → objet plein
+  cadre (étapes chiffrées) → action réelle dans le produit → carton de fin. Scènes optionnelles insérables (une liste
+  qui tombe, une « année 2 », une comparaison) : chaque scène = `[mot de départ, mot de fin]`, rien d'autre.
+- **Une config par vidéo** : titre (2 lignes + couleurs), objet (détourage, photo, cadrage), plaque (nom, détails),
+  `pops` (mot → texte, couleur), `rows` (mot → « A → B » ou texte), `pills` (mot → valeur, étiquette, couleur),
+  tampon de verdict, dossier de captures d'interface. Les fenêtres d'affichage se déduisent du mot suivant.
+- **Mots-chocs** : taille de police calculée sur la longueur du texte (`min(104, 1500 / nb de caractères)`) pour ne
+  jamais déborder ; pastille large calculée pareil. Sortie vers le haut, jamais par fondu seul.
+- **Vraie interface animée** : copier la page réelle, remplacer seulement l'objet de données du cas, retirer les
+  libellés de démo, capturer 4–5 s à 30 i/s en CDP `captureScreenshot` avec `clip` à l'échelle 2, rééchantillonner en
+  séquence JPG, la dessiner sur un canvas dans un téléphone en perspective. Le numéro d'image suit le clic (`k = 28 +
+  (t − tClic) × 30–45`) : le chargement et le résultat tombent sur la voix.
+- **Durée tenue par la voix** : budget ≈ 45–55 mots pour 15–20 s ; si la prise dépasse, resserrer les silences (0,14 s)
+  et accélérer jusqu'à × 1,2 plutôt que de couper une scène ; vérifier la durée finale (`ffprobe`) avant d'envoyer.
+- **Prise de voix** : nombres et sigles écrits comme on les dit ; une prise par vidéo, toutes lancées d'un coup ;
+  relire la transcription mot à mot (« 2 0150 », « 1 .2 litre » signalent un passage à écouter).
+- **Zones sûres dès la config** : mots-chocs du hook à y ≤ 1 390, rien d'important sous 1 480 ; un objet détouré large
+  peut déborder à droite, un texte jamais.
+
+## 20. Site source en HD dans une carte qui suit le contenu
+
+- **Capture** : `scripts/ui-seq-hd.mjs <dossier> <page.html> <sortie> 400 860 4.6` (Playwright, CDP `captureScreenshot`,
+  `deviceScaleFactor 3`, tout le viewport mobile) → images 1200×2580 avec leurs instants (`times.json`), puis
+  rééchantillonnage à 30 i/s (`u000…u134.jpg`).
+- **Libellés inutiles** retirés dans la page avant capture (remplacement de chaîne dans le HTML exporté du site).
+- **Bornes du contenu** : `scripts/ui-bounds.py <dossier>` → `bounds.json` (première/dernière ligne non noire par image).
+- **Dans le film** : un `<canvas>` dans une carte ; à chaque image, on ne dessine que la bande utile
+  (`drawImage(im, x0, top, w, h, 0, 0, w, h)`), et la carte prend cette hauteur → elle grandit d'elle-même
+  (champ → analyse → fiche). Bornes **lissées** sur ±5 images ; les images vides du site (transitions) sont **sautées**
+  (liste des images valides) ; marge basse forcée pour ne pas couper la dernière ligne.
+- **Curseur** : le clic tombe sur l'image où le site clique (ici l'image 28) ; arrivée 0,07 s avant.
+- **Surlignage** : boîte mesurée au pixel sur la capture (couleur de fond de la ligne) puis convertie dans le repère de
+  la carte.
+
+## 21. Un film entier sur un seul objet porteur (ETT)
+
+- **Chaque scène naît de la précédente** : l'élément final d'une scène est la forme de départ de la suivante (prix →
+  carte de fiche : bords sur ressorts décalés depuis le rectangle du prix ; fiche → case C0 du mur ; pépite → carte
+  « Ton annonce » ; carte → point orange de l'image 0).
+- **Calé sur la voix** : tous les instants viennent des mots (`TA`) ; les gestes qui ont besoin de temps (zoom, roulement,
+  goutte) prennent `max(minimum visuel, mot)` pour ne jamais se télescoper.
+- **Rien ne s'arrête** : poussée de caméra sur tout le film (`S(…, 0.05)`), flottement 3D des cartes posées
+  (`rotateY ±12°, rotateX ±6°, translate ±25 px`), obturateur ouvert (`win`) sur les mouvements de caméra.
+- **Mur de 400** : cases qui apparaissent en onde depuis la case d'origine (retard = distance × 0,03 s), bascule 3D,
+  onde de couleur, tri en bandes (positions interpolées vers l'ordre trié), pépite ×2,6 avec liseré blanc.
+- **Boucle** : la dernière image reproduit la première (même point orange, même place, étiquette de contexte présente).
