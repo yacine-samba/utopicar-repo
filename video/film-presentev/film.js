@@ -7,6 +7,11 @@
 (async function () {
   const { spring, clamp, lerp, noise } = Motion;
   const W = 1080, H = 1920, ST = document.getElementById('stage');
+  // ?fmt=desktop : même film recomposé en 1920×1080 — le monde vertical dans la colonne de droite (une caméra le suit),
+  // titres et mentions dans la colonne de gauche, carton de fin centré
+  const DESK = new URLSearchParams(location.search).get('fmt') === 'desktop';
+  if (DESK) { for (const e of [document.documentElement, document.body]) Object.assign(e.style, { width: '1920px', height: '1080px' });
+    document.head.appendChild(Object.assign(document.createElement('style'), { textContent: '#stage .lay{overflow:visible}' })); }
   const J = async (u) => (await fetch(u)).json();
   const WORDS = await J('../audio/vo-presentev/vo.words.json');
   const RECT = await J('../assets/presente-v/app/rects.json');   // positions des blocs dans les captures (px CSS)
@@ -43,9 +48,11 @@
   const show = (e, v) => { e.style.display = v ? '' : 'none'; return v; };
   const tf = (e, x, y, o = {}) => { e.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)${o.c ? ' translate(-50%,-50%)' : ''}${o.p ? ` perspective(1600px) rotateX(${(o.rx || 0).toFixed(2)}deg) rotateY(${(o.ry || 0).toFixed(2)}deg)` : ''} rotate(${(o.r || 0).toFixed(2)}deg) scale(${(o.sx ?? o.s ?? 1).toFixed(4)},${(o.sy ?? o.s ?? 1).toFixed(4)})`; if (o.o != null) e.style.opacity = clamp(o.o, 0, 1).toFixed(3); };
   const BG = mk('div', 'lay', ST);
-  const CAM = mk('div', 'lay', ST, { transformOrigin: '540px 900px' });    // caméra : poussée et orbite lentes, jamais à l'arrêt
+  const VIEW = mk('div', 'a', ST, { width: W + 'px', height: H + 'px', transformOrigin: '0 0' });   // le monde vertical (1080×1920)
+  const CAM = mk('div', 'lay', VIEW, { transformOrigin: '540px 900px' });    // caméra : poussée et orbite lentes, jamais à l'arrêt
 
   // texte cinétique (presente30) : mots dans un masque, lettres qui montent ; sortie vers le haut
+  const KTS = [];
   function KT(parent, y, size, segs, color = '#fff') {
     if (typeof segs === 'string') segs = [[segs, {}]];
     const box = mk('div', 'kt', parent, { top: y + 'px', fontSize: size + 'px', color });
@@ -56,7 +63,9 @@
       words.push({ w, chars: [...wd].map((ch) => mk('span', 'c', w, null, ch.replace(/&/g, '&amp;').replace(/</g, '&lt;'))) });
     }
     const k = { box, words, size };
-    if (box.offsetWidth > 740) { k.size = Math.floor(size * 740 / box.offsetWidth);   // 740 px : la poussée de caméra (× 1,08) reste dans la colonne 140 → 940
+    KTS.push({ k, parent });
+    const CAP = DESK ? 700 : 740;
+    if (box.offsetWidth > CAP) { k.size = Math.floor(size * CAP / box.offsetWidth);   // 740 px : la poussée de caméra (× 1,08) reste dans la colonne 140 → 940
       box.style.fontSize = k.size + 'px'; }
     box.style.left = (540 - box.offsetWidth / 2) + 'px';
     return k;
@@ -99,11 +108,11 @@
   // A · 0 → « Tu colles » : la 208, l'étiquette percée ; 7 190 € → « à la revente : −2 688 € » ; zoom-éclair dans le trou
   // =====================================================================================================
   const A = mk('div', 'lay', CAM);
-  const flou = mk('img', 'a', A, { width: '1080px', height: '1920px', opacity: 0.55 }); flou.src = '../assets/presente-v/208-flou.jpg';
+  const flou = mk('img', 'a', A, DESK ? { left: '-900px', width: '2900px', height: '1920px', objectFit: 'cover', opacity: 0.55 } : { width: '1080px', height: '1920px', opacity: 0.55 }); flou.src = '../assets/presente-v/208-flou.jpg';
   const carW = mk('div', 'a', A, { width: '980px', height: '584px' });
   const car = mk('img', 'a', carW, { width: '980px', filter: 'drop-shadow(0 50px 40px rgba(0,0,0,.55))' }); car.src = '../assets/hooks-cut/208-annonce-cut.png';
-  const ctx = mk('div', 'a ctx', A, { color: 'rgba(244,241,236,.72)', width: '1080px', textAlign: 'center', top: '236px' }, 'Achat-revente auto');
-  const kA = KT(A, 300, 132, 'Ce prix ment.');
+  const ctx = mk('div', 'a ctx', A, { color: 'rgba(244,241,236,.72)', width: '1080px', textAlign: 'center', top: '268px' }, 'Achat-revente auto');
+  const kA = KT(A, 318, 132, 'Ce prix ment.');
   const menA = mk('div', 'a men', A, { color: 'rgba(244,241,236,.8)', width: '1080px', textAlign: 'center', top: '1432px' }, 'Données de démonstration');
   // étiquette : le trou est un masque ; elle pend à sa ficelle et oscille autour du trou
   const HX = 612, HY = 684;                    // centre du trou à l'écran (= le point orange porteur)
@@ -361,7 +370,7 @@
     // tout se replie vers le point, qui file vers le trou de l'étiquette (image 0)
     const out = E(t, T.loop, 0.35, eIn);
     const pe = clamp((t - T.uto2) / (T.loop - T.uto2), 0, 1);
-    Ee.style.transformOrigin = '540px 760px'; Ee.style.transform = `translateY(${(-24 * pe).toFixed(1)}px) rotate(${(1.2 * Math.sin((t - T.uto2) * 0.9)).toFixed(3)}deg) scale(${((1 + 0.07 * pe) * (1 - 0.94 * out)).toFixed(4)})`; Ee.style.opacity = (1 - E(t, T.loop + 0.25, 0.1)).toFixed(3);
+    Ee.style.transformOrigin = '540px 760px'; Ee.style.transform = `translateY(${(-24 * pe).toFixed(1)}px) rotate(${(1.2 * Math.sin((t - T.uto2) * 0.9)).toFixed(3)}deg) scale(${((1 + 0.07 * pe) * (1 - 0.8 * out)).toFixed(4)})`; Ee.style.opacity = (1 - E(t, T.loop + 0.3, 0.12)).toFixed(3);
     LG(t, T.uto2 + 0.02);
     ktP(kE, t, T.achete); ktP(kE2, t, T.revends);
     show(bio, t > T.mieux + 0.4); tf(bio, 540, 1300 + 10 * Math.sin((t - T.mieux) * 2.2), { c: 1, s: (0.6 + 0.4 * SP(t, T.mieux + 0.4, 'snappy')) * (1 + 0.04 * Math.sin((t - T.mieux) * 3.1)), o: E(t, T.mieux + 0.4, 0.15) });
@@ -374,7 +383,20 @@
   }
 
   // ---------- caméra, point de la boucle, seek ----------
-  const DOT = mk('div', 'a', ST, { background: 'var(--o)' });
+  const DOT = mk('div', 'a', VIEW, { background: 'var(--o)' });
+  // 16:9 : titres et mentions passent dans la colonne de gauche (un calque par scène, visible avec elle)
+  const TLS = [];
+  if (DESK) {
+    const TL = mk('div', 'lay', ST), sub = new Map();
+    const into = (own, e) => { if (!sub.has(own)) { const s = mk('div', 'lay', TL); sub.set(own, s); TLS.push([own, s]); } sub.get(own).appendChild(e); };
+    for (const { k, parent } of KTS) if (parent !== Ee) { into(parent, k.box); k.box.style.top = (parseFloat(k.box.style.top) + 180) + 'px'; k.box.style.left = (500 - k.box.offsetWidth / 2) + 'px'; }
+    into(A, ctx); ctx.style.top = '448px'; ctx.style.left = '-40px';
+    for (const [own, m] of [[A, menA], [B, menB], [Dd, menD]]) { into(own, m); m.style.top = '930px'; m.style.left = '-40px'; }
+  }
+  // caméra 16:9 : [x écran du centre du monde, y du monde au centre de l'écran, échelle]
+  const mix3 = (a, b, q) => a.map((v, i) => lerp(v, b[i], q));
+  const CA = [1340, 1000, 0.95], CB = [1360, 950, 0.84], CE = [960, 1030, 0.95];
+  const deskCam = (t) => mix3(mix3(mix3(CA, CB, E(t, tZ + 0.1, 0.6, eIO)), CE, E(t, T.uto2 - 0.15, 0.55, eIO)), CA, E(t, T.loop, DUR - T.loop - 0.02, eIO));
   function paintDot(t) {
     const d = paintLoop(t);
     if (!show(DOT, !!d)) return;
@@ -382,12 +404,14 @@
     tf(DOT, d.x, d.y, { o: d.o });
   }
   window.seek = (t) => {
-    BG.style.background = t >= DUR - 0.3 ? 'var(--k)' : bgAt(t);
+    BG.style.background = t >= DUR - 0.36 ? 'var(--k)' : bgAt(t);
     const orb = `perspective(2200px) rotateY(${(1.6 * Math.sin(t * 0.42)).toFixed(3)}deg) rotateX(${(1.1 * Math.sin(t * 0.31 + 1)).toFixed(3)}deg)`;
     CAM.style.transform = `${orb} scale(${(1.0 + 0.012 * Math.sin(t * 0.5)).toFixed(4)})`;
-    if (t >= DUR - 0.3) { paintA(t, t - DUR); const q = E(t, DUR - 0.3, 0.27, eIO); A.style.clipPath = `circle(${(22 + 2300 * q).toFixed(0)}px at ${HX}px ${HY}px)`; }
+    if (t >= DUR - 0.36) { paintA(t, t - DUR); const q = E(t, DUR - 0.36, 0.33, eIO); A.style.clipPath = `circle(${(22 + 2300 * q).toFixed(0)}px at ${HX}px ${HY}px)`; }
     else { A.style.clipPath = ''; paintA(t, t); }
     paintB(t); paintD(t); paintE(t); paintDot(t);
+    if (DESK) { const c = deskCam(t); VIEW.style.transform = `translate(${(c[0] - 540 * c[2]).toFixed(1)}px,${(540 - c[1] * c[2]).toFixed(1)}px) scale(${c[2].toFixed(4)})`;
+      for (const [own, s] of TLS) s.style.display = own.style.display; }
   };
   // flou de bougé : obturateur 180° partout, 360° sur les gestes rapides
   const inWin = (t) => FAST.some(([a, b]) => t >= a && t <= b);
