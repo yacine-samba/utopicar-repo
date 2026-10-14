@@ -56,7 +56,8 @@
       words.push({ w, chars: [...wd].map((ch) => mk('span', 'c', w, null, ch.replace(/&/g, '&amp;').replace(/</g, '&lt;'))) });
     }
     const k = { box, words, size };
-    if (box.offsetWidth > 800) { k.size = Math.floor(size * 800 / box.offsetWidth); box.style.fontSize = k.size + 'px'; }
+    if (box.offsetWidth > 740) { k.size = Math.floor(size * 740 / box.offsetWidth);   // 740 px : la poussée de caméra (× 1,08) reste dans la colonne 140 → 940
+      box.style.fontSize = k.size + 'px'; }
     box.style.left = (540 - box.offsetWidth / 2) + 'px';
     return k;
   }
@@ -125,13 +126,13 @@
   const zoomS = (t) => 1 + 27 * E(t, tZ, 0.3, eIn);
   function paintA(t, tl) {   // tl : temps local (la boucle repeint A avec tl < 0, juste avant l'image 0)
     const vis = show(A, tl < tZ + 0.32); if (!vis) return;
-    const sw = 6 * Math.exp(-Math.max(0, tl + 0.4) * 1.6) * Math.sin((tl + 0.4) * 5.2) + 2.5 * bump(tl, T.p8840 - 0.05, 0.3) * Math.sin(tl * 9);  // pendule amorti, relancé par le prix
+    const sw = 7 * Math.exp(-Math.max(0, tl + 0.4) * 0.45) * Math.sin((tl + 0.4) * 3.4) + 2.5 * bump(tl, T.p8840 - 0.05, 0.3) * Math.sin(tl * 9);  // pendule amorti, relancé par le prix
     const Z = zoomS(tl);
     // caméra de la scène : poussée lente + orbite 3D de la voiture ; pendant le zoom tout grossit vers le trou
-    const push = 1 + 0.06 * clamp((tl + 0.6) / 5.5, 0, 1);
+    const push = 1 + 0.08 * eIO(clamp((tl + 0.6) / 5.6, 0, 1)) + 0.02 * clamp((tl + 0.6) / 5.6, 0, 1);
     A.style.transformOrigin = `${HX}px ${HY}px`; A.style.transform = `scale(${(push * (1 + 0.6 * E(tl, tZ, 0.3, eIn))).toFixed(4)})`;
-    tf(flou, 0, 0, { s: 1.08 + 0.04 * Math.sin(tl * 0.35) });
-    tf(carW, 50 + 14 * Math.sin(tl * 0.5), 770 + 8 * Math.sin(tl * 0.7), { p: 1, ry: 18 - 10 * clamp((tl + 0.6) / 5.4, 0, 1) + 2 * Math.sin(tl * 0.6), rx: 3 * Math.sin(tl * 0.4) });
+    tf(flou, -30 * clamp((tl + 0.6) / 5.6, 0, 1), 0, { s: 1.08 + 0.08 * clamp((tl + 0.6) / 5.6, 0, 1) });   // le fond glisse 3 fois moins vite que la voiture
+    { const q = clamp((tl + 0.6) / 5.6, 0, 1); tf(carW, 50 + 90 * q - 45, 770 - 20 * q + 8 * Math.sin(tl * 0.7), { p: 1, ry: 26 - 36 * q, rx: 4 * Math.sin(tl * 0.5), r: -1.5 + 3 * q }); }
     // titre : sort du masque juste avant l'image 0 ; il s'efface vers le haut avant le zoom
     ktP(kA, tl, -0.32, tZ - 0.15);
     ctx.style.opacity = (tl < tZ - 0.1 ? 1 : 0);
@@ -184,7 +185,7 @@
   cue(T.cote - 0.03, 'pop', 0.8); cue(T.trav - 0.03, 'pop', 0.8); cue(T.vrai - 0.03, 'pop', 0.8); cue(T.verdict - 0.03, 'pop', 0.9); cue(T.passe - 0.02, 'impact', 1.1);
   function rectAt(t) {   // rectangle de l'objet porteur pendant B (x, y, w, h, rayon)
     // point (centre du trou) → champ
-    const P0 = { x: 540, y: 946, w: 0, h: 0, r: 66 }, F1 = { x: 110, y: 880, w: 860, h: 132, r: 66 };
+    const P0 = { x: 540, y: 946, w: 0, h: 0, r: 66 }, F1 = { x: 140, y: 880, w: 800, h: 132, r: 66 };
     const lead = SP(t, tF, 'snappy'), trail = SP(t, tF + 0.06, 'default');
     let L = lerp(P0.x, F1.x, lead), R = lerp(P0.x, F1.x + F1.w, trail), Tt = lerp(P0.y - 6, F1.y, trail), Bb = lerp(P0.y + 6, F1.y + F1.h, lead), rad = F1.r;
     if (t >= tCard) {   // champ → carte : le haut part le premier, le bas suit (et suit ensuite la hauteur du contenu)
@@ -197,6 +198,7 @@
     const vis = show(B, t >= tZ + 0.1 && t < T.et - 0.02); if (!vis) return;
     // on débouche dans le trou : la scène B est dévoilée par un cercle qui grandit depuis le trou
     const rv = 22 * zoomS(t) + 2400 * E(t, tZ + 0.18, 0.22, eIn); B.style.clipPath = rv < 2300 ? `circle(${rv.toFixed(0)}px at ${HX}px ${HY}px)` : '';
+    B.style.transformOrigin = '540px 900px'; B.style.transform = `scale(${(1 + 0.03 * clamp((t - tZ) / (T.et - tZ), 0, 1)).toFixed(4)})`;
     ktP(kB, t, [T.colles, T.colles + 0.12], T.deux - 0.36);
     ktP(kB2, t, T.dans, tCard);
     ktP(kB3, t, T.deux, T.verdict - 0.1);
@@ -214,8 +216,8 @@
       btn.style.transform = `scale(${(1 + 0.18 * sq).toFixed(3)},${(1 - 0.28 * sq).toFixed(3)})`;
     } else {
       Object.assign(card.style, { width: r.w + 'px', height: r.h + 'px', borderRadius: r.r + 'px' });
-      const fl = E(t, tCard + 0.4, 1.2);   // la carte posée flotte en 3D (rien ne s'arrête)
-      tf(card, r.x, r.y, { p: 1, ry: fl * 6 * Math.sin((t - tCard) * 0.9), rx: fl * 3 * Math.sin((t - tCard) * 0.7 + 1) });
+      const fl = E(t, tCard + 0.3, 0.8);   // la carte posée flotte en 3D (rien ne s'arrête)
+      tf(card, r.x, r.y + fl * 14 * Math.sin((t - tCard) * 1.3), { p: 1, ry: fl * 8 * Math.sin((t - tCard) * 1.1), rx: fl * 5 * Math.sin((t - tCard) * 0.9 + 1), r: fl * 1.2 * Math.sin((t - tCard) * 0.8) });
       card.style.boxShadow = '0 60px 110px -30px rgba(26,19,16,.55)';
       cimg.src = SEQI[seqK(t)].src; cimg.style.opacity = E(t, tCard + 0.08, 0.15).toFixed(3);
       // surlignages : un par mot ; bords sur deux ressorts depuis la gauche
@@ -231,7 +233,7 @@
   // C · le mur d'annonces : la fiche se replie en point, le mur défile, le point l'arrête ; l'onde, la nuit, la pépite
   // =====================================================================================================
   const C = mk('div', 'lay', CAM);
-  const wall = mk('div', 'a', C, { width: '1080px', height: '1920px' });
+  const wall = mk('div', 'a', C, { width: '1080px', height: '1920px', WebkitMaskImage: 'linear-gradient(#000 1340px, transparent 1560px)' });
   const COLS = 3, ROWSN = 16, CWl = 250, CHl = 126, GX = 25, GY = 22, X0 = 540 - (COLS * CWl + (COLS - 1) * GX) / 2;
   const cells = [];
   for (let r = 0; r < ROWSN; r++) for (let c = 0; c < COLS; c++) {
@@ -258,7 +260,7 @@
   // défilement du mur : accélère depuis « Et », s'arrête net sur « scroller » (léger dépassement, ressort)
   const tStop = T.scroller + 0.02;
   const scrollY = (t) => { if (t < T.et) return 0; const v = (tt) => 900 * Math.pow(clamp(tt - T.et, 0, 9), 2) * 0.9 + 600 * clamp(tt - T.et, 0, 9);
-    if (t < tStop) return v(t); return v(tStop) + 60 * (SP(t, tStop, 'default') - 0); };
+    if (t < tStop) return v(t); return v(tStop) + 60 * SP(t, tStop, 'default') + 38 * Math.max(0, t - tStop - 0.4); };   // il dérive ensuite lentement (rien ne s'arrête)
   win(T.et, tStop + 0.15);
   cue(T.et - 0.02, 'whoosh', 0.8); cue(tStop - 0.02, 'tapestop', 1); cue(tStop, 'thud', 1);
   const waves = [T.tourne, T.plus, T.jour, T.lui, T.bosse];
@@ -285,6 +287,7 @@
   }
   function paintC(t) {
     const vis = show(C, t >= T.et - 0.05 && t < T.recois + 0.6); if (!vis) return;
+    C.style.transformOrigin = '540px 1000px'; C.style.transform = `scale(${(1 + 0.06 * clamp((t - tStop) / (T.recois - tStop), 0, 1)).toFixed(4)})`;
     const sY = scrollY(t), span = ROWSN * (CHl + GY);
     const night = t >= T.toi && t < T.une, gemOn = t >= T.une;
     cells.forEach((k) => {
@@ -345,8 +348,9 @@
     Object.assign(mailBox.style, { width: (R - L) + 'px', height: (Bb - Tt) + 'px', borderRadius: (t >= T.uto2 - 0.12 ? lerp(26, 30, E(t, T.uto2 - 0.12, 0.2)) : 26) + 'px' });
     mailBox.style.background = t >= T.uto2 - 0.06 ? 'var(--o)' : '#fff';
     mailIn.style.opacity = (E(t, T.recois + 0.12, 0.2) * (1 - E(t, T.uto2 - 0.14, 0.08))).toFixed(3);
-    const fl = E(t, T.recois + 0.5, 1);
-    tf(mailBox, L, Tt, { p: 1, ry: fl * 5 * Math.sin((t - T.recois) * 0.9), rx: fl * 2.5 * Math.sin((t - T.recois) * 0.7) });
+    const fl = E(t, T.recois + 0.4, 0.8);
+    tf(mailBox, L, Tt + fl * 12 * Math.sin((t - T.recois) * 1.4), { p: 1, ry: fl * 9 * Math.sin((t - T.recois) * 1.1), rx: fl * 4 * Math.sin((t - T.recois) * 0.9), r: fl * 1 * Math.sin((t - T.recois) * 0.7) });
+    Dd.style.transformOrigin = '540px 900px'; Dd.style.transform = `scale(${(1 + 0.05 * clamp((t - T.recois) / (T.uto2 - T.recois), 0, 1)).toFixed(4)})`;
     show(menD, t < T.uto2 - 0.1);
     // curseur : arrive en arc sur le titre de l'annonce, clic sur « appeler »
     const lr = lien.getBoundingClientRect(), tx = MX + (lr.left - mailBox.getBoundingClientRect().left) + 0.55 * lr.width, ty = MY + (lr.top - mailBox.getBoundingClientRect().top) + 0.6 * lr.height;
@@ -397,10 +401,11 @@
     const vis = show(Ee, t >= T.uto2 - 0.02 && t < DUR); if (!vis) return;
     // tout se replie vers le point, qui file vers le trou de l'étiquette (image 0)
     const out = E(t, T.loop, 0.35, eIn);
-    Ee.style.transformOrigin = '540px 760px'; Ee.style.transform = `scale(${(1 - 0.94 * out).toFixed(4)})`; Ee.style.opacity = (1 - E(t, T.loop + 0.25, 0.1)).toFixed(3);
+    const pe = clamp((t - T.uto2) / (T.loop - T.uto2), 0, 1);
+    Ee.style.transformOrigin = '540px 760px'; Ee.style.transform = `translateY(${(-24 * pe).toFixed(1)}px) rotate(${(1.2 * Math.sin((t - T.uto2) * 0.9)).toFixed(3)}deg) scale(${((1 + 0.07 * pe) * (1 - 0.94 * out)).toFixed(4)})`; Ee.style.opacity = (1 - E(t, T.loop + 0.25, 0.1)).toFixed(3);
     LG(t, T.uto2 + 0.02);
     ktP(kE, t, T.achete); ktP(kE2, t, T.revends);
-    show(bio, t > T.mieux + 0.4); tf(bio, 540, 1300, { c: 1, s: 0.6 + 0.4 * SP(t, T.mieux + 0.4, 'snappy'), o: E(t, T.mieux + 0.4, 0.15) });
+    show(bio, t > T.mieux + 0.4); tf(bio, 540, 1300 + 10 * Math.sin((t - T.mieux) * 2.2), { c: 1, s: (0.6 + 0.4 * SP(t, T.mieux + 0.4, 'snappy')) * (1 + 0.04 * Math.sin((t - T.mieux) * 3.1)), o: E(t, T.mieux + 0.4, 0.15) });
   }
   // boucle : un point file du centre du logo vers le trou de l'étiquette ; la scène A s'ouvre depuis lui
   function paintLoop(t) {
