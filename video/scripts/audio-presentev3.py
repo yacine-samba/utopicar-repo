@@ -11,6 +11,7 @@ clavier découpées une par une dans les prises « type » pour le logo et « li
 crête tombe sur l'arrêt de la liste.
 usage (depuis video/) : node scripts/cues-presentev3.mjs && python3 scripts/audio-presentev3.py → audio/mix-presentev3.wav
        version « dans l'interface » : CUT=presentev4 node scripts/cues-presentev3.mjs && CUT=presentev4 python3 scripts/audio-presentev3.py
+       v6 (voix espacée, 44,8 s) : CUT=presentev6 VOD=vo-presentev6 … ; montage de la musique propre à la v6 (voir plus bas)
 """
 import os, json
 import numpy as np, librosa, soundfile as sf, pyloudnorm as pyln
@@ -34,9 +35,10 @@ def curve(points, n=N):
     xs, ys = zip(*points); return np.interp(np.arange(n) / SR, xs, ys)
 
 # ---------- voix ----------
-vo = librosa.load(A('vo-presentev3', 'vo.wav'), sr=SR, mono=True)[0][:N]; vo = np.pad(vo, (0, N - len(vo)))
+VOD = os.environ.get('VOD', 'vo-presentev3')                    # dossier de la voix (v6 : vo-presentev6, voix espacée)
+vo = librosa.load(A(VOD, 'vo.wav'), sr=SR, mono=True)[0][:N]; vo = np.pad(vo, (0, N - len(vo)))
 vo = bp(vo, 80, None, 2)
-WORDS = json.load(open(A('vo-presentev3', 'vo.words.json'), encoding='utf8'))
+WORDS = json.load(open(A(VOD, 'vo.words.json'), encoding='utf8'))
 w = lambda i: WORDS[i]['s']
 
 # ---------- musique ----------
@@ -50,13 +52,25 @@ def put(t0, t1, s0, fi=0.003, fo=0.003, dst=None):
     if fo: k = int(fo * SR); seg[-k:] *= np.cos(np.linspace(0, np.pi / 2, k))[:, None]
     dst[a:b] += seg
 tStop = next(c['t'] for c in CUES if c['k'] == 'tapestop') + 0.02          # la liste s'arrête net
-put(0, tStop, D(6) - w(31), fi=0.002, fo=0.02)                # un premier temps sur « À éviter. »
+V6 = CUT >= 'presentev6'
+# un premier temps sur « À éviter. » (v6 : la voix espacée met « À éviter » à 15,7 s, soit la mesure 8 du morceau)
+put(0, tStop, D(8 if V6 else 6) - w(31), fi=0.002, fo=0.02)
 # « Et pour les trouver, arrête de scroller » : passe-bas qui se referme jusqu'à l'arrêt
 a, b = int(w(48) * SR), int(tStop * SR)
 low = bp(mus[a:b], None, 900, 2); m = np.linspace(0, 1, b - a)[:, None] ** 0.7; mus[a:b] = mus[a:b] * (1 - m) + low * m
 # drop (mesure 16) sur « Ta recherche », puis le morceau continue jusqu'à la fin : « utopicar » tombe pile sur le
 # premier temps de la mesure 21 (18,13 + 5 mesures = 28,13 s), sans saut ; le morceau finit (mesure 23) avec le film
-put(w(55) - 0.01, DUR, D(16) - 0.01, fi=0.003, fo=0)
+if not V6:
+    put(w(55) - 0.01, DUR, D(16) - 0.01, fi=0.003, fo=0)
+else:
+    # v6 : drop (mesure 16) sur « Ta recherche » jusqu'à la fin de « ta vraie marge » ; la musique se referme (passe-bas)
+    # et se tait dans le silence ajouté, où seuls les bruitages de la marge qui se construit restent ; elle repart sur
+    # « Utopicar », pile sur le premier temps de la mesure 21, jusqu'à la fin du film
+    tB = WORDS[87]['e'] + 0.05
+    put(w(55) - 0.01, tB, D(16) - 0.01, fi=0.003, fo=0.06)
+    a, b = int((tB - 0.45) * SR), int(tB * SR)
+    low = bp(mus[a:b], None, 500, 2); m = np.linspace(0, 1, b - a)[:, None] ** 0.8; mus[a:b] = mus[a:b] * (1 - m) + low * m * db(-3)
+    put(w(88) - 0.01, DUR, D(21) - 0.01, fi=0.003, fo=0)
 a, b = int((w(60) - 0.08) * SR), int((w(63) - 0.06) * SR)                       # la nuit (« Toi, tu dors ») : filtrée
 k_ = int(0.08 * SR); seg_ = mus[a:b].copy(); low_ = bp(seg_, None, 700, 2) * db(-2)
 m_ = np.ones(b - a); m_[:k_] = np.linspace(0, 1, k_); m_[-k_:] = np.linspace(1, 0, k_); mus[a:b] = seg_ * (1 - m_[:, None]) + low_ * m_[:, None]

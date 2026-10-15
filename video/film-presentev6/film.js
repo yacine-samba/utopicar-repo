@@ -479,7 +479,7 @@
   const UNL = lettres(UN);
   const CNTs = lettres(mk('div', 'a nw', RING, { left: '0px', top: '590px', width: '900px', textAlign: 'center', font: '600 80px Clash', color: '#ff8a4c' }, 'secondes'));
   const CNTm = lettres(mk('div', 'a nw', RING, { left: '0px', top: '590px', width: '900px', textAlign: 'center', font: '600 80px Clash', color: '#ff8a4c' }, 'minute'));
-  const tR0 = w(19) - 0.06, tRun = w(19) + 0.12, tRend = w(21) + 0.22, tS4out = w(22) - 0.18;
+  const tR0 = w(19) - 0.06, tRun = w(19) + 0.12, tRend = WD[21].e + 0.12, tS4out = w(22) - 0.18;   // le décompte occupe la phrase et le silence qui suit
   ph([[['En', 19], ['une', 20, 'k'], ['minute :', 21, 'k']]], { y: 250, size: 132, out: tS4out });
   cue(tR0, 'whoosh', 0.7); for (let i = 0; i < 12; i++) cue(tR0 + 0.1 + i * 0.03, 'tick', 0.25); for (let i = 0; i < 8; i++) cue(tRun + i * 0.075, 'tick', 0.45); cue(tRend, 'ding', 0.8); cue(tS4out, 'whoosh', 1);
   win(tR0 - 0.02, tR0 + 0.35); win(tS4out - 0.02, tS4out + 0.4);
@@ -630,7 +630,7 @@
   ph([[['Ton', 37], ['prix', 38, 'k']], [["d'offre…", 39, 'k']]], { y: 236, size: 128, out: w(41) - 0.22 });
   ph([[['et', 41], ['le', 42]], [['plafond', 43, 'k']]], { y: 236, size: 128, out: w(44) - 0.16 });
   ph([[['à', 44], ['ne', 45], ['pas', 46]], [['dépasser.', 47, 'r']]], { y: 236, size: 128, out: tS6out });
-  const TBA = phrase([[['Très', 34, 'g'], ['bonne', 35, 'g'], ['affaire', 35, 'g']]], { y: 1350, size: 100, out: tOff - 0.1, dt: 0.15 }); PHR.push(TBA);
+  const TBA = phrase([[['Très', 34, 'g'], ['bonne', 35, 'g'], ['affaire', 35, 'g']]], { y: 1362, size: 100, out: tOff - 0.1, dt: 0.15 }); PHR.push(TBA);
   cue(tCl, 'whoosh', 1); cue(tCl + 0.3, 'roll', 0.7); cue(tCl + 1.0, 'ding', 0.8); [tOff, tObj, tPla].forEach((t0) => { cue(t0, 'whoosh', 0.6); cue(t0 + 0.2, 'roll', 0.5); }); cue(tDal, 'impact', 1.2); cue(tS6out, 'whoosh', 0.9);
   win(tCl - 0.02, tCl + 0.4); win(tOff - 0.02, tOff + 0.42); win(tObj - 0.02, tObj + 0.4); win(tPla - 0.02, tPla + 0.4); win(tDal - 0.02, tDal + 0.25); win(tS6out, tS6out + 0.4);
   function paintS6(t) {
@@ -639,7 +639,7 @@
     const yc = lerp(lerp(lerp(1050, EY[0], up), EY[1], k1), EY[2], k2), shake = bump(t, tDal, 0.12);
     camera(S6, { cx: 540 + 8 * shake * Math.sin((t - tDal) * 90), cy: yc - 40 + 1500 * out, cz: lerp(-400, 0, a) - 250 * up + 100 * k2, rx: lerp(0, 22, up) + 4 * Math.sin(t * 0.6) - 30 * out, ry: lerp(60, 0, a) + lerp(0, -18, up) + 4 * Math.sin(t * 0.5), rz: 1.5 * shake * Math.sin((t - tDal) * 70) });
     // anneau 97 : face caméra, s'éloigne vers le fond quand l'échelle arrive
-    put(R97, 540, 900, -600 * up, { ry: -10 * (1 - a) + 4 * Math.sin(t * 0.8), o: 1 - E(t, tOff + 0.1, 0.3) });
+    put(R97, 540, 1010, -600 * up, { ry: -10 * (1 - a) + 4 * Math.sin(t * 0.8), s: 0.88, o: 1 - E(t, tOff + 0.1, 0.3) });   // sous la phrase, au-dessus de « Très bonne affaire »
     trace(R97p, 326.7, t, tCl + 0.1, 0.4);
     R97a.setAttribute('stroke-dasharray', `${(326.7 * 0.97 * E(t, tCl + 0.3, 0.9, eOut3)).toFixed(1)} 326.7`);
     roule(R97r, t, tCl + 0.3); leve(R97s, t, tCl + 0.55, 20);
