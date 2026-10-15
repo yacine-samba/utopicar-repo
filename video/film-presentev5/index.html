@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>présentation utopicar v5</title>
+<style>
+@font-face{font-family:Clash;font-weight:500;src:url(../assets/fonts-site/ClashDisplay-500.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:400;src:url(../assets/fonts-site/Satoshi-400.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:900;src:url(../assets/fonts-site/Satoshi-900.woff2) format('woff2')}
+@font-face{font-family:Instrument;font-style:italic;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+/* jetons de l'app (thème sombre, copiés de sa feuille de style) ; 1 px de l'app = U px du film (U = 2,4) */
+:root{--bg0:#0b0a09;--bg1:#17100b;--ink:#f4f1ec;--ink2:#f4f1eccc;--ink3:#f4f1ec9e;--line:#f4f1ec1a;--line2:#f4f1ec33;--glass:#f4f1ec0d;
+  --o:#ff5a1f;--o2:#ff8a4c;--o3:#ffb38a;--ok:#3ecb7f;--warn:#ffc53d;--bad:#ff7a7a;--champ:#0000004d;--nuit:#0b1226}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:absolute;inset:0;overflow:hidden;font-family:Satoshi;color:var(--ink);-webkit-font-smoothing:antialiased}
+.a{position:absolute;left:0;top:0}
+.lay{position:absolute;inset:0}
+.nw{white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+/* carte de l'app (.carte : bordure line, panneau, rayon 26 px) à l'échelle du film */
+.carte{position:absolute;left:0;top:0;border:2.4px solid var(--line);border-radius:62px;
+  background:linear-gradient(180deg,#1b140f,#140f0b);box-shadow:0 2px 5px rgba(0,0,0,.25),0 50px 100px -45px rgba(0,0,0,.9)}
+.carte.chaude{background:linear-gradient(160deg,rgba(255,90,31,.18),transparent 55%),linear-gradient(180deg,#1d150f,#140f0b);border-color:rgba(255,90,31,.35)}
+.carte.mauvais{background:linear-gradient(180deg,rgba(255,122,122,.15),#140f0b 70%);border-color:rgba(255,122,122,.4)}
+.carte.bon{background:linear-gradient(180deg,rgba(62,203,127,.15),#140f0b 70%);border-color:rgba(62,203,127,.4)}
+.kick{font:700 26px Satoshi;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.lab{font:500 36px/1.25 Satoshi;color:var(--ink2)}
+.sub{font:500 33px/1.35 Satoshi;color:var(--ink3)}
+.val{font:600 74px/1.05 Clash;letter-spacing:-.02em}
+.h1{font:600 77px/1.05 Clash;letter-spacing:-.025em}
+.pillule{display:inline-block;border:2.4px solid var(--line2);background:var(--glass);border-radius:999px;font:500 31px Satoshi;color:var(--ink2);padding:10px 26px;white-space:nowrap}
+.btno{position:absolute;left:0;top:0;border-radius:999px;background:var(--o);color:#160904;font:600 40px Clash;display:flex;align-items:center;justify-content:center;
+  white-space:nowrap;box-shadow:0 28px 80px -28px rgba(255,90,31,.85)}
+.piste{position:relative;height:16px;border-radius:999px;background:rgba(244,241,236,.08);overflow:hidden}
+.piste>i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}
+/* typographie de la voix */
+.mot{display:inline-block;white-space:nowrap;transform-origin:50% 70%}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../lib/motion.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
