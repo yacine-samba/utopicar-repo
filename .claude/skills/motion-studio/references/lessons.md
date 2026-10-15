@@ -111,6 +111,7 @@
 | Téléphones | Fiche incrustée dans des clips Mixkit à écran vert : « trop mal foutu » (720p agrandi, carte plaquée) | Utiliser le site source capturé en HD (3×) dans une carte en code ; la vidéo de stock seulement si elle est nette en 1080×1920 |
 | Vidéos d'oct. | « On en a marre de voir ta Polo » | Varier la voiture d'une vidéo à l'autre (base : Clio, 207, Fiesta, Twingo…), vérifier la génération sur la photo |
 | Présentation v3 | « Je ne veux pas représenter l'interface par un simple écran… on est dans l'interface, comme dans les références » : vraie app figée dans un téléphone, blocs qui en sortent | Recoder les composants de l'app (mêmes textes, chiffres démo, jetons, polices, courbes de l'app) à l'échelle du film : l'écran entier est l'interface, chaque élément devient le suivant, paroles en grande typographie (`techniques.md` § 22) |
+| Présentation v6 | « Décompose chaque élément de l'interface pour les rendre plus satisfaisants ; c'est pas grave si la vidéo est plus longue » | Chaque composant se construit pièce par pièce dans l'ordre de lecture (trait → carte → libellé → valeur sur rouleaux → barre → reflet) ; le temps vient de silences ajoutés entre les phrases (`vo-espaces.py`), jamais d'une voix ralentie ; `techniques.md` § 23 |
 | Conversion | Promesses « 30 % / 40 % de conversion » | Séparer ce qui se mesure : part des spectateurs qui voient le mot-clé (≈ 30–45 % possible) et commentaires mot-clé ÷ vues (1–3 % = très bon) ; ce sont des estimations tant que les stats ne sont pas lues |
 
 ## Ce qui a marché (à reprendre)

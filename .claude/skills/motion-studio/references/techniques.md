@@ -500,3 +500,46 @@ coupe. Code de référence : `video/film-presentev4/film.js`.
 
   Les à-coups restent au-dessus des références : compteurs, arrêt net de la liste, secousse sur « À éviter ».
   Piste pour le prochain film : des arrêts sur ressort plutôt que des arrêts francs.
+
+## 23. Décomposer chaque élément d'interface (présentation v6)
+
+Demande de l'utilisateur (oct. 2026), sur la v5 validée : « décompose chaque élément de l'interface pour les rendre
+meilleurs à voir, plus satisfaisants ; c'est pas grave si la vidéo est plus longue ». Code de référence :
+`video/film-presentev6/film.js` (bloc « DÉCOMPOSITION »).
+
+- **Du temps sans toucher à la voix.** `video/scripts/vo-espaces.py` insère des silences dans la prise. Chaque
+  silence va au milieu de la plus longue plage calme entre deux phrases (≤ plancher de la prise + 12 dB), et
+  `vo.words.json` est décalé. Une fin de mot posée sur une coupe ne prend pas le silence. En v6 : 18 coupes,
+  +11,65 s, toutes entre −55 et −81 dB, et le film passe de 33 à 44,8 s. Tout le film est calé sur `w(i)`, il suit sans
+  retouche.
+- **On construit dans l'ordre de lecture.** Le contenant naît d'un trait de lumière, puis il s'ouvre :
+  - le bord droit part en `snappy`, le bord gauche suit en `default` 0,05 s après, puis la carte s'ouvre en hauteur ;
+  - le tout passe par `clip-path: inset(… round r)`, retiré une fois la carte ouverte pour rendre les ombres.
+  Les pièces entrent ensuite : 33 ms entre deux pièces d'un groupe, 0,1 à 0,3 s entre deux étapes.
+- **Chaque type de pièce a sa révélation :**
+  - libellé : lettres qui montent d'un masque, 12 à 40 ms par lettre, largeur de chaque lettre figée ;
+  - valeur en texte : elle se décode (des signes défilent, la bonne lettre se fige de gauche à droite) ;
+  - valeur chiffrée : rouleaux (colonne 0 → 19 par chiffre, 10 + n crans, ressort f 1,6 / z 0,86, 0,035 s entre
+    colonnes) ;
+  - chrono : odomètre continu (les unités tournent sans arrêt, les dizaines seulement au passage) ;
+  - barre : la piste s'étire, puis le remplissage part en easeOutCubic avec une tête de lumière ;
+  - anneau : la piste se trace depuis midi, puis l'arc avance et la note roule ;
+  - pastille, bouton, icône : ils jaillissent sur un ressort `snappy` depuis ×0,4 à 0,6 ;
+  - coche, courbe d'icône : tracées au `stroke-dasharray` ;
+  - photo : découverte par un masque de gauche à droite ;
+  - écart à la cote : surligné par un fond qui s'étire ;
+  - horloge à volets, en deux moitiés : le volet haut de l'ancien chiffre tombe (0 → −90°, ease-in), puis le volet
+    bas du nouveau se rabat (90° → 0, ease-out), en 0,34 s, avec 0,05 s entre deux chiffres ;
+  - carte finie : un reflet la traverse une fois.
+- **Un objet porteur.** La pastille utopicar devient le bouton « Analyser l'annonce » : sa largeur suit un ressort, son
+  fond vire à l'orange, ses lettres sortent par le haut et les nouvelles entrent par le bas. Un doigt l'enfonce
+  (×0,95). Le bouton se replie alors en rond et file au centre pour devenir le chrono.
+- **Caméra.** Le détail d'abord, puis l'ensemble : gros plan sur le libellé et la valeur pendant qu'ils se
+  construisent, puis recul sur la carte entière. Le gros plan est pondéré par l'arrivée du traveling ; sans cela, la
+  carte qu'on quitte passe en très gros plan.
+- **Pièges :**
+  - une animation de pièce qui écrit `transform` écrase la pose 3D d'un objet placé par `put()` (la pastille « Benef
+    Pro » sautait en haut de l'écran) : la réserver aux enfants de l'objet ;
+  - découper une phrase aux seuls espaces ordinaires, pour que les insécables gardent « 1 671 € » d'un seul tenant ;
+  - une animation qui démarre pendant que la scène du dessus sort reste cachée (la première bascule de l'horloge) :
+    la décaler.
