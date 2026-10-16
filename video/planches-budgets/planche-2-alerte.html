@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planche 2 · Quinze minutes (l&#x27;alerte)</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+:root{--w:#fbf9f5;--k:#0e0b09;--o:#ff5a1f;--r:#c81e1e;--ink:#1c1612;--mut:#6b5e54;--line:rgba(28,22,18,.12)}
+*{box-sizing:border-box}
+body{margin:0;width:1440px;padding:48px 56px 64px;background:var(--w);color:var(--ink);font:400 16px/1.45 Satoshi,sans-serif}
+h1{font:700 60px/1 Clash,sans-serif;margin:0 0 10px;letter-spacing:-.02em}
+h2{font:700 30px/1.1 Clash,sans-serif;margin:0 0 14px}
+h3{font:700 14px/1 Satoshi,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--o);margin:34px 0 14px}
+.sig{font:500 22px/1.3 Satoshi,sans-serif;color:var(--mut);margin:0 0 18px;max-width:1100px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1.5px solid var(--ink);border-radius:999px;padding:6px 14px;font:500 15px Satoshi,sans-serif}
+.chip.o{border-color:var(--o);color:var(--o);font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.card p{margin:0 0 8px}
+.card b{font-weight:700}
+.lbl{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:14px;background:#fff;border-radius:14px;overflow:hidden}
+th,td{text-align:left;vertical-align:top;padding:9px 11px;border-top:1px solid var(--line)}
+th{background:#f3eee6;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.frames{display:flex;flex-wrap:wrap;gap:18px}
+.fcard{width:270px}
+.ftime{font:700 15px Satoshi,sans-serif;color:var(--o);margin-bottom:8px}
+.frame{width:270px;height:480px;position:relative;overflow:hidden;border-radius:16px;box-shadow:0 16px 34px -14px rgba(28,22,18,.45)}
+.stage{position:absolute;left:0;top:0;width:1080px;height:1920px;transform:scale(.25);transform-origin:0 0;overflow:hidden}
+.frame.light .stage{background:var(--w);color:var(--ink)}
+.frame.dark .stage{background:var(--k);color:var(--w)}
+.g{position:absolute;left:0;right:0;border-top:5px dashed rgba(200,30,30,.55)}
+.g.top{top:220px}.g.bot{top:1480px}
+.gv{position:absolute;top:0;bottom:0;border-left:3px dotted rgba(200,30,30,.4)}
+.gv.l{left:140px}.gv.r{left:940px}
+.tag{position:absolute;left:140px;top:250px;background:var(--r);color:#fff;font:700 40px Satoshi,sans-serif;letter-spacing:.06em;padding:12px 22px;border-radius:14px}
+.tx{position:absolute;left:140px;top:560px;width:800px;font:700 118px/1.02 Clash,sans-serif;letter-spacing:-.02em}
+.vis{position:absolute;left:140px;top:980px;width:800px;height:420px;border:7px dashed rgba(28,22,18,.32);border-radius:30px;padding:40px;font:500 42px/1.3 Satoshi,sans-serif;color:var(--mut);overflow:hidden}
+.frame.dark .vis{border-color:rgba(251,249,245,.35);color:#d9d2c8}
+.fdesc{margin-top:12px;font-size:13.5px;line-height:1.4}
+.fdesc p{margin:0 0 6px}
+.voix{font-style:italic}
+.foot{margin-top:30px;font-size:13px;color:var(--mut);border-top:1px solid var(--line);padding-top:14px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--mut);margin:8px 0 14px}
+.legend i{display:inline-block;width:26px;border-top:4px dashed rgba(200,30,30,.55);vertical-align:middle;margin-right:6px}
+ul{margin:0;padding-left:20px}
+li{margin:0 0 6px}
+a{color:var(--ink)}
+</style></head>
+<body>
+<h1>Planche 2 · Quinze minutes (l&#x27;alerte)</h1>
+<p class="sig">Une alerte te prévient quand une annonce qui te correspond apparaît. Le délai réel n&#x27;est pas mesuré.</p>
+<div class="chips">
+  <span class="chip o">Budget 5 000 €</span>
+  <span class="chip">Dacia Sandero 2014, essence, 110 000 km (médiane réelle) ; l&#x27;annonce de l&#x27;exemple est fictive</span>
+  <span class="chip">Vidéo 9:16 · 30 s · planche, pas de tournage</span>
+  <span class="chip">À valider</span>
+</div>
+
+<h3>1 · Diagnostic</h3>
+<div class="grid">
+  <div class="card"><p><b>Idée finale :</b> Une alerte te prévient quand une annonce qui te correspond apparaît. Le délai réel n&#x27;est pas mesuré.</p><p><b>Public :</b> Débutant qui cherche depuis des soirs et rate les annonces qu&#x27;il veut.</p><p><b>Enjeu :</b> Voir une bonne annonce plus tôt, c&#x27;est pouvoir appeler avant les autres. Le gain réel dépend du délai de relevé, qui n&#x27;est pas mesuré.</p><p><b>Question principale :</b> Comment voir une annonce dès qu&#x27;elle apparaît ?</p></div>
+  <div class="card"><p><b>Attente initiale :</b> Il faut rafraîchir les annonces toute la journée.</p><p><b>Révélation possible :</b> L&#x27;alerte fait le travail à ta place. Le délai exact reste à mesurer avant de le promettre.</p><p><b>Preuves :</b> La fonction alertes existe [S13]. Médiane ajustée de la Sandero 2014 à 110 000 km : 6 407 €, 171 annonces [S8].</p><p><b>Limites :</b> « 15 minutes » est un exemple fictif, pas une statistique. Le seul délai sourcé [S6] concerne la revente d&#x27;un particulier : 25,5 jours en moyenne en 2022, ce n&#x27;est pas la durée d&#x27;une annonce. Risque de surpromesse : élevé.</p></div>
+</div>
+
+<h3>2 · Trois accroches</h3>
+<div class="grid"><div class="card"><p class="lbl">Situation (image 0, exemple fictif étiqueté)</p>
+        <p><b>Voix :</b> « Cette Sandero est restée 15 minutes en ligne. Toi, tu l&#x27;as vue à la seizième. »</p>
+        <p><b>Question ouverte :</b> Et ta prochaine annonce, tu la vois quand ?</p>
+        <p><b>Risque de surpromesse :</b> Exemple fictif : étiqueté à chaque plan. Sans étiquette, c&#x27;est un témoignage inventé.</p></div><div class="card"><p class="lbl">Contradiction</p>
+        <p><b>Voix :</b> « Tu regardes les annonces tous les soirs. La bonne était partie avant. »</p>
+        <p><b>Question ouverte :</b> Depuis quand ?</p>
+        <p><b>Risque de surpromesse :</b> Scénario, pas une mesure. Même règle d&#x27;étiquette.</p></div><div class="card"><p class="lbl">Directe</p>
+        <p><b>Voix :</b> « Les bonnes annonces ne restent pas en ligne. »</p>
+        <p><b>Question ouverte :</b> Combien de temps ?</p>
+        <p><b>Risque de surpromesse :</b> Affirmation non mesurée : à ne pas poser sans donnée. Remplacée par la variante.</p></div></div>
+
+<h3>3 · Art du hook</h3>
+<div class="grid">
+  <div class="card"><p><b>Analyse :</b> Douleur : il cherche depuis des soirs et rate les bonnes affaires. Croyance : il faut être là au bon moment. Vérité : une alerte travaille à sa place. Le délai est à mesurer.</p><p><b>Recommandation :</b> Situation en ouverture, étiquetée « exemple fictif ». Ne pas tourner tant que le délai réel de notification n&#x27;est pas mesuré : voir la variante.</p></div>
+  <div class="card"><p class="lbl">Les 4 verrous (accroche recommandée)</p><ul><li><b>Temps</b> ✅ · « 15 minutes » et « seizième » dans la phrase 1.</li><li><b>Sens</b> ✅ · Deux phrases, une image simple.</li><li><b>Miroir</b> ✅ · La recherche du soir : il la fait déjà.</li><li><b>Écart</b> ✅ si l&#x27;étiquette reste · « Tu l&#x27;as vue à la seizième » ouvre « comment faire mieux ? ».</li></ul></div>
+</div>
+
+<h3>4 · Découpage en planche (9:16, 1080 × 1920)</h3>
+<div class="legend"><span><i></i>Zone interdite : au-dessus de y = 220 px et sous y = 1 480 px</span><span>Texte à l'écran : x 140 → 940</span><span>Les crochets [ ] = élément à fournir ou à capturer</span></div>
+<div class="frames">
+    <div class="fcard">
+      <div class="ftime">0–5 s · Hook (situation fictive)</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        <div class="tag">EXEMPLE FICTIF</div>
+        <div class="tx">Sandero 5 000 € · 15 min en ligne</div>
+        <div class="vis">Cadran d&#x27;horloge plein cadre ; une carte d&#x27;annonce « Sandero 2014 · 5 000 € » sous l&#x27;aiguille, qui balaie dès l&#x27;image 0.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Cette Sandero est restée 15 minutes en ligne. Toi, tu l&#x27;as vue à la seizième. »</p>
+        <p><b>Mouvement :</b> L&#x27;aiguille balaie dès la première image.</p>
+        <p><b>Preuve :</b> Exemple fictif, étiqueté. Rien de réel n&#x27;est montré.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">5–10 s · Minute 2</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        <div class="tag">EXEMPLE FICTIF</div>
+        <div class="tx">Minute 2 : un appel</div>
+        <div class="vis">Notification d&#x27;appel fictive sur la carte.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Minute deux : quelqu&#x27;un appelle. »</p>
+        <p><b>Mouvement :</b> Onde d&#x27;appel sur la carte.</p>
+        <p><b>Preuve :</b> Scénario fictif.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">10–15 s · Minute 16</div>
+      <div class="frame dark"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        <div class="tag">EXEMPLE FICTIF</div>
+        <div class="tx">Minute 16 : « Déjà vendue. »</div>
+        <div class="vis">Deux bulles de message fictives : « Toujours dispo ? » puis « Désolé, déjà vendue. »</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Minute seize : « Désolé, déjà vendue. » »</p>
+        <p><b>Mouvement :</b> Le second message tombe sur le temps fort.</p>
+        <p><b>Preuve :</b> Ne jamais reproduire une vraie conversation.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">15–19 s · Le mécanisme</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        <div class="tag">EXEMPLE FICTIF</div>
+        <div class="tx">Pas de la chance : une alerte</div>
+        <div class="vis">Le cadran se referme sur la carte ; une notification remplace la scène.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Celui qui l&#x27;a eue ne cherchait pas. Il a reçu une alerte. »</p>
+        <p><b>Mouvement :</b> Le cadran se referme sur la carte.</p>
+        <p><b>Preuve :</b> Scénario fictif. Le « il » n&#x27;est pas une personne réelle.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">19–25 s · La fonction</div>
+      <div class="frame dark"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Dès qu&#x27;elle apparaît</div>
+        <div class="vis">[CAPTURE À FAIRE : notification d&#x27;alerte sur un dossier de démonstration, sans logo de plateforme]</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Une alerte te prévient dès que l&#x27;outil relève une annonce qui te correspond. »</p>
+        <p><b>Mouvement :</b> Notification qui glisse depuis le haut.</p>
+        <p><b>Preuve :</b> À vérifier avant tournage : fréquence de relevé, délai réel de notification [S13].</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">25–30 s · Chute chiffrée (réelle)</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        <div class="tag">PRIX DE L&#x27;EXEMPLE FICTIF</div>
+        <div class="tx">Sous la médiane de 1 400 €</div>
+        <div class="vis">Deux barres : 5 000 € (prix de l&#x27;exemple) et médiane réelle 6 407 €. [À RECALCULER à la date de tournage]</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Sous la médiane de 1 400 euros. Dès qu&#x27;elle apparaît, tu le sais. »</p>
+        <p><b>Mouvement :</b> La barre du prix s&#x27;arrête sous celle de la médiane.</p>
+        <p><b>Preuve :</b> Médiane ajustée, 171 annonces Sandero 2014 à 110 000 km [S8]. Le prix de 5 000 € reste celui de l&#x27;exemple.</p>
+      </div>
+    </div></div>
+
+<h3>5 · Détail du découpage</h3>
+<table><tr><th>Temps</th><th>Fonction</th><th>Voix</th><th>Visuel</th><th>Texte à l'écran</th><th>Mouvement</th><th>Preuve ou élément à fournir</th></tr>
+<tr><td>0–5 s</td><td>Hook (situation fictive)</td><td>« Cette Sandero est restée 15 minutes en ligne. Toi, tu l&#x27;as vue à la seizième. »</td><td>Cadran d&#x27;horloge plein cadre ; une carte d&#x27;annonce « Sandero 2014 · 5 000 € » sous l&#x27;aiguille, qui balaie dès l&#x27;image 0.</td><td>Sandero 5 000 € · 15 min en ligne</td><td>L&#x27;aiguille balaie dès la première image.</td><td>Exemple fictif, étiqueté. Rien de réel n&#x27;est montré.</td></tr>
+<tr><td>5–10 s</td><td>Minute 2</td><td>« Minute deux : quelqu&#x27;un appelle. »</td><td>Notification d&#x27;appel fictive sur la carte.</td><td>Minute 2 : un appel</td><td>Onde d&#x27;appel sur la carte.</td><td>Scénario fictif.</td></tr>
+<tr><td>10–15 s</td><td>Minute 16</td><td>« Minute seize : « Désolé, déjà vendue. » »</td><td>Deux bulles de message fictives : « Toujours dispo ? » puis « Désolé, déjà vendue. »</td><td>Minute 16 : « Déjà vendue. »</td><td>Le second message tombe sur le temps fort.</td><td>Ne jamais reproduire une vraie conversation.</td></tr>
+<tr><td>15–19 s</td><td>Le mécanisme</td><td>« Celui qui l&#x27;a eue ne cherchait pas. Il a reçu une alerte. »</td><td>Le cadran se referme sur la carte ; une notification remplace la scène.</td><td>Pas de la chance : une alerte</td><td>Le cadran se referme sur la carte.</td><td>Scénario fictif. Le « il » n&#x27;est pas une personne réelle.</td></tr>
+<tr><td>19–25 s</td><td>La fonction</td><td>« Une alerte te prévient dès que l&#x27;outil relève une annonce qui te correspond. »</td><td>[CAPTURE À FAIRE : notification d&#x27;alerte sur un dossier de démonstration, sans logo de plateforme]</td><td>Dès qu&#x27;elle apparaît</td><td>Notification qui glisse depuis le haut.</td><td>À vérifier avant tournage : fréquence de relevé, délai réel de notification [S13].</td></tr>
+<tr><td>25–30 s</td><td>Chute chiffrée (réelle)</td><td>« Sous la médiane de 1 400 euros. Dès qu&#x27;elle apparaît, tu le sais. »</td><td>Deux barres : 5 000 € (prix de l&#x27;exemple) et médiane réelle 6 407 €. [À RECALCULER à la date de tournage]</td><td>Sous la médiane de 1 400 €</td><td>La barre du prix s&#x27;arrête sous celle de la médiane.</td><td>Médiane ajustée, 171 annonces Sandero 2014 à 110 000 km [S8]. Le prix de 5 000 € reste celui de l&#x27;exemple.</td></tr>
+</table>
+
+<h3>6 · Script final (voix, sans annotation)</h3>
+<div class="card"><p>Cette Sandero est restée 15 minutes en ligne. Toi, tu l&#x27;as vue à la seizième. Minute deux : quelqu&#x27;un appelle. Minute seize : « Désolé, déjà vendue. » Celui qui l&#x27;a eue ne cherchait pas. Il a reçu une alerte. Une alerte te prévient dès que l&#x27;outil relève une annonce qui te correspond. Sous la médiane de 1 400 euros. Dès qu&#x27;elle apparaît, tu le sais.</p>
+<p><b>Mots :</b> 66 · <b>Durée estimée :</b> ≈ 23 s à 3.1 mots/s (débit retenu : Simon × 1,2). À vérifier à voix haute avant tout enregistrement.</p>
+<p><b>Promesse :</b> Voir une bonne annonce avant les autres.<br><b>Réponse réelle :</b> L&#x27;alerte la signale dès que l&#x27;outil la relève. Le délai n&#x27;est pas mesuré : on ne le chiffre pas.</p></div>
+
+<h3>7 · Contrôle qualité</h3>
+<table><tr><th>Question</th><th>Réponse</th></tr><tr><td>Le sujet est-il clair ?</td><td>Oui : une alerte au lieu de rafraîchir.</td></tr><tr><td>L&#x27;enjeu est-il crédible ?</td><td>Partiellement : le gain dépend d&#x27;un délai non mesuré.</td></tr><tr><td>La question est-elle précise ?</td><td>Oui : comment voir une annonce dès qu&#x27;elle apparaît.</td></tr><tr><td>Chaque passage fait-il progresser ?</td><td>Oui, mais l&#x27;histoire repose sur un scénario fictif.</td></tr><tr><td>Le renversement est-il justifié ?</td><td>Non : pas de renversement.</td></tr><tr><td>Les éléments fictifs sont-ils signalés ?</td><td>Oui : étiquette « EXEMPLE FICTIF » sur chaque plan du scénario, et sur le prix de l&#x27;exemple.</td></tr><tr><td>La conclusion répond-elle à la promesse ?</td><td>Partiellement : l&#x27;alerte, pas le délai.</td></tr><tr><td>Le ton semble-t-il humain ?</td><td>À vérifier à voix haute.</td></tr><tr><td>Les affirmations sont-elles soutenues ?</td><td>« 15 minutes » et « seizième » : fiction. Médiane : [S8]. Délai : non mesuré.</td></tr><tr><td>Zones sûres respectées ?</td><td>Oui : étiquette à y = 250 px, rien sous y = 1 480 px.</td></tr></table>
+
+<h3>8 · Variante à tester (une seule dimension)</h3>
+<div class="card"><p><b>Dimension :</b> Le type de preuve</p><p><b>Ce qui change :</b> Scénario fictif (15 minutes) → délai réel sourcé : 25,5 jours pour la revente entre particuliers (2022).</p><p><b>Pourquoi :</b> Un chiffre réel ne s&#x27;étiquette pas ; le scénario, si. La variante teste lequel retient le plus.</p><p><b>Hypothèse :</b> Hypothèse à mesurer : le scénario retient mieux à 3 s, le chiffre réel est plus solide sur 30 s. Critère : part à 3 s et durée moyenne.</p></div>
+
+<h3>9 · À fournir avant production</h3>
+<div class="card"><ul><li>Décision : garder ce concept ou le remplacer (voir le README).</li><li>Si la promesse « dès qu&#x27;elle apparaît » reste : mesurer le délai réel de notification de l&#x27;alerte.</li><li>Capture de la notification sur un dossier de démonstration.</li></ul></div>
+
+<h3>10 · Sources de cette planche</h3>
+<div class="card"><ul><li><b>S6</b> Actu-Automobile, article sur les voitures d&#x27;occasion (2022) : délai de revente entre particuliers, à recouper dans l&#x27;article — <a href="https://www.actu-automobile.com/2022/09/25/les-voitures-doccasion-de-plus-en-plus-cheres/">https://www.actu-automobile.com/2022/09/25/les-voitures-doccasion-de-plus-en-plus-cheres/</a></li><li><b>S8</b> Base des annonces relevées UTOPICAR, lecture du 16 oct. 2026 : fonction cote_marche (comparables ±2 ans, km proche, prix ajustés) et médianes brutes. Prix affichés, pas prix de vente</li><li><b>S13</b> Code : web/src/components/marche/Alertes.tsx (fonction alertes, à décrire comme elle marche réellement)</li></ul></div>
+
+<div class="foot">Concept 5 sur 5 · planches du 16 oct. 2026 · Rien de tourné, rien de rendu. Mentions : « exemple fictif » sur tout scénario inventé ; « prix affichés » sur les médianes de la base ; « jusqu'à » sur chaque fourchette.</div>
+</body></html>

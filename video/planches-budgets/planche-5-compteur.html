@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planche 5 · Le compteur qui recule</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+:root{--w:#fbf9f5;--k:#0e0b09;--o:#ff5a1f;--r:#c81e1e;--ink:#1c1612;--mut:#6b5e54;--line:rgba(28,22,18,.12)}
+*{box-sizing:border-box}
+body{margin:0;width:1440px;padding:48px 56px 64px;background:var(--w);color:var(--ink);font:400 16px/1.45 Satoshi,sans-serif}
+h1{font:700 60px/1 Clash,sans-serif;margin:0 0 10px;letter-spacing:-.02em}
+h2{font:700 30px/1.1 Clash,sans-serif;margin:0 0 14px}
+h3{font:700 14px/1 Satoshi,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--o);margin:34px 0 14px}
+.sig{font:500 22px/1.3 Satoshi,sans-serif;color:var(--mut);margin:0 0 18px;max-width:1100px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1.5px solid var(--ink);border-radius:999px;padding:6px 14px;font:500 15px Satoshi,sans-serif}
+.chip.o{border-color:var(--o);color:var(--o);font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.card p{margin:0 0 8px}
+.card b{font-weight:700}
+.lbl{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:14px;background:#fff;border-radius:14px;overflow:hidden}
+th,td{text-align:left;vertical-align:top;padding:9px 11px;border-top:1px solid var(--line)}
+th{background:#f3eee6;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.frames{display:flex;flex-wrap:wrap;gap:18px}
+.fcard{width:270px}
+.ftime{font:700 15px Satoshi,sans-serif;color:var(--o);margin-bottom:8px}
+.frame{width:270px;height:480px;position:relative;overflow:hidden;border-radius:16px;box-shadow:0 16px 34px -14px rgba(28,22,18,.45)}
+.stage{position:absolute;left:0;top:0;width:1080px;height:1920px;transform:scale(.25);transform-origin:0 0;overflow:hidden}
+.frame.light .stage{background:var(--w);color:var(--ink)}
+.frame.dark .stage{background:var(--k);color:var(--w)}
+.g{position:absolute;left:0;right:0;border-top:5px dashed rgba(200,30,30,.55)}
+.g.top{top:220px}.g.bot{top:1480px}
+.gv{position:absolute;top:0;bottom:0;border-left:3px dotted rgba(200,30,30,.4)}
+.gv.l{left:140px}.gv.r{left:940px}
+.tag{position:absolute;left:140px;top:250px;background:var(--r);color:#fff;font:700 40px Satoshi,sans-serif;letter-spacing:.06em;padding:12px 22px;border-radius:14px}
+.tx{position:absolute;left:140px;top:560px;width:800px;font:700 118px/1.02 Clash,sans-serif;letter-spacing:-.02em}
+.vis{position:absolute;left:140px;top:980px;width:800px;height:420px;border:7px dashed rgba(28,22,18,.32);border-radius:30px;padding:40px;font:500 42px/1.3 Satoshi,sans-serif;color:var(--mut);overflow:hidden}
+.frame.dark .vis{border-color:rgba(251,249,245,.35);color:#d9d2c8}
+.fdesc{margin-top:12px;font-size:13.5px;line-height:1.4}
+.fdesc p{margin:0 0 6px}
+.voix{font-style:italic}
+.foot{margin-top:30px;font-size:13px;color:var(--mut);border-top:1px solid var(--line);padding-top:14px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--mut);margin:8px 0 14px}
+.legend i{display:inline-block;width:26px;border-top:4px dashed rgba(200,30,30,.55);vertical-align:middle;margin-right:6px}
+ul{margin:0;padding-left:20px}
+li{margin:0 0 6px}
+a{color:var(--ink)}
+</style></head>
+<body>
+<h1>Planche 5 · Le compteur qui recule</h1>
+<p class="sig">Entre deux contrôles techniques, le kilométrage ne baisse pas. Quand l&#x27;annonce affiche moins que le relevé, la question est obligatoire.</p>
+<div class="chips">
+  <span class="chip o">Budget 10 000 €</span>
+  <span class="chip">Dacia Duster 2016, essence, 110 000 km (médiane réelle) ; l&#x27;exemple de kilométrage est fictif</span>
+  <span class="chip">Vidéo 9:16 · 30 s · planche, pas de tournage</span>
+  <span class="chip">À valider</span>
+</div>
+
+<h3>1 · Diagnostic</h3>
+<div class="grid">
+  <div class="card"><p><b>Idée finale :</b> Entre deux contrôles techniques, le kilométrage ne baisse pas. Quand l&#x27;annonce affiche moins que le relevé, la question est obligatoire.</p><p><b>Public :</b> Acheteur d&#x27;occasion, et celui qui envoie la vidéo à son proche.</p><p><b>Enjeu :</b> Une voiture d&#x27;occasion sur dix serait concernée par la fraude au compteur [S7, à recouper]. Acheter au mauvais kilométrage, c&#x27;est acheter un prix faux.</p><p><b>Question principale :</b> Comment vérifier gratuitement que le kilométrage annoncé est cohérent ?</p></div>
+  <div class="card"><p><b>Attente initiale :</b> Ça n&#x27;arrive qu&#x27;aux autres.</p><p><b>Révélation possible :</b> HistoVec affiche les kilométrages relevés aux contrôles techniques : l&#x27;annonce se compare à ce relevé.</p><p><b>Preuves :</b> HistoVec : service gratuit de l&#x27;État, relevés des contrôles techniques [S4, S5]. UFC-Que Choisir : 9,6 % [S7]. Duster 2016, 110 000 km, essence : médiane ajustée 8 481 €, p75 9 568 €, 326 annonces [S8].</p><p><b>Limites :</b> L&#x27;exemple (110 000 km sur l&#x27;annonce, 168 000 au contrôle) est fictif et étiqueté. HistoVec ne couvre que les contrôles en France métropolitaine, et le rapport est généré par le propriétaire [S5]. Un compteur remplacé existe : c&#x27;est une question à poser.</p></div>
+</div>
+
+<h3>2 · Trois accroches</h3>
+<div class="grid"><div class="card"><p class="lbl">Contradiction (recommandée, image 0, exemple fictif)</p>
+        <p><b>Voix :</b> « 110 000 km sur l&#x27;annonce. 168 000 au contrôle technique. Même voiture. »</p>
+        <p><b>Question ouverte :</b> Lequel est le bon ?</p>
+        <p><b>Risque de surpromesse :</b> Exemple fictif : étiquette obligatoire à chaque plan du scénario.</p></div><div class="card"><p class="lbl">Directe (chiffre sourcé)</p>
+        <p><b>Voix :</b> « Une voiture d&#x27;occasion sur dix est concernée par la fraude au compteur. »</p>
+        <p><b>Question ouverte :</b> Et celle que tu regardes ?</p>
+        <p><b>Risque de surpromesse :</b> Chiffre à recouper avant tournage [S7]. Dire « concernée par une fraude », jamais « trafiquée ».</p></div><div class="card"><p class="lbl">Situation</p>
+        <p><b>Voix :</b> « Tu as trouvé le Duster parfait, avec un kilométrage rassurant. »</p>
+        <p><b>Question ouverte :</b> Tu as vérifié le relevé ?</p>
+        <p><b>Risque de surpromesse :</b> Ne reproche rien au vendeur : c&#x27;est la question de l&#x27;acheteur.</p></div></div>
+
+<h3>3 · Art du hook</h3>
+<div class="grid">
+  <div class="card"><p><b>Analyse :</b> Douleur : payer un prix sur un kilométrage faux. Croyance : un kilométrage rassurant est vrai. Vérité : un relevé gratuit permet de comparer.</p><p><b>Recommandation :</b> Contradiction en ouverture, avec l&#x27;étiquette « exemple fictif ». Directe en test (chiffre sourcé) pour mesurer ce que la fiction apporte à 3 s.</p></div>
+  <div class="card"><p class="lbl">Les 4 verrous (accroche recommandée)</p><ul><li><b>Temps</b> ✅ · 110 000 et 168 000 dans la phrase 1 ; le sujet est le kilométrage.</li><li><b>Sens</b> ✅ · Deux phrases, deux chiffres, un mot : « même ».</li><li><b>Miroir</b> ✅ · L&#x27;acheteur regarde le kilométrage en premier.</li><li><b>Écart</b> ✅ · « Même voiture » ; la question « lequel est le bon ? » ouvre la suite.</li></ul></div>
+</div>
+
+<h3>4 · Découpage en planche (9:16, 1080 × 1920)</h3>
+<div class="legend"><span><i></i>Zone interdite : au-dessus de y = 220 px et sous y = 1 480 px</span><span>Texte à l'écran : x 140 → 940</span><span>Les crochets [ ] = élément à fournir ou à capturer</span></div>
+<div class="frames">
+    <div class="fcard">
+      <div class="ftime">0–5 s · Hook (exemple fictif)</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        <div class="tag">EXEMPLE FICTIF</div>
+        <div class="tx">110 000 ≠ 168 000</div>
+        <div class="vis">Liège, deux documents punaisés : « Annonce : 110 000 km » et « Contrôle technique 2019 : 168 000 km » (fictifs).</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« 110 000 kilomètres sur l&#x27;annonce. 168 000 au contrôle technique de 2019. Même voiture. »</p>
+        <p><b>Mouvement :</b> Travelling latéral ; le fil rouge se tend entre les deux chiffres.</p>
+        <p><b>Preuve :</b> Valeurs fictives, étiquetées.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">5–10 s · La règle</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        <div class="tag">EXEMPLE FICTIF</div>
+        <div class="tx">Entre deux contrôles, il ne baisse pas</div>
+        <div class="vis">Le fil rouge dessine une courbe : elle monte, puis redescend.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Entre deux contrôles, le kilométrage ne baisse pas. »</p>
+        <p><b>Mouvement :</b> La courbe se trace au rythme de la voix.</p>
+        <p><b>Preuve :</b> Logique de base. Un compteur remplacé existe : c&#x27;est la question à poser (limites).</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">10–15 s · L&#x27;outil gratuit</div>
+      <div class="frame dark"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">HistoVec : gratuit, service de l&#x27;État</div>
+        <div class="vis">Carte de verre, nom écrit en texte : « HistoVec ». Pas de capture de l&#x27;interface officielle.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« HistoVec, service gratuit de l&#x27;État, affiche les relevés des contrôles techniques. »</p>
+        <p><b>Mouvement :</b> La carte glisse depuis le bas.</p>
+        <p><b>Preuve :</b> [S4, S5]. Pas d&#x27;interface redessinée.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">15–20 s · Le marché</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Médiane : 8 481 €</div>
+        <div class="vis">Barre de prix : annonces Duster 2016 à 110 000 km (p25 7 671 · médiane 8 481 · p75 9 568).</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Les annonces de Duster 2016 à 110 000 km : 8 500 euros en médiane. »</p>
+        <p><b>Mouvement :</b> La barre se remplit, le marqueur de la médiane se pose.</p>
+        <p><b>Preuve :</b> [S8], ajustée, 326 annonces. Prix affichés.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">20–25 s · La statistique</div>
+      <div class="frame dark"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">1 voiture sur 10 · UFC-Que Choisir</div>
+        <div class="vis">Dix petites cartes ; une seule est marquée « fraude au compteur ».</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Une voiture d&#x27;occasion sur dix est concernée par la fraude au compteur, selon l&#x27;UFC-Que Choisir. »</p>
+        <p><b>Mouvement :</b> La carte marquée se soulève.</p>
+        <p><b>Preuve :</b> [S7] : 9,6 % repris du brief du 12 oct. 2026, à recouper avant tournage.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">25–30 s · L&#x27;action</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Demande le relevé. Compare.</div>
+        <div class="vis">Le fil se tend entre « annonce » et « relevé » ; les documents restent punaisés.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Demande le relevé au vendeur. Compare-le à l&#x27;annonce. Un chiffre qui ne colle pas, c&#x27;est déjà une réponse. »</p>
+        <p><b>Mouvement :</b> Le fil se tend, puis se fige.</p>
+        <p><b>Preuve :</b> [S5] : le rapport est généré par le propriétaire ; l&#x27;acheteur le demande.</p>
+      </div>
+    </div></div>
+
+<h3>5 · Détail du découpage</h3>
+<table><tr><th>Temps</th><th>Fonction</th><th>Voix</th><th>Visuel</th><th>Texte à l'écran</th><th>Mouvement</th><th>Preuve ou élément à fournir</th></tr>
+<tr><td>0–5 s</td><td>Hook (exemple fictif)</td><td>« 110 000 kilomètres sur l&#x27;annonce. 168 000 au contrôle technique de 2019. Même voiture. »</td><td>Liège, deux documents punaisés : « Annonce : 110 000 km » et « Contrôle technique 2019 : 168 000 km » (fictifs).</td><td>110 000 ≠ 168 000</td><td>Travelling latéral ; le fil rouge se tend entre les deux chiffres.</td><td>Valeurs fictives, étiquetées.</td></tr>
+<tr><td>5–10 s</td><td>La règle</td><td>« Entre deux contrôles, le kilométrage ne baisse pas. »</td><td>Le fil rouge dessine une courbe : elle monte, puis redescend.</td><td>Entre deux contrôles, il ne baisse pas</td><td>La courbe se trace au rythme de la voix.</td><td>Logique de base. Un compteur remplacé existe : c&#x27;est la question à poser (limites).</td></tr>
+<tr><td>10–15 s</td><td>L&#x27;outil gratuit</td><td>« HistoVec, service gratuit de l&#x27;État, affiche les relevés des contrôles techniques. »</td><td>Carte de verre, nom écrit en texte : « HistoVec ». Pas de capture de l&#x27;interface officielle.</td><td>HistoVec : gratuit, service de l&#x27;État</td><td>La carte glisse depuis le bas.</td><td>[S4, S5]. Pas d&#x27;interface redessinée.</td></tr>
+<tr><td>15–20 s</td><td>Le marché</td><td>« Les annonces de Duster 2016 à 110 000 km : 8 500 euros en médiane. »</td><td>Barre de prix : annonces Duster 2016 à 110 000 km (p25 7 671 · médiane 8 481 · p75 9 568).</td><td>Médiane : 8 481 €</td><td>La barre se remplit, le marqueur de la médiane se pose.</td><td>[S8], ajustée, 326 annonces. Prix affichés.</td></tr>
+<tr><td>20–25 s</td><td>La statistique</td><td>« Une voiture d&#x27;occasion sur dix est concernée par la fraude au compteur, selon l&#x27;UFC-Que Choisir. »</td><td>Dix petites cartes ; une seule est marquée « fraude au compteur ».</td><td>1 voiture sur 10 · UFC-Que Choisir</td><td>La carte marquée se soulève.</td><td>[S7] : 9,6 % repris du brief du 12 oct. 2026, à recouper avant tournage.</td></tr>
+<tr><td>25–30 s</td><td>L&#x27;action</td><td>« Demande le relevé au vendeur. Compare-le à l&#x27;annonce. Un chiffre qui ne colle pas, c&#x27;est déjà une réponse. »</td><td>Le fil se tend entre « annonce » et « relevé » ; les documents restent punaisés.</td><td>Demande le relevé. Compare.</td><td>Le fil se tend, puis se fige.</td><td>[S5] : le rapport est généré par le propriétaire ; l&#x27;acheteur le demande.</td></tr>
+</table>
+
+<h3>6 · Script final (voix, sans annotation)</h3>
+<div class="card"><p>110 000 kilomètres sur l&#x27;annonce. 168 000 au contrôle technique de 2019. Même voiture. Entre deux contrôles, le kilométrage ne baisse pas. HistoVec, service gratuit de l&#x27;État, affiche les relevés des contrôles techniques. Les annonces de Duster 2016 à 110 000 km : 8 500 euros en médiane. Une voiture d&#x27;occasion sur dix est concernée par la fraude au compteur, selon l&#x27;UFC-Que Choisir. Demande le relevé au vendeur. Compare-le à l&#x27;annonce. Un chiffre qui ne colle pas, c&#x27;est déjà une réponse.</p>
+<p><b>Mots :</b> 81 · <b>Durée estimée :</b> ≈ 28 s à 3.1 mots/s (débit retenu : Simon × 1,2). À vérifier à voix haute avant tout enregistrement.</p>
+<p><b>Promesse :</b> Vérifier un kilométrage gratuitement.<br><b>Réponse réelle :</b> On compare l&#x27;annonce au relevé HistoVec. Un écart est une question à poser, pas une preuve. Le chiffre de un sur dix est à recouper.</p></div>
+
+<h3>7 · Contrôle qualité</h3>
+<table><tr><th>Question</th><th>Réponse</th></tr><tr><td>Le sujet est-il clair ?</td><td>Oui : le kilométrage, deux chiffres, une question.</td></tr><tr><td>L&#x27;enjeu est-il crédible ?</td><td>Oui si le chiffre de l&#x27;UFC est recoupé [S7].</td></tr><tr><td>La question est-elle précise ?</td><td>Oui : le kilométrage annoncé est-il cohérent ?</td></tr><tr><td>Chaque passage fait-il progresser ?</td><td>Oui : règle, outil, marché, chiffre, action.</td></tr><tr><td>Le renversement est-il justifié ?</td><td>Pas de renversement.</td></tr><tr><td>Les éléments fictifs sont-ils signalés ?</td><td>Oui : étiquette « EXEMPLE FICTIF » sur les quatre premiers plans.</td></tr><tr><td>La conclusion répond-elle à la promesse ?</td><td>Oui, sans accuser le vendeur.</td></tr><tr><td>Le ton semble-t-il humain ?</td><td>À vérifier à voix haute.</td></tr><tr><td>Les affirmations sont-elles soutenues ?</td><td>HistoVec [S4, S5] ; médiane [S8] ; 1 sur 10 [S7], à recouper.</td></tr><tr><td>Zones sûres respectées ?</td><td>Oui : étiquette à y = 250 px, rien sous y = 1 480 px.</td></tr></table>
+
+<h3>8 · Variante à tester (une seule dimension)</h3>
+<div class="card"><p><b>Dimension :</b> Le type de preuve en ouverture</p><p><b>Ce qui change :</b> Contradiction fictive (étiquetée) → Directe avec le chiffre sourcé (1 sur 10).</p><p><b>Pourquoi :</b> Une fiction étiquetée raconte mieux ; un chiffre sourcé n&#x27;a pas besoin d&#x27;étiquette.</p><p><b>Hypothèse :</b> Hypothèse à mesurer : la fiction garde plus à 3 s ; le chiffre sourcé convainc mieux sur 30 s. Critère : part à 3 s et durée moyenne.</p></div>
+
+<h3>9 · À fournir avant production</h3>
+<div class="card"><ul><li>Recoupement du chiffre de l&#x27;UFC-Que Choisir [S7] sur la fiche source.</li><li>Photo d&#x27;une Dacia Duster 2016 (première génération), trois quarts avant, plaque floutée, licence notée.</li><li>Aucune capture de l&#x27;interface HistoVec : nom écrit en texte seulement.</li></ul></div>
+
+<h3>10 · Sources de cette planche</h3>
+<div class="card"><ul><li><b>S4</b> L&#x27;argus, HistoVec intègre les données du contrôle technique — <a href="https://www.largus.fr/actualite-automobile/histovec-integre-desormais-les-donnees-du-controle-technique-10512410.html">https://www.largus.fr/actualite-automobile/histovec-integre-desormais-les-donnees-du-controle-technique-10512410.html</a></li><li><b>S5</b> Matmut, HistoVec pour les véhicules d&#x27;occasion (le rapport est demandé au propriétaire) — <a href="https://www.matmut.fr/assurance/auto/conseils/histovec-vehicules-occasion">https://www.matmut.fr/assurance/auto/conseils/histovec-vehicules-occasion</a></li><li><b>S7</b> UFC-Que Choisir, fraude au compteur : 1 voiture d&#x27;occasion sur 10 (9,6 %). Repris du brief semaines du 12 oct., non revérifié aujourd&#x27;hui — <a href="https://www.quechoisir.org/actualite-fraude-au-compteur-1-voiture-d-occasion-sur-10-concernee-n105694">https://www.quechoisir.org/actualite-fraude-au-compteur-1-voiture-d-occasion-sur-10-concernee-n105694</a></li><li><b>S8</b> Base des annonces relevées UTOPICAR, lecture du 16 oct. 2026 : fonction cote_marche (comparables ±2 ans, km proche, prix ajustés) et médianes brutes. Prix affichés, pas prix de vente</li></ul></div>
+
+<div class="foot">Concept 5 sur 5 · planches du 16 oct. 2026 · Rien de tourné, rien de rendu. Mentions : « exemple fictif » sur tout scénario inventé ; « prix affichés » sur les médianes de la base ; « jusqu'à » sur chaque fourchette.</div>
+</body></html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planche 1 · Le dictionnaire du vendeur</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+:root{--w:#fbf9f5;--k:#0e0b09;--o:#ff5a1f;--r:#c81e1e;--ink:#1c1612;--mut:#6b5e54;--line:rgba(28,22,18,.12)}
+*{box-sizing:border-box}
+body{margin:0;width:1440px;padding:48px 56px 64px;background:var(--w);color:var(--ink);font:400 16px/1.45 Satoshi,sans-serif}
+h1{font:700 60px/1 Clash,sans-serif;margin:0 0 10px;letter-spacing:-.02em}
+h2{font:700 30px/1.1 Clash,sans-serif;margin:0 0 14px}
+h3{font:700 14px/1 Satoshi,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--o);margin:34px 0 14px}
+.sig{font:500 22px/1.3 Satoshi,sans-serif;color:var(--mut);margin:0 0 18px;max-width:1100px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1.5px solid var(--ink);border-radius:999px;padding:6px 14px;font:500 15px Satoshi,sans-serif}
+.chip.o{border-color:var(--o);color:var(--o);font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.card p{margin:0 0 8px}
+.card b{font-weight:700}
+.lbl{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:14px;background:#fff;border-radius:14px;overflow:hidden}
+th,td{text-align:left;vertical-align:top;padding:9px 11px;border-top:1px solid var(--line)}
+th{background:#f3eee6;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.frames{display:flex;flex-wrap:wrap;gap:18px}
+.fcard{width:270px}
+.ftime{font:700 15px Satoshi,sans-serif;color:var(--o);margin-bottom:8px}
+.frame{width:270px;height:480px;position:relative;overflow:hidden;border-radius:16px;box-shadow:0 16px 34px -14px rgba(28,22,18,.45)}
+.stage{position:absolute;left:0;top:0;width:1080px;height:1920px;transform:scale(.25);transform-origin:0 0;overflow:hidden}
+.frame.light .stage{background:var(--w);color:var(--ink)}
+.frame.dark .stage{background:var(--k);color:var(--w)}
+.g{position:absolute;left:0;right:0;border-top:5px dashed rgba(200,30,30,.55)}
+.g.top{top:220px}.g.bot{top:1480px}
+.gv{position:absolute;top:0;bottom:0;border-left:3px dotted rgba(200,30,30,.4)}
+.gv.l{left:140px}.gv.r{left:940px}
+.tag{position:absolute;left:140px;top:250px;background:var(--r);color:#fff;font:700 40px Satoshi,sans-serif;letter-spacing:.06em;padding:12px 22px;border-radius:14px}
+.tx{position:absolute;left:140px;top:560px;width:800px;font:700 118px/1.02 Clash,sans-serif;letter-spacing:-.02em}
+.vis{position:absolute;left:140px;top:980px;width:800px;height:420px;border:7px dashed rgba(28,22,18,.32);border-radius:30px;padding:40px;font:500 42px/1.3 Satoshi,sans-serif;color:var(--mut);overflow:hidden}
+.frame.dark .vis{border-color:rgba(251,249,245,.35);color:#d9d2c8}
+.fdesc{margin-top:12px;font-size:13.5px;line-height:1.4}
+.fdesc p{margin:0 0 6px}
+.voix{font-style:italic}
+.foot{margin-top:30px;font-size:13px;color:var(--mut);border-top:1px solid var(--line);padding-top:14px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--mut);margin:8px 0 14px}
+.legend i{display:inline-block;width:26px;border-top:4px dashed rgba(200,30,30,.55);vertical-align:middle;margin-right:6px}
+ul{margin:0;padding-left:20px}
+li{margin:0 0 6px}
+a{color:var(--ink)}
+</style></head>
+<body>
+<h1>Planche 1 · Le dictionnaire du vendeur</h1>
+<p class="sig">Une phrase rassurante dans une annonce a un prix. L&#x27;acheteur doit le chiffrer avant d&#x27;appeler.</p>
+<div class="chips">
+  <span class="chip o">Budget 2 000 €</span>
+  <span class="chip">Citroën C1 2007–2009, environ 150 000 km</span>
+  <span class="chip">Vidéo 9:16 · 30 s · planche, pas de tournage</span>
+  <span class="chip">À valider</span>
+</div>
+
+<h3>1 · Diagnostic</h3>
+<div class="grid">
+  <div class="card"><p><b>Idée finale :</b> Une phrase rassurante dans une annonce a un prix. L&#x27;acheteur doit le chiffrer avant d&#x27;appeler.</p><p><b>Public :</b> Débutant qui achète une première voiture à petit budget et lit des annonces de particuliers.</p><p><b>Enjeu :</b> Un défaut écrit en une phrase peut coûter de 100 à 600 € selon l&#x27;outil (bruit), jusqu&#x27;à 1 500 € (voyant). Ne pas le chiffrer, c&#x27;est le payer après l&#x27;achat.</p><p><b>Question principale :</b> Combien peut coûter la phrase que le vendeur a écrite ?</p></div>
+  <div class="card"><p><b>Attente initiale :</b> « Petit bruit, rien de grave » : le vendeur sait, donc ce n&#x27;est pas cher.</p><p><b>Révélation possible :</b> Chaque phrase rassurante correspond à une fourchette de coût dans l&#x27;outil. Les quatre phrases ensemble peuvent aller jusqu&#x27;à 3 450 € : somme des maxima, cas extrême, pas une moyenne.</p><p><b>Preuves :</b> Fourchettes de defauts.ts [S9]. Médiane brute des C1 de 2007 à 2009 à 130 000–170 000 km : 2 920 €, 113 annonces [S8].</p><p><b>Limites :</b> Les fourchettes sont des estimations de réparation de l&#x27;outil, pas des devis. Les prix de la base sont des prix affichés, non ajustés. « Jusqu&#x27;à » à chaque chiffre.</p></div>
+</div>
+
+<h3>2 · Trois accroches</h3>
+<div class="grid"><div class="card"><p class="lbl">Contradiction (recommandée, image 0)</p>
+        <p><b>Voix :</b> « « Juste un voyant, rien de grave. » Ça peut te coûter jusqu&#x27;à 1 500 euros. »</p>
+        <p><b>Question ouverte :</b> Quel voyant ? Combien ça coûte vraiment ?</p>
+        <p><b>Risque de surpromesse :</b> Le 1 500 € est le maximum de la fourchette « voyant allumé ». Toujours dire « jusqu&#x27;à ».</p></div><div class="card"><p class="lbl">Directe</p>
+        <p><b>Voix :</b> « Une phrase rassurante peut te coûter jusqu&#x27;à 1 500 euros. »</p>
+        <p><b>Question ouverte :</b> Laquelle ?</p>
+        <p><b>Risque de surpromesse :</b> Plus neutre : la phrase du vendeur n&#x27;est pas dans le hook, donc moins de tension.</p></div><div class="card"><p class="lbl">Situation</p>
+        <p><b>Voix :</b> « Tu lis une C1 à 2 000 euros, et une phrase te rassure. »</p>
+        <p><b>Question ouverte :</b> Et si elle coûte 600 euros ?</p>
+        <p><b>Risque de surpromesse :</b> Situation, pas annonce réelle : ne pas suggérer que cette C1 a ce défaut.</p></div></div>
+
+<h3>3 · Art du hook</h3>
+<div class="grid">
+  <div class="card"><p><b>Analyse :</b> Douleur : il lit des annonces sans savoir chiffrer ce qu&#x27;il lit. Croyance : « rien de grave » veut dire rien à payer. Vérité : la phrase a un coût, et l&#x27;outil en donne la fourchette.</p><p><b>Recommandation :</b> Contradiction en ouverture : la phrase du vendeur et le chiffre dans la phrase 1. Directe en test : mesurer si la phrase du vendeur ajoute de la tension.</p></div>
+  <div class="card"><p class="lbl">Les 4 verrous (accroche recommandée)</p><ul><li><b>Temps</b> ✅ · « Juste un voyant » et « 1 500 » dans la première phrase, le sujet dès les trois premiers mots.</li><li><b>Sens</b> ✅ · Deux phrases courtes, aucun terme technique hors « voyant ».</li><li><b>Miroir</b> ✅ · Il lit ce genre d&#x27;annonce : la phrase rassurante est celle qu&#x27;il a déjà lue.</li><li><b>Écart</b> ✅ · Il croit « rien de grave » ; « jusqu&#x27;à 1 500 € » ouvre « combien, exactement ? ».</li></ul></div>
+</div>
+
+<h3>4 · Découpage en planche (9:16, 1080 × 1920)</h3>
+<div class="legend"><span><i></i>Zone interdite : au-dessus de y = 220 px et sous y = 1 480 px</span><span>Texte à l'écran : x 140 → 940</span><span>Les crochets [ ] = élément à fournir ou à capturer</span></div>
+<div class="frames">
+    <div class="fcard">
+      <div class="ftime">0–5 s · Hook</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Rien de grave = jusqu&#x27;à 1 500 € ?</div>
+        <div class="vis">Citation géante « Juste un voyant, rien de grave. » ; surligneur orange qui barre « rien de grave » ; une étiquette « 1 500 € » tombe sur le temps fort.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Juste un voyant, rien de grave. Ça peut te coûter jusqu&#x27;à 1 500 euros. »</p>
+        <p><b>Mouvement :</b> Surligneur tracé en une seconde ; l&#x27;étiquette tombe sur « 1 500 ».</p>
+        <p><b>Preuve :</b> Fourchette « voyant » 100 à 1 500 € [S9].</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">5–9 s · Traduction 1</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Bruit : 100 à 600 €</div>
+        <div class="vis">« Petit bruit au démarrage » ; étiquette « 600 € max » qui se retourne.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Petit bruit au démarrage : jusqu&#x27;à 600 euros. »</p>
+        <p><b>Mouvement :</b> Plongée courte, retournement d&#x27;étiquette.</p>
+        <p><b>Preuve :</b> Fourchette « bruit » 100 à 600 € [S9].</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">9–14 s · Traduction 2</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Embrayage 500–900 · Clim 80–450</div>
+        <div class="vis">Deux étiquettes : « Embrayage un peu haut », « Clim à recharger ».</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Embrayage un peu haut : 500 à 900 euros. Clim à recharger : 80 à 450. »</p>
+        <p><b>Mouvement :</b> Deux étiquettes qui s&#x27;empilent, une par temps.</p>
+        <p><b>Preuve :</b> Fourchettes « embrayage » 500 à 900 € et « clim » 80 à 450 € [S9].</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">14–19 s · Total (pic de tension)</div>
+      <div class="frame dark"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Au maximum : 3 450 €</div>
+        <div class="vis">Quatre étiquettes empilées ; un compteur roule jusqu&#x27;à 3 450.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Quatre phrases, quatre étiquettes. Au maximum : 3 450 euros. »</p>
+        <p><b>Mouvement :</b> Compteur sur un ressort court, il tombe exactement sur 3 450.</p>
+        <p><b>Preuve :</b> 1 500 + 600 + 900 + 450 = 3 450 : somme des maxima, cas extrême [S9].</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">19–26 s · Marché : l&#x27;écart à la cote</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">2 000 € : sous la cote</div>
+        <div class="vis">Barre horizontale : médiane 2 920 € ; marqueur 2 000 € à gauche. [PHOTO À FOURNIR : Citroën C1 2007–2009, trois quarts avant, plaque floutée, licence libre notée]</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« C1 de 2007 à 2009, 150 000 km : 2 920 euros en médiane. À 2 000, elle est sous la cote. Pourquoi ? »</p>
+        <p><b>Mouvement :</b> La barre se remplit, le marqueur saute à gauche.</p>
+        <p><b>Preuve :</b> Médiane brute, 113 annonces, cohorte 2007–2009, 130 000–170 000 km [S8].</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">26–30 s · Réponse et produit</div>
+      <div class="frame dark"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">La phrase a un prix</div>
+        <div class="vis">[CAPTURE À FAIRE : fiche UTOPICAR avec les défauts chiffrés, sur un dossier de démonstration. Mention « Données de démonstration » si ce sont des données de démo.]</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Une phrase peut cacher une réparation. Utopicar la chiffre avant ton appel. »</p>
+        <p><b>Mouvement :</b> Rien d&#x27;animé tant que la capture n&#x27;existe pas.</p>
+        <p><b>Preuve :</b> Capture à faire après vérification du rendu réel de defauts.ts sur l&#x27;annonce choisie [S9].</p>
+      </div>
+    </div></div>
+
+<h3>5 · Détail du découpage</h3>
+<table><tr><th>Temps</th><th>Fonction</th><th>Voix</th><th>Visuel</th><th>Texte à l'écran</th><th>Mouvement</th><th>Preuve ou élément à fournir</th></tr>
+<tr><td>0–5 s</td><td>Hook</td><td>« Juste un voyant, rien de grave. Ça peut te coûter jusqu&#x27;à 1 500 euros. »</td><td>Citation géante « Juste un voyant, rien de grave. » ; surligneur orange qui barre « rien de grave » ; une étiquette « 1 500 € » tombe sur le temps fort.</td><td>Rien de grave = jusqu&#x27;à 1 500 € ?</td><td>Surligneur tracé en une seconde ; l&#x27;étiquette tombe sur « 1 500 ».</td><td>Fourchette « voyant » 100 à 1 500 € [S9].</td></tr>
+<tr><td>5–9 s</td><td>Traduction 1</td><td>« Petit bruit au démarrage : jusqu&#x27;à 600 euros. »</td><td>« Petit bruit au démarrage » ; étiquette « 600 € max » qui se retourne.</td><td>Bruit : 100 à 600 €</td><td>Plongée courte, retournement d&#x27;étiquette.</td><td>Fourchette « bruit » 100 à 600 € [S9].</td></tr>
+<tr><td>9–14 s</td><td>Traduction 2</td><td>« Embrayage un peu haut : 500 à 900 euros. Clim à recharger : 80 à 450. »</td><td>Deux étiquettes : « Embrayage un peu haut », « Clim à recharger ».</td><td>Embrayage 500–900 · Clim 80–450</td><td>Deux étiquettes qui s&#x27;empilent, une par temps.</td><td>Fourchettes « embrayage » 500 à 900 € et « clim » 80 à 450 € [S9].</td></tr>
+<tr><td>14–19 s</td><td>Total (pic de tension)</td><td>« Quatre phrases, quatre étiquettes. Au maximum : 3 450 euros. »</td><td>Quatre étiquettes empilées ; un compteur roule jusqu&#x27;à 3 450.</td><td>Au maximum : 3 450 €</td><td>Compteur sur un ressort court, il tombe exactement sur 3 450.</td><td>1 500 + 600 + 900 + 450 = 3 450 : somme des maxima, cas extrême [S9].</td></tr>
+<tr><td>19–26 s</td><td>Marché : l&#x27;écart à la cote</td><td>« C1 de 2007 à 2009, 150 000 km : 2 920 euros en médiane. À 2 000, elle est sous la cote. Pourquoi ? »</td><td>Barre horizontale : médiane 2 920 € ; marqueur 2 000 € à gauche. [PHOTO À FOURNIR : Citroën C1 2007–2009, trois quarts avant, plaque floutée, licence libre notée]</td><td>2 000 € : sous la cote</td><td>La barre se remplit, le marqueur saute à gauche.</td><td>Médiane brute, 113 annonces, cohorte 2007–2009, 130 000–170 000 km [S8].</td></tr>
+<tr><td>26–30 s</td><td>Réponse et produit</td><td>« Une phrase peut cacher une réparation. Utopicar la chiffre avant ton appel. »</td><td>[CAPTURE À FAIRE : fiche UTOPICAR avec les défauts chiffrés, sur un dossier de démonstration. Mention « Données de démonstration » si ce sont des données de démo.]</td><td>La phrase a un prix</td><td>Rien d&#x27;animé tant que la capture n&#x27;existe pas.</td><td>Capture à faire après vérification du rendu réel de defauts.ts sur l&#x27;annonce choisie [S9].</td></tr>
+</table>
+
+<h3>6 · Script final (voix, sans annotation)</h3>
+<div class="card"><p>Juste un voyant, rien de grave. Ça peut te coûter jusqu&#x27;à 1 500 euros. Petit bruit au démarrage : jusqu&#x27;à 600 euros. Embrayage un peu haut : 500 à 900 euros. Clim à recharger : 80 à 450. Quatre phrases, quatre étiquettes. Au maximum : 3 450 euros. C1 de 2007 à 2009, 150 000 km : 2 920 euros en médiane. À 2 000, elle est sous la cote. Pourquoi ? Une phrase peut cacher une réparation. Utopicar la chiffre avant ton appel.</p>
+<p><b>Mots :</b> 84 · <b>Durée estimée :</b> ≈ 29 s à 3.1 mots/s (débit retenu : Simon × 1,2). À vérifier à voix haute avant tout enregistrement.</p>
+<p><b>Promesse :</b> Savoir combien peut coûter la phrase du vendeur.<br><b>Réponse réelle :</b> Chaque phrase a une fourchette dans l&#x27;outil ; le total maximal est 3 450 €. La C1 à 2 000 € est sous la médiane : c&#x27;est une question à poser, pas une conclusion.</p></div>
+
+<h3>7 · Contrôle qualité</h3>
+<table><tr><th>Question</th><th>Réponse</th></tr><tr><td>Le sujet est-il clair ?</td><td>Oui : une phrase rassurante, un prix.</td></tr><tr><td>L&#x27;enjeu est-il crédible ?</td><td>Oui, à condition de dire « jusqu&#x27;à » à chaque chiffre.</td></tr><tr><td>La question est-elle précise ?</td><td>Oui : combien coûte la phrase.</td></tr><tr><td>Chaque passage fait-il progresser ?</td><td>Oui : une traduction par temps, un total, la cote, une réponse.</td></tr><tr><td>Le renversement est-il justifié ?</td><td>Pas de renversement : la tension vient du total et de l&#x27;écart à la cote.</td></tr><tr><td>Les éléments fictifs sont-ils signalés ?</td><td>Aucun exemple fictif. La C1 est une donnée de la base, prix affichés.</td></tr><tr><td>La conclusion répond-elle à la promesse ?</td><td>Oui (voir la réponse ci-dessus).</td></tr><tr><td>Le ton semble-t-il humain ?</td><td>À vérifier à voix haute : phrases courtes, pas d&#x27;adjectif gratuit.</td></tr><tr><td>Les affirmations sont-elles soutenues ?</td><td>Oui pour les fourchettes [S9] et la médiane [S8]. « Une phrase peut cacher une réparation » : interprétation raisonnable, à tester.</td></tr><tr><td>Zones sûres respectées ?</td><td>Oui : rien au-dessus de y = 220 px ni sous y = 1 480 px.</td></tr></table>
+
+<h3>8 · Variante à tester (une seule dimension)</h3>
+<div class="card"><p><b>Dimension :</b> Le chiffre héros du hook</p><p><b>Ce qui change :</b> Juste un voyant (1 500 €) → Petit bruit (600 €) en ouverture.</p><p><b>Pourquoi :</b> 1 500 € est le maximum d&#x27;un voyant ; 600 € est plus crédible pour un débutant.</p><p><b>Hypothèse :</b> Hypothèse à mesurer, sans garantie : un chiffre élevé retient plus à 3 s, un chiffre bas inspire plus confiance. Critère : part encore là à 3 s.</p></div>
+
+<h3>9 · À fournir avant production</h3>
+<div class="card"><ul><li>Photo d&#x27;une Citroën C1 2007–2009 (trois quarts avant, plein jour, plaque floutée), licence libre notée.</li><li>Capture de la fiche démo : vérifier le rendu réel de defauts.ts sur l&#x27;annonce choisie.</li><li>Validation des fourchettes avant tournage (elles viennent de l&#x27;outil, pas d&#x27;un devis).</li></ul></div>
+
+<h3>10 · Sources de cette planche</h3>
+<div class="card"><ul><li><b>S8</b> Base des annonces relevées UTOPICAR, lecture du 16 oct. 2026 : fonction cote_marche (comparables ±2 ans, km proche, prix ajustés) et médianes brutes. Prix affichés, pas prix de vente</li><li><b>S9</b> Code : web/src/lib/analyse/defauts.ts (fourchettes de coût par défaut)</li><li><b>S12</b> Code : video/CLAUDE.md (zones sûres 1080 × 1920, mentions)</li></ul></div>
+
+<div class="foot">Concept 5 sur 5 · planches du 16 oct. 2026 · Rien de tourné, rien de rendu. Mentions : « exemple fictif » sur tout scénario inventé ; « prix affichés » sur les médianes de la base ; « jusqu'à » sur chaque fourchette.</div>
+</body></html>
