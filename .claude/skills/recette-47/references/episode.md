@@ -65,7 +65,7 @@ Dans la phrase 1, le premier chiffre arrive dans les quatre premiers mots et le 
 
 <Deux phrases : le calcul du débutant, ce que le film lui montre, ce qu'il garde.>
 
-Écrit avec les skills recette-47, motion-studio et « L'art du hook ». Textes passés à Stop Slop.
+Écrit avec les skills recette-47, motion-studio (grille de scénario) et « L'art du hook ». Textes passés à Stop Slop.
 
 ```
 Produit / URL : aucun, rien à vendre       Objectif : arrêt net, revisionnage, enregistrement et partage spontanés
@@ -74,7 +74,7 @@ Promesse : <une phrase>
 CTA : aucun, ni dit ni écrit                Type / durée : motion design narratif, 29,6 s, en boucle
 Voix : Simon (ElevenLabs), ton MO5          Musique : Controlled Drop, passages de MO5, 120 BPM
 Ouvertures : A = <...> / B = <...>          Format : 9:16, 1080×1920, 60 i/s
-Voiture : <photo de l'utilisateur>          Données : exemple chiffré, sourcé à l'étape 2, mention à l'écran
+Voiture : <photo de l'utilisateur>          Données : exemple chiffré, sourcé à l'étape 2, rien à l'écran
 Interdits : produit, logos de marques et de plateformes, plaques, visages, CTA, morale, chiffre non sourcé
 ```
 
@@ -84,9 +84,14 @@ Interdits : produit, logos de marques et de plateformes, plaques, visages, CTA, 
 - On saura si : <la mesure, la valeur de comparaison (MO5, médiane de la série)>
 - Fabrication : <la technique améliorée dans cet épisode et comment on la mesure>
 
-## Le hook (skill « L'art du hook »)
+## Diagnostic (grille de scénario, motion-studio `references/scenario.md`)
+<Idée finale, public, enjeu, question principale, attente initiale, révélation, preuves, limites ; puis faits,
+interprétations, hypothèses, exemples fictifs, [À FOURNIR].>
+## Le hook (skill « L'art du hook » : au moins une directe, une contradiction = A, une situation)
 ## L'histoire en 7 temps
+## Découpage (voix, visuel, texte à l'écran, fonction, preuve ou à fournir)
 ## Les chiffres (à sourcer à l'étape 2)
+## Contrôle qualité du récit (les 9 questions de la grille de scénario)
 ## Ce qu'on enregistre, ce qu'on envoie, ce qu'on commente
 ## Production : les 5 étapes
 ## Ce qu'il me faut

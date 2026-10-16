@@ -11,7 +11,8 @@ série qui la reprend et le journal des résultats sont dans le skill **recette-
 
 ## Processus en 5 étapes (chaque étape attend un « OK »)
 
-1. **Brief** : concept, hooks, histoire, émotions. `video/brief-<projet>.md`.
+1. **Brief** : concept, hooks, histoire, émotions, passés par la grille de scénario (`scenario.md`).
+   `video/brief-<projet>.md`.
 2. **Timeline seconde par seconde** + 1 à 5 images tests rendues (`video/docs/timeline-<projet>.md`,
    `film-<projet>/tests.html`, une scène par `?s=`). Chiffres sourcés dans la même étape.
 3. **Maquettage complet toutes les 0,1 s** : le vrai film animé (`film-<projet>/film.js`, minutage provisoire dans
@@ -25,8 +26,9 @@ série qui la reprend et le journal des résultats sont dans le skill **recette-
 - 30 s au plus, en boucle parfaite (dernière image = image 0, dernière phrase qui enchaîne sur la première).
 - Rien à vendre : aucun produit, aucun outil, aucun CTA (ni « commente pour recevoir… »), aucune morale.
 - Cible : **débutants qui veulent se lancer dans l'achat-revente**, pas des particuliers qui vendent leur voiture.
-- Un vrai problème de leur univers, montré par une démonstration chiffrée de bon sens. Chiffres sourcés ou
-  annoncés comme exemple à l'écran. Aucun chiffre inventé présenté comme vrai (MO5 : les « 46 h » retirées).
+- Un vrai problème de leur univers, montré par une démonstration chiffrée de bon sens. Chiffres sourcés dans
+  le brief ; à l'écran, ni « exemple » ni source (écran propre, 14 oct. 2026) : l'exemple se dit au « tu ». Aucun
+  chiffre inventé présenté comme vrai (MO5 : les « 46 h » retirées).
 - Émotions fortes et variées : humour, peur, joie, questionnement. Une émotion nommée par temps de l'histoire.
 - Valeur concrète que le spectateur garde (enregistrer) et un détail drôle ou choquant qu'il envoie (partager).
 - Tout hook passe par le skill `art-du-hook` (CLAUDE.md racine) : analyse, 3 à 5 variantes, 4 verrous, re-hooks.
@@ -67,8 +69,8 @@ Avant d'écrire un brief, vérifier :
 
 ## Chiffres et faits
 
-- Chaque montant a sa source (lien, date) dans la timeline. Les fourchettes deviennent un chiffre rond, annoncé
-  comme ordre de grandeur (« Exemple · ordres de grandeur, petite citadine »).
+- Chaque montant a sa source (lien, date) dans la timeline. Les fourchettes deviennent un chiffre rond, pris du
+  côté prudent et noté comme ordre de grandeur dans la timeline, pas à l'écran.
 - Un fait technique se vérifie avant d'être animé, avec ses limites : la Polo 1.2 de cette génération a une chaîne,
   pas une courroie, donc la radiographie montre une voiture générique ; la mousse sous le bouchon peut venir de
   petits trajets, donc la voix dit « méfiance », pas « culasse morte ».

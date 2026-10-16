@@ -36,6 +36,10 @@ ce skill-ci reste celui de la fabrication.
   connexion (Vimeo privé, etc.), on demande le fichier — on ne contourne pas l'accès.
 - **Dépenser des crédits seulement avec accord.** Voix, musique et bruitages ElevenLabs coûtent des crédits :
   `estimate_only` d'abord, puis accord de l'utilisateur.
+- **Grille de scénario avant tout script** (règle du dépôt) : `references/scenario.md`. La réponse s'écrit avant
+  l'accroche, puis viennent les enjeux et une seule question. Les faits restent séparés des hypothèses et des exemples
+  fictifs, et rien ne s'invente. Trois accroches (directe, contradiction, situation) via `art-du-hook`, un découpage
+  qui donne la preuve de chaque passage, le contrôle qualité et une seule variante à tester.
 - **Valider aux bons moments.** Quatre portes de validation (brief, script + voix, storyboard, premier montage) évitent
   de rendre trois fois un film de 60 s pour une question qu'on aurait pu poser avant.
 
@@ -57,7 +61,8 @@ A/B, formats. Écris `video/brief-<projet>.md` (modèle dans intake.md), montre-
 
 ### Phase 2 — Script et voix (porte 2)
 
-Suis `references/script-voice.md` :
+Suis `references/scenario.md` (diagnostic, accroches, script, découpage, contrôle, variante), puis
+`references/script-voice.md` :
 1. Angle et promesse en une phrase ; **deux ouvertures** (0–3 s) d'angles différents, même corps de film — trois
    (A/B/C) si l'utilisateur veut tester des hooks forts. Un gros hook se joue dans la **première seconde**.
 2. Script minuté dans les **deux langues**, écrit pour l'oreille (VO) et séparément pour l'œil (textes à l'écran,
@@ -125,6 +130,7 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 |---|---|
 | `references/intake.md` | Phase 1 : toutes les questions, options, valeurs par défaut, modèle de brief |
 | `references/utopicar.md` | Tout projet UTOPICAR : produit, public, promesse, UI, données démo, charte, CTA |
+| `references/scenario.md` | **Avant tout script** (vidéo, carrousel, post) : réponse, enjeux, question, faits séparés des hypothèses et des exemples, 3 accroches, découpage avec preuves, contrôle qualité, variante |
 | `references/script-voice.md` | Phase 2 : écriture, hooks A/B, budgets de mots, voix ElevenLabs, sous-titres |
 | `references/motion-craft.md` | Phases 3 et 5 : références, style, formats et zones sûres, architecture du film, règles d'animation |
 | `references/sound.md` | Phase 4 : musique, grille, bruitages, mix voix, mastering, téléphone |

@@ -48,8 +48,10 @@ Chacun vient du film publié. Le pourquoi compte plus que la lettre : un nouvel 
    **au même exemple**, avec un verdict sur l'annonce du début (« À 3 500, tu passes ton tour. »). C'est ce que le
    spectateur enregistre.
 8. **La boucle.** « La prochaine fois que tu te dis… » enchaîne sur la phrase 1 ; la dernière image est l'image 0.
-9. **Rien à vendre.** Ni produit, ni CTA, ni logo, ni morale, ni « enregistre ». Chaque montant est sourcé ou annoncé
-   à l'écran comme exemple (« Exemple · prix moyens constatés »).
+9. **Rien à vendre.** Ni produit, ni CTA, ni logo, ni morale, ni « enregistre ». Chaque montant est sourcé dans le
+   brief (lien, date) et pris au calcul prudent. L'écran reste propre : ni « exemple » ni source à l'écran depuis le
+   14 oct. 2026 (MO5 affichait « Exemple · prix moyens constatés »). L'exemple se dit au « tu », jamais comme un fait
+   vécu (grille de scénario, motion-studio `references/scenario.md`).
 
 ## La forme, mesurée sur MO5
 
@@ -82,7 +84,9 @@ prévue pour lui dans le journal.
 
 0. **Lis `references/journal.md`** : version de la recette en cours, leçons confirmées, expérience prévue pour cet
    épisode. Puis `references/sujets.md`.
-1. **Brief.** Choisis une croyance chiffrée du débutant (`sujets.md`) et remplis la grille de transposition
+1. **Brief.** Choisis une croyance chiffrée du débutant (`sujets.md`), puis passe le sujet par la grille de scénario
+   de motion-studio (`references/scenario.md`, règle du dépôt) : la réponse d'abord, les faits séparés des hypothèses
+   et des exemples, rien d'inventé, [À FOURNIR] là où il manque un fait. Remplis ensuite la grille de transposition
    (`references/episode.md`) : chaque temps de MO5 trouve son équivalent. Écris les hooks avec le skill
    **art-du-hook** (règle du dépôt, sans exception) : 3 à 5 variantes, la variante A garde la mécanique « son calcul +
    un objet qui le contredit ». Passe la voix et les textes au skill **stop-slop** ; la personnification du hook

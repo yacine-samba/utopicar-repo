@@ -27,7 +27,7 @@ Une citadine essence de 5 CV, achetée 3 500 € en Île-de-France, revente vis�
 
 Total des frais : 953 €. Sources de chaque montant (eplaque, Ornikar, Groupama, Mecazen, Euromotor, Goodmecano) et
 hypothèses déclarées : `video/docs/timeline-mo5.md`. Mention à l'écran pendant tout le récit : « Exemple · prix moyens
-constatés ».
+constatés » (à ne pas reprendre : écran propre depuis le 14 oct. 2026, ingrédient 9).
 
 ## 2. Seconde par seconde
 
