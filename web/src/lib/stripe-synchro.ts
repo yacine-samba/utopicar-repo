@@ -1,6 +1,6 @@
 import "server-only";
 import type Stripe from "stripe";
-import { OFFRES, OPTION_MESSAGES, pack, type OffreId } from "@/lib/offres";
+import { OFFRES, OPTION_MESSAGES, pack, STATUTS_ACTIFS, type OffreId } from "@/lib/offres";
 import { supabaseService } from "@/lib/supabase/service";
 import { stripe } from "@/lib/stripe";
 
@@ -20,6 +20,9 @@ export async function synchroniser(sub: Stripe.Subscription) {
   const item = sub.items.data[0];
   // option Messages Leboncoin : abonnement à part, enregistré dans options_comptes
   if (item?.price.lookup_key === OPTION_MESSAGES.lookup || sub.metadata?.option === "messages") {
+    // option résiliée à l'arrivée de Pro + Messages : sa fin n'écrase pas une ligne qui suit déjà un autre abonnement
+    const { data: deja } = await svc.from("options_comptes").select("stripe_subscription_id, statut").eq("user_id", userId).eq("option", "messages").maybeSingle();
+    if (deja?.stripe_subscription_id && deja.stripe_subscription_id !== sub.id && !STATUTS_ACTIFS.includes(sub.status)) return;
     const { error } = await svc.from("options_comptes").upsert({
       user_id: userId,
       option: "messages",
@@ -44,6 +47,18 @@ export async function synchroniser(sub: Stripe.Subscription) {
     updated_at: new Date().toISOString(),
   });
   if (error) throw error;
+  // Pro + Messages active : l'option Messages payée à part (45 €) ferait double emploi, elle est résiliée au prorata
+  if (OFFRES[offre].messages && STATUTS_ACTIFS.includes(sub.status)) await resilierOptionSeparee(userId);
+}
+
+async function resilierOptionSeparee(userId: string) {
+  const { data: opt } = await supabaseService().from("options_comptes").select("stripe_subscription_id, statut, offerte").eq("user_id", userId).eq("option", "messages").maybeSingle();
+  if (!opt?.stripe_subscription_id || opt.offerte || !STATUTS_ACTIFS.includes(opt.statut)) return;
+  try {
+    await stripe().subscriptions.cancel(opt.stripe_subscription_id, { prorate: true });
+  } catch (e) {
+    console.error("résiliation de l'option Messages", opt.stripe_subscription_id, e);
+  }
 }
 
 /** Achat du guide payé : accès enregistré dans `achats`. */

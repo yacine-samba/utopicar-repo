@@ -1,4 +1,4 @@
-import { centimes, OFFRES, prixParAnalyse, prixTxt, type Offre, type OffreId } from "@/lib/offres";
+import { centimes, OFFRES, OPTION_MESSAGES, prixParAnalyse, prixTxt, type Offre, type OffreId } from "@/lib/offres";
 import { cx } from "@/lib/cx";
 
 /** Comparatif ligne par ligne des formules d'une famille. Seules les lignes où les formules diffèrent sont montrées. */
@@ -15,6 +15,7 @@ const LIGNES: [string, (o: Offre) => string][] = [
   ["Comparateur de rapports", (o) => (o.comparateur ? OUI : NON)],
   ["Recherche Leboncoin sous la cote et alertes", (o) => (o.recherche ? OUI : NON)],
   ["Gestion du parc et marge réelle", (o) => (o.parc ? OUI : NON)],
+  ["Messages Leboncoin automatiques", (o) => (o.messages ? "Compris" : o.id === "pro" ? `Option ${prixTxt(OPTION_MESSAGES.prix)} / mois` : NON)],
   ["Tableau de bord", (o) => (o.tableauDeBord === "complet" ? "Complet" : o.tableauDeBord === "simple" ? "Simple" : NON)],
   ["Guides inclus", (o) => (o.guide ? OUI : NON)],
 ];

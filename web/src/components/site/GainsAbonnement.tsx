@@ -32,6 +32,7 @@ function cartes(famille: "particulier" | "benef", ids: OffreId[], credits: boole
     starter: "30 annonces chiffrées par mois : marge nette, prix d'offre et plafond avant d'appeler.",
     croissance: "100 annonces par mois et le comparateur : vous ne gardez que les GO.",
     pro: "La recherche sous la cote, les alertes et le parc : repérer avant les autres, suivre la marge réelle.",
+    pro_messages: "Tout Pro, et le premier message part tout seul aux vendeurs : vous êtes le premier sur la voiture.",
   };
   return ids.map((id) => {
     const o = OFFRES[id];
@@ -43,7 +44,7 @@ export function GainsAbonnement({ famille, ids, credits = false, lien }: { famil
   const liste = cartes(famille, ids, credits);
   return (
     <div className="grid gap-6">
-      <ul className={cx("grid gap-3", liste.length >= 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
+      <ul className={cx("grid gap-3", liste.length === 4 ? "md:grid-cols-2 xl:grid-cols-4" : liste.length >= 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
         {liste.map((c) => (
           <li key={c.cle} className={cx("vue carte relative flex flex-col p-6", c.fort && "border-o/60 bg-[linear-gradient(160deg,rgb(255_90_31/0.14),transparent_60%),var(--color-panel)]")}>
             {c.fort && <span className="absolute right-5 top-5 rounded-full bg-o px-2.5 py-0.5 text-xs font-bold text-[#160904]">Conseillé</span>}

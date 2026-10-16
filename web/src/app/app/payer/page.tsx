@@ -27,6 +27,6 @@ export default async function Payer({ searchParams }: { searchParams: Promise<{ 
   const l = libelle(produit);
   if (!l) redirect("/tarifs");
   // déjà sur cette formule : rien à payer
-  if (produit === c.offre.id && c.offre.prix > 0) redirect("/app/compte#formule");
+  if (produit === c.formule && c.offre.prix > 0) redirect("/app/compte#formule");
   return <LancerPaiement produit={produit} libelle={l} />;
 }

@@ -71,7 +71,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
             <p className="mx-auto mb-8 mt-1 max-w-2xl text-center text-ink-3">
               Rapports pour professionnels, marge et prix d&apos;offre. <Link href="/benef" className="text-o2 underline underline-offset-4">Découvrir Benef</Link>
             </p>
-            <CartesOffres ids={BENEF} actuelle={compte?.offre.id} />
+            <CartesOffres ids={BENEF} actuelle={compte?.formule} />
             <TableauFormules ids={BENEF} className="mt-12" />
             <BarreTarifs id="croissance" cible="t-benef" actuelle={compte?.offre.id} />
           </section>

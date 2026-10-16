@@ -2,7 +2,7 @@
    Les prix Stripe sont retrouvés par leur « lookup key » (stripe/prix.mjs les crée). */
 
 export type Famille = "particulier" | "benef";
-export type OffreId = "gratuit" | "essentiel" | "serenite" | "starter" | "croissance" | "pro";
+export type OffreId = "gratuit" | "essentiel" | "serenite" | "starter" | "croissance" | "pro" | "pro_messages";
 /** Niveau de détail d'une analyse particulier. */
 export type Detail = "simple" | "detail" | "complet";
 
@@ -32,6 +32,12 @@ export type Offre = {
   cachee?: boolean;
   /** Anciennes clés de prix Stripe (changement de tarif), pour reconnaître les abonnements déjà pris. */
   anciennesCles?: string[];
+  /** Formule dont elle a tous les droits (Pro + Messages : ceux de Pro, la base fait la même équivalence). */
+  base?: OffreId;
+  /** Messages Leboncoin automatiques compris (sinon : option payante sur Pro). */
+  messages?: boolean;
+  /** Pastille de la carte (« Messages offerts »). */
+  badge?: string;
 };
 
 export const OFFRES: Record<OffreId, Offre> = {
@@ -77,7 +83,15 @@ export const OFFRES: Record<OffreId, Offre> = {
     accroche: "Pour les professionnels en activité", pour: "Vous gérez un stock et suivez vos chiffres.",
     analyses: 400, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "complet",
     parc: true, recherche: true, comparateur: true, guide: true, lookup: "utp_pro_79", anciennesCles: ["utp_pro_mois"],
-    points: ["400 analyses par mois", "Tout Croissance, plus :", "Recherche dans les annonces Leboncoin : marque, modèle, génération, sous la cote", "Alertes e-mail sur vos recherches Leboncoin (3 recherches suivies)", "Cote du marché avec graphique", "Tableau de bord complet : marges, stock, rotation", "Gestion du parc : achats, frais, ventes, marge réelle", "Rapports détaillés et export CSV"],
+    points: ["400 analyses par mois", "Tout Croissance, plus :", "Recherche dans les annonces Leboncoin : marque, modèle, génération, sous la cote", "Alertes e-mail sur vos recherches Leboncoin (3 recherches suivies)", "Cote du marché avec graphique", "Tableau de bord complet : marges, stock, rotation", "Gestion du parc : achats, frais, ventes, marge réelle", "Rapports détaillés et export CSV", "Messages Leboncoin automatiques en option : 45 € par mois"],
+  },
+  // Ancrage : Pro (79 €) + option Messages (45 €) = 124 € ; la même chose en une formule coûte 84 €.
+  pro_messages: {
+    id: "pro_messages", famille: "benef", nom: "Pro + Messages", prix: 84,
+    accroche: "Pour contacter les vendeurs avant les autres", pour: "Vous voulez être le premier sur chaque bonne affaire.",
+    analyses: 400, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "complet",
+    parc: true, recherche: true, comparateur: true, guide: true, lookup: "utp_pro_messages_84", base: "pro", messages: true, badge: "Messages offerts",
+    points: ["Tout Pro, plus :", "Messages Leboncoin automatiques compris (45 € par mois en option sur Pro)", "Un premier message aux vendeurs des annonces de vos recherches, une annonce à la fois", "Jamais deux fois la même annonce ; celles qui refusent le démarchage sont ignorées", "Boîte de réception des réponses", "Un seul abonnement, résiliable à tout moment"],
   },
 };
 
@@ -86,11 +100,12 @@ export const ILLIMITE: Offre = { ...OFFRES.pro, nom: "Illimité", prix: 0, analy
 
 export const GUIDE = { lookup: "utp_guide", prix: 9, nom: "Les guides Utopicar" };
 
-/** Option de Benef Pro : premier message automatique aux vendeurs Leboncoin et boîte de réception (acteur Apify à 29 $ par mois). */
+/** Option de Benef Pro : premier message automatique aux vendeurs Leboncoin et boîte de réception (acteur Apify à 29 $ par mois).
+    Comprise dans la formule Pro + Messages. */
 export const OPTION_MESSAGES = { lookup: "utp_option_messages_45", prix: 45, nom: "Messages Leboncoin" };
 
 export const PARTICULIERS: OffreId[] = ["gratuit", "essentiel"];
-export const BENEF: OffreId[] = ["starter", "croissance", "pro"];
+export const BENEF: OffreId[] = ["starter", "croissance", "pro", "pro_messages"];
 
 export const offre = (id: string | null | undefined): Offre => OFFRES[(id as OffreId) in OFFRES ? (id as OffreId) : "gratuit"];
 export const estPayante = (id: string | null | undefined) => offre(id).prix > 0;

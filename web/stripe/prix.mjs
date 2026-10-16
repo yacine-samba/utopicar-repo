@@ -15,6 +15,7 @@ const PRODUITS = [
   { lookup: "utp_starter_mois", nom: "Benef Starter", desc: "Achat-revente : 30 analyses par mois, historique, tableau de bord.", cents: 1499, mensuel: true },
   { lookup: "utp_croissance_mois", nom: "Benef Croissance", desc: "Achat-revente : 100 analyses par mois, historique complet, comparateur.", cents: 2900, mensuel: true },
   { lookup: "utp_pro_79", nom: "Benef Pro", desc: "Achat-revente : 400 analyses par mois, recherche et alertes Leboncoin, cote, parc, tableau de bord complet.", cents: 7900, mensuel: true },
+  { lookup: "utp_pro_messages_84", nom: "Benef Pro + Messages", desc: "Benef Pro et les messages Leboncoin automatiques aux vendeurs, en un seul abonnement.", cents: 8400, mensuel: true },
   { lookup: "utp_credits_1", nom: "Utopicar 1 analyse", desc: "1 crédit d'analyse détaillée, valable 12 mois.", cents: 299, mensuel: false },
   { lookup: "utp_credits_5", nom: "Utopicar Pack 5 analyses", desc: "5 crédits d'analyse détaillée, valables 12 mois.", cents: 999, mensuel: false },
   { lookup: "utp_credits_15", nom: "Utopicar Pack 15 analyses", desc: "15 crédits d'analyse détaillée, valables 12 mois.", cents: 1999, mensuel: false },

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { centimes, GARANTIE, OFFRES, prixParAnalyse, prixTxt, type OffreId } from "@/lib/offres";
+import { centimes, GARANTIE, OFFRES, OPTION_MESSAGES, prixParAnalyse, prixTxt, type OffreId } from "@/lib/offres";
 import { BoutonAbonner } from "./BoutonAbonner";
 import { cx } from "@/lib/cx";
 import { CreditsDiscrets } from "./CarteCredits";
@@ -9,19 +9,26 @@ import { CreditsDiscrets } from "./CarteCredits";
 export function CartesOffres({ ids, actuelle, credits = false }: { ids: OffreId[]; actuelle?: OffreId | null; credits?: boolean }) {
   const visibles = ids.filter((id) => !OFFRES[id].cachee);
   const grille = (
-    <ul className={cx("grid gap-5", visibles.length === 2 ? "mx-auto max-w-4xl md:grid-cols-2" : "md:grid-cols-3")}>
+    <ul className={cx("grid gap-5", visibles.length === 2 ? "mx-auto max-w-4xl md:grid-cols-2" : visibles.length === 4 ? "md:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-3")}>
       {visibles.map((id) => {
         const o = OFFRES[id];
         const cetteOffre = actuelle === id;
         return (
           <li key={id} className={cx("carte relative flex flex-col p-6 sm:p-7", o.miseEnAvant && "border-o/50 shadow-[0_30px_80px_-40px_rgba(255,90,31,.7)]")}>
             {o.miseEnAvant && <span className="absolute -top-3 left-6 rounded-full bg-o px-3 py-1 text-xs font-semibold text-[#160904]">Conseillé</span>}
+            {o.badge && <span className="absolute -top-3 right-6 rounded-full border border-ok/50 bg-bg1 px-3 py-1 text-xs font-semibold text-ok">{o.badge}</span>}
             <h3 className="font-display text-xl font-semibold">{o.nom}</h3>
             <p className="mt-1 text-sm text-ink-3">{o.accroche}</p>
             <p className="mt-5 flex items-baseline gap-1.5">
               <b className="num font-display text-4xl font-semibold">{prixTxt(o.prix)}</b>
               <span className="text-ink-3">{o.prix ? "par mois" : `pour ${o.analyses} analyse${o.analyses > 1 ? "s" : ""} offerte${o.analyses > 1 ? "s" : ""}`}</span>
             </p>
+            {/* Pro + Messages : ce que coûteraient Pro et l'option séparément */}
+            {o.messages && o.base && (
+              <p className="mt-1 text-sm text-ink-3">
+                au lieu de <s className="num">{prixTxt(OFFRES[o.base].prix + OPTION_MESSAGES.prix)}</s> ({OFFRES[o.base].nom} + option Messages)
+              </p>
+            )}
             {(() => {
               const pa = prixParAnalyse(o);
               return pa ? <p className="num mt-1 text-sm font-medium text-ok">soit {centimes(pa)} l&apos;analyse</p> : null;

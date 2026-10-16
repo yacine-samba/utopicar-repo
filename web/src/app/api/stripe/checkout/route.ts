@@ -6,7 +6,7 @@ import { supabaseService } from "@/lib/supabase/service";
 import { codesPromoActifs, lienPortail, paiementsActifs, prixParCle, stripe, urlSite } from "@/lib/stripe";
 
 // Sérénité n'est plus proposée : elle ne peut plus être souscrite.
-const Corps = z.object({ produit: z.enum(["essentiel", "starter", "croissance", "pro", "guide", "messages", ...PACKS.map((p) => p.id)] as [string, ...string[]]) });
+const Corps = z.object({ produit: z.enum(["essentiel", "starter", "croissance", "pro", "pro_messages", "guide", "messages", ...PACKS.map((p) => p.id)] as [string, ...string[]]) });
 
 /** Identifiant client Stripe de la personne, créé au premier paiement. */
 async function clientStripe(id: string, email: string, prenom: string) {

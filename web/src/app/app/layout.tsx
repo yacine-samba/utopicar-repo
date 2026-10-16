@@ -125,7 +125,7 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
           }
         />
         <main id="contenu" tabIndex={-1} className="mx-auto w-full max-w-6xl px-4 pb-32 pt-6 outline-none sm:px-6 lg:px-10 lg:pb-16 lg:pt-10">
-          <RepriseAchat actuelle={c.offre.id} abonne={!!c.abonnement && ["active", "trialing", "past_due"].includes(c.abonnement.statut)} />
+          <RepriseAchat actuelle={c.formule} abonne={!!c.abonnement && ["active", "trialing", "past_due"].includes(c.abonnement.statut)} />
           {children}
         </main>
         <NotificationsEspace />

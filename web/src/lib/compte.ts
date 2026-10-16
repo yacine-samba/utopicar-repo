@@ -3,7 +3,7 @@ import { cache } from "react";
 import { comptesActifs } from "./supabase/config";
 import { supabaseServeur } from "./supabase/serveur";
 import { guidesOuverts, type GuideId } from "./guides";
-import { ILLIMITE, NIVEAU_CREDIT, OFFRES, offre, STATUTS_ACTIFS, type Famille, type Offre } from "./offres";
+import { ILLIMITE, NIVEAU_CREDIT, OFFRES, offre, STATUTS_ACTIFS, type Famille, type Offre, type OffreId } from "./offres";
 import { lireProfilAnalyse, type ProfilAnalyse } from "./analyse/profil";
 
 export type Abonnement = { offre: string; statut: string; periode_fin: string | null; annule_fin_periode: boolean };
@@ -24,7 +24,10 @@ export type Compte = {
   nom: string;
   famille: Famille | null;
   ville: string;
+  /** Droits de la formule (Pro + Messages : ceux de Pro). Toutes les vérifications de droits passent par elle. */
   offre: Offre;
+  /** Formule prise, telle que vendue et affichée (Pro + Messages), à ne pas utiliser pour les droits. */
+  formule: OffreId;
   abonnement: Abonnement | null;
   /** Les quatre guides ouverts en entier. */
   guide: boolean;
@@ -77,7 +80,9 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
   const aujourdhui = new Date().toISOString().slice(0, 10);
   const offerte = profil?.formule_offerte && (!profil.offerte_jusqu_au || profil.offerte_jusqu_au >= aujourdhui) ? (profil.formule_offerte as string) : null;
   const illimite = !!profil?.illimite;
-  let o = illimite ? ILLIMITE : offre(offerte ?? (actif ? abo.offre : "gratuit"));
+  const prise = illimite ? ILLIMITE : offre(offerte ?? (actif ? abo.offre : "gratuit"));
+  // Pro + Messages a les droits de Pro (même équivalence dans la base : formule_de)
+  let o = prise.base ? { ...OFFRES[prise.base] } : prise;
   const [{ count }, { count: parCode }] = await Promise.all([
     sb.from("usages").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", debutPeriode(o)),
     sb.from("usages").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("par_code", true).gte("created_at", debutPeriode(o)),
@@ -110,6 +115,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     famille: (profil?.famille as Famille) ?? null,
     ville: profil?.ville ?? "",
     offre: o,
+    formule: prise.id,
     abonnement: abo ?? null,
     guide: guides.length === 4,
     guides,
@@ -120,7 +126,8 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     code,
     restantes: restantesFormule + codeBenef + solde,
     favoris: (profil?.reglages as { favoris?: boolean } | null)?.favoris === true,
-    messages: messages === true,
+    // compris dans Pro + Messages ; aussi vrai si la base n'a pas encore la migration de la formule
+    messages: messages === true || (!!prise.messages && !!actif),
     // sans questionnaire : le profil de l'espace affiché (Benef si la formule ou l'usage l'est)
     profilAnalyse: lireProfilAnalyse((profil?.reglages as { analyse?: unknown } | null)?.analyse, illimite ? ((profil?.famille as Famille) ?? "benef") : o.prix > 0 || offerte ? o.famille : ((profil?.famille as Famille) ?? "particulier"), profil?.ville ?? ""),
   };

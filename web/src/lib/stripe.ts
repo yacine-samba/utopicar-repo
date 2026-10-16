@@ -36,13 +36,14 @@ export async function prixParCle(cle: string, def: { nom: string; euros: number;
     Un compte Stripe en mode réel n'en a pas par défaut : elle est créée ici au premier besoin, puis réutilisée. */
 async function configurationPortail(site: string) {
   const liste = await stripe().billingPortal.configurations.list({ active: true, limit: 100 });
-  const deja = liste.data.find((c) => c.metadata?.utopicar === "v1");
+  // v2 : avec Pro + Messages (la v1 reste en place pour rien, elle n'est plus utilisée)
+  const deja = liste.data.find((c) => c.metadata?.utopicar === "v2");
   if (deja) return deja.id;
   const { OFFRES, BENEF } = await import("./offres");
   const ids = (["essentiel", ...BENEF] as const).map((id) => OFFRES[id]);
   const prix = await Promise.all(ids.map((o) => prixParCle(o.lookup!, { nom: `Utopicar ${o.famille === "benef" ? "Benef " : ""}${o.nom}`, euros: o.prix, mensuel: true })));
   const c = await stripe().billingPortal.configurations.create({
-    metadata: { utopicar: "v1" },
+    metadata: { utopicar: "v2" },
     default_return_url: `${site}/app/compte`,
     business_profile: { headline: "Utopicar : votre abonnement", privacy_policy_url: `${site}/legal#confidentialite`, terms_of_service_url: `${site}/legal#vente` },
     features: {

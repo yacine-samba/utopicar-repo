@@ -1,3 +1,4 @@
+import { OFFRES } from "./offres";
 import type { Compte } from "./compte";
 import type { Famille } from "./offres";
 
@@ -49,7 +50,10 @@ export function navEspace(c: Compte): EntreeNav[] {
   ];
 }
 
-export const nomFormule = (c: Compte) => (c.illimite ? "Accès illimité" : c.code ? "Essai Benef" : c.offre.famille === "benef" ? `Benef ${c.offre.nom}` : c.offre.nom);
+export const nomFormule = (c: Compte) => {
+  const nom = c.formule !== c.offre.id ? OFFRES[c.formule].nom : c.offre.nom; // Pro + Messages
+  return c.illimite ? "Accès illimité" : c.code ? "Essai Benef" : c.offre.famille === "benef" ? `Benef ${nom}` : nom;
+};
 /** « 12 analyses restantes ce mois », ou « Analyses illimitées ». */
 export const texteRestantes = (c: Compte) =>
   c.illimite
