@@ -543,3 +543,59 @@ meilleurs à voir, plus satisfaisants ; c'est pas grave si la vidéo est plus lo
   - découper une phrase aux seuls espaces ordinaires, pour que les insécables gardent « 1 671 € » d'un seul tenant ;
   - une animation qui démarre pendant que la scène du dessus sort reste cachée (la première bascule de l'horloge) :
     la décaler.
+
+## 24. Aucun texte superposé, des transitions qui ne traînent pas (présentation v7)
+
+Retour de l'utilisateur sur la v6 rendue : « l'écriture suit trop rapidement, des textes se superposent ; à "pour les
+trouver" l'animation est mal faite ; le plafond se voit mal ». Code de référence : `video/film-presentev7/film.js`.
+L'analyse se fait sur le MP4 rendu (avec son flou de bougé), pas sur des images nettes : les fantômes n'existent que
+là.
+
+- **Ce qui crée des textes superposés :**
+  - un chiffre sur rouleau ou une lettre qui se décode : à mi-course, deux signes partagent la case ; au flou de bougé
+    (4 à 8 sous-images) ils s'empilent en 2 à 8 fantômes ;
+  - un compteur dont la valeur change pendant l'ouverture de l'obturateur : les sous-images portent deux valeurs ;
+  - une scène qui sort en fonçant vers la caméra : l'ancienne interface, dédoublée, passe sous les nouveaux
+    sous-titres ;
+  - un mot géant posé par-dessus le même mot dans la carte (« À ÉVITER » sur « À éviter ») ;
+  - un décor plein de texte (mur d'annonces) sous les sous-titres.
+- **Règles :**
+  - une valeur monte d'un masque, une seule fois (easeOutCubic, 45 ms entre deux signes) ; plus de rouleaux ni de
+    décodage ;
+  - un chiffre qui change est figé sur l'image entière : `fq = (t) => Math.round(t * 30) / 30` (chrono 0:00 → 1:00) ;
+  - une scène sort en reculant : `scale` 0,92, `blur` jusqu'à 26 px, luminosité −60 %, opacité qui tombe sur la fin
+    (`recul()`) ; la suivante passe DEVANT et n'écrit son premier texte qu'une fois l'ancienne floue à 10 px ;
+  - la suivante naît d'une forme : bouton qui se replie en pastille → la pastille se creuse en anneau de chrono →
+    l'anneau se couche (rotateX 90°) en trait → le trait s'ouvre en carte ; carte qui se retourne (verdict rouge →
+    verdict vert) ; écran aux coins arrondis qui s'ouvre au centre et grandit jusqu'au plein écran
+    (`clip-path: inset(… round r)` + liseré clair) ;
+  - un mouvement rapide qu'on ne peut pas éviter (retournement de carte, barre qui tombe) reçoit un flou proportionnel
+    à sa vitesse : il comble les sous-images ;
+  - défilement très rapide : flou directionnel le long de l'axe du mur, filtre SVG `feGaussianBlur stdDeviation="0 σ"`
+    avec σ = la moitié du chemin parcouru pendant une image (plafonné à 60 px) ;
+  - sous les sous-titres posés sur un décor chargé : voile ≥ 0,95 sur toute la bande des sous-titres ;
+  - sous-titres dans une colonne de 740 px (140 → 940, moins les 6 % que la lueur ajoute aux lettres) ; chacun a fini
+    de sortir 0,06 s avant la première lettre du suivant ;
+  - une carte poussée vers le fond par la suivante s'assombrit et se floute en 0,2 s, avant que le trait de la
+    nouvelle ne passe sur ses chiffres ;
+  - milliers : espace insécable U+00A0 ; l'espace fine U+202F n'existe ni dans Clash ni dans Satoshi et disparaît.
+- **Contrôle automatique, à chaque version :**
+  - `CUT=<film> node scripts/chevauchements.mjs` peint le film toutes les 0,1 s ;
+  - il relève deux textes lisibles de deux objets différents qui se recouvrent sans que l'un cache l'autre ;
+  - il relève un texte lisible hors des zones sûres ;
+  - il rend la bande des sous-titres sans les sous-titres ;
+  - `python3 scripts/chevauchements.py renders/_sous-<film>` mesure ensuite le détail net (gradient de luminance) sous
+    chaque lettre. v7 : 0 image sur 396.
+- **Coller un lien, pas un texte.** La vraie page « Analyser une annonce » a un champ « Lien de l'annonce » et un
+  bouton « Analyser ce lien » (`video/assets/presente-v3/ui/analyser-208.html`). Le lien
+  `https://www.leboncoin.fr/ad/voitures/…` apparaît d'un coup, de gauche à droite en 0,28 s, surligné comme un texte
+  collé ; comme dans un vrai champ, ce qui dépasse est coupé par le bord. Le bouton s'allume, puis il est enfoncé.
+- **Animer l'icône du logo elle-même** (fichier officiel, rien de redessiné) :
+  - la tuile se pose sur un ressort lourd ;
+  - la silhouette de la voiture se dessine par un masque : un trait épais de 118 unités suit le contour du chemin
+    (capot → toit → ligne de caisse), animé au `stroke-dasharray`, avec un point clair au bout du trait
+    (`getPointAtLength`) ;
+  - la flèche orange part de sa base en grandissant, l'aileron se pose ;
+  - l'icône glisse à gauche en `lisse` (aucune traînée) ;
+  - les lettres du mot montent d'un `clipPath` placé sous la ligne de base, une fois l'icône passée ;
+  - à la boucle, le cercle qui rouvre la 208 part de l'icône.
