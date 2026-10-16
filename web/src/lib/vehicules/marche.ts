@@ -32,8 +32,9 @@ export type LigneMarche = Ligne & {
 const versPg = (rx: string) => rx.replace(/\\b/g, "\\y");
 
 /** Kilométrage écrit en milliers (« 190 » pour 190 000 km, 965 annonces en octobre 2026) sur une voiture de plus de 2 ans :
-    corrigé quand ×1 000 est plausible pour son âge, sinon inconnu. Laissé tel quel, il fausse sa cote (Q3 de 2012 cotée
-    20 550 € au lieu d'environ 12 500 €), passe les filtres « km max » et tire la régression des autres annonces. */
+    corrigé quand ×1 000 est plausible pour son âge, sinon inconnu. Laissé tel quel, la régression (qui écarte déjà les
+    annonces sous 1 000 km de son calcul) cote l'annonce comme une voiture presque neuve (Q3 de 2012 cotée 20 550 € au lieu
+    d'environ 12 500 €), et l'annonce passe les filtres « km max ». Corrigée, elle entre aussi dans le calcul. */
 export function kmPlausible(km: number | null, annee: number | null, an = new Date().getFullYear()): number | null {
   if (km == null || km >= 1000 || annee == null) return km;
   const age = an - annee;
