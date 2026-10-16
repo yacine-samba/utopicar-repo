@@ -1,3 +1,6 @@
+/* Styles de la page 404, chargés seulement par elle (une feuille importée depuis la page introuvable
+   était préchargée sur toutes les pages du site). */
+export const STYLES_404 = `
 /* Page 404 : scène de nuit, toujours sombre (couleurs fixes, quel que soit le thème du site).
    Mouvements : arrivée de la Polo, roues, warnings, profondeur à la souris. Coupés par data-calme et les animations réduites. */
 
@@ -316,3 +319,4 @@
     margin: 8px 20px 36px;
   }
 }
+`;

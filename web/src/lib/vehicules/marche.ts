@@ -31,7 +31,18 @@ export type LigneMarche = Ligne & {
 /** Motif du catalogue (JavaScript, \b) pour Postgres (\y). */
 const versPg = (rx: string) => rx.replace(/\\b/g, "\\y");
 
-export const lienAnnonce = (l: { id: string; url: string | null }) => l.url || (/^\d{6,14}$/.test(l.id) ? `https://www.leboncoin.fr/ad/voitures/${l.id}` : null);
+/** Kilométrage écrit en milliers (« 190 » pour 190 000 km, 965 annonces en octobre 2026) sur une voiture de plus de 2 ans :
+    corrigé quand ×1 000 est plausible pour son âge, sinon inconnu. Laissé tel quel, il fausse sa cote (Q3 de 2012 cotée
+    20 550 € au lieu d'environ 12 500 €), passe les filtres « km max » et tire la régression des autres annonces. */
+export function kmPlausible(km: number | null, annee: number | null, an = new Date().getFullYear()): number | null {
+  if (km == null || km >= 1000 || annee == null) return km;
+  const age = an - annee;
+  if (age < 2) return km;
+  const k = km * 1000;
+  return k >= age * 3000 && k <= Math.min(600_000, age * 45_000) ? k : null;
+}
+
+export const lienAnnonce =(l: { id: string; url: string | null }) => l.url || (/^\d{6,14}$/.test(l.id) ? `https://www.leboncoin.fr/ad/voitures/${l.id}` : null);
 
 /** Annonces d'un modèle sur une plage d'années (jusqu'à 5 000). `service` : lecture serveur pour l'estimation des formules
     sans la recherche (seul le chiffre de la cote leur est renvoyé, jamais les annonces). */
@@ -218,7 +229,8 @@ async function chargerModele(base: string, y0: number | null | undefined, y1: nu
     const r = reconnaitre({ titre: l.titre });
     return !!r.modele && r.base !== m.base;
   };
-  const lignes: LigneMarche[] = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null, 5000, service)).filter((l) => !autreModele(l)).map((l) => {
+  const lignes: LigneMarche[] = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null, 5000, service)).filter((l) => !autreModele(l)).map((brute) => {
+    const l = { ...brute, km: kmPlausible(brute.km, brute.annee) };
     const g = generationDe(m.base, versMoteur(l));
     const tx = sansAccent(`${l.titre} ${l.version ?? ""} ${l.texte ?? ""}`);
     // puissance : Leboncoin (DIN), sinon la version Leboncoin ou le texte (« 150 ch »)

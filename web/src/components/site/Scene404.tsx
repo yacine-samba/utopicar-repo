@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { BoutonRetour } from "./BoutonRetour";
 import { Polo404 } from "./Polo404";
-import "./scene404.css";
+import { STYLES_404 } from "./scene404-styles";
 
 /* Page introuvable : de nuit, une Polo 5 arrêtée sur le bas-côté, warnings allumés, devant le panneau de la page demandée.
    Profondeur au mouvement de la souris (ciel, panneau, voiture à des vitesses différentes) ; tout s'arrête avec les animations réduites. */
@@ -39,6 +39,7 @@ export function Scene404() {
 
   return (
     <section ref={ref} onPointerMove={bouge} className="n404" aria-labelledby="n404-titre">
+      <style href="utp-404" precedence="default">{STYLES_404}</style>
       <div className="n404-ciel" aria-hidden="true">
         {ETOILES.map((e, i) => (
           <span key={i} className="n404-etoile" style={{ left: `${e.x}%`, top: `${e.y}%`, width: `${e.d}px`, height: `${e.d}px`, opacity: e.o }} />

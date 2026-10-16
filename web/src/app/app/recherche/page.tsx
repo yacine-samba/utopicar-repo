@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { compteBenef } from "@/lib/benef";
 import { codeVerdict, valeursStockees, VERDICTS, type VerdictCode } from "@/lib/analyse/verdicts";
 import { supabaseServeur } from "@/lib/supabase/serveur";
@@ -29,6 +30,8 @@ function nomsCatalogue(): NomsCatalogue {
 const CODES = Object.keys(VERDICTS) as VerdictCode[];
 type Filtres = { vue?: string; q?: string; marque?: string; modele?: string; gen?: string; r?: string; j?: string; verdict?: string; marge?: string; prix?: string; depuis?: string };
 const entier = (s?: string) => (s && /^\d{1,7}$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
+
+export const metadata: Metadata = { title: "Recherche" };
 
 export default async function Page({ searchParams }: { searchParams: Promise<Filtres> }) {
   const c = await compteBenef("/app/recherche");
