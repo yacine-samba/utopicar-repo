@@ -7,7 +7,7 @@ import { debutPeriode, type Compte } from "@/lib/compte";
 import { familleEspace, nomFormule, type Icone } from "@/lib/espace";
 import { BENEF, GUIDE, OFFRES, prixTxt } from "@/lib/offres";
 import { supabaseServeur } from "@/lib/supabase/serveur";
-import { EN_STOCK, joursStock, margePrevue, margeReelle, statsParc, type Vehicule } from "@/lib/parc";
+import { EN_STOCK, joursStock, margePrevue, margeReelle, statsParc, STATUTS_PARC, type Vehicule } from "@/lib/parc";
 import { ListeRapports } from "@/components/benef/ListeRapports";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { AnalyseRapide } from "@/components/espace/AnalyseRapide";
@@ -184,13 +184,16 @@ async function TableauComplet({ c }: { c: Compte }) {
     .slice(0, 8)
     .map((a) => ({ cle: a.cle, titre: a.titre, prix: a.prix, cote: a.cote?.P ?? null, pct: a.cote!.pct!, annee: a.annee, km: a.km, lieu: a.lieu, url: a.url, photo: a.photo, recherche: a.recherche }));
 
-  // Votre journée : les décisions du jour, la plus urgente d'abord (rouge seulement pour ce qui doit être corrigé maintenant)
+  // Votre journée : les décisions du jour, la plus urgente d'abord (rouge seulement pour ce qui doit être corrigé maintenant) ;
+  // les voitures épinglées passent en tête (et y restent même sans décision), les archivées n'y apparaissent plus
   const actions: (Action & { rang: number })[] = [];
-  for (const v of vivants) {
+  for (const v of vivants.filter((x) => !x.archive)) {
     const j = joursStock(v);
     const photo = v.photos?.[0] ?? null;
     const titre = `${v.immat ? `${v.immat} · ` : ""}${titreVehicule(v.titre)}`;
     const fiche = { href: `/app/parc/${v.id}`, l: "Ouvrir la fiche" };
+    const vehicule = { id: v.id, titre: titreVehicule(v.titre), statut: v.statut, date_achat: v.date_achat, epingle: !!v.epingle, archive: false };
+    const avant = actions.length;
     if (EN_STOCK.includes(v.statut) && j != null && j > 60) actions.push({ rang: 0, ton: "bad", etiquette: `${j} jours en stock`, titre, raison: "Le capital dort : baissez le prix ou changez l'annonce aujourd'hui.", lien: { ...fiche, l: "Ajuster le prix" }, photo });
     else if (EN_STOCK.includes(v.statut) && j != null && j > 45) actions.push({ rang: 1, ton: "warn", etiquette: `${j} jours en stock`, titre, raison: "Au-delà de 45 jours, la marge fond : refaites les photos ou ajustez le prix.", lien: { ...fiche, l: "Revoir l'annonce" }, photo });
     if (EN_STOCK.includes(v.statut) && v.prix_achat == null) actions.push({ rang: 1, ton: "warn", etiquette: "Prix d'achat manquant", titre, raison: "Sans lui, la marge et le capital sont faux.", lien: { ...fiche, l: "Compléter" }, photo });
@@ -198,7 +201,12 @@ async function TableauComplet({ c }: { c: Compte }) {
     if (v.statut === "vendu" && m != null && m < 0) actions.push({ rang: 2, ton: "warn", etiquette: "Vendue à perte", titre, raison: `${eur(m)} : notez ce qui a coûté pour la prochaine fois.`, lien: fiche, photo });
     if (v.statut === "repere") {
       const age = joursDepuis(v.created_at);
-      if (age > 7) actions.push({ rang: 3, ton: "warn", etiquette: `Repérée il y a ${age} jours`, titre, raison: "Achetez-la ou abandonnez-la pour garder un parc à jour.", lien: { ...fiche, l: "Décider" }, photo });
+      if (age > 7) actions.push({ rang: 3, ton: "warn", etiquette: `Repérée il y a ${age} jours`, titre, raison: "Achetez-la ou abandonnez-la pour garder un parc à jour.", lien: fiche, photo });
+    }
+    if (v.epingle && actions.length === avant) actions.push({ rang: 6, ton: "o", etiquette: STATUTS_PARC[v.statut], titre, raison: "Épinglée : gardée ici jusqu'à ce que vous la désépingliez.", lien: fiche, photo });
+    for (let k = avant; k < actions.length; k++) {
+      actions[k].vehicule = vehicule;
+      if (v.epingle) actions[k].rang -= 100;
     }
   }
   const dansParc = new Set(parc.map((v) => v.rapport_id).filter(Boolean));

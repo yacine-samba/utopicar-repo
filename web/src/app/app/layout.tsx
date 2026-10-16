@@ -12,6 +12,7 @@ import { NavCote, NavMobile } from "@/components/espace/NavEspace";
 import { CommandeK, SeuilMarge } from "@/components/espace/OutilsEspace";
 import { BoutonAnalyser } from "@/components/espace/BoutonAnalyser";
 import { AnalysesEnFond } from "@/components/espace/AnalysesEnFond";
+import { NotificationsEspace } from "@/components/espace/Notification";
 import { CadreEspace } from "@/components/espace/CadreEspace";
 import { RepriseAchat } from "@/components/espace/RepriseAchat";
 import { PreferencesEspace } from "@/components/espace/Preferences";
@@ -127,6 +128,7 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
           <RepriseAchat actuelle={c.offre.id} abonne={!!c.abonnement && ["active", "trialing", "past_due"].includes(c.abonnement.statut)} />
           {children}
         </main>
+        <NotificationsEspace />
       </div>
     </CadreEspace>
     </AnalysesEnFond>
