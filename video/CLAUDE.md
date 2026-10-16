@@ -59,7 +59,7 @@
 - Tout ce qui est centré l'est sur l'axe de l'écran (x = 540), dans une colonne symétrique 140 → 940. Jamais sur x = 500
   (centre de la zone sûre) : le décalage de 40 px vers la gauche se voit sur un téléphone.
 - Chiffres démo dans une pub vidéo : mention « Données de démonstration » à l'écran. Carrousels et présentation
-  utopicar (v5, v6, v7) : aucune mention (décisions de l'utilisateur, oct. 2026).
+  utopicar (v5 à v8) : aucune mention (décisions de l'utilisateur, oct. 2026).
 - Aucun texte posé sur un autre texte, à aucune image : contrôle `scripts/chevauchements.mjs` (toutes les 0,1 s) puis
   `scripts/chevauchements.py` (détail net sous chaque lettre de sous-titre) avant toute planche ou tout rendu.
 - Processus complet (brief, script, voix, A/B, langues, formats, livraison) : skill `/motion-studio`.

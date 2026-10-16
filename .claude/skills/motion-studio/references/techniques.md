@@ -599,3 +599,51 @@ là.
   - l'icône glisse à gauche en `lisse` (aucune traînée) ;
   - les lettres du mot montent d'un `clipPath` placé sous la ligne de base, une fois l'icône passée ;
   - à la boucle, le cercle qui rouvre la 208 part de l'icône.
+
+## 25. Plus aucun cadre d'interface, un film immersif (présentation v8)
+
+Retour de l'utilisateur sur la v7 : « retire les cadres des interfaces, faut que ça soit beaucoup plus immersif ». Code
+de référence : `video/film-presentev8/film.js` (même voix et même minutage que la v7).
+
+- **Ce qu'on retire :** le fond, la bordure, les coins arrondis et l'ombre de chaque carte (formulaire, critère,
+  verdict, paliers, annonces du mur, recherche, messages, notification, e-mail, marge).
+- **Ce qui flotte à la place :**
+  - chaque pièce flotte seule, en grand : libellé, valeur géante, barre, phrase, anneau, lien collé ;
+  - les séparations deviennent des filets fins qui se tracent, menés par une tête claire (`filet()`, `trait()`) ;
+  - une page blanche (l'e-mail) devient une mise en page sombre à même l'espace ;
+  - une dalle devient une bande plein cadre, plus large que l'écran (PLAFOND).
+- **Ce qui reste plein :** les commandes ne sont pas des cadres. On garde pleins le bouton orange, l'interrupteur,
+  l'étiquette Benef Pro, l'icône de l'app et la pastille « lien en bio ».
+- **Bloc sans conteneur :** `bloc(S)` pose chaque pièce une à une dans le monde. Chaque pièce a un support, posé en 3D,
+  et un contenu, animé à part. Il n'y a aucun conteneur commun, pour une raison technique : une opacité ou un filtre
+  sur un parent `preserve-3d` aplatit ses enfants. Le flou et l'opacité du bloc vont donc sur chaque support.
+- **Vue éclatée :** chaque pièce a sa profondeur (libellé +110, valeur 0, barre −60, phrase +50). Elle est reculée et
+  rapetissée de `k = persp / (persp − z)` : caméra au repos, la mise en page tombe pile à l'écran ; en mouvement, les
+  plans glissent les uns sur les autres. Le bloc tourne d'un seul tenant : la position de chaque pièce est calculée
+  par `rot3()`, dans l'ordre de CSS (rotateZ d'abord). Les pièces qui se retournent gardent un support 3D ; leur flou
+  et leur opacité sont portés par le contenu.
+- **La caméra ne s'arrête jamais :**
+  - pendant chaque tenue, elle pousse lentement (+70 px) et revient pendant la transition suivante ;
+  - elle file d'un critère à l'autre. Les blocs sont posés à 1 000 px, juste hors champ au repos : le filé enchaîne
+    sans vide au milieu. Pendant le filé : flou SVG horizontal, σ = la moitié du chemin parcouru pendant une image ;
+    rotation de 9° dans le sens du mouvement ; petit recul ;
+  - la trame pointillée du fond suit la caméra (parallaxe 0,2, floutée elle aussi) : c'est l'espace qui bouge.
+- **Transitions immersives :**
+  - mise au point : quand le doigt appuie, tout le formulaire se floute sauf le bouton, qui se replie et devient le
+    chrono ;
+  - tambour : les pièces du verdict basculent une à une (45 ms d'écart, flou de rotation) et le dos arrive déjà
+    imprimé ;
+  - iris : un masque radial au bord fondu de 320 px, sans liseré, s'ouvre sur le mur. Le mur arrive flou (16 px) et se
+    met au point, si bien que rien de net ne croise la scène qui recule dans le bord fondu ;
+  - recherche « qui tourne toute seule » : un radar couché au sol (`rotateX` 76°) balaie et accélère sur « tourne » ;
+    les annonces s'allument à son passage.
+- **Pièges :**
+  - **Texte sur un fond chargé.** Sans carte, un texte posé sur un décor chargé devient un texte sur du texte (la
+    meilleure annonce sur le mur). Remède : mise au point (mur flouté à 11 px, assombri de 62 %) et une ombre ronde au
+    bord fondu derrière l'annonce.
+  - **Poussée de caméra.** Elle agrandit le contenu de 4 à 6 %. On dessine donc les blocs dans 760 px (160 → 920) pour
+    rester dans la colonne sûre, et on aligne à droite sur 900 à 905.
+  - **Faux positifs du détecteur.** `chevauchements.mjs` compte les boîtes englobantes : un texte incliné et des
+    lettres encore masquées pendant leur montée en déclenchent. On vérifie chaque cas sur l'image.
+- **Contrôle v8 :** 0 image de sous-titre sur du détail net (395 images). Les recouvrements restants sont des faux
+  positifs, vérifiés.
