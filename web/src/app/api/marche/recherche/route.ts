@@ -58,7 +58,10 @@ export async function POST(req: Request) {
   try {
     mm = await marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, f.anneeMax ? f.anneeMax + 1 : null);
   } catch (e) {
-    return Response.json({ erreur: "Base du marché indisponible : " + (e as Error).message }, { status: 502 });
+    // le message de la base (« canceling statement due to statement timeout ») reste dans les journaux, pas à l'écran
+    console.error("recherche marché", (e as Error).message);
+    const lente = /timeout/i.test((e as Error).message);
+    return Response.json({ erreur: lente ? "La base du marché a mis trop de temps à répondre. Relancez la recherche dans un instant." : "Base du marché indisponible pour le moment. Réessayez dans un instant." }, { status: 502 });
   }
   if (!mm) return Response.json({ erreur: "Modèle inconnu du catalogue." }, { status: 400 });
   const { m, lignes, cotes } = mm;

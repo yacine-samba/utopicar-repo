@@ -155,9 +155,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
           <button type="submit" className="btn btn-o btn-sm">
             Rechercher
           </button>
-          <a href="/app/recherche?vue=rapports" className="btn btn-sm">
+          <Link href="/app/recherche?vue=rapports" className="btn btn-sm">
             Effacer
-          </a>
+          </Link>
         </div>
       </form>
       <div className="flex flex-wrap items-center justify-between gap-3">

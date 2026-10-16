@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useExtension } from "@/lib/extension";
 import { cx, inputCls } from "@/lib/cx";
@@ -114,7 +115,7 @@ function CollerReleve({ actif, cat, dernier }: { actif: boolean; cat: CatMarque[
             Sur une recherche Leboncoin, icône Utopicar puis « Relever toute la recherche » (jusqu&apos;à 3 500 annonces) : cette page s&apos;ouvre toute seule et chaque annonce est reconnue (marque, modèle, génération) et placée sur sa cote. « Relever toutes les cotes » relève toutes les marques et tous les modèles de Leboncoin, en essence, diesel, hybride et électrique, puis affiche ici son bilan. Si la page ne s&apos;ouvre pas, collez le relevé ici avec <kbd className="rounded border border-line-2 px-1.5 text-xs">Ctrl</kbd> + <kbd className="rounded border border-line-2 px-1.5 text-xs">V</kbd>.
           </p>
           <p className="mt-1 flex flex-wrap items-center gap-3 text-sm text-ink-3">
-            <a href="/app/extension" className="btn btn-sm min-h-9 px-4">Installer l&apos;extension Utopicar</a>
+            <Link href="/app/extension" className="btn btn-sm min-h-9 px-4">Installer l&apos;extension Utopicar</Link>
             Chrome, Edge : 1 minute.
           </p>
         </div>

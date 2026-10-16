@@ -186,8 +186,27 @@ export class Cotes {
   }
 }
 
+type Marche = NonNullable<Awaited<ReturnType<typeof chargerModele>>>;
+/** Lectures serveur gardées 5 minutes (CarCrush relit le même modèle à chaque critère changé, l'analyse le relit pour la projection).
+    Jamais les lectures au nom d'un compte : la base y vérifie la formule de chacun. */
+const GARDE_MS = 5 * 60_000, GARDE_MAX = 8;
+const gardes = new Map<string, { t: number; p: Promise<Marche | null> }>();
+
 /** Charge un modèle du catalogue, ses annonces, leur génération et leur motorisation. */
-export async function marcheModele(base: string, y0?: number | null, y1?: number | null, service = false) {
+export async function marcheModele(base: string, y0?: number | null, y1?: number | null, service = false): Promise<Marche | null> {
+  if (!service) return chargerModele(base, y0, y1, false);
+  const k = `${base}|${y0 ?? ""}|${y1 ?? ""}`;
+  const g = gardes.get(k);
+  if (g && Date.now() - g.t < GARDE_MS) return g.p;
+  const p = chargerModele(base, y0, y1, true);
+  gardes.delete(k);
+  gardes.set(k, { t: Date.now(), p });
+  if (gardes.size > GARDE_MAX) gardes.delete(gardes.keys().next().value!);
+  p.catch(() => gardes.get(k)?.p === p && gardes.delete(k)); // une panne n'est pas gardée
+  return p;
+}
+
+async function chargerModele(base: string, y0: number | null | undefined, y1: number | null | undefined, service: boolean) {
   const m = modeleDe(base);
   if (!m) return null;
   const marque = base.split(" ")[0], modele = base.split(" ").slice(1).join(" ");
