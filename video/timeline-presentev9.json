@@ -1,0 +1,12 @@
+{
+ "version": 1,
+ "style": "présentation utopicar v9 : transitions d'écran par une grosse couleur qui prend tout l'écran, puis la scène suivante se découvre et ses textes arrivent en animation ; plus aucun cadre d'interface ; même voix que la v7",
+ "fps": 30,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 49.033,
+ "poster": 2.0
+}

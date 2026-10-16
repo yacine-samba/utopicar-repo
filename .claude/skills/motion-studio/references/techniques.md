@@ -647,3 +647,83 @@ de référence : `video/film-presentev8/film.js` (même voix et même minutage q
     lettres encore masquées pendant leur montée en déclenchent. On vérifie chaque cas sur l'image.
 - **Contrôle v8 :** 0 image de sous-titre sur du détail net (395 images). Les recouvrements restants sont des faux
   positifs, vérifiés.
+
+## 26. Transitions d'écran par grosse couleur (présentation v9)
+
+Retours de l'utilisateur sur la v8 :
+- une image du formulaire, avec « tu trouves pas qu'il y a un problème ici ?? » : le rond blanc du doigt, puis l'onde,
+  se posaient sur le texte « Analyser ce lien » ;
+- « pour les transitions d'écran, j'aime qu'une grosse couleur prenne l'écran, puis les textes arrivent en
+  animation ».
+
+Code de référence : `video/film-presentev9/film.js`.
+
+**L'appui sur un bouton**
+- Pas de doigt ni de rond posé sur un bouton : ils cachent son texte.
+- L'appui se voit au bouton lui-même : il s'écrase (−6 %) et s'éclaire (+20 %).
+- L'onde part de sous le texte. Elle est placée dans la pastille, qui la coupe à son bord.
+
+**Grammaire de la transition** (dans les silences de la voix)
+1. Une couleur pleine part d'un objet de la scène qui sort (le bouton, −2 688 €, le trait vert sous l'annonce,
+   l'icône de la marge), ou d'un bord de l'écran. Elle couvre tout l'écran en 0,22 à 0,32 s (`bez(0.55, 0.05, 0.2, 1)`).
+2. Elle tient 0,04 à 0,32 s.
+3. Un trou s'ouvre (0,24 à 0,33 s, eOut3) et découvre la scène suivante. Ses textes arrivent juste derrière : un
+   verdict qui reste vide 0,6 s après l'ouverture paraît mort.
+
+**Mise en œuvre** : un calque plein au-dessus des scènes, `VOILE`, avec deux dégradés radiaux en masque, croisés
+(`mask-composite: intersect`).
+- **L'entrée** : un disque, `#000` jusqu'à `r − flou`, transparent à `r`.
+- **La sortie** : un trou, transparent jusqu'à `r₂`, opaque à `r₂ + flou`.
+- **Un volet presque droit** : un disque dont le centre est très loin (1 480 px sous le bas de l'écran, ou à gauche).
+- **Le flou du bord** : la moitié du chemin parcouru en une image, comme le filé (`|dr/dt| / 60`, entre 1,5 et
+  140 px).
+- **La nuit** : son trou est fondu sur 320 px, pour que le bleu se fonde dans le ciel autour de l'horloge.
+
+**Formes et couleurs par sens** (varier le départ, garder des couleurs qui portent le sens)
+
+| Transition | Couleur | Forme |
+|---|---|---|
+| accroche → lien | orange | monte d'en bas |
+| bouton → chrono | orange | la pastille grossit jusqu'à tout couvrir, puis se retire en anneau : le bord rentre jusqu'au rayon extérieur de la piste, un trou s'ouvre jusqu'au rayon intérieur, et la piste du chrono prend le relais à la même taille, caméra figée jusque-là |
+| critères → verdict | rouge | part de −2 688 € |
+| verdict rouge → verdict vert | vert | monte d'en bas |
+| plafond → mur | orange | tombe d'en haut |
+| meilleure annonce → recherche | vert | part du trait vert sous l'annonce |
+| recherche → nuit | bleu nuit | tombe d'en haut, puis se fond |
+| nuit → annonce | corail | l'aube monte d'en bas |
+| e-mail → parc | orange | passe de gauche à droite |
+| marge → logo | orange | part de l'icône de la marge ; la tuile du logo se pose sur l'orange avant l'ouverture |
+
+**Empilement**
+- Le calque est au-dessus de toutes les scènes et sous la fin, pour que la tuile du logo se pose sur l'orange.
+- Il est sous les sous-titres, qui restent lisibles sur la couleur.
+- Choisir une couleur qui ne mange pas le mot accentué du sous-titre en cours : pas d'orange sous un mot orange. Vert
+  sous « arrête de scroller. » ; bleu nuit sous « tourne toute seule ».
+- Ça ne suffit pas : un mot rose sur l'orange se perd aussi (« perds », v9 à 5,9 s). Sur le voile, les mots en couleur
+  des sous-titres passent donc à l'encre foncée (`#160904`), au blanc sur le bleu nuit. Le changement se fait lettre
+  par lettre, là où passe le bord. `VOILE_A(t)` donne la part de couleur en chaque point, avec les mêmes masques que
+  le voile. Les mots blancs restent blancs.
+
+**Le lien collé** (retour v9 : « met pas le lien de l'annonce comme ça c'est pas esthétique »)
+- Coupé sur quatre lignes, le lien faisait cassé. Un lien tient sur une ligne, comme dans le vrai champ :
+  - l'icône de lien, puis le domaine en clair (gras) et le chemin plus discret ;
+  - avant le collage, l'indication grisée du champ, coupée par son bord.
+- La taille est calculée pour que l'icône, le lien et le curseur tiennent dans la colonne 140 → 940 : environ 43 px
+  pour « leboncoin.fr/ad/voitures/2873461903 ». Le libellé (40 px) est plus petit que la valeur.
+- **De près et de face, la fin d'une ligne longue sort de l'écran.** Un panoramique qui la suit pendant le collage
+  file à 80–100 px par image : le domaine devient illisible sous le flou de bougé.
+- **La solution est un gros plan de biais** (rotateY +32°, caméra à cz 200). Le début du champ est au premier plan, la
+  fin du lien fuit vers la droite, et la ligne entière tient dans 90 → 915. Puis la caméra recule face au formulaire.
+- Contrôle : simuler la trajectoire de la caméra (`proj`) avant de rendre. On place le début et la fin du texte à
+  chaque image et on mesure sa vitesse : au-delà de 15 px par image, il ne se lit plus.
+
+**Scènes**
+- Une scène reste nette jusqu'à ce que la couleur la couvre (plus de recul), puis elle est cachée.
+- La suivante est peinte sous la couleur et commence à écrire quand le trou s'ouvre.
+- Les fonds de couleur des scènes (palettes) changent sous la couleur pleine.
+
+**Contrôle**
+- `chevauchements.mjs` ignore le voile : les textes cachés sous une couleur pleine ressortent comme recouvrements. On
+  vérifie l'image (ex. v9 à 24,6 s : écran entièrement orange).
+- v9 : 0 image de sous-titre sur du détail net (395). Recouvrements : les 72 images déjà vérifiées en v8, plus 24,6 s
+  (écran entièrement orange). La scène du lien sur une ligne n'en déclenche plus (16 images en moins).
