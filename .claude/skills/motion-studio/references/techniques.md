@@ -875,3 +875,16 @@ et copie cette animation pour les interfaces ». Code : `video/film-presentev11/
   bouge pas), chaque coupe sous l'impact d'une grosse couleur (fondu croisé 12 ms). La mesure presque vide passe
   sous le chiffre qui prépare le verdict, la chute tombe juste avant « Verdict », le dernier segment est décalé pour
   que « utopicar » tombe sur un premier temps (le seul décalage hors grille, caché par l'impact de la fin).
+
+**Le flou de bougé d'un défilement rapide (vu sur le premier rendu, corrigé avant livraison)**
+- À 8 sous-images, un défilement de 2 700 px CSS en 1,1 s empilait 8 copies NETTES de chaque ligne de texte
+  (« 7 400 € » répété huit fois) : l'écart entre deux sous-images (≈ 44 px) dépassait la hauteur d'une ligne.
+- Correction : un flou vertical SVG sur la zone qui défile (pas sur la bande entière : trop coûteux), d'écart-type
+  égal au quart du chemin parcouru en une image (`flouDefil`, plafonné à 70 px de capture) ; même chose, dans le sens
+  du glissement, pour un écran qui monte, descend ou arrive de côté (`flouGlisse`). Les copies se fondent en une
+  traînée de vitesse.
+- L'obturateur grand ouvert (1) reste réservé aux grosses couleurs : pendant un défilement ou un bloc qui sort, le film
+  demande 8 sous-images mais garde l'obturateur à moitié ouvert (`dense()`), sinon le sous-titre qui s'écrit en même
+  temps bave.
+- Contrôle sans attendre le rendu complet : `node video/scripts/mb-apercu.mjs <cut> <dossier> t1 t2 …` moyenne les
+  sous-images d'une image comme `render.mjs`.

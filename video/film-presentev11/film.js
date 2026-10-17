@@ -130,6 +130,9 @@
   const obj = (parent, wd, ht, css = {}, html) => mk('div', 'a', parent, { width: wd + 'px', height: ht + 'px', ...css }, html);
   const CUES = [], cue = (t, k, g = 1) => { if (t >= 0 && t < DUR) CUES.push({ t: +t.toFixed(3), k, g }); };
   const FAST = []; const win = (a, b) => FAST.push([a, b]);
+  // mouvements du téléphone (défilements, blocs qui sortent, écrans qui glissent) : 8 sous-images, mais l'obturateur reste
+  // à moitié ouvert (les sous-titres qui s'écrivent en même temps ne bavent pas) ; le flou de la vitesse vient du filtre
+  const DENSE = []; const dense = (a, b) => DENSE.push([a, b]);
   const milliers = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const eur = (n) => `${milliers(n)} €`;
   const largeur = (el) => el.getBoundingClientRect().width;
@@ -509,6 +512,19 @@
     return { e, clip, b: im(clip, bande), hd: im(e, 'haut.png'), nv: im(e, bas, { top: '1540px' }), y0, S: y0 };
   };
   const posePage = (P, S) => { P.S = S; P.b.style.transform = `translateY(${(-(S - P.y0) * 2).toFixed(1)}px)`; };
+  // flou de défilement : au flou de bougé (8 sous-images), un défilement rapide empilait 8 copies nettes de chaque ligne
+  // de texte ; un flou vertical d'un quart du chemin parcouru en une image les fond en une traînée (px de capture)
+  const FDEF = filtre('fdefil', 3), FGLI = filtre('fglisse', 3);
+  const vitesse = (f, t) => Math.abs(f(t + 0.004) - f(t - 0.004)) / 0.008;
+  const flouDefil = (P, Sf, t) => {
+    const s = Math.min(70, 0.25 * 2 * vitesse(Sf, t) / 30);
+    if (s > 0.6) { FDEF.setAttribute('stdDeviation', `0 ${s.toFixed(1)}`); P.clip.style.filter = 'url(#fdefil)'; } else P.clip.style.filter = '';
+  };
+  // flou d'un écran qui glisse (le rapport qui monte, l'onglet qui arrive de côté, l'e-mail qui descend)
+  const flouGlisse = (e, f, t, dist, axe) => {
+    const s = Math.min(70, 0.25 * dist * vitesse(f, t) / 30);
+    if (s > 0.6) { FGLI.setAttribute('stdDeviation', axe === 'x' ? `${s.toFixed(1)} 0` : `0 ${s.toFixed(1)}`); e.style.filter = (e.style.filter ? e.style.filter + ' ' : '') + 'url(#fglisse)'; }
+  };
   // un morceau d'écran qui réagit à l'appui (bouton, onglet, interrupteur) : il s'écrase et s'éclaire, sans doigt
   const appui = (parent, src, r) => mk('div', 'a', parent, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px', backgroundImage: `url(${DOS}${src})`, backgroundPosition: `${-r.x}px ${-r.y}px`, backgroundSize: '780px 1688px', borderRadius: (r.h / 2) + 'px', transformOrigin: '50% 50%' });
   const appuie = (el, t, t0) => { const b = bump(t, t0, 0.14); el.style.transform = `scale(${(1 - 0.07 * b).toFixed(4)})`; el.style.filter = b > 0.01 ? `brightness(${(1 + 0.25 * b).toFixed(3)})` : ''; return b; };
@@ -535,7 +551,7 @@
   const glisse = bez(0.42, 0, 0.12, 1);
   const defil = (P, S0, segs) => (t) => segs.reduce((S, [a, b, from, to]) => S + (to - from) * glisse(clamp((t - a) / (b - a), 0, 1)), S0);
   const DEFILS = [];
-  const scroll = (P, S0, segs) => { segs.forEach(([a, b, from, to]) => { win(a - 0.02, b); if (Math.abs(to - from) > 1000) cue(a, 'whoosh', clamp(Math.abs(to - from) / 2600, 0.3, 0.6)); DEFILS.push([a, b, Math.abs(to - from)]); }); return defil(P, S0, segs); };
+  const scroll = (P, S0, segs) => { segs.forEach(([a, b, from, to]) => { dense(a - 0.02, b); if (Math.abs(to - from) > 1000) cue(a, 'whoosh', clamp(Math.abs(to - from) / 2600, 0.3, 0.6)); DEFILS.push([a, b, Math.abs(to - from)]); }); return defil(P, S0, segs); };
 
   // ---------- Étape 1 · Analyser ----------
   const tPaste = w(36) + 0.02, tBtn = tPaste + 0.42, tTap = we(42) - 0.04, tSeq = tTap + 0.5;
@@ -548,13 +564,13 @@
   const SRech = scroll(ER, GEO['bande-recherche'].y0, [[we(83) - 0.08, we(83) + 0.36, GEO['bande-recherche'].y0, 1376]]);
   const tEM = we(90) - 0.02, tTog = w(92) - 0.06, tMail = w(95) + 0.02;   // l'e-mail descend sur « tu reçois », l'alerte est rentrée avant
   cue(tEM, 'whoosh', 0.5); cue(tTog, 'click', 0.8); cue(tMail, 'whoosh', 0.6); cue(tMail + 0.32, 'ding', 0.8);
-  win(tEM - 0.02, tEM + 0.4); win(tMail - 0.02, tMail + 0.45);
+  dense(tEM - 0.02, tEM + 0.4); dense(tMail - 0.02, tMail + 0.45);
   // ---------- Étape 3 · Négocier ----------
   const SClio = scroll(EC, 505, [[w(103) - 0.02, w(103) + 0.42, 505, 1232], [we(109) - 0.12, we(109) + 0.26, 1232, 505], [we(112) + 0.08, we(112) + 0.64, 505, 3010], [we(121) + 0.16, we(121) + 0.56, 3010, 2304]]);
   // ---------- Étape 4 · Revendre ----------
   const tAch = w(135) - 0.02, tApres = tAch + 0.12, tOng = w(142) + 0.02, tVend = tOng + 0.14;
   const SVend = scroll(EV, GEO['bande-vendues'].y0, [[tVend + 0.1, tVend + 0.7, GEO['bande-vendues'].y0, 1440]]);
-  cue(tAch, 'click', 1); cue(tApres + 0.2, 'ding', 0.8); cue(tOng, 'click', 0.8); win(tApres - 0.02, tApres + 0.36);
+  cue(tAch, 'click', 1); cue(tApres + 0.2, 'ding', 0.8); cue(tOng, 'click', 0.8); dense(tApres - 0.02, tApres + 0.36);
 
   // ---------- poses du téléphone ----------
   // chaque chapitre part d'une pose cachée sous la grosse couleur et arrive quand elle rentre dans son rond ; ensuite le
@@ -565,7 +581,7 @@
     [R3.c, [{ t: R3.c, x: 540, y: YT + 1050, z: 0, rx: 36, ry: 0, rz: -9 }, { t: R3.r - 0.1, y: YT, rx: 4, ry: 12, rz: 0 }, { t: we(109) - 0.16, x: 480, ry: -12 }, { t: we(112) + 0.04, x: 470, ry: -13 }, { t: we(121) + 0.12, x: 480, ry: -8 }]],
     [R4.c, [{ t: R4.c, x: 540, y: YT, z: -1900, rx: 12, ry: 40, rz: 0 }, { t: R4.r - 0.1, x: 460, z: 0, rx: 4, ry: -12 }, { t: tOng - 0.06, x: 470, ry: -10 }]],
   ];
-  CHAPS.forEach(([, K]) => K.slice(1).forEach((k) => win(k.t - 0.02, k.t + 0.5)));
+  CHAPS.forEach(([, K]) => K.slice(1).forEach((k) => dense(k.t - 0.02, k.t + 0.5)));
   function telPose(t) {
     let C = null; for (const c of CHAPS) if (t >= c[0]) C = c;
     if (!C || t >= R5.c + 0.02) return null;
@@ -591,7 +607,7 @@
     const box = obj(SPH.cam, wd, ht, { borderRadius: (rcss * wd / (iw / ech)).toFixed(1) + 'px', overflow: 'hidden', background: '#0b0a09' });
     im(box, 'pop-' + nom + '.png', { width: '100%', height: '100%' });
     const P = { nom, t0, t1, src, cible, box, wd, ht, iw, ih, B: reflet(box), ry: o.ry ?? 8 };
-    POPS.push(P); win(t0 - 0.02, t0 + 0.42); win(t1 - 0.02, t1 + 0.34);
+    POPS.push(P); dense(t0 - 0.02, t0 + 0.42); dense(t1 - 0.02, t1 + 0.34);
     cue(t0, 'pop', 0.7);   // un son par geste : le bloc qui sort ; il rentre sans bruit
     return P;
   };
@@ -666,20 +682,20 @@
           SEQ.forEach((e, j) => show(e, j === i));
           fond(ES, pr);
         }
-        if (t >= tRap) { show(EP.e, true); posePage(EP, SPolo(t)); pousse(EP.e, pr, 'haut'); }
+        if (t >= tRap) { show(EP.e, true); posePage(EP, SPolo(t)); flouDefil(EP, SPolo, t); pousse(EP.e, pr, 'haut'); flouGlisse(EP.e, (u) => E(u, tRap, 0.42, doux), t, 1688, 'y'); }
       }
     } else if (t < R3.c) {
       // Étape 2 : la recherche, l'alerte allumée, l'e-mail
       const pm = E(t, tEM, 0.38, doux), pl = E(t, tMail, 0.42, doux);
-      if (pm < 1) { show(ER.e, true); posePage(ER, SRech(t)); fond(ER.e, pm, 'gauche'); }
+      if (pm < 1) { show(ER.e, true); posePage(ER, SRech(t)); flouDefil(ER, SRech, t); fond(ER.e, pm, 'gauche'); }
       if (t >= tEM && pl < 1) {
-        show(EM, true); pousse(EM, pm, 'droite'); fond(EM, pl);
+        show(EM, true); pousse(EM, pm, 'droite'); fond(EM, pl); flouGlisse(EM, (u) => E(u, tEM, 0.38, doux), t, 780, 'x');
         show(EMon, t >= tTog); appuie(EMt, t, tTog); show(EMt, t >= tTog);
       }
-      if (t >= tMail) { show(EML, true); pousse(EML, pl, 'bas'); }
+      if (t >= tMail) { show(EML, true); pousse(EML, pl, 'bas'); flouGlisse(EML, (u) => E(u, tMail, 0.42, doux), t, 1688, 'y'); }
     } else if (t < R4.c) {
       // Étape 3 : le rapport de la Clio
-      show(EC.e, true); posePage(EC, SClio(t));
+      show(EC.e, true); posePage(EC, SClio(t)); flouDefil(EC, SClio, t);
     } else {
       // Étape 4 : le parc, « Acheter », l'onglet « Vendues »
       if (t < tVend) {
@@ -687,8 +703,8 @@
         show(EAp, t >= tApres); show(EAb, t < tApres); appuie(EAb, t, tAch);
         show(EAo, t >= tOng - 0.02); appuie(EAo, t, tOng);
         const av = E(t, tApres, 0.32, eOut3);
-        show(EAv, t >= tApres); EAv.style.transform = `translateY(${(-220 * (1 - av)).toFixed(1)}px)`;
-      } else { show(EV.e, true); posePage(EV, SVend(t)); }
+        show(EAv, t >= tApres); EAv.style.transform = `translateY(${(-220 * (1 - av)).toFixed(1)}px)`; EAv.style.filter = ''; flouGlisse(EAv, (u) => E(u, tApres, 0.32, eOut3), t, 220, 'y');
+      } else { show(EV.e, true); posePage(EV, SVend(t)); flouDefil(EV, SVend, t); }
     }
     // les blocs qui sortent ; l'écran recule dans l'ombre pendant qu'un bloc est sorti
     let dim = 0; POPS.forEach((P) => { dim = Math.max(dim, paintPop(P, t, T)); });
@@ -893,9 +909,9 @@
     S1.root.style.zIndex = boucle ? '16' : '2';
     show(F1, boucle); if (boucle) peintFond(F1B, F1G, 0, false);
   };
-  const inWin = (t) => FAST.some(([a, b]) => t >= a && t <= b);
+  const inWin = (t) => FAST.some(([a, b]) => t >= a && t <= b), inDense = (t) => DENSE.some(([a, b]) => t >= a && t <= b);
   window.shutter = (t) => (inWin(t) ? 1 : 0.5);
-  window.samples = (t) => (inWin(t) ? 8 : 4);
+  window.samples = (t) => (inWin(t) || inDense(t) ? 8 : 4);
   window.filmDur = DUR;
   window.cues = CUES.sort((x, y) => x.t - y.t);
   await Promise.all(IMGS.map((e) => e.decode().catch(() => {})));   // toutes les captures prêtes avant la première image
