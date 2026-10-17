@@ -48,11 +48,11 @@ La voix mène, l'image bouge pendant qu'elle parle. Plus de blancs pour laisser 
 **Analyse.**
 - Douleur visée : acheter une voiture pour la revendre et y perdre de l'argent.
 - Croyance classique : « le prix a l'air dans le marché, je négocierai un peu et ça passera ».
-- Vérité proposée : une annonce qui a l'air dans les prix peut te faire perdre 2 490 € une fois tout payé.
+- Vérité proposée : à ce prix, une fois les frais et les travaux payés, la revente fait perdre 2 490 €.
 
 | Variante | Voix | Texte à l'écran |
 |---|---|---|
-| **A · Contexte + coût caché** (recommandée) | « Tu achètes des voitures pour les revendre ? Cette Polo à 8 990 euros a l'air dans les prix. À la revente, tu perds 2 490 euros. » | « Cette Polo à 8 990 € ? », puis « −2 490 € » |
+| **A · Contexte + coût caché** (recommandée) | « Tu achètes des voitures pour les revendre ? Cette Polo à 8 990 euros ? Frais et travaux payés, tu perds 2 490 euros à la revente. » | « Cette Polo à 8 990 € ? », puis « −2 490 € à la revente » |
 | B · Croyance → vérité | « Tu comptes négocier cette Polo à 8 990 euros ? Même à 7 990, tu perds encore 1 490 euros à la revente. » | « Négocier ne suffit pas » |
 | C · Situation | « Polo de 2012, 8 990 euros, vendeur pro. Tu l'achètes pour la revendre ? Attends : tu perdrais 2 490 euros. » | « Tu l'achètes ? Attends. » |
 | D · Démonstration | « Regarde : tu colles cette annonce de Polo dans utopicar. 8 990 euros. Verdict : à éviter. » | « 8 990 € : à éviter » |
@@ -62,46 +62,61 @@ interface de plateforme.
 
 **Recommandation : A.**
 - Le contexte arrive en 2 s (« Tu achètes des voitures pour les revendre ? »), au « tu ».
-- La croyance (« a l'air dans les prix ») et l'écart (« tu perds 2 490 euros ») suivent.
-- La question qui reste (« comment il le sait ? ») est exactement ce que le parcours montre ensuite.
+- La perte suit, avec sa cause (frais et travaux) : le spectateur voit d'où elle vient.
+- La question qui reste (« comment il le sait, et à combien l'acheter ? ») est exactement ce que le parcours montre
+  ensuite.
 
 B est la meilleure variante à tester en second. Ses chiffres sont ceux de l'outil (Polo à 7 990 € : −1 490 €).
 
 ## 4. Le texte de Simon
 
 > **[Analyser]**
-> Tu achètes des voitures pour les revendre ? Cette Polo à 8 990 euros a l'air dans les prix. À la revente, tu perds
-> 2 490 euros.
-> Pour le savoir, copie le lien de l'annonce, et colle-le dans utopicar.
-> L'app la compare à 268 Polo comparables.
-> Fiable ? Moyen. Des travaux ? Environ 400 euros. Bon prix ? Trop cher. Et ça rapporte ? Moins 2 490.
-> Verdict : à éviter. Pour garder ta marge, ne la paie pas plus de 5 750 euros.
+> Tu achètes des voitures pour les revendre ? Cette Polo à 8 990 euros ? Frais et travaux payés, tu perds 2 490 euros
+> à la revente.
+> Pour avoir ces chiffres, copie le lien de l'annonce et colle-le dans utopicar.
+> L'app la compare à 268 Polo comparables : elle est 1 533 euros au-dessus de la cote.
+> Verdict : à éviter. Pour garder 750 euros de marge, paie-la 5 750 au plus.
 >
 > **[Trouver]**
-> Alors, où sont les bonnes affaires ? Lance une recherche : ton modèle, ton budget, combien sous la cote.
-> Une annonce passe dessous ? Tu reçois un mail.
+> Pour les bonnes affaires, lance une recherche : Clio 4, au moins 15 % sous la cote.
+> Une annonce passe dessous, tu reçois un mail.
 >
 > **[Négocier]**
-> Cette Clio : plus de 2 000 euros sous la cote. Très bonne affaire.
-> Tu as ton offre d'ouverture, le prix à ne pas dépasser, et le premier message pour le vendeur.
+> Celle-ci : une Clio, plus de 2 000 euros sous la cote. Très bonne affaire.
+> Tu ouvres à 7 450, sans dépasser 7 950. Ton message au vendeur est prêt.
 >
 > **[Revendre]**
-> Achetée ? Ajoute-la à ton parc, et suis-la jusqu'à la vente, avec ta vraie marge.
+> Tu l'achètes ? Ajoute-la à ton parc. À la vente, tu vois ce qu'elle t'a rapporté, frais payés.
 > utopicar. Achète juste, revends mieux. Le lien est en bio.
 
 **Durée.**
-- 169 mots à l'oral.
-- Au débit de Simon mesuré sur la prise v10 (3,15 mots par seconde, pauses naturelles comprises), cela fait environ
-  54 s de voix.
+- 155 mots, 284 syllabes à l'oral (les nombres sont comptés comme ils se disent).
+- Au débit de Simon mesuré sur la prise v10 (5,2 syllabes par seconde), cela fait environ 54 s de voix.
 - Avec les transitions (0,5 s au plus chacune) et la fin, le film dure environ 58 à 60 s, comme la v10. À
-  chronométrer sur la prise. Pour descendre vers 50 s, la première phrase à couper est « Fiable ? Moyen. ».
+  chronométrer sur la prise.
+
+**Passe stop-slop (17 oct. 2026).** Ce qui a changé par rapport au premier jet :
+- « a l'air dans les prix. À la revente, tu perds… » était une mise en scène (« ça a l'air X, en fait c'est Y »). La
+  voix dit maintenant la cause de la perte : les frais et les travaux.
+- « Pour le savoir » renvoyait à rien. Devenu « Pour avoir ces chiffres ».
+- Les quatre questions enchaînées (« Fiable ? Moyen. Des travaux ? … ») faisaient un rythme de métronome. On garde le
+  chiffre qui tranche, dit en une phrase : « elle est 1 533 euros au-dessus de la cote ». Les quatre cartes restent à
+  l'écran.
+- « Pour garder ta marge » était vague : devenu « Pour garder 750 euros de marge ».
+- « Alors, où sont les bonnes affaires ? » était une question pour la forme : devenu un geste avec de vrais réglages
+  (Clio 4, au moins 15 % sous la cote).
+- Les listes de trois (« ton modèle, ton budget, combien sous la cote » ; « ton offre, le prix à ne pas dépasser, et le
+  premier message ») sont passées à deux éléments chiffrés.
+- « Une annonce passe dessous ? Tu reçois un mail. » répondait tout de suite à sa propre question : une seule phrase.
+- « ta vraie marge » était vague : devenu « ce qu'elle t'a rapporté, frais payés ».
+- Gardés tels quels : « Verdict : à éviter. » et « Très bonne affaire. » (les libellés de l'app), et la signature.
 
 **Pourquoi ces phrases.**
-- La boucle ouverte par l'accroche (« d'où vient ce −2 490 € ? ») se ferme sur la carte « Ça rapporte ? » de l'app.
-- Les quatre questions sont dites dans l'ordre où l'app les affiche. Elles font le rythme : question, réponse, quatre
-  fois.
-- « Alors, où sont les bonnes affaires ? » relance au milieu, avant que la première histoire soit finie.
-- Chaque étape commence par un geste au « tu » : copie, colle, lance, ajoute.
+- La boucle ouverte par l'accroche (« d'où vient ce −2 490 €, et à combien l'acheter ? ») se ferme sur le verdict :
+  5 750 € au plus.
+- Chaque étape commence par un geste au « tu » : copie, colle, lance, ouvre, ajoute.
+- Le mot « cote » est posé dès l'analyse de la Polo (« au-dessus de la cote »). Le spectateur le comprend quand il
+  revient pour la recherche et pour la Clio.
 
 ## 5. Découpage, scène par scène
 
@@ -109,30 +124,32 @@ Chaque scène deviendra une planche, revue une par une.
 
 | # | Étape | Voix | Ce que tu fais | Ce que tu vois (vrais libellés) | Texte à l'écran |
 |---|---|---|---|---|---|
-| 1 | Analyser | Tu achètes des voitures pour les revendre ? Cette Polo à 8 990 euros a l'air dans les prix. À la revente, tu perds 2 490 euros. | Tu fais défiler des annonces ; tu t'arrêtes sur une Polo | L'annonce : la Polo en 3D, « Volkswagen Polo 1.2 TSI 90 Confortline · 2012 · 118 400 km », 8 990 €. Le prix bascule en −2 490 € rouge | Cette Polo à 8 990 € ? · −2 490 € |
-| 2 | Analyser | Pour le savoir, copie le lien de l'annonce, et colle-le dans utopicar. | Tu copies le lien, puis tu le colles | L'écran « Analyser une annonce » : champ « Lien de l'annonce (Leboncoin, La Centrale, AutoScout24) », lien collé sur une ligne, bouton « Analyser ce lien » | Copie le lien · colle-le |
-| 3 | Analyser | L'app la compare à 268 Polo comparables. | Tu attends | « Lecture de l'annonce… », puis les étapes qui se cochent : « Cote sur les annonces comparables », « Calcul du deal : marge, offre, plafond ». Les 268 annonces se rangent autour de la cote (médiane 7 457 €) | 268 Polo comparables |
-| 4 | Analyser | Fiable ? Moyen. Des travaux ? Environ 400 euros. Bon prix ? Trop cher. Et ça rapporte ? Moins 2 490. | Tu lis le rapport | Les quatre cartes de l'app, dans son ordre : « Fiable ? » Moyen, « Des travaux ? » ≈ 400 €, « Bon prix ? » Trop cher (+1 533 €, +21 %), « Ça rapporte ? » −2 490 € | Les quatre questions de l'app |
-| 5 | Analyser | Verdict : à éviter. Pour garder ta marge, ne la paie pas plus de 5 750 euros. | Tu lis le verdict | « Avant le premier message », « À éviter », note 29 sur 100, et « Prix à ne pas dépasser » 5 750 € mis en avant | À éviter · 5 750 € au plus |
-| 6 | Trouver | Alors, où sont les bonnes affaires ? Lance une recherche : ton modèle, ton budget, combien sous la cote. | Tu remplis la recherche | Page « Recherche » : marque et modèle « Renault Clio », « Prix (€) », « Sous la cote d'au moins (%) », bouton « Rechercher », interrupteur « Alerte e-mail » qui s'allume | Ton modèle · ton budget · sous la cote |
-| 7 | Trouver | Une annonce passe dessous ? Tu reçois un mail. | Ton téléphone reçoit le mail | L'e-mail d'alerte : la Clio à 7 650 €, « 2 064 € sous la cote (cote 9 714 € sur 1 102 annonces) », bouton « Voir mes alertes sur utopicar » | Tu reçois un mail |
-| 8 | Négocier | Cette Clio : plus de 2 000 euros sous la cote. Très bonne affaire. | Tu l'analyses | Verdict vert « Très bonne affaire », note 80 sur 100, « Ça rapporte ? » +1 050 € | Très bonne affaire |
-| 9 | Négocier | Tu as ton offre d'ouverture, le prix à ne pas dépasser, et le premier message pour le vendeur. | Tu copies le message | « Offre d'ouverture » 7 450 €, « Prix à ne pas dépasser » 7 950 €, puis « Premier message, prêt à envoyer » et « Copier le message » | Offre · plafond · message |
-| 10 | Revendre | Achetée ? Ajoute-la à ton parc, et suis-la jusqu'à la vente, avec ta vraie marge. | « Ajouter au parc », puis la voiture avance d'étape | La Clio passe « Repérée → Achetée → En préparation → En vente → Vendue » ; « Marge réelle » s'affiche | Ta vraie marge |
-| 11 | Fin | utopicar. Achète juste, revends mieux. Le lien est en bio. | — | Logo officiel, signature, pastille « lien en bio », puis boucle sur l'annonce de la Polo | utopicar · lien en bio |
+| 1 | Analyser | Tu achètes des voitures pour les revendre ? Cette Polo à 8 990 euros ? Frais et travaux payés, tu perds 2 490 euros à la revente. | Tu fais défiler des annonces ; tu t'arrêtes sur une Polo | L'annonce : la Polo en 3D, « Volkswagen Polo 1.2 TSI 90 Confortline · 2012 · 118 400 km », 8 990 €. Le prix se décompose (revente 7 150 €, frais, travaux) et bascule en −2 490 € rouge | Cette Polo à 8 990 € ? · −2 490 € à la revente |
+| 2 | Analyser | Pour avoir ces chiffres, copie le lien de l'annonce et colle-le dans utopicar. | Tu copies le lien, puis tu le colles | L'écran « Analyser une annonce » : champ « Lien de l'annonce (Leboncoin, La Centrale, AutoScout24) », lien collé sur une ligne, bouton « Analyser ce lien » | Copie le lien · colle-le |
+| 3 | Analyser | L'app la compare à 268 Polo comparables : elle est 1 533 euros au-dessus de la cote. | Tu attends, puis tu lis | « Lecture de l'annonce… », puis « Cote sur les annonces comparables ». Les 268 annonces (Polo essence de 2010 à 2014) se rangent autour de la cote, 7 457 € ; la Polo se pose au-dessus. Carte « Bon prix ? » : Trop cher, +1 533 € (+21 %) | 268 Polo comparables · +1 533 € |
+| 4 | Analyser | Verdict : à éviter. Pour garder 750 euros de marge, paie-la 5 750 au plus. | Tu lis le verdict | Les quatre cartes passent (« Fiable ? » Moyen, « Des travaux ? » ≈ 400 €, « Bon prix ? » Trop cher, « Ça rapporte ? » −2 490 €), puis « Avant le premier message », « À éviter », note 29 sur 100, et « Prix à ne pas dépasser » 5 750 €, « pour garder 750 € » | À éviter · 5 750 € au plus |
+| 5 | Trouver | Pour les bonnes affaires, lance une recherche : Clio 4, au moins 15 % sous la cote. | Tu remplis la recherche | Page « Recherche » : « Renault Clio », génération Clio 4, « Sous la cote d'au moins (%) » 15, bouton « Rechercher », interrupteur « Alerte e-mail » qui s'allume | Clio 4 · 15 % sous la cote |
+| 6 | Trouver | Une annonce passe dessous, tu reçois un mail. | Ton téléphone reçoit le mail | L'e-mail d'alerte : la Clio à 7 650 €, « 2 064 € sous la cote (cote 9 714 € sur 1 102 annonces) », bouton « Voir mes alertes sur utopicar » | Tu reçois un mail |
+| 7 | Négocier | Celle-ci : une Clio, plus de 2 000 euros sous la cote. Très bonne affaire. | Tu l'analyses | Verdict vert « Très bonne affaire », note 80 sur 100, « Ça rapporte ? » +1 050 € | Très bonne affaire |
+| 8 | Négocier | Tu ouvres à 7 450, sans dépasser 7 950. Ton message au vendeur est prêt. | Tu copies le message | « Offre d'ouverture » 7 450 €, « Prix à ne pas dépasser » 7 950 €, puis « Premier message, prêt à envoyer » et « Copier le message » | 7 450 € · 7 950 € max |
+| 9 | Revendre | Tu l'achètes ? Ajoute-la à ton parc. À la vente, tu vois ce qu'elle t'a rapporté, frais payés. | « Ajouter au parc », puis la voiture avance d'étape | La Clio passe « Repérée → Achetée → En préparation → En vente → Vendue » ; la marge réelle s'affiche | Ce qu'elle t'a rapporté |
+| 10 | Fin | utopicar. Achète juste, revends mieux. Le lien est en bio. | — | Logo officiel, signature, pastille « lien en bio », puis boucle sur l'annonce de la Polo | utopicar · lien en bio |
 
-**Deux choix d'affichage :**
+**Trois choix d'affichage :**
 - **L'« Objectif » de la Clio n'est pas montré.** L'app le calcule à 7 700 €, plus que le prix demandé (7 650 €) : à
   l'écran, ça embrouille. On montre l'offre d'ouverture et le prix à ne pas dépasser.
-- **La marge réelle de la scène 10 se calcule.** Il faut fixer un prix d'achat et un prix de vente pour l'exemple de la
-  Clio. Je te les proposerai sur la planche 10, calculés avec la formule de l'app (vente − achat − frais).
+- **La revente de la Polo (7 150 €) vient de l'outil** : scénario « Vente normale · 1 à 2 mois ». Frais comptés :
+  150 € par voiture et 500 € de travaux retenus (400 € probables, plus la marge de prudence). 7 150 − 8 990 − 150 −
+  500 = −2 490 €.
+- **La marge réelle de la scène 9 se calcule.** Il faut fixer un prix d'achat et un prix de vente pour l'exemple de la
+  Clio. Je te les proposerai sur la planche 9, calculés avec la formule de l'app (vente − achat − frais).
 
 ## 6. Ce qui change par rapport à la v10
 
 - **Ajouté :**
   - le contexte (qui achète, pour quoi faire) et l'annonce de départ ;
   - le copier-coller du lien et l'attente, avec les vraies étapes de l'app ;
-  - les quatre questions dans l'ordre de l'app ;
+  - la cote posée dès la Polo, puis les quatre questions de l'app à l'écran ;
   - la recherche remplie à l'écran ;
   - le premier message au vendeur ;
   - le passage d'étape dans le parc ;
