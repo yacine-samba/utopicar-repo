@@ -158,7 +158,7 @@ export default async function Accueil() {
             <h2 className="h-sec">
               Pourquoi s&apos;abonner ? <span className="it">Ça se rembourse</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">La première analyse est offerte, sans carte. Voici ce que la suite vous rapporte.</p>
+            <p className="mt-3 text-lg text-ink-2">La première analyse est offerte, sans carte. Après, une seule négociation réussie paie des mois d&apos;abonnement.</p>
           </div>
           <GainsAbonnement famille="particulier" ids={PARTICULIERS} credits lien="/tarifs" />
         </div>

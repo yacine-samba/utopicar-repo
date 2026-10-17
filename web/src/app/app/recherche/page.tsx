@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { compteBenef } from "@/lib/benef";
 import { codeVerdict, valeursStockees, VERDICTS, type VerdictCode } from "@/lib/analyse/verdicts";
 import { supabaseServeur } from "@/lib/supabase/serveur";
@@ -29,6 +30,8 @@ function nomsCatalogue(): NomsCatalogue {
 const CODES = Object.keys(VERDICTS) as VerdictCode[];
 type Filtres = { vue?: string; q?: string; marque?: string; modele?: string; gen?: string; r?: string; j?: string; verdict?: string; marge?: string; prix?: string; depuis?: string };
 const entier = (s?: string) => (s && /^\d{1,7}$/.test(s.replace(/\s/g, "")) ? Number(s.replace(/\s/g, "")) : null);
+
+export const metadata: Metadata = { title: "Recherche" };
 
 export default async function Page({ searchParams }: { searchParams: Promise<Filtres> }) {
   const c = await compteBenef("/app/recherche");
@@ -155,9 +158,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
           <button type="submit" className="btn btn-o btn-sm">
             Rechercher
           </button>
-          <a href="/app/recherche?vue=rapports" className="btn btn-sm">
+          <Link href="/app/recherche?vue=rapports" className="btn btn-sm">
             Effacer
-          </a>
+          </Link>
         </div>
       </form>
       <div className="flex flex-wrap items-center justify-between gap-3">

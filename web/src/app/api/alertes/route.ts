@@ -39,7 +39,12 @@ export async function POST(req: Request) {
     : d.action === "retirer" ? await sb.rpc("alerte_retirer", { p_id: d.id })
     : d.action === "restaurer" ? await sb.rpc("alerte_restaurer", { p_id: d.id })
     : await sb.rpc("alerte_lancer", { p_id: d.id });
-  if (res.error) return Response.json({ erreur: res.error.message }, { status: 400 });
+  if (res.error) {
+    // les refus de la base sont écrits pour l'écran (« 10 alertes au maximum… ») ; une panne technique, non
+    const technique = /timeout|violates|permission|relation|syntax|function|column|connection/i.test(res.error.message);
+    if (technique) console.error("alertes", d.action, res.error.message);
+    return Response.json({ erreur: technique ? "Les alertes sont indisponibles pour le moment. Réessayez dans un instant." : res.error.message }, { status: technique ? 502 : 400 });
+  }
   if (d.action === "liste") return Response.json({ alertes: res.data });
   const liste = await sb.rpc("mes_alertes");
   return Response.json({ ok: true, id: d.action === "enregistrer" ? res.data : undefined, alertes: liste.data ?? [] });

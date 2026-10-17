@@ -108,7 +108,7 @@ export function CarCrush({ compte: compteInitial, rechercheInitiale }: { compte:
     setPile(null);
     setRendus(0);
     ecrire(BROUILLON, null);
-    window.history.replaceState(null, "", "/carcrush");
+    window.history.replaceState(history.state?.utpCarcrush ? { utpCarcrush: true } : null, "", "/carcrush");
     aller("accueil");
   };
 
@@ -129,7 +129,7 @@ export function CarCrush({ compte: compteInitial, rechercheInitiale }: { compte:
         return;
       }
       ecrire(BROUILLON, null);
-      window.history.replaceState(null, "", `/carcrush?r=${d.id}`);
+      window.history.replaceState(history.state?.utpCarcrush ? { utpCarcrush: true } : null, "", `/carcrush?r=${d.id}`);
       if (!d.annonces?.length) {
         setRendus(d.rendus ?? 0);
         aller("vide");
@@ -158,6 +158,29 @@ export function CarCrush({ compte: compteInitial, rechercheInitiale }: { compte:
     return null;
   };
   const retour = precedent();
+
+  // bouton ou geste « retour » du téléphone = la flèche de l'écran : une entrée d'historique reste en haut de la pile
+  // tant que l'écran a un précédent ; un retour la consomme et affiche l'écran précédent (sans précédent : on quitte la page).
+  const sentinelle = useRef(false);
+  const retourRef = useRef<{ retour: Etape | null; aller: (e: Etape) => void }>({ retour, aller });
+  useEffect(() => {
+    retourRef.current = { retour, aller };
+    if (retour && !sentinelle.current) {
+      history.pushState({ utpCarcrush: true }, "");
+      sentinelle.current = true;
+    }
+  });
+  useEffect(() => {
+    const onPop = () => {
+      if (!sentinelle.current || history.state?.utpCarcrush) return;
+      sentinelle.current = false;
+      const { retour: r, aller: a } = retourRef.current;
+      if (r) a(r);
+      else history.back();
+    };
+    addEventListener("popstate", onPop);
+    return () => removeEventListener("popstate", onPop);
+  }, []);
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col px-5 pt-5">

@@ -35,7 +35,7 @@ export default function TikTok() {
             1 500 € prévus. <span className="it">47 € encaissés.</span>
           </h1>
           <p className="arrivee mx-auto mt-6 max-w-2xl text-lg text-ink-2 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
-            « Revente moins achat », c&apos;est le calcul qui fait perdre la première voiture. Ceux qui gagnent le font à l&apos;envers, avant d&apos;appeler le vendeur. Faites-le ici avec vos chiffres.
+            « Revente moins achat » : avec ce calcul, vous perdez de l&apos;argent sur votre première voiture. Faites-le à l&apos;envers, avant d&apos;appeler le vendeur, avec vos chiffres ci-dessous.
           </p>
           <div className="arrivee mt-9 flex flex-wrap justify-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
             <Link href="#calcul" className="btn btn-o">
@@ -82,7 +82,7 @@ export default function TikTok() {
                 Collez-la. Utopicar fait le calcul <span className="it">à votre place.</span>
               </h2>
               <p className="text-lg text-ink-2">
-                Marge nette après frais, prix d&apos;offre et prix max, cote tirée des annonces réellement en ligne, défauts qui coûtent cher. Avec le code TIKTOK, vos 3 premières analyses Benef sont offertes, sans carte bancaire.
+                Marge nette après frais, prix d&apos;offre et prix max, cote tirée des annonces en ligne, défauts qui coûtent cher. Avec le code TIKTOK, vos 3 premières analyses Benef sont offertes, sans carte bancaire.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link href="/inscription?code=TIKTOK&next=/app/analyser" className="btn btn-o">

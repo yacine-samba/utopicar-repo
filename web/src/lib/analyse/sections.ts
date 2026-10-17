@@ -13,14 +13,15 @@ const TOUT = SECTIONS.map((s) => s[0]) as Section[];
 export const SECTIONS_PAR_OFFRE: Partial<Record<OffreId, Section[]>> = {
   pro: TOUT,
   croissance: ["annonce", "alertes", "etat", "nego", "prix", "km", "controles", "papiers", "moteur", "photos", "travaux", "decision", "documents"],
-  starter: ["annonce", "alertes", "etat", "nego", "prix", "controles", "decision", "documents"],
+  // Starter a le rapport de l'ancienne Croissance : moteur, travaux, photos, kilométrage et papiers servent dès la première voiture
+  starter: ["annonce", "alertes", "etat", "nego", "prix", "km", "controles", "papiers", "moteur", "photos", "travaux", "decision", "documents"],
 };
 /** Vue par défaut, sous le bilan (qui donne déjà verdict, prix et travaux) : ce qui sert pour agir. Le reste, dont les papiers
     (CT, HistoVec) qu'on n'a pas avant le premier contact, s'ouvre avec « Détail profond ». */
 export const SECTIONS_PRO: Section[] = ["alertes", "etat", "nego", "travaux", "documents"];
 export const sectionsDe = (o: OffreId) => SECTIONS_PAR_OFFRE[o] ?? SECTIONS_PAR_OFFRE.starter!;
 /** Formule la plus basse qui ouvre une section (pour le cadenas). */
-export const ouvertePar = (s: Section): OffreId => (SECTIONS_PAR_OFFRE.starter!.includes(s) ? "starter" : SECTIONS_PAR_OFFRE.croissance!.includes(s) ? "croissance" : "pro");
+export const ouvertePar = (s: Section): OffreId => (SECTIONS_PAR_OFFRE.starter!.includes(s) ? "starter" : "pro");
 
 /** Retire du rapport ce que la formule ne couvre pas : rien ne part vers le navigateur sans droit. */
 export function filtrerRapport(r: Rapport, o: OffreId): Rapport {

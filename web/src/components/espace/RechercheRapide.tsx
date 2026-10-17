@@ -42,7 +42,8 @@ export function RechercheRapide({ recentes }: { recentes: Recherche[] }) {
         }}
       >
         <ChoixVehicule cat={cat} v={choix} onChange={(c) => { setChoix(c); setErr(""); }} idPrefixe="tb" />
-        <button type="submit" className={cx("btn btn-o min-h-11", !pret && "opacity-80")}>
+        {/* pas d'aspect grisé (contraste trop faible) : sans marque ni modèle, le clic explique quoi choisir */}
+        <button type="submit" className="btn btn-o min-h-11">
           Chercher
         </button>
         {err && <p role="alert" className="text-sm text-warn sm:col-span-2 lg:col-span-4">{err}</p>}

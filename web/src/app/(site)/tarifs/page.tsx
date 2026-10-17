@@ -54,6 +54,8 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
       </div>
       <Rassurance className="mx-auto mt-8 max-w-4xl" />
       <OngletsTarifs
+        // un compte en achat-revente arrive sur ses formules
+        defaut={compte && (compte.famille === "benef" || compte.offre.famille === "benef") ? "benef" : "particuliers"}
         particuliers={
           <section aria-labelledby="t-part">
             <h2 id="t-part" className="text-center font-display text-2xl font-semibold">Vous achetez une voiture pour vous</h2>
@@ -71,9 +73,9 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
             <p className="mx-auto mb-8 mt-1 max-w-2xl text-center text-ink-3">
               Rapports pour professionnels, marge et prix d&apos;offre. <Link href="/benef" className="text-o2 underline underline-offset-4">Découvrir Benef</Link>
             </p>
-            <CartesOffres ids={BENEF} actuelle={compte?.offre.id} />
+            <CartesOffres ids={BENEF} actuelle={compte?.formule} gratuitBenef={!compte || compte.offre.prix === 0} />
             <TableauFormules ids={BENEF} className="mt-12" />
-            <BarreTarifs id="croissance" cible="t-benef" actuelle={compte?.offre.id} />
+            <BarreTarifs id="starter" cible="t-benef" actuelle={compte?.formule} />
           </section>
         }
       />
@@ -83,7 +85,7 @@ export default async function Tarifs({ searchParams }: { searchParams: Promise<{
           <div>
             <h2 id="t-guide" className="font-display text-2xl font-semibold">{GUIDE.nom}</h2>
             <p className="mt-2 text-ink-2">
-              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Les quatre à vie pour {GUIDE.prix}&nbsp;€. Les formules Benef incluent aussi leurs guides : la première revente avec Starter, les trois guides Benef avec Croissance et Pro.
+              Quatre guides complets : votre première revente (16 chapitres), trier les annonces, estimer une reprise, acheter une occasion sans vous faire avoir. Les quatre à vie pour {GUIDE.prix}&nbsp;€. Les formules Benef incluent les trois guides Benef.
             </p>
           </div>
           <div className="grid gap-2 md:w-60">

@@ -7,7 +7,7 @@ import { OFFRES } from "@/lib/offres";
 
 export const metadata: Metadata = {
   title: "Estimer une affaire : analysez une annonce de voiture",
-  description: "Collez une annonce de voiture d'occasion : verdict, coût réel d'achat et points à vérifier, expliqués simplement. Première analyse offerte.",
+  description: "Collez une annonce de voiture d'occasion : verdict, coût réel d'achat et points à vérifier, sans jargon. Première analyse offerte.",
 };
 
 export default async function Page() {
@@ -25,7 +25,7 @@ export default async function Page() {
             <h1 className="h-sec">
               Cette voiture est-elle <span className="it">une bonne affaire ?</span>
             </h1>
-            <p className="text-lg text-ink-2">Collez l&apos;annonce. Nous vous disons combien elle va vraiment vous coûter et ce qu&apos;il faut vérifier avant d&apos;acheter, en langage clair.</p>
+            <p className="text-lg text-ink-2">Collez l&apos;annonce. Nous vous disons combien elle vous coûtera au total et ce qu&apos;il faut vérifier avant d&apos;acheter, en langage clair.</p>
             <p className="text-sm text-ink-3">
               L&apos;aperçu est immédiat et sans compte ; le rapport complet demande un compte gratuit. Déjà inscrit ? <Link href="/connexion?next=/app/analyser" className="text-o2 underline underline-offset-4">Connectez-vous</Link>.
             </p>
@@ -33,7 +33,7 @@ export default async function Page() {
               <summary className="cursor-pointer font-medium text-ink">Comment copier une annonce ?</summary>
               <ul className="mt-3 grid list-disc gap-1.5 pl-5">
                 <li>
-                  <b className="text-ink">Leboncoin</b> : copiez simplement le lien de l&apos;annonce (bouton « Partager », puis « Copier le lien ») et collez-le ci-dessous. L&apos;annonce et ses photos se remplissent toutes seules.
+                  <b className="text-ink">Leboncoin</b> : copiez le lien de l&apos;annonce (bouton « Partager », puis « Copier le lien ») et collez-le ci-dessous. L&apos;annonce et ses photos se remplissent toutes seules.
                 </li>
                 <li>
                   <b className="text-ink">La Centrale, AutoScout24 et les autres</b> : sur ordinateur, Ctrl+A puis Ctrl+C (Cmd sur Mac) ; sur téléphone, appui long sur le texte, « Tout sélectionner », « Copier ». Collez ensuite le texte ci-dessous.

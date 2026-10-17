@@ -33,6 +33,10 @@ export type Vehicule = {
   frais_detail?: Frais[];
   docs?: Record<string, boolean>;
   photos?: string[];
+  /** en tête du parc et de « Votre journée » */
+  epingle?: boolean;
+  /** caché du parc et des décisions du jour, toujours compté dans les statistiques */
+  archive?: boolean;
 };
 
 export type Structure = "achat" | "paiement_revente" | "mandat" | "depot" | "intermediation";

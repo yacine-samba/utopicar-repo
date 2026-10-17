@@ -48,7 +48,40 @@ export function FicheAnnonce({ fiches, index, onIndex }: { fiches: FicheData[]; 
     if (a && !d.open) d.showModal();
     if (!a && d.open) d.close();
   }, [a]);
-  useEffect(() => haut.current?.scrollTo({ top: 0 }), [index]);
+  // accolades obligatoires : les navigateurs récents renvoient une promesse de scrollTo, que React prendrait pour le nettoyage (plantage)
+  useEffect(() => {
+    haut.current?.scrollTo({ top: 0 });
+  }, [index]);
+
+  // bouton ou geste « retour » du téléphone : ferme la fiche au lieu de quitter la page (une entrée d'historique par ouverture)
+  const ouverte = a != null;
+  const fermerRef = useRef(onIndex);
+  useEffect(() => {
+    fermerRef.current = onIndex;
+  });
+  /** true tant que l'entrée d'historique de la fiche ouverte est en haut de la pile */
+  const entree = useRef(false);
+  useEffect(() => {
+    if (!ouverte || entree.current) return;
+    history.pushState({ utpFiche: true }, "");
+    entree.current = true;
+  }, [ouverte]);
+  useEffect(() => {
+    const retour = () => {
+      if (!entree.current || history.state?.utpFiche) return;
+      entree.current = false;
+      fermerRef.current(null);
+    };
+    addEventListener("popstate", retour);
+    return () => removeEventListener("popstate", retour);
+  }, []);
+  /** Fermeture par la croix, Échap ou un clic à côté : l'entrée d'historique de la fiche est retirée (une seule fois). */
+  const fermee = () => {
+    onIndex(null);
+    if (!entree.current) return;
+    entree.current = false;
+    history.back();
+  };
 
   if (!a || index == null) return <dialog ref={ref} />;
   const n = fiches.length;
@@ -72,8 +105,8 @@ export function FicheAnnonce({ fiches, index, onIndex }: { fiches: FicheData[]; 
     <dialog
       ref={ref}
       aria-labelledby="fiche-titre"
-      onClose={() => onIndex(null)}
-      onClick={(e) => e.target === ref.current && ref.current?.close()}
+      onClose={fermee}
+      onClick={(e) => e.target === ref.current && fermee()}
       onKeyDown={(e) => {
         if (e.key === "ArrowRight") aller(index + 1);
         if (e.key === "ArrowLeft") aller(index - 1);
@@ -91,7 +124,7 @@ export function FicheAnnonce({ fiches, index, onIndex }: { fiches: FicheData[]; 
             </button>
             <span className="ml-1 text-xs text-ink-3" aria-live="polite">{index + 1} sur {n}</span>
           </div>
-          <button type="button" onClick={() => ref.current?.close()} aria-label="Fermer la fiche" className="grid size-9 place-items-center rounded-full border border-line-2 text-ink-2 hover:text-ink">
+          <button type="button" onClick={fermee} aria-label="Fermer la fiche" className="grid size-9 place-items-center rounded-full border border-line-2 text-ink-2 hover:text-ink">
             <Ico nom="fermer" className="size-4" />
           </button>
         </div>

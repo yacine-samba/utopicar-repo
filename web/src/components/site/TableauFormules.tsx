@@ -15,6 +15,7 @@ const LIGNES: [string, (o: Offre) => string][] = [
   ["Comparateur de rapports", (o) => (o.comparateur ? OUI : NON)],
   ["Recherche Leboncoin sous la cote et alertes", (o) => (o.recherche ? OUI : NON)],
   ["Gestion du parc et marge réelle", (o) => (o.parc ? OUI : NON)],
+  ["Messages automatiques aux vendeurs", (o) => (o.messages ? "Compris" : o.id === "pro" ? `+${prixTxt(OFFRES.pro_messages.prix - OFFRES.pro.prix)} / mois, en option` : NON)],
   ["Tableau de bord", (o) => (o.tableauDeBord === "complet" ? "Complet" : o.tableauDeBord === "simple" ? "Simple" : NON)],
   ["Guides inclus", (o) => (o.guide ? OUI : NON)],
 ];

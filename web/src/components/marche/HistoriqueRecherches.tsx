@@ -112,7 +112,7 @@ export function HistoriqueRecherches({ recherches, supprimees, alertes, photos =
         <section aria-labelledby="hi-a" className="grid gap-4">
           <div>
             <h2 id="hi-a" className="font-display text-xl font-semibold">Alertes supprimées</h2>
-            <p className="text-sm text-ink-3">Elles ne tournent plus, mais gardent leurs critères et ce qu&apos;elles ont trouvé. Réactivez-en une en un clic.</p>
+            <p className="text-sm text-ink-3">Elles ne tournent plus, mais gardent leurs critères et ce qu&apos;elles ont trouvé. Réactivez celle dont vous avez besoin.</p>
           </div>
           {anciennes.length ? (
             <ul className="grid gap-3">

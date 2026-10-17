@@ -31,7 +31,19 @@ export type LigneMarche = Ligne & {
 /** Motif du catalogue (JavaScript, \b) pour Postgres (\y). */
 const versPg = (rx: string) => rx.replace(/\\b/g, "\\y");
 
-export const lienAnnonce = (l: { id: string; url: string | null }) => l.url || (/^\d{6,14}$/.test(l.id) ? `https://www.leboncoin.fr/ad/voitures/${l.id}` : null);
+/** Kilométrage écrit en milliers (« 190 » pour 190 000 km, 965 annonces en octobre 2026) sur une voiture de plus de 2 ans :
+    corrigé quand ×1 000 est plausible pour son âge, sinon inconnu. Laissé tel quel, la régression (qui écarte déjà les
+    annonces sous 1 000 km de son calcul) cote l'annonce comme une voiture presque neuve (Q3 de 2012 cotée 20 550 € au lieu
+    d'environ 12 500 €), et l'annonce passe les filtres « km max ». Corrigée, elle entre aussi dans le calcul. */
+export function kmPlausible(km: number | null, annee: number | null, an = new Date().getFullYear()): number | null {
+  if (km == null || km >= 1000 || annee == null) return km;
+  const age = an - annee;
+  if (age < 2) return km;
+  const k = km * 1000;
+  return k >= age * 3000 && k <= Math.min(600_000, age * 45_000) ? k : null;
+}
+
+export const lienAnnonce =(l: { id: string; url: string | null }) => l.url || (/^\d{6,14}$/.test(l.id) ? `https://www.leboncoin.fr/ad/voitures/${l.id}` : null);
 
 /** Annonces d'un modèle sur une plage d'années (jusqu'à 5 000). `service` : lecture serveur pour l'estimation des formules
     sans la recherche (seul le chiffre de la cote leur est renvoyé, jamais les annonces). */
@@ -186,8 +198,27 @@ export class Cotes {
   }
 }
 
+type Marche = NonNullable<Awaited<ReturnType<typeof chargerModele>>>;
+/** Lectures serveur gardées 5 minutes (CarCrush relit le même modèle à chaque critère changé, l'analyse le relit pour la projection).
+    Jamais les lectures au nom d'un compte : la base y vérifie la formule de chacun. */
+const GARDE_MS = 5 * 60_000, GARDE_MAX = 8;
+const gardes = new Map<string, { t: number; p: Promise<Marche | null> }>();
+
 /** Charge un modèle du catalogue, ses annonces, leur génération et leur motorisation. */
-export async function marcheModele(base: string, y0?: number | null, y1?: number | null, service = false) {
+export async function marcheModele(base: string, y0?: number | null, y1?: number | null, service = false): Promise<Marche | null> {
+  if (!service) return chargerModele(base, y0, y1, false);
+  const k = `${base}|${y0 ?? ""}|${y1 ?? ""}`;
+  const g = gardes.get(k);
+  if (g && Date.now() - g.t < GARDE_MS) return g.p;
+  const p = chargerModele(base, y0, y1, true);
+  gardes.delete(k);
+  gardes.set(k, { t: Date.now(), p });
+  if (gardes.size > GARDE_MAX) gardes.delete(gardes.keys().next().value!);
+  p.catch(() => gardes.get(k)?.p === p && gardes.delete(k)); // une panne n'est pas gardée
+  return p;
+}
+
+async function chargerModele(base: string, y0: number | null | undefined, y1: number | null | undefined, service: boolean) {
   const m = modeleDe(base);
   if (!m) return null;
   const marque = base.split(" ")[0], modele = base.split(" ").slice(1).join(" ");
@@ -199,7 +230,8 @@ export async function marcheModele(base: string, y0?: number | null, y1?: number
     const r = reconnaitre({ titre: l.titre });
     return !!r.modele && r.base !== m.base;
   };
-  const lignes: LigneMarche[] = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null, 5000, service)).filter((l) => !autreModele(l)).map((l) => {
+  const lignes: LigneMarche[] = (await annoncesModele(m.regex, y0 ?? null, y1 ?? null, 5000, service)).filter((l) => !autreModele(l)).map((brute) => {
+    const l = { ...brute, km: kmPlausible(brute.km, brute.annee) };
     const g = generationDe(m.base, versMoteur(l));
     const tx = sansAccent(`${l.titre} ${l.version ?? ""} ${l.texte ?? ""}`);
     // puissance : Leboncoin (DIN), sinon la version Leboncoin ou le texte (« 150 ch »)

@@ -74,7 +74,7 @@ export function ResultatParticulier({ a, onNouvelle, id }: { a: Analyse; onNouve
         lien={a.lien}
         rapportId={id ?? a.rapportId ?? null}
         argent={
-      <Panneau titre="Ce qu'elle va vraiment vous coûter">
+      <Panneau titre="Ce qu'elle vous coûtera au total">
         <div className="mb-4 flex items-baseline justify-between gap-4">
           <span className="text-ink-2">Coût réel d&apos;achat</span>
           <b className="num font-display text-[clamp(28px,6vw,40px)] font-semibold text-o2">

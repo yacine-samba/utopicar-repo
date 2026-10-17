@@ -9,6 +9,7 @@ import { cx } from "../ui";
 import { ExportCsv } from "./ExportCsv";
 import { FicheParc } from "./FicheParc";
 import { Carrousel } from "../analyse/Photos";
+import { ActionsVehicule } from "../espace/ActionsVehicule";
 
 const eur = (v: number | null) => (v == null ? "—" : `${v.toLocaleString("fr-FR")}\u00a0€`);
 
@@ -16,15 +17,19 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
   const { confirmer, element: confirmation } = useConfirmation();
   const router = useRouter();
   const [edition, setEdition] = useState<string | null>(null);
-  const [filtre, setFiltre] = useState<"stock" | "tous" | "vendus">("stock");
-  const liste = vehicules.filter((v) => (filtre === "tous" ? true : filtre === "vendus" ? v.statut === "vendu" : !["vendu", "abandonne"].includes(v.statut)));
+  const [filtre, setFiltre] = useState<"stock" | "tous" | "vendus" | "archives">("stock");
+  const nArchives = vehicules.filter((v) => v.archive).length;
+  // archivées : seulement dans leur filtre ; épinglées : en tête
+  const liste = vehicules
+    .filter((v) => (filtre === "archives" ? !!v.archive : !v.archive && (filtre === "tous" ? true : filtre === "vendus" ? v.statut === "vendu" : !["vendu", "abandonne"].includes(v.statut))))
+    .sort((a, b) => Number(!!b.epingle) - Number(!!a.epingle));
   return (
     <div className="grid gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div role="group" aria-label="Filtrer le parc" className="flex gap-1 rounded-full border border-line-2 bg-glass p-1 text-sm">
-          {(["stock", "vendus", "tous"] as const).map((k) => (
+          {(["stock", "vendus", "tous", ...(nArchives ? (["archives"] as const) : [])] as const).map((k) => (
             <button key={k} type="button" aria-pressed={filtre === k} onClick={() => setFiltre(k)} className="rounded-full px-4 py-1.5 text-ink-2 aria-pressed:bg-o aria-pressed:text-[#160904]">
-              {k === "stock" ? "En cours" : k === "vendus" ? "Vendues" : "Toutes"}
+              {k === "stock" ? "En cours" : k === "vendus" ? "Vendues" : k === "tous" ? "Toutes" : `Archivées (${nArchives})`}
             </button>
           ))}
         </div>
@@ -70,12 +75,15 @@ export function GestionParc({ vehicules }: { vehicules: Vehicule[] }) {
                           </p>
                           <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-ink-3">
                             <span className="rounded-full border border-o/40 bg-o/10 px-2 py-px text-xs font-medium text-o2">{STATUTS_PARC[v.statut]}</span>
+                            {v.epingle && <span className="text-xs font-medium text-o2">Épinglée</span>}
+                            {v.archive && <span className="text-xs">Archivée</span>}
                             {v.immat && <span className="rounded border border-line-2 bg-white/90 px-1.5 font-mono text-xs font-semibold tracking-wider text-[#1d1d1f]">{v.immat}</span>}
                             {v.structure && v.structure !== "achat" && <span>{STRUCTURES[v.structure]}</span>}
                             {j != null && <span>{j} jour{j > 1 ? "s" : ""} {v.statut === "vendu" ? "en stock" : "depuis l'achat"}</span>}
                           </p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <ActionsVehicule v={v} decider />
                           <button type="button" onClick={() => setEdition(v.id)} className="btn btn-sm">
                             Modifier
                           </button>

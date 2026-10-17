@@ -8,12 +8,20 @@ import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { DemandeProfil } from "@/components/analyse/ProfilAnalyse";
 import { lienPartage } from "@/lib/analyse/import";
+import { redirect } from "next/navigation";
+import { supabaseServeur } from "@/lib/supabase/serveur";
 
 export const metadata: Metadata = { title: "Analyser une annonce" };
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string }> }) {
-  const c = await compteBenef("/app/analyser");
+export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string; usage?: string }> }) {
   const sp = await searchParams;
+  const c = await compteBenef(sp.usage === "benef" ? "/app/analyser?usage=benef" : "/app/analyser");
+  // carte « Gratuit » des tarifs Benef : l'usage achat-revente est enregistré (s'il n'est pas déjà choisi),
+  // pour que l'analyse offerte soit une analyse Benef
+  if (sp.usage === "benef") {
+    if (!c.famille && !c.illimite) await (await supabaseServeur()).from("profils").update({ famille: "benef", updated_at: new Date().toISOString() }).eq("id", c.id);
+    redirect(sp.lien ? `/app/analyser?lien=${encodeURIComponent(sp.lien)}` : "/app/analyser");
+  }
   // ?lien= (tableau de bord) ou partage depuis une appli (url, texte, titre : voir le manifest)
   const lien = sp.lien ?? lienPartage(sp.url, sp.texte, sp.titre) ?? undefined;
   const partageIllisible = !sp.lien && !lien && !!(sp.url || sp.texte);
@@ -34,7 +42,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
           </p>
         </div>
       );
-    return <OutilBenef maxPhotos={o.photos} parc={o.parc} villeCompte={c.ville} lienInitial={lien} restantes={c.illimite ? null : c.restantes} />;
+    return <OutilBenef maxPhotos={o.photos} parc={o.parc} villeCompte={c.ville} lienInitial={lien} restantes={c.illimite ? null : c.restantes} suite={suite?.id ?? null} />;
   }
 
   return (
@@ -44,6 +52,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
       ville={c.ville}
       maxPhotos={o.photos}
       restantes={c.illimite ? null : c.restantes}
+      suite={suite?.id ?? null}
       retour="/app/analyser"
       lienInitial={lien}
       apres={

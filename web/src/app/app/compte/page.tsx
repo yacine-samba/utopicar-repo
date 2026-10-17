@@ -8,7 +8,7 @@ import { guidesPour, GUIDES } from "@/lib/guides";
 import { OptionMessages } from "@/components/compte/OptionMessages";
 import { ChampCode } from "@/components/compte/CodeOffert";
 import { familleEspace, nomFormule } from "@/lib/espace";
-import { BENEF, PARTICULIERS, prixTxt } from "@/lib/offres";
+import { BENEF, OFFRES, PARTICULIERS, prixTxt } from "@/lib/offres";
 import { confirmerRetour } from "@/lib/stripe-synchro";
 import {
   BoutonPortail,
@@ -132,7 +132,7 @@ export default async function Compte({
               : compte.offerte
                 ? "offerte par Utopicar"
                 : o.prix
-                  ? `${prixTxt(o.prix)} par mois`
+                  ? `${prixTxt(OFFRES[compte.formule].prix)} par mois`
                   : "gratuite"}
           </span>
         </div>
@@ -252,7 +252,7 @@ export default async function Compte({
           </div>
           <CartesOffres
             ids={famille === "benef" ? BENEF : PARTICULIERS}
-            actuelle={o.id}
+            actuelle={compte.formule}
             credits={famille !== "benef"}
           />
           <p className="text-sm text-ink-3">
@@ -271,7 +271,7 @@ export default async function Compte({
         </section>
       )}
 
-      {famille === "benef" && o.id === "pro" && <OptionMessages actif={compte.messages} illimite={compte.illimite} />}
+      {famille === "benef" && o.id === "pro" && <OptionMessages actif={compte.messages} illimite={compte.illimite} comprise={compte.formule === "pro_messages"} />}
 
       <section id="guides" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-guides">
         <div className="flex flex-wrap items-baseline justify-between gap-3">

@@ -1,3 +1,4 @@
+import { OFFRES } from "./offres";
 import type { Compte } from "./compte";
 import type { Famille } from "./offres";
 
@@ -6,7 +7,7 @@ export type Icone = "accueil" | "analyser" | "rapports" | "parc" | "rentabilite"
 export type EntreeNav = { href: string; label: string; court: string; icone: Icone; verrou?: string; mobile?: boolean; menu?: boolean };
 
 /** Espace affiché : la famille de la formule payée (ou offerte), sinon l'usage choisi à l'inscription. */
-export const familleEspace = (c: Compte): Famille => (c.illimite ? (c.famille ?? "benef") : c.offre.prix > 0 || c.offerte || c.code ? c.offre.famille : (c.famille ?? "particulier"));
+export const familleEspace = (c: Compte): Famille => (c.illimite ? (c.famille ?? "benef") : c.offre.prix > 0 || c.offerte || c.essaiBenef ? c.offre.famille : (c.famille ?? "particulier"));
 
 /** Modules gardés dans le code mais retirés de l'espace (on ne les utilise pas pour l'instant) : Tri rapide, Comparateur.
     La calculette de rentabilité est sur le site public (/benef), les alertes e-mail dans la Recherche, les guides dans le profil. */
@@ -49,7 +50,10 @@ export function navEspace(c: Compte): EntreeNav[] {
   ];
 }
 
-export const nomFormule = (c: Compte) => (c.illimite ? "Accès illimité" : c.code ? "Essai Benef" : c.offre.famille === "benef" ? `Benef ${c.offre.nom}` : c.offre.nom);
+export const nomFormule = (c: Compte) => {
+  const nom = c.formule !== c.offre.id ? OFFRES[c.formule].nom : c.offre.nom; // Pro + Messages
+  return c.illimite ? "Accès illimité" : c.code ? "Essai Benef" : c.offre.famille === "benef" ? `Benef ${nom}` : nom;
+};
 /** « 12 analyses restantes ce mois », ou « Analyses illimitées ». */
 export const texteRestantes = (c: Compte) =>
   c.illimite

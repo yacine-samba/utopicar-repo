@@ -81,3 +81,18 @@ export function useNotification() {
 
   return { notifier, element };
 }
+
+const EVT_AVIS = "utp-avis";
+/** Notification qui survit au composant qui l'a demandée (une carte archivée disparaît, son « Annuler » reste) :
+    affichée par <NotificationsEspace />, posée une fois dans la mise en page de l'espace. */
+export const annoncer = (a: Avis) => window.dispatchEvent(new CustomEvent<Avis>(EVT_AVIS, { detail: a }));
+
+export function NotificationsEspace() {
+  const { notifier, element } = useNotification();
+  useEffect(() => {
+    const f = (e: Event) => notifier((e as CustomEvent<Avis>).detail);
+    addEventListener(EVT_AVIS, f);
+    return () => removeEventListener(EVT_AVIS, f);
+  }, [notifier]);
+  return element;
+}
