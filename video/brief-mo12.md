@@ -40,9 +40,12 @@ Interdits : produit, logos de marques et de plateformes, plaques, visages, moral
 - **Imposé par le sujet, noté sans être testé** : le compteur héros monte (« Cette affaire te coûte », 0 → 578 €) au
   lieu de fondre ; l'accumulation colle des « ? » (les questions jamais posées) au lieu de débits bancaires ; l'attente
   devient le silence du parking.
-- **On saura si** : commentaires pour 1 000 vues au-dessus de MO5 et de la médiane MO9–MO11, **sans** que la durée
-  moyenne (en % de la vidéo) et la part encore là à 3 s tombent de plus de 20 % sous MO5. Commentaires en hausse et
-  durée en baisse de plus de 20 % : le CTA parlé coûte la boucle, les épisodes suivants le passent à l'écrit seul.
+- **On saura si** : commentaires pour 1 000 vues au-dessus de la médiane des 10 dernières vidéos du compte (MO5
+  compris ; MO9, MO10 et MO11, sans CTA, publiés au même créneau pendant la série, sont les témoins), **sans** que la
+  durée moyenne (en % de la vidéo) et la part encore là à 3 s tombent de plus de 20 % sous cette médiane. Lecture à
+  J+2, décision à J+7, lecture finale à J+10. Commentaires en hausse et durée en baisse de plus de 20 % : le CTA parlé
+  coûte la fin, les épisodes suivants le passent à l'écrit seul (V02). Une vidéo seule ne tranche pas : V02 et V25
+  confirment ou infirment.
 - **Fabrication** : réutiliser `lib/kit47.js` (MO9–MO11) ; nouveau module « route de lumière » (trait SVG qui s'écrit
   avec la plume, caméra qui le suit) ; mesure : part d'images en mouvement (`ref-motion.py`) ≥ 80 %, rendu ≤ 60 min.
 

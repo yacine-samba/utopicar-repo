@@ -18,10 +18,10 @@ Ce que j'ai décidé pour avancer sans te bloquer (dis-moi si l'un de ces points
 | Point | Décision |
 |---|---|
 | « Produire 20 à 30 vidéos » | 26 fiches prêtes à produire (hook A/B/C, contexte, valeur, CTA, chiffres, variable testée). Les MP4 se fabriquent ensuite un par un avec motion-studio, après ton « OK » par vidéo. |
-| « CTA mais sans vendre » | Le CTA demande un **commentaire**, un **enregistrement**, un **envoi à quelqu'un** ou **la suite** (abonnement). Jamais « lien en bio », « code TIKTOK », « commente X pour recevoir » (c'est une collecte de prospects, donc une vente différée). |
+| « CTA mais sans vendre » | Le CTA demande un **commentaire** (question ouverte ou demande d'avis), un **enregistrement** situé (« garde-la pour samedi »), un **envoi à quelqu'un de précis** ou **la suite** (abonnement). Jamais « lien en bio », « code TIKTOK », ni « commente X pour recevoir » : c'est une collecte de prospects (vente différée), Instagram cite le mot-code en commentaire comme exemple d'engagement bait, et sur TikTok France l'envoi automatique en message privé n'existe pas (recherche axe 3). |
 | « Rester dans ma DA » | Charte des vidéos d'attention MO5 → MO11 : fond #08070a, orange #ff5a1f, Clash Display, Satoshi, Fraunces italique, verre dépoli, lumière qui écrit, vraie voiture détourée, Simon, Controlled Drop. Pas de capture d'outil. |
 | « A/B testing » | En organique, on ne peut pas montrer deux versions au même public : on compare des **vidéos entières** qui ne diffèrent que par **une variable**, publiées au **même créneau**, lues à **J+2 et J+7**, en **médiane**. Protocole § 4. |
-| « 1re vidéo » | **MO12 « 600 km »** : la recette 47 (notre seul format prouvé, > 6 000 vues) sur un sujet neuf, avec la seule nouveauté demandée, le CTA. C'est le **témoin** de toute la série. |
+| « 1re vidéo » | **MO12 « 600 km »** : la recette 47 (notre seul format prouvé, > 6 000 vues) sur un sujet neuf, avec la seule nouveauté demandée, le CTA. C'est le **témoin** de toute la série. Les témoins **sans** CTA, que la recherche demande de garder dans le test, existent déjà : MO9, MO10 et MO11 (fabriqués, pas encore publiés) : les publier au même créneau pendant la série. |
 | Sujets déjà pris | Les 14 vidéos « l'analyse sort tout » (12 → 25 oct.) et MO5 → MO11 gardent leurs sujets. Quand une fiche ci-dessous les frôle, c'est écrit, avec une date de publication après la leur. |
 
 ## 2. Les règles de la série (communes aux 26 vidéos)
@@ -49,10 +49,19 @@ Les quatre blocs, et ce que la recherche a établi pour chacun (`docs/recherche-
   crédibilité vérifiable à l'écran (formule, date du relevé, « exemple ») ; la chute n'est pas le seul moment fort :
   une première récompense dans le hook, la méthode avant la fin.
 - **CTA** : une seule demande, précise, liée à une situation vécue (« ta question au vendeur », « envoie-la à celui
-  qui fait 300 km samedi »), dite **et** écrite, ≤ 2,5 s ; jamais « aime et abonne-toi ». Les envois pèsent plus que
-  les commentaires pour toucher des non-abonnés (Instagram, Mosseri 2025 ; TikTok : 40 partages pour 8 commentaires
-  par vidéo dans notre tranche, Socialinsider 2026) ; une vraie question fait + 26 % de commentaires (Metricool 2026).
-  Le type de CTA est fixé par famille (§ 3) pour ne pas devenir une variable cachée.
+  qui fait 300 km samedi »), dite **et** écrite (un CTA écrit à l'écran est la seule forme dont une plateforme a mesuré
+  l'effet), ≤ 2,5 s ; jamais « aime et abonne-toi ». Formes autorisées par les règles des plateformes : la question
+  ouverte, la demande d'avis ou de conseil, le destinataire nommé ; formes à proscrire : « commente OUI si… », « like
+  si… », un mot-code contre une récompense, une promesse non tenue (« partie 2 » jamais publiée = « misleading claim »
+  inéligible au Pour toi). Les envois pèsent plus que les commentaires pour toucher des non-abonnés (Instagram, Mosseri
+  2024-2025 ; TikTok 2025 : commentaires − 24 %, partages + 45 % ; 40 partages pour 8 commentaires par vidéo dans notre
+  tranche) ; une vraie question fait + 26 % de commentaires (Metricool 2026). Le type de CTA est fixé par famille (§ 3)
+  pour ne pas devenir une variable cachée. Un CTA « commente » engage à **répondre dans l'heure** (répondre est associé
+  à + 21 % d'engagement, Buffer 2026). Le commentaire épinglé reprend la question ou un chiffre, jamais un lien.
+- **Cadre légal (à faire valider par un juriste)** : une vidéo pédagogique publiée par la marque sur son propre compte,
+  sans tiers rémunéré, sans produit ni lien, n'entre pas dans l'influence commerciale « à titre onéreux » (loi
+  2023-451) ; l'ARPP ne demande une identification que s'il y a risque de confusion avec un contenu éditorial. Dès
+  qu'une vidéo cite le service UTOPICAR, prévoir une identification explicite.
 - **Constantes de fabrication** : sous-titres intégraux incrustés et synchronisés (69 % regardent sans le son en
   public ; sous-titres + 58 % de mémorisation dans les tests TikTok) ; ≤ 10 mots affichés par seconde ; légende qui
   reformule le hook avec les mots que tape un débutant (« acheter une voiture pour la revendre », « première
@@ -75,7 +84,7 @@ sujet de V01** dans deux autres concepts, pour comparer des concepts à sujet é
 | V07 | 2 · Liste à rebours | 5 voitures que ton acheteur fuit | valence : perte (même format que V06) | vues, commentaires, partages | MO8 (film livré) : à publier tel quel si tu préfères |
 | V08 | 3 · Duel / pari | 2 900 € à 300 km ou 3 400 € à 20 km ? | concept duel vs récit, **même sujet que V01** | commentaires / 1 000 | — |
 | V09 | 3 · Duel / pari | Deux Clio 4 à 6 000 € : TCe ou dCi ? | duel binaire, réponse dans la vidéo | commentaires, part à 3 s | — |
-| V10 | 3 · Duel / pari | 3 000 € : laquelle pour ta première ? | choix à trois, réponse en commentaire épinglé (si la recherche l'autorise) | commentaires, durée moyenne | S1V7 (budget) |
+| V10 | 3 · Duel / pari | 3 000 € : laquelle pour ta première ? | choix à trois (vs duel binaire), réponse à 25 s | commentaires, durée moyenne | S1V7 (budget) |
 | V11 | 4 · Conversation | « Toujours dispo ? » | bulles écrites, une voix | enregistrements, partages | — |
 | V12 | 4 · Conversation | « Dernier prix ? » | dialogue à deux voix (variable de fabrication) | durée moyenne, partages | S2V4 (22 oct.) : publier après le 5 nov. |
 | V13 | 4 · Conversation | « Pourquoi vous la vendez ? » | réponses à trous (le spectateur complète) | commentaires | — |
@@ -147,7 +156,7 @@ semaines de suite, ordre tiré à pile ou face et noté. 26 vidéos ≈ 13 semai
 - *Hooks* : **A** Croyance → vérité : « Elle est belle, elle roule bien. Ton acheteur, lui, a lu le moteur. » — écran : *Ton acheteur a lu le moteur* · **B** Liste + écart (MO8) : « Cinq voitures à ne jamais acheter pour revendre. Pas la voiture : le moteur, ou la boîte. » — écran : *Pas la voiture. Le moteur.* · **C** Erreur intelligente : « Les débutants fuient des marques. Les pros fuient trois moteurs et deux boîtes. » — écran : *3 moteurs, 2 boîtes*. Reco : C, A en test. Verrous C : Temps ✅ · Sens ✅ · Miroir ✅ · Écart ✅.
 - *Contexte* : palettes 5 → 1 : 1.2 PureTech (courroie dans l'huile), 1.2 TCe 115/120 (consommation d'huile), 1.0 EcoBoost (courroie dans l'huile, surchauffe), boîtes DSG/EDC/Powershift/Quickshift, premium à 200 000 km (ta règle, script n° 7 : « pas toutes mauvaises, mais ton acheteur fuit »). Coûts : ceux de MO8, sourcés (jusqu'à 10 000 € pour le TCe, UFC-Que Choisir).
 - *Valeur* : la liste, les années (MO8), la phrase à retenir : « ce n'est pas la voiture, c'est ce que ton acheteur fuit ».
-- *CTA* (dit + écrit) : « Ton moteur, en commentaire : je te dis si ton acheteur le fuit. » (tu réponds, ça relance la vidéo)
+- *CTA* (dit + écrit) : « Le moteur de ta voiture, c'est lequel ? » (question ouverte ; tu réponds à chacun dans l'heure, ça relance la vidéo ; pas de « je te dis si… » conditionnel)
 - *Frôle* : MO8 « Les 5 moteurs » (film livré, non publié). Deux options : publier MO8 comme V07 (il manque le CTA : l'ajouter en carte à l'écran, 2 s) ou produire V07 avec les boîtes et ta règle « premium 200 000 km ».
 
 ### Famille 3 · Le duel / le pari (ce qu'on commente avant la réponse)
@@ -169,9 +178,9 @@ semaines de suite, ordre tiré à pile ou face et noté. 26 vidéos ≈ 13 semai
 **V10 · 3 000 € : laquelle pour ta première ?**
 - *Analyse* : douleur, choisir sa première · croyance, « la plus belle / la plus connue » · vérité, la plus simple à revendre avec un moteur sans histoire.
 - *Hooks* : **A** Pari à trois : « Trois mille euros, trois voitures : une Clio de 2010, une 208 de 2013, une Golf 6. Une seule est une bonne première. » — écran : *A · B · C ?* · **B** Erreur intelligente : « Les débutants prennent la plus belle des trois. Les pros prennent celle qui a une courroie et des factures. » — écran : *La plus belle perd* · **C** Coût caché : « La plus belle des trois cache une courroie qui baigne dans l'huile. » — écran : *La plus belle baigne dans l'huile*. Reco : A, B en test. Verrous A : Temps ✅ · Sens ✅ · Miroir ✅ · Écart ✅.
-- *Contexte* : trois voitures (Commons, versions exactes), trois cartes ; la 208 est une 1.2 PureTech (à fuir, outil), la Golf 6 un 1.4 TSI 122 (chaîne fragile, MO8), la Clio III 1.2 16V (fiable, distribution tous les 120 000 km, outil). La réponse n'est **pas** dans la vidéo : elle est en commentaire épinglé le lendemain **si** la recherche (axe 3) confirme que TikTok ne pénalise pas ce procédé ; sinon réponse à 25 s.
+- *Contexte* : trois voitures (Commons, versions exactes), trois cartes ; la 208 est une 1.2 PureTech (à fuir, outil), la Golf 6 un 1.4 TSI 122 (chaîne fragile, MO8), la Clio III 1.2 16V (fiable, distribution tous les 120 000 km, outil). La réponse tombe à 25 s, dans la vidéo, et le commentaire épinglé la répète avec le pourquoi. (La variante « réponse différée en commentaire » est écartée : retenir une information pour faire commenter est la définition du clickbait dans les règles de recommandation Instagram.)
 - *Valeur* : trois modèles, trois moteurs, ce qui les départage.
-- *CTA* (dit + écrit) : « A, B ou C ? Réponse demain, en commentaire épinglé. »
+- *CTA* (dit à 3 s, écrit jusqu'à 25 s) : « A, B ou C ? Dis-le avant la réponse. »
 
 ### Famille 4 · La conversation (Leboncoin comme personnage, sans logo)
 
@@ -230,7 +239,7 @@ et 6). Ici la DA reste la nôtre (motion + tes vraies photos et captures, sans v
 - **V18 · Partie 2 · Je l'ai vue, je l'ai négociée** — Hook A : « Partie deux. Elle était à trois mille deux. Je l'ai payée… » (silence) — écran : *Partie 2 · payée ?*. Contexte : les 20 minutes de visite (V24), la négo à trois nombres (V12). Valeur : ce qu'on vérifie, la phrase qui a fait baisser. CTA : « Partie 3 vendredi : le bilan, frais compris. »
 - **V19 · Partie 3 · Le bilan, frais compris** — Hook A (chiffre choc) : « Achetée deux mille huit, revendue trois mille six. Bénéfice : [ton vrai chiffre]. Frais compris. » — écran : *Bénéfice réel : … €*. Contexte : chaque frais en notification (vrais tickets). Valeur : la liste réelle des frais, le délai réel. CTA : « Ta question pour la prochaine, en commentaire. »
 - *Variable* : la série elle-même (CTA « la suite »). *Ce qui tranche* : abonnés gagnés pour 1 000 vues, vues de la partie 2 ÷ partie 1 (TikTok Studio : nouveaux abonnés, vues de profil).
-- *Règle* : chiffres réels seulement, écrits sur tes tickets ; mention « exemple vécu » ; aucune promesse de gain.
+- *Règle* : chiffres réels seulement, écrits sur tes tickets ; mention « exemple vécu » ; aucune promesse de gain ; **les trois parties sont fabriquées avant de publier la première** (une « partie 2 » annoncée et jamais publiée est une promesse trompeuse au sens des règles TikTok).
 
 ### Famille 7 · La durée comme variable (15 s, et 60 → 75 s)
 
@@ -259,17 +268,25 @@ ingrédient que confirmée deux fois : V25–V26 servent à ça.
 
 ## 4. Protocole A/B en organique (ce qu'on peut vraiment conclure)
 
-1. **Une variable par vidéo** en plus du sujet, qui change toujours. Paires : même jour de semaine, même heure (celle
-   de MO5), deux semaines de suite, ordre tiré à pile ou face et noté. Jamais deux versions de la même vidéo sur le
-   même compte (risque de contenu dupliqué : `docs/recherche-serie-ab.md`, axe 4).
+1. **Une variable par vidéo** en plus du sujet, qui change toujours. Paires : même jour de semaine, même heure, deux
+   semaines de suite, ordre tiré à pile ou face et noté ; au moins 72 h entre deux vidéos. Jamais deux versions de la
+   même vidéo sur le même compte TikTok (un re-upload identique est du contenu « réutilisé » ; sur Instagram un reel
+   déjà publié est rendu moins visible). Pour comparer deux **ouvertures** d'une même vidéo, utiliser **Trial Reels**
+   sur Instagram (montré aux non-abonnés, statistiques à 24 h, décision à 72 h) : A un jour, B le lendemain au même
+   créneau. Le créneau se choisit une fois dans « Heures d'activité » de TikTok Studio (onglet Spectateurs), puis ne
+   bouge plus : quatre études de plus d'un million de posts donnent quatre « meilleures heures » incompatibles.
 2. **Relever à J+2, J+7 (décision) et J+10 (lecture finale : 96 % de la portée d'une vidéo TikTok est atteinte en
    10 jours, Metricool 2026)** dans TikTok Studio : vues, part encore là à 3 s (lue sur la courbe de rétention, TikTok
    ne publie pas de « taux d'accroche »), courbe, durée moyenne en %, visionnages complets, partages, enregistrements,
    commentaires, nouveaux abonnés, part « Pour toi ». Tout ramener à **1 000 vues**. Une capture par vidéo, rangée
    dans le journal du skill. Repères externes, à titre d'alerte seulement : un compte de 1 000 à 5 000 abonnés fait en
    moyenne 350 vues, 40 partages et 8 commentaires par vidéo (Socialinsider 2026, comptes de marques).
-3. **Comparer en médiane** à MO5 et à la médiane de la série, jamais au meilleur score. Une vidéo seule ne prouve
-   rien ; une leçon devient un ingrédient quand **deux** épisodes la confirment.
+3. **Comparer en médiane**, jamais au meilleur score. La référence n'est pas « 6 000 vues » (un pic : sur un même
+   compte TikTok, l'écart entre vidéos est très grand, indice de Gini médian 0,70) mais la **médiane des 10 dernières
+   vidéos du compte, recalculée toutes les 10 publications** (les vues par vidéo ont baissé de 31 % en un an sur
+   TikTok). Une vidéo seule ne prouve rien : chaque variable est portée par au moins **deux** vidéos (la paire), et
+   un concept par **trois** (sa famille) ; une leçon devient un ingrédient quand deux épisodes la confirment, V25-V26
+   servent à ça. On cherche un motif sur plusieurs tests, pas un gagnant unique.
 4. **La métrique suit la variable** : hook → part à 3 s · valeur → enregistrements (et, sur Instagram, la version
    carrousel de la même valeur, qui capte plus d'enregistrements qu'un Reel) · chute et gag → partages · CTA → la
    métrique de son type (question → commentaires ; « envoie » → partages ; « garde » → enregistrements) **et** durée
@@ -281,8 +298,10 @@ ingrédient que confirmée deux fois : V25–V26 servent à ça.
 6. **Décider** : confirmée (au-dessus de la médiane sur sa métrique, sans perte de plus de 20 % sur les autres),
    infirmée (plus de 20 % sous la médiane), sinon sans signal → on rejoue.
 7. **Contexte noté à chaque ligne** : jour, heure, légende, hashtags (jeu A/B/C de `docs/hashtags_test.md`, en
-   rotation), son d'origine, ouverture publiée (A ou B), durée réelle. Tes retours (« trop lent », « la voix fait IA »)
-   s'écrivent avec la date, comme une mesure.
+   rotation), son d'origine, ouverture publiée (A ou B), durée réelle, réponses aux commentaires (dans l'heure, puis
+   pendant 7 jours). Tes retours (« trop lent », « la voix fait IA ») s'écrivent avec la date, comme une mesure.
+   Déclinaisons : Reels (Trial Reels, View Rate à 3 s, envois par portée) et Shorts (« Stayed to watch », vues
+   engagées sans les boucles ; depuis août 2026 les vues brutes se comptent au démarrage, donc jamais comparer des vues).
 8. **Ce qui s'apprend famille par famille** : F1 le CTA et la durée · F2 la valence (gain / perte) et la liste · F3 le
    pari et la réponse différée · F4 les deux voix · F5 le moment de la réponse · F6 la série · F7 le format court ·
    F8 l'écran partagé. À la fin : un classement des concepts **à sujet égal** (V01 / V05 / V08) et **à format égal**.
