@@ -727,3 +727,57 @@ Code de référence : `video/film-presentev9/film.js`.
   vérifie l'image (ex. v9 à 24,6 s : écran entièrement orange).
 - v9 : 0 image de sous-titre sur du détail net (395). Recouvrements : les 72 images déjà vérifiées en v8, plus 24,6 s
   (écran entièrement orange). La scène du lien sur une ligne n'en déclenche plus (16 images en moins).
+
+## 27. Une voiture en vraie 3D dans un film en CSS (présentation v10)
+
+Demande : « remplace la 208 par notre Polo en 3D », puis « utopicar sur la plaque ». Code : `video/film-presentev10/polo3d.js`
+(modèle `assets/models-3D/Volkswagen Polo GTI Mk5 Typ 6R 2012.fbx`).
+
+**Rendu**
+- Three.js (WebGL, SwiftShader au rendu) dans un canevas transparent, placé dans la scène CSS comme l'était la photo.
+- `pose(t)` repeint l'image : rien n'est conservé d'une image à l'autre, et le flou de bougé fonctionne tel quel.
+- Rendu à 2× puis réduit : la voiture n'a pas de crénelage. Environ 15 ms par image.
+- La voiture tourne lentement sur elle-même (17° pendant l'accroche) : les reflets et les roues bougent, c'est ce qui
+  fait la 3D. Le film garde ses mouvements CSS (avancée, recul et extinction au basculement du prix).
+
+**Les matières d'un modèle téléchargé sont à refaire**
+- La moitié des panneaux arrivent sans matière (blancs), les vitres sont opaques, les glaces de phares sont grises.
+- On réassigne tout par nom de pièce et de matière : peinture (physique, vernis), vitres teintées, plastiques noirs,
+  chromes, alliage des jantes (métal sombre, sinon on dirait un disque blanc), pneus, feux.
+- **Pour trouver une pièce :** colorier une matière en vert vif (`marquer`). Pour un détail précis, lancer un rayon depuis
+  le pixel (`pique`) : on lit la pièce et la matière touchées. C'est ainsi qu'on a trouvé la glace des phares
+  (`sides_rear_001`) et les lettres GTI (une matière chromée à l'intérieur du pare-chocs).
+- **Le modèle doit coller à l'annonce :** l'annonce analysée est une Polo 1.2 TSI. On retire donc les signes de la GTI
+  (étriers rouges, filet rouge et lettres de la calandre, lettres du hayon). La cote de l'outil ne distingue pas les
+  versions : une GTI serait comparée à des Polo ordinaires et passerait pour « trop chère » à tort.
+
+**La plaque**
+- On lit le plan réel du fond blanc de la plaque (les sommets de cette matière) et la bande européenne à sa gauche.
+- On y colle un rectangle texturé, à peine décollé. Le mot vient du logotype officiel (version fond clair, sans le
+  symbole), tel quel, en minuscules.
+
+**Cadrage et ombre**
+- La silhouette est mesurée à l'écran sur un échantillon de sommets. La vue est décalée pour centrer la voiture
+  (`setViewOffset`, sans changer la perspective), et le grossissement est fixé une fois (`cadrer`) : elle tient dans
+  la colonne même quand la caméra du film l'avance.
+- L'ombre de contact est une tache douce rendue en 3D. Son dégradé doit s'éteindre avant les bords de sa texture.
+  Une texture plus large que haute coupait l'ellipse, et la coupe se voyait au sol comme une arête droite (repérée par
+  l'utilisateur). Contrôle : rendre le canevas seul sur fond blanc, et mesurer qu'aucun pixel ne touche ses bords.
+
+**Les chiffres changent avec la voiture**
+- On n'invente aucun chiffre. Les règles de l'outil (copie de `web/src/lib/analyse`, banc `tsx`, profil de la démo :
+  Benef, revente, marge minimale 750 €) tournent sur une annonce d'essai écrite pour l'occasion.
+- La cote est la vraie fonction `cote_marche` de la base, lue en lecture seule (des moyennes, aucune annonce).
+- Contrôle : la cote de la 208 relue le 16 oct. retombe exactement sur celle du 14 (514 annonces, médiane 5 519 €), et
+  le banc retrouve le verdict de la 208 (23/100, « il faudrait l'acheter 3 750 € au plus »).
+- Polo 1.2 TSI 90 Confortline, 2012, 118 400 km, 8 990 €, vendeur pro (cote : 268 annonces, médiane 7 457 €) :
+  « Trop cher », 1 533 € au-dessus (+21 %) ; ≈ 400 € de travaux ; −2 490 € ; 29/100 « À éviter » ; 5 750 € au plus.
+
+**Un chiffre plus large casse une mise en page validée**
+- « 8 990 € » est plus large que « 7 190 € » : il sortait de l'écran à la première image. On lui garde la largeur de
+  l'ancien prix.
+- On mesure les boîtes de chaque texte à chaque image (sonde DOM), pas seulement au repos. La caméra qui arrive, qui
+  avance ou qui tourne au basculement pousse le texte dans les marges : on décale le texte d'autant, le temps du
+  mouvement.
+- Contrôle v10 : 0 image de sous-titre sur du détail net (395). 43 images relevées, contre 73 en v9 : aucune nouvelle,
+  toutes déjà vérifiées. Les 30 alertes de l'accroche et de la boucle (prix dans les marges) ont disparu.
