@@ -75,6 +75,25 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   const marqueCat = cat.find((b) => b.k === choix.marque);
   const modeleCat = marqueCat?.m.find((m) => m.k === choix.modele);
   const genCat = modeleCat ? modeleCat.g.find((g) => g.id === (choix.gen || (modeleCat.g.length === 1 ? modeleCat.g[0].id : ""))) : undefined;
+
+  /** Années d'une génération du catalogue (fin à 0 : encore vendue, pas d'année maximum). */
+  const anneesGen = (c: Choix): [string, string] | null => {
+    const g = c.gen ? cat.find((b) => b.k === c.marque)?.m.find((m) => m.k === c.modele)?.g.find((x) => x.id === c.gen) : undefined;
+    return g ? [String(g.y0), g.y1 ? String(g.y1) : ""] : null;
+  };
+  /** Nouveau véhicule : une génération choisie remplit les années (comme Leboncoin, qui ne connaît que les années),
+      sans écraser des années tapées à la main (seulement des champs vides, ou ceux remplis par la génération d'avant). */
+  function changerChoix(c: Choix) {
+    const avant = anneesGen(choix), apres = anneesGen(c);
+    setF((x) => {
+      let y = x;
+      if (c.gen !== choix.gen || c.modele !== choix.modele) y = { ...y, version: "", phase: "", ...(c.modele !== choix.modele ? { moteur: "" } : {}) };
+      const remplies = avant ? x.anneeMin === avant[0] && x.anneeMax === avant[1] : !x.anneeMin && !x.anneeMax;
+      if (c.gen !== choix.gen && remplies) y = { ...y, anneeMin: apres?.[0] ?? "", anneeMax: apres?.[1] ?? "" };
+      return y;
+    });
+    setChoix(c);
+  }
   const memeModele = res && res.recherche?.criteres.choix.modele === choix.modele && res.recherche?.criteres.choix.marque === choix.marque;
   const suggestionsMoteur = memeModele && res.moteurs.length ? res.moteurs.map((x) => x.l) : motorisationsTypes(choix.marque, choix.modele);
   const onglets = liste.filter((r) => r.active);
@@ -235,8 +254,12 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
       });
       } else if (cible) afficher(cible);
       else if (prerempli?.marque && prerempli.modele) {
+        // recherche rapide du tableau de bord : la génération donne les années, comme dans le formulaire
+        const ans = anneesGen(prerempli);
+        const fx = ans ? { ...VIDE, anneeMin: ans[0], anneeMax: ans[1] } : VIDE;
         setChoix(prerempli);
-        void lancer(prerempli, VIDE);
+        setF(fx);
+        void lancer(prerempli, fx);
       } else {
         const dernier = [...initiales].filter((r) => r.active).sort((x, y) => y.derniere_le.localeCompare(x.derniere_le))[0];
         if (dernier && !nouvelleRecherche) afficher(dernier);
@@ -340,10 +363,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
         <ChoixVehicule
           cat={cat}
           v={choix}
-          onChange={(c) => {
-            if (c.gen !== choix.gen || c.modele !== choix.modele) setF((x) => ({ ...x, version: "", phase: "", ...(c.modele !== choix.modele ? { moteur: "" } : {}) }));
-            setChoix(c);
-          }}
+          onChange={changerChoix}
           idPrefixe="rm"
         />
         {/* Les critères vont par paires min / max sur une même ligne : prix, kilométrage, année. */}
@@ -545,7 +565,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
           )}
           <div className="flex flex-wrap gap-2 text-xs">
             {res.modele.gens.filter((g) => g.n).map((g) => (
-              <button key={g.id} type="button" onClick={() => { setChoix((c) => ({ ...c, gen: c.gen === g.id ? "" : g.id })); }}
+              <button key={g.id} type="button" onClick={() => changerChoix({ ...choix, gen: choix.gen === g.id ? "" : g.id })}
                 className={cx("rounded-full border px-3 py-1", choix.gen === g.id ? "border-o/60 bg-o/12 text-ink" : "border-line-2 text-ink-2")}>
                 {g.label} <span className="num text-ink-3">{g.n}</span>
               </button>
