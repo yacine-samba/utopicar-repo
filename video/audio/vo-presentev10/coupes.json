@@ -1,0 +1,112 @@
+[
+ {
+  "apres": 14,
+  "gap": 0.1,
+  "pour": "la perte se pose avant « Colle » ; la feuille du champ monte (pause v7 0.38 s, naturelle 0.28 s)"
+ },
+ {
+  "apres": 19,
+  "gap": 0.92,
+  "pour": "le lien collé est lu, la pastille devient le bouton « Analyser l'annonce », appui (pause v7 1.44 s, naturelle 0.52 s)"
+ },
+ {
+  "apres": 22,
+  "gap": 0.46,
+  "pour": "le chrono fait son tour, l'anneau se couche en trait (pause v7 0.86 s, naturelle 0.40 s)"
+ },
+ {
+  "apres": 24,
+  "gap": 1.28,
+  "pour": "carte « Bon prix ? » lettre à lettre, puis tenue (pause v7 1.40 s, naturelle 0.12 s)"
+ },
+ {
+  "apres": 26,
+  "gap": 1.14,
+  "pour": "carte « Des travaux ? » (pause v7 1.38 s, naturelle 0.24 s)"
+ },
+ {
+  "apres": 28,
+  "gap": 1.01,
+  "pour": "carte « Ça rapporte ? » (pause v7 1.01 s, naturelle 0.00 s)"
+ },
+ {
+  "apres": 31,
+  "gap": 1.04,
+  "pour": "verdict : anneau, note, surtitre, titre, explication, « À faire » (pause v7 1.52 s, naturelle 0.48 s)"
+ },
+ {
+  "apres": 33,
+  "gap": 0.39,
+  "pour": "« À éviter » s'allume, l'explication s'écrit, avant la phrase du prix maximum"
+ },
+ {
+  "apres": 46,
+  "gap": 0.5,
+  "pour": "tenir « 5 750 € au plus », puis le vert monte (pause v7 après « éviter » 0.88 s, naturelle 0.38 s)"
+ },
+ {
+  "apres": 54,
+  "gap": 0.6,
+  "pour": "la question se pose avant « Cette Clio »"
+ },
+ {
+  "apres": 62,
+  "gap": 0.74,
+  "pour": "verdict de la Clio, anneau à 97 (pause v7 0.82 s, naturelle 0.08 s)"
+ },
+ {
+  "apres": 68,
+  "gap": 0.5,
+  "pour": "paliers de prix (pause v7 0.50 s, naturelle 0.00 s)"
+ },
+ {
+  "apres": 75,
+  "gap": 0.64,
+  "pour": "le prix bute contre la barre PLAFOND, puis l'écran du mur s'ouvre (pause v7 0.86 s, naturelle 0.22 s)"
+ },
+ {
+  "apres": 82,
+  "gap": 1.12,
+  "pour": "la meilleure annonce se construit hors du mur (pause v7 1.27 s, naturelle 0.14 s)"
+ },
+ {
+  "apres": 87,
+  "gap": 1.04,
+  "pour": "recherche enregistrée : pastille, compteurs, interrupteur, lumière qui tourne (pause v7 1.34 s, naturelle 0.30 s)"
+ },
+ {
+  "apres": 90,
+  "gap": 0.04,
+  "pour": "horloge à volets (pause v7 0.64 s, naturelle 0.60 s)"
+ },
+ {
+  "apres": 95,
+  "gap": 1.06,
+  "pour": "messages de la nuit, un par un dans la liste (pause v7 1.28 s, naturelle 0.22 s)"
+ },
+ {
+  "apres": 101,
+  "gap": 0.54,
+  "pour": "notification (pause v7 0.80 s, naturelle 0.26 s)"
+ },
+ {
+  "apres": 105,
+  "gap": 1.16,
+  "pour": "l'e-mail d'alerte se construit (pause v7 1.50 s, naturelle 0.34 s)"
+ },
+ {
+  "apres": 115,
+  "gap": 0.73,
+  "pour": "« Vendues » (pause v7 0.76 s, naturelle 0.03 s)"
+ },
+ {
+  "apres": 118,
+  "gap": 0.7,
+  "pour": "marge du mois et marge par voiture (pause v7 1.28 s, naturelle 0.58 s)"
+ },
+ {
+  "apres": 123,
+  "gap": 0.4,
+  "pour": "la signature se pose avant « Le lien est en bio »"
+ }
+]

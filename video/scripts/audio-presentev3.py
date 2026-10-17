@@ -12,8 +12,9 @@ crête tombe sur l'arrêt de la liste.
 usage (depuis video/) : node scripts/cues-presentev3.mjs && python3 scripts/audio-presentev3.py → audio/mix-presentev3.wav
        version « dans l'interface » : CUT=presentev4 node scripts/cues-presentev3.mjs && CUT=presentev4 python3 scripts/audio-presentev3.py
        v6 (voix espacée, 44,8 s) : CUT=presentev6 VOD=vo-presentev6 … ; montage de la musique propre à la v6 (voir plus bas)
+       v10 (voix refaite, Polo, 59,5 s) : CUT=presentev10 VOD=vo-presentev10 … ; reprise de 4 mesures avant le drop
 """
-import os, json
+import os, json, re
 import numpy as np, librosa, soundfile as sf, pyloudnorm as pyln
 from scipy.signal import butter, sosfilt, fftconvolve, resample_poly
 from scipy.ndimage import minimum_filter1d
@@ -39,7 +40,11 @@ VOD = os.environ.get('VOD', 'vo-presentev3')                    # dossier de la 
 vo = librosa.load(A(VOD, 'vo.wav'), sr=SR, mono=True)[0][:N]; vo = np.pad(vo, (0, N - len(vo)))
 vo = bp(vo, 80, None, 2)
 WORDS = json.load(open(A(VOD, 'vo.words.json'), encoding='utf8'))
-w = lambda i: WORDS[i]['s']
+# v10 : la voix est refaite ; le montage garde les numéros de mots de la voix v7, qui pointent sur les mêmes mots de
+# la nouvelle voix (ancien-vers-nouveau.json)
+ALIAS = A(VOD, 'ancien-vers-nouveau.json')
+WO = [{'s': WORDS[a]['s'], 'e': WORDS[b]['e']} for a, b in (json.load(open(ALIAS))[str(i)] for i in range(93))] if os.path.exists(ALIAS) else WORDS
+w = lambda i: WO[i]['s']
 
 # ---------- musique ----------
 src = librosa.load(A('presente30', 'eleven', 'musique-SUMYsl1ZLq0kvbuCQLXI.mp3'), sr=SR, mono=False)[0].T
@@ -52,9 +57,18 @@ def put(t0, t1, s0, fi=0.003, fo=0.003, dst=None):
     if fo: k = int(fo * SR); seg[-k:] *= np.cos(np.linspace(0, np.pi / 2, k))[:, None]
     dst[a:b] += seg
 tStop = next(c['t'] for c in CUES if c['k'] == 'tapestop') + 0.02          # la liste s'arrête net
-V6 = CUT >= 'presentev6'
+NUM = int(re.search(r'(\d+)$', CUT).group(1))   # numéro de version (comparer « presentev10 » à « presentev6 » en texte se trompait)
+V6 = NUM >= 6
 # un premier temps sur « À éviter. » (v6 : la voix espacée met « À éviter » à 15,7 s, soit la mesure 8 du morceau)
-put(0, tStop, D(8 if V6 else 6) - w(31), fi=0.002, fo=0.02)
+if NUM >= 10:
+    # v10 : « À éviter » sur le premier temps de la mesure qui le suit. La voix, plus longue, ferait passer le drop
+    # (mesure 16) avant « arrête de scroller » : reprise de 4 mesures (13 → 9, même section, timbres les plus proches),
+    # dans le silence après « ça ressemble à quoi ? », fondu croisé de 12 ms
+    k0 = int(np.ceil((w(31) - 0.010) / (4 * 60 / 119.958))); o_ = D(k0) - w(31); tJ = D(13) - o_
+    put(0, tJ + 0.012, o_, fi=0.002, fo=0.012); put(tJ, tStop, D(9), fi=0.012, fo=0.02)
+    print(f'musique : « À éviter » sur la mesure {k0}, reprise 13 → 9 à {tJ:.2f} s, arrêt à {tStop:.2f} s (morceau à {tStop - tJ + D(9):.2f} s, drop à {D(16):.2f} s)')
+else:
+    put(0, tStop, D(8 if V6 else 6) - w(31), fi=0.002, fo=0.02)
 # « Et pour les trouver, arrête de scroller » : passe-bas qui se referme jusqu'à l'arrêt
 a, b = int(w(48) * SR), int(tStop * SR)
 low = bp(mus[a:b], None, 900, 2); m = np.linspace(0, 1, b - a)[:, None] ** 0.7; mus[a:b] = mus[a:b] * (1 - m) + low * m
@@ -66,7 +80,7 @@ else:
     # v6 : drop (mesure 16) sur « Ta recherche » jusqu'à la fin de « ta vraie marge » ; la musique se referme (passe-bas)
     # et se tait dans le silence ajouté, où seuls les bruitages de la marge qui se construit restent ; elle repart sur
     # « Utopicar », pile sur le premier temps de la mesure 21, jusqu'à la fin du film
-    tB = WORDS[87]['e'] + 0.05
+    tB = WO[87]['e'] + 0.05
     put(w(55) - 0.01, tB, D(16) - 0.01, fi=0.003, fo=0.06)
     a, b = int((tB - 0.45) * SR), int(tB * SR)
     low = bp(mus[a:b], None, 500, 2); m = np.linspace(0, 1, b - a)[:, None] ** 0.8; mus[a:b] = mus[a:b] * (1 - m) + low * m * db(-3)
@@ -89,6 +103,16 @@ lines.append(cur)
 SPANS = [(int(l[0]['s'] * SR), int(l[-1]['e'] * SR)) for l in lines if l[-1]['e'] - l[0]['s'] > 0.15]
 gap = lambda m_: [rms(vo[a_:b_]) - rms(m_[a_:b_].mean(1)) for a_, b_ in SPANS]
 mus_st = mus * db(np.median(gap(mus)) - 11)
+if NUM >= 10:
+    # v10 : aucune phrase à moins de 8,5 dB au-dessus de la musique (la fin, plus longue, tombe sur la section la plus
+    # forte du morceau) : la musique baisse d'autant sous la phrase, rampes de 0,15 s
+    g_, r_ = np.ones(N), int(0.15 * SR)
+    for (a_, b_), gp in zip(SPANS, gap(mus_st)):
+        if gp >= 8.5: continue
+        att = db(gp - 8.5); t_ = np.arange(max(0, a_ - r_), min(N, b_ + r_))
+        env_ = np.minimum(np.clip((t_ - (a_ - r_)) / r_, 0, 1), np.clip(((b_ + r_) - t_) / r_, 0, 1))
+        g_[t_] = np.minimum(g_[t_], 1 - (1 - att) * env_)
+    mus_st = mus_st * g_[:, None]
 # voix : enveloppe lissée pour que les bruitages lui cèdent
 env = np.convolve(np.abs(vo), np.ones(int(0.05 * SR)) / int(0.05 * SR), 'same'); duck = clamp_ = np.clip(env / (env.max() * 0.08), 0, 1)
 # ---------- bruitages ElevenLabs ----------

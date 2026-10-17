@@ -27,12 +27,19 @@
   const ST = document.getElementById('stage');
   const NS = 'http://www.w3.org/2000/svg';
   const J = async (u) => (await fetch(u)).json();
-  const WD = await J('../audio/vo-presentev7/vo.words.json');
+  // la voix v10 (Polo, script de la v10) ; le film désigne toujours ses mots par les numéros de la voix v7 : chaque
+  // ancien numéro pointe sur le même mot de la nouvelle voix (ancien-vers-nouveau.json), les mots nouveaux suivent : n(k)
+  const WN = await J('../audio/vo-presentev10/vo.words.json');
+  const AV = await J('../audio/vo-presentev10/ancien-vers-nouveau.json');
+  const NV = 93, n = (k) => NV + k;
+  const sur = (a, b) => ({ w: WN.slice(a, b + 1).map((x) => x.w).join(' '), s: WN[a].s, e: WN[b].e });
+  const WD = [...Array.from({ length: NV }, (_, i) => sur(...AV[i])), ...WN];
+  const mot = (a, b) => { WD.push(sur(a, b)); return WD.length - 1; };   // plusieurs mots lus comme un seul (« 5 750 € »)
   const LISTE = await J('liste.json');
   const LOGO = await (await fetch('../assets/brand/official/utopicar-logo-horizontal-fond-sombre.svg')).text();
   await Promise.all(['500 80px Clash', '600 80px Clash', '700 80px Clash', '400 30px Satoshi', '500 30px Satoshi', '700 30px Satoshi', '900 30px Satoshi', 'italic 80px Instrument'].map((f) => document.fonts.load(f)));
   const w = (i) => WD[i].s;
-  const VEND = WD[WD.length - 1].e;
+  const VEND = WN[WN.length - 1].e;
   const DUR = Math.round((VEND + 2.5) * 30) / 30, TLOOP = DUR - 0.6;
   // transitions d'écran (v9) : [début, écran couvert, début de l'ouverture, fin] de chaque grosse couleur, calées sur les
   // silences de la voix
@@ -40,7 +47,7 @@
   const R1 = RT(WD[13].e - 0.18, 0.3, 0.1, 0.3);      // accroche → coller le lien
   const R2 = RT(WD[18].e + 0.86, 0.32, 0.06, 0.26);   // bouton → chrono
   const R4 = RT(w(28) - 0.2, 0.3, 0.08, 0.3);         // critères → verdict « À éviter »
-  const R5 = RT(WD[32].e + 0.26, 0.28, 0.06, 0.3);    // verdict rouge → verdict vert
+  const R5 = RT(WD[n(46)].e + 0.26, 0.28, 0.06, 0.3); // verdict rouge → verdict vert (après « … 5 750 euros, pas plus. »)
   const R6 = RT(WD[47].e + 0.2, 0.26, 0.06, 0.27);    // plafond → mur d'annonces
   const R7 = RT(w(55) - 0.52, 0.26, 0.04, 0.24);      // meilleure annonce → recherche
   const R8 = RT(w(60) - 0.38, 0.26, 0.14, 0.32);      // recherche → nuit
@@ -639,6 +646,8 @@
   ph([[['les', 24], ['travaux,', 25, 'k']]], { y: 236, size: 136, out: w(26) - 0.22 });
   ph([[['ta', 26], ['marge…', 27, 'k']]], { y: 236, size: 136, out: w(28) - 0.22 });
   ph([[['et', 28], ['le', 29], ['verdict.', 30, 'k']]], { y: 236, size: 136, out: w(31) - 0.24 });
+  // v10 : la réponse chiffrée, dite et écrite (le prix d'achat qui garde la marge minimale), au-dessus de l'anneau
+  ph([[['Pour', n(34)], ['faire', n(35)], ['ta', n(36)], ['marge,', n(37), 'k']], [['il', n(38)], ['faudrait', n(39)], ['la', n(40)], ['payer', n(41)]], [['5 750 €,', mot(42, 44), 'g'], ['pas', n(45)], ['plus.', n(46), 'g']]], { y: 236, size: 100, out: R5.c - 0.06 });
   cue(tC[0], 'whoosh', 0.4); tWh.forEach((t0) => cue(t0, 'whoosh', 0.9)); tC.forEach((t0, i) => { cue(t0 + (i ? 0.2 : 0.3), 'key', 0.5); cue(t0 + (i ? 0.5 : 0.6), 'tick', 0.4); });
   cue(tVer, 'whoosh', 0.6); cue(tV + 0.2, 'key', 0.5); cue(tV + 0.7, 'pop', 0.5); cue(tEv, 'impact', 1.2);
   tWh.forEach((t0) => win(t0, t0 + DW)); win(tEv - 0.02, tEv + 0.25);
@@ -709,8 +718,9 @@
   const pousse = (t) => TENUES.reduce((s, [a, b]) => s + E(t, a, b - a, lin) * (1 - E(t, b, 0.5, lisse)), 0);
   // la lueur suit « bonne » puis « affaire »
   const GTK = [[[w(34) - 0.04, VG.TL[0][5]._x], [WD[34].e, VG.TL[0][VG.TL[0].length - 1]._x + VG.TL[0][VG.TL[0].length - 1]._w]], [[w(35) - 0.02, VG.TL[1][0]._x], [WD[35].e, VG.TL[1][VG.TL[1].length - 1]._x + VG.TL[1][VG.TL[1].length - 1]._w]]];
-  ph([[['Une', 33], ['bonne', 34, 'g']], [['affaire ?', 35, 'g']]], { y: 236, size: 128, out: w(37) - 0.22 });
-  ph([[['Ton', 37], ['prix', 38, 'k']], [["d'offre…", 39, 'k']]], { y: 236, size: 128, out: w(41) - 0.22 });
+  ph([[['Une', 33], ['bonne', 34, 'g'], ['affaire,', 35, 'g']], [['ça', n(50)], ['ressemble', n(51)], ['à', n(52)], ['quoi ?', n(53)]]], { y: 236, size: 112 });
+  ph([[['Cette', n(55)], ['Clio,', n(56), 'g'], ['2 300 €', mot(57, 59), 'g']], [['sous', n(60)], ['la', n(61)], ['cote.', n(62)]]], { y: 236, size: 112 });
+  ph([[['Tu', n(63)], ['as', n(64)], ['ton', 37]], [['prix', 38, 'k'], ["d'offre…", mot(67, 68), 'k']]], { y: 236, size: 128, out: w(41) - 0.22 });
   ph([[['et', 41], ['le', 42]], [['plafond', 43, 'r']]], { y: 236, size: 128, out: w(44) - 0.16 });
   ph([[['à', 44], ['ne', 45], ['pas', 46]], [['dépasser.', 47, 'r']]], { y: 236, size: 128, out: tS6out + 0.2 });
   cue(tFlipB + 0.3, 'key', 0.5); cue(tFlipB + 1.0, 'ding', 0.7); cue(tGout, 'whoosh', 0.5); [tOff, tObj].forEach((t0) => { cue(t0, 'pop', 0.5); cue(t0 + 0.3, 'key', 0.5); }); cue(tPla, 'whoosh', 0.8); cue(tImp, 'impact', 1.3); cue(tDep, 'thud', 0.9); cue(tS6out, 'whoosh', 0.6);
@@ -925,7 +935,7 @@
   const HEURES = [[-1, '0000'], [tN + 0.62, '0114'], ...ENV.slice(1).map((e, i) => [tMsg(i + 1) - 0.04, e[2].replace(':', '')])];
   const Y9 = 1040, PAS9 = 156;
   ph([[['Toi,', 60]], [['tu', 61], ['dors.', 62, 'b']]], { y: 236, size: 150, out: tLui - 0.2 });
-  ph([[['Lui,', 63], ['il', 64], ['bosse.', 65, 'k']]], { y: 236, size: 136, out: tS9out + 0.1 });
+  ph([[['utopicar,', n(91), 'k'], ['lui,', n(92)]], [['écrit', n(93)], ['aux', n(94)], ['vendeurs.', n(95), 'k']]], { y: 236, size: 136, out: tS9out + 0.1 });
   cue(tN, 'nuit', 0.9); [0, 1, 2, 3].forEach((i) => cue(tN + 0.62 + i * 0.05, 'tick', 0.35)); MSG.forEach((m, i) => { cue(tMsg(i), 'sent', 0.55); cue(tMsg(i) + 0.3, 'tick', 0.3); }); cue(tLui, 'whoosh', 0.6);
   function volets(D, i, t) {
     let k = 0; while (k + 1 < HEURES.length && t >= HEURES[k + 1][0] + i * 0.05) k++;
@@ -1075,7 +1085,7 @@
   const MPVs = KB.add(140, yM + 96 + 2 * 80 + 4, 10, { font: '500 34px Satoshi', color: 'rgba(244,241,236,.6)' }, '<span style="display:inline-block;width:6px;height:30px;background:#ff5a1f;vertical-align:-6px;margin-right:14px"></span>' + nb('seuil de marge 750 €'));
   const tP0 = w(76) - 0.3, tMg = w(85) - 0.1, tLg = w(88) - 0.55;
   const TPAN = [w(78) - 0.05, w(81) - 0.05, w(82) + 0.02, w(84) - 0.04, w(84) + 0.26];
-  ph([[['Et', 76], ['chaque', 77], ['voiture,', 78]], [['de', 79], ["l'achat", 80, 'k']], [['à', 82], ['la', 83], ['vente :', 84, 'k']]], { y: 236, size: 104, out: tMg - 0.2 });
+  ph([[['Et', 76], ['pour', n(107)], ['chaque', 77], ['voiture,', 78]], [['de', 79], ["l'achat", 80, 'k']], [['à', 82], ['la', 83], ['vente :', 84, 'k']]], { y: 236, size: 104, out: tMg - 0.2 });
   ph([[['ta', 85], ['vraie', 86, 'g']], [['marge.', 87, 'g']]], { y: 236, size: 150, out: tLg - 0.05 });
   cue(tP0, 'whoosh', 0.6); ETP.forEach((e, i) => { cue(tP0 + 0.3 + i * 0.09, 'pop', 0.25); cue(TPAN[i], i === 4 ? 'ding' : 'tick', 0.6); }); cue(tMg, 'whoosh', 0.7); cue(tMg + 0.22, 'pop', 0.6); cue(tMg + 0.4, 'key', 0.6); cue(tMg + 0.95, 'ding', 0.8); cue(tMg + 0.7, 'pop', 0.5); cue(tMg + 1.12, 'key', 0.5);
   function paintS11(t) {
@@ -1156,7 +1166,7 @@
   const U = 780 / XW, LW = 1061 * U;                 // le logo entier tient dans la colonne sûre (780 px)
   holder.style.width = LW + 'px'; svg.style.width = LW + 'px';
   const ICX = 540 + (120 - XC) * U;                  // centre de l'icône une fois le logo posé
-  const tTile = tLg, tDraw = tLg + 0.26, tArr = tLg + 0.7, tFin2 = tLg + 0.82, tSl = w(88) - 0.04, tWd = w(88) + 0.4, tBio = w(92) + 0.4;
+  const tTile = tLg, tDraw = tLg + 0.26, tArr = tLg + 0.7, tFin2 = tLg + 0.82, tSl = w(88) - 0.04, tWd = w(88) + 0.4, tBio = w(n(125)) - 0.08;   // « lien en bio » s'écrit avec « Le lien est en bio »
   const SIG1 = phrase([[['Achète', 89], ['juste.', 90]]], { y: 960, size: 124, out: 99, parent: GL });
   const SIG2 = phrase([[['Revends', 91, 'k'], ['mieux.', 92, 'k']]], { y: 1100, size: 140, out: 99, font: 'italic 400 140px Instrument', ls: '0em', parent: GL });
   const BIO = mk('div', 'a', GL, { height: '96px', borderRadius: '48px', background: '#f4f1ec', color: '#1c1612', font: '700 40px/96px Satoshi', padding: '0 0 0 46px', whiteSpace: 'nowrap', overflow: 'hidden' });

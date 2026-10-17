@@ -781,3 +781,32 @@ Demande : « remplace la 208 par notre Polo en 3D », puis « utopicar sur la pl
   mouvement.
 - Contrôle v10 : 0 image de sous-titre sur du détail net (395). 43 images relevées, contre 73 en v9 : aucune nouvelle,
   toutes déjà vérifiées. Les 30 alertes de l'accroche et de la boucle (prix dans les marges) ont disparu.
+
+## 28. Nouvelle voix sur un film déjà calé (présentation v10)
+
+Demande : « ok fait la vidéo », avec toute la voix refaite sur le script v10 (`video/script-presentev10.md`). Code :
+`video/scripts/vo-presentev10.py`, `video/audio/vo-presentev10/`, `video/scripts/audio-presentev3.py`.
+
+**La prise**
+- 4 prises eleven_v4 de la même voix. On choisit par mesure : écart au script après transcription (mots manqués ou
+  changés), débit, plage de hauteur, plus long silence. La mesure ne remplace pas l'écoute : l'utilisateur écoute.
+- Transcription mot à mot (faster-whisper medium, `initial_prompt` avec les noms propres : utopicar, Polo, Clio).
+  Les pauses du montage s'ajoutent ensuite par `coupes.json` (chaque coupe dit ce que l'image fait pendant le blanc).
+
+**Garder le film calé sans tout renuméroter**
+- Le film appelle les mots par leur numéro. La nouvelle voix n'a ni les mêmes mots ni le même nombre de mots.
+- `ancien-vers-nouveau.json` donne, pour chaque ancien mot (0 à 92), la plage de nouveaux mots qui le remplace.
+  Le film reconstruit son ancienne liste à partir des nouveaux temps, puis ajoute les nouveaux mots à la suite :
+  `n(k) = 93 + k`. Une valeur qui s'écrit en plusieurs mots à la voix (« 5 750 euros ») devient un seul mot affiché
+  (`mot(a, b)`).
+- Le mixage lit la même table : les repères de musique et de bruitages suivent la nouvelle voix sans être réécrits.
+
+**La musique quand la voix s'allonge**
+- La voix passe de 41 à 57 s : la chute de la musique serait arrivée deux fois. On rejoue 4 mesures (mesure 13 → 9)
+  dans un blanc de la voix, sur la grille mesurée (119,958 BPM), avec des fondus de 2 à 20 ms.
+- Comparer les numéros de montage comme des nombres, pas comme du texte : `'presentev10' < 'presentev6'`.
+
+**Voix devant la musique, phrase par phrase**
+- Le ducking global laissait 5,3 dB sous « Achète juste, revends mieux. » (la musique y monte).
+- Règle ajoutée : sous chaque phrase où l'écart voix / musique tombe sous 8,5 dB, la musique baisse d'autant
+  (rampes de 0,15 s). Mix v10 : −14,2 LUFS, true peak −3,5 dBTP, écart minimal 8,5 dB, médian 11,0 dB (26 phrases).
