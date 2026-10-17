@@ -90,10 +90,11 @@ B est la meilleure variante à tester en second. Ses chiffres sont ceux de l'out
 > utopicar. Achète juste, revends mieux. Le lien est en bio.
 
 **Durée.**
-- Environ 165 mots à l'oral.
+- 169 mots à l'oral.
 - Au débit de Simon mesuré sur la prise v10 (3,15 mots par seconde, pauses naturelles comprises), cela fait environ
-  52 s de voix.
-- Avec les transitions (0,5 s au plus chacune) et la fin, le film dure environ 56 à 58 s. À chronométrer sur la prise.
+  54 s de voix.
+- Avec les transitions (0,5 s au plus chacune) et la fin, le film dure environ 58 à 60 s, comme la v10. À
+  chronométrer sur la prise. Pour descendre vers 50 s, la première phrase à couper est « Fiable ? Moyen. ».
 
 **Pourquoi ces phrases.**
 - La boucle ouverte par l'accroche (« d'où vient ce −2 490 € ? ») se ferme sur la carte « Ça rapporte ? » de l'app.
