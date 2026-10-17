@@ -10,6 +10,9 @@ import { demanderCollecte, dernierReleve, SEUIL_COLLECTE, type EtatCollecte } fr
 import { dansDepartements, departementsDe } from "@/lib/vehicules/leboncoin";
 import { PIEGES } from "@/lib/vehicules/pieges";
 
+// lecture d'un gros modèle quand la base doit le relire sur le disque : jusqu'à une dizaine de secondes
+export const maxDuration = 60;
+
 /* Recherche dans la base du marché, au niveau de l'outil Garage : marque, modèle, génération,
    chaque annonce placée sur la cote de sa génération (régression sur les annonces comparables). Benef Pro et illimité. */
 const Corps = z.object({
@@ -55,7 +58,10 @@ export async function POST(req: Request) {
 
   const t0 = Date.now();
   let mm;
-  const charger = () => marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, f.anneeMax ? f.anneeMax + 1 : null);
+  // lecture serveur (le droit Pro est vérifié juste au-dessus) : pas de coupure à 8 s des appels au nom du compte,
+  // utile quand la base doit relire un gros modèle sur le disque, et modèle gardé 5 min pour les recherches suivantes
+  const serveur = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const charger = () => marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, f.anneeMax ? f.anneeMax + 1 : null, serveur);
   try {
     // une expiration ponctuelle (base froide, relevé en cours) : on relance une fois avant de répondre
     mm = await charger().catch((e: Error) => (/timeout/i.test(e.message) ? charger() : Promise.reject(e)));
