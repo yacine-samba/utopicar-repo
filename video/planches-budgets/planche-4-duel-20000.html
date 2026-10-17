@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planche 4 · Choisis ta voiture (20 000 €)</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+:root{--w:#fbf9f5;--k:#0e0b09;--o:#ff5a1f;--r:#c81e1e;--ink:#1c1612;--mut:#6b5e54;--line:rgba(28,22,18,.12)}
+*{box-sizing:border-box}
+body{margin:0;width:1440px;padding:48px 56px 64px;background:var(--w);color:var(--ink);font:400 16px/1.45 Satoshi,sans-serif}
+h1{font:700 60px/1 Clash,sans-serif;margin:0 0 10px;letter-spacing:-.02em}
+h2{font:700 30px/1.1 Clash,sans-serif;margin:0 0 14px}
+h3{font:700 14px/1 Satoshi,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--o);margin:34px 0 14px}
+.sig{font:500 22px/1.3 Satoshi,sans-serif;color:var(--mut);margin:0 0 18px;max-width:1100px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1.5px solid var(--ink);border-radius:999px;padding:6px 14px;font:500 15px Satoshi,sans-serif}
+.chip.o{border-color:var(--o);color:var(--o);font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.card p{margin:0 0 8px}
+.card b{font-weight:700}
+.lbl{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:14px;background:#fff;border-radius:14px;overflow:hidden}
+th,td{text-align:left;vertical-align:top;padding:9px 11px;border-top:1px solid var(--line)}
+th{background:#f3eee6;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.frames{display:flex;flex-wrap:wrap;gap:18px}
+.fcard{width:270px}
+.ftime{font:700 15px Satoshi,sans-serif;color:var(--o);margin-bottom:8px}
+.frame{width:270px;height:480px;position:relative;overflow:hidden;border-radius:16px;box-shadow:0 16px 34px -14px rgba(28,22,18,.45)}
+.stage{position:absolute;left:0;top:0;width:1080px;height:1920px;transform:scale(.25);transform-origin:0 0;overflow:hidden}
+.frame.light .stage{background:var(--w);color:var(--ink)}
+.frame.dark .stage{background:var(--k);color:var(--w)}
+.g{position:absolute;left:0;right:0;border-top:5px dashed rgba(200,30,30,.55)}
+.g.top{top:220px}.g.bot{top:1480px}
+.gv{position:absolute;top:0;bottom:0;border-left:3px dotted rgba(200,30,30,.4)}
+.gv.l{left:140px}.gv.r{left:940px}
+.tag{position:absolute;left:140px;top:250px;background:var(--r);color:#fff;font:700 40px Satoshi,sans-serif;letter-spacing:.06em;padding:12px 22px;border-radius:14px}
+.tx{position:absolute;left:140px;top:560px;width:800px;font:700 118px/1.02 Clash,sans-serif;letter-spacing:-.02em}
+.vis{position:absolute;left:140px;top:980px;width:800px;height:420px;border:7px dashed rgba(28,22,18,.32);border-radius:30px;padding:40px;font:500 42px/1.3 Satoshi,sans-serif;color:var(--mut);overflow:hidden}
+.frame.dark .vis{border-color:rgba(251,249,245,.35);color:#d9d2c8}
+.fdesc{margin-top:12px;font-size:13.5px;line-height:1.4}
+.fdesc p{margin:0 0 6px}
+.voix{font-style:italic}
+.foot{margin-top:30px;font-size:13px;color:var(--mut);border-top:1px solid var(--line);padding-top:14px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--mut);margin:8px 0 14px}
+.legend i{display:inline-block;width:26px;border-top:4px dashed rgba(200,30,30,.55);vertical-align:middle;margin-right:6px}
+ul{margin:0;padding-left:20px}
+li{margin:0 0 6px}
+a{color:var(--ink)}
+</style></head>
+<body>
+<h1>Planche 4 · Choisis ta voiture (20 000 €)</h1>
+<p class="sig">À prix égal, la voiture la plus désirable n&#x27;est pas forcément celle qui se revend le mieux : on compare au prix médian, pas au badge.</p>
+<div class="chips">
+  <span class="chip o">Budget 20 000 €</span>
+  <span class="chip">Kia Niro hybride 2019 contre Mercedes Classe A 2018–2020 (modèles neufs à ce budget)</span>
+  <span class="chip">Vidéo 9:16 · 30 s · planche, pas de tournage</span>
+  <span class="chip">À valider</span>
+</div>
+
+<h3>1 · Diagnostic</h3>
+<div class="grid">
+  <div class="card"><p><b>Idée finale :</b> À prix égal, la voiture la plus désirable n&#x27;est pas forcément celle qui se revend le mieux : on compare au prix médian, pas au badge.</p><p><b>Public :</b> Débutant qui hésite à 20 000 € entre deux voitures.</p><p><b>Enjeu :</b> À 20 000 €, l&#x27;écart à la cote peut peser plusieurs milliers d&#x27;euros : 3 490 € sous la médiane de la Classe A, 2 438 € au-dessus de celle de la Niro.</p><p><b>Question principale :</b> À 20 000 €, laquelle de ces deux voitures est sous sa cote ?</p></div>
+  <div class="card"><p><b>Attente initiale :</b> La Kia hybride est la valeur sûre ; la Mercedes, c&#x27;est le prix de la marque.</p><p><b>Révélation possible :</b> À ce prix, la Classe A est sous sa médiane et la Niro est au-dessus, sur les annonces relevées.</p><p><b>Preuves :</b> Classe A 2018–2020, 45 000–75 000 km : 402 annonces, médiane 23 490 € (non ajustée) [S8]. Niro 2019, 60 000 km, hybride : 169 annonces, médiane ajustée 17 562 € [S8]. Revente normale = médiane × 0,96 [S10].</p><p><b>Limites :</b> Prix affichés, pas prix de vente. Frais, carte grise et travaux hors calcul. Aucune source fiable sur la fiabilité de ces deux modèles dans cette planche : on n&#x27;en parle pas.</p></div>
+</div>
+
+<h3>2 · Trois accroches</h3>
+<div class="grid"><div class="card"><p class="lbl">Directe (recommandée, image 0)</p>
+        <p><b>Voix :</b> « Même prix : 20 000 euros. Une Mercedes, une Kia hybride. Laquelle est sous sa cote ? »</p>
+        <p><b>Question ouverte :</b> Laquelle ?</p>
+        <p><b>Risque de surpromesse :</b> Dépend de la méthode : la Classe A est comparée à une médiane non ajustée. À dire dans la planche.</p></div><div class="card"><p class="lbl">Contradiction</p>
+        <p><b>Voix :</b> « On dit que l&#x27;hybride est une valeur sûre. À 20 000 euros, la Kia est au-dessus de sa cote. »</p>
+        <p><b>Question ouverte :</b> Et la Mercedes ?</p>
+        <p><b>Risque de surpromesse :</b> Généralise à partir d&#x27;un seul prix et de deux modèles. Dire « sur ces annonces ».</p></div><div class="card"><p class="lbl">Situation</p>
+        <p><b>Voix :</b> « Tu hésites entre deux voitures au même prix, et tu prends celle que tu préfères. »</p>
+        <p><b>Question ouverte :</b> Celle qui se revend le mieux, c&#x27;est laquelle ?</p>
+        <p><b>Risque de surpromesse :</b> Juge la préférence de l&#x27;acheteur : ton neutre, pas de moquerie.</p></div></div>
+
+<h3>3 · Art du hook</h3>
+<div class="grid">
+  <div class="card"><p><b>Analyse :</b> Douleur : choisir à 20 000 € sans pouvoir se tromper. Croyance : la marque ou l&#x27;hybride protège la revente. Vérité : à ce prix, le chiffre médian dit l&#x27;inverse pour la Niro.</p><p><b>Recommandation :</b> Directe (duel) en ouverture. La croyance « hybride = valeur sûre » est la voix 5, pour l&#x27;écart. Variante : comparer avec un diesel au même prix.</p></div>
+  <div class="card"><p class="lbl">Les 4 verrous (accroche recommandée)</p><ul><li><b>Temps</b> ✅ · 20 000 € et les deux voitures dans la phrase 1.</li><li><b>Sens</b> ✅ · Deux phrases, deux noms de voiture.</li><li><b>Miroir</b> ✅ · Un choix entre deux voitures : il l&#x27;a déjà fait ou va le faire.</li><li><b>Écart</b> ✅ · La réputation dit « Kia » ; le chiffre dit autre chose.</li></ul></div>
+</div>
+
+<h3>4 · Découpage en planche (9:16, 1080 × 1920)</h3>
+<div class="legend"><span><i></i>Zone interdite : au-dessus de y = 220 px et sous y = 1 480 px</span><span>Texte à l'écran : x 140 → 940</span><span>Les crochets [ ] = élément à fournir ou à capturer</span></div>
+<div class="frames">
+    <div class="fcard">
+      <div class="ftime">0–5 s · Duel (hook)</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">20 000 € chacune. Sous la cote ?</div>
+        <div class="vis">Deux cartes côte à côte. [PHOTO À FOURNIR : Kia Niro hybride 2019, trois quarts avant] [PHOTO À FOURNIR : Mercedes Classe A, génération W177 2018–2020, trois quarts avant] Plaques floutées.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Même prix : 20 000 euros. Une Mercedes, une Kia hybride. Laquelle est sous sa cote ? »</p>
+        <p><b>Mouvement :</b> Les cartes glissent l&#x27;une vers l&#x27;autre, le curseur hésite.</p>
+        <p><b>Preuve :</b> Photos à fournir, exactes (génération, motorisation) : pas de photo « proche ».</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">5–9 s · Les médianes</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Médiane : 23 490 € · 17 562 €</div>
+        <div class="vis">Deux barres qui se remplissent : « Classe A 2018–2020 » et « Niro 2019, 60 000 km ».</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Médiane de la Mercedes : 23 490 euros. De la Kia : 17 562. »</p>
+        <p><b>Mouvement :</b> Barres sur ressort, sans rebond.</p>
+        <p><b>Preuve :</b> [S8]. Classe A non ajustée (cohorte centrée sur 2019 et 63 000 km) ; Niro ajustée.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">9–12 s · Le temps de choisir</div>
+      <div class="frame dark"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Trois secondes. Choisis.</div>
+        <div class="vis">Compte à rebours 3-2-1 ; le curseur hésite entre les deux cartes.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Trois secondes. Choisis. »</p>
+        <p><b>Mouvement :</b> Compte à rebours net, une seconde par chiffre.</p>
+        <p><b>Preuve :</b> Mécanique du duel : aucune donnée.</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">12–18 s · La revente</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Revente : 22 550 · 16 850 (hors frais)</div>
+        <div class="vis">« VS » en diagonale ; deux colonnes : « Classe A ≈ 22 550 € », « Niro ≈ 16 850 € ».</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Revente normale, avant frais : la Mercedes autour de 22 550 euros. La Kia autour de 16 850. »</p>
+        <p><b>Mouvement :</b> VS claque en diagonale, les colonnes montent.</p>
+        <p><b>Preuve :</b> Médiane × 0,96, arrondie aux 50 € : 23 490 × 0,96 et 17 562 × 0,96 [S8, S10].</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">18–24 s · L&#x27;écart à la cote</div>
+      <div class="frame dark"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">À 20 000 € : sous, puis au-dessus</div>
+        <div class="vis">Deux marqueurs à 20 000 € sur les barres : la Classe A reste à gauche de sa médiane, la Niro à droite.</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« On dit que l&#x27;hybride est une valeur sûre. À 20 000 euros, la Kia est au-dessus de sa cote. »</p>
+        <p><b>Mouvement :</b> Le marqueur saute sur chaque barre.</p>
+        <p><b>Preuve :</b> Écarts : 23 490 − 20 000 = 3 490 € ; 20 000 − 17 562 = 2 438 € [S8].</p>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="ftime">24–30 s · Le produit</div>
+      <div class="frame light"><div class="stage">
+        <div class="gv l"></div><div class="gv r"></div>
+        <div class="g top"></div><div class="g bot"></div>
+        
+        <div class="tx">Même prix. Pas la même affaire.</div>
+        <div class="vis">[CAPTURE À FAIRE : deux fiches calculées dans l&#x27;outil, sur des annonces réelles, sans plaque visible]</div>
+      </div></div>
+      <div class="fdesc">
+        <p class="voix">« Utopicar fait ce calcul pour chaque annonce, frais compris. Même prix. Pas la même affaire. »</p>
+        <p><b>Mouvement :</b> Les deux fiches se superposent.</p>
+        <p><b>Preuve :</b> Calcul : bilan.ts (carte grise, frais, travaux) [S10]. Capture à faire.</p>
+      </div>
+    </div></div>
+
+<h3>5 · Détail du découpage</h3>
+<table><tr><th>Temps</th><th>Fonction</th><th>Voix</th><th>Visuel</th><th>Texte à l'écran</th><th>Mouvement</th><th>Preuve ou élément à fournir</th></tr>
+<tr><td>0–5 s</td><td>Duel (hook)</td><td>« Même prix : 20 000 euros. Une Mercedes, une Kia hybride. Laquelle est sous sa cote ? »</td><td>Deux cartes côte à côte. [PHOTO À FOURNIR : Kia Niro hybride 2019, trois quarts avant] [PHOTO À FOURNIR : Mercedes Classe A, génération W177 2018–2020, trois quarts avant] Plaques floutées.</td><td>20 000 € chacune. Sous la cote ?</td><td>Les cartes glissent l&#x27;une vers l&#x27;autre, le curseur hésite.</td><td>Photos à fournir, exactes (génération, motorisation) : pas de photo « proche ».</td></tr>
+<tr><td>5–9 s</td><td>Les médianes</td><td>« Médiane de la Mercedes : 23 490 euros. De la Kia : 17 562. »</td><td>Deux barres qui se remplissent : « Classe A 2018–2020 » et « Niro 2019, 60 000 km ».</td><td>Médiane : 23 490 € · 17 562 €</td><td>Barres sur ressort, sans rebond.</td><td>[S8]. Classe A non ajustée (cohorte centrée sur 2019 et 63 000 km) ; Niro ajustée.</td></tr>
+<tr><td>9–12 s</td><td>Le temps de choisir</td><td>« Trois secondes. Choisis. »</td><td>Compte à rebours 3-2-1 ; le curseur hésite entre les deux cartes.</td><td>Trois secondes. Choisis.</td><td>Compte à rebours net, une seconde par chiffre.</td><td>Mécanique du duel : aucune donnée.</td></tr>
+<tr><td>12–18 s</td><td>La revente</td><td>« Revente normale, avant frais : la Mercedes autour de 22 550 euros. La Kia autour de 16 850. »</td><td>« VS » en diagonale ; deux colonnes : « Classe A ≈ 22 550 € », « Niro ≈ 16 850 € ».</td><td>Revente : 22 550 · 16 850 (hors frais)</td><td>VS claque en diagonale, les colonnes montent.</td><td>Médiane × 0,96, arrondie aux 50 € : 23 490 × 0,96 et 17 562 × 0,96 [S8, S10].</td></tr>
+<tr><td>18–24 s</td><td>L&#x27;écart à la cote</td><td>« On dit que l&#x27;hybride est une valeur sûre. À 20 000 euros, la Kia est au-dessus de sa cote. »</td><td>Deux marqueurs à 20 000 € sur les barres : la Classe A reste à gauche de sa médiane, la Niro à droite.</td><td>À 20 000 € : sous, puis au-dessus</td><td>Le marqueur saute sur chaque barre.</td><td>Écarts : 23 490 − 20 000 = 3 490 € ; 20 000 − 17 562 = 2 438 € [S8].</td></tr>
+<tr><td>24–30 s</td><td>Le produit</td><td>« Utopicar fait ce calcul pour chaque annonce, frais compris. Même prix. Pas la même affaire. »</td><td>[CAPTURE À FAIRE : deux fiches calculées dans l&#x27;outil, sur des annonces réelles, sans plaque visible]</td><td>Même prix. Pas la même affaire.</td><td>Les deux fiches se superposent.</td><td>Calcul : bilan.ts (carte grise, frais, travaux) [S10]. Capture à faire.</td></tr>
+</table>
+
+<h3>6 · Script final (voix, sans annotation)</h3>
+<div class="card"><p>Même prix : 20 000 euros. Une Mercedes, une Kia hybride. Laquelle est sous sa cote ? Médiane de la Mercedes : 23 490 euros. De la Kia : 17 562. Trois secondes. Choisis. Revente normale, avant frais : la Mercedes autour de 22 550 euros. La Kia autour de 16 850. On dit que l&#x27;hybride est une valeur sûre. À 20 000 euros, la Kia est au-dessus de sa cote. Utopicar fait ce calcul pour chaque annonce, frais compris. Même prix. Pas la même affaire.</p>
+<p><b>Mots :</b> 86 · <b>Durée estimée :</b> ≈ 30 s à 3.1 mots/s (débit retenu : Simon × 1,2). À vérifier à voix haute avant tout enregistrement.</p>
+<p><b>Promesse :</b> Savoir laquelle des deux est sous sa cote, à 20 000 €.<br><b>Réponse réelle :</b> La Classe A est sous sa médiane à ce prix (non ajustée) ; la Niro est au-dessus (ajustée). La planche ne dit rien de la fiabilité, des frais ni de la valeur réelle de chaque voiture.</p></div>
+
+<h3>7 · Contrôle qualité</h3>
+<table><tr><th>Question</th><th>Réponse</th></tr><tr><td>Le sujet est-il clair ?</td><td>Oui : deux voitures, un prix, une question.</td></tr><tr><td>L&#x27;enjeu est-il crédible ?</td><td>Oui : les écarts viennent des médianes [S8].</td></tr><tr><td>La question est-elle précise ?</td><td>Oui : laquelle est sous sa cote à 20 000 € ?</td></tr><tr><td>Chaque passage fait-il progresser ?</td><td>Oui : médianes, revente, écart, outil.</td></tr><tr><td>Le renversement est-il justifié ?</td><td>Oui par le chiffre : « l&#x27;hybride est sûre » est une croyance testée, pas une opinion.</td></tr><tr><td>Les éléments fictifs sont-ils signalés ?</td><td>Aucun exemple fictif : médianes réelles de la base, prix affichés.</td></tr><tr><td>La conclusion répond-elle à la promesse ?</td><td>Oui, avec la limite dite à l&#x27;écran.</td></tr><tr><td>Le ton semble-t-il humain ?</td><td>À vérifier à voix haute : deux phrases courtes, pas de jugement sur l&#x27;acheteur.</td></tr><tr><td>Les affirmations sont-elles soutenues ?</td><td>Oui pour les médianes [S8] et la formule [S10]. Classe A non ajustée : à signaler, ou à recalculer dans l&#x27;outil.</td></tr><tr><td>Zones sûres respectées ?</td><td>Oui : rien au-dessus de y = 220 px ni sous y = 1 480 px.</td></tr></table>
+
+<h3>8 · Variante à tester (une seule dimension)</h3>
+<div class="card"><p><b>Dimension :</b> La motorisation</p><p><b>Ce qui change :</b> Kia Niro hybride → Peugeot 3008 diesel 2019, 60 000 km (médiane 17 298 €, 742 annonces).</p><p><b>Pourquoi :</b> Teste si l&#x27;hybride est la cause de l&#x27;écart, ou seulement le niveau de prix.</p><p><b>Hypothèse :</b> Hypothèse à mesurer : si le 3008 reste au-dessus de sa médiane à 20 000 €, c&#x27;est le prix, pas la motorisation. Critère : écart au prix affiché.</p></div>
+
+<h3>9 · À fournir avant production</h3>
+<div class="card"><ul><li>Photo Kia Niro hybride 2019 et photo Mercedes Classe A W177 : exactes, trois quarts avant, plaques floutées, licences notées.</li><li>Recalcul de la Classe A avec la fonction ajustée de l&#x27;outil, ou mention « non ajustée » à l&#x27;écran.</li><li>Capture des deux fiches calculées sur des annonces réelles, sans plaque ni nom de vendeur.</li></ul></div>
+
+<h3>10 · Sources de cette planche</h3>
+<div class="card"><ul><li><b>S8</b> Base des annonces relevées UTOPICAR, lecture du 16 oct. 2026 : fonction cote_marche (comparables ±2 ans, km proche, prix ajustés) et médianes brutes. Prix affichés, pas prix de vente</li><li><b>S10</b> Code : web/src/lib/analyse/bilan.ts (revente normale = médiane × 0,96, arrondie aux 50 €)</li></ul></div>
+
+<div class="foot">Concept 5 sur 5 · planches du 16 oct. 2026 · Rien de tourné, rien de rendu. Mentions : « exemple fictif » sur tout scénario inventé ; « prix affichés » sur les médianes de la base ; « jusqu'à » sur chaque fourchette.</div>
+</body></html>
