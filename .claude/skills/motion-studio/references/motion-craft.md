@@ -30,6 +30,9 @@
 
 ### Sans référence : proposer un motion original « full smooth »
 
+Pour UTOPICAR, la maison a sa DA : la **DA immersive** (`da-immersive.md`). On la propose en premier ; les deux
+directions originales ci-dessous servent quand l'utilisateur veut autre chose, ou pour un autre produit.
+
 Quand l'utilisateur n'a pas de référence, ne pas copier une tendance : proposer **deux directions originales** sous
 forme de planche (3 images clés chacune, rendues) et laisser choisir. Socle commun d'un film fluide :
 - une caméra continue (le cadre ne saute jamais sans raison : dérive lente, poussée, raccords dans le mouvement —

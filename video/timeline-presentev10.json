@@ -1,0 +1,12 @@
+{
+ "version": 1,
+ "style": "présentation utopicar v10 : notre Polo en vraie 3D (Three.js, « utopicar » sur la plaque) à la place de la 208, chiffres de l'outil sur une annonce d'essai de Polo ; nouvelle voix de Simon (script v10 : prix maximum dit, Clio annoncée, utopicar écrit aux vendeurs, lien en bio) ; transitions par grosse couleur, aucun cadre d'interface",
+ "fps": 30,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 59.533,
+ "poster": 2.0
+}

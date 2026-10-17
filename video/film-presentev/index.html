@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>présentation utopicar avec Simon</title>
+<style>
+@font-face{font-family:Clash;font-weight:600;src:url(../assets/fonts-site/ClashDisplay-600.woff2) format('woff2')}
+@font-face{font-family:Clash;font-weight:700;src:url(../assets/fonts-site/ClashDisplay-700.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:500;src:url(../assets/fonts-site/Satoshi-500.woff2) format('woff2')}
+@font-face{font-family:Satoshi;font-weight:700;src:url(../assets/fonts-site/Satoshi-700.woff2) format('woff2')}
+@font-face{font-family:Instrument;font-style:italic;src:url(../assets/fonts-site/InstrumentSerif-Italic.woff2) format('woff2')}
+:root{--w:#fbf9f5;--k:#0e0b09;--o:#ff5a1f;--r:#d93a3a;--ink:#1c1612;--ok:#0a8f55;--nuit:#1d2a52}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:absolute;inset:0;overflow:hidden;font-family:Satoshi;color:var(--ink);-webkit-font-smoothing:antialiased}
+.a{position:absolute;left:0;top:0}
+.lay{position:absolute;inset:0;overflow:hidden}
+.ctx{font:700 30px Satoshi;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.men{font:500 24px Satoshi;white-space:nowrap}
+.pill{padding:20px 38px;border-radius:999px;font:700 40px Satoshi;white-space:nowrap}
+.cell{position:absolute;left:0;top:0;width:250px;height:126px;border-radius:22px;padding:18px 22px;background:#1b1612;border:2px solid rgba(244,241,236,.09);color:#f4f1ec}
+.cell .m{font:700 24px Satoshi;white-space:nowrap;overflow:hidden}
+.cell .s{font:500 18px Satoshi;opacity:.5;margin-top:3px;white-space:nowrap}
+.cell .p{font:600 34px Clash;margin-top:10px;white-space:nowrap}
+/* texte cinétique : mots masqués (montée), lettres animées une à une */
+.kt{position:absolute;left:0;top:0;white-space:nowrap;font:700 200px/0.92 Clash;letter-spacing:-.045em}
+.kt .ln{display:block}
+.kt .w{display:inline-block;vertical-align:top;padding:.06em .05em .2em;margin:-.06em -.05em -.2em;margin-right:.09em}
+.kt .w.m{overflow:hidden}
+.kt .w:last-child{margin-right:-.05em}
+.kt .c{display:inline-block;transform-origin:50% 80%}
+.kt .i{font-family:Instrument;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.roll{position:absolute;left:0;top:0;white-space:nowrap;font:700 200px/1 Clash;letter-spacing:-.04em;display:flex;align-items:flex-start}
+.roll .col{display:inline-block;height:1em;clip-path:inset(0 -.35em)}
+.roll .col .strip{display:block}
+.roll .col .strip span{display:block;height:1em;text-align:center}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<svg width="0" height="0" style="position:absolute"><defs id="fx">
+  <filter id="goo"><feGaussianBlur stdDeviation="14"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 26 -11"/></filter>
+</defs></svg>
+<script src="../lib/motion.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

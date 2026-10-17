@@ -41,7 +41,7 @@
       KA(s, 140, 330, 72, head, '#fbf9f5', true, a - s.pre - 0.02);
       BA(s, 144, 440, 'expression de vendeur', [], a - s.pre + 0.05, 'rgba(251,249,245,.5)', 30);
       const PB = priceBlock(s, 560, "jusqu'à", tP, from, to, B(label, hot)); s.P.push(PB);
-      men(s, 'Fourchettes de la grille de coûts UTOPICAR', '#fbf9f5');
+      men(s, 'Fourchettes de la grille de coûts utopicar', '#fbf9f5');
       return s;
     }
     // « Juste un voyant… rien de grave. » Traduction :
@@ -78,8 +78,8 @@
     // « …trois mille euros. »
     const s8 = S(tP5 - 0.06, T('je', 12.3), 'var(--ink)', { type: 'cut' }, 0.04); s8.imp.push([tP5 + 0.04, 26]); cue(tP5, 'impact');
     s8.P.push(priceBlock(s8, 600, "jusqu'à", tP5, '0 000 €', '3 000 €', B('pour une seule annonce', ['annonce'])));
-    men(s8, 'Fourchettes de la grille de coûts UTOPICAR', '#fbf9f5');
-    // « Je colle l'annonce dans UTOPICAR… »
+    men(s8, 'Fourchettes de la grille de coûts utopicar', '#fbf9f5');
+    // « Je colle l'annonce dans utopicar… »
     const a9 = T('je', 12.3), tCl = 14.18, s9 = S(a9, T('bam', 14) - 0.02, 'var(--o)', { type: 'slab' });
     KA(s9, 140, 270, 150, 'Je colle', '#fff', false, [a9, T('colle', 12.5)]); KA(s9, 140, 420, 200, "l'annonce", 'var(--ink)', true, T('annonce', 12.9));
     const field = mk('div', 'a', s9.cam, { width: '800px', height: '150px', borderRadius: '999px', background: '#fff', display: 'flex', alignItems: 'center', padding: '0 18px 0 36px', gap: '16px', boxShadow: '0 50px 100px -30px rgba(28,22,18,.45)' },
@@ -332,7 +332,7 @@
   // PS1 · Problème → solution : la Classe A en vente trois fois, à trois prix (vraie annonce analysée le 10 oct. 2026)
   // =====================================================================================================
   SPECS.PS1 = () => {
-    const MERC = PH + 'mercedes-profil.jpg', SRC = 'Vraie annonce (Classe A 180d, 2018, 96 000 km), analysée par UTOPICAR le 10 oct. 2026';
+    const MERC = PH + 'mercedes-profil.jpg', SRC = 'Vraie annonce (Classe A 180d, 2018, 96 000 km), analysée par utopicar le 10 oct. 2026';
     const tBam = T('bam', 13), tMax = T('ton', 13.5), t165 = T('16', 14.5), tJ = T('3', 15.5);
     // « Tu craques pour cette Classe A. » : l'annonce entre, le cœur se remplit
     const s1 = S(-1, 2.25, 'var(--w)', { type: 'cut' }, 0.04);
@@ -385,7 +385,7 @@
     const kP = KA(s4, 140, 1190, 140, 'Pfff…', '#fff', true, 8.75, 'blur', { fx: (i, j, tt) => ({ y: E(tt, 8.95 + j * 0.05, 0.5) * (14 + j * 9), r: E(tt, 8.95, 0.5) * (j % 2 ? 5 : -4) }) });
     s4.P.push((t) => { rise(tk, t, a4 - 0.05, 540, 790, -1); tk.paint(t); });
     cred(s4, SRC + ' · revente normale estimée par l’outil', '#fff');
-    // « Avant d'appeler, tu colles l'annonce dans UTOPICAR… »
+    // « Avant d'appeler, tu colles l'annonce dans utopicar… »
     const a5 = 10.0, tCl = T('car', 12) + 0.2, s5 = S(a5, tBam - 0.03, 'var(--o)', { type: 'slab' });
     KA(s5, 140, 250, 170, "Avant", '#fff', false, T('avant', 9.9)); KA(s5, 140, 430, 190, "d'appeler,", 'var(--ink)', true, [T('d', 10.3)]);
     const field = mk('div', 'a', s5.cam, { width: '800px', height: '150px', borderRadius: '999px', background: '#fff', display: 'flex', alignItems: 'center', padding: '0 18px 0 36px', gap: '16px', boxShadow: '0 50px 100px -30px rgba(28,22,18,.45)' },
@@ -420,10 +420,10 @@
 
   // =====================================================================================================
   // PS2 · Problème → solution, avant / après sur la même annonce : la perte, un vrai rembobinage du film, puis la même
-  // Classe A achetée avec UTOPICAR (vraie analyse du 10 oct. 2026 ; le + 1 290 € est calculé sur ses chiffres)
+  // Classe A achetée avec utopicar (vraie analyse du 10 oct. 2026 ; le + 1 290 € est calculé sur ses chiffres)
   // =====================================================================================================
   SPECS.PS2 = () => {
-    const MERC = PH + 'mercedes-profil.jpg', SRC = 'Vraie annonce (Classe A 180d, 2018, 96 000 km) analysée par UTOPICAR le 10 oct. 2026';
+    const MERC = PH + 'mercedes-profil.jpg', SRC = 'Vraie annonce (Classe A 180d, 2018, 96 000 km) analysée par utopicar le 10 oct. 2026';
     const tAch = T('achete'), t19 = T('19'), tRev = T('revendu', 3), t18 = T('18', 3.5), tCG = T('carte', 5), tTJ = T('trajet', 6), tTX = T('travaux', 7), tFR = tTX + 0.45;
     const tMo = T('moins', 8), t27 = T('2', 8.2), tRw = T('ramb', 10), tMe = T('meme', 11), tAv = T('avant', 12), tUt = T('utopi', 13.5);
     const tBam = T('bam', 14.5), tPx = T('prix', 15.5), t165 = T('16', 16), tNe = T('negocies', 17), t160 = T('16', 17.8), tPl = T('plus', 19), t1290 = T('1', 19.4);
@@ -480,7 +480,7 @@
       rwL.style.opacity = Math.floor(t * 8) % 2 ? 0.55 : 1; band.style.top = ((p * 3.2 % 1) * 2000 - 90).toFixed(0) + 'px';
     } };
     // ---------- SOLUTION ----------
-    // « Même annonce. Avant d'appeler, tu la colles dans UTOPICAR… » : même cadre qu'au début, cette fois on colle le lien
+    // « Même annonce. Avant d'appeler, tu la colles dans utopicar… » : même cadre qu'au début, cette fois on colle le lien
     const tCl = tUt + 0.55, sS1 = S(RW.b, tBam - 0.03, 'var(--w)', { type: 'cut' }, 0.03); cue(RW.b, 'thud', 0.7); sS1.imp.push([RW.b + 0.02, 10]);
     const kM = KT(sS1.cam, 140, 230, 150, [['Même', {}], ['annonce.', { c: 'var(--o)', i: 1 }]]); sS1.P.push((t) => ktP(kM, t, [tMe - 0.05, T('annonce', 11.5)]));
     KA(sS1, 140, 410, 96, "Avant d'appeler,", 'var(--ink)', false, [tAv, T('d', 12.6)]);
@@ -551,7 +551,7 @@
   // 107, C1 et Aygo : même voiture, même moteur 1.0 VVT-i (fiche fiabilité de l'outil, lib/analyse/fiabilite.ts)
   // =====================================================================================================
   SPECS.FI1 = () => {
-    const P = '../assets/photos-fi1/', CRED = 'Photos Wikimedia Commons : Vauxford (CC BY-SA 4.0), Rudolf Stricker (CC BY-SA 3.0), détourées · Fiche fiabilité UTOPICAR';
+    const P = '../assets/photos-fi1/', CRED = 'Photos Wikimedia Commons : Vauxford (CC BY-SA 4.0), Rudolf Stricker (CC BY-SA 3.0), détourées · Fiche fiabilité utopicar';
     const tPe = T('peugeot'), tPere = T('pere', 2.4), tTo = T('toyota', 3.3), tMe = T('meme', 4.3), tAy = T('aigo', 5.3), tC1 = T('c1', 5.8), tTu = T('tu', 6.5), tLa = T('laquelle', 6.8);
     const s = S(-1, DUR + 1, 'var(--k)', { type: 'cut' }, 0.03); s.imp.push([tTo + 0.04, 30]);
     // projecteurs du plateau
@@ -608,7 +608,7 @@
   // (fiche fiabilité de l'outil, lib/analyse/fiabilite.ts : embrayage souvent fatigué, à vérifier)
   // =====================================================================================================
   SPECS.FI2 = () => {
-    const P = '../assets/photos-fi1/', CRED = 'Photos Wikimedia Commons : Vauxford (CC BY-SA 4.0), Rudolf Stricker (CC BY-SA 3.0), détourées · Fiche fiabilité UTOPICAR';
+    const P = '../assets/photos-fi1/', CRED = 'Photos Wikimedia Commons : Vauxford (CC BY-SA 4.0), Rudolf Stricker (CC BY-SA 3.0), détourées · Fiche fiabilité utopicar';
     const tCa = T('carrosserie'), tMo = T('moteur', 2.6), tVo = T('voila', 4), t107 = T('107', 4.6), tFi = T('fiable', 5.5), tTu = T('tu', 6.3), tLa = T('laquelle', 6.8);
     const s = S(-1, DUR + 1, '#f4ece0', { type: 'cut' }, 0.03); s.imp.push([tVo + 0.05, 26]);
     // la cuisine : carrelage, plan de travail en bois
@@ -686,7 +686,7 @@
   // =====================================================================================================
   SPECS.FI3 = async () => {
     const P = '../assets/photos-fi1/', L = '../assets/fi3-lambo/', NF = 103;
-    const CRED = 'Vidéo Pexels n° 3066451 · Photo de la 107 : Vauxford, Wikimedia Commons (CC BY-SA 4.0), détourée · Fiche fiabilité UTOPICAR';
+    const CRED = 'Vidéo Pexels n° 3066451 · Photo de la 107 : Vauxford, Wikimedia Commons (CC BY-SA 4.0), détourée · Fiche fiabilité utopicar';
     // les images de la vidéo, chargées et décodées avant le premier seek (drawImage est alors synchrone)
     const IM = await Promise.all([...Array(NF)].map((_, i) => new Promise((ok) => { const im = new Image(); im.onload = () => im.decode().then(() => ok(im), () => ok(im)); im.onerror = () => ok(null); im.src = `${L}f${String(i + 1).padStart(3, '0')}.jpg`; })));
     const tLe = T('le', 1.5), tMN = T('mais', 2.2) - 0.1, tTa = T('ta', 3.1), tEl = T('elle', 4.3), tMo = T('mot', 5), tTr = T('tres', 5.9), tTu = T('tu', 6.7), tLa = T('laquelle', 7);
@@ -737,12 +737,12 @@
 
   // =====================================================================================================
   // BO1 à BO3 · Débuts « bénéfice d'abord », v2 (retour du 11 oct. 2026 : « moins de texte, plus de visuels, plus
-  // original »). Grammaire relevée sur Behance, dans la DA UTOPICAR : collage MINI JCW (voiture découpée en autocollant,
+  // original »). Grammaire relevée sur Behance, dans la DA utopicar : collage MINI JCW (voiture découpée en autocollant,
   // ombre en trame, disque de couleur, plan au trait avec la pièce en couleur), widgets chiffrés de FinData.
   // 0 s la voiture-autocollant tombe sur le disque orange, « POV ta 1re revente » ; l'étiquette de prix se balance
-  // (achat) puis se retourne (revente) ; l'étoile verte « +978 € » claque sur le drop ; le scanner UTOPICAR passe, la
+  // (achat) puis se retourne (revente) ; l'étoile verte « +978 € » claque sur le drop ; le scanner utopicar passe, la
   // voiture devient un plan au trait, deux repères (moteur fiable, à vérifier) ; « Ton prix max » monte sur le coup final.
-  // Vraies annonces sous le marché (base UTOPICAR, oct. 2026), calcul de l'outil : revente normale = médiane des
+  // Vraies annonces sous le marché (base utopicar, oct. 2026), calcul de l'outil : revente normale = médiane des
   // comparables × 0,95 ; bénéfice = revente − prix − carte grise − 20 € ; prix max = revente − frais − 750 €.
   // =====================================================================================================
   const BO = {
@@ -798,7 +798,7 @@
     const tStar = -0.15, tLand = vo ? T('de', T(d.ben.replace(/\D/g, ''))) : 0.7;   // le compteur s'arrête quand Simon finit le nombre
     const tTag = vo ? T(d.w) - 0.16 : 1.5, tCorner = Math.max(tTag - 0.4, tLand + 0.45), tFlip0 = 2.25;
     const tPaste = vo ? T('colles') - 0.15 : 2.9, tGo = vo ? T('utopicar') + 0.1 : 3.3;
-    // l'analyse est la source : après le clic, le scanner passe, la barre devient « Analyse UTOPICAR ✓ », puis chaque
+    // l'analyse est la source : après le clic, le scanner passe, la barre devient « Analyse utopicar ✓ », puis chaque
     // résultat tombe sur son mot (revente : l'étiquette se retourne, moteur fiable, à vérifier, prix max)
     const tFlip = vo ? T('reven', tGo) - 0.04 : tFlip0, tBadge = vo ? T('analys', tGo) - 0.1 : 3.4;
     const tOut = vo ? tGo : 2.85, tTagOut = vo ? T('moteur', tGo) - 0.25 : tOut, tS0 = vo ? tGo + 0.15 : 3.45, dS = vo ? 0.7 : 0.95, tPM = vo ? T('prix', tGo) - 0.4 : 4.5;
@@ -812,7 +812,7 @@
     const ht = mk('div', 'ht', box, { WebkitMask: `url(${src}) 0 0/100% 100% no-repeat`, mask: `url(${src}) 0 0/100% 100% no-repeat` });
     const ph = mk('img', '', box); ph.src = src;
     const ln = mk('img', 'ln', box); ln.src = `../assets/hooks-cut/${d.n}-line.png`;
-    const scan = mk('div', 'bo-scan', box, null, '<span>UTOPICAR</span>');
+    const scan = mk('div', 'bo-scan', box, null, '<span>utopicar</span>');
     const pins = d.pins.map(([fx, fy, ok]) => {
       const up = fy < 0.6, right = fx > 0.6, L = up ? 120 : 90;
       const p = mk('div', 'bo-pin ' + (ok ? 'ok' : 'wa'), box, { left: fx * 100 + '%', top: fy * 100 + '%' });
@@ -826,15 +826,15 @@
     const k1 = L1(s.cam, 140, 300, 92, 'Ta 1re revente', '#fff'); k1.box.style.textShadow = '0 6px 28px rgba(0,0,0,.6)';
     const sw = mk('div', 'bo-sw a', s.cam), LS = 470;
     mk('div', 'str', sw, { height: LS + 30 + 'px' });
-    const tg = mk('div', 'bo-tg', sw, { top: LS + 'px' }, `<div class="fc fr"><small>achat</small><b>${d.buy}</b></div><div class="fc bk"><small>UTOPICAR · revente</small><b>${d.rev}</b></div>`);
+    const tg = mk('div', 'bo-tg', sw, { top: LS + 'px' }, `<div class="fc fr"><small>achat</small><b>${d.buy}</b></div><div class="fc bk"><small>utopicar · revente</small><b>${d.rev}</b></div>`);
     const st = mk('div', 'bo-star a', s.cam, null, `<svg viewBox="0 0 600 600"><path d="${star(14, 300, 252)}" fill="#3ccf7a" stroke="#fff" stroke-width="14" stroke-linejoin="round"/></svg><div class="lb">de bénef</div>`);
     const RB = ROLL(st, 0, 196, 136, '+000 €', d.ben, '#0e0b09'); RB.box.style.left = (300 - RB.box.offsetWidth / 2) + 'px';
-    // « Tu colles l'annonce dans UTOPICAR » : la barre d'analyse monte, le lien s'écrit, clic sur « Analyser »
-    const bar = mk('div', 'bo-bar a', s.cam, null, `<img src="../assets/brand/official/utopicar-icone-orange.svg"><div class="tx"><span class="ba">Annonce <i>· ${d.w[0].toUpperCase() + d.w.slice(1)} · ${d.buy}</i></span><span class="bb">Analyse <b style="color:var(--o)">UTOPICAR</b> ✓</span></div><div class="go">Analyser</div>`);
+    // « Tu colles l'annonce dans utopicar » : la barre d'analyse monte, le lien s'écrit, clic sur « Analyser »
+    const bar = mk('div', 'bo-bar a', s.cam, null, `<img src="../assets/brand/official/utopicar-icone-orange.svg"><div class="tx"><span class="ba">Annonce <i>· ${d.w[0].toUpperCase() + d.w.slice(1)} · ${d.buy}</i></span><span class="bb">Analyse <b style="color:var(--o)">utopicar</b> ✓</span></div><div class="go">Analyser</div>`);
     const bA = bar.querySelector('.ba'), bB = bar.querySelector('.bb');
     const btx = bar.querySelector('.tx'), bgo = bar.querySelector('.go');
     cue(tPaste, 'whoosh', 0.5); cue(tPaste + 0.25, 'type', 0.7); cue(tGo, 'click', 1);
-    const pm = mk('div', 'bo-pm a', s.cam, null, '<div class="hd"><span>Analyse <b>UTOPICAR</b></span><i>⏱ 1 min</i></div><div class="rw">Ton prix max</div>');
+    const pm = mk('div', 'bo-pm a', s.cam, null, '<div class="hd"><span>Analyse <b>utopicar</b></span><i>⏱ 1 min</i></div><div class="rw">Ton prix max</div>');
     const RP = ROLL(pm.querySelector('.rw'), 0, 4, 110, '0 000 €', d.pm, 'var(--o)'); RP.box.style.left = (700 - RP.box.offsetWidth) + 'px';
     // ---------- sons ----------
     cue(0.1, 'thud', 1); cue(tTag, 'whoosh', 0.45); cue(tTag + 0.36, 'click', 0.7);
@@ -897,7 +897,7 @@
   // =====================================================================================================
   // S1V1 à S2V7 · les 14 vidéos des semaines du 12 et du 19 oct. 2026 (concept « l'analyse sort tout », planches
   // video/renders/maquette-hooks/planche-7-videos*.png). Un seul moteur, une config par vidéo : voitures-autocollants,
-  // étoiles de bénéfice, étiquettes, barre UTOPICAR (« tu colles l'annonce »), scanner, repères, carte prix max,
+  // étoiles de bénéfice, étiquettes, barre utopicar (« tu colles l'annonce »), scanner, repères, carte prix max,
   // tampons, bulles, compteur, ticket, puis le carton « 3 analyses offertes · code TIKTOK » avec le logo.
   // Chaque geste est calé sur un mot de Simon (T). Chiffres : vraies annonces de la base du marché, formule de l'outil
   // (bilan.ts) hors travaux probables, d'où la mention à l'écran.
@@ -923,23 +923,24 @@
     if (!document.getElementById('sm-css')) { const st = mk('style', '', document.head, null, SEM_CSS); st.id = 'sm-css'; }
     const s = S(-1, DUR + 1, '#141110', { type: 'cut' }, 0.03), P = [];
     s.el.insertBefore(mk('div', 'bo-dots', s.el), s.cam);
-    const tGo = TA(['utopicar'], c.goAfter ?? 0) + 0.1, tPaste = TA(['coll'], c.goAfter ?? 0) - 0.15, tF = (() => { const a = TA(['trois'], tGo + 0.5); return a > tGo + 0.5 ? a : TA(['3'], tGo + 0.5); })();   // « trois » d'abord : « 3 000 » ne déclenche pas la fin
+    const tGo = (c.goT ?? TA(['utopicar', 'utopic', 'utopik'], c.goAfter ?? 0)) + 0.1, tPaste = TA(['coll'], c.goAfter ?? 0) - 0.15, tF = c.endT ?? (() => { const a = TA(['trois'], tGo + 0.5); return a > tGo + 0.5 ? a : TA(['3'], tGo + 0.5); })();   // « trois » d'abord : « 3 000 » ne déclenche pas la fin
     const tBadge = c.badge ?? tGo + 0.7, tS0 = c.scanT ?? tGo + 0.15, dS = 0.7, scanF = (t) => eIO(clamp((t - tS0) / dS, 0, 1));
     s.imp.push([0.15, 16], [tGo, 20]);
     // fond : disque (orange ; rouge quand le verdict est négatif), qui s'efface pendant l'analyse
     const disc = mk('div', 'bo-disc a', s.cam);
-    P.push((t) => { const pd = E(t, -0.3, 0.55); disc.style.background = c.red && t >= c.red ? 'var(--r)' : 'var(--o)';
+    P.push((t) => { const pd = E(t, -0.3, 0.55); disc.style.background = c.disc ? c.disc(t) : c.red && t >= c.red ? 'var(--r)' : 'var(--o)';
       pose(disc, t, () => ({ x: 540, y: 960, c: 1, s: (0.35 + 0.65 * pd) * (1 + 0.015 * pulse(t)), o: 1 - (c.noFade ? 0 : 0.75 * E(t, tS0 - 0.1, 0.6)) })); });
     // contexte (image 0)
     const pov = mk('div', 'pill a', s.cam, { background: 'var(--o)', color: '#1a1310', fontSize: '30px', padding: '8px 18px', letterSpacing: '.12em' }, 'POV');
     const k1 = L1(s.cam, 140, 300, 92, c.title || 'Ta 1re revente', '#fff'); k1.box.style.textShadow = '0 6px 28px rgba(0,0,0,.6)';
-    P.push((t) => { slamAt(pov, t, -0.5, 190, 255, -3); ktP(k1, t, [-0.6, -0.5, -0.45, -0.4], 'rise'); });
+    if (c.pov === false) pov.style.display = 'none';
+    P.push((t) => { if (c.pov !== false) slamAt(pov, t, -0.5, 190, 255, -3); ktP(k1, t, [-0.6, -0.5, -0.45, -0.4], 'rise', c.titleOut ?? null, 'up'); });
     // voitures
     const cars = (c.cars || []).map((k) => {
       const box = mk('div', 'bo-car a', s.cam, { width: k.cw + 'px' }), src = `../assets/hooks-cut/${k.n}-sticker.png`;
       const ht = mk('div', 'ht', box, { WebkitMask: `url(${src}) 0 0/100% 100% no-repeat`, mask: `url(${src}) 0 0/100% 100% no-repeat` });
       const ph = mk('img', '', box); ph.src = src; const ln = mk('img', 'ln', box); ln.src = `../assets/hooks-cut/${k.n}-line.png`;
-      const scan = k.scan ? mk('div', 'bo-scan', box, null, '<span>UTOPICAR</span>') : null;
+      const scan = k.scan ? mk('div', 'bo-scan', box, null, '<span>utopicar</span>') : null;
       const pins = (k.pins || []).map(([fx, fy, kind, lab, w]) => {
         const up = fy < 0.6, right = fx > 0.6, L = up ? 120 : 90;
         const p = mk('div', 'bo-pin ' + kind, box, { left: fx * 100 + '%', top: fy * 100 + '%' });
@@ -965,7 +966,8 @@
         const f = k.line ? 100 : k.scan ? clamp((-50 + (k.cw + 100) * scanF(t)) / k.cw, 0, 1) * 100 : 0;
         ph.style.clipPath = `inset(0 0 0 ${f.toFixed(2)}%)`; ln.style.clipPath = `inset(0 ${(100 - f).toFixed(2)}% 0 0)`; ht.style.opacity = (1 - 0.007 * f).toFixed(3);
         ht.style.transform = 'translate(20px,28px)';
-        if (scan) { const bx = -50 + (k.cw + 100) * scanF(t); scan.style.display = t > tS0 - 0.05 && t < tS0 + dS + 0.25 ? '' : 'none'; scan.style.left = bx.toFixed(1) + 'px'; scan.style.height = box.offsetHeight + 180 + 'px'; scan.style.opacity = (1 - E(t, tS0 + dS, 0.22)).toFixed(3); }
+        if (scan) { const bx = -50 + (k.cw + 100) * scanF(t); scan.style.display = t > tS0 - 0.05 && t < tS0 + dS + 0.25 ? '' : 'none'; scan.style.left = bx.toFixed(1) + 'px'; scan.style.height = box.offsetHeight + 180 + 'px'; scan.style.opacity = (1 - E(t, tS0 + dS, 0.22)).toFixed(3);
+          const ax = k.x - k.cw / 2 + bx; scan.firstChild.style.transform = `translateX(calc(-50% + ${(clamp(ax, 230, 850) - ax).toFixed(1)}px))`; }   // l'étiquette reste dans la colonne 140 → 940
         for (const q of pins) {
           const on = t >= q.tc - 0.01; q.p.style.display = on ? '' : 'none'; if (!on) continue; const u = t - q.tc;
           q.dot.style.transform = `scale(${clamp(spring(u, 'snappy'), 0, 2).toFixed(3)})`;
@@ -1008,9 +1010,9 @@
         if (z.strike) st.lastChild.style.transform = `rotate(-8deg) scaleX(${E(t, z.strike, 0.3).toFixed(3)})`;
       });
     }
-    // barre UTOPICAR : « tu colles l'annonce », clic sur Analyser, puis « Analyse UTOPICAR ✓ » jusqu'à la carte
+    // barre utopicar : « tu colles l'annonce », clic sur Analyser, puis « Analyse utopicar ✓ » jusqu'à la carte
     if (c.bar !== false) {
-      const bar = mk('div', 'bo-bar a', s.cam, null, `<img src="../assets/brand/official/utopicar-icone-orange.svg"><div class="tx"><span class="ba">Annonce <i>· ${c.ann}</i></span><span class="bb">Analyse <b style="color:var(--o)">UTOPICAR</b> ✓</span></div><div class="go">Analyser</div>`);
+      const bar = mk('div', 'bo-bar a', s.cam, null, `<img src="../assets/brand/official/utopicar-icone-orange.svg"><div class="tx"><span class="ba">Annonce <i>· ${c.ann}</i></span><span class="bb">Analyse <b style="color:var(--o)">utopicar</b> ✓</span></div><div class="go">Analyser</div>`);
       const btx = bar.querySelector('.tx'), bgo = bar.querySelector('.go'), bA = bar.querySelector('.ba'), bB = bar.querySelector('.bb'), tOff = c.barOff ?? (c.card ? c.card.t : tF - 0.3);
       cue(tPaste, 'whoosh', 0.5); cue(tPaste + 0.25, 'type', 0.7); cue(tGo, 'click', 1); cue(tBadge, 'ding', 0.5);
       P.push((t) => {
@@ -1022,7 +1024,7 @@
     }
     // carte « Ton prix max » (ou autre chiffre final)
     if (c.card) {
-      const k = c.card, pm = mk('div', 'bo-pm a', s.cam, null, `<div class="hd"><span>Analyse <b>UTOPICAR</b></span><i>⏱ 1 min</i></div><div class="rw">${k.lab}</div>`);
+      const k = c.card, pm = mk('div', 'bo-pm a', s.cam, null, `<div class="hd"><span>Analyse <b>utopicar</b></span><i>⏱ 1 min</i></div><div class="rw">${k.lab}</div>`);
       const RP = ROLL(pm.querySelector('.rw'), 0, 4, 110, zero(k.v), k.v, k.color || 'var(--o)'); RP.box.style.left = (700 - RP.box.offsetWidth) + 'px';
       cue(k.t - 0.05, 'whoosh', 0.6); cue(k.t + 0.05, 'roll', 0.8);
       P.push((t) => { rise(pm, t, k.t, 530, k.y ?? 1340, -1.5); rollP(RP, t, k.t + 0.08, Math.max(0.3, k.hit - k.t - 0.2), 0.05); });
@@ -1038,7 +1040,7 @@
       P.push((t) => { pose(e, t, (tt) => (tt < o.t - 0.05 || (o.out && tt > o.out + 0.4) ? null : { x: 540, y: (o.y ?? 760) + (o.out ? 1500 * E(tt, o.out, 0.4, eIn) : 0), c: 1, r: -2, s: (o.s ?? 1) * (1 + 0.3 * (1 - E(tt, o.t, 0.3))) })); rollP(R, t, o.t + 0.05, o.d ?? 0.9, 0.05); });
     }
     if (c.ticket) {
-      const k = c.ticket, tk = mk('div', 'sm-tk a', s.cam, null, `<div class="h"><span>Analyse <b>UTOPICAR</b></span><i>⏱ 1 min</i></div>` + k.rows.map(([a, b]) => `<div class="r"><span>${a}</span><b>${b}</b></div>`).join('') + `<div class="t"><span>${k.tot[0]}</span><b style="color:${k.tot[2] || 'var(--o)'}">${k.tot[1]}</b></div>`);
+      const k = c.ticket, tk = mk('div', 'sm-tk a', s.cam, null, `<div class="h"><span>Analyse <b>utopicar</b></span><i>⏱ 1 min</i></div>` + k.rows.map(([a, b]) => `<div class="r"><span>${a}</span><b>${b}</b></div>`).join('') + `<div class="t"><span>${k.tot[0]}</span><b style="color:${k.tot[2] || 'var(--o)'}">${k.tot[1]}</b></div>`);
       const rows = [...tk.querySelectorAll('.r')], tot = tk.querySelector('.t');
       k.rows.forEach((r) => cue(r[2], 'pop', 0.55)); cue(k.tot[3], 'impact', 0.8); cue(k.t - 0.05, 'whoosh', 0.6);
       P.push((t) => { rise(tk, t, k.t, 530, k.y ?? 1300, -1.5);
@@ -1047,9 +1049,11 @@
     }
     for (const b of c.msgs || []) { const f = bubble(s.cam, b.y, b.txt, b.me, b.t); P.push((t) => { if (b.out && t > b.out) { f(-99); return; } f(t); }); }
     if (c.demo) mk('div', 'sm-demo a', s.cam, { left: '140px', top: '410px' }, c.demo);
+    if (c.extra) c.extra(s, P, { tGo, tF });   // scènes propres à une vidéo (recherche automatique, e-mail…)
     s.P.push((t) => P.forEach((f) => f(t)));
     // fin : « 3 analyses offertes avec le code TIKTOK », logo
-    endCard(tF - 0.12, 'var(--o)', [['3 analyses', 250, 170, '#fff', false, tF], ['offertes', 430, 190, 'var(--ink)', true, TA(['offert'], tF)], ['avec le code TIKTOK', 640, 80, '#fff', false, TA(['code'], tF)]],
+    if (c.end) endCard(tF - 0.12, 'var(--o)', c.end.lines(tF), c.end.pill, tF + 0.35, { type: 'circle', x: 530, y: c.endY ?? 1340 });
+    else endCard(tF - 0.12, 'var(--o)', [['3 analyses', 250, 170, '#fff', false, tF], ['offertes', 430, 190, 'var(--ink)', true, TA(['offert'], tF)], ['avec le code TIKTOK', 640, 80, '#fff', false, TA(['code'], tF)]],
       'Code <b style="color:var(--o)">TIKTOK</b> · lien en bio', tF + 0.35, { type: 'circle', x: 530, y: c.endY ?? 1340 });
     return { cars, tGo, tF };
   }
@@ -1132,13 +1136,99 @@
     card: { lab: 'Ton prix max', v: '3 000 €', t: TA(['ton'], 9.5) - 0.3, hit: TA(['000'], 11) + 0.3 } });
   SEM.S2V6 = () => ({ ann: 'Clio 4 · 7 000 €', demo: MEN,   // la vraie affaire
     cars: [{ n: 'clio4', cw: 900, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.45, 0.4, 'ok', 'Moteur fiable', TA(['fiable'])], [0.72, 0.62, 'ok', '42 350 km, 1re main', TA(['revente'])]] }],
-    tags: [{ front: ['achat', '7 000 €'], x: 520, t: TA(['main']) - 0.1, back: ['UTOPICAR · revente', '8 750 €'], flip: TA(['8'], 6.8) - 0.1, out: TA(['plus']) - 0.2 }],
+    tags: [{ front: ['achat', '7 000 €'], x: 520, t: TA(['main']) - 0.1, back: ['utopicar · revente', '8 750 €'], flip: TA(['8'], 6.8) - 0.1, out: TA(['plus']) - 0.2 }],
     stars: [{ v: '+1 448 €', t: TA(['plus']) - 0.3, land: TA(['1448']) + 0.45, x: 540, y: 1000 }],
     stamps: [{ txt: 'FONCE', color: '#3ccf7a', x: 540, y: 1330, t: TA(['fonce']) - 0.05, r: -8, size: 150 }], barOff: TA(['fonce']) - 0.2 });
   SEM.S2V7 = () => ({ ann: 'messages d\'exemple', demo: 'Messages d\'exemple', red: TA(['arnaque']) - 0.3, noFade: true,   // les 3 messages d'un arnaqueur
     msgs: [{ txt: 'Je suis à l\'étranger 🙏', me: false, y: 540, t: 0.0, out: TA(['coll']) - 0.3 }, { txt: 'Je vous la fais livrer', me: false, y: 760, t: TA(['fais']) - 0.25, out: TA(['coll']) - 0.3 }, { txt: 'Un petit acompte ?', me: false, y: 980, t: TA(['un']) - 0.15, out: TA(['coll']) - 0.3 }],
     ticket: { t: TA(['arnaque']) - 0.5, y: 900, rows: [['Vendeur à l\'étranger', '⚠', TA(['arnaque']) - 0.3], ['Livraison sans visite', '⚠', TA(['arnaque']) - 0.1], ['Acompte avant visite', '⚠', TA(['arnaque']) + 0.1]], tot: ['Verdict', 'Arnaque', 'var(--r)', TA(['classique'])] },
     bigs: [{ txt: 'Rien avant d\'avoir <span style="color:var(--o)">vu</span>', x: 140, y: 1260, t: TA(['paie']) - 0.1, size: 76 }], barOff: TA(['arnaque']) - 0.5 });
+  // ---------- présentation en 5 vidéos (oct. 2026) : fin « Achète juste. Revends mieux. » + logo + lien en bio ----------
+  const FIN = { lines: (tF) => [['Achète juste.', 260, 130, '#fff', false, tF], ['Revends mieux.', 420, 130, 'var(--ink)', true, tF + 0.3]], pill: 'lien en bio' };
+  const DEMO_P = 'Données de démonstration';
+  // annonce collectée par une recherche suivie (carte sombre + verdict)
+  const ANN = [['Volkswagen Golf VII', '2016 · 112 000 km', '9 490 €', 'GO', 'var(--ok)', '+1 180 €'], ['Volkswagen Golf VII', '2015 · 168 000 km', '8 990 €', 'NO GO', 'var(--r)', ''],
+    ['Volkswagen Golf VII', '2017 · 96 000 km', '11 200 €', 'GO', 'var(--ok)', '+940 €'], ['Volkswagen Golf VII', '2014 · 201 000 km', '7 450 €', 'NO GO', 'var(--r)', ''],
+    ['Volkswagen Golf VII', '2016 · 134 000 km', '9 990 €', 'NO GO', 'var(--r)', ''], ['Volkswagen Golf VII', '2018 · 88 000 km', '12 490 €', 'GO', 'var(--ok)', '+1 310 €'],
+    ['Volkswagen Golf VII', '2015 · 145 000 km', '8 750 €', 'NO GO', 'var(--r)', ''], ['Volkswagen Golf VII', '2016 · 121 000 km', '9 200 €', 'NO GO', 'var(--r)', '']];
+  const annCard = (cam, a, showV) => mk('div', 'a', cam, { width: '800px', padding: '22px 30px', borderRadius: '28px', background: '#1b1612', color: '#f4f1ec', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 24px 44px -16px rgba(0,0,0,.7)', border: '1.5px solid rgba(244,241,236,.1)' },
+    `<div><div style="font:700 34px Satoshi">${a[0]}</div><div style="font:500 26px Satoshi;opacity:.55;margin-top:4px">${a[1]} · ${a[2]}</div></div>` + (showV ? `<div style="text-align:right"><b class="vd" style="font:700 28px Satoshi;padding:10px 18px;border-radius:14px;background:${a[4]};color:#fff;white-space:nowrap">${a[3]}</b>${a[5] ? `<div class="mg" style="font:700 30px Satoshi;color:#3ccf7a;margin-top:10px">${a[5]}</div>` : ''}</div>` : ''));
+  const rechCard = (cam) => mk('div', 'a', cam, { width: '800px', padding: '28px 34px', borderRadius: '32px', background: '#fff', color: 'var(--ink)', boxShadow: '0 40px 80px -30px rgba(0,0,0,.6)' },
+    `<div style="display:flex;justify-content:space-between;font:500 28px Satoshi;opacity:.6"><span>Recherche suivie · <b style="color:var(--o)">utopicar</b></span><span>⟳</span></div><div style="font:700 46px Satoshi;margin-top:6px">Volkswagen Golf VII</div><div style="display:flex;gap:14px;margin-top:16px;font:600 28px Satoshi"><span style="padding:8px 18px;border-radius:999px;background:rgba(28,22,18,.07)">toutes les heures</span><span style="padding:8px 18px;border-radius:999px;background:rgba(19,112,54,.12);color:var(--ok)">● active</span></div>`);
+  const mailCard = (cam) => mk('div', 'a', cam, { width: '820px', borderRadius: '34px', background: '#fff', color: 'var(--ink)', overflow: 'hidden', boxShadow: '0 50px 90px -30px rgba(0,0,0,.65)' },
+    `<div style="display:flex;gap:18px;align-items:center;padding:26px 32px;border-bottom:1px solid rgba(28,22,18,.08)"><img src="../assets/brand/official/utopicar-icone-orange.svg" style="width:64px;height:64px;border-radius:16px"><div><div style="font:500 28px Satoshi;opacity:.55"><b style="opacity:1;color:var(--ink)">utopicar</b> · 07:00</div><div style="font:700 38px Satoshi;margin-top:2px">3 annonces GO ce matin</div></div></div>`
+    + [['Golf VII · 2016 · 9 490 €', '+1 180 €'], ['Golf VII · 2017 · 11 200 €', '+940 €'], ['Golf VII · 2018 · 12 490 €', '+1 310 €']].map(([m, g]) => `<div class="ml" style="display:flex;justify-content:space-between;align-items:center;padding:20px 32px;border-bottom:1px solid rgba(28,22,18,.06);font:500 30px Satoshi"><span>${m}</span><b style="color:var(--ok)">${g}</b></div>`).join(''));
+  SEM.P1 = () => ({ ann: '208 · 7 190 €', demo: DEMO_P, pov: false, title: 'Ce prix ment.', end: FIN, endT: TA(['passe'], TA(['dessus'])) + 0.75,   // le prix affiché cache la vraie facture
+    cars: [{ n: 'p208', cw: 860, x: 530, y: 860, tin: -0.1, from: 'slam', pins: [[0.12, 0.42, 'wa', 'Courroie à changer', TA(['courroie'])], [0.24, 0.78, 'wa', 'Pneus à prévoir', TA(['pneu'])], [0.8, 0.72, 'wa', 'Carte grise', TA(['carte'])]] }],
+    tags: [{ front: ['affiché', '7 190 €'], back: ['vraie facture', '8 840 €'], flip: TA(['8840', '8'], TA(['facture'])) - 0.15, x: 470, t: 0.6, out: TA(['coll']) - 0.2 }],
+    card: { lab: 'Ton prix max', v: '6 300 €', t: TA(['ton'], TA(['utopic'])) - 0.3, hit: TA(['6300', '300'], TA(['max'])) + 0.3 },
+    stamps: [{ txt: 'Au-dessus : PASSE', color: '#fff', x: 540, y: 1130, t: TA(['dessus']) - 0.05, r: -4, size: 70 }] });   // 70 : à 90 le tampon débordait de la colonne 140 → 940
+  SEM.P2 = () => ({ ann: 'Clio 4 · 6 900 €', demo: DEMO_P, pov: false, title: 'Tu l\'aurais achetée ?', end: FIN, endT: TA(['5900', '5'], TA(['verdict'])) + 0.9, red: TA(['rate']) - 0.05,   // le oui qui coûte 1 650 €
+    cars: [{ n: 'clio4', cw: 880, x: 530, y: 850, tin: -0.1, from: 'slam', scan: true, pins: [[0.24, 0.45, 'wa', 'Embrayage à changer', TA(['utopic'])], [0.76, 0.66, 'wa', 'Pneus + vidange', TA(['utopic'])]] }],
+    tags: [{ front: ['annonce', '6 900 €'], x: 470, t: TA(['clio']) - 0.1, out: TA(['coll']) - 0.2 }],
+    stamps: [{ txt: 'OUI ✓', color: '#3ccf7a', x: 540, y: 1250, t: TA(['oui']) - 0.05, r: -6, size: 130, out: TA(['rate']) - 0.05 },
+      { txt: '−1 650 € de travaux', color: '#fff', x: 540, y: 1250, t: TA(['1650']) - 0.05, r: -5, size: 74, out: TA(['coll']) - 0.3 }],
+    card: { lab: 'Négocie à', v: '5 900 €', t: TA(['verdict']) - 0.3, hit: TA(['5900', '5'], TA(['verdict'])) + 0.3 } });   // repères ancrés sur le mot précédent : valables pour la prise v3 et la prise v4 (« 5 900 » ou « 5 » « 900 »)
+  SEM.P3 = () => {   // trois annonces, une seule rapporte
+    const c1 = TA(['celle']), c2 = TA(['celle'], c1 + 0.5), c3 = TA(['celle'], c2 + 0.5);
+    return { ann: 'Clio · 4 990 €', demo: DEMO_P, pov: false, title: '3 annonces. 1 seule rapporte.', end: FIN, endT: TA(['minute']) + 0.8,
+      cars: [{ n: 'twingo', cw: 640, x: 530, y: 840, r: -3, tin: -0.1, from: 'slam', tout: c2 - 0.1, to: 'left' },
+        { n: 'polo5', cw: 860, x: 530, y: 840, r: 3, tin: c2 - 0.05, from: 'right', tout: c3 - 0.1, to: 'left' },
+        { n: 'clio3g', cw: 880, x: 530, y: 840, r: -2, tin: c3 - 0.05, from: 'right', scan: true, pins: [[0.45, 0.4, 'ok', 'Moteur fiable', TA(['utopic'])], [0.72, 0.64, 'ok', 'Marge : +1 240 €', TA(['utopic'])]] }],
+      stamps: [{ txt: 'NON', color: 'var(--r)', x: 540, y: 1250, t: TA(['non']) - 0.05, r: -8, size: 150, out: c2 - 0.1 }, { txt: 'NON PLUS', color: 'var(--r)', x: 540, y: 1250, t: TA(['non'], c2) - 0.05, r: 6, size: 130, out: c3 - 0.1 }],
+      stars: [{ v: '+1 240 €', t: TA(['plus'], c3) - 0.2, land: TA(['1240']) + 0.45, x: 640, y: 1230, s: 0.7, corner: { t: TA(['coll']) - 0.5, x: 255, y: 575, s: 0.4 } }] };
+  };
+  SEM.P4 = () => {   // pendant que tu dormais : la recherche suivie tourne seule, l'e-mail de 7 h
+    const tR = TA(['recherche']), tH = TA(['heures']), t7 = TA(['7h', 'sept', '7'], TA(['heures'])), tM = TA(['mail']), tT = TA(['trois', '3'], TA(['mail'])), tA = TA(['appeler']);
+    return { bar: false, pov: false, title: 'Pendant que tu dormais…', demo: DEMO_P, end: FIN, endT: tA + 0.85, goT: tT - 0.1, scanT: 99, titleOut: tR - 0.2,
+      disc: (t) => (t < t7 - 0.1 ? '#22305e' : 'var(--o)'),
+      extra: (s, P) => {
+        const clk = mk('div', 'sm-big a', s.cam, { color: '#fff', fontSize: '150px', background: 'rgba(20,17,16,.6)' }, '03:12');
+        const rc = rechCard(s.cam), cards = ANN.slice(0, 4).map((a) => annCard(s.cam, a, true)), ml = mailCard(s.cam), rows = [...ml.querySelectorAll('.ml')];
+        const tc = cards.map((_, i) => tH - 0.3 + i * 0.26);
+        cue(0.4, 'pop', 0.7); cue(tR - 0.05, 'whoosh', 0.6); cue(tR + 0.35, 'click', 0.8); tc.forEach((x) => cue(x, 'pop', 0.6)); cue(t7, 'roll', 0.8); cue(tM - 0.05, 'ding', 1); rows.forEach((_, i) => cue(tT + 0.15 + i * 0.25, 'pop', 0.7));
+        P.push((t) => {
+          const hm = t < t7 ? Math.min(6 * 60 + 59, 3 * 60 + 12 + Math.floor(E(t, 0.6, t7 - 0.8, (p) => p) * (3 * 60 + 47))) : 7 * 60;
+          clk.textContent = `${String(Math.floor(hm / 60)).padStart(2, '0')}:${String(hm % 60).padStart(2, '0')}`; clk.style.color = t >= t7 ? 'var(--o)' : '#fff';
+          pose(clk, t, (tt) => (tt > tM + 0.3 ? null : { x: 540, y: (tt < tR - 0.2 ? 960 : 560) + 40 * (1 - E(tt, -0.4, 0.4)), c: 1, s: (tt < tR - 0.2 ? 1.25 : 0.62) * (1 + 0.12 * bump(tt, t7, 0.2)), o: 1 - E(tt, tM, 0.25) }));
+          pose(rc, t, (tt) => (tt < tR - 0.05 || tt > tM + 0.3 ? null : { x: 540, y: 820 + 300 * (1 - E(tt, tR, 0.45)), c: 1, r: -1.5, o: E(tt, tR, 0.3) * 2 * (1 - E(tt, tM, 0.25)), s: 1 + 0.04 * bump(tt, tR + 0.35, 0.14) }));
+          cards.forEach((e, i) => pose(e, t, (tt) => { if (tt < tc[i] - 0.02 || tt > tM + 0.3) return null; const p = E(tt, tc[i], 0.35), k = cards.filter((_, j) => tc[j] <= tt).length - 1 - i;
+            return { x: 540, y: lerp(2000, 1040 + k * 112, p), c: 1, r: (i % 2 ? 1.5 : -1.5) * (1 - p), o: 1 - E(tt, tM, 0.25) }; }));
+          pose(ml, t, (tt) => (tt < tM - 0.05 ? null : { x: 540, y: lerp(-500, 940, E(tt, tM, 0.45)), c: 1, r: -1.5, s: 1 + 0.05 * bump(tt, tT, 0.2) }));
+          rows.forEach((r, i) => { const p = E(t, tT + 0.15 + i * 0.25, 0.3); r.style.opacity = (0.15 + 0.85 * p).toFixed(3); r.style.transform = `translateX(${(30 * (1 - p)).toFixed(1)}px)`; });
+        });
+      },
+      stamps: [{ txt: 'Appelle.', color: '#fff', x: 540, y: 1360, t: TA(['plus'], tT) - 0.05, r: -6, size: 110 }] };
+  };
+  SEM.P5 = () => {   // tu scrolles encore ? la recherche suivie trie à ta place
+    const tD = TA(['deux']), tMe = TA(['mets']), tR = TA(['recherche']), tTr = TA(['trie', 'trit'], tMe), tMa = TA(['mauvaise']), tG = TA(['g'], tMa), tMg = TA(['marge']);
+    return { bar: false, pov: false, title: 'Tu scrolles encore ?', demo: DEMO_P, end: FIN, endT: TA(['choisi']) + 0.85, goT: TA(['utopicar', 'utopic']), scanT: 99, titleOut: tMe - 0.1,
+      extra: (s, P) => {
+        const feed = mk('div', 'a', null, { width: '1080px', height: '1000px', top: '480px', overflow: 'hidden', WebkitMaskImage: 'linear-gradient(transparent 0,#000 90px,#000 880px,transparent 1000px)' }); s.cam.insertBefore(feed, s.cam.children[1]);   // fenêtre du fil, sous le titre, au-dessus de la bande du bas
+        const L = [...ANN, ...ANN].map((a) => annCard(feed, a, false));
+        const timer = mk('div', 'sm-big a', s.cam, { color: '#fff', fontSize: '84px' }, '');
+        const rc = rechCard(s.cam), sorted = ANN.slice(0, 6).map((a) => annCard(s.cam, a, true));
+        const tOut = sorted.map((_, i) => tMa + 0.12 * i), keep = ANN.slice(0, 6).map((a) => a[3] === 'GO');
+        const goIdx = keep.map((k, i) => (k ? i : -1)).filter((i) => i >= 0);
+        cue(0.1, 'whoosh', 0.5); cue(tD - 0.05, 'pop', 0.8); cue(tMe - 0.05, 'impact', 0.8); cue(tR, 'whoosh', 0.6); cue(tR + 0.4, 'click', 0.8); cue(tTr, 'roll', 0.7);
+        tOut.forEach((x, i) => { if (!keep[i]) cue(x, 'whoosh', 0.4); }); cue(tG, 'pop', 0.9); cue(tMg, 'pop', 0.8);
+        P.push((t) => {
+          // le fil d'annonces qui défile de plus en plus vite, puis s'arrête net sur « Mets »
+          const sc = t < tMe ? 260 * t + 900 * Math.pow(Math.max(0, t - 1), 2) : 0;
+          L.forEach((e, i) => pose(e, t, (tt) => { if (tt >= tMe) return null; const ss = tt < tMe ? 260 * tt + 900 * Math.pow(Math.max(0, tt - 1), 2) : 0; return { x: 540, y: 140 + i * 132 - (ss % (ANN.length * 132)), c: 1, o: 0.95 }; }));
+          const h = Math.min(134, Math.floor(E(t, tD, 0.9, (p) => p) * 134));
+          timer.textContent = `⏱ ${Math.floor(h / 60)} h ${String(h % 60).padStart(2, '0')} de scroll`;
+          pose(timer, t, (tt) => (tt < tD - 0.05 || tt > tMe ? null : { x: 140, y: 1330 + 50 * (1 - E(tt, tD, 0.35)), o: E(tt, tD, 0.25) * 2 }));
+          pose(rc, t, (tt) => (tt < tR - 0.05 ? null : { x: 540, y: 560 + 260 * (1 - E(tt, tR, 0.45)), c: 1, r: -1.5, o: E(tt, tR, 0.3) * 2, s: 1 + 0.04 * bump(tt, tR + 0.4, 0.14) }));
+          sorted.forEach((e, i) => pose(e, t, (tt) => { if (tt < tTr - 0.1 + i * 0.06) return null; const p = E(tt, tTr - 0.1 + i * 0.06, 0.35);
+            let y = lerp(2000, 820 + i * 120, p), x = 540;
+            if (!keep[i]) x += 1300 * E(tt, tOut[i], 0.35, eIn);
+            else { const k = goIdx.indexOf(i); y = lerp(y, 860 + k * 175, E(tt, tG - 0.2, 0.45)); }
+            return { x, y, c: 1, r: !keep[i] ? 8 * E(tt, tOut[i], 0.35, eIn) : 0, s: keep[i] ? 1 + 0.06 * E(tt, tG - 0.2, 0.45) : 1 }; }));
+          sorted.forEach((e, i) => { const mg = e.querySelector('.mg'); if (mg) mg.style.opacity = E(t, tMg - 0.1, 0.3).toFixed(3); });
+        });
+      } };
+  };
   for (const id of Object.keys(SEM)) SPECS[id] = () => semaine(SEM[id]());
 
   if (!SPECS[ID]) throw new Error('vidéo inconnue : ' + ID);

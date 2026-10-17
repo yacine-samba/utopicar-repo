@@ -1,0 +1,12 @@
+{
+ "version": 1,
+ "style": "présentation utopicar v6 : chaque élément d'interface décomposé pièce par pièce, voix espacée (voix de Simon), typographie lettre à lettre avec lueur, caméra 3D",
+ "fps": 30,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 44.8,
+ "poster": 2.0
+}

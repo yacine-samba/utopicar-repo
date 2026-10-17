@@ -1,0 +1,154 @@
+[
+ {
+  "apres": 13,
+  "mot": "euros.",
+  "suivant": "Colle",
+  "t": 5.875,
+  "gap": 0.3,
+  "dB": -72.7
+ },
+ {
+  "apres": 18,
+  "mot": "Utopicar.",
+  "suivant": "En",
+  "t": 7.435,
+  "gap": 1.1,
+  "dB": -79.5
+ },
+ {
+  "apres": 21,
+  "mot": "minute,",
+  "suivant": "la",
+  "t": 8.355,
+  "gap": 0.6,
+  "dB": -67.6
+ },
+ {
+  "apres": 23,
+  "mot": "cote,",
+  "suivant": "les",
+  "t": 9.015,
+  "gap": 1.2,
+  "dB": -55.2
+ },
+ {
+  "apres": 25,
+  "mot": "travaux,",
+  "suivant": "ta",
+  "t": 9.795,
+  "gap": 1.2,
+  "dB": -67.7
+ },
+ {
+  "apres": 27,
+  "mot": "marge",
+  "suivant": "et",
+  "t": 10.495,
+  "gap": 1.0,
+  "dB": -62.2
+ },
+ {
+  "apres": 30,
+  "mot": "verdict.",
+  "suivant": "À",
+  "t": 11.465,
+  "gap": 1.0,
+  "dB": -64.6
+ },
+ {
+  "apres": 32,
+  "mot": "éviter.",
+  "suivant": "Une",
+  "t": 12.415,
+  "gap": 0.6,
+  "dB": -61.0
+ },
+ {
+  "apres": 36,
+  "mot": "?",
+  "suivant": "Ton",
+  "t": 13.525,
+  "gap": 0.8,
+  "dB": -73.9
+ },
+ {
+  "apres": 40,
+  "mot": "'offre",
+  "suivant": "et",
+  "t": 14.355,
+  "gap": 0.5,
+  "dB": -59.4
+ },
+ {
+  "apres": 47,
+  "mot": "dépasser.",
+  "suivant": "Et",
+  "t": 15.865,
+  "gap": 0.7,
+  "dB": -73.6
+ },
+ {
+  "apres": 54,
+  "mot": "scroller.",
+  "suivant": "Ta",
+  "t": 17.875,
+  "gap": 1.0,
+  "dB": -58.7
+ },
+ {
+  "apres": 59,
+  "mot": "seule.",
+  "suivant": "Toi,",
+  "t": 19.665,
+  "gap": 1.0,
+  "dB": -61.8
+ },
+ {
+  "apres": 62,
+  "mot": "dors.",
+  "suivant": "Lui,",
+  "t": 20.895,
+  "gap": 0.4,
+  "dB": -64.1
+ },
+ {
+  "apres": 65,
+  "mot": "bosse.",
+  "suivant": "Une",
+  "t": 22.145,
+  "gap": 1.0,
+  "dB": -64.5
+ },
+ {
+  "apres": 71,
+  "mot": "cote,",
+  "suivant": "tu",
+  "t": 23.455,
+  "gap": 0.6,
+  "dB": -80.9
+ },
+ {
+  "apres": 75,
+  "mot": "mail.",
+  "suivant": "Et",
+  "t": 24.515,
+  "gap": 1.2,
+  "dB": -64.7
+ },
+ {
+  "apres": 84,
+  "mot": "vente,",
+  "suivant": "ta",
+  "t": 26.865,
+  "gap": 0.5,
+  "dB": -62.7
+ },
+ {
+  "apres": 87,
+  "mot": "marge.",
+  "suivant": "Utopicar.",
+  "t": 28.055,
+  "gap": 1.2,
+  "dB": -71.0
+ }
+]

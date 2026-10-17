@@ -10,6 +10,7 @@
 //   CUT=x FMT=square VLANG=en HOOK=B node scripts/render.mjs --all → renders/1x1-x-B-en.mp4 (audio/mix-x-en.wav si présent)
 //   CUT=mo4 MB=8 node scripts/render.mjs --all   flou de bougé : jusqu'à 8 sous-images par image (window.shutter, window.samples)
 //   CUT=mo4 MB=8 PARTS=3 PART=0|1|2 node scripts/render.mjs --all, puis CUT=mo4 PARTS=3 node scripts/render.mjs --assemble : rendu en parallèle
+//   GPU=1 CUT=x node scripts/render.mjs --all     sur une machine avec carte graphique : Chromium peint avec le GPU
 import { chromium } from 'playwright';
 import http from 'http';
 import fs from 'fs';
@@ -45,7 +46,14 @@ const base = `http://127.0.0.1:${server.address().port}`;
 
 const scale = opt('--draft') ? 0.5 : 1;
 // CHROMIUM = chemin d'un autre Chromium si celui de Playwright n'est pas installé
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined, args: ['--force-color-profile=srgb', '--disable-lcd-text', '--font-render-hinting=none', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+// GPU=1 (machine locale avec carte graphique) : Chromium peint avec la carte (ANGLE D3D11 sous Windows, Metal sous macOS,
+// Vulkan sous Linux) au lieu de SwiftShader (processeur). Même image au pixel près ou presque, rendu plus rapide.
+// Sans carte graphique (conteneur cloud), laisser GPU vide : SwiftShader.
+const GL = process.env.GPU === '1'
+  ? ['--enable-gpu', '--ignore-gpu-blocklist', '--enable-gpu-rasterization', '--enable-zero-copy',
+    ...(process.platform === 'win32' ? ['--use-angle=d3d11'] : process.platform === 'darwin' ? ['--use-angle=metal'] : ['--use-angle=vulkan', '--enable-features=Vulkan'])]
+  : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined, args: ['--force-color-profile=srgb', '--disable-lcd-text', '--font-render-hinting=none', ...GL] });
 const page = await browser.newPage({ viewport: { width: SIZE[0], height: SIZE[1] }, deviceScaleFactor: scale });
 page.on('pageerror', e => console.error('PAGEERR', e.message));
 page.on('console', m => { if (m.type() === 'error') console.error('CONSOLE', m.text()); });

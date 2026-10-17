@@ -1,0 +1,9 @@
+c7 P2 · -14.0 LUFS intégrés, true peak -3.6 dBTP
+bruitages posés : 17 · retirés pour collision : 0 ()
+écart voix / musique par phrase : min 7.9 dB, médiane 11.0 dB (3 phrases)
+attaque premier temps (image 0)  prévue   0.00 s, mesurée   0.02 s (+24 ms)
+attaque drop                     prévue   9.22 s, mesurée   9.22 s (-1 ms)
+attaque coup final (carton)      prévue  13.48 s, mesurée  13.48 s (+0 ms)
+RMS avant arrêt          mix  -15.9  musique  -24.9 dBFS
+RMS drop                 mix  -16.6  musique  -22.2 dBFS
+RMS carton final         mix  -24.4  musique  -24.9 dBFS

@@ -49,6 +49,7 @@
    −3,5 dBTP), son des 2 premières secondes, équilibre pour haut-parleur de téléphone. Un FAIL bloque la livraison.
 
 ## Spécifique UTOPICAR
+- La marque s'écrit toujours « utopicar », en minuscules, partout à l'écran (sauf le logo officiel, tel quel).
 - L'UI filmée est le vrai fichier assets/site/utopicar-live.html, chargé dans Chromium
   avec une fausse base démo (window.claude mocké). Aucune donnée réelle du parc.
 - Les chiffres affichés sont ceux que calcule l'outil lui-même à partir des données démo.
@@ -57,6 +58,9 @@
   les 440 px du bas, les 140 px de droite et les 60 px de gauche. Square : 60 px partout. Desktop : 96 × 54 px, bas 108 px.
 - Tout ce qui est centré l'est sur l'axe de l'écran (x = 540), dans une colonne symétrique 140 → 940. Jamais sur x = 500
   (centre de la zone sûre) : le décalage de 40 px vers la gauche se voit sur un téléphone.
-- Chiffres démo dans une pub vidéo : mention « Données de démonstration » à l'écran. Carrousels : aucune mention (décision de l'utilisateur, oct. 2026).
+- Chiffres démo dans une pub vidéo : mention « Données de démonstration » à l'écran. Carrousels et présentation
+  utopicar (v5 à v10) : aucune mention (décisions de l'utilisateur, oct. 2026).
+- Aucun texte posé sur un autre texte, à aucune image : contrôle `scripts/chevauchements.mjs` (toutes les 0,1 s) puis
+  `scripts/chevauchements.py` (détail net sous chaque lettre de sous-titre) avant toute planche ou tout rendu.
 - Processus complet (brief, script, voix, A/B, langues, formats, livraison) : skill `/motion-studio`.
 - Épisodes de la série qui reprend MO5 « 47 € » : skill `/recette-47` (recette, épisodes, journal des résultats).
