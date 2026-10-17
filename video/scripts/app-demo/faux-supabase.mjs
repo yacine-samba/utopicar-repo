@@ -3,7 +3,8 @@
 // .single/.maybeSingle, count) et aux fonctions (/rest/v1/rpc/<fn>) à partir de demo.mjs. Journal des requêtes : stdout.
 // usage : node faux-supabase.mjs 54321
 import http from 'node:http';
-import { TABLES, RPC, USER } from './demo.mjs';
+import fs from 'node:fs';
+import { TABLES, RPC, USER, ANNONCES } from './demo.mjs';
 const PORT = +(process.argv[2] || 54321); let NID = 0;
 const send = (res, code, body, headers = {}) => { res.writeHead(code, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': '*', 'Access-Control-Expose-Headers': 'Content-Range', ...headers }); res.end(body === undefined ? '' : JSON.stringify(body)); };
 function filtre(rows, q) {
@@ -33,7 +34,10 @@ http.createServer((req, res) => {
     if (p.startsWith('/auth/v1/token')) return send(res, 200, { access_token: 'demo', token_type: 'bearer', expires_in: 360000, expires_at: 4102444800, refresh_token: 'demo', user: USER });
     if (p.startsWith('/auth/v1/')) return send(res, 200, {});
     if (p.startsWith('/rest/v1/rpc/')) { const fn = p.slice('/rest/v1/rpc/'.length); const r = RPC[fn]; let a = {}; try { a = JSON.parse(body || '{}'); } catch {}
-      const out = typeof r === 'function' ? r(a) : r; if (out === undefined) console.log('  ↳ RPC inconnue', fn); return send(res, 200, out ?? null); }
+      const out = typeof r === 'function' ? r(a) : r; if (out === undefined) console.log('  ↳ RPC inconnue', fn);
+      // DELAIS="cote_marche:8000,…" : une fonction qui répond lentement, pour filmer l'attente de l'analyse
+      const d = +((process.env.DELAIS || '').split(',').map((x) => x.split(':')).find(([f]) => f === fn) || [])[1] || 0;
+      return d ? setTimeout(() => send(res, 200, out ?? null), d) : send(res, 200, out ?? null); }
     if (p.startsWith('/rest/v1/')) {
       const t = p.slice('/rest/v1/'.length); if (!(t in TABLES)) console.log('  ↳ table inconnue', t);
       if (req.method !== 'GET' && req.method !== 'HEAD') {   // écritures : gardées en mémoire, renvoyées si demandé
@@ -60,6 +64,15 @@ http.createServer((req, res) => {
       if (req.method === 'HEAD') return send(res, 200, undefined, head);
       if (single) return rows.length ? send(res, 200, rows[0], head) : send(res, 406, { code: 'PGRST116', message: 'no rows' });
       return send(res, 200, rows, head);
+    }
+    // lecture d'une annonce par son lien (fonction « annonce ») : annonces d'essai de demo.mjs, photos de la Polo 3D ;
+    // DELAI_IMPORT (ms) laisse le temps de filmer l'écran « Lecture de l'annonce… »
+    if (p === '/functions/v1/annonce') {
+      let url = ''; try { url = JSON.parse(body || '{}').url || ''; } catch {}
+      const A = ANNONCES.find((x) => url.includes(x.id));
+      if (!A) return send(res, 200, { ok: false, erreur: 'introuvable' });
+      const photos = A.photos.map((f) => 'data:image/jpeg;base64,' + fs.readFileSync(new URL(`../../assets/presente-v11/annonce/${f}`, import.meta.url)).toString('base64'));
+      return setTimeout(() => send(res, 200, { ok: true, src: 'leboncoin', url, ad: A.ad, photos, liens: [], vendeur: A.vendeur }), +(process.env.DELAI_IMPORT || 0));
     }
     send(res, 404, { message: 'faux supabase : ' + p });
   });

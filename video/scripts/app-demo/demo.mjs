@@ -10,10 +10,22 @@ export const RPC = { mes_credits: 0, mon_code_solde: 0, option_active: true, sui
 
 // ---------- analyse : cote de l'outil = vraie fonction cote_marche de la base, lue le 14 oct. 2026 (agrégats, aucune annonce) ----------
 const COTES = [
+  // présentation v11, cote relue le 17 oct. 2026 : Volkswagen Polo, 2012, 118 400 km, essence ; Renault Clio, 2018, 88 500 km, diesel
+  { re: /polo/i, annee: 2012, cote: { n: 268, p25: 6744, mediane: 7457, p75: 8437 } },
+  { re: /clio/i, annee: 2018, km: 88500, cote: { n: 1102, p25: 8896, mediane: 9714, p75: 10679 } },
   { re: /208/i, cote: { n: 514, p25: 4838, mediane: 5519, p75: 6654 } },     // Peugeot 208, 2016, 116 789 km, essence
   { re: /clio/i, cote: { n: 1411, p25: 7557, mediane: 8329, p75: 9144 } },   // Renault Clio, 2016, 112 000 km, diesel
 ];
-RPC.cote_marche = (a) => (COTES.find((c) => c.re.test(`${a.p_marque} ${a.p_modele}`)) || {}).cote ?? null;
+RPC.cote_marche = (a) => (COTES.find((c) => c.re.test(`${a.p_marque} ${a.p_modele}`) && (c.annee == null || c.annee === a.p_annee) && (c.km == null || Math.abs(c.km - a.p_km) < 1000)) || {}).cote ?? null;
+
+// ---------- annonces lues par lien (fonction « annonce ») : la Polo de la présentation v11, annonce d'essai ----------
+const attr = (key, key_label, value_label) => ({ key, key_label, value_label });
+export const ANNONCES = [
+  { id: '2873461903', photos: ['polo-1.jpg', 'polo-2.jpg', 'polo-3.jpg'], vendeur: { nom: 'Garage du Rhône', type: 'pro' },
+    ad: { subject: 'Volkswagen Polo 1.2 TSI 90 Confortline', price: [8990], location: { city: 'Villeurbanne', zipcode: '69100', department_name: 'Rhône' }, owner: { type: 'pro', name: 'Garage du Rhône' },
+      attributes: [attr('brand', 'Marque', 'Volkswagen'), attr('model', 'Modèle', 'Polo'), attr('regdate', 'Année modèle', '2012'), attr('mileage', 'Kilométrage', '118 400 km'), attr('fuel', 'Énergie', 'Essence'), attr('gearbox', 'Boîte de vitesse', 'Manuelle'), attr('doors', 'Nombre de portes', '3')],
+      body: 'Volkswagen Polo 1.2 TSI 90 Confortline 3 portes. Mise en circulation 2012. 118 400 km.' } },
+];
 RPC.historique_annonce = null;
 let nRap = 0;
 RPC.enregistrer_analyse = (a) => {
@@ -38,6 +50,13 @@ export const MARCHE = Array.from({ length: 220 }, (_, i) => {
   const vu = new Date(Date.UTC(2026, 9, 14, 9) - Math.floor(rnd(i + 601) * 6 * 24) * 3600e3).toISOString();
   return { id: `demo-clio-${i}`, source: 'demo', titre: `Renault Clio IV 1.5 dCi ${ch} ${FIN[i % FIN.length]}`, texte: '', prix, annee, km, energie: 'Diesel', boite: 'Manuelle', pro: rnd(i + 701) < 0.3, ch, places: 5, carr: 'citadine', etat: null, lieu: VILLES[i % VILLES.length], url: null, vu_le: vu, en_ligne: true, photo: null, photos: null, version: null, finition: FIN[i % FIN.length], mec: `${annee}-0${1 + (i % 9)}`, portes: 5, lbc_min: null, lbc_max: null, lbc_pos: null };
 });
+// la Clio de la présentation v11 (annonce d'essai) : elle a un lien, l'alerte e-mail l'envoie et l'app peut la lire
+const CLIO11 = MARCHE.find((l) => l.id === 'demo-clio-169');   // 2018 · 88 500 km · 1.5 dCi 75 · Villeurbanne · 7 650 €
+CLIO11.url = 'https://www.leboncoin.fr/ad/voitures/2870558214';
+ANNONCES.push({ id: '2870558214', photos: [], vendeur: { nom: 'Karim', type: 'particulier' },
+  ad: { subject: CLIO11.titre, price: [CLIO11.prix], location: { city: 'Villeurbanne', zipcode: '69100', department_name: 'Rhône' }, owner: { type: 'private', name: 'Karim' },
+    attributes: [attr('brand', 'Marque', 'Renault'), attr('model', 'Modèle', 'Clio'), attr('regdate', 'Année modèle', '2018'), attr('mileage', 'Kilométrage', '88 500 km'), attr('fuel', 'Énergie', 'Diesel'), attr('gearbox', 'Boîte de vitesse', 'Manuelle'), attr('doors', 'Nombre de portes', '5')],
+    body: 'Renault Clio IV 1.5 dCi 75 Zen 5 portes. Mise en circulation 2018. 88 500 km.' } });
 RPC.marche_candidats = (a) => { let re; try { re = new RegExp(String(a.p_regex || '').replace(/\\y/g, '\\b'), 'i'); } catch { return []; }
   return MARCHE.filter((l) => re.test(l.titre) && (!a.p_annee_min || l.annee >= a.p_annee_min) && (!a.p_annee_max || l.annee <= a.p_annee_max)).slice(0, a.p_limite || 5000); };
 Object.assign(TABLES, { recherches: [], recherches_journal: [], annonces_trouvees: [], documents: [], parc: [], lbc_boites: [], lbc_campagnes: [], lbc_envois: [], cotes: [], collectes: [] });
@@ -57,7 +76,7 @@ RPC.alerte_supprimer = null; RPC.alerte_basculer = (a) => { const v = TABLES.vei
 export const RECH_ID = '00000000-0000-4000-9000-000000000010';
 const F0 = { version: '', phase: '', carrosserie: '', moteur: '', chMin: '', chMax: '', energie: 'diesel', boite: '', anneeMin: '', anneeMax: '', prixMin: '', prixMax: '', kmMin: '', kmMax: '', vendeur: '', dep: '', mots: '', exclure: '', sousCote: '', fiables: true, tri: 'ecart' };
 TABLES.recherches.push({ id: RECH_ID, user_id: UID, cle: 'renault|clio|4', nom: 'Renault Clio 4', active: true, criteres: { choix: { marque: 'renault', modele: 'clio', gen: '4' }, f: F0 }, trouvees: 220, sous_cote: 22,
-  meilleure: { titre: 'Renault Clio IV 1.5 dCi 90 Business', prix: 7650, ecart: 2270, pct: 0.23, url: null }, derniere_le: '2026-10-14T06:00:00Z', alerte_id: process.env.ALERTE_ON ? '00000000-0000-4000-a000-300000000001' : null, created_at: '2026-10-09T08:00:00Z' });
+  meilleure: { titre: 'Renault Clio IV 1.5 dCi 75 Zen', prix: 7650, ecart: 2064, pct: 21, url: null }, derniere_le: '2026-10-14T06:00:00Z', alerte_id: process.env.ALERTE_ON ? '00000000-0000-4000-a000-300000000001' : null, created_at: '2026-10-09T08:00:00Z' });
 if (process.env.ALERTE_ON) TABLES.veilles.push({ id: '00000000-0000-4000-a000-300000000001', nom: 'Renault Clio 4', actif: true, notifier: true, email: USER.email, intervalle_min: 180, filtres: {}, created_at: '2026-10-09T08:00:00Z' });
 
 // ---------- messages automatiques (option de Benef Pro) : la nuit, la campagne écrit aux vendeurs ----------
@@ -78,6 +97,8 @@ TABLES.parc = [
   V(2, { titre: 'Volkswagen Polo V 1.2 TSI 90', statut: 'vendu', prix_achat: 4300, frais: 410, prix_vente: 5590, date_achat: '2026-09-28', date_vente: '2026-10-11', annee: 2014, km: 117000, energie: 'Essence', boite: 'Manuelle' }),
   V(3, { titre: 'Toyota Yaris III 1.33 VVT-i', statut: 'en_vente', prix_achat: 6900, frais: 380, prix_vente: null, date_achat: '2026-10-02', date_vente: null, annee: 2015, km: 96000, energie: 'Essence', boite: 'Manuelle' }),
   V(4, { titre: 'Peugeot 208 1.2 PureTech 82', statut: 'preparation', prix_achat: 5200, frais: 520, prix_vente: null, date_achat: '2026-10-08', date_vente: null, annee: 2017, km: 88000, energie: 'Essence', boite: 'Manuelle' }),
-  V(5, { titre: 'Renault Clio IV 1.5 dCi 75 Zen', statut: 'achete', prix_achat: 6950, frais: 0, prix_vente: null, date_achat: '2026-10-13', date_vente: null, annee: 2018, km: 88500, energie: 'Diesel', boite: 'Manuelle' }),
+  // v11 : la Clio de la présentation, achetée à l'offre d'ouverture de l'outil (7 400 €), frais 650 € (travaux retenus 500 € + 150 €),
+  // revendue au prix de la « vente normale » de l'outil (9 350 €) : la marge réelle est calculée par l'app
+  V(5, { titre: 'Renault Clio IV 1.5 dCi 75 Zen', statut: 'vendu', prix_achat: 7400, frais: 650, prix_vente: 9350, date_achat: '2026-09-24', date_vente: '2026-10-16', annee: 2018, km: 88500, energie: 'Diesel', boite: 'Manuelle' }),
   V(6, { titre: 'Dacia Sandero 0.9 TCe 90', statut: 'repere', prix_achat: null, frais: 0, prix_vente: null, date_achat: null, date_vente: null, annee: 2016, km: 74000, energie: 'Essence', boite: 'Manuelle' }),
 ];
