@@ -100,8 +100,8 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
       : estimationLeboncoin(l);
     return {
       id: l.id, titre: (l.titre || "Annonce").slice(0, 140), prix: l.prix, annee: l.annee, km: l.km, ch: l.ch, energie: l.energie, boite: l.boite,
-      pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l)?.replace(/^http:\/\//, "https://") ?? null, photo: l.photo?.startsWith("https://") ? l.photo : null,
-      pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l), photo: photos[0] ?? null, photos,
+      // lien de l'annonce passé en https ; photos déjà filtrées en https par photosDe
+      pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l)?.replace(/^http:\/\//, "https://") ?? null, photo: photos[0] ?? null, photos,
       gen: l.genLabel || genObj?.label || "",
       cote,
       verdict: verdictPrix(cote?.pct, PIEGES.test(l.tx)),
