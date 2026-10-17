@@ -810,3 +810,9 @@ Demande : « ok fait la vidéo », avec toute la voix refaite sur le script v10 
 - Le ducking global laissait 5,3 dB sous « Achète juste, revends mieux. » (la musique y monte).
 - Règle ajoutée : sous chaque phrase où l'écart voix / musique tombe sous 8,5 dB, la musique baisse d'autant
   (rampes de 0,15 s). Mix v10 : −14,2 LUFS, true peak −3,5 dBTP, écart minimal 8,5 dB, médian 11,0 dB (26 phrases).
+
+**Contrôle**
+- Détecteurs relancés sur tout le film recalé : 0 image de sous-titre sur du détail net (487). 38 images relevées
+  (43 avec l'ancienne voix), toutes d'une catégorie déjà vérifiée : chrono, cartes qui sortent, compteurs, bandeau
+  PLAFOND qui entre, mur d'annonces sous la couleur, « zzZ ».
+- Ne pas lancer le détecteur pendant un rendu : sur 4 cœurs, ses captures dépassent 30 s et il s'arrête en route.
