@@ -83,8 +83,8 @@ export async function POST(req: Request) {
       { offres: o.famille },
     );
 
-  // Analyses offertes par un code (formule Découverte) : contenu Benef au niveau Starter
-  const niveau = compte?.code && mode === "benef" ? OFFRES.starter.id : o.id;
+  // Analyse offerte en achat-revente (code ou inscription Benef, formule Découverte) : contenu Benef au niveau Starter
+  const niveau = compte?.essaiBenef && mode === "benef" ? OFFRES.starter.id : o.id;
   const photos = r.data.photos.slice(0, o.photos);
   const faits = lireAnnonce(texte);
   const fiab = fiabilite({ texte, annee: faits.annee, km: faits.km, energie: faits.energie });

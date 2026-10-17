@@ -42,6 +42,8 @@ export type Compte = {
   codeBenef: number;
   /** Un code a été utilisé sur ce compte : l'espace passe en Benef, analyses au niveau Starter. */
   code: boolean;
+  /** Découverte en achat-revente (code utilisé ou inscription « achat-revente ») : l'analyse offerte est une analyse Benef au niveau Starter. */
+  essaiBenef: boolean;
   /** Total disponible : formule, puis code, puis crédits. */
   restantes: number;
   /** Favoris affichés (paramètres d'accessibilité, désactivés par défaut). */
@@ -97,7 +99,10 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
   // Formule Découverte et code utilisé (TIKTOK…) : espace Benef, analyses au niveau Starter (marge nette, prix d'offre, prix max)
   const codeBenef = typeof soldeCode === "number" ? soldeCode : 0;
   const code = !illimite && !offerte && o.prix === 0 && (codesUtilises ?? 0) > 0;
-  if (code) {
+  // inscrit pour l'achat-revente : sa première analyse montre ce qu'il est venu chercher (marge nette, prix d'offre),
+  // pas une analyse de particulier ; sans ça, aucun inscrit Benef n'avait vu un rapport Benef avant de devoir payer
+  const essaiBenef = code || (!illimite && !offerte && o.prix === 0 && profil?.famille === "benef");
+  if (essaiBenef) {
     const s = OFFRES.starter;
     o = { ...o, famille: "benef", detail: "complet", photos: Math.max(o.photos, s.photos), historique: Math.max(o.historique, s.historique), tableauDeBord: "simple" };
   }
@@ -124,6 +129,7 @@ export const compteCourant = cache(async (): Promise<Compte | null> => {
     credits: solde,
     codeBenef,
     code,
+    essaiBenef,
     restantes: restantesFormule + codeBenef + solde,
     favoris: (profil?.reglages as { favoris?: boolean } | null)?.favoris === true,
     // compris dans Pro + Messages ; aussi vrai si la base n'a pas encore la migration de la formule

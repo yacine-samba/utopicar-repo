@@ -65,32 +65,31 @@ export const OFFRES: Record<OffreId, Offre> = {
   },
   starter: {
     id: "starter", famille: "benef", nom: "Starter", prix: 14.99,
-    accroche: "Pour vos premières voitures", pour: "Vous vous lancez dans l'achat-revente.",
-    analyses: 30, parMois: true, photos: 3, detail: "complet", historique: 20, tableauDeBord: "simple",
-    parc: false, recherche: false, comparateur: false, guide: true, lookup: "utp_starter_mois",
-    points: ["30 analyses de véhicule par mois", "Marge nette, prix d'offre et plafond", "Historique de vos 20 derniers rapports", "Tableau de bord", "La cote détaillée de chaque modèle", "Le guide « Votre première revente » inclus"],
+    accroche: "Pour vous lancer dans l'achat-revente", pour: "Vous achetez et revendez vos premières voitures.",
+    analyses: 30, parMois: true, photos: 3, detail: "complet", historique: Infinity, tableauDeBord: "simple",
+    parc: false, recherche: false, comparateur: false, guide: true, lookup: "utp_starter_mois", miseEnAvant: true,
+    points: ["30 analyses de véhicule par mois", "Marge nette, prix d'offre et prix à ne pas dépasser", "Fiabilité du moteur, travaux à prévoir et kilométrage", "Historique complet de vos rapports", "La cote détaillée de chaque modèle", "Les 3 guides Benef : première revente, tri des annonces, estimation de reprise"],
   },
   croissance: {
-    id: "croissance", famille: "benef", nom: "Croissance", prix: 29,
+    id: "croissance", famille: "benef", nom: "Croissance", prix: 29, cachee: true,
     accroche: "Pour passer à plusieurs voitures par mois", pour: "Vous achetez et revendez régulièrement.",
     analyses: 100, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "simple",
-    parc: false, recherche: false, comparateur: true, guide: true, lookup: "utp_croissance_mois",
-    points: ["100 analyses par mois", "Tout Starter, plus :", "Historique complet des rapports", "Comparateur de 2 à 3 rapports côte à côte", "Analyse de 6 photos par annonce", "Les 3 guides Benef inclus : première revente, tri des annonces, estimation de reprise"],
-    miseEnAvant: true,
+    parc: false, recherche: false, comparateur: false, guide: true, lookup: "utp_croissance_mois",
+    points: ["100 analyses par mois", "Tout Starter, plus :", "Analyse de 6 photos par annonce"],
   },
   pro: {
     id: "pro", famille: "benef", nom: "Pro", prix: 79,
     accroche: "Pour les professionnels en activité", pour: "Vous gérez un stock et suivez vos chiffres.",
     analyses: 400, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "complet",
-    parc: true, recherche: true, comparateur: true, guide: true, lookup: "utp_pro_79", anciennesCles: ["utp_pro_mois"],
-    points: ["400 analyses par mois", "Tout Croissance, plus :", "Recherche dans les annonces Leboncoin : marque, modèle, génération, sous la cote", "Alertes e-mail sur vos recherches Leboncoin (3 recherches suivies)", "Cote du marché avec graphique", "Tableau de bord complet : marges, stock, rotation", "Gestion du parc : achats, frais, ventes, marge réelle", "Rapports détaillés et export CSV", "Messages Leboncoin automatiques en option : 45 € par mois"],
+    parc: true, recherche: true, comparateur: false, guide: true, lookup: "utp_pro_79", anciennesCles: ["utp_pro_mois"],
+    points: ["400 analyses par mois", "Tout Starter, plus :", "Analyse de 6 photos par annonce, le montage du deal et les risques cachés", "Recherche dans les annonces Leboncoin : marque, modèle, génération, sous la cote", "Alertes e-mail sur vos recherches Leboncoin (3 recherches suivies)", "Cote du marché avec graphique", "Tableau de bord complet : marges, stock, rotation", "Gestion du parc : achats, frais, ventes, marge réelle", "Rapports détaillés et export CSV", "Messages Leboncoin automatiques en option : 45 € par mois"],
   },
   // Ancrage : Pro (79 €) + option Messages (45 €) = 124 € ; la même chose en une formule coûte 84 €.
   pro_messages: {
     id: "pro_messages", famille: "benef", nom: "Pro + Messages", prix: 84,
     accroche: "Pour contacter les vendeurs avant les autres", pour: "Vous voulez être le premier sur chaque bonne affaire.",
     analyses: 400, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "complet",
-    parc: true, recherche: true, comparateur: true, guide: true, lookup: "utp_pro_messages_84", base: "pro", messages: true, badge: "Messages offerts",
+    parc: true, recherche: true, comparateur: false, guide: true, lookup: "utp_pro_messages_84", base: "pro", messages: true, badge: "Messages offerts",
     points: ["Tout Pro, plus :", "Messages Leboncoin automatiques compris (45 € par mois en option sur Pro)", "Un premier message aux vendeurs des annonces de vos recherches, une annonce à la fois", "Jamais deux fois la même annonce ; celles qui refusent le démarchage sont ignorées", "Boîte de réception des réponses", "Un seul abonnement, résiliable à tout moment"],
   },
 };
@@ -105,7 +104,8 @@ export const GUIDE = { lookup: "utp_guide", prix: 9, nom: "Les guides Utopicar" 
 export const OPTION_MESSAGES = { lookup: "utp_option_messages_45", prix: 45, nom: "Messages Leboncoin" };
 
 export const PARTICULIERS: OffreId[] = ["gratuit", "essentiel"];
-export const BENEF: OffreId[] = ["starter", "croissance", "pro", "pro_messages"];
+/** En vente : Starter pour se lancer, Pro pour trouver les affaires et gérer le stock, Pro + Messages (ancrage : 79 + 45 = 124 €). */
+export const BENEF: OffreId[] = ["starter", "pro", "pro_messages"];
 
 export const offre = (id: string | null | undefined): Offre => OFFRES[(id as OffreId) in OFFRES ? (id as OffreId) : "gratuit"];
 export const estPayante = (id: string | null | undefined) => offre(id).prix > 0;
@@ -136,7 +136,7 @@ export const centimes = (v: number) => `${v.toLocaleString("fr-FR", { minimumFra
 
 /** Quand les analyses sont épuisées : la formule à proposer (moins chère à l'analyse que les crédits), ou null au sommet. */
 export function formuleSuivante(id: OffreId | string, famille: Famille): Offre | null {
-  const suite: Partial<Record<string, OffreId>> = famille === "benef" ? { gratuit: "starter", essentiel: "starter", starter: "croissance", croissance: "pro" } : { gratuit: "essentiel" };
+  const suite: Partial<Record<string, OffreId>> = famille === "benef" ? { gratuit: "starter", essentiel: "starter", starter: "pro", croissance: "pro" } : { gratuit: "essentiel" };
   const s = suite[id];
   return s ? OFFRES[s] : null;
 }

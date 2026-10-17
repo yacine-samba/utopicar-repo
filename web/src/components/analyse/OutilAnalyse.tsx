@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
+import type { OffreId } from "@/lib/offres";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
 import { Saisie } from "../Saisie";
 import { ResultatParticulier } from "./ResultatParticulier";
 import { EnTeteRapport } from "./EnTeteRapport";
 
-export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres, restantes = null }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode; restantes?: number | null }) {
+export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres, restantes = null, suite }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode; restantes?: number | null; suite?: OffreId | null }) {
   const router = useRouter();
   const [a, setA] = useState<Analyse | null>(null);
   if (a)
@@ -42,6 +43,7 @@ export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", li
           mode="particulier"
           maxPhotos={maxPhotos}
           restantes={restantes}
+          suite={suite}
           villeInitiale={ville}
           villeLabel="Votre ville"
           villeAide="Pour calculer le trajet jusqu'à la voiture."

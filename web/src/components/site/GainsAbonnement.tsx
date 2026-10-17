@@ -29,7 +29,7 @@ function cartes(famille: "particulier" | "benef", ids: OffreId[], credits: boole
   }
   const marge = 6300 - 5000 - 630;
   const pourquoi: Record<string, string> = {
-    starter: "30 annonces chiffrées par mois : marge nette, prix d'offre et plafond avant d'appeler.",
+    starter: "30 annonces chiffrées par mois : marge nette, prix d'offre, moteur et travaux, avant d'appeler.",
     croissance: "100 annonces par mois et le comparateur : vous ne gardez que les GO.",
     pro: "La recherche sous la cote, les alertes et le parc : repérer avant les autres, suivre la marge réelle.",
     pro_messages: "Tout Pro, et le premier message part tout seul aux vendeurs : vous êtes le premier sur la voiture.",

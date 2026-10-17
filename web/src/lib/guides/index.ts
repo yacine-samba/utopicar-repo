@@ -173,7 +173,7 @@ export const GUIDES: { id: GuideId; titre: string; pour: string; resume: string;
 /** Guides ouverts en entier par chaque formule. Les autres : deux chapitres offerts, ou les quatre à vie avec l'achat à 9 €. */
 const GUIDES_FORMULE: Record<string, GuideId[]> = {
   serenite: ["acheter-occasion"],
-  starter: ["premiere-revente"],
+  starter: ["premiere-revente", "trier-annonces", "estimer-reprise"],
   croissance: ["premiere-revente", "trier-annonces", "estimer-reprise"],
   pro: ["premiere-revente", "trier-annonces", "estimer-reprise"],
 };
@@ -187,11 +187,10 @@ export function guidesOuverts(illimite: boolean, formule: string, produits: stri
 }
 
 /** Guides mis en avant selon la formule (page « Mes guides » du profil) ; les autres restent accessibles en dessous.
-    Benef Starter : la première vente ; Croissance et Pro : la méthode de tri et l'estimation de reprise ; particuliers : l'achat. */
+    Benef Starter : la première vente d'abord, puis le tri et la reprise ; Pro : le tri et l'estimation de reprise ; particuliers : l'achat. */
 export function guidesPour(formule: string, famille: "particulier" | "benef"): GuideId[] {
   if (famille === "particulier") return ["acheter-occasion"];
-  if (formule === "starter") return ["premiere-revente"];
-  if (formule === "croissance") return ["trier-annonces", "estimer-reprise", "premiere-revente"];
+  if (formule === "starter" || formule === "croissance") return ["premiere-revente", "trier-annonces", "estimer-reprise"];
   return ["trier-annonces", "estimer-reprise"];
 }
 
