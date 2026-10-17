@@ -2,6 +2,9 @@ import { Criteres, actif } from "@/lib/carcrush";
 import { chercher } from "@/lib/carcrush-recherche";
 import { ipDe, tropDeDemandes } from "@/lib/limite";
 
+// lecture d'un gros modèle quand la base doit le relire sur le disque : jusqu'à une dizaine de secondes
+export const maxDuration = 60;
+
 /* CarCrush : nombre d'annonces qui répondent aux critères, avant de lancer (rien n'est débité, aucune annonce n'est renvoyée). */
 export async function POST(req: Request) {
   if (tropDeDemandes("carcrush-apercu", ipDe(req), 40, 10 * 60e3)) return Response.json({ erreur: "Trop de demandes, réessayez dans quelques minutes." }, { status: 429 });
