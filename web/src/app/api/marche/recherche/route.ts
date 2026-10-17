@@ -55,13 +55,14 @@ export async function POST(req: Request) {
 
   const t0 = Date.now();
   let mm;
+  const charger = () => marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, f.anneeMax ? f.anneeMax + 1 : null);
   try {
-    mm = await marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, f.anneeMax ? f.anneeMax + 1 : null);
+    // une expiration ponctuelle (base froide, relevé en cours) : on relance une fois avant de répondre
+    mm = await charger().catch((e: Error) => (/timeout/i.test(e.message) ? charger() : Promise.reject(e)));
   } catch (e) {
     // le message de la base (« canceling statement due to statement timeout ») reste dans les journaux, pas à l'écran
     console.error("recherche marché", (e as Error).message);
-    const lente = /timeout/i.test((e as Error).message);
-    return Response.json({ erreur: lente ? "La base du marché a mis trop de temps à répondre. Relancez la recherche dans un instant." : "Base du marché indisponible pour le moment. Réessayez dans un instant." }, { status: 502 });
+    return Response.json({ erreur: "Pas de réponse pour l'instant. Relancez la recherche." }, { status: 502 });
   }
   if (!mm) return Response.json({ erreur: "Modèle inconnu du catalogue." }, { status: 400 });
   const { m, lignes, cotes } = mm;
