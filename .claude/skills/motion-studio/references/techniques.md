@@ -816,3 +816,62 @@ Demande : « ok fait la vidéo », avec toute la voix refaite sur le script v10 
   (43 avec l'ancienne voix), toutes d'une catégorie déjà vérifiée : chrono, cartes qui sortent, compteurs, bandeau
   PLAFOND qui entre, mur d'annonces sous la couleur, « zzZ ».
 - Ne pas lancer le détecteur pendant un rendu : sur 4 cœurs, ses captures dépassent 30 s et il s'arrête en route.
+
+## 29. Le parcours dans un téléphone : vrais écrans, blocs qui sortent, fil des étapes (présentation v11)
+
+Demande : sur la v10, « l'animation du scroll s'arrête net, un des textes chiffrés coupe, aucun dynamisme, on ne
+comprend rien : pas de contexte, pas de parcours, pas d'UX » ; puis, sur la planche v11 : « repars de la vidéo de base
+et copie cette animation pour les interfaces ». Code : `video/film-presentev11/film.js` (fil, téléphone, blocs),
+`video/scripts/app-demo/capturer-v11.mjs` et `capturer-v11b.mjs` (captures), `video/scripts/film-v11-images.py`
+(écrans, bandes, cartes, `geo.json`), `video/scripts/audio-presentev11.py` (mix).
+
+**Le contexte reste à l'écran : le fil des étapes**
+- Quatre ronds reliés par un trait en haut de l'écran (236 → 333, ronds à 240, 440, 640, 840, libellés Satoshi 700
+  27 px). Il naît sur « en quatre étapes » : trait qui se trace, ronds qui jaillissent à 80 ms d'écart.
+- États : à venir (sombre, cerclé gris), en cours (orange plein, numéro foncé, halo de 8 px), fini (brun, cerclé
+  d'orange, coche tracée ; le trait se remplit jusqu'au suivant). La coche reste cachée tant qu'elle n'est pas tracée :
+  un trait de longueur nulle à bouts ronds dessine un point.
+- Chaque « Étape N » : la grosse couleur SORT du rond N (disque qui part de son rayon de 30 px), porte le nom de
+  l'étape au centre (« Étape 1 / Analyser. », Clash 170 px, encre foncée sans lueur : la lueur blanche sur l'orange
+  donnait un gris sale), avance doucement (+6 %), puis RENTRE dans le rond (son disque se resserre jusqu'à 30 px,
+  `r1fin`) et découvre le téléphone. Un reflet plus clair dérive dans la couleur pendant qu'elle tient.
+- Les sous-titres passent sous le fil (y 380) ; leur sortie ne monte que de 18 px pour ne pas toucher les libellés.
+
+**Le téléphone : les vrais écrans, pas une interface redessinée**
+- Boîtier en CSS 3D (bord 16 px, rayon 78, écran 560 × 1212, haut à 620), dans une scène de perspective 2 400 px.
+  L'écran contient les captures de l'app en px de capture (2× de 390 × 844 : 780 × 1688, mis à l'échelle 560 / 780) :
+  barre du haut (0 → 128), page à plat qui défile (« bande », découpée dans la capture pleine page), barre du bas
+  (1540 → 1688). Une bande va jusqu'au dernier bloc visé PLUS un écran, sinon le bas de l'écran reste vide.
+- Défilement : `bez(0.42, 0, 0.12, 1)`, il accélère puis se pose longuement ; jamais d'arrêt net. Le téléphone et la
+  caméra continuent de dériver pendant la pose (le reproche de la v10).
+- Changer d'écran comme l'app : l'état change d'un coup (lien collé dévoilé de gauche à droite sur le champ, bouton
+  qui devient orange depuis son centre, interrupteur, onglet), une page monte par-dessus (rapport), glisse de côté
+  (onglet « Mes recherches ») ou descend (e-mail). L'attente de l'analyse est la vraie, capturée image par image
+  (38 images en 9,8 s) et passée en accéléré (× 3) : les étapes se cochent vraiment.
+- Un appui sans doigt : le morceau d'écran du bouton (même image, recadrée) s'écrase de 7 % et s'éclaire.
+- Le téléphone se tourne d'un côté à l'autre (±12°, ressort `default`) pour laisser la place au bloc qui sort, et
+  arrive à chaque chapitre (du bas, du côté, du fond) pendant que la couleur rentre dans son rond.
+
+**Le bloc qui compte sort de l'écran**
+- Le gros plan est la capture 3× du bloc (carte entière : jamais une coupe dans un chiffre). Il part de sa place
+  EXACTE à l'écran : la place du bloc dans la page à plat est mesurée dans l'app (`rects2.json`), convertie en px de
+  l'écran selon le défilement du moment, puis posée dans le monde par la même rotation que le téléphone (`rot3`).
+  À t0 il recouvre l'original au pixel près : on le voit se décoller.
+- Il va (ressort `default`, ~2 % de dépassement) jusqu'à sa place à l'écran (bord droit ≤ 920, bas ≤ 1 460), à
+  260 px devant le plan net, face caméra, tourné de 8° ; un reflet le balaie ; il flotte (±6 px). Il rentre à sa
+  place (ressort `snappy`) quand la voix passe à autre chose, TOUJOURS avant que son écran ne change (l'alerte rentrait
+  par-dessus l'e-mail).
+- Pendant qu'il est sorti, l'écran du téléphone recule dans l'ombre (luminosité −34 %, flou 2,4 px).
+- Les petits blocs (un champ, un prix) sortent plus grands (660 à 700 px) que les cartes (540 à 640 px).
+
+**Les sous-titres sans pause dans la voix**
+- La règle « un seul sous-titre du haut, sorti 0,26 s avant le suivant » coupait le dernier mot quand la phrase
+  suivante démarre sans blanc (« …sous la cote. Une annonce… ») : « cote. » ne s'écrivait jamais. Correction : le
+  premier mot du sous-titre suivant s'écrit sur un mot plus loin de la voix (« Une annonce » sur « annonce »,
+  « Très bonne » sur « bonne »). Vérifier dans les planches 0,1 s que chaque dernier mot apparaît.
+
+**La musique sur un parcours en chapitres**
+- Morceau de 50 s pour un film de 55 s : on le monte par segments décalés d'un nombre entier de mesures (la grille ne
+  bouge pas), chaque coupe sous l'impact d'une grosse couleur (fondu croisé 12 ms). La mesure presque vide passe
+  sous le chiffre qui prépare le verdict, la chute tombe juste avant « Verdict », le dernier segment est décalé pour
+  que « utopicar » tombe sur un premier temps (le seul décalage hors grille, caché par l'impact de la fin).

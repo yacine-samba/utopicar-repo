@@ -201,7 +201,16 @@ L'app (`main` du 17 oct. 2026) tourne en local sur la base démo (`scripts/app-d
     recherche ;
   - le bouton de l'e-mail d'alerte écrit « Utopicar » avec une majuscule.
 
-## 9. Suite
+## 9. Fait (17 oct. 2026)
 
-1. Tu regardes la planche et tu valides ou corriges scène par scène : texte, écran, gros plan.
-2. Une fois validée : la voix de Simon (crédits ElevenLabs, avec ton accord), puis le film, scène par scène.
+- **Planche validée** par l'utilisateur : « repars de la vidéo de base qu'on a créée et copie cette animation pour les
+  interfaces », nouveau texte et nouvelle voix.
+- **Voix** : 2 prises eleven_v4 de Simon (1 730 crédits, avec accord). Prise retenue `Uy7VO2vX` : aucun mot faux à la
+  transcription (seuls des homophones : cette/cet, paie/paye), « En quatre étapes. » détaché, 23,2 demi-tons, silence le
+  plus long 0,43 s. Accélérée × 1,05 : 52,97 s de voix, 6,0 syllabes par seconde (v10 : 5,2). `scripts/vo-presentev11.py`.
+- **Film** : `film-presentev11/` (55,2 s) ; écrans et gros plans : `scripts/film-v11-images.py` ; captures en plus
+  (l'attente de l'analyse image par image, « Acheter », l'onglet « Vendues ») : `scripts/app-demo/capturer-v11b.mjs`.
+- **Son** : `scripts/audio-presentev11.py` (même musique que la v10, montée par chapitre ; bruitages aux repères).
+- **Écart avec la planche** : le libellé « Lien de l'annonce (Leboncoin, La Centrale, AutoScout24) » et « Lecture de
+  l'annonce sur Leboncoin » restent visibles en petit sur l'écran du téléphone (vrais écrans, comme sur la planche) ;
+  le gros plan du lien, lui, ne les montre pas. À décider : les garder ou les masquer.

@@ -1,4 +1,4 @@
-# DA immersive : la direction artistique des films utopicar (présentation v8 → v10)
+# DA immersive : la direction artistique des films utopicar (présentation v8 → v11)
 
 C'est la DA de la présentation utopicar, construite version après version sur les retours de l'utilisateur :
 - sur la v7 : « retire les cadres des interfaces, faut que ça soit beaucoup plus immersif » ;
@@ -8,7 +8,8 @@ C'est la DA de la présentation utopicar, construite version après version sur 
 - sur le script v10 : « ok fait la vidéo » (voix refaite, film rendu).
 
 **Code de référence :** `video/film-presentev10/film.js` et `polo3d.js`. Film rendu :
-`video/renders/9x16-presentev10.mp4`.
+`video/renders/9x16-presentev10.mp4`. Pour un parcours dans l'app (v11, § 15) : `video/film-presentev11/film.js`,
+`video/renders/9x16-presentev11.mp4`.
 
 **Quand la proposer.** C'est la direction recommandée pour tout film produit utopicar : présentation, explainer, démo,
 pub. On la propose en premier à la porte 3, avec ses images (`renders/stills-presentev10`, `renders/apercu-presentev10`).
@@ -319,3 +320,21 @@ Chacun vient d'une erreur réellement corrigée.
    - rendu `MB=8 PARTS=3` ;
    - `qa_video.py` ;
    - planche de la vidéo encodée et coutures des morceaux.
+
+## 15. Le parcours dans un téléphone (v11)
+
+Sur la v10, l'utilisateur : « on ne comprend rien : pas de contexte, pas de parcours, pas d'UX ». La v11 garde tout ce
+qui précède (accroche en 3D, voix qui s'écrit, grosses couleurs, fond vivant, fin, boucle) et change la façon de montrer
+l'app. Détail et valeurs : `techniques.md` § 29.
+
+- **Le fil des étapes** en haut de l'écran (236 → 333) : quatre ronds, Analyser → Trouver → Négocier → Revendre. Il
+  naît sur la promesse (« en quatre étapes ») et reste jusqu'à la fin : le spectateur sait toujours où il en est.
+- **Chaque chapitre** : la grosse couleur sort du rond de l'étape, porte son nom au centre (encre foncée sur
+  l'orange, sans lueur), puis rentre dans le rond, qui reste allumé ; l'étape finie se coche.
+- **Les interfaces sont les vrais écrans** de l'app, dans un téléphone en 3D (choix de l'utilisateur sur la planche
+  v11 : ici, le téléphone et les cartes de l'app ne sont plus des « cadres » interdits). L'écran défile sans arrêt net,
+  change d'écran comme l'app, et le téléphone se tourne d'un côté à l'autre sans jamais s'arrêter.
+- **Le bloc qui compte sort de l'écran** vers nous, depuis sa place exacte, en capture 3× entière ; l'écran recule
+  dans l'ombre pendant qu'il est sorti ; il rentre avant que l'écran ne change.
+- **Les sous-titres** passent sous le fil (y 380, 100 à 120 px) ; quand la voix enchaîne sans blanc, le sous-titre
+  suivant commence sur un mot plus loin.

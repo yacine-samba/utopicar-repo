@@ -1,0 +1,122 @@
+{
+ "polo": {
+  "titre": {
+   "x": 16,
+   "y": 259,
+   "w": 358,
+   "h": 242,
+   "t": "Volkswagen Polo\n\nVolkswagen Polo 1.2 TSI 90 Confortline\n\n201"
+  },
+  "verdict": {
+   "x": 16,
+   "y": 521,
+   "w": 358,
+   "h": 817,
+   "t": "AVANT LE PREMIER MESSAGE\n\nÀ éviter\n\nMême bien négociée, elle"
+  },
+  "prix": {
+   "x": 16,
+   "y": 1678,
+   "w": 358,
+   "h": 148,
+   "t": "Bon prix ?\n›\nTrop cher\n1 533 € de plus que les annonces comp"
+  },
+  "offre": {
+   "x": 37,
+   "y": 3356,
+   "w": 316,
+   "h": 86,
+   "t": "Offre d'ouverture\n\n5 400 €\n\naprès la visite"
+  },
+  "plafond": {
+   "x": 37,
+   "y": 3544,
+   "w": 316,
+   "h": 86,
+   "t": "Prix à ne pas dépasser\n\n5 750 €\n\npour garder 750 €"
+  },
+  "msglabel": {
+   "x": 37,
+   "y": 2600,
+   "w": 200,
+   "h": 20,
+   "t": "Premier message, prêt à envoyer"
+  },
+  "message": {
+   "x": 37,
+   "y": 5676,
+   "w": 316,
+   "h": 122,
+   "t": "Bonjour, votre Volkswagen Polo m'intéresse. Est-elle toujour"
+  },
+  "haut": 8688
+ },
+ "clio": {
+  "titre": {
+   "x": 16,
+   "y": 259,
+   "w": 358,
+   "h": 242,
+   "t": "Renault Clio\n\nRenault Clio IV 1.5 dCi 75 Zen\n\n2018\n88 500 km"
+  },
+  "verdict": {
+   "x": 16,
+   "y": 521,
+   "w": 358,
+   "h": 741,
+   "t": "AVANT LE PREMIER MESSAGE\n\nTrès bonne affaire\n\nIl vous rester"
+  },
+  "prix": {
+   "x": 16,
+   "y": 1562,
+   "w": 358,
+   "h": 148,
+   "t": "Bon prix ?\n›\nTrès bon prix\n2 064 € de moins que les annonces"
+  },
+  "offre": {
+   "x": 37,
+   "y": 3260,
+   "w": 316,
+   "h": 86,
+   "t": "Offre d'ouverture\n\n7 400 €\n\naprès la visite"
+  },
+  "plafond": {
+   "x": 37,
+   "y": 3448,
+   "w": 316,
+   "h": 86,
+   "t": "Prix à ne pas dépasser\n\n7 900 €\n\npour garder 750 €"
+  },
+  "msglabel": {
+   "x": 37,
+   "y": 2504,
+   "w": 200,
+   "h": 20,
+   "t": "Premier message, prêt à envoyer"
+  },
+  "message": {
+   "x": 37,
+   "y": 5517,
+   "w": 316,
+   "h": 122,
+   "t": "Bonjour, votre Renault Clio m'intéresse. Est-elle toujours d"
+  },
+  "haut": 8453
+ },
+ "mesrecherches": {
+  "carte": {
+   "x": 16,
+   "y": 519,
+   "w": 358,
+   "h": 228,
+   "t": "Renault Clio 4\nActive\n14 oct.\n\ndiesel\n\n220 annonces · 22 sou"
+  },
+  "alerte": {
+   "x": 33,
+   "y": 692,
+   "w": 140,
+   "h": 34,
+   "t": "Alerte e-mail"
+  }
+ }
+}

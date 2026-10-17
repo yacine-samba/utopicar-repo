@@ -1,0 +1,12 @@
+{
+ "version": 1,
+ "style": "présentation utopicar v11 : la base v10 (Polo 3D, voix qui s'écrit, grosses couleurs, fin) et l'animation de la planche v11 pour les interfaces : fil des quatre étapes en haut, vrais écrans de l'app dans un téléphone en 3D qui défile, blocs qui sortent de l'écran vers nous ; nouveau texte, nouvelle voix de Simon",
+ "fps": 30,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 55.2,
+ "poster": 2.0
+}

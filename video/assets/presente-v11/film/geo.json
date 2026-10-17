@@ -1,0 +1,411 @@
+{
+ "ecran": [
+  780,
+  1688
+ ],
+ "haut": 128,
+ "bas": 1540,
+ "bande-polo": {
+  "y0": 505,
+  "h": 7190
+ },
+ "bande-clio": {
+  "y0": 505,
+  "h": 6990
+ },
+ "bande-recherche": {
+  "y0": 294,
+  "h": 4008
+ },
+ "bande-vendues": {
+  "y0": 64,
+  "h": 4200
+ },
+ "analyse": [
+  [
+   "000.png",
+   0.08
+  ],
+  [
+   "001.png",
+   0.39
+  ],
+  [
+   "002.png",
+   0.64
+  ],
+  [
+   "003.png",
+   0.9
+  ],
+  [
+   "004.png",
+   1.14
+  ],
+  [
+   "005.png",
+   1.4
+  ],
+  [
+   "006.png",
+   1.65
+  ],
+  [
+   "007.png",
+   1.9
+  ],
+  [
+   "008.png",
+   2.13
+  ],
+  [
+   "009.png",
+   2.37
+  ],
+  [
+   "010.png",
+   2.6
+  ],
+  [
+   "011.png",
+   2.84
+  ],
+  [
+   "012.png",
+   3.09
+  ],
+  [
+   "013.png",
+   3.35
+  ],
+  [
+   "014.png",
+   3.6
+  ],
+  [
+   "015.png",
+   3.86
+  ],
+  [
+   "016.png",
+   4.13
+  ],
+  [
+   "017.png",
+   4.4
+  ],
+  [
+   "018.png",
+   4.66
+  ],
+  [
+   "019.png",
+   4.92
+  ],
+  [
+   "020.png",
+   5.18
+  ],
+  [
+   "021.png",
+   5.44
+  ],
+  [
+   "022.png",
+   5.69
+  ],
+  [
+   "023.png",
+   5.95
+  ],
+  [
+   "024.png",
+   6.19
+  ],
+  [
+   "025.png",
+   6.47
+  ],
+  [
+   "026.png",
+   6.74
+  ],
+  [
+   "027.png",
+   7
+  ],
+  [
+   "028.png",
+   7.26
+  ],
+  [
+   "029.png",
+   7.53
+  ],
+  [
+   "030.png",
+   7.82
+  ],
+  [
+   "031.png",
+   8.11
+  ],
+  [
+   "032.png",
+   8.47
+  ],
+  [
+   "033.png",
+   8.74
+  ],
+  [
+   "034.png",
+   9
+  ],
+  [
+   "035.png",
+   9.27
+  ],
+  [
+   "036.png",
+   9.51
+  ],
+  [
+   "037.png",
+   9.78
+  ]
+ ],
+ "avis": {
+  "x": 24,
+  "y": 24,
+  "w": 732,
+  "h": 180.375
+ },
+ "acheter": {
+  "x": 66,
+  "y": 1330.4,
+  "width": 184.8,
+  "height": 72
+ },
+ "onglet-vendues": {
+  "x": 221.0,
+  "y": 416.4,
+  "width": 168.9,
+  "height": 64
+ },
+ "pop-lien": [
+  680,
+  235
+ ],
+ "pop-cote268": [
+  1194,
+  410
+ ],
+ "pop-polo-prix": [
+  1194,
+  387
+ ],
+ "pop-polo-verdict": [
+  1194,
+  1130
+ ],
+ "pop-polo-plafond": [
+  1068,
+  261
+ ],
+ "pop-generation": [
+  688,
+  196
+ ],
+ "pop-souscote": [
+  688,
+  200
+ ],
+ "pop-alerte": [
+  1194,
+  684
+ ],
+ "pop-clio-prix": [
+  1194,
+  387
+ ],
+ "pop-clio-verdict": [
+  1194,
+  1110
+ ],
+ "pop-clio-offre": [
+  1068,
+  261
+ ],
+ "pop-clio-plafond": [
+  1068,
+  261
+ ],
+ "pop-clio-message": [
+  1194,
+  820
+ ],
+ "pop-avis": [
+  1218,
+  273
+ ],
+ "pop-vendue": [
+  1188,
+  891
+ ],
+ "rects": {
+  "polo": {
+   "titre": {
+    "x": 16,
+    "y": 259,
+    "w": 358,
+    "h": 242,
+    "t": "Volkswagen Polo\n\nVolkswagen Polo 1.2 TSI 90 Confortline\n\n201"
+   },
+   "verdict": {
+    "x": 16,
+    "y": 521,
+    "w": 358,
+    "h": 817,
+    "t": "AVANT LE PREMIER MESSAGE\n\nÀ éviter\n\nMême bien négociée, elle"
+   },
+   "prix": {
+    "x": 16,
+    "y": 1678,
+    "w": 358,
+    "h": 148,
+    "t": "Bon prix ?\n›\nTrop cher\n1 533 € de plus que les annonces comp"
+   },
+   "offre": {
+    "x": 37,
+    "y": 3356,
+    "w": 316,
+    "h": 86,
+    "t": "Offre d'ouverture\n\n5 400 €\n\naprès la visite"
+   },
+   "plafond": {
+    "x": 37,
+    "y": 3544,
+    "w": 316,
+    "h": 86,
+    "t": "Prix à ne pas dépasser\n\n5 750 €\n\npour garder 750 €"
+   },
+   "msglabel": {
+    "x": 37,
+    "y": 2600,
+    "w": 200,
+    "h": 20,
+    "t": "Premier message, prêt à envoyer"
+   },
+   "message": {
+    "x": 37,
+    "y": 5676,
+    "w": 316,
+    "h": 122,
+    "t": "Bonjour, votre Volkswagen Polo m'intéresse. Est-elle toujour"
+   },
+   "haut": 8688
+  },
+  "clio": {
+   "titre": {
+    "x": 16,
+    "y": 259,
+    "w": 358,
+    "h": 242,
+    "t": "Renault Clio\n\nRenault Clio IV 1.5 dCi 75 Zen\n\n2018\n88 500 km"
+   },
+   "verdict": {
+    "x": 16,
+    "y": 521,
+    "w": 358,
+    "h": 741,
+    "t": "AVANT LE PREMIER MESSAGE\n\nTrès bonne affaire\n\nIl vous rester"
+   },
+   "prix": {
+    "x": 16,
+    "y": 1562,
+    "w": 358,
+    "h": 148,
+    "t": "Bon prix ?\n›\nTrès bon prix\n2 064 € de moins que les annonces"
+   },
+   "offre": {
+    "x": 37,
+    "y": 3260,
+    "w": 316,
+    "h": 86,
+    "t": "Offre d'ouverture\n\n7 400 €\n\naprès la visite"
+   },
+   "plafond": {
+    "x": 37,
+    "y": 3448,
+    "w": 316,
+    "h": 86,
+    "t": "Prix à ne pas dépasser\n\n7 900 €\n\npour garder 750 €"
+   },
+   "msglabel": {
+    "x": 37,
+    "y": 2504,
+    "w": 200,
+    "h": 20,
+    "t": "Premier message, prêt à envoyer"
+   },
+   "message": {
+    "x": 37,
+    "y": 5517,
+    "w": 316,
+    "h": 122,
+    "t": "Bonjour, votre Renault Clio m'intéresse. Est-elle toujours d"
+   },
+   "haut": 8453
+  },
+  "recherche": {
+   "marque": {
+    "x": 37,
+    "y": 404,
+    "w": 316,
+    "h": 70
+   },
+   "generation": {
+    "x": 37,
+    "y": 576,
+    "w": 316,
+    "h": 70
+   },
+   "souscote": {
+    "x": 37,
+    "y": 1676,
+    "w": 316,
+    "h": 72
+   },
+   "bouton": {
+    "x": 37,
+    "y": 2109,
+    "w": 118,
+    "h": 40
+   },
+   "haut": 2298
+  },
+  "mesrecherches": {
+   "carte": {
+    "x": 16,
+    "y": 519,
+    "w": 358,
+    "h": 228,
+    "t": "Renault Clio 4\nActive\n14 oct.\n\ndiesel\n\n220 annonces · 22 sou"
+   },
+   "alerte": {
+    "x": 33,
+    "y": 692,
+    "w": 140,
+    "h": 34,
+    "t": "Alerte e-mail"
+   }
+  },
+  "vendue": {
+   "x": 16,
+   "y": 1471,
+   "w": 358,
+   "h": 565
+  }
+ }
+}

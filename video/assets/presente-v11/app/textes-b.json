@@ -1,0 +1,181 @@
+{
+ "seq-analyse": [
+  {
+   "f": "seq-analyse/000.png",
+   "t": 0.08
+  },
+  {
+   "f": "seq-analyse/001.png",
+   "t": 0.39
+  },
+  {
+   "f": "seq-analyse/002.png",
+   "t": 0.64
+  },
+  {
+   "f": "seq-analyse/003.png",
+   "t": 0.9
+  },
+  {
+   "f": "seq-analyse/004.png",
+   "t": 1.14
+  },
+  {
+   "f": "seq-analyse/005.png",
+   "t": 1.4
+  },
+  {
+   "f": "seq-analyse/006.png",
+   "t": 1.65
+  },
+  {
+   "f": "seq-analyse/007.png",
+   "t": 1.9
+  },
+  {
+   "f": "seq-analyse/008.png",
+   "t": 2.13
+  },
+  {
+   "f": "seq-analyse/009.png",
+   "t": 2.37
+  },
+  {
+   "f": "seq-analyse/010.png",
+   "t": 2.6
+  },
+  {
+   "f": "seq-analyse/011.png",
+   "t": 2.84
+  },
+  {
+   "f": "seq-analyse/012.png",
+   "t": 3.09
+  },
+  {
+   "f": "seq-analyse/013.png",
+   "t": 3.35
+  },
+  {
+   "f": "seq-analyse/014.png",
+   "t": 3.6
+  },
+  {
+   "f": "seq-analyse/015.png",
+   "t": 3.86
+  },
+  {
+   "f": "seq-analyse/016.png",
+   "t": 4.13
+  },
+  {
+   "f": "seq-analyse/017.png",
+   "t": 4.4
+  },
+  {
+   "f": "seq-analyse/018.png",
+   "t": 4.66
+  },
+  {
+   "f": "seq-analyse/019.png",
+   "t": 4.92
+  },
+  {
+   "f": "seq-analyse/020.png",
+   "t": 5.18
+  },
+  {
+   "f": "seq-analyse/021.png",
+   "t": 5.44
+  },
+  {
+   "f": "seq-analyse/022.png",
+   "t": 5.69
+  },
+  {
+   "f": "seq-analyse/023.png",
+   "t": 5.95
+  },
+  {
+   "f": "seq-analyse/024.png",
+   "t": 6.19
+  },
+  {
+   "f": "seq-analyse/025.png",
+   "t": 6.47
+  },
+  {
+   "f": "seq-analyse/026.png",
+   "t": 6.74
+  },
+  {
+   "f": "seq-analyse/027.png",
+   "t": 7
+  },
+  {
+   "f": "seq-analyse/028.png",
+   "t": 7.26
+  },
+  {
+   "f": "seq-analyse/029.png",
+   "t": 7.53
+  },
+  {
+   "f": "seq-analyse/030.png",
+   "t": 7.82
+  },
+  {
+   "f": "seq-analyse/031.png",
+   "t": 8.11
+  },
+  {
+   "f": "seq-analyse/032.png",
+   "t": 8.47
+  },
+  {
+   "f": "seq-analyse/033.png",
+   "t": 8.74
+  },
+  {
+   "f": "seq-analyse/034.png",
+   "t": 9
+  },
+  {
+   "f": "seq-analyse/035.png",
+   "t": 9.27
+  },
+  {
+   "f": "seq-analyse/036.png",
+   "t": 9.51
+  },
+  {
+   "f": "seq-analyse/037.png",
+   "t": 9.78
+  }
+ ],
+ "acheter": {
+  "x": 33,
+  "y": 665.1875,
+  "width": 92.390625,
+  "height": 36
+ },
+ "avis": {
+  "x": 12,
+  "y": 12,
+  "w": 366,
+  "h": 90.1875
+ },
+ "onglet-vendues": {
+  "x": 110.515625,
+  "y": 208.1875,
+  "width": 84.453125,
+  "height": 32
+ },
+ "vendue-clio": {
+  "x": 16,
+  "y": 1471,
+  "w": 358,
+  "h": 565
+ },
+ "vendues-haut": 2164
+}
