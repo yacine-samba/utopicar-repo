@@ -92,7 +92,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
       if (innerWidth < 640) document.getElementById("rm-attente")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
     try {
-      const r = await fetch("/api/marche/recherche", {
+      const envoyer = () => fetch("/api/marche/recherche", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -101,11 +101,14 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
           anneeMin: n(fx.anneeMin), anneeMax: n(fx.anneeMax), prixMin: n(fx.prixMin), prixMax: n(fx.prixMax), kmMin: n(fx.kmMin ?? ""), kmMax: n(fx.kmMax), dep: fx.dep?.trim() || undefined,
           vendeur: fx.vendeur, mots: fx.mots, exclure: fx.exclure, sousCote: n(fx.sousCote) ?? 0, fiables: fx.fiables, tri: fx.tri, saisie: fx,
         }),
-      });
-      const j = (await r.json().catch(() => null)) as (Resultat & { erreur?: string }) | null;
-      if (!r.ok || !j) {
-        setEtat(j?.erreur ?? "La recherche n'a pas abouti. Réessayez.");
-        notifier({ titre: "La recherche n'a pas abouti", texte: j?.erreur ?? "Réessayez dans un instant.", ton: "warn" });
+      }).catch(() => null);
+      // base du marché lente ou coupure : une seconde tentative, sans rien afficher
+      let r = await envoyer();
+      if (!r || r.status >= 500) r = await envoyer();
+      const j = r ? ((await r.json().catch(() => null)) as (Resultat & { erreur?: string }) | null) : null;
+      if (!r || !r.ok || !j) {
+        // pas de notification d'erreur : une ligne près du bouton suffit (refus de formule, critères : le message de l'API)
+        setEtat(r && r.status < 500 && j?.erreur ? j.erreur : "Pas de réponse pour l'instant. Relancez la recherche.");
         return;
       }
       setRes(j);
