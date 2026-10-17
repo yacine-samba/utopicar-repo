@@ -82,15 +82,15 @@ export const OFFRES: Record<OffreId, Offre> = {
     accroche: "Pour les professionnels en activité", pour: "Vous gérez un stock et suivez vos chiffres.",
     analyses: 400, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "complet",
     parc: true, recherche: true, comparateur: false, guide: true, lookup: "utp_pro_79", anciennesCles: ["utp_pro_mois"],
-    points: ["400 analyses par mois", "Tout Starter, plus :", "Analyse de 6 photos par annonce, le montage du deal et les risques cachés", "Recherche dans les annonces Leboncoin : marque, modèle, génération, sous la cote", "Alertes e-mail sur vos recherches Leboncoin (3 recherches suivies)", "Cote du marché avec graphique", "Tableau de bord complet : marges, stock, rotation", "Gestion du parc : achats, frais, ventes, marge réelle", "Rapports détaillés et export CSV", "Messages Leboncoin automatiques en option : 45 € par mois"],
+    points: ["400 analyses par mois", "Tout Starter, plus :", "Analyse de 6 photos par annonce, le montage du deal et les risques cachés", "Recherche dans les annonces Leboncoin : marque, modèle, génération, sous la cote", "Alertes e-mail sur vos recherches Leboncoin (3 recherches suivies)", "Cote du marché avec graphique", "Tableau de bord complet : marges, stock, rotation", "Gestion du parc : achats, frais, ventes, marge réelle", "Rapports détaillés et export CSV"],
   },
-  // Ancrage : Pro (79 €) + option Messages (45 €) = 124 € ; la même chose en une formule coûte 84 €.
+  // Variante de Pro, vendue comme une case à cocher sur la carte Pro (+5 €) : pas une carte à part
   pro_messages: {
     id: "pro_messages", famille: "benef", nom: "Pro + Messages", prix: 84,
     accroche: "Pour contacter les vendeurs avant les autres", pour: "Vous voulez être le premier sur chaque bonne affaire.",
     analyses: 400, parMois: true, photos: 6, detail: "complet", historique: Infinity, tableauDeBord: "complet",
-    parc: true, recherche: true, comparateur: false, guide: true, lookup: "utp_pro_messages_84", base: "pro", messages: true, badge: "Messages offerts",
-    points: ["Tout Pro, plus :", "Messages Leboncoin automatiques compris (45 € par mois en option sur Pro)", "Un premier message aux vendeurs des annonces de vos recherches, une annonce à la fois", "Jamais deux fois la même annonce ; celles qui refusent le démarchage sont ignorées", "Boîte de réception des réponses", "Un seul abonnement, résiliable à tout moment"],
+    parc: true, recherche: true, comparateur: false, guide: true, lookup: "utp_pro_messages_84", base: "pro", messages: true,
+    points: ["Tout Pro, plus :", "Messages Leboncoin automatiques aux vendeurs", "Un premier message aux vendeurs des annonces de vos recherches, une annonce à la fois", "Jamais deux fois la même annonce ; celles qui refusent le démarchage sont ignorées", "Boîte de réception des réponses", "Un seul abonnement, résiliable à tout moment"],
   },
 };
 
@@ -104,8 +104,11 @@ export const GUIDE = { lookup: "utp_guide", prix: 9, nom: "Les guides Utopicar" 
 export const OPTION_MESSAGES = { lookup: "utp_option_messages_45", prix: 45, nom: "Messages Leboncoin" };
 
 export const PARTICULIERS: OffreId[] = ["gratuit", "essentiel"];
-/** En vente : Starter pour se lancer, Pro pour trouver les affaires et gérer le stock, Pro + Messages (ancrage : 79 + 45 = 124 €). */
-export const BENEF: OffreId[] = ["starter", "pro", "pro_messages"];
+/** En vente : Starter pour se lancer (conseillé), Pro pour trouver les affaires et gérer le stock ; la page Tarifs ajoute
+    devant la carte Gratuit (analyse Benef offerte). Les messages automatiques se cochent sur Pro (VARIANTES). */
+export const BENEF: OffreId[] = ["starter", "pro"];
+/** Variante d'une formule proposée en case à cocher sur sa carte. */
+export const VARIANTES: Partial<Record<OffreId, OffreId>> = { pro: "pro_messages" };
 
 export const offre = (id: string | null | undefined): Offre => OFFRES[(id as OffreId) in OFFRES ? (id as OffreId) : "gratuit"];
 export const estPayante = (id: string | null | undefined) => offre(id).prix > 0;

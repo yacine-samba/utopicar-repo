@@ -5,7 +5,7 @@ import { compteBenef } from "@/lib/benef";
 import { confirmerRetour } from "@/lib/stripe-synchro";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { supabaseService } from "@/lib/supabase/service";
-import { OFFRES, OPTION_MESSAGES, prixTxt } from "@/lib/offres";
+import { OFFRES, prixTxt } from "@/lib/offres";
 import { BoutonAbonner } from "@/components/site/BoutonAbonner";
 import { EspaceMessages, type Boite, type Campagne, type CompteLbc, type Defauts, type EnvoiLbc } from "@/components/messages/EspaceMessages";
 
@@ -39,12 +39,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
           Un premier message envoyé automatiquement aux vendeurs des annonces de vos recherches, une annonce à la fois, espacé d&apos;une à deux minutes, sans jamais recontacter une annonce déjà contactée. Les annonces qui refusent le démarchage sont ignorées par défaut. Une mini boîte de réception montre les réponses.
         </p>
         <div className="mx-auto mt-6 grid max-w-xs gap-3">
-          {/* l'option seule (45 €) face à Pro + Messages (84 € au lieu de 79 + 45) */}
-          <BoutonAbonner produit="pro_messages">Passer à {OFFRES.pro_messages.nom} : {prixTxt(OFFRES.pro_messages.prix)} par mois</BoutonAbonner>
-          <p className="text-sm text-ink-3">au lieu de {prixTxt(OFFRES.pro.prix + OPTION_MESSAGES.prix)} pour Benef Pro et l&apos;option séparément</p>
-          {c.offre.id === "pro" && (
-            <BoutonAbonner produit="messages" className="btn w-full">Ou ajouter l&apos;option seule : {prixTxt(OPTION_MESSAGES.prix)} par mois</BoutonAbonner>
-          )}
+          {/* Benef Pro : +5 € par mois (changement de formule dans l'espace de paiement) ; sinon Benef Pro avec les messages */}
+          <BoutonAbonner produit="pro_messages">
+            {c.offre.id === "pro" ? `Ajouter les messages : +${prixTxt(OFFRES.pro_messages.prix - OFFRES.pro.prix)} par mois` : `Benef Pro avec les messages : ${prixTxt(OFFRES.pro_messages.prix)} par mois`}
+          </BoutonAbonner>
+          <p className="text-sm text-ink-3">Sans engagement : retirez-les quand vous voulez.</p>
           <Link href="/app/compte#option-messages" className="text-sm text-ink-3 underline-offset-4 hover:text-ink hover:underline">Ma formule</Link>
         </div>
       </section>

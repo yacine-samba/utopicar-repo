@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { OFFRES, OPTION_MESSAGES, prixTxt } from "@/lib/offres";
+const SUPPLEMENT = OFFRES.pro_messages.prix - OFFRES.pro.prix;
 import { BoutonAbonner } from "@/components/site/BoutonAbonner";
 
 /** Option « Messages Leboncoin » de Benef Pro, dans le profil. */
@@ -20,12 +21,11 @@ export function OptionMessages({ actif, illimite, comprise = false }: { actif: b
         {actif ? (
           <Link href="/app/messages" className="btn btn-o">Ouvrir les messages</Link>
         ) : (
-          <div className="grid w-full max-w-sm gap-2">
-            <BoutonAbonner produit="pro_messages">Passer à {pm.nom} : {prixTxt(pm.prix)} par mois</BoutonAbonner>
-            <BoutonAbonner produit="messages" className="btn w-full">Ou ajouter l&apos;option seule : {prixTxt(OPTION_MESSAGES.prix)} par mois</BoutonAbonner>
+          <div className="w-full max-w-xs">
+            <BoutonAbonner produit="pro_messages">Ajouter les messages : +{prixTxt(SUPPLEMENT)} par mois</BoutonAbonner>
           </div>
         )}
-        {!actif && <p className="text-sm text-ink-3">{pm.nom} : Benef Pro et les messages pour {prixTxt(pm.prix)} au lieu de {prixTxt(OFFRES.pro.prix + OPTION_MESSAGES.prix)}. Sans engagement.</p>}
+        {!actif && <p className="text-sm text-ink-3">Votre formule devient {pm.nom} ({prixTxt(pm.prix)} par mois). Sans engagement.</p>}
       </div>
     </section>
   );

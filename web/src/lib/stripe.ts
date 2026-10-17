@@ -40,7 +40,7 @@ async function configurationPortail(site: string) {
   const deja = liste.data.find((c) => c.metadata?.utopicar === "v2");
   if (deja) return deja.id;
   const { OFFRES, BENEF } = await import("./offres");
-  const ids = (["essentiel", ...BENEF] as const).map((id) => OFFRES[id]);
+  const ids = (["essentiel", ...BENEF, "pro_messages"] as const).map((id) => OFFRES[id]);
   const prix = await Promise.all(ids.map((o) => prixParCle(o.lookup!, { nom: `Utopicar ${o.famille === "benef" ? "Benef " : ""}${o.nom}`, euros: o.prix, mensuel: true })));
   const c = await stripe().billingPortal.configurations.create({
     metadata: { utopicar: "v2" },
