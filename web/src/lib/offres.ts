@@ -46,7 +46,7 @@ export const OFFRES: Record<OffreId, Offre> = {
     accroche: "Pour vérifier une annonce", pour: "Vous avez une voiture en vue et voulez un avis rapide.",
     analyses: 1, parMois: false, photos: 0, detail: "simple", historique: 1, tableauDeBord: "aucun",
     parc: false, recherche: false, comparateur: false, guide: false, lookup: null,
-    points: ["1 analyse complète, présentée simplement", "Verdict clair : bonne affaire ou pas", "Coût réel d'achat : prix, carte grise, trajet, CT, petites réparations", "Les 3 points à vérifier en priorité"],
+    points: ["1 analyse complète, sans jargon", "Verdict clair : bonne affaire ou pas", "Coût réel d'achat : prix, carte grise, trajet, CT, petites réparations", "Les 3 points à vérifier en priorité"],
   },
   essentiel: {
     id: "essentiel", famille: "particulier", nom: "Essentiel", prix: 4.99,

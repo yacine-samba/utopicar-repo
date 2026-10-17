@@ -99,7 +99,7 @@ async function TableauParticulier({ c }: { c: Compte }) {
       <CartePremiersPas c={c} />
       <ActionsMobile recherche={false} />
       <div className="hidden sm:block">
-        <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle va vraiment vous coûter et ce qu'il faut vérifier." />
+        <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle vous coûtera au total et ce qu'il faut vérifier." />
       </div>
       <Suivies />
       <ProjetAchat lignes={data ?? []} />

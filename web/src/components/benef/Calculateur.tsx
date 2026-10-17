@@ -78,7 +78,7 @@ export function Calculateur({ scenarios = SCENARIOS }: { scenarios?: Scenario[] 
         <p className={`mt-1 text-right text-sm ${ton}`}>{verdict}</p>
         {net > 0 && (
           <p className="mt-5 text-sm text-ink-2">
-            Pour 500 € par mois : <b>{Math.ceil(500 / net)}</b> voiture(s). Pour 1 000 € : <b>{Math.ceil(1000 / net)}</b>.
+            Pour 500 € par mois : <b>{Math.ceil(500 / net)}</b> voiture{Math.ceil(500 / net) > 1 ? "s" : ""}. Pour 1 000 € : <b>{Math.ceil(1000 / net)}</b>.
           </p>
         )}
         <p className="mt-3 text-xs text-ink-3">Avant impôts et cotisations. Le guide explique quel statut choisir.</p>

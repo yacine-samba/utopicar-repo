@@ -23,7 +23,7 @@ async function mesure(): Promise<Justesse["tranches"]> {
 const QUESTIONS = [
   ["Fiable ?", "La réputation du moteur et de la boîte de cette version précise, années comprises (une soixantaine de fiches, de la citadine à la sportive), le kilométrage face à la durée de vie habituelle de ce moteur, l'âge, l'entretien prouvé et les pièces déjà refaites."],
   ["Des travaux ?", "Ce qui est écrit dans l'annonce, ce que montrent les photos, l'entretien arrivé à échéance (distribution, embrayage, révision) et le risque connu du moteur, chacun avec sa probabilité. Vous voyez un montant probable et une fourchette."],
-  ["Bon prix ?", "Le prix affiché comparé aux annonces du même modèle réellement en ligne (même génération, même énergie, kilométrage proche), ramenées à l'année et au kilométrage de la voiture."],
+  ["Bon prix ?", "Le prix affiché comparé aux annonces du même modèle en ligne (même génération, même énergie, kilométrage proche), ramenées à l'année et au kilométrage de la voiture."],
   ["Ça rapporte ? / Combien par mois ?", "Pour revendre : le bénéfice dans trois rythmes de revente, tous frais comptés, et le prix à ne pas dépasser. Pour rouler avec : la perte de valeur mesurée sur les annonces du modèle, l'entretien et les travaux probables."],
 ];
 
@@ -40,7 +40,7 @@ export default async function Methode() {
           Comment l&apos;analyse <span className="it">est faite</span>
         </h1>
         <p className="mt-4 text-lg text-ink-2">
-          Avant même le premier message au vendeur, Utopicar répond à quatre questions avec ce que l&apos;on sait : l&apos;annonce, ses photos et le marché. Chaque note dit pourquoi, chaque chiffre dit d&apos;où il vient.
+          Avant même le premier message au vendeur, Utopicar répond à quatre questions avec ce que l&apos;on sait : l&apos;annonce, ses photos et le marché. Chaque note et chaque chiffre indiquent d&apos;où ils viennent.
         </p>
 
         <section className="mt-12 grid gap-4" aria-labelledby="m-questions">
@@ -94,7 +94,7 @@ export default async function Methode() {
           ) : (
             <p className="text-sm text-ink-3">La mesure s&apos;affichera ici dès que la base aura assez d&apos;annonces disparues.</p>
           )}
-          <p className="text-ink-2">Chaque rapport permet aussi de nous dire « ce chiffre est faux » : prix de vente réel, devis du garage, défaut constaté. Ces retours servent à régler l&apos;analyse.</p>
+          <p className="text-ink-2">Chaque rapport permet aussi de nous dire « ce chiffre est faux » : prix de vente réel, devis du garage, défaut constaté. Nous nous servons de ces retours pour régler l&apos;analyse.</p>
         </section>
 
         <section className="mt-12 grid gap-4" aria-labelledby="m-neutre">
