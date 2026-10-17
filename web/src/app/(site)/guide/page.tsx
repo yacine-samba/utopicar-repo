@@ -6,7 +6,7 @@ import { ContenuGuides } from "@/components/site/ContenuGuides";
 import "./guide.css";
 
 export const metadata: Metadata = {
-  title: "Guides : acheter une occasion sans se faire avoir, réussir sa première revente",
+  title: "Guides : acheter une occasion et réussir sa revente",
   description: "Quatre guides complets : première revente, tri des annonces, estimation d'une reprise, achat d'une occasion sans se faire avoir.",
 };
 

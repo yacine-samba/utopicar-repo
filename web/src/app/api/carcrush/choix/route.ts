@@ -15,6 +15,9 @@ const Annonce = z.object({
   boite: z.string().max(40).nullable(),
   pro: z.boolean(),
   lieu: z.string().max(80).nullable(),
+  // liens rendus tels quels dans les coups de cœur : https seulement (pas de « javascript: » glissé par un appel forgé)
+  url: z.string().max(500).regex(/^https:\/\//).nullable(),
+  photo: z.string().max(600).regex(/^https:\/\//).nullable(),
   url: z.string().max(500).nullable(),
   photo: z.string().max(600).nullable(),
   photos: z.array(z.string().max(600)).max(3).optional(),

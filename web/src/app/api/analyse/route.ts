@@ -59,6 +59,16 @@ async function stockerPhotos(uid: string, photos: { media_type: string; data: st
 // Limite par adresse IP (par instance), en plus des quotas de chaque formule : 12 analyses par 10 minutes.
 const erreur = (message: string, status: number, extra: Record<string, unknown> = {}) => Response.json({ erreur: message, ...extra }, { status });
 
+/* Une analyse à la fois par compte : le quota est vérifié avant l'appel à l'IA mais décompté après, donc des envois
+   en parallèle passeraient tous sur la même analyse restante. Le verrou expire avec la durée maximale de la route. */
+const EN_COURS = new Map<string, number>();
+function prendre(uid: string) {
+  const t = EN_COURS.get(uid);
+  if (t && Date.now() - t < maxDuration * 1000) return false;
+  EN_COURS.set(uid, Date.now());
+  return true;
+}
+
 export async function POST(req: Request) {
   if (tropDeDemandes("analyse", ipDe(req), 12, 10 * 60_000)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
 
@@ -82,6 +92,7 @@ export async function POST(req: Request) {
       402,
       { offres: o.famille },
     );
+  if (compte && !prendre(compte.id)) return erreur("Une analyse est déjà en cours sur votre compte. Attendez son résultat.", 429);
 
   // Analyses offertes par un code (formule Découverte) : contenu Benef au niveau Starter
   const niveau = compte?.code && mode === "benef" ? OFFRES.starter.id : o.id;
@@ -105,7 +116,8 @@ export async function POST(req: Request) {
         return error ? null : (data as Historique | null);
       })().catch(() => null)
     : Promise.resolve(null);
-  const cote = compte ? await coteMarche(texte, faits) : null;
+  // base du marché indisponible : l'analyse continue sans cote plutôt que d'échouer
+  const cote = compte ? await coteMarche(texte, faits).catch((e) => (console.error("cote du marché", e), null)) : null;
   const out: Analyse = { faits, fiab, ia: null, cote, profil };
 
   try {
@@ -170,5 +182,6 @@ export async function POST(req: Request) {
     }
   }
 
+  if (compte) EN_COURS.delete(compte.id);
   return Response.json({ ...out, rapportId, detail, offre: niveau, restantes: compte ? Math.max(0, compte.restantes - (out.ia ? 1 : 0)) : null, demo });
 }

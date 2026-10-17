@@ -6,6 +6,7 @@ import { supabaseServeur } from "@/lib/supabase/serveur";
 import { supabaseService } from "@/lib/supabase/service";
 import { urlSite } from "@/lib/stripe";
 import { jetonEmail } from "@/lib/jeton";
+import { tropDeDemandes } from "@/lib/limite";
 
 /* Profil et sécurité du compte, par le serveur : marche même pour un ancien compte sans fiche profil,
    et sans dépendre des emails de Supabase (désactivés : tous les emails partent d'utopicar.fr). */
@@ -54,6 +55,8 @@ export async function POST(req: Request) {
   const admin = supabaseService().auth.admin;
 
   if (d.action === "motdepasse") {
+    // la vérification du mot de passe actuel ne doit pas servir à le deviner : 8 essais par compte et par quart d'heure
+    if (tropDeDemandes("motdepasse", c.id, 8, 15 * 60_000)) return erreur("Trop d'essais. Réessayez dans un quart d'heure.", 429);
     const { data: u } = await admin.getUserById(c.id);
     const user = u?.user;
     if (!user) return erreur("Compte introuvable.", 404);
@@ -75,6 +78,8 @@ export async function POST(req: Request) {
 
   // nouvelle adresse e-mail : lien signé envoyé à la nouvelle adresse, le changement se fait au clic (route /api/compte/email)
   if (d.email.toLowerCase() === c.email.toLowerCase()) return erreur("C'est déjà votre adresse.");
+  // chaque demande envoie un e-mail à une adresse libre : 5 par compte et par heure
+  if (tropDeDemandes("email-change", c.id, 5, 60 * 60_000)) return erreur("Trop de demandes. Réessayez dans une heure.", 429);
   const lien = `${urlSite(req)}/api/compte/email?j=${encodeURIComponent(jetonEmail(c.id, d.email))}`;
   try {
     await envoyerEmail(
