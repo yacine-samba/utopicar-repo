@@ -34,19 +34,27 @@ hors zones interdites) ou remplace-les par de vrais chiffres vérifiés et autor
   Leboncoin : **masquer ou ne pas cadrer** (aucune plateforme tierce à l'écran).
 
 ## Charte
-- Logo : fourni par l'utilisateur (tuile sombre `#1A1310`, voiture blanche `#F4F1EC`, flèche orange `#FF5A1F`).
-  Actuellement `video/assets/brand/logo.svg` est **un retracé** d'une image : demander le fichier source.
+- Logo : tuile sombre `#1A1310`, voiture blanche `#F4F1EC`, flèche orange `#FF5A1F`. Fichiers officiels dans
+  `video/assets/brand/official/` (logo horizontal fond clair ou sombre, logo en ligne, icône, symbole) : toujours
+  partir de ceux-là. L'ancien `video/assets/brand/logo.svg` est un retracé, à ne plus utiliser.
   Sur fond sombre, la tuile disparaît : lui donner un liseré clair (`0 0 0 3px rgba(255,255,255,.16)`) ou la poser sur
   un fond clair.
 - **La marque s'écrit toujours « utopicar », en minuscules** (règle de l'utilisateur, 14 oct. 2026) : titres, mots-chocs,
   étiquettes, libellés d'interface recopiés (« Fiche utopicar », « Voir mes alertes sur utopicar »), mentions. Seul le logo
   officiel s'affiche tel quel.
-- Mot-symbole : « UTOPICAR », Archivo 800, largeur 125 %, interlettrage +0,02 em.
-- Police : Archivo (unique, display et UI), servie localement (`assets/site/Archivo-latin.woff2`, italique, TTF 800/125).
-- Couleurs du site : encre `#0C0F14`, fond `#F2F4F7`, papier `#FFFFFF`, jaune `#FFC928` (boutons), gain `#0A8F55` /
-  `#E4F6EC`, perte `#D93A3A`, plaque `#2447D6` / `#EAEFFF`, attente `#B26A00` / `#FFF2DA`.
-- Accent film depuis la v5 : l'orange du logo `#FF5A1F` (texte dessus `#1A1310`). Le jaune reste celui des vrais
-  boutons capturés — ne pas le repeindre.
+- **Charte actuelle de l'app et du site** (`web/src/app/globals.css`, oct. 2026) :
+  - polices : Clash Display (titres, chiffres), Satoshi (texte), Instrument Serif (accents) ;
+  - espace connecté sombre : fond `#0b0a09` → `#17100b`, encre `#f4f1ec` ;
+  - orange `#ff5a1f` / `#ff8a4c` / `#ffb38a`, gain `#3ecb7f`, attention `#ffc53d`, perte `#ff7a7a` ;
+  - courbe `--ease-doux` : `cubic-bezier(.2, .8, .2, 1)`.
+
+  Ce sont les jetons de tous les films de présentation (`film-presentev*`). Leur usage en vidéo est fixé par la DA
+  immersive (`da-immersive.md`).
+- **Ancienne charte** (premières pubs produit, `video/film/` et `video/film-launch/`, et leurs captures) : Archivo seule (mot-symbole « UTOPICAR » en
+  Archivo 800, largeur 125 %), fond clair `#F2F4F7`, encre `#0C0F14`, boutons jaunes `#FFC928`. Elle ne sert plus
+  que pour relire ces anciens films. Sur une capture de l'ancien site, le jaune reste celui des vrais boutons : ne pas
+  le repeindre.
+- Accent des films : l'orange du logo `#FF5A1F` (texte dessus `#1A1310` ou `#160904`).
 - CTA historique : « Commente GARAGE pour recevoir l'accès. » — pas de handle, pas d'URL à l'écran (outil privé).
 - CTA actuel des vidéos TikTok (oct. 2026) : « Trois analyses offertes avec le code TIKTOK », carton orange + logo +
   pastille « Code TIKTOK · lien en bio ». Le code n'existe qu'une fois la branche `claude/code-tiktok` déployée

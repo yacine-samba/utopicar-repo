@@ -10,9 +10,11 @@ monteur et contrôleur qualité. Le but n'est pas « une vidéo », c'est **une 
 effort et fait agir**, livrée proprement en plusieurs déclinaisons.
 
 Ce skill vient des films réalisés pour UTOPICAR : les pubs produit v1 → v9, les motions MO1 → MO10, dont les
-vidéos d'attention MO5 « 47 € » et MO6 « Ce qui se voit, ce qui se cache », et master60, la pub « wow » de 60 s
-(écrans pleins, sous-titres géants, musique et bruitages ElevenLabs, 16:9 et 9:16). Chaque règle ici corrige une erreur
-réellement commise ou garde une réussite réelle — `references/lessons.md` les liste. Lis-le avant de construire.
+vidéos d'attention MO5 « 47 € » et MO6 « Ce qui se voit, ce qui se cache », master60, la pub « wow » de 60 s
+(écrans pleins, sous-titres géants, musique et bruitages ElevenLabs, 16:9 et 9:16), et la présentation utopicar
+v1 → v10, d'où vient la **DA immersive** (`references/da-immersive.md`) : interface sans cadre, voix écrite en grand,
+grosse couleur entre deux écrans, caméra 3D qui ne s'arrête jamais, voiture en vraie 3D. Chaque règle ici corrige une
+erreur réellement commise ou garde une réussite réelle — `references/lessons.md` les liste. Lis-le avant de construire.
 
 **Deux formats.** Une **pub produit** suit le déroulé ci-dessous (phases 0 à 7). Une **vidéo d'attention** (30 s, rien
 à vendre, aucun CTA, en boucle) suit le processus en 5 étapes de `references/codes-attention.md` : brief → timeline et
@@ -85,6 +87,10 @@ référence, deux directions originales « full smooth » à choisir sur planche
 VO et la grille musicale, **storyboard rendu** (une image clé par plan, dans les 3 formats). Attends la validation
 avant d'animer : changer un plan ici coûte une minute, après le rendu il en coûte vingt.
 
+Pour un film produit UTOPICAR, la direction recommandée est la **DA immersive** (`references/da-immersive.md`) :
+la proposer en premier, avec les images de la présentation v10. On ne cherche une autre direction que si
+l'utilisateur veut changer.
+
 ### Phase 4 — Son
 
 Lire d'abord `references/sound-design.md` : le sound design se fait sur l'image (repérage, un son principal à la fois, chaque son dans sa bande, la musique qui cède par bandes, drop sur le pivot), puis se vérifie sur le MP4 encodé (calage ≤ 3 images, niveaux par passage, version sans musique).
@@ -109,6 +115,8 @@ rouleaux, palettes, verre et lueurs, photo réelle détourée et abîmée par ca
 étiquettes reliées aux objets, vidéos réelles en séquences, boucle parfaite, planches 0,1 s, rendu parallèle. Pour une
 pub à écrans pleins et sous-titres géants : texte cinétique mot par mot, flou de bougé directionnel par élément, logo
 animé depuis le SVG, repères sonores publiés par le film (§ 15). Pour 16:9 et 9:16 tirés du même code : § 16.
+
+Dans la DA immersive, partir de `video/film-presentev10/` : `da-immersive.md` § 14 dit quoi garder et quoi écrire.
 
 Film en code déterministe (`window.seek(t)`), springs fermés, vraie UI, mise en page **recomposée par format**
 (pas un recadrage), paramètres `?fmt=&lang=&hook=` — détails et pièges dans `references/motion-craft.md`.
@@ -135,14 +143,15 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 | `references/utopicar.md` | Tout projet UTOPICAR : produit, public, promesse, UI, données démo, charte, CTA |
 | `references/script-voice.md` | Phase 2 : écriture, hooks A/B, budgets de mots, voix ElevenLabs, sous-titres |
 | `references/motion-craft.md` | Phases 3 et 5 : références, style, formats et zones sûres, architecture du film, règles d'animation |
+| `references/da-immersive.md` | Phases 3 et 5, tout film produit UTOPICAR : la DA maison (présentation v8 → v10) avec ses valeurs exactes (jetons, typo, sous-titres de la voix, interface sans cadre, caméra, grosse couleur, 3D, courbes, son, fin et boucle, interdits) et la marche à suivre pour un nouveau film |
 | `references/sound.md` | Phase 4 : musique, grille, bruitages, mix voix, mastering, téléphone |
 | `references/qa-delivery.md` | Phases 6 et 7 : grille de notes, contrôles, matrice de livraison, git, envoi |
 | `references/motion-pro.md` | **Avant d'animer quoi que ce soit** : ce qui fait « Canva », les 12 principes After Effects traduits en code (objet porteur, bords sur deux ressorts, écraser-étirer, masques, liquide, onde dans une grille), rythme du hook |
 | `references/fluidite.md` | Phases 3 et 5 : ce qui rend un motion fluide (mesuré), règles, pièges, rendu avec flou de bougé |
 | `references/sound-design.md` | Phase 4 : sound design et mixage d'ingénieur du son (repérage, priorités, bandes, ducking, calage vérifié) |
-| `references/techniques.md` | Phases 3 et 5 : toutes les recettes de construction (caméra, écriture à la lumière, compteurs, photo réelle, radiographie, raccords, boucle, rendu, voix, son, écrans pleins et sous-titres géants, un film pour deux formats) avec le code de référence |
+| `references/techniques.md` | Phases 3 et 5 : toutes les recettes de construction (caméra, écriture à la lumière, compteurs, photo réelle, radiographie, raccords, boucle, rendu, voix, son, écrans pleins et sous-titres géants, un film pour deux formats ; présentation : interface recodée, sans cadre, grosse couleur, voiture 3D, nouvelle voix sur un film calé, § 22–28) avec le code de référence |
 | `references/codes-attention.md` | Toute vidéo d'attention (sans produit) : processus en 5 étapes, trouver le concept, chiffres sourcés, DA, mouvement, son |
-| `references/lessons.md` | Avant de construire : erreurs réelles (v1–v9, MO1–MO6) et ce qui a marché |
+| `references/lessons.md` | Avant de construire : erreurs réelles (v1–v10, MO1–MO6) et ce qui a marché |
 | `scripts/qa_video.py` | Sur chaque MP4 livré : `python3 scripts/qa_video.py film.mp4 --out renders/qa` |
 | `scripts/music-pick.py` | Choisir une musique générée : `python3 scripts/music-pick.py prises/*.mp3 --bpm 112 --sim 14-24` (tempo réel, stabilité, mesures, coupes possibles) |
 | `scripts/eleven-dl.py` | Télécharger les générations ElevenLabs avant expiration : `python3 scripts/eleven-dl.py statut.json --out dossier --map "fragment=type,…"` |
