@@ -58,6 +58,8 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   const [choix, setChoix] = useState<Choix>(SANS);
   const [f, setF] = useState<Filtres>(VIDE);
   const [res, setRes] = useState<Resultat | null>(null);
+  // critères qui ont produit les résultats affichés (le formulaire peut avoir changé depuis, ou la relance avoir échoué)
+  const [lance, setLance] = useState<{ c: Choix; f: Filtres } | null>(null);
   const [etat, setEtat] = useState("");
   const [charge, setCharge] = useState(false);
   // téléphone : les filtres se replient pendant et après la recherche, pour voir le chargement puis les résultats
@@ -74,6 +76,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   }, [courant]);
   const marqueCat = cat.find((b) => b.k === choix.marque);
   const modeleCat = marqueCat?.m.find((m) => m.k === choix.modele);
+  const perime = !!res && !!lance && JSON.stringify([lance.c, lance.f]) !== JSON.stringify([choix, f]);
   const genCat = modeleCat ? modeleCat.g.find((g) => g.id === (choix.gen || (modeleCat.g.length === 1 ? modeleCat.g[0].id : ""))) : undefined;
 
   /** Années d'une génération du catalogue (fin à 0 : encore vendue, pas d'année maximum). */
@@ -131,6 +134,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
         return;
       }
       setRes(j);
+      setLance({ c, f: fx });
       setEtat("");
       const enCours = j.collecte && (j.collecte.statut === "demandee" || j.collecte.statut === "en cours");
       setCollecte(j.collecte ? { ...j.collecte, choix: c, f: fx, rid: j.recherche?.id ?? null } : null);
@@ -193,6 +197,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
     setCourant(r.id);
     setChoix(c);
     setF(fx);
+    setLance({ c, f: fx });
     history.replaceState(null, "", `/app/recherche?r=${r.id}`);
     const deja = cache.current.get(r.id);
     if (deja && !relancer) {
@@ -249,6 +254,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
         const fx = { ...VIDE, ...journal.f };
         setChoix(c);
         setF(fx);
+        setLance({ c, f: fx });
         void ouvrirGardes(`j=${journal.id}`).then((j) => {
         if (!j) void lancer(c, fx);
       });
@@ -531,10 +537,16 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
 
       {res && !charge && (
         <section aria-labelledby="rm-res" className="grid scroll-mt-24 gap-4">
+          {perime && (
+            <p role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-warn/40 bg-warn/10 p-3 text-sm">
+              <span>Vos critères ont changé : cette liste vient de la recherche précédente.</span>
+              <button type="button" onClick={() => void lancer(choix, f)} className="btn btn-o btn-sm min-h-9">Mettre à jour</button>
+            </p>
+          )}
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="rm-res" className="font-display text-xl font-semibold">
               {res.trouvees} annonce{res.trouvees > 1 ? "s" : ""} · {res.recherche?.nom ?? res.modele.nom}
-              {resumeFiltres(f) && <span className="block text-sm font-normal text-ink-3">{resumeFiltres(f)}</span>}
+              {resumeFiltres(lance?.f ?? f) && <span className="block text-sm font-normal text-ink-3">{resumeFiltres(lance?.f ?? f)}</span>}
             </h2>
             <div className="grid justify-items-end gap-1 text-right">
               <p className="text-sm text-ink-3">
