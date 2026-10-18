@@ -1,7 +1,7 @@
 import "server-only";
 import { COULEURS, MAX_ANNONCES, verdictPrix, type AnnonceCC, type Criteres } from "./carcrush";
 import { anneesAChercher, lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "./vehicules/marche";
-import { dansPhase } from "./vehicules/phases";
+import { anneesPhase } from "./vehicules/phases";
 import { dansDepartements, departementsDe } from "./vehicules/leboncoin";
 import { PIEGES } from "./vehicules/pieges";
 
@@ -64,9 +64,10 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
 
   const genC = f.gen || (m.gens.length === 1 ? m.gens[0].id : "");
   const genObj = genC ? m.gens.find((g) => g.id === genC) : null;
-  const [gy0, gy1] = genObj ? [genObj.y0, genObj.y1] : [0, 9999];
-  // comme la recherche du marché : génération lue dans l'annonce, sinon d'après l'année (sauf si elle en écrit une autre)
-  const dansGen = (l: LigneMarche) => !f.gen || l.gen === genC || (!l.gen && l.annee != null && l.annee >= gy0 && l.annee <= gy1 && (!l.cands.length || l.cands.includes(genC)));
+  // génération (et phase) = ses années, comme la recherche du marché : les annonces ne l'écrivent presque jamais
+  const ph = f.phase && genC ? anneesPhase(m.base, genC, f.phase) : null;
+  const [gy0, gy1] = genObj ? (ph ?? [genObj.y0, genObj.y1 || 9999]) : [0, 9999];
+  const dansGen = (l: LigneMarche) => !f.gen || (l.annee != null && l.annee >= gy0 && l.annee <= gy1);
   const mots = sansAccent(f.finition).split(/[\s,]+/).filter(Boolean).map((w) => new RegExp(`\\b${echapper(w)}\\b`));
   const couleur = COULEURS.find((c) => c.id === f.couleur);
   const deps = departementsDe(f.dep);
@@ -74,7 +75,6 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
   const gardees = lignes.filter((l) => {
     if (l.en_ligne === false) return false;
     if (!dansGen(l)) return false;
-    if (f.phase && genC && !dansPhase(m.base, genC, f.phase, l)) return false;
     if (f.energie && normEn(l.energie) !== f.energie) return false;
     if (f.boite && normBo(l.boite) !== (f.boite === "auto" ? "auto" : "manuelle")) return false;
     if (f.anneeMin && (l.annee ?? 0) < f.anneeMin) return false;
@@ -93,11 +93,12 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
   // simple comptage (aperçu avant de lancer) : pas de cote à calculer
   if (limite <= 0) return { annonces: [], total: gardees.length };
   const annonces: AnnonceCC[] = gardees.map((l) => {
+    // sans génération écrite, l'annonce est cotée sur la génération choisie (son année y tombe)
     const doute = !!f.gen && !l.gen;
     const photos = photosDe(l);
     const e = cotes.estimer(doute ? { ...l, gen: genC } : l);
     const cote = e && e.P
-      ? { P: Math.round(e.P), ecart: e.ecart == null ? null : Math.round(e.ecart), pct: e.pct, conf: doute ? ("faible" as const) : e.conf, source: "utopicar" as const }
+      ? { P: Math.round(e.P), ecart: e.ecart == null ? null : Math.round(e.ecart), pct: e.pct, conf: e.conf, source: "utopicar" as const }
       : estimationLeboncoin(l);
     return {
       id: l.id, titre: (l.titre || "Annonce").slice(0, 140), prix: l.prix, annee: l.annee, km: l.km, ch: l.ch, energie: l.energie, boite: l.boite,

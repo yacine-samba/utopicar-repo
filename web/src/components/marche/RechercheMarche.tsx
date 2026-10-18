@@ -86,8 +86,13 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   };
   /** Nouveau véhicule : une génération choisie remplit les années (comme Leboncoin, qui ne connaît que les années),
       sans écraser des années tapées à la main (seulement des champs vides, ou ceux remplis par la génération d'avant). */
+  /** Années remplies en ce moment par le véhicule : celles de la phase choisie, sinon de la génération. */
+  const anneesPhaseForm = (id: string): [string, string] | null => {
+    const ph = id ? genCat?.ph?.find((x) => x.id === id) : undefined;
+    return ph ? [String(ph.y0), String(ph.y1)] : null;
+  };
   function changerChoix(c: Choix) {
-    const avant = anneesGen(choix), apres = anneesGen(c);
+    const avant = anneesPhaseForm(f.phase) ?? anneesGen(choix), apres = anneesGen(c);
     setF((x) => {
       let y = x;
       if (c.gen !== choix.gen || c.modele !== choix.modele) y = { ...y, version: "", phase: "", ...(c.modele !== choix.modele ? { moteur: "" } : {}) };
@@ -96,6 +101,15 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
       return y;
     });
     setChoix(c);
+  }
+  /** Phase choisie (Golf 7 phase 1 : 2012 à 2016) : ses années remplacent celles de la génération, avec la même règle. */
+  function changerPhase(e: React.ChangeEvent<HTMLSelectElement>) {
+    const id = e.target.value;
+    const avant = anneesPhaseForm(f.phase) ?? anneesGen(choix), apres = anneesPhaseForm(id) ?? anneesGen(choix);
+    setF((x) => {
+      const remplies = avant ? x.anneeMin === avant[0] && x.anneeMax === avant[1] : !x.anneeMin && !x.anneeMax;
+      return { ...x, phase: id, ...(remplies ? { anneeMin: apres?.[0] ?? "", anneeMax: apres?.[1] ?? "" } : {}) };
+    });
   }
   const memeModele = res && res.recherche?.criteres.choix.modele === choix.modele && res.recherche?.criteres.choix.marque === choix.marque;
   const suggestionsMoteur = memeModele && res.moteurs.length ? res.moteurs.map((x) => x.l) : motorisationsTypes(choix.marque, choix.modele);
@@ -451,7 +465,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
         )}
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Phase</span>
-          <select value={f.phase} onChange={maj("phase")} disabled={!genCat?.ph} className={inputCls}>
+          <select value={f.phase} onChange={changerPhase} disabled={!genCat?.ph} className={inputCls}>
             <option value="">{genCat?.ph ? "Toutes" : genCat ? "Pas de restylage distingué" : "Génération d'abord"}</option>
             {genCat?.ph?.map((p) => (
               <option key={p.id} value={p.id}>
@@ -582,7 +596,6 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
                 {g.label} <span className="num text-ink-3">{g.n}</span>
               </button>
             ))}
-            {res.modele.incertaines > 0 && <span className="rounded-full border border-line px-3 py-1 text-ink-3">génération incertaine {res.modele.incertaines}</span>}
           </div>
           {(res.versions.some((v) => v.n) || res.moteurs.length > 0) && (
             <div className="grid gap-2 text-xs">
@@ -613,11 +626,6 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
                 Touchez une pastille pour filtrer. Motorisation : écrite dans l&apos;annonce ou dans la version Leboncoin, sinon reconnue à sa puissance et son énergie.
               </p>
             </div>
-          )}
-          {!!res.incertaines && (
-            <p className="rounded-2xl border border-warn/30 bg-warn/5 px-4 py-2.5 text-sm text-ink-2">
-              {res.incertaines} annonce{res.incertaines > 1 ? "s" : ""} de cette période ne disent pas leur génération (années de transition) : elles sont gardées d&apos;après leur année, comme sur Leboncoin, marquées « à vérifier », et ne comptent pas comme bonnes affaires.
-            </p>
           )}
           {res.annonces.length ? (
             <ListeResultats annonces={res.annonces} favs={favs} />
@@ -703,7 +711,7 @@ function LigneAnnonce({ a, fav, onFav, onOuvrir }: { a: Annonce; fav: boolean; o
             </p>
           </div>
         ) : (
-          <p className="text-xs text-ink-3">{a.gen ? "pas assez de comparables" : "génération incertaine"}</p>
+          <p className="text-xs text-ink-3">{a.gen ? "pas assez de comparables" : "choisissez la génération pour la cote"}</p>
         )}
         <div className="relative z-10 mt-2 flex items-center gap-2 sm:justify-end">
           <BoutonFavori
