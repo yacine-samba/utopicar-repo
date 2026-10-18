@@ -4,6 +4,9 @@ import { chercher } from "@/lib/carcrush-recherche";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { supabaseService } from "@/lib/supabase/service";
 
+// lecture d'un gros modèle quand la base doit le relire sur le disque : jusqu'à une dizaine de secondes
+export const maxDuration = 60;
+
 /* CarCrush : lancer une recherche (crédits débités, rendus si aucune annonce) et rouvrir une recherche déjà payée. */
 
 export async function POST(req: Request) {

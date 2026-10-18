@@ -1,6 +1,6 @@
 import "server-only";
 import { COULEURS, MAX_ANNONCES, verdictPrix, type AnnonceCC, type Criteres } from "./carcrush";
-import { lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "./vehicules/marche";
+import { anneesAChercher, lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "./vehicules/marche";
 import { dansPhase } from "./vehicules/phases";
 import { dansDepartements, departementsDe } from "./vehicules/leboncoin";
 import { PIEGES } from "./vehicules/pieges";
@@ -57,7 +57,8 @@ function estimationLeboncoin(l: LigneMarche): AnnonceCC["cote"] {
 
 /** Annonces en ligne qui répondent aux critères, triées des meilleures affaires aux moins bonnes. null : modèle inconnu. */
 export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<ResultatCC | null> {
-  const mm = await marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, null, true);
+  const [y0, y1] = anneesAChercher(`${f.marque} ${f.modele}`, f.gen, f.anneeMin, null);
+  const mm = await marcheModele(`${f.marque} ${f.modele}`, y0, y1, true);
   if (!mm) return null;
   const { m, lignes, cotes } = mm;
 
@@ -100,7 +101,7 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
       : estimationLeboncoin(l);
     return {
       id: l.id, titre: (l.titre || "Annonce").slice(0, 140), prix: l.prix, annee: l.annee, km: l.km, ch: l.ch, energie: l.energie, boite: l.boite,
-      // https seulement (le schéma de /api/carcrush/choix refuse le reste) : lien passé en https, photos déjà filtrées par photosDe
+      // lien de l'annonce passé en https ; photos déjà filtrées en https par photosDe
       pro: !!l.pro, lieu: l.lieu?.slice(0, 80) ?? null, url: lienAnnonce(l)?.replace(/^http:\/\//, "https://") ?? null, photo: photos[0] ?? null, photos,
       gen: l.genLabel || genObj?.label || "",
       cote,

@@ -1,6 +1,6 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
-import { lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "@/lib/vehicules/marche";
+import { anneesAChercher, lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "@/lib/vehicules/marche";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { supabaseService } from "@/lib/supabase/service";
 import { cleFavori } from "@/lib/favoris";
@@ -9,6 +9,9 @@ import { dansPhase, memeMoteur } from "@/lib/vehicules/phases";
 import { demanderCollecte, dernierReleve, SEUIL_COLLECTE, type EtatCollecte } from "@/lib/vehicules/collecte";
 import { dansDepartements, departementsDe } from "@/lib/vehicules/leboncoin";
 import { PIEGES } from "@/lib/vehicules/pieges";
+
+// lecture d'un gros modèle quand la base doit le relire sur le disque : jusqu'à une dizaine de secondes
+export const maxDuration = 60;
 
 /* Recherche dans la base du marché, au niveau de l'outil Garage : marque, modèle, génération,
    chaque annonce placée sur la cote de sa génération (régression sur les annonces comparables). Benef Pro et illimité. */
@@ -55,13 +58,19 @@ export async function POST(req: Request) {
 
   const t0 = Date.now();
   let mm;
+  // lecture serveur (le droit Pro est vérifié juste au-dessus) : pas de coupure à 8 s des appels au nom du compte,
+  // utile quand la base doit relire un gros modèle sur le disque, et modèle gardé 5 min pour les recherches suivantes
+  const serveur = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+  // la génération choisie borne les années lues (Leboncoin ne connaît pas les générations, seulement les années)
+  const [y0, y1] = anneesAChercher(`${f.marque} ${f.modele}`, f.gen, f.anneeMin, f.anneeMax);
+  const charger = () => marcheModele(`${f.marque} ${f.modele}`, y0, y1, serveur);
   try {
-    mm = await marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, f.anneeMax ? f.anneeMax + 1 : null);
+    // une expiration ponctuelle (base froide, relevé en cours) : on relance une fois avant de répondre
+    mm = await charger().catch((e: Error) => (/timeout/i.test(e.message) ? charger() : Promise.reject(e)));
   } catch (e) {
     // le message de la base (« canceling statement due to statement timeout ») reste dans les journaux, pas à l'écran
     console.error("recherche marché", (e as Error).message);
-    const lente = /timeout/i.test((e as Error).message);
-    return Response.json({ erreur: lente ? "La base du marché a mis trop de temps à répondre. Relancez la recherche dans un instant." : "Base du marché indisponible pour le moment. Réessayez dans un instant." }, { status: 502 });
+    return Response.json({ erreur: "Pas de réponse pour l'instant. Relancez la recherche." }, { status: 502 });
   }
   if (!mm) return Response.json({ erreur: "Modèle inconnu du catalogue." }, { status: 400 });
   const { m, lignes, cotes } = mm;
