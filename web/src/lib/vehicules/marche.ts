@@ -198,6 +198,15 @@ export class Cotes {
   }
 }
 
+/** Années à charger pour une recherche : celles demandées, bornées par la génération choisie (un an de marge de chaque côté).
+    Sans borne, un modèle courant (Clio : 7 800 annonces) s'arrête aux 5 000 plus récentes, et une « Clio III » perd ses annonces. */
+export function anneesAChercher(base: string, gen: string | null | undefined, anneeMin?: number | null, anneeMax?: number | null): [number | null, number | null] {
+  const g = gen ? modeleDe(base)?.gens.find((x) => x.id === gen) : undefined;
+  const lo = Math.max(anneeMin ?? 0, g?.y0 ?? 0);
+  const hi = Math.min(anneeMax ?? 9999, g?.y1 || 9999);
+  return [lo ? lo - 1 : null, hi < 9999 ? hi + 1 : null];
+}
+
 type Marche = NonNullable<Awaited<ReturnType<typeof chargerModele>>>;
 /** Lectures serveur gardées 5 minutes (CarCrush relit le même modèle à chaque critère changé, l'analyse le relit pour la projection).
     Jamais les lectures au nom d'un compte : la base y vérifie la formule de chacun. */

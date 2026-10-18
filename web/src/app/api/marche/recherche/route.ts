@@ -1,6 +1,6 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
-import { lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "@/lib/vehicules/marche";
+import { anneesAChercher, lienAnnonce, marcheModele, normBo, normEn, type LigneMarche } from "@/lib/vehicules/marche";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { supabaseService } from "@/lib/supabase/service";
 import { cleFavori } from "@/lib/favoris";
@@ -61,7 +61,9 @@ export async function POST(req: Request) {
   // lecture serveur (le droit Pro est vérifié juste au-dessus) : pas de coupure à 8 s des appels au nom du compte,
   // utile quand la base doit relire un gros modèle sur le disque, et modèle gardé 5 min pour les recherches suivantes
   const serveur = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
-  const charger = () => marcheModele(`${f.marque} ${f.modele}`, f.anneeMin ? f.anneeMin - 1 : null, f.anneeMax ? f.anneeMax + 1 : null, serveur);
+  // la génération choisie borne les années lues (Leboncoin ne connaît pas les générations, seulement les années)
+  const [y0, y1] = anneesAChercher(`${f.marque} ${f.modele}`, f.gen, f.anneeMin, f.anneeMax);
+  const charger = () => marcheModele(`${f.marque} ${f.modele}`, y0, y1, serveur);
   try {
     // une expiration ponctuelle (base froide, relevé en cours) : on relance une fois avant de répondre
     mm = await charger().catch((e: Error) => (/timeout/i.test(e.message) ? charger() : Promise.reject(e)));
