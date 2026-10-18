@@ -27,7 +27,8 @@ export async function POST(req: Request) {
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return Response.json({ erreur: "Demande invalide." }, { status: 400 });
   const { base, energie } = r.data;
-  const mm = await marcheModele(base).catch(() => null);
+  // lecture serveur (compte illimité vérifié juste au-dessus) : pas de coupure à 8 s des appels au nom du compte
+  const mm = await marcheModele(base, null, null, Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY)).catch(() => null);
   if (!mm) return Response.json({ erreur: "Modèle inconnu ou base indisponible." }, { status: 400 });
   // une heure de marge : l'heure de l'extension et celle de la base peuvent différer un peu
   const depuis = new Date(r.data.depuis - 3600e3).toISOString();
