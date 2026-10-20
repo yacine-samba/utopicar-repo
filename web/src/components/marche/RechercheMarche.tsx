@@ -18,16 +18,15 @@ type Annonce = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; ch: number | null; pro: boolean; lieu: string | null;
   source: string; vu: string | null; url: string | null; photo?: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
   moteur: string | null; version: string | null;
-  /** motorisation déduite de la puissance (pas écrite) ; génération d'après l'année seulement (doute) ; version et estimation Leboncoin */
-  moteurDeduit?: boolean; genPar?: "texte" | "puissance" | "annee" | null; doute?: boolean;
+  /** motorisation déduite de la puissance (pas écrite) ; version et estimation Leboncoin */
+  moteurDeduit?: boolean; genPar?: "texte" | "puissance" | "annee" | null;
   lbcVersion?: string | null; mec?: string | null; lbc?: { min: number; max: number; pos: string | null } | null;
 };
 type Collecte = { cle: string; nom: string; statut: "demandee" | "en cours" | "ok" | "erreur" | "quota"; n?: number | null; erreur?: string | null };
 type Resultat = {
-  recherche: Recherche | null; modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[]; incertaines: number };
+  recherche: Recherche | null; modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[] };
   versions: { id: string; label: string; n: number }[]; moteurs: { l: string; n: number; deduits?: number; ch?: number | null }[]; base: number; collecte: Collecte | null;
   /** annonces placées dans la génération d'après leur année seulement */
-  incertaines?: number;
   total: number; trouvees: number; sousLaCote: number; annonces: Annonce[]; ms: number;
   /** annonces retirées de Leboncoin (absentes du dernier relevé complet), écartées des résultats ; date du dernier relevé de la génération */
   retirees?: number; releve?: string | null;
@@ -138,9 +137,9 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
           vendeur: fx.vendeur, mots: fx.mots, exclure: fx.exclure, sousCote: n(fx.sousCote) ?? 0, fiables: fx.fiables, tri: fx.tri, saisie: fx,
         }),
       }).catch(() => null);
-      // base du marché lente ou coupure : une seconde tentative, sans rien afficher
+      // coupure réseau : une seconde tentative, sans rien afficher (une base lente est déjà relancée par le serveur)
       let r = await envoyer();
-      if (!r || r.status >= 500) r = await envoyer();
+      if (!r) r = await envoyer();
       const j = r ? ((await r.json().catch(() => null)) as (Resultat & { erreur?: string }) | null) : null;
       if (!r || !r.ok || !j) {
         // pas de notification d'erreur : une ligne près du bouton suffit (refus de formule, critères : le message de l'API)
@@ -646,7 +645,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
 
 const ficheDe = (a: Annonce): FicheData => ({
   id: a.id, titre: a.titre, prix: a.prix, annee: a.annee, km: a.km, ch: a.ch, energie: a.energie, boite: a.boite, moteur: a.moteur, version: a.version ?? a.genLabel ?? null,
-  lieu: a.lieu, pro: a.pro, photo: a.photo ?? null, url: a.url, cote: a.cote, doute: a.doute, lbc: a.lbc ?? null,
+  lieu: a.lieu, pro: a.pro, photo: a.photo ?? null, url: a.url, cote: a.cote, lbc: a.lbc ?? null,
   alerte: a.piege ? (a.suspect ? "Prix suspect : pièces, location ou acompte possible. Vérifiez avant tout contact." : "Piège possible sur cette annonce : lisez-la en entier avant de contacter le vendeur.") : null,
 });
 
@@ -683,8 +682,8 @@ function LigneAnnonce({ a, fav, onFav, onOuvrir }: { a: Annonce; fav: boolean; o
           {a.moteur && <span title={a.moteurDeduit ? "Reconnue à sa puissance et son énergie (pas écrite dans l'annonce)" : undefined}> · {a.moteurDeduit ? "≈ " : ""}{a.moteur}</span>}
           {[a.ch ? `${a.ch} ch` : null, a.energie, a.boite].filter(Boolean).map((x) => ` · ${x}`).join("")}
           {(a.version ?? a.genLabel) && (
-            <span title={a.doute ? "Génération d'après l'année seulement : vérifiez-la (carte grise, photos)" : a.genPar === "puissance" ? "Génération reconnue à sa puissance (année de transition)" : undefined} className={a.doute ? "text-warn" : undefined}>
-              {" · "}{a.version ?? a.genLabel}{a.doute ? " (à vérifier)" : ""}
+            <span title={a.genPar === "puissance" ? "Génération reconnue à sa puissance (année de transition)" : undefined}>
+              {" · "}{a.version ?? a.genLabel}
             </span>
           )}
         </p>
