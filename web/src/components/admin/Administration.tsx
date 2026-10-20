@@ -10,7 +10,7 @@ const dateFr = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "nu
 const heureFr = (d: string) => new Date(d).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const nomOffre = (id: OffreId) => (OFFRES[id].famille === "benef" ? `Benef ${OFFRES[id].nom}` : OFFRES[id].nom);
 export type GuideChoix = { id: GuideId; titre: string; pour: string };
-const FORMULES: OffreId[] = ["essentiel", "serenite", "starter", "croissance", "pro"];
+const FORMULES: OffreId[] = ["essentiel", "serenite", "starter", "croissance", "pro", "pro_messages"];
 const ACTIONS: Record<string, string> = {
   formule_offerte: "Formule offerte",
   formule_retiree: "Formule offerte retirée",

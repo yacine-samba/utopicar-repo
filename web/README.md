@@ -96,7 +96,7 @@ Réservé aux personnes connectées, 30 imports par jour et par personne (table 
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://rvdfifhgosovdapdltps.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | clé publique du projet Supabase |
-| `SUPABASE_SERVICE_ROLE_KEY` | clé secrète : enregistrement des abonnements Stripe, portail de paiement, suppression de compte. Les analyses n'en ont plus besoin (fonction SQL `enregistrer_analyse`). |
+| `SUPABASE_SERVICE_ROLE_KEY` | clé secrète : enregistrement des abonnements Stripe, portail de paiement, suppression de compte, enregistrement des analyses (fonction SQL `enregistrer_analyse_pour`, réservée au serveur), limites d'appels partagées (`limite_appel`), lectures du marché sans la coupure de 8 s. Sans elle (poste de développement), les analyses passent encore par `enregistrer_analyse` au nom du compte, jusqu'à ce qu'elle soit retirée aux comptes. |
 | `ANTHROPIC_API_KEY` | analyse |
 | `ANTHROPIC_WORKSPACE_ID` | seulement si la clé Anthropic n'est rattachée à aucun espace de travail : identifiant `wrkspc_…` (Console Anthropic › Workspaces) |
 | `ANTHROPIC_MODEL` | facultatif : `claude-haiku-4-5` par défaut, pour toutes les formules |

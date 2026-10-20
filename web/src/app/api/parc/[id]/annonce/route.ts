@@ -20,7 +20,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const c = await compteCourant();
   if (!c) return Response.json({ erreur: "Connectez-vous." }, { status: 401 });
   if (!c.offre.parc) return Response.json({ erreur: "L'annonce de revente fait partie de Benef Pro." }, { status: 403 });
-  if (tropDeDemandes("annonce-revente", ipDe(req), 15, 60 * 60_000)) return Response.json({ erreur: "Trop de demandes, réessayez dans un moment." }, { status: 429 });
+  if (await tropDeDemandes("annonce-revente", ipDe(req), 15, 60 * 60_000)) return Response.json({ erreur: "Trop de demandes, réessayez dans un moment." }, { status: 429 });
   const sb = await supabaseServeur();
   const { data: v } = await sb.from("parc").select("*").eq("id", id).maybeSingle();
   if (!v) return Response.json({ erreur: "Voiture introuvable." }, { status: 404 });

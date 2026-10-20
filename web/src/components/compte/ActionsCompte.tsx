@@ -233,7 +233,7 @@ export function ChoixUsage({ id, famille }: { id: string; famille: "particulier"
 }
 
 /** Accessibilité : options d'affichage de l'espace (enregistrées dans profils.reglages). Les favoris sont désactivés par défaut. */
-export function ChoixAccessibilite({ id, reglages }: { id: string; reglages: Record<string, unknown> }) {
+export function ChoixAccessibilite({ reglages }: { reglages: Record<string, unknown> }) {
   const router = useRouter();
   const [favoris, setFavoris] = useState(reglages.favoris === true);
   const [etat, setEtat] = useState("");
@@ -241,10 +241,8 @@ export function ChoixAccessibilite({ id, reglages }: { id: string; reglages: Rec
     const suivant = !favoris;
     setFavoris(suivant);
     setEtat("");
-    // réglages relus juste avant : ceux reçus au chargement effaceraient ce qui a été enregistré depuis (profil d'analyse…)
-    const sb = supabaseNavigateur();
-    const { data: actuel } = await sb.from("profils").select("reglages").eq("id", id).maybeSingle();
-    const { error } = await sb.from("profils").update({ reglages: { ...((actuel?.reglages as Record<string, unknown> | null) ?? reglages), favoris: suivant }, updated_at: new Date().toISOString() }).eq("id", id);
+    // fusion dans la base : seul « favoris » change, le profil d'analyse et les autres réglages restent
+    const { error } = await supabaseNavigateur().rpc("profil_reglages", { p: { favoris: suivant } });
     if (error) {
       setFavoris(!suivant);
       return setEtat("Enregistrement impossible, réessayez.");

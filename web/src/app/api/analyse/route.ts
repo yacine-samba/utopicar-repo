@@ -20,6 +20,7 @@ import { comptesActifs } from "@/lib/supabase/config";
 import { titreVehicule } from "@/lib/titre";
 import { vendeurDe } from "@/lib/analyse/vendeur";
 import { supabaseServeur } from "@/lib/supabase/serveur";
+import { supabaseService } from "@/lib/supabase/service";
 import { ipDe, tropDeDemandes } from "@/lib/limite";
 
 export const maxDuration = 300;
@@ -70,7 +71,7 @@ function prendre(uid: string) {
 }
 
 export async function POST(req: Request) {
-  if (tropDeDemandes("analyse", ipDe(req), 12, 10 * 60_000)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
+  if (await tropDeDemandes("analyse", ipDe(req), 12, 10 * 60_000)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
 
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return erreur(r.error.issues[0]?.message ?? "Demande invalide.", 400);
@@ -172,8 +173,9 @@ async function analyser(d: z.infer<typeof Corps>, compte: Awaited<ReturnType<typ
     const b = bilan(out, profil);
     out.bilan = { verdict: b.libelle, indice: b.indice, version: 2 };
     const resume = { verdict: b.libelle, marge: profil.objectif === "revente" ? b.argent.marge : null, note: b.indice, prix: b.argent.prix };
-    // Décompte et rapport en une fois, avec la session de la personne (fonction enregistrer_analyse).
-    const { data, error } = await (await supabaseServeur()).rpc("enregistrer_analyse", {
+    // Décompte et rapport en une fois, par le serveur (enregistrer_analyse_pour : un compte ne peut pas enregistrer
+    // lui-même un rapport inventé) ; sans clé de service (poste de développement), au nom de la personne.
+    const args = {
       p_mode: mode,
       p_titre: titre,
       p_marque: v.marque || null,
@@ -183,7 +185,12 @@ async function analyser(d: z.infer<typeof Corps>, compte: Awaited<ReturnType<typ
       p_note: resume.note == null ? null : Math.round(resume.note),
       p_annonce: texte.slice(0, 8000),
       p_resultat: { ...out, ville },
-    });
+    };
+    const { data, error } = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? await supabaseService().rpc("enregistrer_analyse_pour", { p_uid: compte.id, ...args })
+      : await (await supabaseServeur()).rpc("enregistrer_analyse", args);
+    // plus d'analyse disponible (analyses lancées en parallèle, la base tient le compte) : le rapport n'est pas livré
+    if (error?.code === "P0003") return erreur("Vous n'avez plus d'analyse disponible : une autre analyse vient d'utiliser la dernière.", 402, { offres: o.famille });
     if (error) console.error("enregistrer_analyse", error);
     rapportId = (data as string | null) ?? null;
     if (rapportId) {

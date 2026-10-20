@@ -39,10 +39,8 @@ export async function PATCH(req: Request) {
   if (corps?.premiers_pas === "masque" || corps?.premiers_pas === "fini") maj.premiers_pas = corps.premiers_pas;
   if (corps?.bienvenue === "fait" || corps?.bienvenue === "passee") maj.bienvenue = corps.bienvenue;
   if (!Object.keys(maj).length) return Response.json({ erreur: "premiers_pas" }, { status: 400 });
-  const sb = await supabaseServeur();
-  const { data: p } = await sb.from("profils").select("reglages").eq("id", c.id).maybeSingle();
-  const reglages = { ...((p?.reglages as Record<string, unknown> | null) ?? {}), ...maj };
-  const { error } = await sb.from("profils").update({ reglages }).eq("id", c.id);
+  // fusion dans la base (profil_reglages) : les autres réglages, écrits ailleurs entre-temps, restent
+  const { error } = await (await supabaseServeur()).rpc("profil_reglages", { p: maj });
   if (error) return Response.json({ erreur: "ecriture" }, { status: 500 });
   return Response.json({ ok: true });
 }
@@ -53,10 +51,8 @@ export async function PUT(req: Request) {
   const corps = (await req.json().catch(() => null)) as { analyse?: unknown } | null;
   const r = ProfilSchema.safeParse(corps?.analyse);
   if (!r.success) return Response.json({ erreur: "profil" }, { status: 400 });
-  const sb = await supabaseServeur();
-  const { data: p } = await sb.from("profils").select("reglages").eq("id", c.id).maybeSingle();
-  const reglages = { ...((p?.reglages as Record<string, unknown> | null) ?? {}), analyse: { ...r.data, rempli: true } };
-  const { error } = await sb.from("profils").update({ reglages }).eq("id", c.id);
+  const analyse = { ...r.data, rempli: true };
+  const { error } = await (await supabaseServeur()).rpc("profil_reglages", { p: { analyse } });
   if (error) return Response.json({ erreur: "ecriture" }, { status: 500 });
-  return Response.json({ ok: true, profil: reglages.analyse });
+  return Response.json({ ok: true, profil: analyse });
 }
