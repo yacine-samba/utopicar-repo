@@ -6,7 +6,7 @@ import { urlSite } from "@/lib/stripe";
 
 /* Actions de la page Administration. Réservées aux comptes profils.admin, vérifié à chaque appel. */
 
-const FORMULES = ["gratuit", "essentiel", "serenite", "starter", "croissance", "pro"] as const;
+const FORMULES = ["gratuit", "essentiel", "serenite", "starter", "croissance", "pro", "pro_messages"] as const;
 const id = z.uuid();
 const guide = z.enum(["premiere-revente", "trier-annonces", "estimer-reprise", "acheter-occasion"]);
 const Corps = z.discriminatedUnion("action", [

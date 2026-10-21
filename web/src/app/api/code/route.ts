@@ -9,7 +9,7 @@ import { ipDe, tropDeDemandes } from "@/lib/limite";
 const Corps = z.object({ code: z.string().trim().min(3).max(30) });
 
 export async function POST(req: Request) {
-  if (tropDeDemandes("code", ipDe(req), 10, 10 * 60_000)) return Response.json({ erreur: "Trop d'essais. Réessayez dans quelques minutes." }, { status: 429 });
+  if (await tropDeDemandes("code", ipDe(req), 10, 10 * 60_000)) return Response.json({ erreur: "Trop d'essais. Réessayez dans quelques minutes." }, { status: 429 });
   const c = await compteCourant();
   if (!c) return Response.json({ erreur: "Connectez-vous pour utiliser un code." }, { status: 401 });
   const r = Corps.safeParse(await req.json().catch(() => null));

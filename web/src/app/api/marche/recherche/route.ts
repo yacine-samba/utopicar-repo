@@ -127,7 +127,8 @@ export async function POST(req: Request) {
     if (f.prixMin && l.prix < f.prixMin) return false;
     if (f.prixMax && l.prix > f.prixMax) return false;
     if (f.kmMin && (l.km ?? 0) < f.kmMin) return false;
-    if (f.kmMax && (l.km ?? 0) > f.kmMax) return false;
+    // kilométrage demandé : sans kilométrage connu, l'annonce est écartée (comme CarCrush), pas comptée à 0 km
+    if (f.kmMax && (l.km == null || l.km > f.kmMax)) return false;
     if (!dansDepartements(l.lieu, deps)) return false;
     if (f.vendeur === "pro" && !l.pro) return false;
     if (f.vendeur === "particulier" && l.pro) return false;
@@ -141,7 +142,6 @@ export async function POST(req: Request) {
   const annonces = gardees.map((l) => {
     // génération écrite dans l'annonce : sa cote ; sinon celle de la génération choisie (l'année y tombe)
     const parAnnee = !!f.gen && !l.gen;
-    const doute = false;
     const e = cotes.estimer(parAnnee ? { ...l, gen: genC } : l);
     const tx = l.tx;
     // plus de 45 % sous la cote : presque toujours pièces, location, acompte ou prix d'appel
@@ -151,7 +151,7 @@ export async function POST(req: Request) {
       ch: l.ch, moteur: moteurDe(l), moteurDeduit: !l.moteur && !!l.moteurDeduit, version: l.varianteEcrite ? versions.find((v) => v.id === l.variant)?.label ?? null : null,
       lbcVersion: l.version ?? null, mec: l.mec ?? null, lbc: l.lbc_min && l.lbc_max ? { min: l.lbc_min, max: l.lbc_max, pos: l.lbc_pos ?? null } : null,
       vu: l.vu_le, url: lienAnnonce(l), photo: l.photo ?? null, gen: l.gen ?? (parAnnee ? genC : null), genLabel: l.genLabel || (parAnnee ? genObj?.label ?? "" : ""),
-      genPar: parAnnee ? ("annee" as const) : l.genPar, doute, piege: PIEGES.test(tx) || suspect, suspect,
+      genPar: parAnnee ? ("annee" as const) : l.genPar, piege: PIEGES.test(tx) || suspect, suspect,
       cote: e && e.P ? { P: e.P, lo: e.lo, hi: e.hi, ecart: e.ecart, pct: e.pct, conf: e.conf, moinsCherQue: e.moinsCherQue, n: e.nClean, why: e.why, segments: e.segments } : null,
     };
   });
@@ -172,10 +172,9 @@ export async function POST(req: Request) {
   const sousLaCote = avecCote.filter((a) => !a.suspect && (a.cote!.pct ?? 0) >= 0.05).length;
   // résultats gardés avec la recherche : la rouvrir les affiche sans refaire de requête
   const resultat = {
-    modele: { nom: `${m.marque} ${m.nom}`, gens: m.gens.map(({ id, label, y0, y1 }) => ({ id, label, y0, y1, n: parGen.get(id) ?? 0 })), incertaines: 0 },
+    modele: { nom: `${m.marque} ${m.nom}`, gens: m.gens.map(({ id, label, y0, y1 }) => ({ id, label, y0, y1, n: parGen.get(id) ?? 0 })) },
     versions: versions.map((v) => ({ id: v.id, label: v.label, n: parVersion.get(v.id) ?? 0 })),
     moteurs: [...moteurs].sort((a, b) => b[1].n - a[1].n).slice(0, 40).map(([l, x]) => ({ l, n: x.n, deduits: x.deduits, ch: [...x.ch].sort((p, q) => q[1] - p[1])[0]?.[0] ?? null })),
-    incertaines: 0,
     base: deLaGen.length,
     total: lignes.length,
     trouvees: filtrees.length,
@@ -242,7 +241,7 @@ const stable = (v: unknown): string =>
 
 type Trouvee = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; ch: number | null; energie: string | null; boite: string | null; moteur: string | null; version: string | null;
-  lieu: string | null; url: string | null; photo?: string | null; pro: boolean; gen: string | null; genLabel: string; piege: boolean; doute: boolean; cote: { P: number; ecart: number | null; pct: number | null } | null;
+  lieu: string | null; url: string | null; photo?: string | null; pro: boolean; gen: string | null; genLabel: string; piege: boolean; cote: { P: number; ecart: number | null; pct: number | null } | null;
 };
 
 /** Garde la recherche (une par véhicule), son lancement avec ses résultats (journal) et les annonces trouvées. */
@@ -255,7 +254,7 @@ async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: s
   const nom = `${m.marque} ${g?.label ?? m.nom}${v ? ` ${v.label.replace(/^[A-Z]\d{2,3}\s/, "")}` : ""}`.slice(0, 160);
   const maintenant = new Date().toISOString();
   // meilleure affaire crédible : ni piège, ni prix trop beau pour être vrai (plus de 40 % sous la cote)
-  const top = trouvees.filter((a) => !a.piege && !a.doute && a.cote?.pct != null && a.cote.pct <= 0.4 && a.cote.ecart != null).sort((a, b) => b.cote!.pct! - a.cote!.pct!)[0];
+  const top = trouvees.filter((a) => !a.piege && a.cote?.pct != null && a.cote.pct <= 0.4 && a.cote.ecart != null).sort((a, b) => b.cote!.pct! - a.cote!.pct!)[0];
   const meilleure: Meilleure | null = top ? { titre: top.titre.slice(0, 140), prix: top.prix, ecart: Math.round(top.cote!.ecart!), pct: Math.round(top.cote!.pct! * 100), url: top.url } : null;
   const { data, error } = await sb
     .from("recherches")
@@ -281,14 +280,14 @@ async function enregistrer(f: z.infer<typeof Corps>, m: { marque: string; nom: s
     cote: a.cote ? { P: a.cote.P, ecart: a.cote.ecart, pct: a.cote.pct } : null, recherche: nom, derniere_le: maintenant,
     ...(a.photo?.startsWith("https://") ? { photo: a.photo.slice(0, 600) } : {}),
   })).filter((x) => !vues.has(x.cle) && !!vues.add(x.cle));
-  if (lignes.length) {
-    const { error: et } = await sb.from("annonces_trouvees").upsert(lignes, { onConflict: "user_id,cle" });
-    if (et) console.error("annonces trouvées", et.message);
-  }
-
-  // les onglets les plus anciens se ferment ; les recherches restent toutes dans l'historique
-  const { data: ouverts0 } = await sb.from("recherches").select("id").eq("active", true).order("derniere_le", { ascending: false });
-  const ouverts = ouverts0 ?? [];
-  if (ouverts.length > MAX_ONGLETS) await sb.from("recherches").update({ active: false }).in("id", ouverts.slice(MAX_ONGLETS).map((x) => x.id));
+  // en même temps : annonces trouvées gardées, et les onglets les plus anciens fermés (les recherches restent dans l'historique)
+  await Promise.all([
+    lignes.length
+      ? sb.from("annonces_trouvees").upsert(lignes, { onConflict: "user_id,cle" }).then(({ error: et }) => et && console.error("annonces trouvées", et.message))
+      : null,
+    sb.from("recherches").select("id").eq("active", true).order("derniere_le", { ascending: false }).then(async ({ data: ouverts }) => {
+      if ((ouverts ?? []).length > MAX_ONGLETS) await sb.from("recherches").update({ active: false }).in("id", ouverts!.slice(MAX_ONGLETS).map((x) => x.id));
+    }),
+  ]);
   return { recherche: data, journal: j ? { id: j.id as string, le: j.maj as string } : null };
 }

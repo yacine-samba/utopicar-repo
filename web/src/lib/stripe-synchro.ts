@@ -37,6 +37,9 @@ export async function synchroniser(sub: Stripe.Subscription) {
   // La clé du prix fait foi : elle suit les changements de formule faits dans le portail.
   const offre = parCle(item?.price.lookup_key) ?? (sub.metadata?.offre as OffreId | undefined);
   if (!offre || !(offre in OFFRES)) throw new Error(`Formule inconnue pour ${sub.id}`);
+  // un événement tardif d'un ancien abonnement (résilié, expiré) n'écrase pas l'abonnement actif suivi à sa place
+  const { data: suivi } = await svc.from("abonnements").select("stripe_subscription_id, statut").eq("user_id", userId).maybeSingle();
+  if (suivi?.stripe_subscription_id && suivi.stripe_subscription_id !== sub.id && STATUTS_ACTIFS.includes(suivi.statut) && !STATUTS_ACTIFS.includes(sub.status)) return;
   const { error } = await svc.from("abonnements").upsert({
     user_id: userId,
     offre,

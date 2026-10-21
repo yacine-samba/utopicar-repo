@@ -94,9 +94,9 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
   if (limite <= 0) return { annonces: [], total: gardees.length };
   const annonces: AnnonceCC[] = gardees.map((l) => {
     // sans génération écrite, l'annonce est cotée sur la génération choisie (son année y tombe)
-    const doute = !!f.gen && !l.gen;
+    const parAnnee = !!f.gen && !l.gen;
     const photos = photosDe(l);
-    const e = cotes.estimer(doute ? { ...l, gen: genC } : l);
+    const e = cotes.estimer(parAnnee ? { ...l, gen: genC } : l);
     const cote = e && e.P
       ? { P: Math.round(e.P), ecart: e.ecart == null ? null : Math.round(e.ecart), pct: e.pct, conf: e.conf, source: "utopicar" as const }
       : estimationLeboncoin(l);

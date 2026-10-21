@@ -32,7 +32,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!/^[0-9a-f-]{36}$/.test(id)) return erreur("Rapport introuvable.", 404);
   const c = await compteCourant();
   if (!c) return erreur("Connectez-vous.", 401);
-  if (tropDeDemandes("complements", ipDe(req), 30, 10 * 60_000)) return erreur("Trop d'ajouts d'affilée, réessayez dans quelques minutes.", 429);
+  if (await tropDeDemandes("complements", ipDe(req), 30, 10 * 60_000)) return erreur("Trop d'ajouts d'affilée, réessayez dans quelques minutes.", 429);
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return erreur(r.error.issues[0]?.message ?? "Demande invalide.", 400);
   const sb = await supabaseServeur();

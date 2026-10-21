@@ -1,5 +1,5 @@
 import { compteCourant } from "@/lib/compte";
-import { marcheModele, normEn } from "@/lib/vehicules/marche";
+import { anneesAChercher, marcheModele, normEn } from "@/lib/vehicules/marche";
 
 /* Motorisations d'une génération et leurs puissances Leboncoin (apprises des annonces) : une alerte « 325i »
    devient une recherche Leboncoin par puissance DIN (218 ch), qui trouve aussi les annonces qui n'écrivent pas « 325i ». */
@@ -11,7 +11,10 @@ export async function GET(req: Request) {
   const marque = (u.searchParams.get("marque") ?? "").slice(0, 40), modele = (u.searchParams.get("modele") ?? "").slice(0, 60);
   const gen = (u.searchParams.get("gen") ?? "").slice(0, 20), energie = (u.searchParams.get("energie") ?? "").slice(0, 12);
   if (!/^[a-z0-9]+$/.test(marque) || !/^[a-z0-9]+$/.test(modele)) return Response.json({ erreur: "Modèle inconnu." }, { status: 400 });
-  const mm = await marcheModele(`${marque} ${modele}`).catch(() => null);
+  // seulement les années de la génération : sans bornes, un gros modèle (Fiesta, Golf) est coupé aux 5 000 annonces les plus
+  // récentes et ses anciennes générations disparaissent ; lecture serveur, le droit Pro est vérifié au-dessus
+  const [y0, y1] = anneesAChercher(`${marque} ${modele}`, gen || undefined);
+  const mm = await marcheModele(`${marque} ${modele}`, y0, y1, Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY)).catch(() => null);
   if (!mm) return Response.json({ moteurs: [] });
   const par = new Map<string, { n: number; ch: Map<number, number> }>();
   for (const l of mm.lignes) {
