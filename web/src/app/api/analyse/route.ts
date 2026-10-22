@@ -20,6 +20,7 @@ import { comptesActifs } from "@/lib/supabase/config";
 import { titreVehicule } from "@/lib/titre";
 import { vendeurDe } from "@/lib/analyse/vendeur";
 import { supabaseServeur } from "@/lib/supabase/serveur";
+import { supabaseService } from "@/lib/supabase/service";
 import { ipDe, tropDeDemandes } from "@/lib/limite";
 
 export const maxDuration = 300;
@@ -70,11 +71,11 @@ function prendre(uid: string) {
 }
 
 export async function POST(req: Request) {
-  if (tropDeDemandes("analyse", ipDe(req), 12, 10 * 60_000)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
+  if (await tropDeDemandes("analyse", ipDe(req), 12, 10 * 60_000)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
 
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return erreur(r.error.issues[0]?.message ?? "Demande invalide.", 400);
-  const { mode, texte, ville } = r.data;
+  const { mode } = r.data;
 
   // Mode démonstration (UTOPICAR_DEMO=1) : seulement quand les comptes ne sont pas configurés, pour tester le site.
   const demo = !comptesActifs() && process.env.UTOPICAR_DEMO === "1";
@@ -93,10 +94,20 @@ export async function POST(req: Request) {
       { offres: o.famille },
     );
   if (compte && !prendre(compte.id)) return erreur("Une analyse est déjà en cours sur votre compte. Attendez son résultat.", 429);
+  try {
+    return await analyser(r.data, compte, o, demo);
+  } finally {
+    // rendu même quand l'analyse lève une erreur (sinon le compte reste bloqué toute la durée de la route)
+    if (compte) EN_COURS.delete(compte.id);
+  }
+}
+
+async function analyser(d: z.infer<typeof Corps>, compte: Awaited<ReturnType<typeof compteCourant>>, o: Offre, demo: boolean) {
+  const { mode, texte, ville } = d;
 
   // Analyse offerte en achat-revente (code ou inscription Benef, formule Découverte) : contenu Benef au niveau Starter
   const niveau = compte?.essaiBenef && mode === "benef" ? OFFRES.starter.id : o.id;
-  const photos = r.data.photos.slice(0, o.photos);
+  const photos = d.photos.slice(0, o.photos);
   const faits = lireAnnonce(texte);
   const fiab = fiabilite({ texte, annee: faits.annee, km: faits.km, energie: faits.energie });
   const detail = mode === "benef" ? "complet" : o.detail;
@@ -111,7 +122,7 @@ export async function POST(req: Request) {
   // Historique de l'annonce et même voiture vue ailleurs (base du marché) : facultatif, jamais bloquant.
   const historiqueP: Promise<Historique | null> = compte
     ? (async () => {
-        const { data, error } = await (await supabaseServeur()).rpc("historique_annonce", { p_id: numeroLeboncoin(r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0]), p_annee: faits.annee, p_km: faits.km, p_modele: marqueModele(texte, faits).modele });
+        const { data, error } = await (await supabaseServeur()).rpc("historique_annonce", { p_id: numeroLeboncoin(d.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0]), p_annee: faits.annee, p_km: faits.km, p_modele: marqueModele(texte, faits).modele });
         if (error) console.error("historique_annonce", error.message);
         return error ? null : (data as Historique | null);
       })().catch(() => null)
@@ -150,9 +161,9 @@ export async function POST(req: Request) {
   out.projection = await projectionP;
   out.historique = await historiqueP;
   out.offre = niveau;
-  out.lien = r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0];
-  out.vendeur = vendeurDe(r.data.vendeur, texte);
-  if (compte) out.photosUrls = r.data.photosLiens.length ? r.data.photosLiens : photos.length ? await stockerPhotos(compte.id, photos) : [];
+  out.lien = d.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0];
+  out.vendeur = vendeurDe(d.vendeur, texte);
+  if (compte) out.photosUrls = d.photosLiens.length ? d.photosLiens : photos.length ? await stockerPhotos(compte.id, photos) : [];
   let rapportId: string | null = null;
   // Une analyse n'est décomptée et enregistrée que si elle a abouti.
   if (compte && out.ia) {
@@ -162,8 +173,9 @@ export async function POST(req: Request) {
     const b = bilan(out, profil);
     out.bilan = { verdict: b.libelle, indice: b.indice, version: 2 };
     const resume = { verdict: b.libelle, marge: profil.objectif === "revente" ? b.argent.marge : null, note: b.indice, prix: b.argent.prix };
-    // Décompte et rapport en une fois, avec la session de la personne (fonction enregistrer_analyse).
-    const { data, error } = await (await supabaseServeur()).rpc("enregistrer_analyse", {
+    // Décompte et rapport en une fois, par le serveur (enregistrer_analyse_pour : un compte ne peut pas enregistrer
+    // lui-même un rapport inventé) ; sans clé de service (poste de développement), au nom de la personne.
+    const args = {
       p_mode: mode,
       p_titre: titre,
       p_marque: v.marque || null,
@@ -173,7 +185,12 @@ export async function POST(req: Request) {
       p_note: resume.note == null ? null : Math.round(resume.note),
       p_annonce: texte.slice(0, 8000),
       p_resultat: { ...out, ville },
-    });
+    };
+    const { data, error } = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? await supabaseService().rpc("enregistrer_analyse_pour", { p_uid: compte.id, ...args })
+      : await (await supabaseServeur()).rpc("enregistrer_analyse", args);
+    // plus d'analyse disponible (analyses lancées en parallèle, la base tient le compte) : le rapport n'est pas livré
+    if (error?.code === "P0003") return erreur("Vous n'avez plus d'analyse disponible : une autre analyse vient d'utiliser la dernière.", 402, { offres: o.famille });
     if (error) console.error("enregistrer_analyse", error);
     rapportId = (data as string | null) ?? null;
     if (rapportId) {
@@ -182,6 +199,5 @@ export async function POST(req: Request) {
     }
   }
 
-  if (compte) EN_COURS.delete(compte.id);
   return Response.json({ ...out, rapportId, detail, offre: niveau, restantes: compte ? Math.max(0, compte.restantes - (out.ia ? 1 : 0)) : null, demo });
 }

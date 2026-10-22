@@ -7,7 +7,7 @@ export const maxDuration = 60;
 
 /* CarCrush : nombre d'annonces qui répondent aux critères, avant de lancer (rien n'est débité, aucune annonce n'est renvoyée). */
 export async function POST(req: Request) {
-  if (tropDeDemandes("carcrush-apercu", ipDe(req), 40, 10 * 60e3)) return Response.json({ erreur: "Trop de demandes, réessayez dans quelques minutes." }, { status: 429 });
+  if (await tropDeDemandes("carcrush-apercu", ipDe(req), 40, 10 * 60e3)) return Response.json({ erreur: "Trop de demandes, réessayez dans quelques minutes." }, { status: 429 });
   const r = Criteres.safeParse(await req.json().catch(() => null));
   if (!r.success || !actif(r.data, "modele")) return Response.json({ erreur: "Choisissez une marque et un modèle." }, { status: 400 });
   try {

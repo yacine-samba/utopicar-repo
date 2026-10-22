@@ -1,8 +1,8 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
 import { supabaseServeur } from "@/lib/supabase/serveur";
-import { lienAnnonce, marcheModele, normEn, type Ligne } from "@/lib/vehicules/marche";
-import { generationDe, parseCard, reconnaitre, type Carte, type Estimation } from "@/lib/vehicules/moteur";
+import { anneesAChercher, lienAnnonce, marcheModele, normEn, type Ligne } from "@/lib/vehicules/marche";
+import { generationDe, modeleDe, parseCard, reconnaitre, type Carte, type Estimation } from "@/lib/vehicules/moteur";
 
 /* Cote (mode de l'outil Garage) :
    - relevé collé (extension « Relever la page », Ctrl+V) : chaque annonce reconnue (marque, modèle, génération)
@@ -60,11 +60,18 @@ export async function POST(req: Request) {
   if (estimation ? !(c.illimite || c.offre.famille === "benef") : !c.illimite)
     return Response.json({ erreur: estimation ? "L'estimation de cote est incluse dans les formules Benef." : "La cote du marché est réservée au compte illimité." }, { status: 403 });
 
+  // lecture serveur (droit vérifié juste au-dessus) quand la clé est là
+  const serveur = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+
   // ---- Placer une voiture
   if (r.data.voiture) {
     const v = r.data.voiture;
-    const mm = await marcheModele(v.base, null, null, estimation && !c.offre.recherche).catch(() => null);
-    if (!mm) return Response.json({ erreur: "Modèle inconnu ou base indisponible." }, { status: 400 });
+    // seulement les années de sa génération (choisie, sinon celles des générations vendues l'année de la voiture) ;
+    // lecture serveur, le droit est vérifié au-dessus : pas de coupure à 8 s des appels au nom du compte
+    const gens = modeleDe(v.base)?.gens.filter((g) => (v.gen ? g.id === v.gen : v.annee >= g.y0 && v.annee <= (g.y1 || 9999))) ?? [];
+    const [y0, y1] = gens.length ? anneesAChercher(v.base, null, Math.min(...gens.map((g) => g.y0)), Math.max(...gens.map((g) => g.y1 || 9999))) : [null, null];
+    const mm = await marcheModele(v.base, y0, y1, serveur).catch((e) => (console.error("cote placer", v.base, e?.message), null));
+    if (!mm) return Response.json({ erreur: modeleDe(v.base) ? "Base indisponible pour l'instant. Relancez dans un instant." : "Modèle inconnu." }, { status: modeleDe(v.base) ? 503 : 400 });
     const a = { titre: `${mm.m.marque} ${mm.m.nom} ${v.version ?? ""}`.trim(), texte: v.version ?? "", annee: v.annee, km: v.km, energie: v.energie ?? "", boite: v.boite ?? "", ch: v.ch ?? null, portes: v.portes ?? null };
     const g = generationDe(mm.m.base, a);
     const gen = v.gen || g?.id;
@@ -116,7 +123,7 @@ export async function POST(req: Request) {
   const cotees = new Map<string, unknown>();
 
   for (const [base, liste] of modeles) {
-    const mm = await marcheModele(base).catch(() => null);
+    const mm = await marcheModele(base, null, null, serveur).catch(() => null);
     if (!mm) continue;
     const vus = new Set(mm.lignes.map((l) => l.id));
     const collees = liste.map(({ it }) => {

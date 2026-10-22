@@ -18,7 +18,7 @@ const HEURE = 3600_000;
 
 export async function POST(req: Request) {
   const c = await compteCourant();
-  if (!c && tropDeDemandes("apercu", ipDe(req), MAX_VISITEUR, HEURE)) return Response.json({ erreur: "limite" }, { status: 429 });
+  if (!c && (await tropDeDemandes("apercu", ipDe(req), MAX_VISITEUR, HEURE))) return Response.json({ erreur: "limite" }, { status: 429 });
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return Response.json({ erreur: "texte" }, { status: 400 });
   const texte = r.data.texte;

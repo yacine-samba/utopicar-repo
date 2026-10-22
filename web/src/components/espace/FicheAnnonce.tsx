@@ -29,8 +29,6 @@ export type FicheData = {
   cote?: { P: number | null; ecart: number | null; pct: number | null; conf?: string; moinsCherQue?: number | null } | null;
   /** annonce douteuse (prix suspect, pièces, location, acompte) */
   alerte?: string | null;
-  /** génération déduite de l'année seulement */
-  doute?: boolean;
   lbc?: { min: number; max: number; pos: string | null } | null;
 };
 
@@ -165,7 +163,6 @@ export function FicheAnnonce({ fiches, index, onIndex }: { fiches: FicheData[]; 
               <p className="text-sm text-ink-2">Pas assez d&apos;annonces comparables pour situer ce prix : l&apos;analyse détaillée le fera avec le texte et les photos.</p>
             )}
             {a.lbc && <p className="text-xs text-ink-3">Estimation affichée par Leboncoin : {eur(a.lbc.min)} – {eur(a.lbc.max)}{a.lbc.pos ? ` · ${a.lbc.pos}` : ""}</p>}
-            {a.doute && <p className="text-xs text-warn">Génération déduite de l&apos;année seulement : à vérifier sur la carte grise ou les photos.</p>}
           </section>
 
           <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">

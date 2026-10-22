@@ -67,7 +67,6 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
   // génération (et phase) = ses années, comme la recherche du marché : les annonces ne l'écrivent presque jamais
   const ph = f.phase && genC ? anneesPhase(m.base, genC, f.phase) : null;
   const [gy0, gy1] = genObj ? (ph ?? [genObj.y0, genObj.y1 || 9999]) : [0, 9999];
-  // comme la recherche du marché : génération lue dans l'annonce, sinon d'après l'année (sauf si elle en écrit une autre)
   const dansGen = (l: LigneMarche) => !f.gen || (l.annee != null && l.annee >= gy0 && l.annee <= gy1);
   const mots = sansAccent(f.finition).split(/[\s,]+/).filter(Boolean).map((w) => new RegExp(`\\b${echapper(w)}\\b`));
   const couleur = COULEURS.find((c) => c.id === f.couleur);
@@ -95,9 +94,9 @@ export async function chercher(f: Criteres, limite = MAX_ANNONCES): Promise<Resu
   if (limite <= 0) return { annonces: [], total: gardees.length };
   const annonces: AnnonceCC[] = gardees.map((l) => {
     // sans génération écrite, l'annonce est cotée sur la génération choisie (son année y tombe)
-    const doute = !!f.gen && !l.gen;
+    const parAnnee = !!f.gen && !l.gen;
     const photos = photosDe(l);
-    const e = cotes.estimer(doute ? { ...l, gen: genC } : l);
+    const e = cotes.estimer(parAnnee ? { ...l, gen: genC } : l);
     const cote = e && e.P
       ? { P: Math.round(e.P), ecart: e.ecart == null ? null : Math.round(e.ecart), pct: e.pct, conf: e.conf, source: "utopicar" as const }
       : estimationLeboncoin(l);

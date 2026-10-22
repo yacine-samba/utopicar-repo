@@ -302,7 +302,7 @@ export default async function Compte({
 
       <section id="accessibilite" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-acces">
         <h2 id="c-acces" className="mb-4 font-display text-xl font-semibold">Accessibilité</h2>
-        <ChoixAccessibilite id={compte.id} reglages={(profil?.reglages as Record<string, unknown> | null) ?? {}} />
+        <ChoixAccessibilite reglages={(profil?.reglages as Record<string, unknown> | null) ?? {}} />
       </section>
 
       <section id="profil" className="carte scroll-mt-24 p-6 sm:p-7" aria-labelledby="c-profil">
