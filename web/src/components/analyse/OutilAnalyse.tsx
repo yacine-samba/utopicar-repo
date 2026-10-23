@@ -5,8 +5,9 @@ import type { Analyse } from "@/lib/analyse/couts";
 import { Saisie } from "../Saisie";
 import { ResultatParticulier } from "./ResultatParticulier";
 import { EnTeteRapport } from "./EnTeteRapport";
+import type { DemandeEssai } from "./EssaiEmail";
 
-export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres, restantes = null }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode; restantes?: number | null }) {
+export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres, restantes = null, visiteur = false, essai }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode; restantes?: number | null; visiteur?: boolean; essai?: DemandeEssai }) {
   const router = useRouter();
   const [a, setA] = useState<Analyse | null>(null);
   if (a)
@@ -48,6 +49,8 @@ export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", li
           bouton="Analyser l'annonce"
           retour={retour}
           lienInitial={lienInitial}
+          visiteur={visiteur}
+          essai={essai}
           onResultat={(r) => {
             // rapport enregistré : la page complète s'ouvre (photos d'abord, puis l'analyse)
             if (r.rapportId && !r.demo) return router.push(`/app/rapports/${r.rapportId}`);

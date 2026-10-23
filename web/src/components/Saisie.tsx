@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
 import { Patience, type Apercu } from "./analyse/Patience";
+import { EssaiEmail, type DemandeEssai } from "./analyse/EssaiEmail";
 import { lienImportable, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { useExtension } from "@/lib/extension";
@@ -33,6 +34,8 @@ export function Saisie({
   lienInitial,
   enPlus,
   restantes = null,
+  visiteur = false,
+  essai,
   onResultat,
 }: {
   mode: "particulier" | "benef";
@@ -48,6 +51,10 @@ export function Saisie({
   enPlus?: ReactNode;
   /** Analyses restantes du compte (null : inconnu ou sans limite). À 0, rien n'est envoyé : ni import, ni analyse. */
   restantes?: number | null;
+  /** Visiteur sans compte : au lieu d'analyser, on demande son email (analyse offerte, lien reçu par email). */
+  visiteur?: boolean;
+  /** Annonce gardée par l'analyse offerte (lien reçu par email) : reprise et lancée dès l'ouverture. */
+  essai?: DemandeEssai;
   onResultat: (a: Analyse, ville: string) => void;
 }) {
   const router = useRouter();
@@ -64,15 +71,28 @@ export function Saisie({
   const [nbEnvoyees, setNbEnvoyees] = useState(0);
   // annonce venue de Leboncoin ou de l'extension : photos d'origine, lien et vendeur, gardés avec le rapport
   const [origine, setOrigine] = useState<Origine | null>(null);
+  const [demande, setDemande] = useState<DemandeEssai | null>(null);
   const fichier = useRef<HTMLInputElement>(null);
 
   // Annonce collée avant l'inscription : on la retrouve au retour.
   useEffect(() => {
     try {
       const b = JSON.parse(sessionStorage.getItem(BROUILLON) || "null");
-      if (b?.mode === mode && b.lien) {
+      if (essai) {
+        // analyse offerte : l'annonce vient de la base, le lien reçu par email ne doit pas la relancer au rechargement
+        history.replaceState(null, "", location.pathname);
+        const v = essai.ville || villeInitiale;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- reprise unique (analyse offerte ou brouillon)
+        setVille(v);
+        if (essai.lien) {
+          setLien(essai.lien);
+          importer(essai.lien, v);
+        } else if (essai.texte) {
+          setTexte(essai.texte);
+          lancer(essai.texte, [], v, null);
+        }
+      } else if (b?.mode === mode && b.lien) {
         sessionStorage.removeItem(BROUILLON);
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- reprise unique du brouillon
         setLien(b.lien);
         if (b.ville) setVille(b.ville);
         importer(b.lien, b.ville ?? "");
@@ -156,6 +176,10 @@ export function Saisie({
       setErreur({ t: ERREURS_IMPORT.lien });
       return;
     }
+    if (visiteur) {
+      setDemande({ lien: url, ville: villeChoisie });
+      return;
+    }
     if (!SUPABASE_URL) {
       setErreur({ t: "L'import par lien ouvre très bientôt. Copiez la page de l'annonce et collez-la ci-dessous." });
       return;
@@ -204,6 +228,10 @@ export function Saisie({
       setErreur({ t: "Collez le texte complet de l'annonce : titre, prix, kilométrage et description." });
       return;
     }
+    if (visiteur) {
+      setDemande({ texte: t, ville: v });
+      return;
+    }
     setCharge(true);
     setSec(0);
     setApercu(null);
@@ -241,6 +269,15 @@ export function Saisie({
   }
 
   if (charge || lecture) return <Patience phase={lecture ? "import" : "analyse"} sec={sec} apercu={apercu} nbPhotos={lecture ? 0 : nbEnvoyees} benef={mode === "benef"} />;
+
+  if (demande)
+    return (
+      <EssaiEmail
+        demande={demande}
+        onRetour={() => setDemande(null)}
+        onMotDePasse={() => versInscription(demande.lien ? { lien: demande.lien, ville: demande.ville } : { texte: demande.texte ?? "", ville: demande.ville })}
+      />
+    );
 
   return (
     <form

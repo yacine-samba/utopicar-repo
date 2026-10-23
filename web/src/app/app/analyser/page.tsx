@@ -8,10 +8,11 @@ import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { DemandeProfil } from "@/components/analyse/ProfilAnalyse";
 import { lienPartage } from "@/lib/analyse/import";
+import { reprendreEssai } from "@/lib/essai";
 
 export const metadata: Metadata = { title: "Analyser une annonce" };
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string }> }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string; essai?: string }> }) {
   const c = await compteBenef("/app/analyser");
   const sp = await searchParams;
   // ?lien= (tableau de bord) ou partage depuis une appli (url, texte, titre : voir le manifest)
@@ -36,6 +37,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
     return <OutilBenef maxPhotos={o.photos} parc={o.parc} villeCompte={c.ville} lienInitial={lien} restantes={c.illimite ? null : c.restantes} />;
   }
 
+  // analyse offerte : l'annonce collée avant l'email part toute seule
+  const essai = await reprendreEssai(sp.essai, c.email);
+
   return (
     <>
     <DemandeProfil />
@@ -45,6 +49,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
       restantes={c.illimite ? null : c.restantes}
       retour="/app/analyser"
       lienInitial={lien}
+      essai={essai}
       apres={
         <p className="mb-4 text-sm text-ink-3">
           Analyse enregistrée dans <Link href="/app/rapports" className="text-o2 underline underline-offset-4">Mes analyses</Link>.

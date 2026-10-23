@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
 import { compteCourant } from "@/lib/compte";
+import { comptesActifs } from "@/lib/supabase/config";
 import { OFFRES } from "@/lib/offres";
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default async function Page() {
       <OutilAnalyse
         ville=""
         maxPhotos={OFFRES.gratuit.photos}
+        visiteur={comptesActifs()}
         entete={
           <div className="grid gap-3">
             <span className="kicker w-fit">Première analyse offerte</span>
@@ -27,7 +29,7 @@ export default async function Page() {
             </h1>
             <p className="text-lg text-ink-2">Collez l&apos;annonce. Nous vous disons combien elle va vraiment vous coûter et ce qu&apos;il faut vérifier avant d&apos;acheter, en langage clair.</p>
             <p className="text-sm text-ink-3">
-              L&apos;aperçu est immédiat et sans compte ; le rapport complet demande un compte gratuit. Déjà inscrit ? <Link href="/connexion?next=/app/analyser" className="text-o2 underline underline-offset-4">Connectez-vous</Link>.
+              Sans mot de passe : indiquez votre email, le lien reçu ouvre votre analyse. Déjà inscrit ? <Link href="/connexion?next=/app/analyser" className="text-o2 underline underline-offset-4">Connectez-vous</Link>.
             </p>
             <details className="carte mt-2 p-4 text-sm text-ink-2">
               <summary className="cursor-pointer font-medium text-ink">Comment copier une annonce ?</summary>
