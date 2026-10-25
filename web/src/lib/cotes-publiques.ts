@@ -35,31 +35,36 @@ export const slugCote = (nom: string) =>
 /** Marque en clair d'une base du catalogue (« renault clio » → « renault »). */
 export const marqueDe = (base: string) => base.split(" ")[0];
 
-export const listeCotes = unstable_cache(
+// une erreur (base froide, coupure à 8 s) est levée pour ne pas être gardée une heure en cache : la page suivante réessaie
+const listeEnCache = unstable_cache(
   async (): Promise<CoteResume[]> => {
     const { data, error } = await supabasePublic().rpc("cotes_publiques");
-    if (error) {
-      console.error("cotes_publiques", error.message);
-      return [];
-    }
+    if (error) throw new Error(error.message);
     return (data ?? []) as CoteResume[];
   },
   ["cotes-publiques"],
   { revalidate: 3600, tags: ["cotes"] },
 );
+export const listeCotes = () =>
+  listeEnCache().catch((e: Error) => {
+    console.error("cotes_publiques", e.message);
+    return [] as CoteResume[];
+  });
 
-const detail = unstable_cache(
+const detailEnCache = unstable_cache(
   async (cle: string): Promise<CoteDetail | null> => {
     const { data, error } = await supabasePublic().rpc("cote_publique", { p_cle: cle });
-    if (error) {
-      console.error("cote_publique", error.message);
-      return null;
-    }
+    if (error) throw new Error(error.message);
     return (data as CoteDetail | null) ?? null;
   },
   ["cote-publique"],
   { revalidate: 3600, tags: ["cotes"] },
 );
+const detail = (cle: string) =>
+  detailEnCache(cle).catch((e: Error) => {
+    console.error("cote_publique", e.message);
+    return null;
+  });
 
 /** Cote d'une page, par son adresse ; null si inconnue ou trop peu d'annonces. */
 export async function coteParSlug(slug: string) {

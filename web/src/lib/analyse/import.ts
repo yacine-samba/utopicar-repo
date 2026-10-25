@@ -142,6 +142,15 @@ export function photosDepuisExtension(brut: string): string[] {
   }
 }
 
+/** Ce que la personne colle dans un champ d'annonce, quand c'est un lien à importer : le lien seul, ou le texte de partage
+    de l'appli Leboncoin (« Voici une annonce intéressante que je viens de trouver sur leboncoin : https://… », 118
+    caractères). 14 analyses sur 32 avaient été faites sur ce seul texte de partage, sans annonce : ni cote ni IA.
+    Un texte long (l'annonce copiée, qui peut citer son lien) reste un texte. */
+export function lienColle(s: string): string | null {
+  const t = s.trim();
+  return lienImportable(t) ?? (t.length <= 400 ? lienPartage(t) : null);
+}
+
 /** Lien d'annonce importable trouvé dans ce qu'une appli partage (lien seul, ou texte « Regarde cette annonce : https://… »). */
 export function lienPartage(...morceaux: (string | null | undefined)[]): string | null {
   for (const m of morceaux) {

@@ -15,6 +15,8 @@ const CSP_OBSERVEE = [
 
 const nextConfig: NextConfig = {
   turbopack: { root: __dirname },
+  // pas d'en-tête « X-Powered-By: Next.js » : il n'apporte rien et renseigne qui cherche une faille
+  poweredByHeader: false,
   // extension (compte illimité) : servie par /api/extension, jamais dans public/
   outputFileTracingIncludes: { "/api/extension": ["./prive/utopicar-extension.zip"] },
   async headers() {

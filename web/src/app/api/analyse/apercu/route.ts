@@ -1,6 +1,7 @@
 import * as z from "zod/v4";
 import { compteCourant } from "@/lib/compte";
 import { lireAnnonce } from "@/lib/analyse/texte";
+import { lienColle } from "@/lib/analyse/import";
 import { fiabilite } from "@/lib/analyse/fiabilite";
 import { coteMarche } from "@/lib/analyse/cote";
 import { iaRegles } from "@/lib/analyse/regles";
@@ -23,6 +24,9 @@ export async function POST(req: Request) {
   if (!r.success) return Response.json({ erreur: "texte" }, { status: 400 });
   const texte = r.data.texte;
   const f = lireAnnonce(texte);
+  // texte de partage de l'appli Leboncoin (une phrase et le lien) : la page lit l'annonce par son lien
+  const lien = lienColle(texte);
+  if (lien && !f.prix) return Response.json({ erreur: "lien", lien }, { status: 422 });
   const fiab = fiabilite({ texte, annee: f.annee, km: f.km, energie: f.energie });
   const cote = await coteMarche(texte, f).catch(() => null);
   // bilan de l'outil, gratuit : verdict et quatre réponses, avec le profil du compte (sinon celui d'un particulier)
