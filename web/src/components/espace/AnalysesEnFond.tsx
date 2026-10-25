@@ -5,7 +5,7 @@
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { lienImportable, siteAnnonce, texteDepuisImport } from "@/lib/analyse/import";
+import { lienColle, siteAnnonce, texteDepuisImport } from "@/lib/analyse/import";
 import { depuisDataUrl, type PhotoLocale } from "@/lib/photos-analyse";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
@@ -39,7 +39,7 @@ export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif, suite 
   /** Lance l'analyse ; renvoie un message d'erreur immédiat (lien refusé), sinon null : la suite arrive par notification. */
   const lancer = useCallback(
     async (brut: string): Promise<string | null> => {
-      const lien = lienImportable(brut);
+      const lien = lienColle(brut);
       if (!lien) return ERREURS.lien;
       if (!SUPABASE_URL) return "L'import par lien n'est pas disponible ici : collez le texte de l'annonce dans la page Analyser.";
       const { data } = await supabaseNavigateur().auth.getSession();

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
-import { lienImportable, texteDepuisImport } from "@/lib/analyse/import";
+import { lienColle, texteDepuisImport } from "@/lib/analyse/import";
 import type { Analyse } from "@/lib/analyse/couts";
 import { ecrireProfil, lireProfil } from "@/lib/orientation";
 import { CLES_EXEMPLES, EXEMPLES, euros } from "@/lib/demo";
@@ -226,7 +226,9 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       champ.current?.focus();
       return;
     }
-    if (lienImportable(v)) return void importer(v);
+    // lien seul ou texte de partage de l'appli Leboncoin (« Voici une annonce… : https://… ») : l'annonce est lue
+    const lien = lienColle(v);
+    if (lien) return void importer(lien);
     if (/^https?:\/\//i.test(v)) return setErreur(ERREURS_IMPORT.lien);
     if (v.length < 30) return setErreur("Collez le texte complet de l'annonce : titre, prix, kilométrage et description.");
     void apercu(v, null, "texte", origineDepuisExtension(v)?.liens[0] ?? null);

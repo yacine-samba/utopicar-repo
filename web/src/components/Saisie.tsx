@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
 import { Patience, type Apercu } from "./analyse/Patience";
-import { lienImportable, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
+import { lienColle, lienImportable, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { useExtension } from "@/lib/extension";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
@@ -186,6 +186,7 @@ export function Saisie({
   async function importer(url: string, villeChoisie = ville) {
     setErreur(null);
     if (quotaEpuise()) return;
+    url = lienColle(url) ?? url;
     if (!lienImportable(url)) {
       setErreur({ t: ERREURS_IMPORT.lien });
       return;
@@ -234,6 +235,12 @@ export function Saisie({
   async function lancer(t = texte, ph = photos, v = ville, og = origine) {
     setErreur(null);
     if (quotaEpuise()) return;
+    // texte de partage de l'appli Leboncoin tapé ou collé dans le champ texte : l'annonce est lue, pas analysée telle quelle
+    const partage = !og && lienColle(t);
+    if (partage) {
+      setLien(partage);
+      return importer(partage, v);
+    }
     if (t.trim().length < 30) {
       setErreur({ t: "Collez le texte complet de l'annonce : titre, prix, kilométrage et description." });
       return;
@@ -286,7 +293,7 @@ export function Saisie({
       onPaste={async (e) => {
         // Copie de l'extension UTOPICAR Scanner : texte structuré et photos jointes.
         const brut = e.clipboardData.getData("text/plain");
-        const url = lienImportable(brut);
+        const url = lienColle(brut);
         if (url && (e.target as HTMLElement).tagName === "TEXTAREA") {
           e.preventDefault();
           setLien(url);
@@ -339,7 +346,7 @@ export function Saisie({
             value={lien}
             onChange={(e) => setLien(e.target.value)}
             onPaste={(e) => {
-              const url = lienImportable(e.clipboardData.getData("text/plain"));
+              const url = lienColle(e.clipboardData.getData("text/plain"));
               if (!url) return;
               e.preventDefault();
               e.stopPropagation();

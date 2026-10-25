@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import * as z from "zod/v4";
 import { lireAnnonce } from "@/lib/analyse/texte";
+import { lienColle } from "@/lib/analyse/import";
 import { fiabilite } from "@/lib/analyse/fiabilite";
 import { analyseIA, IaIndisponible } from "@/lib/analyse/ia";
 import { filtrer } from "@/lib/analyse/filtre";
@@ -76,6 +77,9 @@ export async function POST(req: Request) {
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return erreur(r.error.issues[0]?.message ?? "Demande invalide.", 400);
   const { mode } = r.data;
+  // un lien ou le texte de partage de l'appli Leboncoin, sans l'annonce : rien à analyser, l'analyse n'est pas décomptée
+  if (lienColle(r.data.texte) && !lireAnnonce(r.data.texte).prix)
+    return erreur("Ce texte ne contient que le lien de l'annonce : collez le lien seul pour qu'elle soit lue, ou le texte complet de l'annonce.", 422, { lien: lienColle(r.data.texte) });
 
   // Mode démonstration (UTOPICAR_DEMO=1) : seulement quand les comptes ne sont pas configurés, pour tester le site.
   const demo = !comptesActifs() && process.env.UTOPICAR_DEMO === "1";
