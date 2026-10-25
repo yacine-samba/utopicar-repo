@@ -57,8 +57,10 @@ export async function POST(req: Request) {
   // Estimation (toutes les formules Benef) : la cote d'une voiture d'après ses critères, sans les annonces ni le nuage.
   // La cote globale (graphique, comparables, relevés) est réservée au compte illimité.
   const estimation = r.data.estimation === true;
-  if (estimation ? !(c.illimite || c.offre.famille === "benef") : !c.illimite)
-    return Response.json({ erreur: estimation ? "L'estimation de cote est incluse dans les formules Benef." : "La cote du marché est réservée au compte illimité." }, { status: 403 });
+  // Benef Pro : une voiture placée sur la cote avec le graphique et les annonces proches (« Cote du marché avec
+  // graphique », promis sur la page Tarifs) ; le relevé collé reste au compte illimité (vérifié plus bas)
+  if (estimation ? !(c.illimite || c.offre.famille === "benef") : !(c.illimite || (c.offre.recherche && !!r.data.voiture)))
+    return Response.json({ erreur: estimation ? "L'estimation de cote est incluse dans les formules Benef." : "La cote du marché avec graphique est incluse dans Benef Pro." }, { status: 403 });
 
   // lecture serveur (droit vérifié juste au-dessus) quand la clé est là
   const serveur = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);

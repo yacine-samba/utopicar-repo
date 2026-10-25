@@ -21,7 +21,8 @@ export default async function Page() {
           Renseignez la voiture : marque, modèle, génération, année, kilométrage, et si vous les connaissez la motorisation, la finition et la puissance. La cote est calculée sur les annonces réelles de notre base (même moteur quand il y en a assez), avec ce que coûtent les kilomètres et ce qu&apos;elle vaudra dans un an.
         </p>
       </div>
-      <PlacerVoiture cat={catalogue()} estimation />
+      {/* Benef Pro : la cote avec le graphique et les annonces les plus proches ; Starter : l'estimation seule */}
+      <PlacerVoiture cat={catalogue()} estimation={!c.offre.recherche} />
     </div>
   );
 }
