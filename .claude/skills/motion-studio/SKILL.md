@@ -67,7 +67,8 @@ A/B, formats. Écris `video/brief-<projet>.md` (modèle dans intake.md), montre-
 
 ### Phase 2 — Script et voix (porte 2)
 
-Suis `references/script-voice.md` :
+Suis `references/scenario.md` (diagnostic, accroches, script, découpage, contrôle, variante), puis
+`references/script-voice.md` :
 1. Angle et promesse en une phrase ; **deux ouvertures** (0–3 s) d'angles différents, même corps de film — trois
    (A/B/C) si l'utilisateur veut tester des hooks forts. Un gros hook se joue dans la **première seconde**.
 2. Script minuté dans les **deux langues**, écrit pour l'oreille (VO) et séparément pour l'œil (textes à l'écran,
@@ -141,6 +142,7 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 |---|---|
 | `references/intake.md` | Phase 1 : toutes les questions, options, valeurs par défaut, modèle de brief |
 | `references/utopicar.md` | Tout projet UTOPICAR : produit, public, promesse, UI, données démo, charte, CTA |
+| `references/scenario.md` | **Avant tout script** (vidéo, carrousel, post) : réponse, enjeux, question, faits séparés des hypothèses et des exemples, 3 accroches, découpage avec preuves, contrôle qualité, variante |
 | `references/script-voice.md` | Phase 2 : écriture, hooks A/B, budgets de mots, voix ElevenLabs, sous-titres |
 | `references/motion-craft.md` | Phases 3 et 5 : références, style, formats et zones sûres, architecture du film, règles d'animation |
 | `references/da-immersive.md` | Phases 3 et 5, tout film produit UTOPICAR : la DA maison (présentation v8 → v10) avec ses valeurs exactes (jetons, typo, sous-titres de la voix, interface sans cadre, caméra, grosse couleur, 3D, courbes, son, fin et boucle, interdits) et la marche à suivre pour un nouveau film |

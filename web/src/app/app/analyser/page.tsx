@@ -45,6 +45,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
     return <OutilBenef maxPhotos={o.photos} parc={o.parc} villeCompte={c.ville} lienInitial={lien} restantes={c.illimite ? null : c.restantes} suite={suite?.id ?? null} />;
   }
 
+  // analyse offerte : l'annonce collée avant l'email part toute seule
+  const essai = await reprendreEssai(sp.essai, c.email);
+
   return (
     <>
     <DemandeProfil />
@@ -55,6 +58,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
       suite={suite?.id ?? null}
       retour="/app/analyser"
       lienInitial={lien}
+      essai={essai}
       apres={
         <p className="mb-4 text-sm text-ink-3">
           Analyse enregistrée dans <Link href="/app/rapports" className="text-o2 underline underline-offset-4">Mes analyses</Link>.

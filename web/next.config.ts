@@ -1,15 +1,15 @@
 import type { NextConfig } from "next";
 
-/* Sources utilisées par le site : Supabase (données, connexion, photos), Stripe (paiement), Vercel (statistiques),
+/* Sources utilisées par le site : Supabase (données, connexion, photos), Stripe (paiement), Vercel (statistiques), Cloudflare (anti-robot),
    photos Leboncoin, La Centrale et AutoScout24, axe-core en développement. Observée seulement, pour l'instant. */
 const CSP_OBSERVEE = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://js.stripe.com",
+  "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://js.stripe.com https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.leboncoin.fr https://*.lacentrale.fr https://*.autoscout24.net https://*.supabase.co",
   "font-src 'self'",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com https://api.stripe.com",
-  "frame-src https://js.stripe.com https://checkout.stripe.com",
+  "frame-src https://js.stripe.com https://checkout.stripe.com https://challenges.cloudflare.com",
   "form-action 'self' https://checkout.stripe.com",
 ].join("; ");
 

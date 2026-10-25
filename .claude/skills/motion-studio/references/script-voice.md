@@ -2,6 +2,8 @@
 
 ## 1. Stratégie avant les mots
 
+Avant tout : la grille de scénario (`scenario.md`, règle du dépôt). Ce qui suit la complète pour une pub produit.
+
 Écris d'abord, en une ligne chacun : **qui** (public précis), **douleur** (vécue, concrète), **promesse** (ce que le
 produit change, chiffrée si possible), **preuve** (ce que l'écran montre), **action** (CTA). Si l'une manque, le
 script sera flou — c'est ce qui est arrivé à la v5 : la promesse du brief n'y était jamais dite en toutes lettres.
@@ -74,9 +76,9 @@ capture montre « GO » ou « NO GO », on ajoute une légende en clair juste de
 
 Livre le script sous cette forme :
 ```
-| t | Voix FR | Voix EN | Écran FR | Écran EN | Image |
-| 0,0–3,0 (A) | … | … | … | … | … |
-| 0,0–3,0 (B) | … | … | … | … | … |
+| t | Voix FR | Voix EN | Écran FR | Écran EN | Image | Fonction | Preuve ou à fournir |
+| 0,0–3,0 (A) | … | … | … | … | … | … | … |
+| 0,0–3,0 (B) | … | … | … | … | … | … | … |
 | 3,0–8,0 | … |
 ```
 

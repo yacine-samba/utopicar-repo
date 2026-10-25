@@ -40,7 +40,7 @@ export default function Legal() {
 
       <Section id="mentions" titre="Mentions légales">
         <h3>Éditeur du site</h3>
-        <p>Le site utopicar.fr est édité par Yacine Samba, qui en est le directeur de la publication. Numéro SIRET : [à compléter avant l&apos;ouverture des paiements].</p>
+        <p>Le site utopicar.fr est édité par Yacine Samba, qui en est le directeur de la publication. Numéro SIREN : 884898651.</p>
         <p>Pour toute demande, utilisez le formulaire de contact en bas de cette page.</p>
         <h3>Hébergement</h3>
         <p>Le site est hébergé par Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis (vercel.com).</p>

@@ -66,6 +66,22 @@ const existe = async (email: string) => {
   return !!data?.length;
 };
 
+/** Case anti-robot Cloudflare Turnstile : vérifiée seulement quand reglages.turnstile_secret est renseigné. */
+async function humain(jeton: unknown, ip: string) {
+  const { data } = await sb.from("reglages").select("valeur").eq("cle", "turnstile_secret").maybeSingle();
+  if (!data?.valeur) return true;
+  if (typeof jeton !== "string" || !jeton || jeton.length > 2048) return false;
+  const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST",
+    body: new URLSearchParams({ secret: data.valeur, response: jeton, remoteip: ip }),
+  }).catch(() => null);
+  const j = await r?.json().catch(() => null);
+  return j?.success === true;
+}
+
+const ESSAIS_MAX_JOUR = 300;
+const JOUR = 24 * 60;
+
 Deno.serve(async (req) => {
   const origin = req.headers.get("origin");
   const h = entetes(origin);
@@ -142,6 +158,62 @@ Deno.serve(async (req) => {
           gabarit("Nouveau mot de passe", "Cliquez sur le bouton : vous arrivez dans votre compte Utopicar, prêt à choisir un nouveau mot de passe.", "Choisir mon mot de passe", lien, "Ce lien est valable une heure et ne sert qu'une fois. Si vous n'avez rien demandé, ignorez ce message : votre mot de passe actuel reste valable."),
           `Choisir un nouveau mot de passe Utopicar (lien valable une heure) :\n${lien}\n\nSi vous n'avez rien demandé, ignorez ce message.`,
         );
+      return rep({ ok: true });
+    }
+
+    if (action === "essai") {
+      // Analyse offerte sans compte : l'annonce est gardée, un lien de connexion (ou d'activation) part par email et
+      // ouvre /app/analyser?essai=<id>. Une analyse par compte (formule Découverte) ; ici, on freine les nouveaux comptes.
+      const texte = typeof b.texte === "string" ? b.texte.trim() : "";
+      const lienAnnonce = typeof b.lien === "string" ? b.lien.trim() : "";
+      const ville = typeof b.ville === "string" ? b.ville.trim().slice(0, 80) : "";
+      if (b.cgu !== true) return rep({ erreur: "Acceptez les conditions d'utilisation pour recevoir votre analyse." }, 400);
+      if (!(texte.length >= 30 && texte.length <= 20000) && !(/^https:\/\/\S+$/.test(lienAnnonce) && lienAnnonce.length <= 500))
+        return rep({ erreur: "Collez le texte complet de l'annonce, ou son lien." }, 400);
+      if (!(await humain(b.jeton, ip))) return rep({ erreur: "La vérification anti-robot n'a pas abouti. Rechargez la page et réessayez." }, 403);
+      if (await tropDeDemandes(`email:${email}:essai`, 3, 15)) return rep({ ok: true });
+      if (await tropDeDemandes(`ip:${ip}:essai`, 2, JOUR))
+        return rep({ erreur: "L'analyse offerte a déjà été demandée depuis cette connexion aujourd'hui. Vérifiez votre boîte mail, ou connectez-vous.", code: "limite" }, 429);
+      const { data: max } = await sb.from("reglages").select("valeur").eq("cle", "essais_max_jour").maybeSingle();
+      if (await tropDeDemandes("essais:jour", Number(max?.valeur) || ESSAIS_MAX_JOUR, JOUR))
+        return rep({ erreur: "Trop de demandes aujourd'hui. Créez votre compte gratuit : votre première analyse vous attend.", code: "plafond" }, 429);
+
+      const { data: essai, error: eEssai } = await sb
+        .from("essais")
+        .insert({ email, texte: texte.length >= 30 ? texte : null, lien: lienAnnonce || null, ville: ville || null, ip })
+        .select("id")
+        .single();
+      if (eEssai || !essai) {
+        console.error("essai", eEssai);
+        return rep({ erreur: "L'envoi n'a pas marché. Réessayez dans un instant." }, 500);
+      }
+      // Nouveau visiteur, ou invité qui n'a pas encore cliqué : « invite » crée (ou renvoie) le compte sans mot de passe
+      // et le lien l'active ; compte déjà actif : simple lien de connexion.
+      const { data: p } = await sb.from("profils").select("id").eq("email", email).limit(1).maybeSingle();
+      const actif = p ? !!(await sb.auth.admin.getUserById(p.id)).data.user?.email_confirmed_at : false;
+      const nouveau = !actif;
+      const type = nouveau ? "invite" : "magiclink";
+      const { data, error } = await sb.auth.admin.generateLink(
+        nouveau ? { type, email, options: { data: { famille: "particulier", onboarding: { source: "essai", cgu: new Date().toISOString() } } } } : { type, email },
+      );
+      if (error || !data?.properties?.hashed_token) {
+        console.error("generateLink essai", error);
+        return rep({ erreur: "L'envoi n'a pas marché. Réessayez dans un instant." }, 500);
+      }
+      const suite = `/app/analyser?essai=${essai.id}`;
+      const lien = `${site}/auth/confirm?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=${type}&next=${encodeURIComponent(suite)}`;
+      await envoyer(
+        email,
+        "Votre analyse Utopicar vous attend",
+        gabarit(
+          "Votre analyse vous attend",
+          "Cliquez sur le bouton : votre espace Utopicar s'ouvre et l'analyse de l'annonce démarre toute seule (environ une minute). Pas de mot de passe à créer.",
+          "Voir mon analyse",
+          lien,
+          "Ce lien est valable une heure et ne sert qu'une fois. Si vous n'avez rien demandé, ignorez ce message : aucun compte ne sera activé.",
+        ),
+        `Votre analyse Utopicar vous attend (lien valable une heure) :\n${lien}\n\nSi vous n'avez rien demandé, ignorez ce message.`,
+      );
       return rep({ ok: true });
     }
 
