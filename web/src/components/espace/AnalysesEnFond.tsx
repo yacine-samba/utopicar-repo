@@ -5,7 +5,7 @@
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { lienImportable, siteAnnonce, texteDepuisImport } from "@/lib/analyse/import";
+import { lienColle, siteAnnonce, texteDepuisImport } from "@/lib/analyse/import";
 import { depuisDataUrl, type PhotoLocale } from "@/lib/photos-analyse";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
@@ -28,7 +28,7 @@ const ERREURS: Record<string, string> = {
 
 const rien = () => () => {};
 
-export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif }: { children: ReactNode; mode: "particulier" | "benef"; maxPhotos: number; ville: string; actif: boolean }) {
+export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif, suite }: { children: ReactNode; mode: "particulier" | "benef"; maxPhotos: number; ville: string; actif: boolean; /** quota épuisé : la formule à proposer avant les crédits */ suite?: { l: string; href: string } | null }) {
   const router = useRouter();
   const { notifier, element } = useNotification();
   // ville de départ et de revente : celle du profil d'analyse, sinon celle du compte
@@ -39,7 +39,7 @@ export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif }: { ch
   /** Lance l'analyse ; renvoie un message d'erreur immédiat (lien refusé), sinon null : la suite arrive par notification. */
   const lancer = useCallback(
     async (brut: string): Promise<string | null> => {
-      const lien = lienImportable(brut);
+      const lien = lienColle(brut);
       if (!lien) return ERREURS.lien;
       if (!SUPABASE_URL) return "L'import par lien n'est pas disponible ici : collez le texte de l'annonce dans la page Analyser.";
       const { data } = await supabaseNavigateur().auth.getSession();
@@ -49,7 +49,8 @@ export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif }: { ch
       const etape = (e: EnCours["etape"]) => setEnCours((l) => l.map((x) => (x.id === id ? { ...x, etape: e } : x)));
       setEnCours((l) => [...l, { id, lien, etape: "import" }]);
       const echec = (texte: string, quota = false): null => {
-        notifier({ titre: "L'analyse n'a pas abouti", texte, ton: "warn", action: quota ? { l: "Acheter des crédits", onClick: () => router.push("/app/credits") } : { l: "Réessayer dans la page Analyser", onClick: () => router.push(`/app/analyser?lien=${encodeURIComponent(lien)}`) } });
+        const versFormule = quota && suite ? { l: suite.l, onClick: () => router.push(suite.href) } : null;
+        notifier({ titre: "L'analyse n'a pas abouti", texte, ton: "warn", action: versFormule ?? (quota ? { l: "Acheter des crédits", onClick: () => router.push("/app/credits") } : { l: "Réessayer dans la page Analyser", onClick: () => router.push(`/app/analyser?lien=${encodeURIComponent(lien)}`) }) });
         return null;
       };
       try {
@@ -93,7 +94,7 @@ export function AnalysesEnFond({ children, mode, maxPhotos, ville, actif }: { ch
       }
       return null;
     },
-    [maxPhotos, mode, notifier, router, villeProfil],
+    [maxPhotos, mode, notifier, router, villeProfil, suite],
   );
 
   return (

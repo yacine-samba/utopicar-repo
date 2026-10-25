@@ -19,6 +19,8 @@ sujet avance : idée → brief → en production → publié (avec le lien vers 
 |---|---|---|---|---|
 | MO9 « 974 € » (brief `video/brief-mo9.md`, 8 oct. 2026) | une revente qui marche, c'est de la chance | elle se décide avant l'achat | trois décisions au jour 0 : prix de revente sur les annonces d'à côté, prix max frais compris, défauts chiffrés à la visite | « Bénéfice : 974 euros. Même le kebab était prévu. » |
 
+| MO12 « 600 km » (brief `video/brief-mo12.md`, planche `video/renders/maquette-hooks/planche-mo12.png`, 16 oct. 2026 ; vidéo 1 de `video/docs/serie-ab-achat-revente.md`) | une affaire à 300 km vaut la route : « 1 600 € de moins, à 300 km » | la route ne coûte pas de l'essence, elle fait acheter une voiture qu'on aurait refusée au téléphone (coûts irrécupérables) : 578 €, presque un euro du kilomètre | les 300 km se font au téléphone : cinq questions, un prix max écrit avant de partir, deux verdicts (avec / sans facture de distribution) | « Six cents kilomètres. Cinq cent soixante-dix-huit euros. Presque un euro du kilomètre. » |
+
 ## Développés dans `video/serie-47.md` (à valider)
 
 | Épisode | Croyance (son calcul) | Vérité | Méthode du pro | Chute possible |

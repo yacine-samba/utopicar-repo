@@ -656,3 +656,49 @@ select option:disabled {
     display: none;
   }
 }
+
+/* ---------- Menu latéral de l'espace (ordinateur) : étiquettes en bulle au survol ----------
+   .a-bulle : l'élément survolé (lien, bouton) ; .bulle : son intitulé, visible menu ouvert, en bulle menu replié ;
+   .bulle-seule : intitulé seulement en bulle (bouton du menu, avatar) ; .bulle-bas : bulle sous l'élément. */
+.bulle-seule { display: none; }
+@media (min-width: 64rem) {
+  #menu-lateral .a-bulle { position: relative; }
+  #menu-lateral[data-replie="true"] { overflow: visible; }
+  #menu-lateral[data-replie="true"] .bulle,
+  #menu-lateral .bulle-seule {
+    display: block;
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    translate: -4px -50%;
+    flex: none;
+    width: max-content;
+    max-width: 240px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--color-line-2);
+    background: var(--color-bg1);
+    color: var(--color-ink);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    white-space: nowrap;
+    box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.8);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.12s ease, translate 0.12s ease;
+    z-index: 60;
+  }
+  /* bouton du menu : bulle sous lui menu ouvert, à droite menu replié (comme les icônes) */
+  #menu-lateral[data-replie="false"] .bulle-seule.bulle-bas { left: auto; right: 0; top: calc(100% + 8px); translate: 0 -4px; }
+  #menu-lateral[data-replie="true"] .a-bulle:hover > .bulle,
+  #menu-lateral[data-replie="true"] .a-bulle:focus-visible > .bulle,
+  #menu-lateral .a-bulle:hover > .bulle-seule,
+  #menu-lateral .a-bulle:focus-visible > .bulle-seule { opacity: 1; translate: 0 -50%; }
+  #menu-lateral[data-replie="false"] .a-bulle:hover > .bulle-seule.bulle-bas,
+  #menu-lateral[data-replie="false"] .a-bulle:focus-visible > .bulle-seule.bulle-bas { translate: 0 0; }
+  #menu-lateral[data-replie="false"] .bulle-seule:not(.bulle-bas) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #menu-lateral .bulle, #menu-lateral .bulle-seule { transition: none; }
+}

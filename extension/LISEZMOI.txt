@@ -1,4 +1,4 @@
-Utopicar, extension Chrome et Edge (version 4.4)
+Utopicar, extension Chrome et Edge (version 4.6)
 
 Installation ou mise à jour (2 minutes)
 1. Décompressez ce dossier quelque part où il restera (ex. Documents/utopicar-extension).
@@ -41,11 +41,27 @@ Toujours disponible
   annonces rejoignent la base du marché (formule Benef Pro). Tout est aussi copié (Ctrl+V en secours). Bouton « Arrêter » pour stopper :
   ce qui a déjà été lu est gardé. Si Leboncoin affiche une vérification, le relevé s'arrête et garde
   ce qui a été lu.
+- « Relever toutes les cotes » : toutes les marques de Leboncoin, chaque modèle de chaque marque, et pour chaque
+  modèle l'essence, le diesel, l'hybride et l'électrique, relevés page après page. Seulement les annonces de 500 € et
+  plus, 250 000 km au plus. Facultatif : « Seulement ces marques » (ex. Audi, Renault) pour un relevé partiel.
+  Marques et modèles : la liste que Leboncoin charge lui-même quand elle est lisible ; sinon des marques connues, celles
+  vues dans les annonces, et les modèles vus en lisant chaque grande marque.
+  Pour lire moins de pages sans rien perdre : une recherche de 100 pages ou moins (3 500 annonces) est lue en entier
+  puis répartie par modèle et par énergie ; une marque plus grande est découpée par modèle, un modèle plus grand par
+  énergie. Une recherche qui dépasse encore 100 pages est lue sur 100 pages (Leboncoin n'en montre pas plus) : son
+  nombre total de résultats est noté, et la Cote l'affiche dans « Relevés incomplets ».
+  Les annonces sont gardées dans l'extension pendant le relevé. À la fin, elles sont envoyées à Utopicar (base du
+  marché) et la Cote s'ouvre avec le bilan. « Envoyer à Utopicar » relance l'envoi s'il a été interrompu (déconnexion).
+  Pause de 2 à 4 secondes entre deux pages, de 4 à 8 secondes entre deux recherches, de 1 à 2 minutes toutes les
+  40 recherches : tout Leboncoin prend de nombreuses heures. Il faut un onglet Leboncoin (l'extension en ouvre un en
+  fond s'il n'y en a pas). « Pause », « Reprendre » et « Abandonner » à tout moment ; après une vérification Leboncoin
+  (validez-la vous-même, puis « Reprendre ») ou un redémarrage du navigateur, le relevé reprend où il s'était arrêté.
 - Raccourci clavier : Alt+Maj+U ouvre l'extension.
 
 Bon usage
 - Les règles de Leboncoin interdisent la collecte automatique en masse. L'extension lit seulement ce
   que vous choisissez (10 annonces au maximum par lecture), à un rythme humain, depuis votre propre
-  navigateur. Gardez ce rythme : pas de lectures enchaînées toute la journée.
+  navigateur. Gardez ce rythme : pas de lectures enchaînées toute la journée. Le relevé de toutes les cotes
+  enchaîne des milliers de pages : lancez-le de temps en temps, éventuellement par marques.
 
 Sites pris en charge pour les photos : Leboncoin, La Centrale, AutoScout24, ParuVendu.

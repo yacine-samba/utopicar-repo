@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { FormContact } from "@/components/site/FormContact";
-import { GUIDE, OFFRES, prixTxt } from "@/lib/offres";
+import { GARANTIE, GUIDE, OFFRES, prixTxt } from "@/lib/offres";
 
 export const metadata: Metadata = { title: "Informations légales", description: "Mentions légales, confidentialité, conditions d'utilisation et de vente, accessibilité et contact." };
 
@@ -124,6 +124,12 @@ export default function Legal() {
         <p>Les abonnements sont mensuels, sans engagement, et se renouvellent automatiquement chaque mois. Vous pouvez résilier à tout moment depuis « Mon compte » : l&apos;accès reste ouvert jusqu&apos;à la fin du mois payé, puis plus rien n&apos;est prélevé. Un changement de formule est appliqué immédiatement, avec un ajustement au prorata.</p>
         <h3>Paiement</h3>
         <p>Le paiement se fait par carte bancaire via Stripe. Une facture est disponible dans votre espace de gestion d&apos;abonnement.</p>
+        {GARANTIE && (
+          <>
+            <h3>Garantie du premier mois</h3>
+            <p>Le premier paiement d&apos;un abonnement est remboursé en entier si vous le demandez par e-mail dans les {GARANTIE.jours} jours qui suivent, sans justification. Le remboursement est fait sur la carte utilisée et l&apos;abonnement est résilié. La garantie vaut une fois par personne ; elle ne s&apos;applique pas aux crédits à l&apos;unité ni aux guides.</p>
+          </>
+        )}
         <h3>Droit de rétractation</h3>
         <p>Vous disposez de 14 jours pour vous rétracter après la souscription. Toutefois, en demandant l&apos;accès immédiat au service ou au guide lors du paiement, vous acceptez que son exécution commence avant la fin de ce délai et vous renoncez à votre droit de rétractation pour le contenu numérique déjà fourni (articles L221-25 et L221-28 du Code de la consommation). En cas de difficulté, écrivez-nous : nous cherchons toujours une solution.</p>
         <h3>Médiation</h3>

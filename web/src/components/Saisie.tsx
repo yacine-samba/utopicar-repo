@@ -4,17 +4,47 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
 import { Patience, type Apercu } from "./analyse/Patience";
-import { EssaiEmail, type DemandeEssai } from "./analyse/EssaiEmail";
-import { lienImportable, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
+import { lienColle, lienImportable, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { useExtension } from "@/lib/extension";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { Champ, cx, inputCls } from "./ui";
 import { depuisDataUrl, estImage, reduire, type PhotoLocale } from "@/lib/photos-analyse";
+import { centimes, GARANTIE, OFFRES, PACKS, prixParAnalyse, prixTxt, type OffreId } from "@/lib/offres";
+import { BoutonAbonner } from "./site/BoutonAbonner";
 
 const BROUILLON = "utp-brouillon";
 
-const QUOTA_EPUISE = "Vous n'avez plus d'analyse disponible. Continuez tout de suite avec des crédits à l'unité, sans abonnement, ou passez à une formule.";
+const QUOTA_EPUISE = "Plus d'analyse disponible pour le moment. Continuez tout de suite :";
+
+/** Plus d'analyse : une seule offre claire (la formule suivante), puis l'analyse à l'unité, puis toutes les formules.
+    Au lieu de renvoyer vers une page de six formules sur deux onglets. */
+function OffreSuite({ mode, suite }: { mode: "particulier" | "benef"; suite?: OffreId | null }) {
+  const o = suite === null ? null : OFFRES[suite ?? (mode === "benef" ? "starter" : "essentiel")];
+  const pa = o ? prixParAnalyse(o) : null;
+  return (
+    <div className="mt-3 grid max-w-md gap-2">
+      {o && (
+        <>
+          <BoutonAbonner produit={o.id} className="btn btn-o btn-sm w-full">
+            {o.famille === "benef" ? "Benef " : ""}{o.nom} : {o.analyses} analyses pour {prixTxt(o.prix)} par mois
+          </BoutonAbonner>
+          <p className="text-xs text-ink-3">
+            {pa ? `soit ${centimes(pa)} l'analyse · ` : ""}sans engagement{GARANTIE ? `, remboursé sous ${GARANTIE.jours} jours` : ""}
+          </p>
+        </>
+      )}
+      <p className="flex flex-wrap gap-x-4 gap-y-1">
+        <Link href="/app/credits" className={o ? "text-o2 underline underline-offset-4" : "btn btn-o btn-sm"}>
+          {o ? "Ou " : ""}1 analyse à {prixTxt(PACKS[0].prix)}, sans abonnement
+        </Link>
+        <Link href={`/tarifs#${mode === "benef" ? "benef" : "particuliers"}`} className="text-ink-3 underline-offset-4 hover:text-ink hover:underline">
+          Toutes les formules
+        </Link>
+      </p>
+    </div>
+  );
+}
 
 const ERREURS_IMPORT: Record<string, string> = {
   lien: "Ce lien n'est pas celui d'une annonce Leboncoin, La Centrale ou AutoScout24. Copiez la page de l'annonce et collez-la ci-dessous.",
@@ -34,8 +64,7 @@ export function Saisie({
   lienInitial,
   enPlus,
   restantes = null,
-  visiteur = false,
-  essai,
+  suite,
   onResultat,
 }: {
   mode: "particulier" | "benef";
@@ -51,10 +80,8 @@ export function Saisie({
   enPlus?: ReactNode;
   /** Analyses restantes du compte (null : inconnu ou sans limite). À 0, rien n'est envoyé : ni import, ni analyse. */
   restantes?: number | null;
-  /** Visiteur sans compte : au lieu d'analyser, on demande son email (analyse offerte, lien reçu par email). */
-  visiteur?: boolean;
-  /** Annonce gardée par l'analyse offerte (lien reçu par email) : reprise et lancée dès l'ouverture. */
-  essai?: DemandeEssai;
+  /** Formule à proposer quand les analyses sont épuisées (null : aucune au-dessus, seulement l'unité). */
+  suite?: OffreId | null;
   onResultat: (a: Analyse, ville: string) => void;
 }) {
   const router = useRouter();
@@ -172,6 +199,7 @@ export function Saisie({
   async function importer(url: string, villeChoisie = ville) {
     setErreur(null);
     if (quotaEpuise()) return;
+    url = lienColle(url) ?? url;
     if (!lienImportable(url)) {
       setErreur({ t: ERREURS_IMPORT.lien });
       return;
@@ -224,6 +252,12 @@ export function Saisie({
   async function lancer(t = texte, ph = photos, v = ville, og = origine) {
     setErreur(null);
     if (quotaEpuise()) return;
+    // texte de partage de l'appli Leboncoin tapé ou collé dans le champ texte : l'annonce est lue, pas analysée telle quelle
+    const partage = !og && lienColle(t);
+    if (partage) {
+      setLien(partage);
+      return importer(partage, v);
+    }
     if (t.trim().length < 30) {
       setErreur({ t: "Collez le texte complet de l'annonce : titre, prix, kilométrage et description." });
       return;
@@ -289,7 +323,7 @@ export function Saisie({
       onPaste={async (e) => {
         // Copie de l'extension UTOPICAR Scanner : texte structuré et photos jointes.
         const brut = e.clipboardData.getData("text/plain");
-        const url = lienImportable(brut);
+        const url = lienColle(brut);
         if (url && (e.target as HTMLElement).tagName === "TEXTAREA") {
           e.preventDefault();
           setLien(url);
@@ -342,7 +376,7 @@ export function Saisie({
             value={lien}
             onChange={(e) => setLien(e.target.value)}
             onPaste={(e) => {
-              const url = lienImportable(e.clipboardData.getData("text/plain"));
+              const url = lienColle(e.clipboardData.getData("text/plain"));
               if (!url) return;
               e.preventDefault();
               e.stopPropagation();
@@ -453,16 +487,7 @@ export function Saisie({
       {erreur && (
         <div role="alert" className="rounded-2xl border border-warn/40 bg-warn/10 p-4 text-sm">
           <p className="text-warn">{erreur.t}</p>
-          {erreur.offres && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Link href="/app/credits" className="btn btn-o btn-sm">
-                Acheter des crédits
-              </Link>
-              <Link href={`/tarifs#${erreur.offres === "benef" ? "benef" : "particuliers"}`} className="btn btn-sm">
-                Voir les formules
-              </Link>
-            </div>
-          )}
+          {erreur.offres && <OffreSuite mode={erreur.offres === "benef" ? "benef" : "particulier"} suite={suite} />}
         </div>
       )}
     </form>

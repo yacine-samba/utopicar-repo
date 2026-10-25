@@ -1,0 +1,178 @@
+[
+ {
+  "apres": 14,
+  "mot": "euros.",
+  "suivant": "Colle",
+  "t": 5.695,
+  "gap": 0.1,
+  "dB": -62.9
+ },
+ {
+  "apres": 19,
+  "mot": "utopicar.",
+  "suivant": "En",
+  "t": 7.315,
+  "gap": 0.92,
+  "dB": -62.3
+ },
+ {
+  "apres": 22,
+  "mot": "minute.",
+  "suivant": "La",
+  "t": 8.345,
+  "gap": 0.46,
+  "dB": -61.2
+ },
+ {
+  "apres": 24,
+  "mot": "cote,",
+  "suivant": "les",
+  "t": 9.035,
+  "gap": 1.28,
+  "dB": -65.4
+ },
+ {
+  "apres": 26,
+  "mot": "travaux,",
+  "suivant": "ta",
+  "t": 9.745,
+  "gap": 1.14,
+  "dB": -66.6
+ },
+ {
+  "apres": 28,
+  "mot": "marge",
+  "suivant": "et",
+  "t": 10.455,
+  "gap": 1.01,
+  "dB": -63.9
+ },
+ {
+  "apres": 31,
+  "mot": "verdict.",
+  "suivant": "A",
+  "t": 11.395,
+  "gap": 1.04,
+  "dB": -87.3
+ },
+ {
+  "apres": 33,
+  "mot": "éviter.",
+  "suivant": "Pour",
+  "t": 12.355,
+  "gap": 0.39,
+  "dB": -57.9
+ },
+ {
+  "apres": 46,
+  "mot": "plus.",
+  "suivant": "Une",
+  "t": 16.435,
+  "gap": 0.5,
+  "dB": -87.9
+ },
+ {
+  "apres": 54,
+  "mot": "?",
+  "suivant": "Cette",
+  "t": 18.605,
+  "gap": 0.6,
+  "dB": -77.2
+ },
+ {
+  "apres": 62,
+  "mot": "cote.",
+  "suivant": "Tu",
+  "t": 21.275,
+  "gap": 0.74,
+  "dB": -58.0
+ },
+ {
+  "apres": 68,
+  "mot": "'offre",
+  "suivant": "et",
+  "t": 22.345,
+  "gap": 0.5,
+  "dB": -66.9
+ },
+ {
+  "apres": 75,
+  "mot": "dépasser.",
+  "suivant": "Et",
+  "t": 23.945,
+  "gap": 0.64,
+  "dB": -86.8
+ },
+ {
+  "apres": 82,
+  "mot": "scroller.",
+  "suivant": "Ta",
+  "t": 26.005,
+  "gap": 1.12,
+  "dB": -67.3
+ },
+ {
+  "apres": 87,
+  "mot": "seule.",
+  "suivant": "Toi,",
+  "t": 27.625,
+  "gap": 1.04,
+  "dB": -60.4
+ },
+ {
+  "apres": 90,
+  "mot": "dors.",
+  "suivant": "Utopicar,",
+  "t": 28.795,
+  "gap": 0.04,
+  "dB": -60.0
+ },
+ {
+  "apres": 95,
+  "mot": "vendeurs.",
+  "suivant": "Une",
+  "t": 31.275,
+  "gap": 1.06,
+  "dB": -85.5
+ },
+ {
+  "apres": 101,
+  "mot": "cote,",
+  "suivant": "tu",
+  "t": 32.725,
+  "gap": 0.54,
+  "dB": -71.0
+ },
+ {
+  "apres": 105,
+  "mot": "mail.",
+  "suivant": "Et",
+  "t": 33.815,
+  "gap": 1.16,
+  "dB": -85.4
+ },
+ {
+  "apres": 115,
+  "mot": "vente,",
+  "suivant": "ta",
+  "t": 36.295,
+  "gap": 0.73,
+  "dB": -79.6
+ },
+ {
+  "apres": 118,
+  "mot": "marge.",
+  "suivant": "Utopicar.",
+  "t": 37.345,
+  "gap": 0.7,
+  "dB": -86.9
+ },
+ {
+  "apres": 123,
+  "mot": "mieux.",
+  "suivant": "Le",
+  "t": 40.035,
+  "gap": 0.4,
+  "dB": -68.5
+ }
+]

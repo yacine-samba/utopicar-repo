@@ -15,7 +15,7 @@ import { fournisseursActifs } from "@/lib/fournisseurs";
 import { BENEF, GUIDE } from "@/lib/offres";
 
 export const metadata: Metadata = {
-  title: "Benef : l'achat-revente automobile, chiffré avant de vous déplacer",
+  title: "Benef : l'achat-revente auto chiffré avant d'acheter",
   description: "Pour vous lancer dans l'achat-revente de voitures ou développer votre activité : marge nette, prix d'offre, historique, tableau de bord et gestion du parc.",
 };
 
@@ -68,7 +68,7 @@ export default async function Benef() {
         <div className="wrap">
           <div className="apparait mx-auto mb-10 max-w-2xl text-center">
             <h2 className="h-sec">
-              Combien vous reste&#8209;t&#8209;il <span className="it">vraiment ?</span>
+              Combien vous reste&#8209;t&#8209;il <span className="it">après les frais ?</span>
             </h2>
             <p className="mt-3 text-lg text-ink-2">Bougez les curseurs.</p>
           </div>
@@ -103,7 +103,7 @@ export default async function Benef() {
             <h2 className="h-sec">
               Pourquoi s&apos;abonner ? <span className="it">Une voiture suffit</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Une seule bonne affaire paie l&apos;abonnement. Une seule erreur évitée aussi.</p>
+            <p className="mt-3 text-lg text-ink-2">Une voiture bien achetée, ou une mauvaise évitée, paie l&apos;abonnement.</p>
           </div>
           <GainsAbonnement famille="benef" ids={BENEF} lien="/tarifs#benef" />
         </div>

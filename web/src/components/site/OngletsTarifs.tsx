@@ -6,8 +6,8 @@ type Famille = "particuliers" | "benef";
 
 /** Tarifs : un seul jeu de formules à la fois. « J'achète pour moi » (par défaut) ou Benef, au survol ou au clic.
     Les liens /tarifs#benef et /tarifs#particuliers ouvrent le bon onglet. */
-export function OngletsTarifs({ particuliers, benef }: { particuliers: ReactNode; benef: ReactNode }) {
-  const [f, setF] = useState<Famille>("particuliers");
+export function OngletsTarifs({ particuliers, benef, defaut = "particuliers" }: { particuliers: ReactNode; benef: ReactNode; defaut?: Famille }) {
+  const [f, setF] = useState<Famille>(defaut);
   useEffect(() => {
     const lire = () => {
       const h = location.hash.slice(1);

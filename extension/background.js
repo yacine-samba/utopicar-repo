@@ -2,7 +2,7 @@
 /* Utopicar v4 : travail de fond. Lecture d'une annonce (texte + toutes les photos) et lecture en rafale
    des annonces cochées, au rythme d'une personne. Le résultat s'ouvre directement sur utopicar.fr
    (analyse, Tri rapide ou Cote) ; il est aussi copié, pour Ctrl+V en secours. */
-importScripts('extract.js');
+importScripts('extract.js', 'balayage.js');
 
 const SITE = 'https://www.utopicar.fr';
 // où chaque envoi s'ouvre : l'annonce dans l'analyse, le lot dans le Tri rapide, le relevé dans la Cote
@@ -241,6 +241,7 @@ chrome.runtime.onMessage.addListener((msg, sender, send) => {
     runReleve(msg.tabId, msg.url || ''); send({ok:true}); return;
   }
   if (msg.type === 'utp-stop'){ stopAsked = true; send({ok:true}); return; }
+  if (typeof msg.type === 'string' && msg.type.startsWith('utp-bal-')) return balMessage(msg, send);
   if (msg.type === 'utp-copylast'){
     chrome.storage.local.get('last').then(async r => { if (!r.last){ send({ok:false, err:'Rien à recopier.'}); return; } send({ok: await copyText(r.last)}); });
     return true;

@@ -115,7 +115,7 @@ export async function Bento() {
           </p>
         </div>
         <p className="pas mt-auto text-sm text-ink-3" style={d(0.6)}>
-          Rédigé pour vous, à copier en un clic.
+          Rédigé pour vous, prêt à copier.
         </p>
       </Case>
 

@@ -2,23 +2,31 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { compteBenef } from "@/lib/benef";
 import { familleEspace, texteRestantes } from "@/lib/espace";
-import { BENEF } from "@/lib/offres";
+import { BENEF, centimes, formuleSuivante, prixParAnalyse } from "@/lib/offres";
 import { OutilBenef } from "@/components/benef/OutilBenef";
 import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { DemandeProfil } from "@/components/analyse/ProfilAnalyse";
 import { lienPartage } from "@/lib/analyse/import";
-import { reprendreEssai } from "@/lib/essai";
+import { redirect } from "next/navigation";
+import { supabaseServeur } from "@/lib/supabase/serveur";
 
 export const metadata: Metadata = { title: "Analyser une annonce" };
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string; essai?: string }> }) {
-  const c = await compteBenef("/app/analyser");
+export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string; usage?: string }> }) {
   const sp = await searchParams;
+  const c = await compteBenef(sp.usage === "benef" ? "/app/analyser?usage=benef" : "/app/analyser");
+  // carte « Gratuit » des tarifs Benef : l'usage achat-revente est enregistré (s'il n'est pas déjà choisi),
+  // pour que l'analyse offerte soit une analyse Benef
+  if (sp.usage === "benef") {
+    if (!c.famille && !c.illimite) await (await supabaseServeur()).from("profils").update({ famille: "benef", updated_at: new Date().toISOString() }).eq("id", c.id);
+    redirect(sp.lien ? `/app/analyser?lien=${encodeURIComponent(sp.lien)}` : "/app/analyser");
+  }
   // ?lien= (tableau de bord) ou partage depuis une appli (url, texte, titre : voir le manifest)
   const lien = sp.lien ?? lienPartage(sp.url, sp.texte, sp.titre) ?? undefined;
   const partageIllisible = !sp.lien && !lien && !!(sp.url || sp.texte);
   const o = c.offre;
+  const suite = c.illimite ? null : formuleSuivante(o.id, familleEspace(c));
 
   if (familleEspace(c) === "benef") {
     if (o.famille !== "benef")
@@ -34,7 +42,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
           </p>
         </div>
       );
-    return <OutilBenef maxPhotos={o.photos} parc={o.parc} villeCompte={c.ville} lienInitial={lien} restantes={c.illimite ? null : c.restantes} />;
+    return <OutilBenef maxPhotos={o.photos} parc={o.parc} villeCompte={c.ville} lienInitial={lien} restantes={c.illimite ? null : c.restantes} suite={suite?.id ?? null} />;
   }
 
   // analyse offerte : l'annonce collée avant l'email part toute seule
@@ -47,6 +55,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
       ville={c.ville}
       maxPhotos={o.photos}
       restantes={c.illimite ? null : c.restantes}
+      suite={suite?.id ?? null}
       retour="/app/analyser"
       lienInitial={lien}
       essai={essai}
@@ -65,7 +74,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
           <p className="text-sm text-ink-3">
             {c.restantes > 0 ? `${texteRestantes(c)}.` : "Plus d'analyse disponible pour le moment."}{" "}
             {c.restantes === 0 ? (
-              <Link href="/app/credits" className="text-o2 underline underline-offset-4">Acheter des crédits</Link>
+              <>
+                {suite && <Link href={`/app/payer?produit=${suite.id}`} className="font-medium text-o2 underline underline-offset-4">Passer à {suite.nom}{prixParAnalyse(suite) ? `, ${centimes(prixParAnalyse(suite)!)} l'analyse` : ""}</Link>}
+                {suite && " ou "}
+                <Link href="/app/credits" className="text-o2 underline underline-offset-4">{suite ? "acheter des crédits" : "Acheter des crédits"}</Link>
+              </>
             ) : (
               o.prix === 0 && <Link href="/app/compte#formule" className="text-o2 underline underline-offset-4">Voir les formules</Link>
             )}

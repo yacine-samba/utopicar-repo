@@ -1,5 +1,27 @@
 # Critique, contrôle et livraison (phases 6 et 7)
 
+## Vérifications de fond (avant la voix, puis avant l'envoi)
+
+Une vidéo juste et laide se corrige ; une vidéo belle et fausse se supprime. À cocher pour chaque vidéo :
+
+1. **Chiffres** : recalculés avec la formule du produit (son code), hypothèse prudente ; chaque chiffre affiché = un
+   chiffre dit = un chiffre de l'interface. Hypothèses visibles quand le total en dépend (« 6 voitures »).
+2. **Faits** : moteur, génération, boîte, taux, règles : recherche web + source officielle ; un repère n'est pas une loi.
+3. **Cohérence du verdict** : tampon, fiche et voix concluent pareil (prix au-dessus du max → « négocie » ou « passe »).
+4. **Image** : photo de la bonne génération ; flous limités à l'obligatoire, contrôlés zoomés ; aucun logo de plateforme
+   tierce.
+5. **Écran propre** : pas d'emoji, pas de « exemple », pas de source ni de mention parasite (sauf obligation légale).
+6. **Contrat des 3 s** : image figée à 3 s sans le son → pour qui, quel objet, quel enjeu.
+7. **Durée** : dans la cible demandée (`ffprobe`), carton de fin compris.
+8. **Voix** : transcription relue mot à mot, prise écoutée ; si non écoutée, le dire dans le message de livraison.
+9. **Mesures** : `qa_video.py` sans FAIL, chaque WARN tranché sur l'image ; planche de contrôle de toute la série
+   (3 images par vidéo : hook, chiffre, interface) regardée avant l'envoi.
+10. **Voix continue** : aucun blanc > 0,4 s dans la piste voix (mesure RMS par 50 ms) ; aucun arrêt de musique sur un
+    blanc de voix.
+11. **Éléments fantômes** : aucun élément créé et jamais animé ; planche d'images à chaque changement de scène.
+12. **Surlignages** : cadres mesurés au pixel sur la capture, pas posés à l'œil.
+13. **Dépendances** : tout ce que la vidéo promet existe (code promo en ligne, offre réelle) avant publication.
+
 ## Un round de critique
 
 Sur le **MP4 réellement encodé** (jamais seulement sur la page) :

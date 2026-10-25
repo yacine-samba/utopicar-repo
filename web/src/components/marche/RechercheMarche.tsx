@@ -18,16 +18,15 @@ type Annonce = {
   id: string; titre: string; prix: number; annee: number | null; km: number | null; energie: string | null; boite: string | null; ch: number | null; pro: boolean; lieu: string | null;
   source: string; vu: string | null; url: string | null; photo?: string | null; gen: string | null; genLabel: string; piege: boolean; suspect: boolean; cote: CoteAnnonce | null;
   moteur: string | null; version: string | null;
-  /** motorisation déduite de la puissance (pas écrite) ; génération d'après l'année seulement (doute) ; version et estimation Leboncoin */
-  moteurDeduit?: boolean; genPar?: "texte" | "puissance" | "annee" | null; doute?: boolean;
+  /** motorisation déduite de la puissance (pas écrite) ; version et estimation Leboncoin */
+  moteurDeduit?: boolean; genPar?: "texte" | "puissance" | "annee" | null;
   lbcVersion?: string | null; mec?: string | null; lbc?: { min: number; max: number; pos: string | null } | null;
 };
 type Collecte = { cle: string; nom: string; statut: "demandee" | "en cours" | "ok" | "erreur" | "quota"; n?: number | null; erreur?: string | null };
 type Resultat = {
-  recherche: Recherche | null; modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[]; incertaines: number };
+  recherche: Recherche | null; modele: { nom: string; gens: { id: string; label: string; y0: number; y1: number; n: number }[] };
   versions: { id: string; label: string; n: number }[]; moteurs: { l: string; n: number; deduits?: number; ch?: number | null }[]; base: number; collecte: Collecte | null;
   /** annonces placées dans la génération d'après leur année seulement */
-  incertaines?: number;
   total: number; trouvees: number; sousLaCote: number; annonces: Annonce[]; ms: number;
   /** annonces retirées de Leboncoin (absentes du dernier relevé complet), écartées des résultats ; date du dernier relevé de la génération */
   retirees?: number; releve?: string | null;
@@ -58,6 +57,8 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   const [choix, setChoix] = useState<Choix>(SANS);
   const [f, setF] = useState<Filtres>(VIDE);
   const [res, setRes] = useState<Resultat | null>(null);
+  // critères qui ont produit les résultats affichés (le formulaire peut avoir changé depuis, ou la relance avoir échoué)
+  const [lance, setLance] = useState<{ c: Choix; f: Filtres } | null>(null);
   const [etat, setEtat] = useState("");
   const [charge, setCharge] = useState(false);
   // téléphone : les filtres se replient pendant et après la recherche, pour voir le chargement puis les résultats
@@ -74,7 +75,41 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
   }, [courant]);
   const marqueCat = cat.find((b) => b.k === choix.marque);
   const modeleCat = marqueCat?.m.find((m) => m.k === choix.modele);
+  const perime = !!res && !!lance && JSON.stringify([lance.c, lance.f]) !== JSON.stringify([choix, f]);
   const genCat = modeleCat ? modeleCat.g.find((g) => g.id === (choix.gen || (modeleCat.g.length === 1 ? modeleCat.g[0].id : ""))) : undefined;
+
+  /** Années d'une génération du catalogue (fin à 0 : encore vendue, pas d'année maximum). */
+  const anneesGen = (c: Choix): [string, string] | null => {
+    const g = c.gen ? cat.find((b) => b.k === c.marque)?.m.find((m) => m.k === c.modele)?.g.find((x) => x.id === c.gen) : undefined;
+    return g ? [String(g.y0), g.y1 ? String(g.y1) : ""] : null;
+  };
+  /** Nouveau véhicule : une génération choisie remplit les années (comme Leboncoin, qui ne connaît que les années),
+      sans écraser des années tapées à la main (seulement des champs vides, ou ceux remplis par la génération d'avant). */
+  /** Années remplies en ce moment par le véhicule : celles de la phase choisie, sinon de la génération. */
+  const anneesPhaseForm = (id: string): [string, string] | null => {
+    const ph = id ? genCat?.ph?.find((x) => x.id === id) : undefined;
+    return ph ? [String(ph.y0), String(ph.y1)] : null;
+  };
+  function changerChoix(c: Choix) {
+    const avant = anneesPhaseForm(f.phase) ?? anneesGen(choix), apres = anneesGen(c);
+    setF((x) => {
+      let y = x;
+      if (c.gen !== choix.gen || c.modele !== choix.modele) y = { ...y, version: "", phase: "", ...(c.modele !== choix.modele ? { moteur: "" } : {}) };
+      const remplies = avant ? x.anneeMin === avant[0] && x.anneeMax === avant[1] : !x.anneeMin && !x.anneeMax;
+      if (c.gen !== choix.gen && remplies) y = { ...y, anneeMin: apres?.[0] ?? "", anneeMax: apres?.[1] ?? "" };
+      return y;
+    });
+    setChoix(c);
+  }
+  /** Phase choisie (Golf 7 phase 1 : 2012 à 2016) : ses années remplacent celles de la génération, avec la même règle. */
+  function changerPhase(e: React.ChangeEvent<HTMLSelectElement>) {
+    const id = e.target.value;
+    const avant = anneesPhaseForm(f.phase) ?? anneesGen(choix), apres = anneesPhaseForm(id) ?? anneesGen(choix);
+    setF((x) => {
+      const remplies = avant ? x.anneeMin === avant[0] && x.anneeMax === avant[1] : !x.anneeMin && !x.anneeMax;
+      return { ...x, phase: id, ...(remplies ? { anneeMin: apres?.[0] ?? "", anneeMax: apres?.[1] ?? "" } : {}) };
+    });
+  }
   const memeModele = res && res.recherche?.criteres.choix.modele === choix.modele && res.recherche?.criteres.choix.marque === choix.marque;
   const suggestionsMoteur = memeModele && res.moteurs.length ? res.moteurs.map((x) => x.l) : motorisationsTypes(choix.marque, choix.modele);
   const onglets = liste.filter((r) => r.active);
@@ -92,7 +127,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
       if (innerWidth < 640) document.getElementById("rm-attente")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
     try {
-      const r = await fetch("/api/marche/recherche", {
+      const envoyer = () => fetch("/api/marche/recherche", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -101,14 +136,18 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
           anneeMin: n(fx.anneeMin), anneeMax: n(fx.anneeMax), prixMin: n(fx.prixMin), prixMax: n(fx.prixMax), kmMin: n(fx.kmMin ?? ""), kmMax: n(fx.kmMax), dep: fx.dep?.trim() || undefined,
           vendeur: fx.vendeur, mots: fx.mots, exclure: fx.exclure, sousCote: n(fx.sousCote) ?? 0, fiables: fx.fiables, tri: fx.tri, saisie: fx,
         }),
-      });
-      const j = (await r.json().catch(() => null)) as (Resultat & { erreur?: string }) | null;
-      if (!r.ok || !j) {
-        setEtat(j?.erreur ?? "La recherche n'a pas abouti. Réessayez.");
-        notifier({ titre: "La recherche n'a pas abouti", texte: j?.erreur ?? "Réessayez dans un instant.", ton: "warn" });
+      }).catch(() => null);
+      // coupure réseau : une seconde tentative, sans rien afficher (une base lente est déjà relancée par le serveur)
+      let r = await envoyer();
+      if (!r) r = await envoyer();
+      const j = r ? ((await r.json().catch(() => null)) as (Resultat & { erreur?: string }) | null) : null;
+      if (!r || !r.ok || !j) {
+        // pas de notification d'erreur : une ligne près du bouton suffit (refus de formule, critères : le message de l'API)
+        setEtat(r && r.status < 500 && j?.erreur ? j.erreur : "Pas de réponse pour l'instant. Relancez la recherche.");
         return;
       }
       setRes(j);
+      setLance({ c, f: fx });
       setEtat("");
       const enCours = j.collecte && (j.collecte.statut === "demandee" || j.collecte.statut === "en cours");
       setCollecte(j.collecte ? { ...j.collecte, choix: c, f: fx, rid: j.recherche?.id ?? null } : null);
@@ -171,6 +210,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
     setCourant(r.id);
     setChoix(c);
     setF(fx);
+    setLance({ c, f: fx });
     history.replaceState(null, "", `/app/recherche?r=${r.id}`);
     const deja = cache.current.get(r.id);
     if (deja && !relancer) {
@@ -227,13 +267,18 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
         const fx = { ...VIDE, ...journal.f };
         setChoix(c);
         setF(fx);
+        setLance({ c, f: fx });
         void ouvrirGardes(`j=${journal.id}`).then((j) => {
         if (!j) void lancer(c, fx);
       });
       } else if (cible) afficher(cible);
       else if (prerempli?.marque && prerempli.modele) {
+        // recherche rapide du tableau de bord : la génération donne les années, comme dans le formulaire
+        const ans = anneesGen(prerempli);
+        const fx = ans ? { ...VIDE, anneeMin: ans[0], anneeMax: ans[1] } : VIDE;
         setChoix(prerempli);
-        void lancer(prerempli, VIDE);
+        setF(fx);
+        void lancer(prerempli, fx);
       } else {
         const dernier = [...initiales].filter((r) => r.active).sort((x, y) => y.derniere_le.localeCompare(x.derniere_le))[0];
         if (dernier && !nouvelleRecherche) afficher(dernier);
@@ -337,10 +382,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
         <ChoixVehicule
           cat={cat}
           v={choix}
-          onChange={(c) => {
-            if (c.gen !== choix.gen || c.modele !== choix.modele) setF((x) => ({ ...x, version: "", phase: "", ...(c.modele !== choix.modele ? { moteur: "" } : {}) }));
-            setChoix(c);
-          }}
+          onChange={changerChoix}
           idPrefixe="rm"
         />
         {/* Les critères vont par paires min / max sur une même ligne : prix, kilométrage, année. */}
@@ -422,7 +464,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
         )}
         <label className="grid gap-1.5 text-sm">
           <span className="text-ink-2">Phase</span>
-          <select value={f.phase} onChange={maj("phase")} disabled={!genCat?.ph} className={inputCls}>
+          <select value={f.phase} onChange={changerPhase} disabled={!genCat?.ph} className={inputCls}>
             <option value="">{genCat?.ph ? "Toutes" : genCat ? "Pas de restylage distingué" : "Génération d'abord"}</option>
             {genCat?.ph?.map((p) => (
               <option key={p.id} value={p.id}>
@@ -508,10 +550,16 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
 
       {res && !charge && (
         <section aria-labelledby="rm-res" className="grid scroll-mt-24 gap-4">
+          {perime && (
+            <p role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-warn/40 bg-warn/10 p-3 text-sm">
+              <span>Vos critères ont changé : cette liste vient de la recherche précédente.</span>
+              <button type="button" onClick={() => void lancer(choix, f)} className="btn btn-o btn-sm min-h-9">Mettre à jour</button>
+            </p>
+          )}
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="rm-res" className="font-display text-xl font-semibold">
               {res.trouvees} annonce{res.trouvees > 1 ? "s" : ""} · {res.recherche?.nom ?? res.modele.nom}
-              {resumeFiltres(f) && <span className="block text-sm font-normal text-ink-3">{resumeFiltres(f)}</span>}
+              {resumeFiltres(lance?.f ?? f) && <span className="block text-sm font-normal text-ink-3">{resumeFiltres(lance?.f ?? f)}</span>}
             </h2>
             <div className="grid justify-items-end gap-1 text-right">
               <p className="text-sm text-ink-3">
@@ -542,12 +590,11 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
           )}
           <div className="flex flex-wrap gap-2 text-xs">
             {res.modele.gens.filter((g) => g.n).map((g) => (
-              <button key={g.id} type="button" onClick={() => { setChoix((c) => ({ ...c, gen: c.gen === g.id ? "" : g.id })); }}
+              <button key={g.id} type="button" onClick={() => changerChoix({ ...choix, gen: choix.gen === g.id ? "" : g.id })}
                 className={cx("rounded-full border px-3 py-1", choix.gen === g.id ? "border-o/60 bg-o/12 text-ink" : "border-line-2 text-ink-2")}>
                 {g.label} <span className="num text-ink-3">{g.n}</span>
               </button>
             ))}
-            {res.modele.incertaines > 0 && <span className="rounded-full border border-line px-3 py-1 text-ink-3">génération incertaine {res.modele.incertaines}</span>}
           </div>
           {(res.versions.some((v) => v.n) || res.moteurs.length > 0) && (
             <div className="grid gap-2 text-xs">
@@ -579,11 +626,6 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
               </p>
             </div>
           )}
-          {!!res.incertaines && (
-            <p className="rounded-2xl border border-warn/30 bg-warn/5 px-4 py-2.5 text-sm text-ink-2">
-              {res.incertaines} annonce{res.incertaines > 1 ? "s" : ""} de cette période ne disent pas leur génération (années de transition) : elles sont gardées d&apos;après leur année, comme sur Leboncoin, marquées « à vérifier », et ne comptent pas comme bonnes affaires.
-            </p>
-          )}
           {res.annonces.length ? (
             <ListeResultats annonces={res.annonces} favs={favs} />
           ) : (
@@ -603,7 +645,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
 
 const ficheDe = (a: Annonce): FicheData => ({
   id: a.id, titre: a.titre, prix: a.prix, annee: a.annee, km: a.km, ch: a.ch, energie: a.energie, boite: a.boite, moteur: a.moteur, version: a.version ?? a.genLabel ?? null,
-  lieu: a.lieu, pro: a.pro, photo: a.photo ?? null, url: a.url, cote: a.cote, doute: a.doute, lbc: a.lbc ?? null,
+  lieu: a.lieu, pro: a.pro, photo: a.photo ?? null, url: a.url, cote: a.cote, lbc: a.lbc ?? null,
   alerte: a.piege ? (a.suspect ? "Prix suspect : pièces, location ou acompte possible. Vérifiez avant tout contact." : "Piège possible sur cette annonce : lisez-la en entier avant de contacter le vendeur.") : null,
 });
 
@@ -640,8 +682,8 @@ function LigneAnnonce({ a, fav, onFav, onOuvrir }: { a: Annonce; fav: boolean; o
           {a.moteur && <span title={a.moteurDeduit ? "Reconnue à sa puissance et son énergie (pas écrite dans l'annonce)" : undefined}> · {a.moteurDeduit ? "≈ " : ""}{a.moteur}</span>}
           {[a.ch ? `${a.ch} ch` : null, a.energie, a.boite].filter(Boolean).map((x) => ` · ${x}`).join("")}
           {(a.version ?? a.genLabel) && (
-            <span title={a.doute ? "Génération d'après l'année seulement : vérifiez-la (carte grise, photos)" : a.genPar === "puissance" ? "Génération reconnue à sa puissance (année de transition)" : undefined} className={a.doute ? "text-warn" : undefined}>
-              {" · "}{a.version ?? a.genLabel}{a.doute ? " (à vérifier)" : ""}
+            <span title={a.genPar === "puissance" ? "Génération reconnue à sa puissance (année de transition)" : undefined}>
+              {" · "}{a.version ?? a.genLabel}
             </span>
           )}
         </p>
@@ -668,7 +710,7 @@ function LigneAnnonce({ a, fav, onFav, onOuvrir }: { a: Annonce; fav: boolean; o
             </p>
           </div>
         ) : (
-          <p className="text-xs text-ink-3">{a.gen ? "pas assez de comparables" : "génération incertaine"}</p>
+          <p className="text-xs text-ink-3">{a.gen ? "pas assez de comparables" : "choisissez la génération pour la cote"}</p>
         )}
         <div className="relative z-10 mt-2 flex items-center gap-2 sm:justify-end">
           <BoutonFavori

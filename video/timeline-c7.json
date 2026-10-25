@@ -1,0 +1,153 @@
+{
+ "version": 1,
+ "style": "Motions de 15 à 20 s (dictionnaire du vendeur, carrousels A01 à A07) dans la grammaire master60w ; HOOK = id de la vidéo",
+ "fps": 30,
+ "bpm": 112,
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 20.0,
+ "hooks": {
+  "dico2": {
+   "dur": 20.0,
+   "poster": 1.9
+  },
+  "A01": {
+   "dur": 20.0,
+   "poster": 1.6
+  },
+  "A02": {
+   "dur": 18.4,
+   "poster": 3.2
+  },
+  "A03": {
+   "dur": 17.0,
+   "poster": 1.9
+  },
+  "A04": {
+   "dur": 17.2,
+   "poster": 2.1
+  },
+  "A05": {
+   "dur": 19.4,
+   "poster": 2.2
+  },
+  "A06": {
+   "dur": 16.1,
+   "poster": 2.1
+  },
+  "A07": {
+   "dur": 18.8,
+   "poster": 2.0
+  },
+  "PS1": {
+   "dur": 19.4,
+   "poster": 3.4
+  },
+  "PS2": {
+   "dur": 26.0,
+   "poster": 8.8
+  },
+  "FI1": {
+   "dur": 7.9,
+   "poster": 0.0
+  },
+  "FI2": {
+   "dur": 7.8,
+   "poster": 0.0
+  },
+  "FI3": {
+   "dur": 7.95,
+   "poster": 0.0
+  },
+  "BO1": {
+   "dur": 15.6,
+   "poster": 0.9
+  },
+  "BO2": {
+   "dur": 5.6,
+   "poster": 2.2
+  },
+  "BO3": {
+   "dur": 5.6,
+   "poster": 2.2
+  },
+  "S1V1": {
+   "dur": 21.67,
+   "poster": 0.9
+  },
+  "S1V2": {
+   "dur": 16.39,
+   "poster": 0.9
+  },
+  "S1V3": {
+   "dur": 15.23,
+   "poster": 0.9
+  },
+  "S1V4": {
+   "dur": 14.23,
+   "poster": 0.9
+  },
+  "S1V5": {
+   "dur": 13.39,
+   "poster": 0.9
+  },
+  "S1V6": {
+   "dur": 14.59,
+   "poster": 0.9
+  },
+  "S1V7": {
+   "dur": 15.61,
+   "poster": 0.9
+  },
+  "S2V1": {
+   "dur": 14.45,
+   "poster": 0.9
+  },
+  "S2V2": {
+   "dur": 16.19,
+   "poster": 0.9
+  },
+  "S2V3": {
+   "dur": 17.23,
+   "poster": 0.9
+  },
+  "S2V4": {
+   "dur": 12.81,
+   "poster": 0.9
+  },
+  "S2V5": {
+   "dur": 15.35,
+   "poster": 0.9
+  },
+  "S2V6": {
+   "dur": 14.47,
+   "poster": 0.9
+  },
+  "S2V7": {
+   "dur": 13.05,
+   "poster": 0.9
+  },
+  "P1": {
+   "dur": 17.38,
+   "poster": 0.9
+  },
+  "P2": {
+   "dur": 16.08,
+   "poster": 0.9
+  },
+  "P3": {
+   "dur": 14.3,
+   "poster": 0.9
+  },
+  "P4": {
+   "dur": 15.2,
+   "poster": 0.9
+  },
+  "P5": {
+   "dur": 14.24,
+   "poster": 0.9
+  }
+ }
+}

@@ -1,0 +1,21 @@
+[
+  {"apres": 13, "gap": 0.3, "pour": "la perte se pose avant « Colle » ; la feuille du champ monte"},
+  {"apres": 18, "gap": 1.1, "pour": "le lien collé est lu, la pastille devient le bouton « Analyser l'annonce », appui"},
+  {"apres": 21, "gap": 0.6, "pour": "le chrono fait son tour, l'anneau se couche en trait"},
+  {"apres": 23, "gap": 1.2, "pour": "carte « Bon prix ? » lettre à lettre, puis tenue"},
+  {"apres": 25, "gap": 1.2, "pour": "carte « Des travaux ? »"},
+  {"apres": 27, "gap": 1.0, "pour": "carte « Ça rapporte ? »"},
+  {"apres": 30, "gap": 1.0, "pour": "verdict : anneau, note, surtitre, titre, explication, « À faire »"},
+  {"apres": 32, "gap": 0.6, "pour": "tenir « À éviter », la carte se retourne"},
+  {"apres": 36, "gap": 0.8, "pour": "verdict de la Clio, anneau à 97"},
+  {"apres": 40, "gap": 0.5, "pour": "paliers de prix"},
+  {"apres": 47, "gap": 0.7, "pour": "le prix bute contre la barre PLAFOND, puis l'écran du mur s'ouvre"},
+  {"apres": 54, "gap": 1.0, "pour": "la meilleure annonce se construit hors du mur"},
+  {"apres": 59, "gap": 1.0, "pour": "recherche enregistrée : pastille, compteurs, interrupteur, lumière qui tourne"},
+  {"apres": 62, "gap": 0.4, "pour": "horloge à volets"},
+  {"apres": 65, "gap": 1.0, "pour": "messages de la nuit, un par un dans la liste"},
+  {"apres": 71, "gap": 0.6, "pour": "notification"},
+  {"apres": 75, "gap": 1.2, "pour": "l'e-mail d'alerte se construit"},
+  {"apres": 84, "gap": 0.5, "pour": "« Vendues »"},
+  {"apres": 87, "gap": 1.2, "pour": "marge du mois et marge par voiture"}
+]

@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { compteBenef } from "@/lib/benef";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 import { VerrouBenef } from "@/components/benef/Verrou";
 import { GestionParc } from "@/components/benef/GestionParc";
 import type { Vehicule } from "@/lib/parc";
+
+export const metadata: Metadata = { title: "Parc" };
 
 export default async function Page() {
   const c = await compteBenef("/app/parc");

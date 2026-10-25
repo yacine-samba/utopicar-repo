@@ -6,9 +6,10 @@ import { Ico } from "@/components/espace/Icones";
 
 export const metadata: Metadata = { title: "Extension Utopicar" };
 
-const VERSION = "4.4";
+const VERSION = "4.6";
 
-/** Extension Chrome / Edge : envoyer une annonce, lire en entier une sélection, relever toute une recherche Leboncoin. */
+/** Extension Chrome / Edge : envoyer une annonce, lire en entier une sélection, relever toute une recherche Leboncoin
+    ou les cotes de toutes les marques, modèles et énergies de Leboncoin. */
 export default async function Page() {
   const c = await compteCourant();
   if (!c) redirect("/connexion?next=/app/extension");
@@ -20,13 +21,14 @@ export default async function Page() {
     { t: "Envoyer cette annonce", d: <>Sur une annonce : description complète, tous les critères Leboncoin et jusqu&apos;à 20 photos. La page <Link href="/app/analyser" className="text-o2 underline underline-offset-4">Analyser</Link> s&apos;ouvre et l&apos;analyse démarre seule.</> },
     { t: "Lire en entier", badge: benef ? undefined : "Benef", d: <>Sur une page de résultats : cochez jusqu&apos;à 10 annonces. Chacune est ouverte en fond et lue avec ses photos, au rythme d&apos;une personne (5 à 10 s par annonce). Le <Link href="/app/tri" className="text-o2 underline underline-offset-4">Tri rapide</Link> s&apos;ouvre avec les annonces classées.</> },
     { t: "Relever toute la recherche", badge: pro ? undefined : "Benef Pro", d: <>Toutes les pages de la recherche, jusqu&apos;à 3 500 annonces (le maximum de Leboncoin), avec une pause entre deux pages. La page <Link href="/app/cote" className="text-o2 underline underline-offset-4">Cote</Link> s&apos;ouvre avec chaque annonce placée sur sa cote, et les annonces rejoignent la base du marché.</> },
+    { t: "Relever toutes les cotes", badge: pro ? undefined : "Benef Pro", d: <>Toutes les marques et tous les modèles de Leboncoin, chacun en essence, diesel, hybride et électrique, page après page (500 € et plus, 250 000 km au plus). Une recherche de plus de 100 pages est notée avec son total. À la fin, les annonces rejoignent la base du marché et le bilan s&apos;ouvre dans la <Link href="/app/cote" className="text-o2 underline underline-offset-4">Cote</Link>. Pause et reprise à tout moment.</> },
   ];
   return (
     <div className="grid max-w-4xl gap-8">
       <div>
         <h1 className="font-display text-3xl font-semibold">Extension Utopicar</h1>
         <p className="mt-2 text-ink-2">
-          Depuis Leboncoin, en un clic sur l&apos;icône Utopicar (ou Alt+Maj+U) : une annonce, une sélection lue en entier, ou toute une recherche, ouvertes directement dans votre espace.
+          Depuis Leboncoin, en un clic sur l&apos;icône Utopicar (ou Alt+Maj+U) : une annonce, une sélection lue en entier, toute une recherche, ou les cotes de tout le marché, ouvertes directement dans votre espace.
         </p>
       </div>
 
@@ -40,7 +42,7 @@ export default async function Page() {
         </a>
       </section>
 
-      <section aria-labelledby="ext-quoi" className="grid gap-4 md:grid-cols-3">
+      <section aria-labelledby="ext-quoi" className="grid gap-4 md:grid-cols-2">
         <h2 id="ext-quoi" className="sr-only">Ce qu&apos;elle fait</h2>
         {actions.map((a) => (
           <div key={a.t} className="carte grid content-start gap-2 p-5">
@@ -72,7 +74,7 @@ export default async function Page() {
           Mise à jour : remplacez les fichiers du dossier par ceux de la nouvelle version, puis cliquez sur « Actualiser » (flèche ronde) sur la carte Utopicar dans <code>chrome://extensions</code>. Si un envoi ne s&apos;ouvre pas, il est aussi copié : faites Ctrl+V dans la page concernée.
         </p>
         <p className="text-sm text-ink-3">
-          Bon usage : les règles de Leboncoin interdisent la collecte automatique en masse. L&apos;extension lit seulement ce que vous choisissez, à un rythme humain, depuis votre navigateur. Gardez ce rythme : pas de relevés enchaînés toute la journée.
+          Bon usage : les règles de Leboncoin interdisent la collecte automatique en masse. L&apos;extension lit seulement ce que vous choisissez, à un rythme humain, depuis votre navigateur. Le relevé de toutes les cotes enchaîne des milliers de pages sur plusieurs heures : lancez-le de temps en temps, éventuellement par marques ; il s&apos;arrête dès que Leboncoin demande une vérification et ne la contourne jamais.
         </p>
       </section>
     </div>

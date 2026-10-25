@@ -91,21 +91,65 @@ async function extractList(maxPages){
 
 
 /* Une page de résultats Leboncoin (numéro p) lue depuis l'onglet de l'utilisateur : données complètes, sans défilement.
-   Appelée page par page par l'arrière-plan pour relever toute une recherche. */
-async function lbcPage(p){
-  var u=new URL(location.href);if(p>1)u.searchParams.set('page',p);else u.searchParams.delete('page');
+   Appelée page par page par l'arrière-plan pour relever toute une recherche ; `adresse` : une autre recherche que celle
+   de l'onglet (relevé automatique des cotes : marque, modèle, énergie). */
+async function lbcPage(p,adresse){
+  var u=new URL(adresse||location.href);if(p>1)u.searchParams.set('page',p);else u.searchParams.delete('page');
   var res;try{res=await fetch(u.toString(),{credentials:'include',headers:{'Accept':'text/html'}});}catch(e){return {err:'réseau'};}
+  if(res.status===429)return {err:'Leboncoin ralentit les recherches (429)',lent:true};
   var h=await res.text();
   if(res.status===403||/captcha-delivery|datadome/i.test(h.slice(0,20000))&&!/__NEXT_DATA__/.test(h))return {blocked:true};
   var m=h.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);if(!m)return {err:'page illisible'};
   var sd;try{var pp=JSON.parse(m[1]).props.pageProps;sd=pp.searchData||(pp.initialProps&&pp.initialProps.searchData)||{};}catch(e){return {err:'page illisible'};}
   var items=(sd.ads||[]).concat(sd.ads_alu||[]).map(function(a){
-    var A=a.attributes||[],g=function(k){var x=A.filter(function(z){return z&&z.key===k;})[0];return x?(x.value_label||x.value||''):'';};
+    var A=a.attributes||[],at=function(k){return A.filter(function(z){return z&&z.key===k;})[0];},g=function(k){var x=at(k);return x?(x.value_label||x.value||''):'';},code=function(k){var x=at(k);return x?String(x.value||''):'';};
     var loc=a.location||{},pr=Array.isArray(a.price)?a.price[0]:a.price;
     var km=String(g('mileage')).replace(/\D/g,''),an=g('regdate'),en=g('fuel'),bo=g('gearbox'),ch=String(g('horse_power_din')).replace(/\D/g,'');
     var pro=!!(a.owner&&a.owner.type==='pro');
     var x=[a.subject||'',pr!=null?'Prix : '+pr+' €':'',an?'Année : '+an:'',km?'Kilométrage : '+km+' km':'',en?'Énergie : '+en:'',bo?'Boîte de vitesse : '+bo:'',ch?'Puissance : '+ch+' ch':'',(loc.city||loc.zipcode)?'Située à '+(loc.city||'')+' '+(loc.zipcode||''):'',pro?'Vendeur professionnel':'Particulier',String(a.body||'').replace(/\s+/g,' ').slice(0,200)].filter(Boolean).join('\n');
-    return {u:String(a.url||('https://www.leboncoin.fr/ad/voitures/'+a.list_id)).split('?')[0],t:String(a.subject||'').slice(0,140),x:x,f:{prix:pr,annee:an?+an:null,km:km?+km:null,energie:en,boite:bo,ville:loc.city||'',cp:loc.zipcode||'',pro:pro,ch:ch?+ch:null}};
+    return {u:String(a.url||('https://www.leboncoin.fr/ad/voitures/'+a.list_id)).split('?')[0],t:String(a.subject||'').slice(0,140),x:x,f:{prix:pr,annee:an?+an:null,km:km?+km:null,energie:en,boite:bo,ville:loc.city||'',cp:loc.zipcode||'',pro:pro,ch:ch?+ch:null,mq:code('u_car_brand'),md:code('u_car_model'),mql:g('u_car_brand'),mdl:g('u_car_model')}};
   });
-  return {items:items,total:sd.total||sd.total_all||null,max_pages:sd.max_pages||null,title:document.title,url:location.href};
+  return {items:items,total:sd.total||sd.total_all||null,max_pages:sd.max_pages||null,title:document.title,url:u.toString()};
+}
+
+
+/* Marques et modèles de Leboncoin, lus dans les données que le site charge lui-même (page de recherche, données du
+   front) : codes exacts des filtres (« AUDI », « AUDI_A1 ») et leurs noms. Lecture seule, depuis l'onglet Leboncoin.
+   Rien trouvé : l'extension les découvre dans les annonces au fil du relevé. */
+async function lbcReferentiel(){
+  var marques={},modeles={},sources=[];
+  var CODE_MQ=/^[A-Z0-9][A-Z0-9 &'.\-]{0,40}$/,CODE_MD=/^([A-Z0-9][A-Z0-9 &'.\-]{0,40})_(.{1,60})$/;
+  function ajoute(code,label,ctx){
+    if(typeof code!=='string')return;
+    label=(typeof label==='string'&&label.trim())?label.trim():null;
+    var m=code.match(CODE_MD);
+    if(ctx==='model'&&m){(modeles[m[1]]=modeles[m[1]]||{})[code]=label||m[2];}
+    else if(ctx==='brand'&&!m&&CODE_MQ.test(code)){marques[code]=label||code;}
+  }
+  var vu=0;
+  function walk(x,ctx,dp){
+    if(!x||typeof x!=='object'||dp>30||++vu>400000)return;
+    if(Array.isArray(x)){for(var i=0;i<x.length;i++)walk(x[i],ctx,dp+1);return;}
+    var nom=[x.key,x.name,x.id,x.param,x.field,x.filter].filter(function(v){return typeof v==='string';}).join(' ');
+    var c=ctx;
+    if(/u_car_brand|car_brand|vehicle_brand|^brands?$/i.test(nom))c='brand';
+    else if(/u_car_model|car_model|vehicle_model|^models?$/i.test(nom))c='model';
+    if(ctx){var code=typeof x.value==='string'?x.value:typeof x.code==='string'?x.code:null;if(code)ajoute(code,x.label||x.value_label||x.text||(typeof x.name==='string'&&x.name!==code?x.name:null),ctx);}
+    for(var k in x){
+      if(!Object.prototype.hasOwnProperty.call(x,k))continue;
+      var v=x[k],cc=c;
+      if(/u_car_brand|car_brand|^brands$/i.test(k))cc='brand';else if(/u_car_model|car_model|^models$/i.test(k))cc='model';
+      // tables { "AUDI": "Audi" } ou { "AUDI_A1": { label: "A1" } }
+      if(cc&&typeof v==='string')ajoute(k,v,cc);
+      else if(cc&&v&&typeof v==='object'&&!Array.isArray(v)&&(CODE_MQ.test(k)||CODE_MD.test(k)))ajoute(k,v.label||v.name||v.value_label,CODE_MD.test(k)?'model':cc);
+      walk(v,cc,dp+1);
+    }
+  }
+  function lire(txt,src){try{var avant=Object.keys(marques).length+Object.keys(modeles).length;walk(JSON.parse(txt),null,0);if(Object.keys(marques).length+Object.keys(modeles).length>avant)sources.push(src);}catch(e){}}
+  var nd=document.getElementById('__NEXT_DATA__');if(nd)lire(nd.textContent,'page');
+  [].slice.call(document.querySelectorAll('script[type="application/json"]')).forEach(function(s,i){if(s.id!=='__NEXT_DATA__'&&s.textContent.length<8e6)lire(s.textContent,'json'+i);});
+  // données chargées par le front Leboncoin (référentiels, filtres) : relues depuis le cache du navigateur
+  var urls=performance.getEntriesByType('resource').map(function(e){return e.name;}).filter(function(u){return /leboncoin\.fr/.test(u)&&/fdata|referential|referentiel|config|filters?|brands?|models?|vehicle/i.test(u)&&!/\.(js|css|png|jpe?g|webp|svg|woff2?)(\?|$)/i.test(u);}).filter(function(u,i,a){return a.indexOf(u)===i;}).slice(0,12);
+  for(var i=0;i<urls.length;i++){try{var r=await fetch(urls[i],{credentials:'include'});if(r.ok){var t=await r.text();if(t.length<2e7&&/^[\s]*[\[{]/.test(t))lire(t,urls[i].split('?')[0]);}}catch(e){}}
+  return {marques:marques,modeles:modeles,sources:sources};
 }

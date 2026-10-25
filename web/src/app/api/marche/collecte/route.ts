@@ -12,6 +12,8 @@ export async function GET(req: Request) {
     const e = await etatCollecte(cle);
     return e ? Response.json(e) : Response.json({ erreur: "Collecte inconnue." }, { status: 404 });
   } catch (e) {
-    return Response.json({ erreur: (e as Error).message }, { status: 502 });
+    // le détail technique reste dans les journaux, pas à l'écran
+    console.error("état de la collecte", (e as Error).message);
+    return Response.json({ erreur: "Suivi de la collecte indisponible pour l'instant." }, { status: 502 });
   }
 }

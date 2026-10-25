@@ -36,11 +36,18 @@
   .pit .pr{font-weight:750;white-space:nowrap}
   .row{display:flex;gap:8px}
   .row button{flex:1}
+  .bal{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px;display:grid;gap:8px}
+  .bal h2{margin:0;font-size:13.5px;font-weight:750}
+  .bal p{margin:0;font-size:12px;color:var(--muted)}
+  .bal label{font-size:12.5px;display:flex;align-items:center;gap:6px}
+  #balMsg{font-size:12.5px}
+  #balStats{font-size:12px;color:var(--muted)}
+  .bal input{font:inherit;font-size:12.5px;padding:5px 7px;border:1px solid var(--line);border-radius:6px;flex:1;min-width:0}
   footer{padding:0 14px 12px;font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
-<header><img class="mark" src="icons/48.png" alt=""><div><b>Utopicar</b><span>Envoyer vers utopicar.fr · v4.4</span></div></header>
+<header><img class="mark" src="icons/48.png" alt=""><div><b>Utopicar</b><span>Envoyer vers utopicar.fr · v4.6</span></div></header>
 <main>
   <button id="ad"><b>Envoyer cette annonce</b><small>Description, tous les critères et jusqu'à 20 photos : l'analyse s'ouvre sur Utopicar</small></button>
   <div class="picker" id="picker">
@@ -49,6 +56,17 @@
   </div>
   <button id="batch" style="display:none" class="main"><b id="batchT">Lire en entier (0)</b><small>Chaque annonce est ouverte en fond, lue en entier avec ses photos, au rythme d'une personne (5 à 10 s par annonce), puis triée dans le Tri rapide</small></button>
   <button id="list"><b>Relever toute la recherche</b><small>Toutes les pages de résultats (jusqu&apos;à 3 500 annonces, le maximum de Leboncoin), placées sur leur cote dans Utopicar</small></button>
+  <section class="bal" aria-labelledby="balT">
+    <h2 id="balT">Relever toutes les cotes</h2>
+    <p>Toutes les marques de Leboncoin, chaque modèle, et pour chaque modèle l'essence, le diesel, l'hybride et l'électrique, page après page (500 € et plus, 250 000 km au plus). Au-delà de 100 pages, Leboncoin n'affiche plus rien : le nombre total de résultats est noté dans la Cote. À la fin, tout part sur Utopicar.</p>
+    <label id="balFiltreL">Seulement ces marques <input id="balFiltre" placeholder="facultatif : Audi, Renault"></label>
+    <div class="bar" id="balBar" style="display:none"><i></i></div>
+    <div id="balStats"></div>
+    <div id="balMsg" role="status"></div>
+    <button id="balGo" class="main"><b id="balGoT">Lancer le relevé des cotes</b><small>Tourne en arrière-plan : vous pouvez fermer cette fenêtre</small></button>
+    <div class="row"><button id="balPause" class="lite" style="display:none">Pause</button><button id="balReprendre" class="lite" style="display:none">Reprendre</button><button id="balAbandon" class="lite" style="display:none">Abandonner</button></div>
+    <div class="row"><button id="balEnvoyer" class="lite" style="display:none">Envoyer à Utopicar</button><button id="balBilan" class="lite" style="display:none">Voir le bilan</button></div>
+  </section>
   <div class="bar" id="bar"><i></i></div>
   <div id="status" role="status"></div>
   <div class="row"><button id="stop" class="lite" style="display:none">Arrêter</button><button id="reopen" class="lite" style="display:none">Rouvrir le dernier envoi</button><button id="go" class="lite" style="background:var(--side);color:#fff;border-color:var(--side)">Ouvrir Utopicar</button></div>

@@ -42,8 +42,17 @@ export function Carrousel({ photos, alt, className }: { photos: string[]; alt: s
       <div
         ref={zone}
         onScroll={(e) => setI(Math.round(e.currentTarget.scrollLeft / Math.max(1, e.currentTarget.clientWidth)))}
-        className="flex size-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        aria-label={`${n} photo${n > 1 ? "s" : ""} : faites glisser pour les voir`}
+        // atteignable au clavier : les flèches font défiler les photos
+        tabIndex={n > 1 ? 0 : undefined}
+        role="group"
+        aria-roledescription="carrousel"
+        onKeyDown={(e) => {
+          if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+          e.preventDefault();
+          aller(i + (e.key === "ArrowRight" ? 1 : -1));
+        }}
+        className="flex size-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain outline-none [scrollbar-width:none] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-o2 [&::-webkit-scrollbar]:hidden"
+        aria-label={`${n} photo${n > 1 ? "s" : ""} : faites glisser${n > 1 ? " ou utilisez les flèches" : ""}`}
       >
         {photos.map((p, k) => (
           <div key={p + k} className="size-full shrink-0 snap-center">

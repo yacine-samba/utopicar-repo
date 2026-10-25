@@ -1,0 +1,12 @@
+{
+ "version": 1,
+ "style": "présentation utopicar v8 : plus aucun cadre d'interface, chaque élément flotte seul dans l'espace, en grand ; vue éclatée en profondeur, caméra qui circule (filé, grue, iris), même voix que la v7",
+ "fps": 30,
+ "bpm": 120,
+ "size": [
+  1080,
+  1920
+ ],
+ "dur": 49.033,
+ "poster": 2.0
+}

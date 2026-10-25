@@ -5,7 +5,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { supabaseNavigateur } from "@/lib/supabase/navigateur";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
-import { lienImportable, texteDepuisImport } from "@/lib/analyse/import";
+import { lienColle, texteDepuisImport } from "@/lib/analyse/import";
 import type { Analyse } from "@/lib/analyse/couts";
 import { ecrireProfil, lireProfil } from "@/lib/orientation";
 import { CLES_EXEMPLES, EXEMPLES, euros } from "@/lib/demo";
@@ -226,7 +226,9 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
       champ.current?.focus();
       return;
     }
-    if (lienImportable(v)) return void importer(v);
+    // lien seul ou texte de partage de l'appli Leboncoin (« Voici une annonce… : https://… ») : l'annonce est lue
+    const lien = lienColle(v);
+    if (lien) return void importer(lien);
     if (/^https?:\/\//i.test(v)) return setErreur(ERREURS_IMPORT.lien);
     if (v.length < 30) return setErreur("Collez le texte complet de l'annonce : titre, prix, kilométrage et description.");
     void apercu(v, null, "texte", origineDepuisExtension(v)?.liens[0] ?? null);
@@ -294,7 +296,14 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
               className={cx(inputCls, "min-h-14 resize-none text-base leading-snug sm:min-h-[52px]")}
             />
             <button type="submit" disabled={etat === "lecture"} className="btn btn-o sm:self-start">
-              {etat === "lecture" ? "Lecture de l'annonce…" : "Analyser"}
+              {etat === "lecture" ? (
+                <span className="flex items-center justify-center gap-2.5">
+                  <span className="size-5 shrink-0 animate-spin rounded-full border-[2.5px] border-current border-t-transparent motion-reduce:animate-none" aria-hidden="true" />
+                  Lecture…
+                </span>
+              ) : (
+                "Analyser"
+              )}
             </button>
           </div>
           {erreur && (

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cx } from "@/lib/cx";
 import { titreVehicule } from "@/lib/titre";
 import { Carrousel } from "./Photos";
@@ -31,12 +32,21 @@ export function CarteVoiture({
   coin?: React.ReactNode;
 }) {
   const t = titreVehicule(titre);
+  const router = useRouter();
   return (
     <article className="carte group flex h-full flex-col overflow-hidden transition hover:border-o/40">
       <div className="relative">
-        <Link href={href} tabIndex={-1} aria-hidden="true" className="block">
+        {/* clic sur la photo = ouvrir le rapport (à la souris ; au clavier, c'est le titre). Pas de lien autour :
+            le carrousel contient des boutons, interdits dans un lien. */}
+        <div
+          className="block cursor-pointer"
+          onClick={(e) => {
+            if (e.ctrlKey || e.metaKey) window.open(href, "_blank", "noopener");
+            else router.push(href);
+          }}
+        >
           <Carrousel photos={photos} alt={t} />
-        </Link>
+        </div>
         {badge && (
           <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-bg0/85 backdrop-blur-md">
             <span className={cx("block rounded-full border px-2.5 py-0.5 text-xs font-semibold", badge.ton)}>{badge.l}</span>

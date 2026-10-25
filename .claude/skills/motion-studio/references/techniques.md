@@ -367,3 +367,452 @@ en 55 s, quelque chose de neuf sur chaque temps. Rendu 1080p de 60 s : ≈ 4 min
   - après, les rendre de nouveau et les comparer au pixel (master60 : 29/29 identiques).
 - **Même son pour les deux formats** : les repères ne dépendent que du temps. `render.mjs` prend le même
   `audio/mix-<projet>-<A|B>.wav`.
+
+## 17. Collage autocollant et scanner (débuts BO, semaines d'oct.)
+
+Grammaire relevée sur Behance (collage MINI JCW, FinData), dans la DA UTOPICAR : peu de texte, chaque chiffre porté
+par un objet.
+
+- **Deux calques alignés par voiture** : `scripts/sticker-plan.py <noms>` (copie dans le skill ; à lancer depuis `video/`, après `cutout.py`) écrit
+  `<nom>-sticker.png` (voiture + liseré blanc de 18 px) et `<nom>-line.png` (plan au trait : arêtes Canny dans la
+  silhouette + contour de 6 px). Même toile, même marge : ils se superposent au pixel.
+- **Ombre en trame** : un `div` en `radial-gradient` de points, masqué par le PNG de l'autocollant
+  (`mask: url(sticker.png) 0 0/100% 100%`), décalé de 20 px × 28 px. Le masque CSS exige un serveur HTTP (le rendu
+  en a un).
+- **Scanner** : une barre orange lumineuse traverse la voiture ; la photo est coupée par
+  `clip-path: inset(0 0 0 f%)` et le plan au trait par `inset(0 (100−f)% 0 0)`, `f` suivant la barre. Les repères
+  (pastille, trait, étiquette) apparaissent quand la barre les franchit, au plus tôt sur leur mot.
+- **Étiquette de prix** : carton sur une ficelle qui pend du haut du cadre, balancement amorti, retournement en
+  `rotateY` (recto achat, verso revente), trait rouge en `scaleX` pour barrer un prix.
+- **Étoile de bénéfice** : polygone à 28 branches avec liseré blanc, compteur à rouleaux à l'intérieur ; elle claque
+  (× 2,2 → 1), roule jusqu'au mot, puis se colle en petit en haut à gauche pour rester visible.
+- **Pastille sombre** derrière tout texte posé sur un fond coloré (le disque orange mange un chiffre orange).
+- **Photos** : une vraie photo Pexels par voiture, cohérente avec l'annonce (génération, pas de GTI pour un 1.2),
+  logos et plaques floutés (`scripts/blur-boxes.py`) puis contrôlés sur un recadrage zoomé. Une voiture coupée ou
+  floutée au mauvais endroit se reconstruit par symétrie depuis sa moitié propre.
+
+## 18. Production en série calée sur la voix (14 vidéos d'un coup)
+
+- **Un moteur, une config** : `semaine(c)` lit une config par vidéo (voitures, étiquettes, étoiles, barre, carte,
+  tampons, textes, compteur, ticket, bulles, mention démo). Chaque instant est un mot de la voix :
+  `TA(['coll'])`, `TA(['utopicar'])`, `TA(['trois', '3'])`. Mot-clé numérique de 1 ou 2 chiffres : égalité stricte
+  (« 3 » ne doit pas trouver « 3 100 »).
+- **Voix** : une prise par vidéo, toutes lancées d'un coup, un seul `creative_get_flow_run_status` (gros résultat
+  JSON, lu avec Python), téléchargement immédiat. `vo-c7-pose.py` resserre les silences et accélère × 1,1. Si Whisper
+  saute un passage (liste de chiffres), retranscrire le passage seul avec VAD et recoller les mots.
+- **Musique calée sur les mots** : `build-c7.py` calcule pour chaque vidéo l'arrêt de bande (0,5 s avant « tu
+  colles »), le drop (le clic sur « Utopicar »), le coup final (le chiffre ou le verdict) et la durée (dernier mot +
+  carton).
+- **Contrôle avant le rendu final** : 4 à 5 images fixes par vidéo (0,1 s, arrêt, drop, coup final, fin) sur une
+  seule planche, avec la ligne y = 1 480 tracée. Toute la série se corrige d'un coup avant les 30 minutes de rendu.
+- **Fabrication** : `video/scripts/semaines.sh [ids]` enchaîne repères, mixage, rendu avec flou de bougé et
+  `qa_video.py`. En tâche de fond, suivi par un moniteur sur le journal. Pour l'arrêter, tuer le PID du script, jamais
+  tous les `node.exe`.
+
+## 19. Format court 15–20 s piloté par la voix (modèle générique)
+
+- **Squelette en 4 scènes**, chacune déclenchée par un mot de la voix : hook (contexte + titre + objet) → objet plein
+  cadre (étapes chiffrées) → action réelle dans le produit → carton de fin. Scènes optionnelles insérables (une liste
+  qui tombe, une « année 2 », une comparaison) : chaque scène = `[mot de départ, mot de fin]`, rien d'autre.
+- **Une config par vidéo** : titre (2 lignes + couleurs), objet (détourage, photo, cadrage), plaque (nom, détails),
+  `pops` (mot → texte, couleur), `rows` (mot → « A → B » ou texte), `pills` (mot → valeur, étiquette, couleur),
+  tampon de verdict, dossier de captures d'interface. Les fenêtres d'affichage se déduisent du mot suivant.
+- **Mots-chocs** : taille de police calculée sur la longueur du texte (`min(104, 1500 / nb de caractères)`) pour ne
+  jamais déborder ; pastille large calculée pareil. Sortie vers le haut, jamais par fondu seul.
+- **Vraie interface animée** : copier la page réelle, remplacer seulement l'objet de données du cas, retirer les
+  libellés de démo, capturer 4–5 s à 30 i/s en CDP `captureScreenshot` avec `clip` à l'échelle 2, rééchantillonner en
+  séquence JPG, la dessiner sur un canvas dans un téléphone en perspective. Le numéro d'image suit le clic (`k = 28 +
+  (t − tClic) × 30–45`) : le chargement et le résultat tombent sur la voix.
+- **Durée tenue par la voix** : budget ≈ 45–55 mots pour 15–20 s ; si la prise dépasse, resserrer les silences (0,14 s)
+  et accélérer jusqu'à × 1,2 plutôt que de couper une scène ; vérifier la durée finale (`ffprobe`) avant d'envoyer.
+- **Prise de voix** : nombres et sigles écrits comme on les dit ; une prise par vidéo, toutes lancées d'un coup ;
+  relire la transcription mot à mot (« 2 0150 », « 1 .2 litre » signalent un passage à écouter).
+- **Zones sûres dès la config** : mots-chocs du hook à y ≤ 1 390, rien d'important sous 1 480 ; un objet détouré large
+  peut déborder à droite, un texte jamais.
+
+## 20. Site source en HD dans une carte qui suit le contenu
+
+- **Capture** : `scripts/ui-seq-hd.mjs <dossier> <page.html> <sortie> 400 860 4.6` (Playwright, CDP `captureScreenshot`,
+  `deviceScaleFactor 3`, tout le viewport mobile) → images 1200×2580 avec leurs instants (`times.json`), puis
+  rééchantillonnage à 30 i/s (`u000…u134.jpg`).
+- **Libellés inutiles** retirés dans la page avant capture (remplacement de chaîne dans le HTML exporté du site).
+- **Bornes du contenu** : `scripts/ui-bounds.py <dossier>` → `bounds.json` (première/dernière ligne non noire par image).
+- **Dans le film** : un `<canvas>` dans une carte ; à chaque image, on ne dessine que la bande utile
+  (`drawImage(im, x0, top, w, h, 0, 0, w, h)`), et la carte prend cette hauteur → elle grandit d'elle-même
+  (champ → analyse → fiche). Bornes **lissées** sur ±5 images ; les images vides du site (transitions) sont **sautées**
+  (liste des images valides) ; marge basse forcée pour ne pas couper la dernière ligne.
+- **Curseur** : le clic tombe sur l'image où le site clique (ici l'image 28) ; arrivée 0,07 s avant.
+- **Surlignage** : boîte mesurée au pixel sur la capture (couleur de fond de la ligne) puis convertie dans le repère de
+  la carte.
+
+## 21. Un film entier sur un seul objet porteur (ETT)
+
+- **Chaque scène naît de la précédente** : l'élément final d'une scène est la forme de départ de la suivante (prix →
+  carte de fiche : bords sur ressorts décalés depuis le rectangle du prix ; fiche → case C0 du mur ; pépite → carte
+  « Ton annonce » ; carte → point orange de l'image 0).
+- **Calé sur la voix** : tous les instants viennent des mots (`TA`) ; les gestes qui ont besoin de temps (zoom, roulement,
+  goutte) prennent `max(minimum visuel, mot)` pour ne jamais se télescoper.
+- **Rien ne s'arrête** : poussée de caméra sur tout le film (`S(…, 0.05)`), flottement 3D des cartes posées
+  (`rotateY ±12°, rotateX ±6°, translate ±25 px`), obturateur ouvert (`win`) sur les mouvements de caméra.
+- **Mur de 400** : cases qui apparaissent en onde depuis la case d'origine (retard = distance × 0,03 s), bascule 3D,
+  onde de couleur, tri en bandes (positions interpolées vers l'ordre trié), pépite ×2,6 avec liseré blanc.
+- **Boucle** : la dernière image reproduit la première (même point orange, même place, étiquette de contexte présente).
+
+## 22. Le film EST l'interface : composants de l'app recodés (présentation v4)
+
+Demande de l'utilisateur (oct. 2026), après une version « vraie app dans un téléphone » : « on ne montre pas
+l'interface, on est dans l'interface, comme dans les références ». Grammaire 1600.agency (Juicebox, lemlist) :
+l'écran entier est l'app, chaque élément est recodé et s'anime de A à Z, la caméra passe d'un écran à l'autre sans
+coupe. Code de référence : `video/film-presentev4/film.js`.
+
+- **Fidèle, pas imaginé.** Les textes et chiffres viennent des pages de l'app figées sur la base démo
+  (`scripts/app-demo/figer.mjs`, puis `innerText`). Les couleurs, rayons, ombres et polices viennent de sa feuille de
+  style (`--color-*`, `.carte`, `.btn-o`), et les courbes aussi : `--ease-doux` cubic-bezier(.2,.8,.2,1),
+  `--ease-ressort` (.34,1.56,.64,1), images clés `remplit`, `surligne`, `ping`, `anneau`. Le film bouge comme l'app.
+- **Échelle.** Une carte de 364 px dans l'app en fait 800 dans le film (×2,2), dans la colonne 140 → 940. Valeurs
+  en Clash 86–100 px, libellés en Satoshi 37 px, textes secondaires 29 px au moins.
+- **Chaque élément devient le suivant.** L'annonce se retourne en « Ça rapporte ? », puis plonge dans le champ où on
+  la colle. Le bouton se replie en chrono « 60 s », qui se remplit en une minute. Les cartes de note se rangent en
+  pile, qui devient le verdict. Un balayage à gauche mène au rapport de la Clio, puis aux prix et à la ligne PLAFOND.
+  Une liste file puis s'arrête net sur la meilleure annonce, qui mène à la recherche enregistrée et à son
+  interrupteur. Viennent ensuite la nuit (horloge géante), les messages à leur heure, l'annonce sous la cote, la
+  notification et l'e-mail en tiroir. Les étapes du parc mènent à « Vendues », qui s'ouvre en marge du mois, puis au
+  logo tapé.
+- **Pile qui grandit** (`pile()`) : le groupe reste centré. La caméra est serrée sur le premier élément (×1,15 au
+  plus, pour ne pas sortir de la zone sûre) et recule à mesure que les suivants arrivent, sur des ressorts.
+- **Paroles en typographie.** Chaque mot arrive flou (9 px), monte de 34 px et se pose net 0,09 s avant d'être dit.
+  La phrase part (flou, ease-in de 0,12 s) avant que la suivante n'apparaisse. Mots clés en couleur ; phrases chocs
+  en géant, de 118 à 170 px. Taille ajustée pour tenir sur deux lignes au plus.
+- **Espaces insécables** dans tout texte recodé (`nb()`), pour ne jamais lire « 7 / 650 € » ni « (+30 / %) ».
+- **Rien ne s'arrête.** Poussée de caméra sur les plans qui tiennent (accroche, parc), flottement des cartes posées
+  (±6 px, ±0,4°), deux-points de l'horloge qui clignotent.
+- **Mesures** :
+
+  | | Brouillon | Film livré (MB=8) | Films 1600 |
+  |---|---|---|---|
+  | Images en mouvement | 52 % | 53 % | 57–77 % |
+  | Plan figé le plus long | 3,87 s | 2,9 s | 3,0–3,5 s |
+  | Coupes | 0 | 0 | |
+  | Durée médiane d'un geste | 0,37 s | | |
+  | Gestes en ressort | 58 % | | 51–71 % |
+  | Vitesse p50 / p90 | 7,2 / 30 %/s | 6,1 / 28 %/s | 6–9 / 18–49 %/s |
+  | À-coups | | 0,25 | 0,06–0,14 |
+
+  Les à-coups restent au-dessus des références : compteurs, arrêt net de la liste, secousse sur « À éviter ».
+  Piste pour le prochain film : des arrêts sur ressort plutôt que des arrêts francs.
+
+## 23. Décomposer chaque élément d'interface (présentation v6)
+
+Demande de l'utilisateur (oct. 2026), sur la v5 validée : « décompose chaque élément de l'interface pour les rendre
+meilleurs à voir, plus satisfaisants ; c'est pas grave si la vidéo est plus longue ». Code de référence :
+`video/film-presentev6/film.js` (bloc « DÉCOMPOSITION »).
+
+- **Du temps sans toucher à la voix.** `video/scripts/vo-espaces.py` insère des silences dans la prise. Chaque
+  silence va au milieu de la plus longue plage calme entre deux phrases (≤ plancher de la prise + 12 dB), et
+  `vo.words.json` est décalé. Une fin de mot posée sur une coupe ne prend pas le silence. En v6 : 18 coupes,
+  +11,65 s, toutes entre −55 et −81 dB, et le film passe de 33 à 44,8 s. Tout le film est calé sur `w(i)`, il suit sans
+  retouche.
+- **On construit dans l'ordre de lecture.** Le contenant naît d'un trait de lumière, puis il s'ouvre :
+  - le bord droit part en `snappy`, le bord gauche suit en `default` 0,05 s après, puis la carte s'ouvre en hauteur ;
+  - le tout passe par `clip-path: inset(… round r)`, retiré une fois la carte ouverte pour rendre les ombres.
+  Les pièces entrent ensuite : 33 ms entre deux pièces d'un groupe, 0,1 à 0,3 s entre deux étapes.
+- **Chaque type de pièce a sa révélation :**
+  - libellé : lettres qui montent d'un masque, 12 à 40 ms par lettre, largeur de chaque lettre figée ;
+  - valeur en texte : elle se décode (des signes défilent, la bonne lettre se fige de gauche à droite) ;
+  - valeur chiffrée : rouleaux (colonne 0 → 19 par chiffre, 10 + n crans, ressort f 1,6 / z 0,86, 0,035 s entre
+    colonnes) ;
+  - chrono : odomètre continu (les unités tournent sans arrêt, les dizaines seulement au passage) ;
+  - barre : la piste s'étire, puis le remplissage part en easeOutCubic avec une tête de lumière ;
+  - anneau : la piste se trace depuis midi, puis l'arc avance et la note roule ;
+  - pastille, bouton, icône : ils jaillissent sur un ressort `snappy` depuis ×0,4 à 0,6 ;
+  - coche, courbe d'icône : tracées au `stroke-dasharray` ;
+  - photo : découverte par un masque de gauche à droite ;
+  - écart à la cote : surligné par un fond qui s'étire ;
+  - horloge à volets, en deux moitiés : le volet haut de l'ancien chiffre tombe (0 → −90°, ease-in), puis le volet
+    bas du nouveau se rabat (90° → 0, ease-out), en 0,34 s, avec 0,05 s entre deux chiffres ;
+  - carte finie : un reflet la traverse une fois.
+- **Un objet porteur.** La pastille utopicar devient le bouton « Analyser l'annonce » : sa largeur suit un ressort, son
+  fond vire à l'orange, ses lettres sortent par le haut et les nouvelles entrent par le bas. Un doigt l'enfonce
+  (×0,95). Le bouton se replie alors en rond et file au centre pour devenir le chrono.
+- **Caméra.** Le détail d'abord, puis l'ensemble : gros plan sur le libellé et la valeur pendant qu'ils se
+  construisent, puis recul sur la carte entière. Le gros plan est pondéré par l'arrivée du traveling ; sans cela, la
+  carte qu'on quitte passe en très gros plan.
+- **Pièges :**
+  - une animation de pièce qui écrit `transform` écrase la pose 3D d'un objet placé par `put()` (la pastille « Benef
+    Pro » sautait en haut de l'écran) : la réserver aux enfants de l'objet ;
+  - découper une phrase aux seuls espaces ordinaires, pour que les insécables gardent « 1 671 € » d'un seul tenant ;
+  - une animation qui démarre pendant que la scène du dessus sort reste cachée (la première bascule de l'horloge) :
+    la décaler.
+
+## 24. Aucun texte superposé, des transitions qui ne traînent pas (présentation v7)
+
+Retour de l'utilisateur sur la v6 rendue : « l'écriture suit trop rapidement, des textes se superposent ; à "pour les
+trouver" l'animation est mal faite ; le plafond se voit mal ». Code de référence : `video/film-presentev7/film.js`.
+L'analyse se fait sur le MP4 rendu (avec son flou de bougé), pas sur des images nettes : les fantômes n'existent que
+là.
+
+- **Ce qui crée des textes superposés :**
+  - un chiffre sur rouleau ou une lettre qui se décode : à mi-course, deux signes partagent la case ; au flou de bougé
+    (4 à 8 sous-images) ils s'empilent en 2 à 8 fantômes ;
+  - un compteur dont la valeur change pendant l'ouverture de l'obturateur : les sous-images portent deux valeurs ;
+  - une scène qui sort en fonçant vers la caméra : l'ancienne interface, dédoublée, passe sous les nouveaux
+    sous-titres ;
+  - un mot géant posé par-dessus le même mot dans la carte (« À ÉVITER » sur « À éviter ») ;
+  - un décor plein de texte (mur d'annonces) sous les sous-titres.
+- **Règles :**
+  - une valeur monte d'un masque, une seule fois (easeOutCubic, 45 ms entre deux signes) ; plus de rouleaux ni de
+    décodage ;
+  - un chiffre qui change est figé sur l'image entière : `fq = (t) => Math.round(t * 30) / 30` (chrono 0:00 → 1:00) ;
+  - une scène sort en reculant : `scale` 0,92, `blur` jusqu'à 26 px, luminosité −60 %, opacité qui tombe sur la fin
+    (`recul()`) ; la suivante passe DEVANT et n'écrit son premier texte qu'une fois l'ancienne floue à 10 px ;
+  - la suivante naît d'une forme : bouton qui se replie en pastille → la pastille se creuse en anneau de chrono →
+    l'anneau se couche (rotateX 90°) en trait → le trait s'ouvre en carte ; carte qui se retourne (verdict rouge →
+    verdict vert) ; écran aux coins arrondis qui s'ouvre au centre et grandit jusqu'au plein écran
+    (`clip-path: inset(… round r)` + liseré clair) ;
+  - un mouvement rapide qu'on ne peut pas éviter (retournement de carte, barre qui tombe) reçoit un flou proportionnel
+    à sa vitesse : il comble les sous-images ;
+  - défilement très rapide : flou directionnel le long de l'axe du mur, filtre SVG `feGaussianBlur stdDeviation="0 σ"`
+    avec σ = la moitié du chemin parcouru pendant une image (plafonné à 60 px) ;
+  - sous les sous-titres posés sur un décor chargé : voile ≥ 0,95 sur toute la bande des sous-titres ;
+  - sous-titres dans une colonne de 740 px (140 → 940, moins les 6 % que la lueur ajoute aux lettres) ; chacun a fini
+    de sortir 0,06 s avant la première lettre du suivant ;
+  - une carte poussée vers le fond par la suivante s'assombrit et se floute en 0,2 s, avant que le trait de la
+    nouvelle ne passe sur ses chiffres ;
+  - milliers : espace insécable U+00A0 ; l'espace fine U+202F n'existe ni dans Clash ni dans Satoshi et disparaît.
+- **Contrôle automatique, à chaque version :**
+  - `CUT=<film> node scripts/chevauchements.mjs` peint le film toutes les 0,1 s ;
+  - il relève deux textes lisibles de deux objets différents qui se recouvrent sans que l'un cache l'autre ;
+  - il relève un texte lisible hors des zones sûres ;
+  - il rend la bande des sous-titres sans les sous-titres ;
+  - `python3 scripts/chevauchements.py renders/_sous-<film>` mesure ensuite le détail net (gradient de luminance) sous
+    chaque lettre. v7 : 0 image sur 396.
+- **Coller un lien, pas un texte.** La vraie page « Analyser une annonce » a un champ « Lien de l'annonce » et un
+  bouton « Analyser ce lien » (`video/assets/presente-v3/ui/analyser-208.html`). Le lien
+  `https://www.leboncoin.fr/ad/voitures/…` apparaît d'un coup, de gauche à droite en 0,28 s, surligné comme un texte
+  collé ; comme dans un vrai champ, ce qui dépasse est coupé par le bord. Le bouton s'allume, puis il est enfoncé.
+- **Animer l'icône du logo elle-même** (fichier officiel, rien de redessiné) :
+  - la tuile se pose sur un ressort lourd ;
+  - la silhouette de la voiture se dessine par un masque : un trait épais de 118 unités suit le contour du chemin
+    (capot → toit → ligne de caisse), animé au `stroke-dasharray`, avec un point clair au bout du trait
+    (`getPointAtLength`) ;
+  - la flèche orange part de sa base en grandissant, l'aileron se pose ;
+  - l'icône glisse à gauche en `lisse` (aucune traînée) ;
+  - les lettres du mot montent d'un `clipPath` placé sous la ligne de base, une fois l'icône passée ;
+  - à la boucle, le cercle qui rouvre la 208 part de l'icône.
+
+## 25. Plus aucun cadre d'interface, un film immersif (présentation v8)
+
+Retour de l'utilisateur sur la v7 : « retire les cadres des interfaces, faut que ça soit beaucoup plus immersif ». Code
+de référence : `video/film-presentev8/film.js` (même voix et même minutage que la v7).
+
+- **Ce qu'on retire :** le fond, la bordure, les coins arrondis et l'ombre de chaque carte (formulaire, critère,
+  verdict, paliers, annonces du mur, recherche, messages, notification, e-mail, marge).
+- **Ce qui flotte à la place :**
+  - chaque pièce flotte seule, en grand : libellé, valeur géante, barre, phrase, anneau, lien collé ;
+  - les séparations deviennent des filets fins qui se tracent, menés par une tête claire (`filet()`, `trait()`) ;
+  - une page blanche (l'e-mail) devient une mise en page sombre à même l'espace ;
+  - une dalle devient une bande plein cadre, plus large que l'écran (PLAFOND).
+- **Ce qui reste plein :** les commandes ne sont pas des cadres. On garde pleins le bouton orange, l'interrupteur,
+  l'étiquette Benef Pro, l'icône de l'app et la pastille « lien en bio ».
+- **Bloc sans conteneur :** `bloc(S)` pose chaque pièce une à une dans le monde. Chaque pièce a un support, posé en 3D,
+  et un contenu, animé à part. Il n'y a aucun conteneur commun, pour une raison technique : une opacité ou un filtre
+  sur un parent `preserve-3d` aplatit ses enfants. Le flou et l'opacité du bloc vont donc sur chaque support.
+- **Vue éclatée :** chaque pièce a sa profondeur (libellé +110, valeur 0, barre −60, phrase +50). Elle est reculée et
+  rapetissée de `k = persp / (persp − z)` : caméra au repos, la mise en page tombe pile à l'écran ; en mouvement, les
+  plans glissent les uns sur les autres. Le bloc tourne d'un seul tenant : la position de chaque pièce est calculée
+  par `rot3()`, dans l'ordre de CSS (rotateZ d'abord). Les pièces qui se retournent gardent un support 3D ; leur flou
+  et leur opacité sont portés par le contenu.
+- **La caméra ne s'arrête jamais :**
+  - pendant chaque tenue, elle pousse lentement (+70 px) et revient pendant la transition suivante ;
+  - elle file d'un critère à l'autre. Les blocs sont posés à 1 000 px, juste hors champ au repos : le filé enchaîne
+    sans vide au milieu. Pendant le filé : flou SVG horizontal, σ = la moitié du chemin parcouru pendant une image ;
+    rotation de 9° dans le sens du mouvement ; petit recul ;
+  - la trame pointillée du fond suit la caméra (parallaxe 0,2, floutée elle aussi) : c'est l'espace qui bouge.
+- **Transitions immersives :**
+  - mise au point : quand le doigt appuie, tout le formulaire se floute sauf le bouton, qui se replie et devient le
+    chrono ;
+  - tambour : les pièces du verdict basculent une à une (45 ms d'écart, flou de rotation) et le dos arrive déjà
+    imprimé ;
+  - iris : un masque radial au bord fondu de 320 px, sans liseré, s'ouvre sur le mur. Le mur arrive flou (16 px) et se
+    met au point, si bien que rien de net ne croise la scène qui recule dans le bord fondu ;
+  - recherche « qui tourne toute seule » : un radar couché au sol (`rotateX` 76°) balaie et accélère sur « tourne » ;
+    les annonces s'allument à son passage.
+- **Pièges :**
+  - **Texte sur un fond chargé.** Sans carte, un texte posé sur un décor chargé devient un texte sur du texte (la
+    meilleure annonce sur le mur). Remède : mise au point (mur flouté à 11 px, assombri de 62 %) et une ombre ronde au
+    bord fondu derrière l'annonce.
+  - **Poussée de caméra.** Elle agrandit le contenu de 4 à 6 %. On dessine donc les blocs dans 760 px (160 → 920) pour
+    rester dans la colonne sûre, et on aligne à droite sur 900 à 905.
+  - **Faux positifs du détecteur.** `chevauchements.mjs` compte les boîtes englobantes : un texte incliné et des
+    lettres encore masquées pendant leur montée en déclenchent. On vérifie chaque cas sur l'image.
+- **Contrôle v8 :** 0 image de sous-titre sur du détail net (395 images). Les recouvrements restants sont des faux
+  positifs, vérifiés.
+
+## 26. Transitions d'écran par grosse couleur (présentation v9)
+
+Retours de l'utilisateur sur la v8 :
+- une image du formulaire, avec « tu trouves pas qu'il y a un problème ici ?? » : le rond blanc du doigt, puis l'onde,
+  se posaient sur le texte « Analyser ce lien » ;
+- « pour les transitions d'écran, j'aime qu'une grosse couleur prenne l'écran, puis les textes arrivent en
+  animation ».
+
+Code de référence : `video/film-presentev9/film.js`.
+
+**L'appui sur un bouton**
+- Pas de doigt ni de rond posé sur un bouton : ils cachent son texte.
+- L'appui se voit au bouton lui-même : il s'écrase (−6 %) et s'éclaire (+20 %).
+- L'onde part de sous le texte. Elle est placée dans la pastille, qui la coupe à son bord.
+
+**Grammaire de la transition** (dans les silences de la voix)
+1. Une couleur pleine part d'un objet de la scène qui sort (le bouton, −2 688 €, le trait vert sous l'annonce,
+   l'icône de la marge), ou d'un bord de l'écran. Elle couvre tout l'écran en 0,22 à 0,32 s (`bez(0.55, 0.05, 0.2, 1)`).
+2. Elle tient 0,04 à 0,32 s.
+3. Un trou s'ouvre (0,24 à 0,33 s, eOut3) et découvre la scène suivante. Ses textes arrivent juste derrière : un
+   verdict qui reste vide 0,6 s après l'ouverture paraît mort.
+
+**Mise en œuvre** : un calque plein au-dessus des scènes, `VOILE`, avec deux dégradés radiaux en masque, croisés
+(`mask-composite: intersect`).
+- **L'entrée** : un disque, `#000` jusqu'à `r − flou`, transparent à `r`.
+- **La sortie** : un trou, transparent jusqu'à `r₂`, opaque à `r₂ + flou`.
+- **Un volet presque droit** : un disque dont le centre est très loin (1 480 px sous le bas de l'écran, ou à gauche).
+- **Le flou du bord** : la moitié du chemin parcouru en une image, comme le filé (`|dr/dt| / 60`, entre 1,5 et
+  140 px).
+- **La nuit** : son trou est fondu sur 320 px, pour que le bleu se fonde dans le ciel autour de l'horloge.
+
+**Formes et couleurs par sens** (varier le départ, garder des couleurs qui portent le sens)
+
+| Transition | Couleur | Forme |
+|---|---|---|
+| accroche → lien | orange | monte d'en bas |
+| bouton → chrono | orange | la pastille grossit jusqu'à tout couvrir, puis se retire en anneau : le bord rentre jusqu'au rayon extérieur de la piste, un trou s'ouvre jusqu'au rayon intérieur, et la piste du chrono prend le relais à la même taille, caméra figée jusque-là |
+| critères → verdict | rouge | part de −2 688 € |
+| verdict rouge → verdict vert | vert | monte d'en bas |
+| plafond → mur | orange | tombe d'en haut |
+| meilleure annonce → recherche | vert | part du trait vert sous l'annonce |
+| recherche → nuit | bleu nuit | tombe d'en haut, puis se fond |
+| nuit → annonce | corail | l'aube monte d'en bas |
+| e-mail → parc | orange | passe de gauche à droite |
+| marge → logo | orange | part de l'icône de la marge ; la tuile du logo se pose sur l'orange avant l'ouverture |
+
+**Empilement**
+- Le calque est au-dessus de toutes les scènes et sous la fin, pour que la tuile du logo se pose sur l'orange.
+- Il est sous les sous-titres, qui restent lisibles sur la couleur.
+- Choisir une couleur qui ne mange pas le mot accentué du sous-titre en cours : pas d'orange sous un mot orange. Vert
+  sous « arrête de scroller. » ; bleu nuit sous « tourne toute seule ».
+- Ça ne suffit pas : un mot rose sur l'orange se perd aussi (« perds », v9 à 5,9 s). Sur le voile, les mots en couleur
+  des sous-titres passent donc à l'encre foncée (`#160904`), au blanc sur le bleu nuit. Le changement se fait lettre
+  par lettre, là où passe le bord. `VOILE_A(t)` donne la part de couleur en chaque point, avec les mêmes masques que
+  le voile. Les mots blancs restent blancs.
+
+**Le lien collé** (retour v9 : « met pas le lien de l'annonce comme ça c'est pas esthétique »)
+- Coupé sur quatre lignes, le lien faisait cassé. Un lien tient sur une ligne, comme dans le vrai champ :
+  - l'icône de lien, puis le domaine en clair (gras) et le chemin plus discret ;
+  - avant le collage, l'indication grisée du champ, coupée par son bord.
+- La taille est calculée pour que l'icône, le lien et le curseur tiennent dans la colonne 140 → 940 : environ 43 px
+  pour « leboncoin.fr/ad/voitures/2873461903 ». Le libellé (40 px) est plus petit que la valeur.
+- **De près et de face, la fin d'une ligne longue sort de l'écran.** Un panoramique qui la suit pendant le collage
+  file à 80–100 px par image : le domaine devient illisible sous le flou de bougé.
+- **La solution est un gros plan de biais** (rotateY +32°, caméra à cz 200). Le début du champ est au premier plan, la
+  fin du lien fuit vers la droite, et la ligne entière tient dans 90 → 915. Puis la caméra recule face au formulaire.
+- Contrôle : simuler la trajectoire de la caméra (`proj`) avant de rendre. On place le début et la fin du texte à
+  chaque image et on mesure sa vitesse : au-delà de 15 px par image, il ne se lit plus.
+
+**Scènes**
+- Une scène reste nette jusqu'à ce que la couleur la couvre (plus de recul), puis elle est cachée.
+- La suivante est peinte sous la couleur et commence à écrire quand le trou s'ouvre.
+- Les fonds de couleur des scènes (palettes) changent sous la couleur pleine.
+
+**Contrôle**
+- `chevauchements.mjs` ignore le voile : les textes cachés sous une couleur pleine ressortent comme recouvrements. On
+  vérifie l'image (ex. v9 à 24,6 s : écran entièrement orange).
+- v9 : 0 image de sous-titre sur du détail net (395). Recouvrements : les 72 images déjà vérifiées en v8, plus 24,6 s
+  (écran entièrement orange). La scène du lien sur une ligne n'en déclenche plus (16 images en moins).
+
+## 27. Une voiture en vraie 3D dans un film en CSS (présentation v10)
+
+Demande : « remplace la 208 par notre Polo en 3D », puis « utopicar sur la plaque ». Code : `video/film-presentev10/polo3d.js`
+(modèle `assets/models-3D/Volkswagen Polo GTI Mk5 Typ 6R 2012.fbx`).
+
+**Rendu**
+- Three.js (WebGL, SwiftShader au rendu) dans un canevas transparent, placé dans la scène CSS comme l'était la photo.
+- `pose(t)` repeint l'image : rien n'est conservé d'une image à l'autre, et le flou de bougé fonctionne tel quel.
+- Rendu à 2× puis réduit : la voiture n'a pas de crénelage. Environ 15 ms par image.
+- La voiture tourne lentement sur elle-même (17° pendant l'accroche) : les reflets et les roues bougent, c'est ce qui
+  fait la 3D. Le film garde ses mouvements CSS (avancée, recul et extinction au basculement du prix).
+
+**Les matières d'un modèle téléchargé sont à refaire**
+- La moitié des panneaux arrivent sans matière (blancs), les vitres sont opaques, les glaces de phares sont grises.
+- On réassigne tout par nom de pièce et de matière : peinture (physique, vernis), vitres teintées, plastiques noirs,
+  chromes, alliage des jantes (métal sombre, sinon on dirait un disque blanc), pneus, feux.
+- **Pour trouver une pièce :** colorier une matière en vert vif (`marquer`). Pour un détail précis, lancer un rayon depuis
+  le pixel (`pique`) : on lit la pièce et la matière touchées. C'est ainsi qu'on a trouvé la glace des phares
+  (`sides_rear_001`) et les lettres GTI (une matière chromée à l'intérieur du pare-chocs).
+- **Le modèle doit coller à l'annonce :** l'annonce analysée est une Polo 1.2 TSI. On retire donc les signes de la GTI
+  (étriers rouges, filet rouge et lettres de la calandre, lettres du hayon). La cote de l'outil ne distingue pas les
+  versions : une GTI serait comparée à des Polo ordinaires et passerait pour « trop chère » à tort.
+
+**La plaque**
+- On lit le plan réel du fond blanc de la plaque (les sommets de cette matière) et la bande européenne à sa gauche.
+- On y colle un rectangle texturé, à peine décollé. Le mot vient du logotype officiel (version fond clair, sans le
+  symbole), tel quel, en minuscules.
+
+**Cadrage et ombre**
+- La silhouette est mesurée à l'écran sur un échantillon de sommets. La vue est décalée pour centrer la voiture
+  (`setViewOffset`, sans changer la perspective), et le grossissement est fixé une fois (`cadrer`) : elle tient dans
+  la colonne même quand la caméra du film l'avance.
+- L'ombre de contact est une tache douce rendue en 3D. Son dégradé doit s'éteindre avant les bords de sa texture.
+  Une texture plus large que haute coupait l'ellipse, et la coupe se voyait au sol comme une arête droite (repérée par
+  l'utilisateur). Contrôle : rendre le canevas seul sur fond blanc, et mesurer qu'aucun pixel ne touche ses bords.
+
+**Les chiffres changent avec la voiture**
+- On n'invente aucun chiffre. Les règles de l'outil (copie de `web/src/lib/analyse`, banc `tsx`, profil de la démo :
+  Benef, revente, marge minimale 750 €) tournent sur une annonce d'essai écrite pour l'occasion.
+- La cote est la vraie fonction `cote_marche` de la base, lue en lecture seule (des moyennes, aucune annonce).
+- Contrôle : la cote de la 208 relue le 16 oct. retombe exactement sur celle du 14 (514 annonces, médiane 5 519 €), et
+  le banc retrouve le verdict de la 208 (23/100, « il faudrait l'acheter 3 750 € au plus »).
+- Polo 1.2 TSI 90 Confortline, 2012, 118 400 km, 8 990 €, vendeur pro (cote : 268 annonces, médiane 7 457 €) :
+  « Trop cher », 1 533 € au-dessus (+21 %) ; ≈ 400 € de travaux ; −2 490 € ; 29/100 « À éviter » ; 5 750 € au plus.
+
+**Un chiffre plus large casse une mise en page validée**
+- « 8 990 € » est plus large que « 7 190 € » : il sortait de l'écran à la première image. On lui garde la largeur de
+  l'ancien prix.
+- On mesure les boîtes de chaque texte à chaque image (sonde DOM), pas seulement au repos. La caméra qui arrive, qui
+  avance ou qui tourne au basculement pousse le texte dans les marges : on décale le texte d'autant, le temps du
+  mouvement.
+- Contrôle v10 : 0 image de sous-titre sur du détail net (395). 43 images relevées, contre 73 en v9 : aucune nouvelle,
+  toutes déjà vérifiées. Les 30 alertes de l'accroche et de la boucle (prix dans les marges) ont disparu.
+
+## 28. Nouvelle voix sur un film déjà calé (présentation v10)
+
+Demande : « ok fait la vidéo », avec toute la voix refaite sur le script v10 (`video/script-presentev10.md`). Code :
+`video/scripts/vo-presentev10.py`, `video/audio/vo-presentev10/`, `video/scripts/audio-presentev3.py`.
+
+**La prise**
+- 4 prises eleven_v4 de la même voix. On choisit par mesure : écart au script après transcription (mots manqués ou
+  changés), débit, plage de hauteur, plus long silence. La mesure ne remplace pas l'écoute : l'utilisateur écoute.
+- Transcription mot à mot (faster-whisper medium, `initial_prompt` avec les noms propres : utopicar, Polo, Clio).
+  Les pauses du montage s'ajoutent ensuite par `coupes.json` (chaque coupe dit ce que l'image fait pendant le blanc).
+
+**Garder le film calé sans tout renuméroter**
+- Le film appelle les mots par leur numéro. La nouvelle voix n'a ni les mêmes mots ni le même nombre de mots.
+- `ancien-vers-nouveau.json` donne, pour chaque ancien mot (0 à 92), la plage de nouveaux mots qui le remplace.
+  Le film reconstruit son ancienne liste à partir des nouveaux temps, puis ajoute les nouveaux mots à la suite :
+  `n(k) = 93 + k`. Une valeur qui s'écrit en plusieurs mots à la voix (« 5 750 euros ») devient un seul mot affiché
+  (`mot(a, b)`).
+- Le mixage lit la même table : les repères de musique et de bruitages suivent la nouvelle voix sans être réécrits.
+
+**La musique quand la voix s'allonge**
+- La voix passe de 41 à 57 s : la chute de la musique serait arrivée deux fois. On rejoue 4 mesures (mesure 13 → 9)
+  dans un blanc de la voix, sur la grille mesurée (119,958 BPM), avec des fondus de 2 à 20 ms.
+- Comparer les numéros de montage comme des nombres, pas comme du texte : `'presentev10' < 'presentev6'`.
+
+**Voix devant la musique, phrase par phrase**
+- Le ducking global laissait 5,3 dB sous « Achète juste, revends mieux. » (la musique y monte).
+- Règle ajoutée : sous chaque phrase où l'écart voix / musique tombe sous 8,5 dB, la musique baisse d'autant
+  (rampes de 0,15 s). Mix v10 : −14,2 LUFS, true peak −3,5 dBTP, écart minimal 8,5 dB, médian 11,0 dB (26 phrases).
+
+**Contrôle**
+- Détecteurs relancés sur tout le film recalé : 0 image de sous-titre sur du détail net (487). 38 images relevées
+  (43 avec l'ancienne voix), toutes d'une catégorie déjà vérifiée : chrono, cartes qui sortent, compteurs, bandeau
+  PLAFOND qui entre, mur d'annonces sous la couleur, « zzZ ».
+- Ne pas lancer le détecteur pendant un rendu : sur 4 cœurs, ses captures dépassent 30 s et il s'arrête en route.

@@ -36,13 +36,14 @@ export async function prixParCle(cle: string, def: { nom: string; euros: number;
     Un compte Stripe en mode réel n'en a pas par défaut : elle est créée ici au premier besoin, puis réutilisée. */
 async function configurationPortail(site: string) {
   const liste = await stripe().billingPortal.configurations.list({ active: true, limit: 100 });
-  const deja = liste.data.find((c) => c.metadata?.utopicar === "v1");
+  // v2 : avec Pro + Messages (la v1 reste en place pour rien, elle n'est plus utilisée)
+  const deja = liste.data.find((c) => c.metadata?.utopicar === "v2");
   if (deja) return deja.id;
   const { OFFRES, BENEF } = await import("./offres");
-  const ids = (["essentiel", ...BENEF] as const).map((id) => OFFRES[id]);
+  const ids = (["essentiel", ...BENEF, "pro_messages"] as const).map((id) => OFFRES[id]);
   const prix = await Promise.all(ids.map((o) => prixParCle(o.lookup!, { nom: `Utopicar ${o.famille === "benef" ? "Benef " : ""}${o.nom}`, euros: o.prix, mensuel: true })));
   const c = await stripe().billingPortal.configurations.create({
-    metadata: { utopicar: "v1" },
+    metadata: { utopicar: "v2" },
     default_return_url: `${site}/app/compte`,
     business_profile: { headline: "Utopicar : votre abonnement", privacy_policy_url: `${site}/legal#confidentialite`, terms_of_service_url: `${site}/legal#vente` },
     features: {
@@ -70,4 +71,19 @@ export async function lienPortail(customer: string, site: string) {
 /** Adresse publique du site, pour les retours de paiement et les liens des emails. */
 export function urlSite(req: Request) {
   return (process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin).replace(/\/$/, "");
+}
+
+/** Le champ « code promo » de Stripe ne s'affiche que s'il existe au moins un code promo actif : sinon il fait sortir
+    du paiement pour aller chercher un code qui n'existe pas. Vérifié au plus toutes les 10 minutes ; en cas d'erreur, affiché. */
+let codesPromo: { t: number; v: boolean } | null = null;
+export async function codesPromoActifs(): Promise<boolean> {
+  if (codesPromo && Date.now() - codesPromo.t < 10 * 60_000) return codesPromo.v;
+  try {
+    const l = await stripe().promotionCodes.list({ active: true, limit: 1 });
+    codesPromo = { t: Date.now(), v: l.data.length > 0 };
+  } catch (e) {
+    console.error("codes promo stripe", e);
+    return true;
+  }
+  return codesPromo.v;
 }

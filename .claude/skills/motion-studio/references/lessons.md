@@ -1,4 +1,4 @@
-# Leçons des films UTOPICAR (v1 → v9, MO1 → MO10, master60)
+# Leçons des films UTOPICAR (v1 → v10, MO1 → MO10, master60, semaines d'oct.)
 
 À relire avant de construire. Chaque ligne est arrivée pour de vrai.
 
@@ -82,6 +82,41 @@
 | master60 | Titres desktop posés à x = 96, vus à x ≈ 70 dans le MP4 | La poussée de caméra (zoom depuis le centre) élargit tout : prévoir la marge (`motion-craft.md` § 3) |
 | master60 | Aplats vides de 0,2 à 0,4 s à deux coupes (`qa_video.py`) | Le premier élément entre à la frame de coupe ; la coupe tombe sur le mot qui amène l'élément |
 | master60 | `matplotlib` absent, `sleep` bloqué dans Bash | Spectrogrammes en PIL (`music-pick.py`) ; rendus en tâche de fond, attendre la notification de fin |
+| Débuts BO | « Manque d'originalité » : fiche d'annonce + ticket de 5 lignes | Moins de texte : chaque chiffre porté par un objet (étiquette qui se retourne, étoile, repères sur la voiture) ; grammaire relevée sur Behance avant de redessiner |
+| BO1 | « Boîte DSG » et « Quickshift » à l'écran alors que les 3 annonces étaient en boîte manuelle | Vérifier chaque point « à vérifier » dans l'annonce (colonne `boite` de `marche_annonces`) et dans la liste de l'outil (`web/src/lib/analyse/fiabilite.ts`) |
+| Polo v2 → v4 | « Fais 978 de bénef avec ça » (pronom sans objet), puis « 3 analyses offertes » sans avoir montré ce qu'est une analyse | Objet nommé dans la 1re phrase ; le produit produit chaque résultat à l'écran (« tu colles l'annonce », barre, clic, scanner) avant le CTA |
+| Planches | Chiffres calculés de mémoire (× 0,95, 20 € de frais) : l'outil fait × 0,96, 150 € de frais, prix max arrondi aux 50 € inférieurs | Lire la formule dans le code du produit (`bilan.ts`) avant de chiffrer ; mention « hors travaux » quand une partie manque |
+| Semaines oct. | Textes posés à y ≥ 1 480 : dans la bande du bas couverte par TikTok, 14 rendus à refaire | Bas de chaque texte ≤ 1 480 dès la config ; planche de contrôle avec la ligne 1 480 tracée avant le rendu final |
+| Semaines oct. | Carton de fin déclenché par « 3 100 » au lieu de « Trois » (mot cherché par préfixe) | Mot-clé numérique court : égalité stricte ; chercher « trois » d'abord, « 3 » ensuite |
+| Semaines oct. | Whisper saute des passages entiers (liste de chiffres dite vite) | Retranscrire le passage seul (VAD, sans contexte) et recoller les mots dans le `.words.json` |
+| Semaines oct. | Chiffre orange posé sur le disque orange : illisible | Pastille sombre derrière tout texte posé sur un fond coloré |
+| Semaines oct. | `taskkill /IM node.exe` pour arrêter un rendu : tous les node du PC tués, serveur de dev compris | N'arrêter que ses propres processus (PID du script de rendu) |
+| Twingo BO3 | Flou de la photo sur le pare-brise, détourage avec un pavé flou ; puis raccord visible | Reconstruire la voiture par symétrie depuis la moitié propre ; vérifier chaque flou sur un recadrage zoomé |
+| Top 3 / 14 vidéos | Bénéfices « trop beaux » : revente à la médiane, travaux probables oubliés ; 5 vidéos sur 13 passaient en perte une fois recalculées | Chiffrer avec l'hypothèse **prudente** du produit (bas de fourchette, travaux, frais, marge) ; si le sujet ne tient plus, réécrire l'angle (« le piège ») plutôt que garder un chiffre flatteur |
+| Top 3 | « Polo 1.6 TDI la plus fiable » : faux | Tout fait technique dit à l'écran (moteur, génération, boîte) se vérifie par recherche + dans la source du produit avant le script |
+| Top 3 | La voix lit « 1,4 » « un virgule quatre » | Écrire les nombres comme on les dit (« un litre quatre », « six mille six cent cinquante ») dans le texte envoyé au TTS |
+| Top 3 | Bégaiements « code code » après resserrage des silences | Marges de découpe qui se chevauchent : ne jamais reprendre un bout déjà pris (`a = max(prev_b, a - pre)`), ignorer les segments vides |
+| Top 3 | Flous « chelou » sur logos et phares | Ne flouter que ce qui l'exige (plaque), sur la photo originale, contrôle sur recadrage zoomé |
+| Top 3 | Interface « exemple » à l'écran, rapport qui contredisait le verdict | Capturer la vraie UI avec les données du cas montré, retirer les libellés de démo, et vérifier que fiche, tampon et voix disent la même chose |
+| 13 vidéos | Tampon « J'ACHÈTE » alors que le prix dépassait le prix max de la fiche | Le verdict à l'écran découle des chiffres affichés, pas du ton voulu (« NÉGOCIE » si prix > max) |
+| 13 vidéos | Photo d'une autre génération que celle annoncée (Polo 5 pour une Polo 4) | Pas de photo exacte = changer de sujet ou le signaler avant production, jamais en douce |
+| Capital an 1 | Repère présenté comme une loi (« 3 à 6 cartes grises »), total valable seulement pour le haut de fourchette | Dire « repère » quand ce n'est pas un texte ; afficher l'hypothèse du calcul (6 voitures) ; vérifier les taux officiels (12,3 % URSSAF) avant le rendu |
+| Toutes | Emojis, mentions « exemple », sources à l'écran jugés cheap | Mots-chocs en texte seul ; sources dans le brief, pas à l'écran (sauf obligation légale) |
+| Hooks HK1–HK3 | « C'est du Canva, pas du motion design » : pastilles, anneaux, halos, bandeaux, étiquettes qui tombent | Lire `motion-pro.md` et regarder des références avant d'animer ; un seul objet porteur qui se transforme, du vide, des bords sur deux ressorts |
+| Hooks | Animé sans relire le skill ni chercher de références | Toujours : skill → 2–3 références décomposées image par image → construction → mesure `ref-motion.py` contre les références |
+| NEGO | « La voix de Simon s'arrête » : silences ajoutés (0,6–0,9 s) + arrêt de musique au même endroit = vide total | Jamais de silence ajouté dans la voix ; ce sont les images qui débordent sur la phrase suivante ; vérifier la piste voix (aucun blanc > 0,4 s) |
+| ETT | Un texte créé (`KT`) mais jamais animé reste visible par défaut et se superpose (« Prix max » sur « −350 € ») | Supprimer l'élément, pas seulement son animation ; planche de contrôle à chaque scène |
+| ETT | Cadre de surlignage posé « à l'œil » en % : décalé de la ligne | Mesurer la boîte au pixel sur la capture (couleur de fond de la ligne), convertir en % de la carte |
+| ETT | En-tête « Fiche Utopicar · en 2 secondes, sans compte » jugé inutile | Retirer les libellés de l'interface qui n'apportent rien dans la vidéo, dans la page avant capture |
+| Téléphones | Fiche incrustée dans des clips Mixkit à écran vert : « trop mal foutu » (720p agrandi, carte plaquée) | Utiliser le site source capturé en HD (3×) dans une carte en code ; la vidéo de stock seulement si elle est nette en 1080×1920 |
+| Vidéos d'oct. | « On en a marre de voir ta Polo » | Varier la voiture d'une vidéo à l'autre (base : Clio, 207, Fiesta, Twingo…), vérifier la génération sur la photo |
+| Présentation v3 | « Je ne veux pas représenter l'interface par un simple écran… on est dans l'interface, comme dans les références » : vraie app figée dans un téléphone, blocs qui en sortent | Recoder les composants de l'app (mêmes textes, chiffres démo, jetons, polices, courbes de l'app) à l'échelle du film : l'écran entier est l'interface, chaque élément devient le suivant, paroles en grande typographie (`techniques.md` § 22) |
+| Présentation v6 | « Décompose chaque élément de l'interface pour les rendre plus satisfaisants ; c'est pas grave si la vidéo est plus longue » | Chaque composant se construit pièce par pièce dans l'ordre de lecture (trait → carte → libellé → valeur sur rouleaux → barre → reflet) ; le temps vient de silences ajoutés entre les phrases (`vo-espaces.py`), jamais d'une voix ralentie ; `techniques.md` § 23 |
+| Présentation v7 | « Quand il colle l'annonce, ça doit être un lien leboncoin ; l'écriture suit trop vite, des textes se superposent ; "pour les trouver" est mal fait ; anime l'icône du logo ; le plafond se voit mal » | Analyse du MP4 v6 image par image : rouleaux et décodage empilaient des chiffres fantômes au flou de bougé, les scènes qui foncent vers la caméra passaient sous les sous-titres. Règles : une valeur monte d'un masque une seule fois, un chiffre qui change est figé sur l'image, une scène sort en reculant et en se floutant, la suivante naît d'une forme ; contrôle automatique des superpositions ; `techniques.md` § 24 |
+| Présentation v8 | « Retire les cadres des interfaces, faut que ça soit beaucoup plus immersif » | Plus aucune carte : chaque pièce flotte seule, en grand, à sa profondeur (vue éclatée compensée) ; filets au lieu des bords ; commandes pleines conservées ; caméra qui ne s'arrête jamais (poussée lente, filé, tambour, mise au point, iris au bord fondu, radar au sol) ; sans carte, un texte sur un décor chargé devient un texte sur du texte : mise au point et ombre ronde derrière ; `techniques.md` § 25 |
+| Présentation v9 | « Tu trouves pas qu'il y a un problème ici ?? » (le rond du doigt sur « Analyser ce lien ») ; « pour les transitions d'écran, j'aime qu'une grosse couleur prenne l'écran, puis les textes arrivent en animation » | Ne jamais poser un doigt ou une onde sur le texte d'un bouton : l'appui se voit au bouton (il s'écrase, l'onde part de dessous, coupée par lui). Chaque changement d'écran : une couleur pleine qui part d'un objet ou d'un bord, couvre tout, tient, puis s'ouvre sur la scène suivante dont les textes arrivent aussitôt ; couleurs qui portent le sens (rouge, vert, bleu nuit, aube). Puis « met pas le lien de l'annonce comme ça c'est pas esthétique » (coupé sur quatre lignes) : un lien tient sur une ligne, comme dans le vrai champ, vu de près et de biais pour qu'il tienne entier dans le cadre, jamais suivi par un panoramique trop rapide pour être lu. Sur une grosse couleur, les mots en couleur des sous-titres passent au foncé (« perds » rose disparaissait sur l'orange) ; `techniques.md` § 26 |
+| Présentation v10 | « Remplace la 208 par notre Polo en 3D », « utopicar sur la plaque », puis « améliore bien, si je vois une erreur je pourrai ne plus dormir » (une arête d'ombre sous la voiture) | Un modèle 3D téléchargé n'est jamais prêt : refaire ses matières pièce par pièce, le faire coller à l'annonce (GTI retirée), et contrôler son canevas seul sur fond blanc. Changer de voiture, c'est changer tous les chiffres : refaire l'analyse avec les règles de l'outil et la vraie cote, et refaire la phrase de voix. Un chiffre plus large casse une mise en page validée : mesurer chaque texte à chaque image ; `techniques.md` § 27. Nouvelle voix sur le script v10 (« ok fait la vidéo ») : garder les anciens numéros de mots par une table ancien → nouveau, rejouer 4 mesures de musique dans un blanc de la voix plutôt que de laisser la chute revenir, et vérifier l'écart voix / musique phrase par phrase (5,3 dB sous la signature, relevé à 8,5) ; § 28 |
+| Conversion | Promesses « 30 % / 40 % de conversion » | Séparer ce qui se mesure : part des spectateurs qui voient le mot-clé (≈ 30–45 % possible) et commentaires mot-clé ÷ vues (1–3 % = très bon) ; ce sont des estimations tant que les stats ne sont pas lues |
 
 ## Ce qui a marché (à reprendre)
 
@@ -117,3 +152,42 @@
   - **Formats** : le 9:16 vient du même code, et le 16:9 est resté identique au pixel près.
 
   Recettes : `techniques.md` § 15–16, `sound-design.md` § 9.
+- Oct. 2026, concept « l'analyse sort tout » : la Polo v4 validée (« ok on enregistre ça »), puis 14 vidéos produites
+  en une passe (semaines du 12 et du 19 oct.). Ce qui a marché :
+  - **Image** : voiture-autocollant (liseré blanc, ombre en trame, disque orange), étiquette de prix sur sa ficelle qui
+    se retourne (achat → revente), étoile verte qui roule jusqu'au mot, barre UTOPICAR « tu colles l'annonce » qui
+    devient « Analyse UTOPICAR ✓ », scanner qui change la photo en plan au trait, repères qui tombent sur leur mot,
+    carte « Ton prix max » sur le coup final, carton « 3 analyses offertes · code TIKTOK » avec le logo.
+  - **Fabrication** : un seul moteur (`semaine()` dans `film-c7/_specs.js`) et une config par vidéo ; repères
+    musicaux calculés sur les mots de Simon (`build-c7.py`) ; `video/scripts/semaines.sh` mixe, rend et contrôle tout.
+  - **Sujets** : peur de se faire avoir (compteur, arnaque), perte chiffrée (boîte auto, petit kilométrage), erreur de
+    calcul (frais, « dernier prix »), puis la récompense ; verdicts variés (fonce, négocie, passe, prudence).
+
+  Recettes : `techniques.md` § 17–18.
+- Oct. 2026, modèle court « Top 3 » puis 14 vidéos de 15–20 s : validé après une dizaine d'itérations. Ce qui a marché :
+  - **Ouverture** : petite étiquette de contexte (pour qui) + titre sur deux lignes + objet détouré qui claque, avant 0,5 s.
+  - **Autodérision** : le mot drôle de la voix claque en grosse pastille qui tremble puis s'envole ; l'humour court sur
+    toute la vidéo, pas seulement au début.
+  - **Objet plein cadre** : photo qui zoome en continu, plaque d'identité qui se déplie (lettres qui montent, détails
+    un à un, compteur qui roule), étapes chiffrées sur leur mot (barré → valeur, pastille couleur du verdict).
+  - **Vraie interface** capturée en séquence d'images et rejouée dans un téléphone 3D avec curseur et clics, puis un
+    tampon de verdict ; fin fixe.
+  - **Mouvement continu** : marquee géant en contour, points qui dérivent, halo qui respire, traînées de vitesse,
+    anneaux d'impact : 67–72 % d'images en mouvement au lieu de 37 %.
+
+  Recettes : `techniques.md` § 19, vérifications : `qa-delivery.md` « Vérifications de fond ».
+- Oct. 2026, film complet « Et la tienne ? » v4 (ETT) en grammaire pro, après recherche (prompt-motion.com, Dribbble,
+  Material 3, IBM Carbon, références mesurées). Ce qui a marché :
+  - **un seul objet porteur** du début à la fin : point orange → étiquette percée → zoom-éclair à travers son trou →
+    Clio en 2.5D → prix qui roule → goutte « −350 € » → fiche qui naît du prix → case parmi 400 → pépite → « Ton annonce »
+    → point orange (boucle parfaite, pas de carton final) ;
+  - **mesures** : ouverture 86 % d'images en mouvement, à-coups 0,078 (références 0,02–0,08) ; film entier 69 %, plan
+    figé max 1,07 s après poussée de caméra continue (`S(…, 0.05)`) et flottements 3D ;
+  - **site source en HD** (capture 3×) dans une carte qui prend la hauteur du contenu à chaque image.
+
+  Recettes : `techniques.md` § 20–21, `motion-pro.md`.
+- Oct. 2026, P1–P5 (présentation, 5 vidéos) : la voix de base de Simon est **eleven_v4**, à vitesse d'origine
+  (déjà vive ; la v3 demandait × 1,1). Faster-whisper place certains mots qui suivent un silence 0,4 à 0,7 s trop
+  tard (« raté », « 1 650 ») : `video/scripts/words_snap.py` recale chaque début de mot sur l'attaque réelle de la
+  voix, appliqué automatiquement par `vo-c7-pose.py`. Les repères du film s'ancrent sur le mot précédent
+  (`TA(['5900', '5'], TA(['verdict']))`), jamais sur une seconde fixe : changer de prise ne casse plus le calage.

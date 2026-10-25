@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#0c0a09}
+#f{position:absolute;left:0;top:0;width:390px;height:844px;border:0;transform-origin:0 0;border-radius:18px}</style></head>
+<body><iframe id="f" src="../assets/presente-v3/ui/rapport-208.html"></iframe>
+<script>
+const f=document.getElementById('f');
+f.addEventListener('load',()=>{ window.seek=(t)=>{ const s=2.4+0.6*t; f.style.transform=`translate(${60-200*t}px,${120-300*t}px) scale(${s})`; f.contentWindow.scrollTo(0, 300*t); }; window.seek(0); window.filmReady=true; });
+</script></body></html>

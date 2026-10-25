@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { BoutonAbonner } from "@/components/site/BoutonAbonner";
 import { useState } from "react";
 import { coutParticulier, eur, type Analyse } from "@/lib/analyse/couts";
 import { OFFRES, PACKS, prixTxt } from "@/lib/offres";
@@ -25,9 +26,9 @@ function Verrou({ titre, texte, offre }: { titre: string; texte: string; offre: 
       <h2 className="mt-1 font-display text-lg font-semibold">{titre}</h2>
       <p className="mt-1 text-ink-2">{texte}</p>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Link href="/tarifs#particuliers" className="btn btn-sm">
-          Découvrir {o.nom}, {prixTxt(o.prix)} par mois
-        </Link>
+        <BoutonAbonner produit={o.id} className="btn btn-o btn-sm">
+          Prendre {o.nom}, {prixTxt(o.prix)} par mois
+        </BoutonAbonner>
         <Link href="/app/credits" className="btn btn-sm">
           Ou un crédit, dès {prixTxt(PACKS[0].prix)}
         </Link>
@@ -73,7 +74,7 @@ export function ResultatParticulier({ a, onNouvelle, id }: { a: Analyse; onNouve
         lien={a.lien}
         rapportId={id ?? a.rapportId ?? null}
         argent={
-      <Panneau titre="Ce qu'elle va vraiment vous coûter">
+      <Panneau titre="Ce qu'elle vous coûtera au total">
         <div className="mb-4 flex items-baseline justify-between gap-4">
           <span className="text-ink-2">Coût réel d&apos;achat</span>
           <b className="num font-display text-[clamp(28px,6vw,40px)] font-semibold text-o2">

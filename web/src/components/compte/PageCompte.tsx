@@ -3,35 +3,40 @@ import { redirect } from "next/navigation";
 import { compteCourant } from "@/lib/compte";
 import { comptesActifs } from "@/lib/supabase/config";
 import { suiteSure } from "@/lib/suite";
-import { OFFRES, type OffreId } from "@/lib/offres";
+import { centimes, GARANTIE, OFFRES, prixParAnalyse, prixTxt, type OffreId } from "@/lib/offres";
 import { FormulaireCompte } from "./FormulaireCompte";
 import { ConnexionSociale } from "./ConnexionSociale";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { TroisTemps } from "../accueil/TroisTemps";
 import { PreuveAnimee } from "../accueil/PreuveAnimee";
+import { CompteurInscrits } from "../site/CompteurInscrits";
 
 /** Écran commun inscription / connexion. À l'inscription : le parcours en 3 temps (on en est au premier)
     et, sur ordinateur, la carte animée qui montre ce qu'on obtient juste après. */
-export async function PageCompte({ mode, params }: { mode: "inscription" | "connexion"; params: { next?: string; offre?: string; erreur?: string } }) {
+export async function PageCompte({ mode, params }: { mode: "inscription" | "connexion"; params: { next?: string; offre?: string; erreur?: string; code?: string } }) {
   const suite = suiteSure(params.next, "/app");
   if (await compteCourant()) redirect(suite);
   const offre = params.offre && params.offre in OFFRES ? OFFRES[params.offre as OffreId] : null;
-  const autre = `/${mode === "inscription" ? "connexion" : "inscription"}?next=${encodeURIComponent(suite)}${offre ? `&offre=${offre.id}` : ""}`;
+  const code = (params.code ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 30);
+  const autre = `/${mode === "inscription" ? "connexion" : "inscription"}?next=${encodeURIComponent(suite)}${offre ? `&offre=${offre.id}` : ""}${params.code ? `&code=${encodeURIComponent(params.code)}` : ""}`;
   return (
     <div className="wrap grid gap-8 py-10 sm:py-14 lg:grid-cols-[1fr_440px] lg:items-start lg:gap-10">
       <div className="max-w-xl">
         <span className="kicker">{mode === "inscription" ? "Compte gratuit" : "Bon retour"}</span>
         <h1 className="h-sec mt-5">{mode === "inscription" ? <>Créez votre compte <span className="it">en 30 secondes</span></> : <>Connectez-vous <span className="it">à votre compte</span></>}</h1>
         <p className="mt-4 text-lg text-ink-2">
-          {offre
-            ? `Ensuite, vous pourrez choisir la formule ${offre.nom}.`
+          {mode === "inscription" && code
+            ? `Avec le code ${code} : vos analyses Benef offertes (marge nette, prix d'offre, prix max) s'ajoutent dès la création du compte, sans carte bancaire.`
+            : offre && offre.prix > 0
+            ? `Étape 1 sur 2. Juste après, le paiement de ${offre.famille === "benef" ? "Benef " : ""}${offre.nom} s'ouvre tout seul : rien à recliquer.`
             : mode === "inscription"
               ? "Votre première analyse est offerte, sans carte bancaire."
               : "Retrouvez vos analyses, vos rapports et votre formule."}
         </p>
         {mode === "inscription" && (
           <div className="mt-7">
-            <TroisTemps etapes={[["compte", "Votre compte"], ["lien", "Collez une annonce"], ["verdict", "Votre verdict"]]} actif={0} />
+            <TroisTemps etapes={offre && offre.prix > 0 ? [["compte", "Votre compte"], ["carte", "Le paiement"], ["verdict", "Vos analyses"]] : [["compte", "Votre compte"], ["lien", "Collez une annonce"], ["verdict", "Votre verdict"]]} actif={0} />
+            <CompteurInscrits className="mt-4" />
           </div>
         )}
         {mode === "inscription" && (
@@ -51,6 +56,19 @@ export async function PageCompte({ mode, params }: { mode: "inscription" | "conn
         )}
       </div>
       <div className="carte p-6 sm:p-8">
+        {offre && offre.prix > 0 && (
+          <div className="mb-6 rounded-2xl border border-o/40 bg-o/10 p-4">
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-o2">Votre formule</p>
+            <p className="mt-1 flex flex-wrap items-baseline justify-between gap-2">
+              <b className="font-display text-lg">{offre.famille === "benef" ? "Benef " : ""}{offre.nom}</b>
+              <span className="num font-semibold">{prixTxt(offre.prix)} par mois</span>
+            </p>
+            <p className="text-sm text-ink-2">
+              {offre.analyses} analyses par mois{prixParAnalyse(offre) ? `, soit ${centimes(prixParAnalyse(offre)!)} l'analyse` : ""}. Sans engagement{GARANTIE ? `, remboursé sous ${GARANTIE.jours} jours` : ""}.
+            </p>
+            <Link href={`/tarifs#${offre.famille === "benef" ? "benef" : "particuliers"}`} className="mt-1 inline-block text-xs text-ink-3 underline underline-offset-4 hover:text-ink">Changer de formule</Link>
+          </div>
+        )}
         <h2 className="mb-5 font-display text-xl font-semibold">{mode === "inscription" ? "Inscription" : "Connexion"}</h2>
         {params.erreur === "lien" && (
           <p role="alert" className="mb-4 rounded-xl border border-warn/40 bg-warn/10 px-3 py-2 text-sm text-warn">
@@ -58,7 +76,7 @@ export async function PageCompte({ mode, params }: { mode: "inscription" | "conn
           </p>
         )}
         {comptesActifs() && <div className="mb-5"><ConnexionSociale fournisseurs={await fournisseursActifs()} suite={suite} inscription={mode === "inscription"} /></div>}
-        <FormulaireCompte mode={mode} suite={suite} actif={comptesActifs()} />
+        <FormulaireCompte mode={mode} suite={suite} actif={comptesActifs()} codeInitial={code || undefined} />
         <p className="mt-6 border-t border-line pt-5 text-center text-sm text-ink-3">
           {mode === "inscription" ? "Déjà un compte ?" : "Pas encore de compte ?"}{" "}
           <Link href={autre} className="font-medium text-o2 underline underline-offset-4">

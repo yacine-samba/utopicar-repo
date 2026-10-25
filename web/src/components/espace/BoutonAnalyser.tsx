@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useEffect, useId, useRef, useState } from "react";
-import { lienImportable } from "@/lib/analyse/import";
+import { lienColle } from "@/lib/analyse/import";
 import { useAnalyseEnFond } from "./AnalysesEnFond";
 import { cx, inputCls } from "@/lib/cx";
 import { Ico } from "./Icones";
@@ -29,7 +29,7 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
     return () => removeEventListener("keydown", f);
   }, [ouvert]);
   const aller = (brut: string) => {
-    const l = lienImportable(brut);
+    const l = lienColle(brut);
     if (!l) return setErr("Collez le lien d'une annonce Leboncoin, La Centrale ou AutoScout24.");
     setOuvert(false);
     setV("");
@@ -41,10 +41,10 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
       <button
         type="button"
         onClick={() => setOuvert(true)}
-        className={cx("btn btn-o w-full justify-start gap-3", className)}
+        className={cx("a-bulle btn btn-o w-full justify-start gap-3 lg:group-data-[replie=true]/menu:size-11 lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:rounded-xl lg:group-data-[replie=true]/menu:p-0", className)}
       >
         <Ico nom="analyser" className={cx("shrink-0", icone)} />
-        {libelle}
+        <span className="bulle">{libelle}</span>
       </button>
       {ouvert &&
         // rendu à la racine de la page : dans le menu (position sticky), la fenêtre passait sous le contenu
@@ -109,7 +109,7 @@ export function BoutonAnalyser({ className, libelle = "Analyser une annonce", ic
                     }}
                     onPaste={(e) => {
                       const t = e.clipboardData.getData("text");
-                      if (lienImportable(t)) {
+                      if (lienColle(t)) {
                         e.preventDefault();
                         aller(t);
                       }

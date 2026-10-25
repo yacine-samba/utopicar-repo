@@ -130,7 +130,9 @@ export function lireAnnonce(texte: string): Faits {
     /^(Prix|Ann[ée]e|Kilom|[ÉE]nergie|Bo[iî]te|Situ[ée]|·|Garantie|Annonce)/i.test(l) ||
     /^(À la une|Sponsoris[ée]|Pro|Particulier|Vendeur professionnel\.?|Pack S[ée]r[ée]nit[ée]|Paiement s[ée]curis[ée]|Tr[èe]s bonne affaire|Bonne affaire|Prix [ée]quitable|Prix [ée]lev[ée]|Baisse de prix|Urgent|Nouveau|Livraison possible|Manuelle|Automatique|Diesel|Essence|Hybride|[ÉE]lectrique|\d[\d\s]*(km)?)$/i.test(l) ||
     /^[^\d]{1,45}\s\d{5}(\s|$)/.test(l);
-  const titre = (lines.find((l) => l.length >= 4 && !skip(l)) || "").slice(0, 140);
+  // annonce collée d'un seul bloc (« Renault Clio IV 1.5 dCi 90, 2016, 98 000 km… 8 200 € ») : aucune ligne sans prix,
+  // le titre est le début de la première ligne, jusqu'à la première virgule ou au premier point
+  const titre = (lines.find((l) => l.length >= 4 && !skip(l)) || (lines[0] ?? "").split(/,|;|\.\s|\s[-–]\s/)[0].trim()).slice(0, 140);
 
   // Estimation Leboncoin collée avec l'annonce (« Estimation : 6 200 € - 7 400 € »).
   let estimSite: Faits["estimSite"] = null;

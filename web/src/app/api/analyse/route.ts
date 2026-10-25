@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import * as z from "zod/v4";
 import { lireAnnonce } from "@/lib/analyse/texte";
+import { lienColle } from "@/lib/analyse/import";
 import { fiabilite } from "@/lib/analyse/fiabilite";
 import { analyseIA, IaIndisponible } from "@/lib/analyse/ia";
 import { filtrer } from "@/lib/analyse/filtre";
@@ -20,6 +21,7 @@ import { comptesActifs } from "@/lib/supabase/config";
 import { titreVehicule } from "@/lib/titre";
 import { vendeurDe } from "@/lib/analyse/vendeur";
 import { supabaseServeur } from "@/lib/supabase/serveur";
+import { supabaseService } from "@/lib/supabase/service";
 import { ipDe, tropDeDemandes } from "@/lib/limite";
 
 export const maxDuration = 300;
@@ -59,12 +61,25 @@ async function stockerPhotos(uid: string, photos: { media_type: string; data: st
 // Limite par adresse IP (par instance), en plus des quotas de chaque formule : 12 analyses par 10 minutes.
 const erreur = (message: string, status: number, extra: Record<string, unknown> = {}) => Response.json({ erreur: message, ...extra }, { status });
 
+/* Une analyse à la fois par compte : le quota est vérifié avant l'appel à l'IA mais décompté après, donc des envois
+   en parallèle passeraient tous sur la même analyse restante. Le verrou expire avec la durée maximale de la route. */
+const EN_COURS = new Map<string, number>();
+function prendre(uid: string) {
+  const t = EN_COURS.get(uid);
+  if (t && Date.now() - t < maxDuration * 1000) return false;
+  EN_COURS.set(uid, Date.now());
+  return true;
+}
+
 export async function POST(req: Request) {
-  if (tropDeDemandes("analyse", ipDe(req), 12, 10 * 60_000)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
+  if (await tropDeDemandes("analyse", ipDe(req), 12, 10 * 60_000)) return erreur("Trop d'analyses d'affilée. Réessayez dans quelques minutes.", 429);
 
   const r = Corps.safeParse(await req.json().catch(() => null));
   if (!r.success) return erreur(r.error.issues[0]?.message ?? "Demande invalide.", 400);
-  const { mode, texte, ville } = r.data;
+  const { mode } = r.data;
+  // un lien ou le texte de partage de l'appli Leboncoin, sans l'annonce : rien à analyser, l'analyse n'est pas décomptée
+  if (lienColle(r.data.texte) && !lireAnnonce(r.data.texte).prix)
+    return erreur("Ce texte ne contient que le lien de l'annonce : collez le lien seul pour qu'elle soit lue, ou le texte complet de l'annonce.", 422, { lien: lienColle(r.data.texte) });
 
   // Mode démonstration (UTOPICAR_DEMO=1) : seulement quand les comptes ne sont pas configurés, pour tester le site.
   const demo = !comptesActifs() && process.env.UTOPICAR_DEMO === "1";
@@ -82,8 +97,21 @@ export async function POST(req: Request) {
       402,
       { offres: o.famille },
     );
+  if (compte && !prendre(compte.id)) return erreur("Une analyse est déjà en cours sur votre compte. Attendez son résultat.", 429);
+  try {
+    return await analyser(r.data, compte, o, demo);
+  } finally {
+    // rendu même quand l'analyse lève une erreur (sinon le compte reste bloqué toute la durée de la route)
+    if (compte) EN_COURS.delete(compte.id);
+  }
+}
 
-  const photos = r.data.photos.slice(0, o.photos);
+async function analyser(d: z.infer<typeof Corps>, compte: Awaited<ReturnType<typeof compteCourant>>, o: Offre, demo: boolean) {
+  const { mode, texte, ville } = d;
+
+  // Analyse offerte en achat-revente (code ou inscription Benef, formule Découverte) : contenu Benef au niveau Starter
+  const niveau = compte?.essaiBenef && mode === "benef" ? OFFRES.starter.id : o.id;
+  const photos = d.photos.slice(0, o.photos);
   const faits = lireAnnonce(texte);
   const fiab = fiabilite({ texte, annee: faits.annee, km: faits.km, energie: faits.energie });
   const detail = mode === "benef" ? "complet" : o.detail;
@@ -98,16 +126,17 @@ export async function POST(req: Request) {
   // Historique de l'annonce et même voiture vue ailleurs (base du marché) : facultatif, jamais bloquant.
   const historiqueP: Promise<Historique | null> = compte
     ? (async () => {
-        const { data, error } = await (await supabaseServeur()).rpc("historique_annonce", { p_id: numeroLeboncoin(r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0]), p_annee: faits.annee, p_km: faits.km, p_modele: marqueModele(texte, faits).modele });
+        const { data, error } = await (await supabaseServeur()).rpc("historique_annonce", { p_id: numeroLeboncoin(d.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0]), p_annee: faits.annee, p_km: faits.km, p_modele: marqueModele(texte, faits).modele });
         if (error) console.error("historique_annonce", error.message);
         return error ? null : (data as Historique | null);
       })().catch(() => null)
     : Promise.resolve(null);
-  const cote = compte ? await coteMarche(texte, faits) : null;
+  // base du marché indisponible : l'analyse continue sans cote plutôt que d'échouer
+  const cote = compte ? await coteMarche(texte, faits).catch((e) => (console.error("cote du marché", e), null)) : null;
   const out: Analyse = { faits, fiab, ia: null, cote, profil };
 
   try {
-    const { ia: brut, rapport } = await analyseIA({ texte, faits, fiab, profil, photos, offre: o.id, cote });
+    const { ia: brut, rapport } = await analyseIA({ texte, faits, fiab, profil, photos, offre: niveau, cote });
     // La cote de l'outil (annonces comparables) fait foi pour le prix du marché, dans les deux vues.
     if (cote) {
       const mc = marcheDepuisCote(cote);
@@ -115,7 +144,7 @@ export async function POST(req: Request) {
       rapport.marche = { ...rapport.marche, bas: mc.bas ?? undefined, realiste: mc.realiste ?? undefined, reventeRapide: mc.reventeRapide ?? undefined, confiance: mc.confiance, commentaire: mc.commentaire };
     }
     out.ia = filtrer(brut, detail);
-    if (mode === "benef") out.rapport = filtrerRapport(rapport, o.id);
+    if (mode === "benef") out.rapport = filtrerRapport(rapport, niveau);
   } catch (e) {
     if (e instanceof IaIndisponible) out.iaErreur = "L'estimation du marché n'est pas configurée sur ce serveur.";
     else if (e instanceof Anthropic.RateLimitError) out.iaErreur = "Trop de demandes en ce moment, réessayez dans une minute.";
@@ -128,17 +157,17 @@ export async function POST(req: Request) {
     // L'IA ne répond pas : l'analyse reste complète avec les règles et la cote de l'outil, comme l'outil Garage.
     const regles = iaRegles(texte, faits, fiab, cote);
     out.ia = filtrer(regles, detail);
-    if (mode === "benef") out.rapport = filtrerRapport(depuisIa(regles), o.id);
+    if (mode === "benef") out.rapport = filtrerRapport(depuisIa(regles), niveau);
     out.regles = true;
     delete out.iaErreur;
   }
 
   out.projection = await projectionP;
   out.historique = await historiqueP;
-  out.offre = o.id;
-  out.lien = r.data.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0];
-  out.vendeur = vendeurDe(r.data.vendeur, texte);
-  if (compte) out.photosUrls = r.data.photosLiens.length ? r.data.photosLiens : photos.length ? await stockerPhotos(compte.id, photos) : [];
+  out.offre = niveau;
+  out.lien = d.lienAnnonce ?? texte.match(/https?:\/\/\S+/)?.[0];
+  out.vendeur = vendeurDe(d.vendeur, texte);
+  if (compte) out.photosUrls = d.photosLiens.length ? d.photosLiens : photos.length ? await stockerPhotos(compte.id, photos) : [];
   let rapportId: string | null = null;
   // Une analyse n'est décomptée et enregistrée que si elle a abouti.
   if (compte && out.ia) {
@@ -148,8 +177,9 @@ export async function POST(req: Request) {
     const b = bilan(out, profil);
     out.bilan = { verdict: b.libelle, indice: b.indice, version: 2 };
     const resume = { verdict: b.libelle, marge: profil.objectif === "revente" ? b.argent.marge : null, note: b.indice, prix: b.argent.prix };
-    // Décompte et rapport en une fois, avec la session de la personne (fonction enregistrer_analyse).
-    const { data, error } = await (await supabaseServeur()).rpc("enregistrer_analyse", {
+    // Décompte et rapport en une fois, par le serveur (enregistrer_analyse_pour : un compte ne peut pas enregistrer
+    // lui-même un rapport inventé) ; sans clé de service (poste de développement), au nom de la personne.
+    const args = {
       p_mode: mode,
       p_titre: titre,
       p_marque: v.marque || null,
@@ -159,7 +189,12 @@ export async function POST(req: Request) {
       p_note: resume.note == null ? null : Math.round(resume.note),
       p_annonce: texte.slice(0, 8000),
       p_resultat: { ...out, ville },
-    });
+    };
+    const { data, error } = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? await supabaseService().rpc("enregistrer_analyse_pour", { p_uid: compte.id, ...args })
+      : await (await supabaseServeur()).rpc("enregistrer_analyse", args);
+    // plus d'analyse disponible (analyses lancées en parallèle, la base tient le compte) : le rapport n'est pas livré
+    if (error?.code === "P0003") return erreur("Vous n'avez plus d'analyse disponible : une autre analyse vient d'utiliser la dernière.", 402, { offres: o.famille });
     if (error) console.error("enregistrer_analyse", error);
     rapportId = (data as string | null) ?? null;
     if (rapportId) {
@@ -168,5 +203,5 @@ export async function POST(req: Request) {
     }
   }
 
-  return Response.json({ ...out, rapportId, detail, offre: o.id, restantes: compte ? Math.max(0, compte.restantes - (out.ia ? 1 : 0)) : null, demo });
+  return Response.json({ ...out, rapportId, detail, offre: niveau, restantes: compte ? Math.max(0, compte.restantes - (out.ia ? 1 : 0)) : null, demo });
 }

@@ -7,7 +7,7 @@ import { debutPeriode, type Compte } from "@/lib/compte";
 import { familleEspace, nomFormule, type Icone } from "@/lib/espace";
 import { BENEF, GUIDE, OFFRES, prixTxt } from "@/lib/offres";
 import { supabaseServeur } from "@/lib/supabase/serveur";
-import { EN_STOCK, joursStock, margePrevue, margeReelle, statsParc, type Vehicule } from "@/lib/parc";
+import { EN_STOCK, joursStock, margePrevue, margeReelle, statsParc, STATUTS_PARC, type Vehicule } from "@/lib/parc";
 import { ListeRapports } from "@/components/benef/ListeRapports";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { AnalyseRapide } from "@/components/espace/AnalyseRapide";
@@ -99,7 +99,7 @@ async function TableauParticulier({ c }: { c: Compte }) {
       <CartePremiersPas c={c} />
       <ActionsMobile recherche={false} />
       <div className="hidden sm:block">
-        <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle va vraiment vous coûter et ce qu'il faut vérifier." />
+        <AnalyseRapide titre="Une voiture en vue ?" texte="Collez le lien de l'annonce : en une minute, le verdict, ce qu'elle vous coûtera au total et ce qu'il faut vérifier." />
       </div>
       <Suivies />
       <ProjetAchat lignes={data ?? []} />
@@ -184,13 +184,16 @@ async function TableauComplet({ c }: { c: Compte }) {
     .slice(0, 8)
     .map((a) => ({ cle: a.cle, titre: a.titre, prix: a.prix, cote: a.cote?.P ?? null, pct: a.cote!.pct!, annee: a.annee, km: a.km, lieu: a.lieu, url: a.url, photo: a.photo, recherche: a.recherche }));
 
-  // Votre journée : les décisions du jour, la plus urgente d'abord (rouge seulement pour ce qui doit être corrigé maintenant)
+  // Votre journée : les décisions du jour, la plus urgente d'abord (rouge seulement pour ce qui doit être corrigé maintenant) ;
+  // les voitures épinglées passent en tête (et y restent même sans décision), les archivées n'y apparaissent plus
   const actions: (Action & { rang: number })[] = [];
-  for (const v of vivants) {
+  for (const v of vivants.filter((x) => !x.archive)) {
     const j = joursStock(v);
     const photo = v.photos?.[0] ?? null;
     const titre = `${v.immat ? `${v.immat} · ` : ""}${titreVehicule(v.titre)}`;
     const fiche = { href: `/app/parc/${v.id}`, l: "Ouvrir la fiche" };
+    const vehicule = { id: v.id, titre: titreVehicule(v.titre), statut: v.statut, date_achat: v.date_achat, epingle: !!v.epingle, archive: false };
+    const avant = actions.length;
     if (EN_STOCK.includes(v.statut) && j != null && j > 60) actions.push({ rang: 0, ton: "bad", etiquette: `${j} jours en stock`, titre, raison: "Le capital dort : baissez le prix ou changez l'annonce aujourd'hui.", lien: { ...fiche, l: "Ajuster le prix" }, photo });
     else if (EN_STOCK.includes(v.statut) && j != null && j > 45) actions.push({ rang: 1, ton: "warn", etiquette: `${j} jours en stock`, titre, raison: "Au-delà de 45 jours, la marge fond : refaites les photos ou ajustez le prix.", lien: { ...fiche, l: "Revoir l'annonce" }, photo });
     if (EN_STOCK.includes(v.statut) && v.prix_achat == null) actions.push({ rang: 1, ton: "warn", etiquette: "Prix d'achat manquant", titre, raison: "Sans lui, la marge et le capital sont faux.", lien: { ...fiche, l: "Compléter" }, photo });
@@ -198,7 +201,12 @@ async function TableauComplet({ c }: { c: Compte }) {
     if (v.statut === "vendu" && m != null && m < 0) actions.push({ rang: 2, ton: "warn", etiquette: "Vendue à perte", titre, raison: `${eur(m)} : notez ce qui a coûté pour la prochaine fois.`, lien: fiche, photo });
     if (v.statut === "repere") {
       const age = joursDepuis(v.created_at);
-      if (age > 7) actions.push({ rang: 3, ton: "warn", etiquette: `Repérée il y a ${age} jours`, titre, raison: "Achetez-la ou abandonnez-la pour garder un parc à jour.", lien: { ...fiche, l: "Décider" }, photo });
+      if (age > 7) actions.push({ rang: 3, ton: "warn", etiquette: `Repérée il y a ${age} jours`, titre, raison: "Achetez-la ou abandonnez-la pour garder un parc à jour.", lien: fiche, photo });
+    }
+    if (v.epingle && actions.length === avant) actions.push({ rang: 6, ton: "o", etiquette: STATUTS_PARC[v.statut], titre, raison: "Épinglée : gardée ici jusqu'à ce que vous la désépingliez.", lien: fiche, photo });
+    for (let k = avant; k < actions.length; k++) {
+      actions[k].vehicule = vehicule;
+      if (v.epingle) actions[k].rang -= 100;
     }
   }
   const dansParc = new Set(parc.map((v) => v.rapport_id).filter(Boolean));
@@ -389,7 +397,12 @@ async function TableauBenef({ c }: { c: Compte }) {
           Analyses du mois
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Tuile l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} sous={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} alerte={!c.illimite && c.restantes <= 3} />
+          {c.code ? (
+            // analyses offertes par un code (TIKTOK…) : le quota Découverte (1) n'a pas de sens ici
+            <Tuile l="Analyses offertes" v={String(c.codeBenef)} sous={c.codeBenef ? `restante${c.codeBenef > 1 ? "s" : ""}, au niveau Benef Starter` : "toutes utilisées"} alerte={c.codeBenef <= 1} lien={{ href: "/tarifs#benef", l: "Voir les formules" }} />
+          ) : (
+            <Tuile l="Analyses utilisées" v={c.illimite ? String(c.utilisees) : `${c.utilisees} / ${c.offre.analyses}`} sous={c.illimite ? "sans limite" : `${c.restantes} restante${c.restantes > 1 ? "s" : ""}`} alerte={!c.illimite && c.restantes <= 3} />
+          )}
           <Tuile l="Bonnes affaires repérées" v={String(go.length)} sous={`sur ${n} annonce${n > 1 ? "s" : ""} analysée${n > 1 ? "s" : ""}`} />
           <Tuile l="Marge moyenne des bonnes affaires" v={eur(marges.length ? marges.reduce((s, x) => s + x, 0) / marges.length : null)} sous="estimée avant achat" />
           <Tuile l="Meilleure affaire" v={eur(meilleure?.marge ?? null)} sous={meilleure?.titre ?? "aucune ce mois"} />

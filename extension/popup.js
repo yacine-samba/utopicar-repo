@@ -61,19 +61,55 @@ $('#again').addEventListener('click', async () => { const r = await chrome.runti
 $('#go').addEventListener('click', async () => { await chrome.runtime.sendMessage({type:'utp-open'}); window.close(); });
 $('#reopen').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type:'utp-renvoyer'}); if (r && r.ok) window.close(); else status((r && r.err) || 'Rien à rouvrir.', 'bad'); });
 
+/* ---- relevé automatique des cotes ---- */
+const nb = v => Number(v || 0).toLocaleString('fr-FR');
+function showBal(b){
+  const enCours = !!(b && b.actif), pause = enCours && !!b.pause, envoi = b && b.envoi && b.envoi.etat === 'en cours';
+  $('#balBar').style.display = enCours || envoi ? 'block' : 'none';
+  const pct = envoi ? b.envoi.envoyees / Math.max(1, b.lues) : b && b.nMarques ? b.marquesFaites / b.nMarques : 0;
+  $('#balBar').firstElementChild.style.width = Math.round(100 * pct) + '%';
+  $('#balMsg').textContent = b && b.msg || '';
+  $('#balMsg').style.color = pause && b.pause !== 'arret' ? 'var(--perte)' : '';
+  $('#balStats').textContent = b && b.prepare ? `Marques ${nb(b.marquesFaites)} / ${nb(b.nMarques)} · ${nb(b.recherches)} recherches · ${nb(b.lues)} annonces lues · ${nb(b.coupees)} coupée(s) à 100 pages` + (b.envoi && b.envoi.etat === 'fini' ? ' · envoyées à Utopicar' : '') : '';
+  $('#balPause').style.display = enCours && !pause ? 'block' : 'none';
+  $('#balReprendre').style.display = pause ? 'block' : 'none';
+  $('#balAbandon').style.display = enCours ? 'block' : 'none';
+  $('#balEnvoyer').style.display = b && b.lues && !envoi && (!enCours || pause) ? 'block' : 'none';
+  $('#balEnvoyer').textContent = b && b.envoi && b.envoi.etat === 'fini' ? 'Renvoyer le bilan' : 'Envoyer à Utopicar';
+  $('#balBilan').style.display = b && b.recherches ? 'block' : 'none';
+  $('#balGo').style.display = enCours || envoi ? 'none' : 'grid';
+  $('#balFiltreL').style.display = enCours || envoi ? 'none' : '';
+  $('#balGoT').textContent = b && b.recherches ? 'Lancer un nouveau relevé des cotes' : 'Lancer le relevé des cotes';
+}
+$('#balGo').addEventListener('click', async () => {
+  const { bal } = await chrome.storage.local.get('bal');
+  if (bal && bal.lues && !(bal.envoi && bal.envoi.etat === 'fini') && !confirm(`Le relevé précédent (${nb(bal.lues)} annonces) n'a pas été envoyé à Utopicar. Le remplacer quand même ?`)) return;
+  $('#balGo').disabled = true; $('#balMsg').textContent = 'Démarrage…';
+  const r = await chrome.runtime.sendMessage({type: 'utp-bal-start', marques: $('#balFiltre').value});
+  $('#balGo').disabled = false;
+  if (!r || !r.ok) $('#balMsg').textContent = (r && r.err) || 'Lancement impossible.';
+});
+$('#balPause').addEventListener('click', () => chrome.runtime.sendMessage({type: 'utp-bal-pause'}).then(() => { $('#balMsg').textContent = 'Pause après la page en cours…'; }));
+$('#balReprendre').addEventListener('click', () => chrome.runtime.sendMessage({type: 'utp-bal-reprendre'}).then(r => { if (!r || !r.ok) $('#balMsg').textContent = (r && r.err) || 'Reprise impossible.'; }));
+$('#balAbandon').addEventListener('click', () => { if (confirm('Arrêter définitivement ce relevé ? Les annonces déjà relevées restent dans l\'extension et peuvent être envoyées à Utopicar.')) chrome.runtime.sendMessage({type: 'utp-bal-abandon'}); });
+$('#balEnvoyer').addEventListener('click', () => { $('#balMsg').textContent = 'Envoi à Utopicar…'; chrome.runtime.sendMessage({type: 'utp-bal-envoyer'}).then(r => { if (r && !r.ok && r.err) $('#balMsg').textContent = r.err; }); });
+$('#balBilan').addEventListener('click', async () => { const r = await chrome.runtime.sendMessage({type: 'utp-bal-bilan'}); if (r && r.ok) window.close(); else $('#balMsg').textContent = (r && r.err) || 'Pas de bilan.'; });
+
 function showJob(j){
   if (!j) return;
   const bar = $('#bar');
   if (j.running){ bar.style.display = 'block'; bar.firstElementChild.style.width = Math.round(100 * (j.done || 0) / Math.max(1, j.total || 1)) + '%'; status(j.msg || 'Lecture en cours…'); $('#stop').style.display = j.kind === 'batch' || j.kind === 'releve' ? 'block' : 'none'; $('#batch').disabled = true; $('#ad').disabled = true; }
   else { bar.style.display = 'none'; $('#stop').style.display = 'none'; if (j.msg) status(j.msg, j.status === 'bad' ? 'bad' : 'ok'); $('#ad').disabled = false; updBatch(); }
 }
-chrome.storage.onChanged.addListener((ch, area) => { if (area === 'session' && ch.job) showJob(ch.job.newValue); if (area === 'local' && ch.lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; } });
+chrome.storage.onChanged.addListener((ch, area) => { if (area === 'session' && ch.job) showJob(ch.job.newValue); if (area === 'local' && ch.bal) showBal(ch.bal.newValue); if (area === 'local' && ch.lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; } });
 
 (async () => {
   tab = await currentTab(); const u = tab && tab.url || '';
   const isAd = /\/ad\/|annonce-|\/offres\/[^/]+-[0-9a-f-]{8,}|\/detail/i.test(u);
   const { job } = await chrome.storage.session.get('job');
   const { lastMeta } = await chrome.storage.local.get('lastMeta');
+  const { bal } = await chrome.storage.local.get('bal');
+  showBal(bal);
   if (lastMeta){ $('#again').style.display = 'block'; $('#reopen').style.display = 'block'; }
   if (isAd){ $('#ad').classList.add('main'); }
   else if (/^https?:/.test(u)){

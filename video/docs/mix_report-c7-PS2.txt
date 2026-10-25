@@ -1,0 +1,9 @@
+c7 PS2 · -14.1 LUFS intégrés, true peak -3.5 dBTP
+bruitages posés : 24 · retirés pour collision : 3 (whoosh@15.07, whoosh@16.66, roll@19.46)
+écart voix / musique par phrase : min 7.9 dB, médiane 11.0 dB (13 phrases)
+attaque premier temps (image 0)  prévue   0.00 s, mesurée   0.02 s (+24 ms)
+attaque drop                     prévue  15.08 s, mesurée  15.08 s (-3 ms)
+attaque coup final (carton)      prévue  19.34 s, mesurée  19.34 s (+1 ms)
+RMS avant arrêt          mix  -16.1  musique  -23.8 dBFS
+RMS drop                 mix  -15.6  musique  -20.9 dBFS
+RMS carton final         mix  -17.8  musique  -28.8 dBFS

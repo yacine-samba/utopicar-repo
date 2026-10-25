@@ -25,7 +25,8 @@ const PHASES: Record<string, Ligne[]> = {
   "audi a1 8x": P2(2010, 2014, 2018), "audi a3 8p": P2(2003, 2008, 2013), "audi a3 8v": P2(2012, 2016, 2020), "audi a4 b8": P2(2007, 2011, 2016), "audi a4 b9": P2(2015, 2019, 2024),
   "audi a5 8t": P2(2007, 2011, 2017), "audi a6 c6": P2(2004, 2008, 2011), "audi a6 c7": P2(2011, 2014, 2018), "audi q3 8u": P2(2011, 2014, 2018), "audi q5 8r": P2(2008, 2012, 2017),
   // Volkswagen
-  "volkswagen golf 7": [["p1", 2012, 2017, "Golf 7"], ["p2", 2017, 2020, "Golf 7.5", /\b(golf ?)?7[.,]5\b/]],
+  // phase 1 jusqu'en 2016 : la recherche filtre par les années, et les Golf 7.5 arrivent en 2017
+  "volkswagen golf 7": [["p1", 2012, 2016, "Golf 7"], ["p2", 2017, 2020, "Golf 7.5", /\b(golf ?)?7[.,]5\b/]],
   "volkswagen golf 8": [["p1", 2019, 2024, "Golf 8"], ["p2", 2024, MAINTENANT, "Golf 8.5", /\b(golf ?)?8[.,]5\b/]],
   "volkswagen polo 5": [["p1", 2009, 2014, "Polo 6R", /\b6r\b/], ["p2", 2014, 2017, "Polo 6C", /\b6c\b/]],
   "volkswagen polo 6": P2(2017, 2021, MAINTENANT), "volkswagen passat b8": P2(2014, 2019, 2024), "volkswagen tiguan 1": P2(2007, 2011, 2016), "volkswagen tiguan 2": P2(2016, 2020, 2024),
@@ -87,6 +88,12 @@ function phaseEcrite(L: Ligne[], tx: string): string | null {
   // « LCI », « restylée » : la phase 2 quand la génération n'en a que deux
   if (L.length === 2 && /\b(lci|restyl\w*|facelift)\b/.test(tx)) return "p2";
   return null;
+}
+
+/** Années d'une phase (Golf 7 phase 1 : 2012 à 2016), ou null si la génération n'a pas de phases connues. */
+export function anneesPhase(base: string, gen: string, phase: string): [number, number] | null {
+  const p = PHASES[`${base} ${gen}`]?.find(([id]) => id === phase);
+  return p ? [p[1], p[2]] : null;
 }
 
 /** L'annonce est-elle dans cette phase ? (écrit dans l'annonce, sinon par l'année). */

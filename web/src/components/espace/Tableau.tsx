@@ -5,6 +5,8 @@ import { cx } from "@/lib/cx";
 import { titreVehicule } from "@/lib/titre";
 import { Ico } from "./Icones";
 import { BoutonAnalyserAnnonce } from "./BoutonAnalyserAnnonce";
+import { ActionsVehicule } from "./ActionsVehicule";
+import type { Vehicule } from "@/lib/parc";
 
 /* Briques du tableau de bord complet (Benef Pro, illimité). Rendu serveur ; seul « Analyser » est un bouton client.
    Principes suivis :
@@ -50,7 +52,11 @@ export function EnTeteTableau({ prenom, sous, resume, action, journee }: { preno
   );
 }
 
-export type Action = { ton: "bad" | "warn" | "o" | "ok"; etiquette: string; titre: string; raison: string; lien: { href: string; l: string; externe?: boolean }; photo?: string | null };
+export type Action = {
+  ton: "bad" | "warn" | "o" | "ok"; etiquette: string; titre: string; raison: string; lien: { href: string; l: string; externe?: boolean }; photo?: string | null;
+  /** véhicule du parc concerné : boutons Acheter / Abandonner (voiture repérée), Épingler, Archiver */
+  vehicule?: Pick<Vehicule, "id" | "titre" | "statut" | "date_achat" | "epingle" | "archive">;
+};
 const PUCE: Record<Action["ton"], { cls: string; signe: string }> = {
   bad: { cls: "bg-bad/15 text-bad", signe: "!" },
   warn: { cls: "bg-warn/15 text-warn", signe: "!" },
@@ -79,6 +85,7 @@ export function Journee({ actions }: { actions: Action[] }) {
                 <div className="min-w-0 flex-1">
                   <p className="flex flex-wrap items-center gap-x-2 text-xs">
                     <span className={cx("font-semibold uppercase tracking-wide", TEXTE[a.ton])}>{a.etiquette}</span>
+                    {a.vehicule?.epingle && <span className="text-o2">· Épinglée</span>}
                   </p>
                   <p className="truncate font-medium">{a.titre}</p>
                   <p className="text-sm text-ink-3">{a.raison}</p>
@@ -90,6 +97,7 @@ export function Journee({ actions }: { actions: Action[] }) {
                   >
                     {a.lien.l} <span aria-hidden="true">&nbsp;→</span>
                   </Link>
+                  {a.vehicule && <ActionsVehicule v={a.vehicule} decider className="mt-2" />}
                 </div>
               </div>
             </li>

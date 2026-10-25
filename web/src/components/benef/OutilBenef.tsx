@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import type { OffreId } from "@/lib/offres";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
@@ -12,7 +13,7 @@ import { RapportComplet } from "./RapportComplet";
 import { AjouterParc } from "./AjouterParc";
 import { EnTeteRapport } from "../analyse/EnTeteRapport";
 
-export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restantes = null }: { maxPhotos: number; parc: boolean; villeCompte: string; lienInitial?: string; restantes?: number | null }) {
+export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restantes = null, suite }: { maxPhotos: number; parc: boolean; villeCompte: string; lienInitial?: string; restantes?: number | null; suite?: OffreId | null }) {
   const { profil } = useProfilAnalyse();
   const reg = { ...paramsPro(profil), ville: profil.ville || villeCompte || "Paris" };
   const router = useRouter();
@@ -81,6 +82,7 @@ export function OutilBenef({ maxPhotos, parc, villeCompte, lienInitial, restante
           mode="benef"
           maxPhotos={maxPhotos}
           restantes={restantes}
+          suite={suite}
           villeInitiale={reg.ville}
           villeLabel="Ville de départ et de revente"
           villeAide="Sert au trajet et à la cote de revente."
