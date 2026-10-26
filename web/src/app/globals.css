@@ -414,6 +414,77 @@ select option:disabled {
   }
 }
 
+/* Trois actes de l'accueil (TroisActes) : chaque acte se joue quand il arrive à l'écran (classe « scene »).
+   Hors scène (« repos »), tout est dans son état final. */
+.scene .lettre {
+  animation: leve 0.7s var(--ease-doux) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes leve {
+  from {
+    transform: translateY(105%);
+  }
+}
+/* le lien se tape, le curseur clignote, puis le bouton s'enfonce */
+.scene .tape {
+  animation: tape 0.9s steps(26, end) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes tape {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+.scene .clignote-texte {
+  animation: clignote 0.9s steps(1) infinite;
+}
+.scene .appui {
+  animation:
+    surgit 0.42s var(--ease-ressort) 0.1s both,
+    appui 0.36s var(--ease-doux) 1.3s;
+}
+@keyframes appui {
+  45% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 6px rgb(239 98 46 / 0.25);
+  }
+}
+/* la photo se resserre en arrivant */
+.scene .zoom-doux {
+  animation: zoom-doux 1.4s var(--ease-doux) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes zoom-doux {
+  from {
+    transform: scale(1.18);
+  }
+}
+/* le verdict tombe comme un tampon */
+.scene .tampon {
+  display: inline-block;
+  animation: tampon 0.55s var(--ease-ressort) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes tampon {
+  from {
+    opacity: 0;
+    transform: scale(1.9) rotate(-8deg);
+  }
+}
+.pulse-o {
+  animation: pulse-o 1.6s ease-out infinite;
+}
+.repos .passe {
+  display: none;
+}
+.repos mark.surligne {
+  background: rgb(255 122 122 / 0.32);
+  color: inherit;
+}
+:root[data-calme] .scene .tape {
+  clip-path: none;
+}
+
 /* Lueurs d'ambiance derrière tout le site public : trois halos orangés très flous qui dérivent lentement.
    Couche fixe sous le contenu (le cadre isole son empilement), transform seulement, figées en pause ou mouvement réduit. */
 .cadre-site {
