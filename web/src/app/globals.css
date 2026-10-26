@@ -333,6 +333,78 @@ select option:disabled {
     transform: translateY(28px) scale(0.96);
   }
 }
+/* Écran de l'app qui se déploie au défilement : il arrive incliné et un peu plus petit, puis se pose à plat
+   quand il occupe l'écran. Même garde que « .vue » : CSS natif, coupé avec les animations réduites ou en pause. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root:not([data-calme]) .deploie {
+      animation: deploie linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+      transform-origin: center top;
+    }
+  }
+}
+@keyframes deploie {
+  from {
+    opacity: 0.4;
+    transform: perspective(1400px) rotateX(16deg) scale(0.9) translateY(36px);
+  }
+}
+
+/* Lueurs d'ambiance derrière tout le site public : trois halos orangés très flous qui dérivent lentement.
+   Couche fixe sous le contenu (le cadre isole son empilement), transform seulement, figées en pause ou mouvement réduit. */
+.cadre-site {
+  isolation: isolate;
+}
+.lueurs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.lueurs span {
+  position: absolute;
+  width: 46vmax;
+  height: 46vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 90 31 / 0.16), transparent);
+  filter: blur(40px);
+  animation: derive 38s ease-in-out infinite alternate;
+}
+.lueurs span:nth-child(1) {
+  left: -14vmax;
+  top: 8vh;
+}
+.lueurs span:nth-child(2) {
+  right: -16vmax;
+  top: 38vh;
+  background: radial-gradient(closest-side, rgb(255 138 76 / 0.12), transparent);
+  animation-duration: 46s;
+  animation-delay: -12s;
+}
+.lueurs span:nth-child(3) {
+  left: 28vw;
+  bottom: -22vmax;
+  background: radial-gradient(closest-side, rgb(255 179 138 / 0.1), transparent);
+  animation-duration: 54s;
+  animation-delay: -24s;
+}
+.cadre-site[data-theme="clair"] .lueurs span {
+  opacity: 0.6;
+}
+@keyframes derive {
+  to {
+    transform: translate3d(8vw, -6vh, 0) scale(1.15);
+  }
+}
+@media print {
+  .lueurs {
+    display: none;
+  }
+}
+
 /* Barres verticales qui montent (histogrammes du bento). */
 .scene .monte {
   animation: monte 0.7s var(--ease-doux) both;

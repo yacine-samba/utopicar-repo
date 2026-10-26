@@ -266,7 +266,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     );
 
   return (
-    <div id="essai" className="mx-auto grid max-w-2xl scroll-mt-28 gap-5">
+    <div id="essai" className="mx-auto grid max-w-2xl scroll-mt-32 gap-5">
       {etat !== "apercu" && (
         <form method="get" action="/analyse" onSubmit={envoyer} className="grid gap-3">
           <label htmlFor={`${id}-a`} className="sr-only">

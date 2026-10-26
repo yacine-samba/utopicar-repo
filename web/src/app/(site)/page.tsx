@@ -17,11 +17,24 @@ import { JsonLdFaq } from "@/components/site/JsonLd";
 import { GainsAbonnement } from "@/components/site/GainsAbonnement";
 import { PARTICULIERS } from "@/lib/offres";
 import { CompteurInscrits } from "@/components/site/CompteurInscrits";
+import { TroisActes } from "@/components/accueil/TroisActes";
+import { SommairePage } from "@/components/site/SommairePage";
 
 /* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
    Une seule action (coller une annonce), la preuve visible tout de suite (vraie annonce, verdict joué en 2 s), de vrais chiffres,
-   presque pas de texte. Ordre : essai et preuve → chiffres → 3 vrais verdicts → ce qui est vérifié → pièges → cote en direct
-   → prix → questions → appel final. */
+   presque pas de texte. Ordre : essai et preuve → chiffres → comment ça marche en 3 actes → 3 vrais verdicts → ce qui est vérifié
+   → l'app → pièges → cote en direct → prix → questions → appel final. Sommaire collant sur tablette et ordinateur. */
+
+const SOMMAIRE: [string, string][] = [
+  ["essai", "Essayer"],
+  ["comment", "Comment ça marche"],
+  ["verdicts", "Verdicts"],
+  ["verifie", "Ce qu'on vérifie"],
+  ["app", "L'app"],
+  ["cote", "La cote"],
+  ["formules", "Formules"],
+  ["faq", "Questions"],
+];
 
 /** Des vrais libellés de l'outil (lib/analyse/defauts.ts, 38 règles), parmi les plus parlants. */
 const PIEGES = ["Joint de culasse signalé", "Moteur à refaire", "Distribution à faire", "Embrayage à changer", "Kilométrage non garanti", "Boîte de vitesses à revoir", "Turbo à changer", "Voyant allumé", "Fuite d'huile", "Fumée à l'échappement", "Problème de papiers", "Rouille", "Choc de carrosserie", "Vendue en l'état"];
@@ -48,6 +61,7 @@ export default async function Accueil() {
   return (
     <>
       {/* ---------------- héros : le champ d'essai à gauche, la preuve qui se joue à droite ---------------- */}
+      <SommairePage sections={SOMMAIRE} />
       <section className="relative overflow-hidden pb-12 pt-10 sm:pt-16">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_80%_55%_at_50%_0,#000_25%,transparent_78%)]" aria-hidden="true" />
         <div className="wrap grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
@@ -79,8 +93,19 @@ export default async function Accueil() {
       <ChiffresMarche />
       <Defile items={MODELES} label="Modèles analysés" />
 
+      {/* ---------------- comment ça marche : trois actes en grands mots, un sélecteur collant les suit ---------------- */}
+      <section id="comment" aria-labelledby="comment-t" className="scroll-mt-32 pt-20">
+        <div className="wrap text-center">
+          <p className="kicker">Comment ça marche</p>
+          <h2 id="comment-t" className="h-sec mx-auto mt-4 max-w-2xl">
+            Trois étapes, <span className="it">une minute</span>
+          </h2>
+        </div>
+        <TroisActes />
+      </section>
+
       {/* ---------------- trois vraies annonces, trois verdicts : l'outil sait aussi dire non ---------------- */}
-      <section className="py-16">
+      <section id="verdicts" className="scroll-mt-32 py-16">
         <div className="wrap">
           <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
             <h2 className="h-sec">
@@ -97,7 +122,7 @@ export default async function Accueil() {
       </section>
 
       {/* ---------------- ce qui est vérifié, en bento : la vraie cote en case d'ancrage, une idée par case, l'action à part ---------------- */}
-      <section className="py-16">
+      <section id="verifie" className="scroll-mt-32 py-16">
         <div className="wrap">
           <h2 className="h-sec mx-auto mb-10 max-w-2xl text-center">
             Ce qu&apos;on vérifie <span className="it">à votre place</span>
@@ -114,16 +139,16 @@ export default async function Accueil() {
         </div>
       </section>
 
-      {/* ---------------- visite interactive de l'app ---------------- */}
-      <section className="py-16">
+      {/* ---------------- visite interactive de l'app : grand titre, puis l'écran se déploie au défilement ---------------- */}
+      <section id="app" className="scroll-mt-32 py-20">
         <div className="wrap">
-          <div className="apparait mx-auto mb-10 max-w-2xl text-center">
-            <h2 className="h-sec">
+          <div className="apparait mx-auto mb-12 max-w-3xl text-center">
+            <h2 className="font-display text-[clamp(40px,7vw,88px)] font-semibold leading-[0.95] tracking-[-0.035em]">
               Dans l&apos;app, <span className="it">en vrai</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Cliquez sur un écran.</p>
+            <p className="mt-4 text-lg text-ink-2">Cliquez sur un écran.</p>
           </div>
-          <div className="mx-auto max-w-4xl">
+          <div className="deploie mx-auto max-w-4xl">
             <VisiteApp />
           </div>
         </div>
@@ -138,7 +163,7 @@ export default async function Accueil() {
       </section>
 
       {/* ---------------- la cote en direct : vrais prix médians de la base ---------------- */}
-      <section className="py-16">
+      <section id="cote" className="scroll-mt-32 py-16">
         <div className="wrap">
           <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
             <h2 className="h-sec">
@@ -152,7 +177,7 @@ export default async function Accueil() {
       </section>
 
       {/* ---------------- formules ---------------- */}
-      <section id="formules" className="scroll-mt-24 py-16">
+      <section id="formules" className="scroll-mt-32 py-16">
         <div className="wrap">
           <div className="apparait mx-auto mb-10 max-w-2xl text-center">
             <h2 className="h-sec">
@@ -165,7 +190,7 @@ export default async function Accueil() {
       </section>
 
       {/* ---------------- questions ---------------- */}
-      <section id="faq" className="scroll-mt-24 py-16">
+      <section id="faq" className="scroll-mt-32 py-16">
         <div className="wrap">
           <h2 className="apparait h-sec mx-auto mb-10 max-w-2xl text-center">Vos questions</h2>
           <Faq questions={FAQ.map((f) => ({ cat: f.cat, q: f.q, r: <p>{f.r}</p> }))} />
