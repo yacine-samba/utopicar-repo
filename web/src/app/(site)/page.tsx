@@ -20,6 +20,7 @@ import { CompteurInscrits } from "@/components/site/CompteurInscrits";
 import { TroisActes } from "@/components/accueil/TroisActes";
 import { SommairePage } from "@/components/site/SommairePage";
 import { Pieges } from "@/components/accueil/Pieges";
+import { Fleches } from "@/components/site/Fleches";
 import { CATALOGUE_DEFAUTS } from "@/lib/analyse/defauts";
 
 /* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
@@ -102,8 +103,8 @@ export default async function Accueil() {
       {/* ---------------- comment ça marche : trois actes en grands mots, un sélecteur collant les suit ---------------- */}
       <section id="comment" aria-labelledby="comment-t" className="scroll-mt-32 pt-14">
         <div className="wrap text-center">
-          <p className="kicker">Comment ça marche</p>
-          <h2 id="comment-t" className="h-sec mx-auto mt-4 max-w-2xl">
+          <p className="surtitre">Comment ça marche</p>
+          <h2 id="comment-t" className="h-sec mx-auto mt-3 max-w-3xl">
             Trois étapes, <span className="it">une minute</span>
           </h2>
         </div>
@@ -113,16 +114,18 @@ export default async function Accueil() {
       {/* ---------------- trois vraies annonces, trois verdicts : l'outil sait aussi dire non ---------------- */}
       <section id="verdicts" className="scroll-mt-32 py-16">
         <div className="wrap">
-          <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
-            <h2 className="h-sec">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <p className="surtitre">Verdicts</p>
+            <h2 className="h-sec mt-3">
               3 annonces, <span className="it">3 verdicts</span>
             </h2>
-            <Link href="#essai" className="inline-flex min-h-6 items-center text-sm font-medium text-o2 underline underline-offset-4">
+            <Link href="#essai" className="mt-4 inline-flex min-h-6 items-center text-sm font-medium text-o2 underline underline-offset-4">
               Essayez la vôtre ↑
             </Link>
           </div>
           <div className="mx-auto max-w-5xl">
             <TroisVerdicts />
+            <Fleches cible="liste-verdicts" libelle="annonce" className="mt-4 md:hidden" />
           </div>
         </div>
       </section>
@@ -149,7 +152,7 @@ export default async function Accueil() {
       <section id="app" className="scroll-mt-32 py-20">
         <div className="wrap">
           <div className="apparait mx-auto mb-12 max-w-3xl text-center">
-            <h2 className="font-display text-[clamp(40px,7vw,88px)] font-semibold leading-[0.95] tracking-[-0.035em]">
+            <h2 className="font-display text-[clamp(40px,7vw,96px)] font-medium leading-[0.95] tracking-[-0.04em]">
               Dans l&apos;app, <span className="it">en vrai</span>
             </h2>
             <p className="mt-4 text-lg text-ink-2">Cliquez sur un écran.</p>
@@ -163,7 +166,7 @@ export default async function Accueil() {
       {/* ---------------- les pièges repérés dans le texte des annonces : la vraie liste des règles, avec leur coût ---------------- */}
       <section id="pieges" aria-labelledby="pieges-t" className="scroll-mt-32 py-16">
         <div className="wrap">
-          <div className="mx-auto mb-10 max-w-5xl">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
             <h2 id="pieges-t" className="h-sec">
               Les pièges <span className="it">qu&apos;on repère</span>
             </h2>
@@ -180,7 +183,7 @@ export default async function Accueil() {
       {/* ---------------- la cote en direct : vrais prix médians de la base ---------------- */}
       <section id="cote" className="scroll-mt-32 py-16">
         <div className="wrap">
-          <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
             <h2 className="h-sec">
               La cote <span className="it">en direct</span>
             </h2>
@@ -194,8 +197,9 @@ export default async function Accueil() {
       {/* ---------------- formules ---------------- */}
       <section id="formules" className="scroll-mt-32 py-16">
         <div className="wrap">
-          <div className="apparait mx-auto mb-10 max-w-2xl text-center">
-            <h2 className="h-sec">
+          <div className="apparait mx-auto mb-10 max-w-3xl text-center">
+            <p className="surtitre">Formules</p>
+            <h2 className="h-sec mt-3">
               Pourquoi s&apos;abonner ? <span className="it">Ça se rembourse</span>
             </h2>
             <p className="mt-3 text-lg text-ink-2">La première analyse est offerte, sans carte. Après, une seule négociation réussie paie des mois d&apos;abonnement.</p>
@@ -224,7 +228,7 @@ export default async function Accueil() {
       <section id="appel-final" className="py-20 text-center">
         <div className="wrap">
           <div className="apparait mx-auto max-w-4xl">
-            <h2 className="vue font-display text-[clamp(44px,8vw,104px)] font-semibold leading-[0.95] tracking-[-0.04em]">
+            <h2 className="vue font-display text-[clamp(44px,8vw,112px)] font-medium leading-[0.95] tracking-[-0.045em] [text-wrap:balance]">
               Votre prochaine voiture, <span className="it">au bon prix</span>
             </h2>
             <Link href="#essai" className="btn btn-o mt-9">

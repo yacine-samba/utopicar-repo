@@ -233,9 +233,16 @@ export function TroisActes() {
   const [actif, setActif] = useState(-1);
   // passages : chaque arrivée sur un acte remonte sa scène, qui se rejoue
   const [tour, setTour] = useState(0);
+  // mouvement réduit ou animations en pause : les actes restent dans leur état final, sans jamais se remonter
+  const [anime, setAnime] = useState(false);
   const refs = useRef<(HTMLElement | null)[]>([]);
   useEffect(() => {
-    if (!("IntersectionObserver" in window)) return;
+    const calme = () => matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.hasAttribute("data-calme");
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture unique de la préférence au montage
+    setAnime(!calme());
+    const suivre = (e: Event) => setAnime(!(e as CustomEvent<boolean>).detail && !matchMedia("(prefers-reduced-motion: reduce)").matches);
+    addEventListener("utp-calme", suivre);
+    if (!("IntersectionObserver" in window)) return () => removeEventListener("utp-calme", suivre);
     const io = new IntersectionObserver(
       (es) =>
         es.forEach((e) => {
@@ -246,13 +253,16 @@ export function TroisActes() {
       { rootMargin: "-40% 0px -45% 0px" },
     );
     refs.current.forEach((r) => r && io.observe(r));
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      removeEventListener("utp-calme", suivre);
+    };
   }, []);
   return (
     // « actes » nomme la frise du défilement de la section : la barre du sélecteur s'y remplit (globals.css)
     <div className="actes relative overflow-x-clip">
       {ACTES.map(({ id, mot, titre, texte, Visuel }, i) => {
-        const joue = actif === i;
+        const joue = anime && actif === i;
         return (
           <article
             key={id}
@@ -270,7 +280,7 @@ export function TroisActes() {
                 id={`${id}-t`}
                 aria-label={mot}
                 className={cx(
-                  "vue relative z-10 -mb-[0.2em] font-display text-[clamp(60px,12vw,168px)] font-semibold leading-[0.85] tracking-[-0.05em]",
+                  "vue relative z-10 -mb-[0.2em] font-display text-[clamp(56px,13vw,180px)] font-medium leading-[0.85] tracking-[-0.05em]",
                   i % 2 === 1 && "text-right",
                 )}
               >

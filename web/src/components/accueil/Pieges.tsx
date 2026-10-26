@@ -112,7 +112,8 @@ export function Pieges({ defauts }: { defauts: DefautCatalogue[] }) {
             );
           })}
         </div>
-        <ul id={`${base}-liste`} role="tabpanel" aria-labelledby={`${base}-${groupe}`} className="grid">
+        <div id={`${base}-liste`} role="tabpanel" aria-labelledby={`${base}-${groupe}`}>
+        <ul className="grid">
           {liste.map((d) => (
             <li key={d.k}>
               <button
@@ -143,6 +144,7 @@ export function Pieges({ defauts }: { defauts: DefautCatalogue[] }) {
             </li>
           ))}
         </ul>
+        </div>
       </div>
     </div>
   );

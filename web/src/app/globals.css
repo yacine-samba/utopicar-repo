@@ -184,12 +184,20 @@ select option:disabled {
     background: var(--color-o);
     box-shadow: 0 0 10px var(--color-o);
   }
+  /* Titres de section : grands et en graisse moyenne, lettres resserrées (repris de Google Flow : 80 px, 500, −0,04 em) */
   .h-sec {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(30px, 4.6vw, 52px);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-weight: 500;
+    font-size: clamp(34px, 5.4vw, 72px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  /* Petit libellé au-dessus d'un titre de section (« Comment ça marche », « Formules ») */
+  .surtitre {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-ink-3);
   }
   .btn {
     display: inline-flex;
@@ -485,6 +493,19 @@ select option:disabled {
   clip-path: none;
 }
 
+/* Cartes des formules : au survol de l'une, les autres s'effacent (souris seulement). */
+@media (hover: hover) {
+  .focus-groupe > * {
+    transition:
+      opacity 0.3s var(--ease-doux),
+      filter 0.3s var(--ease-doux);
+  }
+  .focus-groupe:has(> :hover) > :not(:hover) {
+    opacity: 0.55;
+    filter: saturate(0.6);
+  }
+}
+
 /* Lueurs d'ambiance derrière tout le site public : trois halos orangés très flous qui dérivent lentement.
    Couche fixe sous le contenu (le cadre isole son empilement), transform seulement, figées en pause ou mouvement réduit. */
 .cadre-site {
@@ -659,6 +680,8 @@ select option:disabled {
   *,
   *::before,
   *::after {
+    /* pas d'attente non plus : un délai garderait l'élément invisible avant son état final */
+    animation-delay: 0s !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
