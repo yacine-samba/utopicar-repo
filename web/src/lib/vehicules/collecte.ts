@@ -68,7 +68,9 @@ export async function demanderCollecte(userId: string, base: string, gen: string
   if (quota) {
     return { cle: spec.cle, nom: spec.nom, statut: "quota", erreur: `Quota de collectes atteint (${PAR_JOUR} par jour, ${PAR_MOIS} par mois). Les résultats viennent de la base actuelle.` };
   }
-  const { error } = await sb.rpc("utp_cote_demande", { p: spec });
+  // acteur scrapifier~leboncoin-voitures-scraper (depuis le 26 oct. 2026) : sans « locations », il ne cherche qu'autour
+  // de Lyon ; une liste vide = toute la France. La fonction veille passe ces filtres tels quels à l'acteur.
+  const { error } = await sb.rpc("utp_cote_demande", { p: { ...spec, filtres: { ...spec.filtres, locations: [] } } });
   if (error) throw new Error(error.message);
   await sb.from("collectes").insert({ user_id: userId, cle: spec.cle });
   return { cle: spec.cle, nom: spec.nom, statut: "demandee" };
