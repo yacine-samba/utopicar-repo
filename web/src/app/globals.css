@@ -21,6 +21,14 @@
   --color-bad: #ff7a7a;
   /* creux : encart en retrait (message, visuels d'étapes) ; champ : fond des champs de saisie */
   --color-creux: rgb(0 0 0 / 0.25);
+  /* le papier imprimé (ticket du rapport, carte des réparations) : identique dans les deux thèmes, comme un vrai ticket */
+  --color-papier: #fbf8f3;
+  --color-papier-ink: #1c1612;
+  --color-papier-ink-2: rgb(28 22 18 / 0.72);
+  /* un champ sombre plein, pour les sections qui changent de fond */
+  --color-champ-fort: #241a14;
+  /* le nom en très grand de l'accueil : l'orange de la charte, un peu plus profond sur fond clair (contraste ≥ 3:1) */
+  --color-mot: #ef622e;
   --color-champ: rgb(0 0 0 / 0.3);
   --font-display: var(--font-clash), "Clash Display", var(--font-satoshi), system-ui, sans-serif;
   --font-body: var(--font-satoshi), "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -49,9 +57,6 @@ body {
   font: 16px/1.6 var(--font-body);
   /* couleur de secours : impression, contraste forcé et outils de mesure ne voient pas les dégradés */
   background-color: var(--color-bg0);
-  background-image:
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(239 98 46 / 0.12), transparent 70%),
-    linear-gradient(160deg, var(--color-bg0), var(--color-bg1) 60%, var(--color-bg0)) fixed;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -80,19 +85,15 @@ body {
   --color-warn: #8a5306;
   --color-bad: #c81e1e;
   --color-creux: rgb(28 22 18 / 0.05);
+  --color-champ-fort: #1c1612;
+  --color-mot: #e35426;
   --color-champ: #ffffff;
   background-color: var(--color-bg0);
-  background-image:
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(239 98 46 / 0.08), transparent 70%),
-    linear-gradient(160deg, #fbf8f3, var(--color-bg1) 60%, #fbf8f3);
 }
 /* Le cadre sombre peint aussi son fond : à la bascule, la page change de thème avant que le serveur
    ne remette le fond du corps à jour. */
 .cadre-site[data-theme="sombre"] {
   background-color: var(--color-bg0);
-  background-image:
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(239 98 46 / 0.12), transparent 70%),
-    linear-gradient(160deg, var(--color-bg0), var(--color-bg1) 60%, var(--color-bg0));
 }
 /* Bascule de thème : l'ancienne image reste dessous, la nouvelle s'ouvre en cercle (BoutonTheme). */
 ::view-transition-old(root),
@@ -106,9 +107,6 @@ body {
 .cadre-site[data-theme="clair"] .btn-o:hover {
   background: #f1774b;
   border-color: #f1774b;
-}
-.cadre-site[data-theme="clair"] .carte {
-  box-shadow: 0 1px 2px rgb(28 22 18 / 0.04), 0 12px 32px -20px rgb(28 22 18 / 0.18);
 }
 
 /* Listes déroulantes natives : le fond des champs est translucide, et Windows peignait alors la liste ouverte
@@ -159,10 +157,7 @@ select option:disabled {
     font-style: italic;
     font-weight: 400;
     letter-spacing: 0;
-    background: linear-gradient(100deg, var(--color-o2), var(--color-o3) 60%, var(--color-o2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--color-o2);
     padding-right: 0.06em;
   }
   .kicker {
@@ -192,12 +187,6 @@ select option:disabled {
     line-height: 1.02;
     letter-spacing: -0.035em;
     text-wrap: balance;
-  }
-  /* Petit libellé au-dessus d'un titre de section (« Comment ça marche », « Formules ») */
-  .surtitre {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--color-ink-3);
   }
   .btn {
     display: inline-flex;
@@ -229,7 +218,7 @@ select option:disabled {
     background: var(--color-o);
     border-color: var(--color-o);
     color: #160904;
-    box-shadow: 0 12px 34px -14px rgb(239 98 46 / 0.6);
+    box-shadow: none;
   }
   .btn-o:hover {
     background: var(--color-o2);
@@ -257,7 +246,6 @@ select option:disabled {
     border: 1px solid var(--color-line);
     border-radius: 26px;
     background: var(--color-panel);
-    backdrop-filter: blur(10px);
   }
   /* Bloc d'évitement : hors écran, il descend dès qu'un de ses liens reçoit le focus clavier. */
   .evitement {
@@ -378,40 +366,6 @@ select option:disabled {
   }
 }
 
-/* Défilement de l'accueil : barre de lecture sous l'en-tête, et barre du sélecteur des trois actes qui se remplit
-   pendant qu'on lit la section. CSS natif ; absentes là où les frises de défilement n'existent pas, ou en mouvement réduit. */
-.progression,
-.actes-barre {
-  display: none;
-}
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    .progression {
-      display: block;
-      position: fixed;
-      inset-inline: 0;
-      top: 67px;
-      z-index: 41;
-      height: 2px;
-      background: linear-gradient(90deg, var(--color-o), var(--color-o2));
-      opacity: 0.8;
-      transform-origin: left center;
-      pointer-events: none;
-      animation: remplit linear both;
-      animation-timeline: scroll(root);
-    }
-    .actes {
-      view-timeline: --actes block;
-    }
-    .actes-barre {
-      display: block;
-      transform-origin: left center;
-      animation: remplit linear both;
-      animation-timeline: --actes;
-      animation-range: contain 0% contain 100%;
-    }
-  }
-}
 /* flèche « suite » sous le héros */
 .pousse-bas {
   animation: pousse-bas 1.8s var(--ease-doux) infinite;
@@ -422,140 +376,29 @@ select option:disabled {
   }
 }
 
-/* Trois actes de l'accueil (TroisActes) : chaque acte se joue quand il arrive à l'écran (classe « scene »).
-   Hors scène (« repos »), tout est dans son état final. */
-.scene .lettre {
-  animation: leve 0.7s var(--ease-doux) both;
-  animation-delay: var(--d, 0s);
-}
-@keyframes leve {
-  from {
-    transform: translateY(105%);
+/* Accueil. Le nom en très grand rétrécit un peu quand le premier écran s'en va (moins de 8 %), et la photo de la scène
+   dérive lentement. CSS natif ; immobiles en mouvement réduit ou animations en pause. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root:not([data-calme]) .mot-geant {
+      animation: retrecit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+      transform-origin: right bottom;
+    }
+  }
+  :root:not([data-calme]) .derive {
+    animation: derive 24s ease-in-out infinite alternate;
   }
 }
-/* le lien se tape, le curseur clignote, puis le bouton s'enfonce */
-.scene .tape {
-  animation: tape 0.9s steps(26, end) both;
-  animation-delay: var(--d, 0s);
-}
-@keyframes tape {
-  from {
-    clip-path: inset(0 100% 0 0);
+@keyframes retrecit {
+  to {
+    scale: 0.93;
   }
-}
-.scene .clignote-texte {
-  animation: clignote 0.9s steps(1) infinite;
-}
-.scene .appui {
-  animation:
-    surgit 0.42s var(--ease-ressort) 0.1s both,
-    appui 0.36s var(--ease-doux) 1.3s;
-}
-@keyframes appui {
-  45% {
-    transform: scale(0.9);
-    box-shadow: 0 0 0 6px rgb(239 98 46 / 0.25);
-  }
-}
-/* la photo se resserre en arrivant */
-.scene .zoom-doux {
-  animation: zoom-doux 1.4s var(--ease-doux) both;
-  animation-delay: var(--d, 0s);
-}
-@keyframes zoom-doux {
-  from {
-    transform: scale(1.18);
-  }
-}
-/* le verdict tombe comme un tampon */
-.scene .tampon {
-  display: inline-block;
-  animation: tampon 0.55s var(--ease-ressort) both;
-  animation-delay: var(--d, 0s);
-}
-@keyframes tampon {
-  from {
-    opacity: 0;
-    transform: scale(1.9) rotate(-8deg);
-  }
-}
-.pulse-o {
-  animation: pulse-o 1.6s ease-out infinite;
-}
-.repos .passe {
-  display: none;
-}
-.repos mark.surligne {
-  background: rgb(255 122 122 / 0.32);
-  color: inherit;
-}
-:root[data-calme] .scene .tape {
-  clip-path: none;
-}
-
-/* Cartes des formules : au survol de l'une, les autres s'effacent (souris seulement). */
-@media (hover: hover) {
-  .focus-groupe > * {
-    transition:
-      opacity 0.3s var(--ease-doux),
-      filter 0.3s var(--ease-doux);
-  }
-  .focus-groupe:has(> :hover) > :not(:hover) {
-    opacity: 0.55;
-    filter: saturate(0.6);
-  }
-}
-
-/* Lueurs d'ambiance derrière tout le site public : trois halos orangés très flous qui dérivent lentement.
-   Couche fixe sous le contenu (le cadre isole son empilement), transform seulement, figées en pause ou mouvement réduit. */
-.cadre-site {
-  isolation: isolate;
-}
-.lueurs {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-.lueurs span {
-  position: absolute;
-  width: 46vmax;
-  height: 46vmax;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(239 98 46 / 0.12), transparent);
-  filter: blur(40px);
-  animation: derive 38s ease-in-out infinite alternate;
-}
-.lueurs span:nth-child(1) {
-  left: -14vmax;
-  top: 8vh;
-}
-.lueurs span:nth-child(2) {
-  right: -16vmax;
-  top: 38vh;
-  background: radial-gradient(closest-side, rgb(243 143 89 / 0.09), transparent);
-  animation-duration: 46s;
-  animation-delay: -12s;
-}
-.lueurs span:nth-child(3) {
-  left: 28vw;
-  bottom: -22vmax;
-  background: radial-gradient(closest-side, rgb(244 180 144 / 0.08), transparent);
-  animation-duration: 54s;
-  animation-delay: -24s;
-}
-.cadre-site[data-theme="clair"] .lueurs span {
-  opacity: 0.6;
 }
 @keyframes derive {
   to {
-    transform: translate3d(8vw, -6vh, 0) scale(1.15);
-  }
-}
-@media print {
-  .lueurs {
-    display: none;
+    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
   }
 }
 

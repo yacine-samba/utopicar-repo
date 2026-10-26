@@ -29,7 +29,7 @@ export function BarreEssai({ libelle = "Analyser une annonce", sous = "gratuit" 
   }, []);
   return (
     <div
-      className={`fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg0/92 px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 backdrop-blur-md transition duration-300 sm:hidden ${visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0"}`}
+      className={`fixed inset-x-0 bottom-0 z-40 bg-bg0/92 px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 backdrop-blur-md transition duration-300 sm:hidden ${visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0"}`}
       aria-hidden={!visible}
     >
       <a href="#essai" tabIndex={visible ? 0 : -1} className="btn btn-o w-full whitespace-nowrap">

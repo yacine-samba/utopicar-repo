@@ -312,7 +312,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
             </p>
           )}
           <p className="flex flex-wrap items-center justify-center gap-2 text-sm text-ink-3">
-            ou essayez :
+            Pas d&apos;annonce sous la main ? Essayez un exemple :
             {CLES_EXEMPLES.map((k) => (
               <button key={k} type="button" onClick={() => exemple(k)} className="rounded-full border border-line-2 bg-glass px-3 py-1 text-ink-2 transition hover:border-o/50 hover:text-ink">
                 {EXEMPLES[k].onglet} <span className="num text-ink-3">· {euros(EXEMPLES[k].prix)}</span>

@@ -2,3 +2,6 @@ node_modules/
 .vercel
 supabase/.temp
 supabase/.branches
+
+# rapports locaux de l'inspecteur de design (captures, mesures)
+.taste-skill/

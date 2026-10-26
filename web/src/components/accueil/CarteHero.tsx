@@ -6,12 +6,12 @@ import { PreuveAnimee, type CarteAnalyse } from "./PreuveAnimee";
 export const EVT_CARTE = "utp-carte-hero";
 
 /** La carte pendant que l'analyse tourne : même gabarit, un balayage en boucle et des barres qui attendent. */
-function Chargement() {
+function Chargement({ plein = false }: { plein?: boolean }) {
   return (
-    <figure className="mx-auto w-full max-w-[420px]">
+    <figure className={plein ? "size-full" : "mx-auto w-full max-w-[420px]"}>
       <figcaption className="sr-only">Analyse de votre annonce en cours…</figcaption>
-      <div className="relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 bg-[radial-gradient(120%_90%_at_30%_10%,#3a2a20,#120d0a)] shadow-[0_40px_100px_-40px_rgb(239_98_46/0.6)]" aria-hidden="true">
-        <div className="balayage-boucle pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(239_98_46/0.28))] shadow-[0_6px_24px_rgb(239_98_46/0.55)]" />
+      <div data-ui className={plein ? "relative isolate size-full overflow-hidden rounded-xl bg-[#120d0a]" : "relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 bg-[radial-gradient(120%_90%_at_30%_10%,#3a2a20,#120d0a)] shadow-[0_40px_100px_-40px_rgb(239_98_46/0.6)]"} aria-hidden="true">
+        <div className="balayage-boucle pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-o/15" />
         <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/20 bg-black/50 py-1.5 pl-2 pr-3 text-sm font-medium text-white backdrop-blur-md">
           <span className="grid size-5 place-items-center rounded-full bg-white text-[9px] font-bold text-black">lbc</span>
           <span className="size-1.5 animate-pulse rounded-full bg-o" /> Analyse en cours…
@@ -38,7 +38,7 @@ function Chargement() {
 
 /** La carte de l'en-tête : l'exemple au départ, un chargement pendant l'analyse, puis l'annonce que la personne vient
     de scanner (première photo, son prix face au marché, son verdict). La clé change : l'animation se rejoue. */
-export function CarteHero({ defaut }: { defaut: CarteAnalyse }) {
+export function CarteHero({ defaut, plein = false }: { defaut: CarteAnalyse; plein?: boolean }) {
   const [carte, setCarte] = useState<{ c: CarteAnalyse | "charge"; n: number }>({ c: defaut, n: 0 });
   useEffect(() => {
     const suivre = (e: Event) => {
@@ -49,8 +49,8 @@ export function CarteHero({ defaut }: { defaut: CarteAnalyse }) {
     return () => removeEventListener(EVT_CARTE, suivre);
   }, [defaut]);
   return (
-    <div aria-live="polite">
-      {carte.c === "charge" ? <Chargement /> : <PreuveAnimee key={carte.n} carte={carte.c} remplace={carte.n > 0} />}
+    <div aria-live="polite" className={plein ? "size-full" : undefined}>
+      {carte.c === "charge" ? <Chargement plein={plein} /> : <PreuveAnimee key={carte.n} carte={carte.c} remplace={carte.n > 0} plein={plein} />}
     </div>
   );
 }

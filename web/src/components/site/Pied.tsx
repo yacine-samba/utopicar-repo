@@ -10,7 +10,7 @@ const COLONNES = [
 
 export function Pied() {
   return (
-    <footer className="mt-24 border-t border-line">
+    <footer className="mt-24 bg-creux">
       <div className="wrap grid gap-10 py-14 md:grid-cols-[1.3fr_repeat(3,1fr)]">
         <div className="grid content-start gap-4">
           <Link href="/" aria-label="Utopicar, accueil" className="w-fit">
