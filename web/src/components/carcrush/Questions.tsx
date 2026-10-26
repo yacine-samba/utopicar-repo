@@ -28,7 +28,7 @@ export function Accueil() {
             <span className="h-2.5 w-28 rounded-full bg-line-2" />
           </div>
         </div>
-        <div className="absolute bottom-0 right-0 grid size-14 place-items-center rounded-full bg-o text-[#160904] shadow-[0_12px_34px_-12px_rgb(255_90_31/0.85)]">
+        <div className="absolute bottom-0 right-0 grid size-14 place-items-center rounded-full bg-o text-[#160904] shadow-[0_12px_34px_-12px_rgb(239_98_46/0.85)]">
           <svg viewBox="0 0 24 24" fill="currentColor" className="size-6">
             <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z" />
           </svg>
@@ -216,7 +216,7 @@ function Curseur({ id, label, valeur, defaut, min, max, pas, texte, onChange }: 
         value={valeur ?? defaut}
         aria-valuetext={valeur == null ? "Peu importe" : texte(valeur)}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-8 w-full accent-[#ff5a1f]"
+        className="h-8 w-full accent-o"
       />
     </div>
   );

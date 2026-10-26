@@ -22,7 +22,7 @@ export function AnalyseRapide({ titre, texte, compact = false }: { titre?: strin
   return (
     <Enveloppe
       aria-labelledby={compact ? undefined : `${id}-t`}
-      className={compact ? "w-full" : "relative overflow-hidden rounded-3xl border border-o/30 bg-[radial-gradient(120%_120%_at_50%_0%,rgb(255_90_31/0.18),transparent_65%)] px-5 py-7 text-center sm:px-10 sm:py-10"}
+      className={compact ? "w-full" : "relative overflow-hidden rounded-3xl border border-o/30 bg-[radial-gradient(120%_120%_at_50%_0%,rgb(239_98_46/0.18),transparent_65%)] px-5 py-7 text-center sm:px-10 sm:py-10"}
     >
       {!compact && (
         <>

@@ -9,11 +9,12 @@ export function SommairePage({ sections }: { sections: [id: string, label: strin
   useEffect(() => {
     const els = sections.map(([id]) => document.getElementById(id)).filter((x): x is HTMLElement => !!x);
     if (!els.length || !("IntersectionObserver" in window)) return;
-    // bande fine au milieu de l'écran : la section qui la traverse est celle qu'on lit
+    // bande fine au milieu de l'écran : la section qui la traverse est celle qu'on lit ; aucune (appel final, pied de page) : rien d'allumé
+    const dedans = new Set<string>();
     const io = new IntersectionObserver(
       (es) => {
-        const vue = es.filter((e) => e.isIntersecting).pop();
-        if (vue) setActif(vue.target.id);
+        es.forEach((e) => (e.isIntersecting ? dedans.add(e.target.id) : dedans.delete(e.target.id)));
+        setActif(sections.find(([id]) => dedans.has(id))?.[0] ?? null);
       },
       { rootMargin: "-45% 0px -50% 0px" },
     );

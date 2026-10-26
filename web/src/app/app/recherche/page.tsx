@@ -175,7 +175,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
 }
 
 function EnTete({ vue }: { vue: "marche" | "historique" | "annonces" | "rapports" }) {
-  const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-center text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass");
+  const onglet = (actif: boolean) => cx("shrink-0 rounded-full px-4 py-2 text-center text-sm", actif ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(239_98_46/0.35)]" : "text-ink-2 hover:bg-glass");
   const sous = { marche: "Toutes les annonces de la base du marché, chacune placée sur la cote de sa génération.", historique: "Vos recherches, leurs photos et leurs résultats gardés. Une alerte e-mail s'allume sur chaque recherche.", annonces: "Toutes les annonces trouvées par vos recherches, gardées pour toujours.", rapports: "Vos rapports enregistrés, par verdict, marge, prix ou période." }[vue];
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">

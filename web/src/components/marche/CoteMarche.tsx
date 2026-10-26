@@ -28,7 +28,7 @@ export function CoteMarche({ cat, extension, dernierReleve = null }: { cat: CatM
       <div role="tablist" aria-label="Mode de calcul" className="flex w-fit gap-1 rounded-full border border-line p-1">
         {([["releve", "Coller un relevé"], ["voiture", "Placer une voiture"]] as const).map(([k, l]) => (
           <button key={k} role="tab" type="button" aria-selected={onglet === k} onClick={() => setOnglet(k)}
-            className={cx("rounded-full px-4 py-2 text-sm", onglet === k ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass")}>
+            className={cx("rounded-full px-4 py-2 text-sm", onglet === k ? "bg-o/15 text-ink shadow-[inset_0_0_0_1px_rgb(239_98_46/0.35)]" : "text-ink-2 hover:bg-glass")}>
             {l}
           </button>
         ))}
@@ -145,7 +145,7 @@ function CollerReleve({ actif, cat, dernier }: { actif: boolean; cat: CatMarque[
             {charge ? "Calcul…" : "Calculer la cote"}
           </button>
           <label className="flex items-center gap-2 text-sm text-ink-2">
-            <input type="checkbox" checked={enregistrer} onChange={(e) => setEnregistrer(e.target.checked)} className="size-4 accent-[#ff5a1f]" />
+            <input type="checkbox" checked={enregistrer} onChange={(e) => setEnregistrer(e.target.checked)} className="size-4 accent-o" />
             Ajouter ces annonces à la base du marché
           </label>
           <p className="text-sm text-ink-3" role="status">{etat}</p>
@@ -187,7 +187,7 @@ function CollerReleve({ actif, cat, dernier }: { actif: boolean; cat: CatMarque[
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm text-ink-3">{lignes.length} annonce{lignes.length > 1 ? "s" : ""}</p>
                 <label className="flex items-center gap-2 text-sm text-ink-2">
-                  <input type="checkbox" checked={sous} onChange={(e) => setSous(e.target.checked)} className="size-4 accent-[#ff5a1f]" /> Sous la cote seulement
+                  <input type="checkbox" checked={sous} onChange={(e) => setSous(e.target.checked)} className="size-4 accent-o" /> Sous la cote seulement
                 </label>
               </div>
               <ul className="grid gap-2">

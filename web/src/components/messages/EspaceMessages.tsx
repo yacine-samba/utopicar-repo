@@ -645,7 +645,7 @@ function CompteLeboncoin({ compte, onFait }: { compte: CompteLbc | null; onFait:
             <p className="font-semibold text-warn">Avant tout : désactivez la double authentification</p>
             <p className="mt-1 text-ink-2">Sur Leboncoin : Mon compte › Connexion et sécurité › Validation en deux étapes, désactivez-la. Déconnectez aussi l&apos;application Leboncoin de votre téléphone si elle valide les connexions.</p>
             <label className="mt-2 flex items-center gap-2 text-ink">
-              <input type="checkbox" checked={sans2fa} onChange={(e) => setSans2fa(e.target.checked)} className="size-4 accent-[#ff5a1f]" />
+              <input type="checkbox" checked={sans2fa} onChange={(e) => setSans2fa(e.target.checked)} className="size-4 accent-o" />
               J&apos;ai désactivé la double authentification
             </label>
           </div>

@@ -295,7 +295,7 @@ export function Alertes({ cat, initiales, prerempli, email, max = 20, freqMin = 
               <input value={edition.nom} onChange={(e) => setEdition((x) => (x ? { ...x, nom: e.target.value } : x))} placeholder="facultatif" className={inputCls} />
             </label>
             <label className="flex items-center gap-2 text-sm text-ink-2">
-              <input type="checkbox" checked={edition.notifier} onChange={(e) => setEdition((x) => (x ? { ...x, notifier: e.target.checked } : x))} className="size-4 accent-[#ff5a1f]" />
+              <input type="checkbox" checked={edition.notifier} onChange={(e) => setEdition((x) => (x ? { ...x, notifier: e.target.checked } : x))} className="size-4 accent-o" />
               Recevoir les nouvelles annonces par e-mail
             </label>
             <label className="grid gap-1.5 text-sm lg:col-span-2">

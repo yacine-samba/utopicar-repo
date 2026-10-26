@@ -38,7 +38,7 @@ export function ListeRapports({ rapports, comparateur, vide = "Aucun rapport pou
       checked={sel.includes(r.id)}
       disabled={!sel.includes(r.id) && sel.length >= 3}
       onChange={(e) => setSel((l) => (e.target.checked ? [...l, r.id] : l.filter((x) => x !== r.id)))}
-      className={cx(cls, "accent-[#ff5a1f]")}
+      className={cx(cls, "accent-o")}
     />
   );
 

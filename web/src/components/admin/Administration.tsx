@@ -53,7 +53,7 @@ function Etat({ etat }: { etat: { ok: boolean; t: string } | null }) {
 function Prevenir({ v, set }: { v: boolean; set: (v: boolean) => void }) {
   return (
     <label className="flex items-center gap-2 text-sm text-ink-2">
-      <input type="checkbox" checked={v} onChange={(e) => set(e.target.checked)} className="size-4 accent-[#ff5a1f]" />
+      <input type="checkbox" checked={v} onChange={(e) => set(e.target.checked)} className="size-4 accent-o" />
       Prévenir par e-mail
     </label>
   );

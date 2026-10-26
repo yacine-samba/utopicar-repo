@@ -112,7 +112,7 @@ export function PreuveAnimee({ carte = CARTE_ACCUEIL, remplace = false }: { cart
   return (
     <figure className={`${remplace ? "" : "arrivee attend "}mx-auto w-full max-w-[420px]`} style={{ "--i": 2 } as CSSProperties}>
       <figcaption className="sr-only">{carte.resume}</figcaption>
-      <div className="scene relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 bg-[radial-gradient(120%_90%_at_30%_10%,#3a2a20,#120d0a)] shadow-[0_40px_100px_-40px_rgb(255_90_31/0.6)]" aria-hidden="true">
+      <div className="scene relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 bg-[radial-gradient(120%_90%_at_30%_10%,#3a2a20,#120d0a)] shadow-[0_40px_100px_-40px_rgb(239_98_46/0.6)]" aria-hidden="true">
         {carte.photo &&
           (locale ? (
             // eslint-disable-next-line @next/next/no-img-element -- photo de démonstration, servie en local et compressée
@@ -124,7 +124,7 @@ export function PreuveAnimee({ carte = CARTE_ACCUEIL, remplace = false }: { cart
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.4)_0%,transparent_26%,transparent_38%,rgb(0_0_0/0.9)_100%)]" />
 
         {/* 1. le balayage d'analyse */}
-        <div className="balayage pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(255_90_31/0.28))] shadow-[0_6px_24px_rgb(255_90_31/0.55)]" style={d(0.15)} />
+        <div className="balayage pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(239_98_46/0.28))] shadow-[0_6px_24px_rgb(239_98_46/0.55)]" style={d(0.15)} />
         <div className="absolute left-4 top-4 flex max-w-[calc(100%-2rem)] items-center gap-2 rounded-full border border-white/20 bg-black/50 py-1.5 pl-2 pr-3 text-sm font-medium text-white backdrop-blur-md">
           <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white text-[9px] font-bold text-black">lbc</span>
           <span className="relative grid min-w-0">

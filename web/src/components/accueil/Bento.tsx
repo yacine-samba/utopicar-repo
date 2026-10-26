@@ -138,7 +138,7 @@ export async function Bento() {
 
       {/* 6. l'action, dans sa propre case */}
       <li className="vue lg:col-span-2" style={{ "--i": 2 } as CSSProperties}>
-        <Link href="#essai" className="reflet isolate group flex h-full min-h-40 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(255_90_31/0.9)]">
+        <Link href="#essai" className="reflet isolate group flex h-full min-h-40 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(239_98_46/0.9)]">
           <span className="pointer-events-none absolute -bottom-6 -right-6 -z-10 text-[#160904]/15" aria-hidden="true">
             <Picto nom="voiture" className="size-40" />
           </span>

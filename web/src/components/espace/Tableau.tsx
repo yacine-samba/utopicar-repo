@@ -31,7 +31,7 @@ export function EnTeteTableau({ prenom, sous, resume, action, journee }: { preno
   return (
     <section aria-labelledby="tb-titre" className="relative isolate grid overflow-hidden rounded-[28px] border border-o/25 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
       {/* halo orange et grille discrète : décor seulement */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(80%_120%_at_0%_0%,rgb(255_90_31/0.24),transparent_60%),radial-gradient(50%_80%_at_100%_100%,rgb(255_138_76/0.08),transparent_70%)]" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(80%_120%_at_0%_0%,rgb(239_98_46/0.24),transparent_60%),radial-gradient(50%_80%_at_100%_100%,rgb(243_143_89/0.08),transparent_70%)]" />
       <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-[0.07] [background-image:linear-gradient(var(--color-ink)_1px,transparent_1px),linear-gradient(90deg,var(--color-ink)_1px,transparent_1px)] [background-size:44px_44px] [mask-image:radial-gradient(70%_100%_at_0%_0%,black,transparent)]" />
       <div className="flex flex-col px-5 py-7 sm:px-8 sm:py-9">
         <p className="arrivee text-sm font-medium first-letter:uppercase text-o2" style={cascade(0)}>{date}</p>
@@ -117,7 +117,7 @@ export function Journee({ actions }: { actions: Action[] }) {
 export function Chiffre({ icone, l, v, s, ton, delta, fort, i = 0 }: { icone: NomIcone; l: string; v: string; s?: ReactNode; ton?: Ton; delta?: { v: number; l: string } | null; fort?: boolean; i?: number }) {
   return (
     <div
-      className={cx("arrivee carte relative flex flex-col overflow-hidden p-4 sm:p-5", fort && "border-o/35 bg-[linear-gradient(160deg,rgb(255_90_31/0.16),transparent_55%),var(--color-panel)]")}
+      className={cx("arrivee carte relative flex flex-col overflow-hidden p-4 sm:p-5", fort && "border-o/35 bg-[linear-gradient(160deg,rgb(239_98_46/0.16),transparent_55%),var(--color-panel)]")}
       style={cascade(i)}
     >
       <div className="flex items-center gap-2.5">

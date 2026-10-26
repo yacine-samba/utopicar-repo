@@ -22,7 +22,7 @@ export function NavCote({ entrees }: { entrees: EntreeNav[] }) {
             aria-current={actif ? "page" : undefined}
             className={cx(
               "a-bulle group flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm transition lg:group-data-[replie=true]/menu:size-11 lg:group-data-[replie=true]/menu:justify-center lg:group-data-[replie=true]/menu:px-0",
-              actif ? "bg-o/12 text-ink shadow-[inset_0_0_0_1px_rgb(255_90_31/0.35)]" : "text-ink-2 hover:bg-glass hover:text-ink",
+              actif ? "bg-o/12 text-ink shadow-[inset_0_0_0_1px_rgb(239_98_46/0.35)]" : "text-ink-2 hover:bg-glass hover:text-ink",
             )}
           >
             <Ico nom={e.icone} className={cx("size-[18px] shrink-0", actif ? "text-o2" : "text-ink-3 group-hover:text-ink-2")} />

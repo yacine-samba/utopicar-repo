@@ -62,6 +62,7 @@ export default async function Accueil() {
     <>
       {/* ---------------- héros : le champ d'essai à gauche, la preuve qui se joue à droite ---------------- */}
       <SommairePage sections={SOMMAIRE} />
+      <div className="progression" aria-hidden="true" />
       <section className="relative overflow-hidden pb-12 pt-10 sm:pt-16">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_80%_55%_at_50%_0,#000_25%,transparent_78%)]" aria-hidden="true" />
         <div className="wrap grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
@@ -87,6 +88,11 @@ export default async function Accueil() {
           </div>
           <CarteHero defaut={CARTE_ACCUEIL} />
         </div>
+        <a href="#comment" aria-label="Voir comment ça marche" className="mx-auto mt-10 hidden size-11 place-items-center rounded-full border border-line-2 text-ink-3 no-underline transition hover:border-o/50 hover:text-ink lg:grid">
+          <svg viewBox="0 0 24 24" className="pousse-bas size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </a>
       </section>
 
       {/* ---------------- vrais chiffres ---------------- */}
@@ -198,13 +204,13 @@ export default async function Accueil() {
       </section>
 
       {/* ---------------- appel final ---------------- */}
-      <section id="appel-final" className="py-16 text-center">
+      <section id="appel-final" className="py-20 text-center">
         <div className="wrap">
-          <div className="carte apparait mx-auto max-w-3xl px-6 py-12">
-            <h2 className="h-sec">
+          <div className="apparait mx-auto max-w-4xl">
+            <h2 className="vue font-display text-[clamp(44px,8vw,104px)] font-semibold leading-[0.95] tracking-[-0.04em]">
               Votre prochaine voiture, <span className="it">au bon prix</span>
             </h2>
-            <Link href="#essai" className="btn btn-o mt-7">
+            <Link href="#essai" className="btn btn-o mt-9">
               Analyser une annonce <span aria-hidden="true">→</span>
             </Link>
             <p className="mx-auto mt-8 flex w-fit items-center gap-3 text-left text-sm text-ink-3">

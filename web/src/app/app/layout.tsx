@@ -91,7 +91,7 @@ export default async function LayoutEspace({ children }: { children: ReactNode }
       }
       menu={
         <>
-          <BoutonAnalyser className="min-h-10 gap-2 whitespace-nowrap px-3.5 py-1.5 text-[13px] shadow-[0_8px_22px_-14px_rgb(255_90_31/0.9)]" icone="size-4" />
+          <BoutonAnalyser className="min-h-10 gap-2 whitespace-nowrap px-3.5 py-1.5 text-[13px] shadow-[0_8px_22px_-14px_rgb(239_98_46/0.9)]" icone="size-4" />
           <div className="grid w-full flex-1 content-start gap-3">
             <NavCote entrees={entrees} />
             <div className="grid gap-2 lg:group-data-[replie=true]/menu:hidden">

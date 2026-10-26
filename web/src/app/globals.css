@@ -12,9 +12,10 @@
   --color-line-2: rgb(244 241 236 / 0.2);
   --color-glass: rgb(244 241 236 / 0.05);
   --color-panel: rgb(22 16 12 / 0.72);
-  --color-o: #ff5a1f;
-  --color-o2: #ff8a4c;
-  --color-o3: #ffb38a;
+  /* orange de la charte, à peine moins saturé que le logo (#ff5a1f) pour reposer l'œil sur les grandes surfaces */
+  --color-o: #ef622e;
+  --color-o2: #f38f59;
+  --color-o3: #f4b490;
   --color-ok: #3ecb7f;
   --color-warn: #ffc53d;
   --color-bad: #ff7a7a;
@@ -49,7 +50,7 @@ body {
   /* couleur de secours : impression, contraste forcé et outils de mesure ne voient pas les dégradés */
   background-color: var(--color-bg0);
   background-image:
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(255 90 31 / 0.16), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(239 98 46 / 0.12), transparent 70%),
     linear-gradient(160deg, var(--color-bg0), var(--color-bg1) 60%, var(--color-bg0)) fixed;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
@@ -73,8 +74,8 @@ body {
   --color-line-2: rgb(28 22 18 / 0.2);
   --color-glass: rgb(28 22 18 / 0.04);
   --color-panel: rgb(255 255 255 / 0.72);
-  --color-o2: #c2410c;
-  --color-o3: #e0571a;
+  --color-o2: #b04611;
+  --color-o3: #d7581d;
   --color-ok: #137036;
   --color-warn: #8a5306;
   --color-bad: #c81e1e;
@@ -82,12 +83,12 @@ body {
   --color-champ: #ffffff;
   background-color: var(--color-bg0);
   background-image:
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(255 90 31 / 0.1), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(239 98 46 / 0.08), transparent 70%),
     linear-gradient(160deg, #fbf8f3, var(--color-bg1) 60%, #fbf8f3);
 }
 .cadre-site[data-theme="clair"] .btn-o:hover {
-  background: #ff7040;
-  border-color: #ff7040;
+  background: #f1774b;
+  border-color: #f1774b;
 }
 .cadre-site[data-theme="clair"] .carte {
   box-shadow: 0 1px 2px rgb(28 22 18 / 0.04), 0 12px 32px -20px rgb(28 22 18 / 0.18);
@@ -196,14 +197,14 @@ select option:disabled {
       box-shadow 0.3s;
   }
   .btn:hover {
-    border-color: rgb(255 90 31 / 0.5);
+    border-color: rgb(239 98 46 / 0.45);
     transform: translateY(-1px);
   }
   .btn-o {
     background: var(--color-o);
     border-color: var(--color-o);
     color: #160904;
-    box-shadow: 0 12px 34px -12px rgb(255 90 31 / 0.85);
+    box-shadow: 0 12px 34px -14px rgb(239 98 46 / 0.6);
   }
   .btn-o:hover {
     background: var(--color-o2);
@@ -352,6 +353,50 @@ select option:disabled {
   }
 }
 
+/* Défilement de l'accueil : barre de lecture sous l'en-tête, et barre du sélecteur des trois actes qui se remplit
+   pendant qu'on lit la section. CSS natif ; absentes là où les frises de défilement n'existent pas, ou en mouvement réduit. */
+.progression,
+.actes-barre {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .progression {
+      display: block;
+      position: fixed;
+      inset-inline: 0;
+      top: 67px;
+      z-index: 41;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-o), var(--color-o2));
+      opacity: 0.8;
+      transform-origin: left center;
+      pointer-events: none;
+      animation: remplit linear both;
+      animation-timeline: scroll(root);
+    }
+    .actes {
+      view-timeline: --actes block;
+    }
+    .actes-barre {
+      display: block;
+      transform-origin: left center;
+      animation: remplit linear both;
+      animation-timeline: --actes;
+      animation-range: contain 0% contain 100%;
+    }
+  }
+}
+/* flèche « suite » sous le héros */
+.pousse-bas {
+  animation: pousse-bas 1.8s var(--ease-doux) infinite;
+}
+@keyframes pousse-bas {
+  50% {
+    transform: translateY(3px);
+  }
+}
+
 /* Lueurs d'ambiance derrière tout le site public : trois halos orangés très flous qui dérivent lentement.
    Couche fixe sous le contenu (le cadre isole son empilement), transform seulement, figées en pause ou mouvement réduit. */
 .cadre-site {
@@ -369,7 +414,7 @@ select option:disabled {
   width: 46vmax;
   height: 46vmax;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(255 90 31 / 0.16), transparent);
+  background: radial-gradient(closest-side, rgb(239 98 46 / 0.12), transparent);
   filter: blur(40px);
   animation: derive 38s ease-in-out infinite alternate;
 }
@@ -380,14 +425,14 @@ select option:disabled {
 .lueurs span:nth-child(2) {
   right: -16vmax;
   top: 38vh;
-  background: radial-gradient(closest-side, rgb(255 138 76 / 0.12), transparent);
+  background: radial-gradient(closest-side, rgb(243 143 89 / 0.09), transparent);
   animation-duration: 46s;
   animation-delay: -12s;
 }
 .lueurs span:nth-child(3) {
   left: 28vw;
   bottom: -22vmax;
-  background: radial-gradient(closest-side, rgb(255 179 138 / 0.1), transparent);
+  background: radial-gradient(closest-side, rgb(244 180 144 / 0.08), transparent);
   animation-duration: 54s;
   animation-delay: -24s;
 }

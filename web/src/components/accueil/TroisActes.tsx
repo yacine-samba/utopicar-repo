@@ -141,7 +141,8 @@ export function TroisActes() {
     return () => io.disconnect();
   }, []);
   return (
-    <div className="relative">
+    // « actes » nomme la frise du défilement de la section : la barre du sélecteur s'y remplit (globals.css)
+    <div className="actes relative">
       {ACTES.map(({ id, mot, texte, Visuel }, i) => (
         <article
           key={id}
@@ -168,7 +169,8 @@ export function TroisActes() {
       ))}
       {/* sélecteur collant : il suit le bas de l'écran tant que la section est lue (tablette et ordinateur ; la barre d'essai fait ce rôle sur téléphone) */}
       <div className="sticky bottom-5 z-20 mt-4 hidden justify-center sm:flex">
-        <nav aria-label="Les trois étapes" className="flex items-center gap-1 rounded-full border border-line-2 bg-bg0/80 p-1.5 shadow-[0_18px_40px_-20px_rgb(0_0_0/0.6)] backdrop-blur-md">
+        <nav aria-label="Les trois étapes" className="relative flex items-center gap-1 overflow-hidden rounded-full border border-line-2 bg-bg0/80 p-1.5 shadow-[0_18px_40px_-20px_rgb(0_0_0/0.6)] backdrop-blur-md">
+          <span className="actes-barre absolute inset-x-0 bottom-0 h-0.5 bg-o/70" aria-hidden="true" />
           {ACTES.map(({ id, mot }, i) => (
             <a
               key={id}

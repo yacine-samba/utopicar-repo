@@ -62,7 +62,7 @@ export const STYLES_404 = `
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #ffb38a;
+  color: #f4b490;
 }
 .n404 h1 {
   margin: 14px 0 0;
@@ -99,20 +99,20 @@ export const STYLES_404 = `
   transition: border-color 0.2s, background 0.2s, transform 0.2s var(--ease-ressort);
 }
 .n404-btn:hover {
-  border-color: #ff8a4c;
+  border-color: #f38f59;
   transform: translateY(-1px);
 }
 .n404-btn:focus-visible {
-  outline: 2px solid #ffb38a;
+  outline: 2px solid #f4b490;
   outline-offset: 3px;
 }
 .n404-btn-o {
   border-color: transparent;
-  background: #ff5a1f;
+  background: #ef622e;
   color: #160904;
 }
 .n404-btn-o:hover {
-  background: #ff8a4c;
+  background: #f38f59;
 }
 
 /* fausse analyse de la page, comme un ticket posé de travers */

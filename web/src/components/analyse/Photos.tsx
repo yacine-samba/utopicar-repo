@@ -7,7 +7,7 @@ import { usePiegeFocus } from "@/lib/piege-focus";
 /** Silhouette de voiture quand l'annonce n'a pas de photo. */
 export function SansPhoto({ className }: { className?: string }) {
   return (
-    <div className={cx("grid place-items-center bg-[radial-gradient(120%_120%_at_30%_20%,rgb(255_90_31/0.18),transparent_60%)] text-ink-3", className)} aria-hidden="true">
+    <div className={cx("grid place-items-center bg-[radial-gradient(120%_120%_at_30%_20%,rgb(239_98_46/0.18),transparent_60%)] text-ink-3", className)} aria-hidden="true">
       <svg viewBox="0 0 64 36" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" className="w-1/3 max-w-28 opacity-70">
         <path d="M4 26v-5l5-2 7-8h22l9 8 10 2 3 4v1H4z" />
         <circle cx="16" cy="27" r="4.5" />

@@ -112,7 +112,7 @@ export function BilanAncienView({ bilan }: { bilan: BilanAncien }) {
             </select>
           </label>
           <label className="flex items-center gap-2 pb-2 text-sm text-ink-2">
-            <input type="checkbox" checked={echecs} onChange={(e) => setEchecs(e.target.checked)} className="size-4 accent-[#ff5a1f]" /> Refusées seulement
+            <input type="checkbox" checked={echecs} onChange={(e) => setEchecs(e.target.checked)} className="size-4 accent-o" /> Refusées seulement
           </label>
         </div>
         <div className="overflow-x-auto rounded-xl border border-line">

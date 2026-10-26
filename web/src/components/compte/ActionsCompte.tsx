@@ -217,7 +217,7 @@ export function ChoixUsage({ id, famille }: { id: string; famille: "particulier"
           ] as const
         ).map(([f, t, d]) => (
           <label key={f} className={`carte flex cursor-pointer gap-3 p-4 transition ${v === f ? "border-o/60 bg-o/10" : "hover:border-line-2"}`}>
-            <input type="radio" name="usage" checked={v === f} onChange={() => choisir(f)} className="mt-1 size-4 accent-[#ff5a1f]" />
+            <input type="radio" name="usage" checked={v === f} onChange={() => choisir(f)} className="mt-1 size-4 accent-o" />
             <span>
               <span className="block font-medium">{t}</span>
               <span className="block text-sm text-ink-3">{d}</span>
@@ -257,7 +257,7 @@ export function ChoixAccessibilite({ reglages }: { reglages: Record<string, unkn
           <span className="block font-medium">Favoris</span>
           <span className="block text-sm text-ink-3">Une étoile sur les annonces, les recherches et les rapports, et une page Favoris dans le menu, pour mettre des voitures de côté.</span>
         </span>
-        <input type="checkbox" role="switch" checked={favoris} onChange={basculer} className="mt-1 size-5 shrink-0 accent-[#ff5a1f]" />
+        <input type="checkbox" role="switch" checked={favoris} onChange={basculer} className="mt-1 size-5 shrink-0 accent-o" />
       </label>
       <p role="status" className="text-sm text-ink-3">{etat}</p>
     </div>

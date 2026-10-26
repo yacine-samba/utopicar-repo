@@ -90,7 +90,7 @@ export function EssaiEmail({ demande, onRetour, onMotDePasse }: { demande: Deman
         <input type="email" required autoFocus value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" aria-invalid={!!erreur && /email/i.test(erreur)} aria-describedby={err} className={inputCls} />
       </label>
       <label className="flex items-start gap-3 text-sm text-ink-2">
-        <input type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} className="mt-0.5 size-5 shrink-0 cursor-pointer accent-[#ff5a1f]" />
+        <input type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} className="mt-0.5 size-5 shrink-0 cursor-pointer accent-o" />
         <span>
           J&apos;accepte les{" "}
           <Link href="/legal#conditions" className="text-o2 underline underline-offset-4">
