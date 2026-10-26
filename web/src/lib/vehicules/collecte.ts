@@ -17,8 +17,15 @@ const FRAICHE_MS = 3 * 864e5;
 export type EtatCollecte = { cle: string; nom: string; statut: "demandee" | "en cours" | "ok" | "erreur" | "quota"; n?: number | null; erreur?: string | null; maj?: string | null };
 type LigneCote = { cle: string; nom: string; statut: string; run_id: string | null; n: number | null; maj: string | null; erreur: string | null; demande: string | null };
 
+/** Erreur de la collecte telle qu'on la montre : le détail technique (Apify, base) reste dans la table `cotes`.
+    Le 25 oct. 2026, l'acteur Apify a été retiré : les recherches affichaient « Acteur Apify introuvable. ». */
+const erreurLisible = (e: string | null) =>
+  !e ? null
+  : /aucune annonce trouv/i.test(e) ? "Leboncoin n'a renvoyé aucune annonce pour ce modèle : les résultats viennent de la base actuelle."
+  : "La mise à jour depuis Leboncoin est indisponible pour le moment : les résultats viennent de la base actuelle.";
+
 const versEtat = (c: LigneCote): EtatCollecte => ({
-  cle: c.cle, nom: c.nom, n: c.n, maj: c.maj, erreur: c.erreur,
+  cle: c.cle, nom: c.nom, n: c.n, maj: c.maj, erreur: erreurLisible(c.erreur),
   statut: c.run_id ? "en cours" : c.statut === "ok" ? "ok" : c.statut === "erreur" ? "erreur" : "demandee",
 });
 

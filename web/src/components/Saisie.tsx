@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Analyse } from "@/lib/analyse/couts";
 import { Patience, type Apercu } from "./analyse/Patience";
+import { EssaiEmail, type DemandeEssai } from "./analyse/EssaiEmail";
 import { lienColle, lienImportable, origineDepuisExtension, photosDepuisExtension, photosDepuisHtml, texteDepuisExtension, texteDepuisImport, type Origine } from "@/lib/analyse/import";
 import { SUPABASE_CLE, SUPABASE_URL } from "@/lib/supabase/config";
 import { useExtension } from "@/lib/extension";
@@ -65,6 +66,8 @@ export function Saisie({
   enPlus,
   restantes = null,
   suite,
+  visiteur = false,
+  essai,
   onResultat,
 }: {
   mode: "particulier" | "benef";
@@ -82,6 +85,10 @@ export function Saisie({
   restantes?: number | null;
   /** Formule à proposer quand les analyses sont épuisées (null : aucune au-dessus, seulement l'unité). */
   suite?: OffreId | null;
+  /** Visiteur sans compte : au lieu d'analyser, on demande son email (analyse offerte, lien reçu par email). */
+  visiteur?: boolean;
+  /** Annonce gardée par l'analyse offerte (lien reçu par email) : reprise et lancée dès l'ouverture. */
+  essai?: DemandeEssai;
   onResultat: (a: Analyse, ville: string) => void;
 }) {
   const router = useRouter();
