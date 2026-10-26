@@ -8,7 +8,7 @@ import { ResultatParticulier } from "./ResultatParticulier";
 import { EnTeteRapport } from "./EnTeteRapport";
 import type { DemandeEssai } from "./EssaiEmail";
 
-export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres, restantes = null, suite }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode; restantes?: number | null; suite?: OffreId | null }) {
+export function OutilAnalyse({ ville, maxPhotos, entete, retour = "/analyse", lienInitial, apres, restantes = null, suite, visiteur = false, essai }: { ville: string; maxPhotos: number; entete: React.ReactNode; retour?: string; lienInitial?: string; apres?: React.ReactNode; restantes?: number | null; suite?: OffreId | null; visiteur?: boolean; essai?: DemandeEssai }) {
   const router = useRouter();
   const [a, setA] = useState<Analyse | null>(null);
   if (a)
