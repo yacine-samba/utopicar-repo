@@ -100,7 +100,7 @@ export default async function Accueil() {
       <Defile items={MODELES} label="Modèles analysés" />
 
       {/* ---------------- comment ça marche : trois actes en grands mots, un sélecteur collant les suit ---------------- */}
-      <section id="comment" aria-labelledby="comment-t" className="scroll-mt-32 pt-20">
+      <section id="comment" aria-labelledby="comment-t" className="scroll-mt-32 pt-14">
         <div className="wrap text-center">
           <p className="kicker">Comment ça marche</p>
           <h2 id="comment-t" className="h-sec mx-auto mt-4 max-w-2xl">
