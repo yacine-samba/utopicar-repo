@@ -86,6 +86,23 @@ body {
     radial-gradient(ellipse 70% 40% at 50% -10%, rgb(239 98 46 / 0.08), transparent 70%),
     linear-gradient(160deg, #fbf8f3, var(--color-bg1) 60%, #fbf8f3);
 }
+/* Le cadre sombre peint aussi son fond : à la bascule, la page change de thème avant que le serveur
+   ne remette le fond du corps à jour. */
+.cadre-site[data-theme="sombre"] {
+  background-color: var(--color-bg0);
+  background-image:
+    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(239 98 46 / 0.12), transparent 70%),
+    linear-gradient(160deg, var(--color-bg0), var(--color-bg1) 60%, var(--color-bg0));
+}
+/* Bascule de thème : l'ancienne image reste dessous, la nouvelle s'ouvre en cercle (BoutonTheme). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
 .cadre-site[data-theme="clair"] .btn-o:hover {
   background: #f1774b;
   border-color: #f1774b;

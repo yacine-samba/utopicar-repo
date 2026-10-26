@@ -23,7 +23,7 @@ export function SommairePage({ sections }: { sections: [id: string, label: strin
   }, [sections]);
   return (
     <nav aria-label="Sur cette page" className="sticky top-[68px] z-30 hidden border-b border-line bg-bg0/70 backdrop-blur-md md:block">
-      <ul className="wrap flex items-center justify-center gap-1 overflow-x-auto py-2">
+      <ul className="wrap flex items-center justify-center-safe gap-1 overflow-x-auto py-2">
         {sections.map(([id, label]) => (
           <li key={id} className="shrink-0">
             <a

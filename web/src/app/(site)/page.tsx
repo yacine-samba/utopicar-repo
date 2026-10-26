@@ -19,6 +19,8 @@ import { PARTICULIERS } from "@/lib/offres";
 import { CompteurInscrits } from "@/components/site/CompteurInscrits";
 import { TroisActes } from "@/components/accueil/TroisActes";
 import { SommairePage } from "@/components/site/SommairePage";
+import { Pieges } from "@/components/accueil/Pieges";
+import { CATALOGUE_DEFAUTS } from "@/lib/analyse/defauts";
 
 /* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
    Une seule action (coller une annonce), la preuve visible tout de suite (vraie annonce, verdict joué en 2 s), de vrais chiffres,
@@ -31,13 +33,11 @@ const SOMMAIRE: [string, string][] = [
   ["verdicts", "Verdicts"],
   ["verifie", "Ce qu'on vérifie"],
   ["app", "L'app"],
+  ["pieges", "Pièges"],
   ["cote", "La cote"],
   ["formules", "Formules"],
   ["faq", "Questions"],
 ];
-
-/** Des vrais libellés de l'outil (lib/analyse/defauts.ts, 38 règles), parmi les plus parlants. */
-const PIEGES = ["Joint de culasse signalé", "Moteur à refaire", "Distribution à faire", "Embrayage à changer", "Kilométrage non garanti", "Boîte de vitesses à revoir", "Turbo à changer", "Voyant allumé", "Fuite d'huile", "Fumée à l'échappement", "Problème de papiers", "Rouille", "Choc de carrosserie", "Vendue en l'état"];
 
 const MODELES = ["Renault Clio IV", "Peugeot 208", "Toyota Yaris", "Dacia Sandero", "VW Polo V", "Citroën C3", "Ford Fiesta", "Opel Corsa", "Hyundai i20", "Suzuki Swift", "Renault Twingo", "Seat Ibiza", "Kia Rio", "Skoda Fabia"];
 
@@ -160,12 +160,21 @@ export default async function Accueil() {
         </div>
       </section>
 
-      {/* ---------------- les pièges repérés dans le texte des annonces ---------------- */}
-      <section aria-labelledby="pieges" className="py-10">
-        <h2 id="pieges" className="wrap mb-4 text-center font-display text-xl font-semibold">
-          Les pièges qu&apos;on repère <span className="text-ink-3">(38 au total)</span>
-        </h2>
-        <Defile items={PIEGES} label="Exemples de pièges repérés" inverse />
+      {/* ---------------- les pièges repérés dans le texte des annonces : la vraie liste des règles, avec leur coût ---------------- */}
+      <section id="pieges" aria-labelledby="pieges-t" className="scroll-mt-32 py-16">
+        <div className="wrap">
+          <div className="mx-auto mb-10 max-w-5xl">
+            <h2 id="pieges-t" className="h-sec">
+              Les pièges <span className="it">qu&apos;on repère</span>
+            </h2>
+            <p className="mt-3 text-lg text-ink-2">
+              {CATALOGUE_DEFAUTS.length} règles lisent le texte de l&apos;annonce, chacune avec son coût de réparation.
+            </p>
+          </div>
+          <div className="mx-auto max-w-5xl">
+            <Pieges defauts={CATALOGUE_DEFAUTS} />
+          </div>
+        </div>
       </section>
 
       {/* ---------------- la cote en direct : vrais prix médians de la base ---------------- */}
@@ -197,8 +206,16 @@ export default async function Accueil() {
 
       {/* ---------------- questions ---------------- */}
       <section id="faq" className="scroll-mt-32 py-16">
-        <div className="wrap">
-          <h2 className="apparait h-sec mx-auto mb-10 max-w-2xl text-center">Vos questions</h2>
+        <div className="wrap mx-auto grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-12">
+          <div className="lg:sticky lg:top-36 lg:self-start">
+            <h2 className="apparait h-sec">Vos questions</h2>
+            <p className="mt-3 text-ink-2">
+              Une autre ?{" "}
+              <Link href="/legal#contact" className="font-medium text-o2 underline underline-offset-4">
+                Écrivez-nous
+              </Link>
+            </p>
+          </div>
           <Faq questions={FAQ.map((f) => ({ cat: f.cat, q: f.q, r: <p>{f.r}</p> }))} />
         </div>
       </section>
