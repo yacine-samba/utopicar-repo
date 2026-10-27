@@ -78,7 +78,7 @@ export default async function Accueil() {
               <Essai fournisseurs={fournisseurs} depuis="hero" />
             </div>
             <ul className="arrivee mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-2 lg:justify-start" style={{ "--i": 3 } as React.CSSProperties}>
-              {["Gratuit", "Sans compte", "Sans carte"].map((t) => (
+              {["Aperçu en 2 s", "Sans compte", "Gratuit"].map((t) => (
                 <li key={t} className="flex items-center gap-1.5">
                   <Coche />
                   {t}
