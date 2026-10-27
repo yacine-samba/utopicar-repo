@@ -72,7 +72,7 @@ et c'est le branchement qui fait la référence.
 > jawline and cheekbones, same warm light-brown skin, same short dark curly hair with a neat taper on the sides and the
 > same hairline, same thick straight dark eyebrows, same thin mustache and same short chin goatee, clean-shaven cheeks.
 > His eyes are light green, with natural iris texture. He wears a plain white crewneck sweatshirt with the utopicar
-> logo from @logo (the black car silhouette with an orange arrow, on white) printed on it.
+> logo from @logo (the black car silhouette with an orange arrow, on white) printed as a small logo, about 10 cm wide, on his right side (the left side of the picture when he faces the camera), on the lower chest near the side seam, exactly where the orange two-triangle shape sits in @selfie (the selfie of the man by a lake), not centered and not large.
 
 ## 1. Le portrait de base → `@portrait`
 
@@ -112,7 +112,7 @@ Joindre `@logo` en image 3.
 ```
 Image 1, @selfie (the selfie of the man by a lake), is the identity reference. Image 2, @portrait-en-cours (the portrait to edit), is the image to change. Image 3, @logo (the black car silhouette with an orange arrow, on white), is the utopicar logo.
 Change only the print on the sweatshirt: remove the orange two-triangle shape and replace it with the logo of image 3,
-at the same place and about the same size as the shape in @selfie (the selfie of the man by a lake). Copy the logo exactly: the black car
+at the same place and the same size as the shape in @selfie (the selfie of the man by a lake): a small logo, about 10 cm wide, on his right side (the left side of the picture when he faces the camera), on the lower chest near the side seam, exactly where the orange two-triangle shape sits in @selfie (the selfie of the man by a lake), not centered and not large. Copy the logo exactly: the black car
 silhouette and the orange arrow (#FF5A1F), same proportions, same orientation as in image 3 (car facing left, arrow
 pointing up to the right), not mirrored. No text and no other mark. It is printed flat on the cotton and follows the
 folds and the light of the fabric. Do not redraw or stylize the logo. Do not change any other elements of the image.
@@ -167,13 +167,30 @@ Image 1 is @selfie (the selfie of the man by a lake): use it as the only identit
 orange arrow, on white). Create a photorealistic character reference sheet of exactly the same
 man: same face shape, eyes, nose, lips, jawline, skin tone, short dark curly hair with taper, same thick straight
 eyebrows, same thin mustache and short chin goatee. Light natural green eyes. No earbuds.
-He wears a plain white crewneck sweatshirt with the logo of image 2 printed on the chest: the black car silhouette and
+He wears a plain white crewneck sweatshirt with the logo of image 2 printed as a small logo, about 10 cm wide, on his right side (the left side of the picture when he faces the camera), on the lower chest near the side seam, exactly where the orange two-triangle shape sits in @selfie (the selfie of the man by a lake), not centered and not large: the black car silhouette and
 the orange arrow (#FF5A1F), copied exactly, same proportions, car facing left and arrow pointing up to the right, not
 mirrored, no text, printed flat on the cotton and following the folds.
 Five head-and-shoulders views in one row on a plain light grey background, same scale and same soft even daylight:
-left profile, left three-quarter, front, right three-quarter, right profile. Neutral relaxed expression, mouth closed.
+left profile, left three-quarter, front, right three-quarter, right profile. The small logo is visible on his right
+side in the front, right three-quarter and right profile views, and hidden in the left views. Neutral relaxed
+expression, mouth closed.
 85mm lens, natural undistorted proportions, natural skin texture with pores, sharp focus on the eyes. No text, no
 labels.
+```
+
+**Corriger une planche déjà générée** (logo trop grand ou centré). Envoyer dans cet ordre :
+1. la planche à corriger ;
+2. le selfie ;
+3. le logo.
+
+```
+Image 1 is the sheet to edit. Image 2 is @selfie (the selfie of the man by a lake). Image 3 is @logo (the black car
+silhouette with an orange arrow, on white).
+Change only the logo on the sweatshirt in every view: make it a small logo, about 10 cm wide, on his right side (the
+left side of the picture when he faces the camera), on the lower chest near the side seam, exactly where the orange
+two-triangle shape sits in image 2. It is visible in the front, right three-quarter and right profile views and hidden
+in the left views. Copy the logo of image 3 exactly, not mirrored, printed flat on the cotton. Keep his face, hair,
+beard, eyes, the framing and everything else exactly the same. Do not change any other elements of the image.
 ```
 
 Garder la variation où le fondateur se reconnaît le mieux, de face et de trois-quarts. Pour corriger une seule case,
