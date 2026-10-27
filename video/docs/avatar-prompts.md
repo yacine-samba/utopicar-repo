@@ -21,68 +21,70 @@ dépôt »).
 
 | Référence | Contenu | Rôle |
 |---|---|---|
-| `@selfie-reference` | le selfie du fondateur au bord d'un lac | **identité** : visage, peau, cheveux, bouc, moustache, sweat blanc |
-| `@logo-utopicar-hd` | symbole officiel en 2400 px : voiture noire et flèche orange, sur fond blanc | logo du sweat, rendu depuis `video/assets/brand/official/utopicar-symbole-site.svg` |
-| `@logo-utopicar` | le même symbole, fichier fourni (512 px) | secours si la version HD n'est pas acceptée |
-| `@interieur-rs4-habitacle` | habitacle complet en 3/4, volant à anneaux, toit ouvrant, jardin d'oliviers dehors | décor principal et lumière |
-| `@interieur-rs3-siege` | siège en nid d'abeille, « RS » sur le haut du dossier, surpiqûres rouges, ceinture noire à liserés rouges | détail des sièges, du logo et de la ceinture |
-| `@interieur-s3-sieges` | sièges à losanges | **écartée** : un autre motif casserait la constance |
+| `@selfie` | le selfie du fondateur au bord d'un lac | **identité** : visage, peau, cheveux, bouc, moustache, sweat blanc |
+| `@logo` | symbole officiel en 2400 px : voiture noire et flèche orange, sur fond blanc | logo du sweat, rendu depuis `video/assets/brand/official/utopicar-symbole-site.svg` |
+| `@logo` (512 px) | le même symbole, fichier fourni (512 px) | secours si la version HD n'est pas acceptée |
+| `@interieur-audi` | habitacle complet en 3/4, volant à anneaux, toit ouvrant, jardin d'oliviers dehors | décor principal et lumière |
+| `@siege-rs` | siège en nid d'abeille, « RS » sur le haut du dossier, surpiqûres rouges, ceinture noire à liserés rouges | détail des sièges, du logo et de la ceinture |
+| `@sieges-losanges` | sièges à losanges | **écartée** : un autre motif casserait la constance |
 
 Références générées au fil des étapes :
 
 | Référence | Étape | Contenu |
 |---|---|---|
-| `@avatar-portrait` | 1 | portrait propre, yeux vert clair, logo utopicar |
+| `@portrait` | 1 | portrait propre, yeux vert clair, logo utopicar |
 | `@fiche-visage` | 2 | le visage seul sous 10 angles |
 | `@fiche-angles` | 2 | 5 angles, tête et épaules, sweat et logo |
 | `@fiche-expressions` | 2 | 6 expressions |
 | `@fiche-bouche` | 2 | 6 positions de bouche (sons du français) |
-| `@plaque-habitacle` | 3 | l'habitacle vide vu du téléphone, logos nets |
-| `@avatar-voiture` | 4 | l'avatar à sa place, première image de chaque plan vidéo |
+| `@habitacle-vide` | 3 | l'habitacle vide vu du téléphone, logos nets |
+| `@depart` | 4 | l'avatar à sa place, première image de chaque plan vidéo |
 
 **Joindre les références :**
 - toujours dans le même ordre ;
 - une seule fonction par image, et le dire dans le prompt ;
-- **toujours `@selfie-reference` en image 1** dès qu'il y a le visage : c'est la vraie source de l'identité. On ne
+- **toujours `@selfie` en image 1** dès qu'il y a le visage : c'est la vraie source de l'identité. On ne
   part jamais d'une retouche de retouche.
 
-Flow renomme les fichiers à sa façon : les prompts ne citent donc **jamais un nom de fichier**. Chaque image est
-désignée par son **numéro** (l'ordre d'envoi) et par **ce qu'elle montre**. Les `@noms` ci-dessous ne servent qu'à nous,
-pour savoir quel fichier joindre et dans quel ordre :
+Flow renomme les fichiers à sa façon. Dans les prompts, chaque image est donc appelée **deux fois** : par une
+référence `@` (là où elle apparaît, taper `@` dans Flow et choisir l'image correspondante), et par une description
+entre parenthèses de ce qu'elle montre. Même si Flow change le nom, le modèle sait de quelle image il s'agit. Envoyer
+les images dans l'ordre indiqué au-dessus de chaque prompt.
 
-| Notre nom | Ce que dit le prompt |
+| Fichier chez nous | Référence dans le prompt |
 |---|---|
-| `@selfie-reference` | « the selfie of the man by a lake » |
-| `@logo-utopicar-hd` | « the logo image (a black car silhouette with an orange arrow, on white) » |
-| `@avatar-portrait` | « the studio portrait of the man with green eyes » |
-| `@fiche-angles` | « the five-view sheet of the man » |
-| `@plaque-habitacle` | « the photo of the empty car interior » |
-| `@interieur-rs3-siege` | « the close-up photo of the black honeycomb RS seat » |
-| `@interieur-rs4-habitacle` | « the wide photo of the black Audi interior with the open sunroof » |
-| `@avatar-voiture` | « the start frame » |
+| `selfie-reference.jpg` | `@selfie (the selfie of the man by a lake)` |
+| `logo-utopicar-hd.png` | `@logo (the black car silhouette with an orange arrow, on white)` |
+| `@portrait` généré | `@portrait (the studio portrait of the man with green eyes)` |
+| `@fiche-angles` générée | `@fiche-angles (the five-view sheet of the man)` |
+| `@habitacle-vide` générée | `@habitacle-vide (the photo of the empty car interior)` |
+| `interieur-rs3-siege.jpg` | `@siege-rs (the close-up photo of the black honeycomb RS seat)` |
+| `interieur-rs4-habitacle.jpg` | `@interieur-audi (the wide photo of the black Audi interior with the open sunroof)` |
+| image du tour précédent (étape 1) | `@portrait-en-cours (the portrait to edit)` |
+| `@depart` générée | `@depart (the start frame)` |
 
 Dans ElevenLabs Flows, l'image se branche sur le port (images, start_frame) : le `@nom` dans le texte sert de repère,
 et c'est le branchement qui fait la référence.
 
 **Bloc identité**, à coller mot pour mot partout où le visage apparaît :
 
-> Exactly the same man as in the selfie of the man by a lake: same face shape, same eye shape, same nose bridge, same lips, same
+> Exactly the same man as in @selfie (the selfie of the man by a lake): same face shape, same eye shape, same nose bridge, same lips, same
 > jawline and cheekbones, same warm light-brown skin, same short dark curly hair with a neat taper on the sides and the
 > same hairline, same thick straight dark eyebrows, same thin mustache and same short chin goatee, clean-shaven cheeks.
 > His eyes are light green, with natural iris texture. He wears a plain white crewneck sweatshirt with the utopicar
-> logo from the logo image (a black car silhouette with an orange arrow, on white) printed on it.
+> logo from @logo (the black car silhouette with an orange arrow, on white) printed on it.
 
-## 1. Le portrait de base → `@avatar-portrait`
+## 1. Le portrait de base → `@portrait`
 
 Outil : Nano Banana Pro (`gemini-3-pro-image`), 9:16, 2K. Trois tours, **une seule modification par tour**, comme le
-conseille Google. Joindre chaque fois `@selfie-reference` en image 1, puis l'image du tour précédent en image 2.
+conseille Google. Joindre chaque fois `@selfie` en image 1, puis l'image du tour précédent en image 2.
 
 ### Tour 1 : un portrait propre
 
 Le selfie est pris au grand angle à bout de bras, ce qui déforme le visage. On le refait en vrai portrait.
 
 ```
-Using the selfie of the man by a lake, create a photorealistic head-and-shoulders portrait of exactly the same man, in 9:16.
+Using @selfie (the selfie of the man by a lake), create a photorealistic head-and-shoulders portrait of exactly the same man, in 9:16.
 Keep his face exactly the same: face shape, eyes, nose, lips, jawline, skin tone, hair, eyebrows, thin mustache and
 short chin goatee. Keep the same white crewneck sweatshirt.
 Change only the shot: eye level, 85mm portrait lens with natural, undistorted proportions, instead of the wide-angle
@@ -97,7 +99,7 @@ Pour garder ses écouteurs comme signature, remplacer « No earbuds » par « Ke
 ### Tour 2 : les yeux vert clair
 
 ```
-Image 1 (the selfie of the man by a lake) is the identity reference. Image 2 is the portrait to edit.
+Image 1, @selfie (the selfie of the man by a lake), is the identity reference. Image 2, @portrait-en-cours (the portrait to edit), is the image to change.
 Change only the color of his irises to a light, natural green, with real iris texture, a darker limbal ring and normal
 reflections, not glowing and not saturated. Keep the eye shape, the eyelids, the eyebrows and everything else in
 image 2 exactly the same. Do not change any other elements of the image.
@@ -105,12 +107,12 @@ image 2 exactly the same. Do not change any other elements of the image.
 
 ### Tour 3 : le logo utopicar sur le sweat
 
-Joindre `@logo-utopicar-hd` en image 3.
+Joindre `@logo` en image 3.
 
 ```
-Image 1 (the selfie of the man by a lake) is the identity reference. Image 2 is the portrait to edit. Image 3 is the utopicar logo.
+Image 1, @selfie (the selfie of the man by a lake), is the identity reference. Image 2, @portrait-en-cours (the portrait to edit), is the image to change. Image 3, @logo (the black car silhouette with an orange arrow, on white), is the utopicar logo.
 Change only the print on the sweatshirt: remove the orange two-triangle shape and replace it with the logo of image 3,
-at the same place and about the same size as the shape in the selfie of the man by a lake. Copy the logo exactly: the black car
+at the same place and about the same size as the shape in @selfie (the selfie of the man by a lake). Copy the logo exactly: the black car
 silhouette and the orange arrow (#FF5A1F), same proportions, same orientation as in image 3 (car facing left, arrow
 pointing up to the right), not mirrored. No text and no other mark. It is printed flat on the cotton and follows the
 folds and the light of the fabric. Do not redraw or stylize the logo. Do not change any other elements of the image.
@@ -121,12 +123,12 @@ folds and the light of the fabric. Do not redraw or stylize the logo. Do not cha
 - les yeux sont verts et naturels ;
 - le logo est net et dans le bon sens.
 
-Ce portrait devient `@avatar-portrait`.
+Ce portrait devient `@portrait`.
 
 ## 2. Les trois planches
 
-Outil : Nano Banana Pro, 16:9, 4K. Joindre `@selfie-reference` (image 1), `@avatar-portrait` (image 2),
-`@logo-utopicar-hd` (image 3).
+Outil : Nano Banana Pro, 16:9, 4K. Joindre `@selfie` (image 1), `@portrait` (image 2),
+`@logo` (image 3).
 
 Règles communes :
 - même lumière douce et égale dans toutes les cases ;
@@ -137,7 +139,7 @@ Règles communes :
 Envoyer d'abord le selfie du fondateur, puis rien d'autre. Format 16:9, résolution 4K.
 
 ```
-Image 1 is the selfie of the man by a lake: use it as the only identity reference. Create a photorealistic face
+Image 1 is @selfie (the selfie of the man by a lake): use it as the only identity reference. Create a photorealistic face
 reference sheet of exactly the same man: same face shape, same eye shape, same nose bridge, same lips, same jawline
 and cheekbones, same warm light-brown skin, same short dark curly hair with a neat taper on the sides and the same
 hairline, same thick straight dark eyebrows, same thin mustache and same short chin goatee, clean-shaven cheeks.
@@ -161,8 +163,8 @@ Envoyer dans cet ordre :
 Format 16:9, résolution 4K.
 
 ```
-Image 1 is the selfie of the man by a lake: use it as the only identity reference. Image 2 is the logo image (a black
-car silhouette with an orange arrow, on white). Create a photorealistic character reference sheet of exactly the same
+Image 1 is @selfie (the selfie of the man by a lake): use it as the only identity reference. Image 2 is @logo (the black car silhouette with an
+orange arrow, on white). Create a photorealistic character reference sheet of exactly the same
 man: same face shape, eyes, nose, lips, jawline, skin tone, short dark curly hair with taper, same thick straight
 eyebrows, same thin mustache and short chin goatee. Light natural green eyes. No earbuds.
 He wears a plain white crewneck sweatshirt with the logo of image 2 printed on the chest: the black car silhouette and
@@ -181,7 +183,7 @@ change any other elements of the image. »
 ### `@fiche-expressions`
 
 ```
-Use image 1 for his identity and image 2 for his final look; image 3 is the logo.
+Use image 1, @selfie (the selfie of the man by a lake), for his identity and image 2, @portrait (the studio portrait of the man with green eyes), for his final look; image 3, @logo (the black car silhouette with an orange arrow, on white), is the logo.
 [BLOC IDENTITÉ]
 Create an expression sheet: a 3 by 2 grid of front-facing head-and-shoulders portraits on a plain light grey
 background, same framing, scale and soft even daylight in every cell: 1) calm neutral; 2) warm half-smile, lips
@@ -196,7 +198,7 @@ texture with pores, natural creases around the eyes when he smiles.
 C'est la planche qui aide le plus la synchro labiale, les dents et la langue.
 
 ```
-Use image 1 for his identity and image 2 for his final look.
+Use image 1, @selfie (the selfie of the man by a lake), for his identity and image 2, @portrait (the studio portrait of the man with green eyes), for his final look.
 [BLOC IDENTITÉ]
 Create a mouth reference sheet: a 3 by 2 grid of front-view close-ups from the nose to the chin, same scale and soft
 even light, plain light grey background, his thin mustache and short chin goatee identical in every cell, each one
@@ -217,12 +219,12 @@ Pour retoucher une case :
 Keep everything the same, but change only [ONE THING]. Do not change any other elements of the image.
 ```
 
-Une seule modification par tour, toujours avec `@selfie-reference` jointe.
+Une seule modification par tour, toujours avec `@selfie` jointe.
 
-## 3. L'habitacle, logos compris → `@plaque-habitacle`
+## 3. L'habitacle, logos compris → `@habitacle-vide`
 
-Outil : Nano Banana Pro, 9:16, 4K. Joindre dans cet ordre : `@interieur-rs3-siege` (image 1), puis
-`@interieur-rs4-habitacle` (image 2).
+Outil : Nano Banana Pro, 9:16, 4K. Joindre dans cet ordre : `@siege-rs` (image 1), puis
+`@interieur-audi` (image 2).
 
 **Bloc décor**, à coller mot pour mot dans tous les prompts suivants :
 
@@ -233,8 +235,8 @@ Outil : Nano Banana Pro, 9:16, 4K. Joindre dans cet ordre : `@interieur-rs3-sieg
 > with olive trees, soft late-afternoon sun.
 
 ```
-Use image 1 (the close-up photo of the black honeycomb RS seat) for the seats: copy the honeycomb quilting, the red stitching and piping, the RS
-logo and the seatbelt exactly. Use image 2 (the wide photo of the black Audi interior with the open sunroof) for the layout, the dashboard, the steering
+Use image 1, @siege-rs (the close-up photo of the black honeycomb RS seat), for the seats: copy the honeycomb quilting, the red stitching and piping, the RS
+logo and the seatbelt exactly. Use image 2, @interieur-audi (the wide photo of the black Audi interior with the open sunroof), for the layout, the dashboard, the steering
 wheel with the Audi rings, the roof and the light.
 Create an empty photorealistic plate of this exact interior, seen from a phone mounted on the dashboard slightly below
 eye level, facing the empty driver's seat, vertical 9:16.
@@ -252,17 +254,17 @@ reflections on the glass, no phone mount visible.
 
 Si un logo est abîmé, on corrige cette plaque une fois pour toutes : toute la série en hérite.
 
-## 4. L'avatar à sa place → `@avatar-voiture`
+## 4. L'avatar à sa place → `@depart`
 
 Outil : Nano Banana Pro, 9:16, 4K. Joindre :
-- `@selfie-reference` (image 1) ;
-- `@avatar-portrait` (image 2) ;
+- `@selfie` (image 1) ;
+- `@portrait` (image 2) ;
 - `@fiche-angles` (image 3) ;
-- `@plaque-habitacle` (image 4) ;
-- `@logo-utopicar-hd` (image 5).
+- `@habitacle-vide` (image 4) ;
+- `@logo` (image 5).
 
 ```
-Images 1 to 3 are only for the man's identity and look; image 4 is only for the environment; image 5 is the logo on
+Images 1 to 3 (@selfie (the selfie of the man by a lake), @portrait (the studio portrait of the man with green eyes), @fiche-angles (the five-view sheet of the man)) are only for the man's identity and look; image 4, @habitacle-vide (the photo of the empty car interior), is only for the environment; image 5, @logo (the black car silhouette with an orange arrow, on white), is the logo on
 his sweatshirt.
 [BLOC IDENTITÉ]
 Change only: place this man in the driver's seat of image 4. Keep everything else in image 4 the same: seats,
@@ -281,7 +283,7 @@ une plaque, pas un plan.
 
 ## 5. Les plans vidéo de 8 s
 
-Outil : Gemini Omni Flash 1.1 (`gemini-omni-1.1-flash`), 9:16, 8 s. Brancher `@avatar-voiture` sur **start_frame**.
+Outil : Gemini Omni Flash 1.1 (`gemini-omni-1.1-flash`), 9:16, 8 s. Brancher `@depart` sur **start_frame**.
 Ce mode ne se combine pas avec des images de référence : c'est l'image de départ qui porte l'identité. Faire les essais
 en 360p (le réglage le plus bas d'Omni) et la version finale en 1080p.
 
@@ -329,7 +331,7 @@ No music. No extra sound effects. No subtitles, no captions, no on-screen text.
    **Sync Lipsync 3** (`sync-lipsync-v3`) avec la voix de Simon seule, sans musique ni bruit, en 1080p.
    - Sync 3 recrée la bouche en 4K, alors que lipsync-2-pro la refait en 512 × 512, ce qui floute les dents en gros plan.
    - Pour un deuxième essai, repartir du plan d'origine, jamais d'un plan déjà resynchronisé.
-3. **Repli.** OmniHuman 1.5, avec `@avatar-voiture` et la voix de Simon en WAV 16 bits, 30 s maximum en 1080p.
+3. **Repli.** OmniHuman 1.5, avec `@depart` et la voix de Simon en WAV 16 bits, 30 s maximum en 1080p.
    La synchro est solide, mais le décor reste plus figé.
 4. **Montage chez nous :**
    - ambiance et musique remises après la synchro ;
@@ -340,7 +342,7 @@ No music. No extra sound effects. No subtitles, no captions, no on-screen text.
 
 ## 7. Contrôle de chaque plan
 
-- **Visage :** le même que `@selfie-reference`. Vérifier la ligne des cheveux, le bouc, la moustache et les yeux vert
+- **Visage :** le même que `@selfie`. Vérifier la ligne des cheveux, le bouc, la moustache et les yeux vert
   clair (ni gris, ni marron, ni lumineux).
 - **Bouche :** à contrôler image par image en gros plan.
   - Les lèvres se ferment sur p, b et m.
