@@ -33,7 +33,8 @@ Références générées au fil des étapes :
 | Référence | Étape | Contenu |
 |---|---|---|
 | `@avatar-portrait` | 1 | portrait propre, yeux vert clair, logo utopicar |
-| `@fiche-angles` | 2 | 5 angles du visage |
+| `@fiche-visage` | 2 | le visage seul sous 10 angles |
+| `@fiche-angles` | 2 | 5 angles, tête et épaules, sweat et logo |
 | `@fiche-expressions` | 2 | 6 expressions |
 | `@fiche-bouche` | 2 | 6 positions de bouche (sons du français) |
 | `@plaque-habitacle` | 3 | l'habitacle vide vu du téléphone, logos nets |
@@ -45,16 +46,31 @@ Références générées au fil des étapes :
 - **toujours `@selfie-reference` en image 1** dès qu'il y a le visage : c'est la vraie source de l'identité. On ne
   part jamais d'une retouche de retouche.
 
+Flow renomme les fichiers à sa façon : les prompts ne citent donc **jamais un nom de fichier**. Chaque image est
+désignée par son **numéro** (l'ordre d'envoi) et par **ce qu'elle montre**. Les `@noms` ci-dessous ne servent qu'à nous,
+pour savoir quel fichier joindre et dans quel ordre :
+
+| Notre nom | Ce que dit le prompt |
+|---|---|
+| `@selfie-reference` | « the selfie of the man by a lake » |
+| `@logo-utopicar-hd` | « the logo image (a black car silhouette with an orange arrow, on white) » |
+| `@avatar-portrait` | « the studio portrait of the man with green eyes » |
+| `@fiche-angles` | « the five-view sheet of the man » |
+| `@plaque-habitacle` | « the photo of the empty car interior » |
+| `@interieur-rs3-siege` | « the close-up photo of the black honeycomb RS seat » |
+| `@interieur-rs4-habitacle` | « the wide photo of the black Audi interior with the open sunroof » |
+| `@avatar-voiture` | « the start frame » |
+
 Dans ElevenLabs Flows, l'image se branche sur le port (images, start_frame) : le `@nom` dans le texte sert de repère,
 et c'est le branchement qui fait la référence.
 
 **Bloc identité**, à coller mot pour mot partout où le visage apparaît :
 
-> Exactly the same man as in @selfie-reference: same face shape, same eye shape, same nose bridge, same lips, same
+> Exactly the same man as in the selfie of the man by a lake: same face shape, same eye shape, same nose bridge, same lips, same
 > jawline and cheekbones, same warm light-brown skin, same short dark curly hair with a neat taper on the sides and the
 > same hairline, same thick straight dark eyebrows, same thin mustache and same short chin goatee, clean-shaven cheeks.
 > His eyes are light green, with natural iris texture. He wears a plain white crewneck sweatshirt with the utopicar
-> logo from @logo-utopicar-hd printed on it.
+> logo from the logo image (a black car silhouette with an orange arrow, on white) printed on it.
 
 ## 1. Le portrait de base → `@avatar-portrait`
 
@@ -66,7 +82,7 @@ conseille Google. Joindre chaque fois `@selfie-reference` en image 1, puis l'ima
 Le selfie est pris au grand angle à bout de bras, ce qui déforme le visage. On le refait en vrai portrait.
 
 ```
-Using @selfie-reference, create a photorealistic head-and-shoulders portrait of exactly the same man, in 9:16.
+Using the selfie of the man by a lake, create a photorealistic head-and-shoulders portrait of exactly the same man, in 9:16.
 Keep his face exactly the same: face shape, eyes, nose, lips, jawline, skin tone, hair, eyebrows, thin mustache and
 short chin goatee. Keep the same white crewneck sweatshirt.
 Change only the shot: eye level, 85mm portrait lens with natural, undistorted proportions, instead of the wide-angle
@@ -81,7 +97,7 @@ Pour garder ses écouteurs comme signature, remplacer « No earbuds » par « Ke
 ### Tour 2 : les yeux vert clair
 
 ```
-Image 1 (@selfie-reference) is the identity reference. Image 2 is the portrait to edit.
+Image 1 (the selfie of the man by a lake) is the identity reference. Image 2 is the portrait to edit.
 Change only the color of his irises to a light, natural green, with real iris texture, a darker limbal ring and normal
 reflections, not glowing and not saturated. Keep the eye shape, the eyelids, the eyebrows and everything else in
 image 2 exactly the same. Do not change any other elements of the image.
@@ -92,9 +108,9 @@ image 2 exactly the same. Do not change any other elements of the image.
 Joindre `@logo-utopicar-hd` en image 3.
 
 ```
-Image 1 (@selfie-reference) is the identity reference. Image 2 is the portrait to edit. Image 3 is the utopicar logo.
+Image 1 (the selfie of the man by a lake) is the identity reference. Image 2 is the portrait to edit. Image 3 is the utopicar logo.
 Change only the print on the sweatshirt: remove the orange two-triangle shape and replace it with the logo of image 3,
-at the same place and about the same size as the shape in @selfie-reference. Copy the logo exactly: the black car
+at the same place and about the same size as the shape in the selfie of the man by a lake. Copy the logo exactly: the black car
 silhouette and the orange arrow (#FF5A1F), same proportions, same orientation as in image 3 (car facing left, arrow
 pointing up to the right), not mirrored. No text and no other mark. It is printed flat on the cotton and follows the
 folds and the light of the fabric. Do not redraw or stylize the logo. Do not change any other elements of the image.
@@ -116,16 +132,51 @@ Règles communes :
 - même lumière douce et égale dans toutes les cases ;
 - pas d'ombre dure, pas de lunettes, pas de chapeau.
 
-### `@fiche-angles`
+### `@fiche-visage` : le visage sous tous les angles (tête seule)
+
+Envoyer d'abord le selfie du fondateur, puis rien d'autre. Format 16:9, résolution 4K.
 
 ```
-Use image 1 for his identity and image 2 for his final look (light green eyes, utopicar logo); image 3 is the logo.
-[BLOC IDENTITÉ]
-Create a character reference sheet: five head-and-shoulders views in one row on a plain light grey background, same
-scale and same soft even daylight in every view: left profile, left three-quarter, front, right three-quarter, right
-profile. Neutral relaxed expression, mouth closed. The logo stays sharp and correctly oriented wherever it is visible.
-85mm lens, natural skin texture with pores, sharp focus on the eyes.
+Image 1 is the selfie of the man by a lake: use it as the only identity reference. Create a photorealistic face
+reference sheet of exactly the same man: same face shape, same eye shape, same nose bridge, same lips, same jawline
+and cheekbones, same warm light-brown skin, same short dark curly hair with a neat taper on the sides and the same
+hairline, same thick straight dark eyebrows, same thin mustache and same short chin goatee, clean-shaven cheeks.
+Change only his eye color: light natural green irises with real iris texture and a darker limbal ring, not glowing.
+No earbuds.
+Layout: two rows on a plain light grey background, every cell the same scale, framed from the top of the head to the
+chin, same soft even daylight in every cell, neutral relaxed expression, mouth closed.
+Top row: left profile, left three-quarter, front, right three-quarter, right profile.
+Bottom row: head tilted slightly up, head tilted slightly down, front close-up of the eyes and nose, three-quarter
+close-up of the mouth and goatee, back three-quarter view of the head showing the hair taper.
+85mm portrait lens, natural undistorted proportions, natural skin texture with visible pores and fine lines, natural
+facial asymmetry, sharp focus on the eyes. No text, no labels.
 ```
+
+### `@fiche-angles` : tête et épaules, sweat et logo (5 angles)
+
+Envoyer dans cet ordre :
+1. le selfie du fondateur ;
+2. le logo en haute définition.
+
+Format 16:9, résolution 4K.
+
+```
+Image 1 is the selfie of the man by a lake: use it as the only identity reference. Image 2 is the logo image (a black
+car silhouette with an orange arrow, on white). Create a photorealistic character reference sheet of exactly the same
+man: same face shape, eyes, nose, lips, jawline, skin tone, short dark curly hair with taper, same thick straight
+eyebrows, same thin mustache and short chin goatee. Light natural green eyes. No earbuds.
+He wears a plain white crewneck sweatshirt with the logo of image 2 printed on the chest: the black car silhouette and
+the orange arrow (#FF5A1F), copied exactly, same proportions, car facing left and arrow pointing up to the right, not
+mirrored, no text, printed flat on the cotton and following the folds.
+Five head-and-shoulders views in one row on a plain light grey background, same scale and same soft even daylight:
+left profile, left three-quarter, front, right three-quarter, right profile. Neutral relaxed expression, mouth closed.
+85mm lens, natural undistorted proportions, natural skin texture with pores, sharp focus on the eyes. No text, no
+labels.
+```
+
+Garder la variation où le fondateur se reconnaît le mieux, de face et de trois-quarts. Pour corriger une seule case,
+renvoyer le selfie en image 1 et écrire : « Keep everything the same, but change only [la case et le défaut]. Do not
+change any other elements of the image. »
 
 ### `@fiche-expressions`
 
@@ -182,8 +233,8 @@ Outil : Nano Banana Pro, 9:16, 4K. Joindre dans cet ordre : `@interieur-rs3-sieg
 > with olive trees, soft late-afternoon sun.
 
 ```
-Use image 1 (@interieur-rs3-siege) for the seats: copy the honeycomb quilting, the red stitching and piping, the RS
-logo and the seatbelt exactly. Use image 2 (@interieur-rs4-habitacle) for the layout, the dashboard, the steering
+Use image 1 (the close-up photo of the black honeycomb RS seat) for the seats: copy the honeycomb quilting, the red stitching and piping, the RS
+logo and the seatbelt exactly. Use image 2 (the wide photo of the black Audi interior with the open sunroof) for the layout, the dashboard, the steering
 wheel with the Audi rings, the roof and the light.
 Create an empty photorealistic plate of this exact interior, seen from a phone mounted on the dashboard slightly below
 eye level, facing the empty driver's seat, vertical 9:16.
@@ -242,7 +293,7 @@ captions, on-screen text, scene cuts, extra people »).
 
 ```
 In a single continuous shot, no scene cuts. Vertical 9:16 video, static locked-off camera as if filmed by a phone
-mounted on the dashboard; the framing stays exactly as in the start frame @avatar-voiture.
+mounted on the dashboard; the framing stays exactly as in the start frame.
 The man is speaking naturally to the camera. He looks straight into the lens and says in French, as a native speaker
 from Paris with a soft uvular R, in a calm, confident, conversational tone: "[RÉPLIQUE — 15 à 18 mots, chiffres en
 lettres]"
