@@ -1,163 +1,252 @@
 import Link from "next/link";
+import { Rotateur } from "@/components/accueil/Rotateur";
+import { Defile } from "@/components/site/Defile";
+import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
 import { CARTE_ACCUEIL } from "@/components/accueil/PreuveAnimee";
 import { CarteHero } from "@/components/accueil/CarteHero";
-import { Ticket } from "@/components/accueil/Ticket";
-import { Verdicts } from "@/components/accueil/Verdicts";
-import { CarteReparations } from "@/components/accueil/CarteReparations";
-import { Chiffres } from "@/components/accueil/Chiffres";
-import { DeuxFormules } from "@/components/accueil/DeuxFormules";
+import { TroisTemps } from "@/components/accueil/TroisTemps";
+import { TroisVerdicts } from "@/components/accueil/TroisVerdicts";
+import { CoteEnDirect } from "@/components/accueil/CoteEnDirect";
+import { Bento } from "@/components/accueil/Bento";
+import { VisiteApp } from "@/components/accueil/VisiteApp";
+import { ChiffresMarche } from "@/components/site/ChiffresMarche";
 import { BarreEssai } from "@/components/site/BarreEssai";
 import { fournisseursActifs } from "@/lib/fournisseurs";
 import { JsonLdFaq } from "@/components/site/JsonLd";
+import { GainsAbonnement } from "@/components/site/GainsAbonnement";
+import { PARTICULIERS } from "@/lib/offres";
 import { CompteurInscrits } from "@/components/site/CompteurInscrits";
+import { TroisActes } from "@/components/accueil/TroisActes";
+import { SommairePage } from "@/components/site/SommairePage";
+import { Pieges } from "@/components/accueil/Pieges";
+import { Fleches } from "@/components/site/Fleches";
+import { CATALOGUE_DEFAUTS } from "@/lib/analyse/defauts";
 
 /* Page d'accueil pensée pour la conversion : 67 % des visiteurs sont sur téléphone et arrivent de TikTok.
-   L'idée : l'annonce que vous collez devient le rapport. Sur ordinateur, la moitié gauche ne bouge pas : la vraie
-   annonce Clio de la démonstration, avec sa cote et son verdict, remplacée par la vôtre dès que vous l'essayez.
-   À droite, on lit : le champ d'essai, puis le ticket du rapport. Ensuite la page s'élargit : trois verdicts, la carte
-   des réparations (les 38 pièges et leur coût), les chiffres de la base, deux formules, les réponses, un dernier mot.
-   Pas de cadres, de dégradés ni d'ombres : des fonds pleins, de grandes tailles, de vraies photos. */
+   Une seule action (coller une annonce), la preuve visible tout de suite (vraie annonce, verdict joué en 2 s), de vrais chiffres,
+   presque pas de texte. Ordre : essai et preuve → chiffres → comment ça marche en 3 actes → 3 vrais verdicts → ce qui est vérifié
+   → l'app → pièges → cote en direct → prix → questions → appel final. Sommaire collant sur tablette et ordinateur. */
 
-/** Les questions qui bloquent l'essai, et seulement elles (le texte brut sert aussi aux données structurées). */
-const FAQ: { q: string; r: string }[] = [
-  { q: "C'est vraiment gratuit ?", r: "Oui. L'aperçu est immédiat sans compte, et la première analyse complète est offerte, sans carte bancaire. Ensuite : 4,99 € par mois sans engagement, ou 2,99 € l'analyse à l'unité." },
-  { q: "Ça marche sur quelles annonces ?", r: "Leboncoin (le lien suffit), La Centrale et AutoScout24 (collez le texte de la page). Voitures particulières, vendeurs particuliers ou professionnels." },
-  { q: "Ça remplace un garagiste ?", r: "Non : ça vous évite les mauvais déplacements et vous donne un prix de départ. Pour une voiture chère ou un doute mécanique, l'outil conseille une inspection." },
-  { q: "Combien de temps ça prend ?", r: "L'aperçu (cote, défauts, moteur) s'affiche en 2 secondes. Le rapport complet, photos lues et questions rédigées, en une minute environ." },
-  { q: "Que faites-vous de mes informations ?", r: "Votre e-mail sert à votre compte, vos analyses restent privées. Pas de revente de données, pas de publicité." },
+const SOMMAIRE: [string, string][] = [
+  ["essai", "Essayer"],
+  ["comment", "Comment ça marche"],
+  ["verdicts", "Verdicts"],
+  ["verifie", "Ce qu'on vérifie"],
+  ["app", "L'app"],
+  ["pieges", "Pièges"],
+  ["cote", "La cote"],
+  ["formules", "Formules"],
+  ["faq", "Questions"],
 ];
 
-/** Espace entre deux sections : nettement plus grand que tout écart à l'intérieur d'une section. */
-const SECTION = "py-[clamp(88px,11vw,176px)]";
+const MODELES = ["Renault Clio IV", "Peugeot 208", "Toyota Yaris", "Dacia Sandero", "VW Polo V", "Citroën C3", "Ford Fiesta", "Opel Corsa", "Hyundai i20", "Suzuki Swift", "Renault Twingo", "Seat Ibiza", "Kia Rio", "Skoda Fabia"];
+
+/** Les questions qui bloquent l'essai, et seulement elles (le texte brut sert aussi aux données structurées). */
+const FAQ: { cat: string; q: string; r: string }[] = [
+  { cat: "Prix", q: "C'est vraiment gratuit ?", r: "Oui. L'aperçu est immédiat sans compte, et la première analyse complète est offerte, sans carte bancaire. Ensuite : 4,99 € par mois sans engagement, ou 2,99 € l'analyse à l'unité." },
+  { cat: "Annonces", q: "Ça marche sur quelles annonces ?", r: "Leboncoin (le lien suffit), La Centrale et AutoScout24 (collez le texte de la page). Voitures particulières, vendeurs particuliers ou professionnels." },
+  { cat: "Fiabilité", q: "Ça remplace un garagiste ?", r: "Non : ça vous évite les mauvais déplacements et vous donne un prix de départ. Pour une voiture chère ou un doute mécanique, l'outil conseille une inspection." },
+  { cat: "Délai", q: "Combien de temps ça prend ?", r: "L'aperçu (cote, défauts, moteur) s'affiche en 2 secondes. Le rapport complet, photos lues et questions rédigées, en une minute environ." },
+  { cat: "Données", q: "Que faites-vous de mes informations ?", r: "Votre e-mail sert à votre compte, vos analyses restent privées. Pas de revente de données, pas de publicité." },
+];
+
+const Coche = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true" className="shrink-0 text-ok">
+    <path d="m5 12 5 5L20 7" />
+  </svg>
+);
 
 export default async function Accueil() {
   const fournisseurs = await fournisseursActifs();
   return (
     <>
-      {/* ---------------- la scène : l'annonce à gauche (fixe sur ordinateur), la lecture à droite ---------------- */}
-      <section aria-labelledby="titre" className="relative flex flex-col lg:grid lg:grid-cols-[minmax(0,47fr)_minmax(0,53fr)] lg:grid-rows-[auto_auto]">
-        <div className="flex flex-col justify-center px-5 pb-10 pt-8 sm:px-10 lg:col-start-2 lg:row-start-1 lg:min-h-[calc(100svh-68px)] lg:px-14 lg:pb-[clamp(150px,15vw,230px)] xl:px-20">
-          <h1 id="titre" className="arrivee max-w-[22ch] font-display text-[clamp(30px,3.6vw,54px)] font-medium leading-[1.04] tracking-[-0.03em]">
-            Cette voiture est-elle une bonne affaire ?
-          </h1>
-          <p className="arrivee mt-5 max-w-[46ch] text-[20px] text-ink-2" style={{ "--i": 1 } as React.CSSProperties}>
-            Collez son annonce Leboncoin, La Centrale ou AutoScout24 : en 10 secondes, la cote du marché, les défauts lus dans le texte et le prix à proposer. Gratuit, sans compte ni carte.
-          </p>
-          <div className="arrivee mt-8 max-w-[560px] [&_#essai]:mx-0 [&_p.justify-center]:justify-start" style={{ "--i": 2 } as React.CSSProperties}>
-            <Essai fournisseurs={fournisseurs} depuis="hero" />
+      {/* ---------------- héros : le champ d'essai à gauche, la preuve qui se joue à droite ---------------- */}
+      <SommairePage sections={SOMMAIRE} />
+      <div className="progression" aria-hidden="true" />
+      <section className="relative overflow-hidden pb-12 pt-10 sm:pt-16">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_80%_55%_at_50%_0,#000_25%,transparent_78%)]" aria-hidden="true" />
+        <div className="wrap grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
+          <div className="text-center lg:text-left lg:[&_p.justify-center]:justify-start">
+            <h1 className="arrivee mx-auto max-w-[17ch] font-display text-[clamp(36px,5.6vw,62px)] font-semibold leading-[1.02] tracking-[-0.03em] lg:mx-0">
+              Voyez en 10 secondes si une occasion est <Rotateur mots={["une vraie affaire", "une arnaque", "à négocier", "au bon prix"]} />
+            </h1>
+            <div className="mt-6">
+              <TroisTemps etapes={[["lien", "Collez l'annonce"], ["balance", "Comparée au marché"], ["verdict", "Verdict et prix"]]} />
+            </div>
+            <div className="arrivee mt-7" style={{ "--i": 2 } as React.CSSProperties}>
+              <Essai fournisseurs={fournisseurs} depuis="hero" />
+            </div>
+            <ul className="arrivee mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-2 lg:justify-start" style={{ "--i": 3 } as React.CSSProperties}>
+              {["Gratuit", "Sans compte", "Sans carte"].map((t) => (
+                <li key={t} className="flex items-center gap-1.5">
+                  <Coche />
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <CompteurInscrits className="mt-3 justify-center lg:justify-start" />
           </div>
-          <CompteurInscrits className="mt-5" />
+          <CarteHero defaut={CARTE_ACCUEIL} />
         </div>
+        <a href="#comment" aria-label="Voir comment ça marche" className="mx-auto mt-10 hidden size-11 place-items-center rounded-full border border-line-2 text-ink-3 no-underline transition hover:border-o/50 hover:text-ink lg:grid">
+          <svg viewBox="0 0 24 24" className="pousse-bas size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </a>
+      </section>
 
-        {/* la scène : l'annonce, fixe pendant toute la lecture sur ordinateur ; la vôtre la remplace dès que vous essayez */}
-        <div className="p-3 lg:sticky lg:top-[68px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:h-[calc(100svh-68px)] lg:self-start lg:p-5">
-          <div className="h-[72svh] max-h-[640px] lg:h-full lg:max-h-none">
-            <CarteHero defaut={CARTE_ACCUEIL} plein />
-          </div>
+      {/* ---------------- vrais chiffres ---------------- */}
+      <ChiffresMarche />
+      <Defile items={MODELES} label="Modèles analysés" />
+
+      {/* ---------------- comment ça marche : trois actes en grands mots, un sélecteur collant les suit ---------------- */}
+      <section id="comment" aria-labelledby="comment-t" className="scroll-mt-32 pt-14">
+        <div className="wrap text-center">
+          <p className="surtitre">Comment ça marche</p>
+          <h2 id="comment-t" className="h-sec mx-auto mt-3 max-w-3xl">
+            Trois étapes, <span className="it">une minute</span>
+          </h2>
         </div>
-
-        {/* le nom en très grand : sous la scène sur téléphone */}
-        <p aria-hidden="true" className="mot-geant -mt-1 select-none px-3 font-display text-[22vw] font-medium leading-[0.8] tracking-[-0.055em] text-mot lg:hidden">
-          utopicar
-        </p>
-
-        {/* ---------------- comment ça marche : le ticket du rapport ---------------- */}
-        <div id="comment" className="scroll-mt-24 px-5 pb-[clamp(88px,11vw,176px)] pt-16 sm:px-10 lg:col-start-2 lg:row-start-2 lg:px-14 lg:pt-[clamp(88px,9vw,140px)] xl:px-20">
-          <h2 className="apparait font-display text-[clamp(36px,3.6vw,56px)] font-medium leading-none tracking-[-0.035em]">Trois étapes, une minute</h2>
-          <p className="apparait mt-5 max-w-[42ch] text-[20px] text-ink-2" style={{ "--i": 1 } as React.CSSProperties}>
-            Ce que l&apos;outil a fait de la Clio de l&apos;exemple, une vraie annonce Leboncoin relevée le 3 octobre 2026.
-          </p>
-          <div className="mt-10 max-w-[480px]">
-            <Ticket />
-          </div>
-        </div>
-
-        {/* le nom en très grand, à cheval sur la scène et la colonne (ordinateur) : il rétrécit un peu quand on descend */}
-        <p aria-hidden="true" className="mot-geant pointer-events-none absolute right-14 top-[calc(100svh-68px)] z-10 hidden -translate-y-[calc(100%+36px)] select-none font-display text-[clamp(140px,15.5vw,250px)] font-medium leading-[0.78] tracking-[-0.055em] text-mot lg:block xl:right-20">
-          utopicar
-        </p>
+        <TroisActes />
       </section>
 
       {/* ---------------- trois vraies annonces, trois verdicts : l'outil sait aussi dire non ---------------- */}
-      <section id="verdicts" aria-labelledby="verdicts-t" className={`wrap scroll-mt-24 ${SECTION}`}>
-        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-end">
-          <h2 id="verdicts-t" className="apparait font-display text-[clamp(36px,4.4vw,64px)] font-medium leading-none tracking-[-0.035em]">
-            Trois annonces, trois verdicts
+      <section id="verdicts" className="scroll-mt-32 py-16">
+        <div className="wrap">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <p className="surtitre">Verdicts</p>
+            <h2 className="h-sec mt-3">
+              3 annonces, <span className="it">3 verdicts</span>
+            </h2>
+            <Link href="#essai" className="mt-4 inline-flex min-h-6 items-center text-sm font-medium text-o2 underline underline-offset-4">
+              Essayez la vôtre ↑
+            </Link>
+          </div>
+          <div className="mx-auto max-w-5xl">
+            <TroisVerdicts />
+            <Fleches cible="liste-verdicts" libelle="annonce" className="mt-4 md:hidden" />
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- ce qui est vérifié, en bento : la vraie cote en case d'ancrage, une idée par case, l'action à part ---------------- */}
+      <section id="verifie" className="scroll-mt-32 py-16">
+        <div className="wrap">
+          <h2 className="h-sec mx-auto mb-10 max-w-2xl text-center">
+            Ce qu&apos;on vérifie <span className="it">à votre place</span>
           </h2>
-          <p className="apparait max-w-[40ch] text-[20px] text-ink-2 md:justify-self-end" style={{ "--i": 1 } as React.CSSProperties}>
-            L&apos;outil sait aussi dire non. Trois vraies annonces, analysées telles quelles.{" "}
-            <Link href="#essai" className="font-medium text-o2 underline underline-offset-4">
-              Essayez la vôtre
+          <div className="mx-auto max-w-5xl">
+            <Bento />
+          </div>
+          <p className="mt-6 text-center text-ink-2">
+            Achat-revente ?{" "}
+            <Link href="/benef" className="font-medium text-o2 underline underline-offset-4">
+              Benef calcule votre marge →
             </Link>
           </p>
         </div>
-        <div className="mt-14">
-          <Verdicts />
+      </section>
+
+      {/* ---------------- visite interactive de l'app : grand titre, puis l'écran se déploie au défilement ---------------- */}
+      <section id="app" className="scroll-mt-32 py-20">
+        <div className="wrap">
+          <div className="apparait mx-auto mb-12 max-w-3xl text-center">
+            <h2 className="font-display text-[clamp(40px,7vw,96px)] font-medium leading-[0.95] tracking-[-0.04em]">
+              Dans l&apos;app, <span className="it">en vrai</span>
+            </h2>
+            <p className="mt-4 text-lg text-ink-2">Cliquez sur un écran.</p>
+          </div>
+          <div className="deploie mx-auto max-w-4xl">
+            <VisiteApp />
+          </div>
         </div>
       </section>
 
-      {/* ---------------- la carte des réparations : les 38 pièges et leur coût, sur un champ sombre ---------------- */}
-      <section id="pieges" aria-labelledby="pieges-t" className={`scroll-mt-24 bg-champ-fort ${SECTION}`}>
-        <div className="wrap max-w-[1080px]">
-          <CarteReparations />
+      {/* ---------------- les pièges repérés dans le texte des annonces : la vraie liste des règles, avec leur coût ---------------- */}
+      <section id="pieges" aria-labelledby="pieges-t" className="scroll-mt-32 py-16">
+        <div className="wrap">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <h2 id="pieges-t" className="h-sec">
+              Les pièges <span className="it">qu&apos;on repère</span>
+            </h2>
+            <p className="mt-3 text-lg text-ink-2">
+              {CATALOGUE_DEFAUTS.length} règles lisent le texte de l&apos;annonce, chacune avec son coût de réparation.
+            </p>
+          </div>
+          <div className="mx-auto max-w-5xl">
+            <Pieges defauts={CATALOGUE_DEFAUTS} />
+          </div>
         </div>
       </section>
 
-      {/* ---------------- les chiffres de la base, et la cote en direct ---------------- */}
-      <section id="cote" aria-labelledby="chiffres-t" className={`wrap scroll-mt-24 ${SECTION}`}>
-        <Chiffres />
+      {/* ---------------- la cote en direct : vrais prix médians de la base ---------------- */}
+      <section id="cote" className="scroll-mt-32 py-16">
+        <div className="wrap">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <h2 className="h-sec">
+              La cote <span className="it">en direct</span>
+            </h2>
+          </div>
+          <div className="mx-auto max-w-5xl">
+            <CoteEnDirect />
+          </div>
+        </div>
       </section>
 
-      {/* ---------------- deux formules, deux champs de couleur ---------------- */}
-      <section id="formules" aria-labelledby="formules-t" className="scroll-mt-24">
-        <h2 id="formules-t" className="sr-only">
-          Formules
-        </h2>
-        <DeuxFormules />
+      {/* ---------------- formules ---------------- */}
+      <section id="formules" className="scroll-mt-32 py-16">
+        <div className="wrap">
+          <div className="apparait mx-auto mb-10 max-w-3xl text-center">
+            <p className="surtitre">Formules</p>
+            <h2 className="h-sec mt-3">
+              Pourquoi s&apos;abonner ? <span className="it">Ça se rembourse</span>
+            </h2>
+            <p className="mt-3 text-lg text-ink-2">La première analyse est offerte, sans carte. Après, une seule négociation réussie paie des mois d&apos;abonnement.</p>
+          </div>
+          <GainsAbonnement famille="particulier" ids={PARTICULIERS} credits lien="/tarifs" />
+        </div>
       </section>
 
-      {/* ---------------- les réponses, à lire d'un coup d'œil ---------------- */}
-      <section id="faq" aria-labelledby="faq-t" className={`wrap scroll-mt-24 ${SECTION}`}>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,9fr)] lg:gap-12">
-          <h2 id="faq-t" className="apparait font-display text-[clamp(30px,2.6vw,40px)] font-medium leading-tight tracking-[-0.025em]">
-            Vos questions
-          </h2>
-          <div className="gap-14 md:columns-2">
-            {FAQ.map(({ q, r }, i) => (
-              <p key={q} className="apparait mb-6 break-inside-avoid text-[17px] leading-relaxed text-ink-2" style={{ "--i": i } as React.CSSProperties}>
-                <b className="font-semibold text-ink">{q}</b> {r}
-              </p>
-            ))}
-            <p className="apparait break-inside-avoid text-[17px] leading-relaxed text-ink-2">
-              <b className="font-semibold text-ink">Une autre question ?</b>{" "}
-              <Link href="/methode" className="font-medium text-o2 underline underline-offset-4">
-                Comment l&apos;analyse est faite
-              </Link>
-              , ou{" "}
+      {/* ---------------- questions ---------------- */}
+      <section id="faq" className="scroll-mt-32 py-16">
+        <div className="wrap mx-auto grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-12">
+          <div className="lg:sticky lg:top-36 lg:self-start">
+            <h2 className="apparait h-sec">Vos questions</h2>
+            <p className="mt-3 text-ink-2">
+              Une autre ?{" "}
               <Link href="/legal#contact" className="font-medium text-o2 underline underline-offset-4">
-                écrivez-nous
+                Écrivez-nous
               </Link>
-              .
+            </p>
+          </div>
+          <Faq questions={FAQ.map((f) => ({ cat: f.cat, q: f.q, r: <p>{f.r}</p> }))} />
+        </div>
+      </section>
+
+      {/* ---------------- appel final ---------------- */}
+      <section id="appel-final" className="py-20 text-center">
+        <div className="wrap">
+          <div className="apparait mx-auto max-w-4xl">
+            <h2 className="vue font-display text-[clamp(44px,8vw,112px)] font-medium leading-[0.95] tracking-[-0.045em] [text-wrap:balance]">
+              Votre prochaine voiture, <span className="it">au bon prix</span>
+            </h2>
+            <Link href="#essai" className="btn btn-o mt-9">
+              Analyser une annonce <span aria-hidden="true">→</span>
+            </Link>
+            <p className="mx-auto mt-8 flex w-fit items-center gap-3 text-left text-sm text-ink-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-o/15 font-display text-o2" aria-hidden="true">
+                Y
+              </span>
+              <span>
+                Par <b className="text-ink">Yacine</b>, qui l&apos;utilise pour ses achats-reventes.
+              </span>
             </p>
           </div>
         </div>
       </section>
-
-      {/* ---------------- un dernier mot, une action ---------------- */}
-      <section id="appel-final" aria-label="Analyser une annonce" className="wrap pb-[12svh] pt-[14svh]">
-        <div className="apparait max-w-[38ch] lg:ml-[25%]">
-          <p className="text-[clamp(20px,1.7vw,24px)] leading-snug">Votre prochaine voiture, au bon prix : collez son annonce, le verdict arrive tout de suite.</p>
-          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link href="#essai" className="btn btn-o">
-              Analyser une annonce
-            </Link>
-            <span className="text-[15px] text-ink-2">Par Yacine, qui l&apos;utilise pour ses achats-reventes.</span>
-          </div>
-        </div>
-      </section>
       <BarreEssai />
-      <JsonLdFaq questions={FAQ} />
+      <JsonLdFaq questions={FAQ.map(({ q, r }) => ({ q, r }))} />
     </>
   );
 }

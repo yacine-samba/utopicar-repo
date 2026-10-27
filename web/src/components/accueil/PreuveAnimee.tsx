@@ -96,10 +96,10 @@ export const CARTE_BENEF: CarteAnalyse = {
 
 const d = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
 const PILULE = { ok: "bg-[#3ecb7f] text-[#04140a]", warn: "bg-[#ffc53d] text-[#1a1300]", bad: "bg-[#ff7a7a] text-[#1a0606]" };
+const SIGNE = { ok: "✓", warn: "!", bad: "✕" };
 
-/** `remplace` : carte posée après un scan, elle se joue tout de suite (sans attendre l'apparition de la page).
-    `plein` : la carte remplit son conteneur (scène fixe de l'accueil) au lieu d'un format 4:5 de 420 px. */
-export function PreuveAnimee({ carte = CARTE_ACCUEIL, remplace = false, plein = false }: { carte?: CarteAnalyse; remplace?: boolean; plein?: boolean }) {
+/** `remplace` : carte posée après un scan, elle se joue tout de suite (sans attendre l'apparition de la page). */
+export function PreuveAnimee({ carte = CARTE_ACCUEIL, remplace = false }: { carte?: CarteAnalyse; remplace?: boolean }) {
   const ton = carte.ton ?? "ok";
   const m = carte.marche;
   // les barres : la plus longue des deux fait toute la largeur ; l'écart est hachuré
@@ -110,30 +110,21 @@ export function PreuveAnimee({ carte = CARTE_ACCUEIL, remplace = false, plein = 
   const locale = !!carte.photo && carte.photo.startsWith("/images/demo/");
   const droiteCls = carte.droite.ton === "ok" ? "text-ok" : carte.droite.ton === "bad" ? "text-bad" : "";
   return (
-    <figure className={`${remplace ? "" : "arrivee attend "}${plein ? "size-full" : "mx-auto w-full max-w-[420px]"}`} style={{ "--i": 2 } as CSSProperties}>
+    <figure className={`${remplace ? "" : "arrivee attend "}mx-auto w-full max-w-[420px]`} style={{ "--i": 2 } as CSSProperties}>
       <figcaption className="sr-only">{carte.resume}</figcaption>
-      {/* data-ui : un fragment de la vraie interface, il garde ses voiles et ses pastilles */}
-      <div
-        data-ui
-        className={
-          plein
-            ? "scene relative isolate size-full overflow-hidden rounded-xl bg-[#120d0a]"
-            : "scene relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 bg-[radial-gradient(120%_90%_at_30%_10%,#3a2a20,#120d0a)] shadow-[0_40px_100px_-40px_rgb(239_98_46/0.6)]"
-        }
-        aria-hidden="true"
-      >
+      <div className="scene relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 bg-[radial-gradient(120%_90%_at_30%_10%,#3a2a20,#120d0a)] shadow-[0_40px_100px_-40px_rgb(239_98_46/0.6)]" aria-hidden="true">
         {carte.photo &&
           (locale ? (
             // eslint-disable-next-line @next/next/no-img-element -- photo de démonstration, servie en local et compressée
-            <img src={carte.photo} srcSet={srcSetDemo(carte.photo)} sizes={plein ? "(max-width: 1024px) 100vw, 47vw" : "(max-width: 480px) 92vw, 420px"} alt="" fetchPriority="high" className={`absolute inset-0 -z-10 size-full object-cover ${plein ? "derive" : ""}`} />
+            <img src={carte.photo} srcSet={srcSetDemo(carte.photo)} sizes="(max-width: 480px) 92vw, 420px" alt="" fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element -- première photo de l'annonce analysée, servie par Leboncoin
-            <img src={carte.photo} referrerPolicy="no-referrer" alt="" className={`absolute inset-0 -z-10 size-full object-cover ${plein ? "derive" : ""}`} />
+            <img src={carte.photo} referrerPolicy="no-referrer" alt="" className="absolute inset-0 -z-10 size-full object-cover" />
           ))}
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.4)_0%,transparent_26%,transparent_38%,rgb(0_0_0/0.9)_100%)]" />
 
         {/* 1. le balayage d'analyse */}
-        <div className="balayage pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-o/15" style={d(0.15)} />
+        <div className="balayage pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(239_98_46/0.28))] shadow-[0_6px_24px_rgb(239_98_46/0.55)]" style={d(0.15)} />
         <div className="absolute left-4 top-4 flex max-w-[calc(100%-2rem)] items-center gap-2 rounded-full border border-white/20 bg-black/50 py-1.5 pl-2 pr-3 text-sm font-medium text-white backdrop-blur-md">
           <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white text-[9px] font-bold text-black">lbc</span>
           <span className="relative grid min-w-0">
@@ -146,7 +137,7 @@ export function PreuveAnimee({ carte = CARTE_ACCUEIL, remplace = false, plein = 
           </span>
         </div>
 
-        <div className={`absolute bottom-4 grid gap-3 text-white ${plein ? "inset-x-4 sm:inset-x-6 sm:bottom-6 lg:max-w-[440px]" : "inset-x-4"}`}>
+        <div className="absolute inset-x-4 bottom-4 grid gap-3 text-white">
           {/* 2. le prix face au marché : deux barres côte à côte, l'écart hachuré */}
           {m != null && (
             <div className="pas grid gap-2.5 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm backdrop-blur-md" style={d(1.0)}>
@@ -175,7 +166,7 @@ export function PreuveAnimee({ carte = CARTE_ACCUEIL, remplace = false, plein = 
           <div className="pas flex items-center justify-between gap-3 rounded-2xl border border-line bg-bg0 px-4 py-3 text-ink shadow-lg" style={d(1.9)}>
             <span className="grid min-w-0 gap-1">
               <span className={`w-fit rounded-full px-2.5 py-0.5 text-sm font-bold ${PILULE[ton]}`}>
-                {carte.verdict}
+                {SIGNE[ton]} {carte.verdict}
               </span>
               {m != null && ecart > 0 ? (
                 <span className={`text-xs font-medium ${sous ? "text-ok" : "text-bad"}`}>
