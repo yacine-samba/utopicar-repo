@@ -295,7 +295,7 @@ captions, on-screen text, scene cuts, extra people »).
 
 ```
 In a single continuous shot, no scene cuts. Vertical 9:16 video, static locked-off camera as if filmed by a phone
-mounted on the dashboard; the framing stays exactly as in the start frame.
+mounted on the dashboard; the framing stays exactly as in @depart (the start frame).
 The man is speaking naturally to the camera. He looks straight into the lens and says in French, as a native speaker
 from Paris with a soft uvular R, in a calm, confident, conversational tone: "[RÉPLIQUE — 15 à 18 mots, chiffres en
 lettres]"
