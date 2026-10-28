@@ -8,12 +8,13 @@ import { OutilAnalyse } from "@/components/analyse/OutilAnalyse";
 import { CartesOffres } from "@/components/site/CartesOffres";
 import { DemandeProfil } from "@/components/analyse/ProfilAnalyse";
 import { lienPartage } from "@/lib/analyse/import";
+import { reprendreEssai } from "@/lib/essai";
 import { redirect } from "next/navigation";
 import { supabaseServeur } from "@/lib/supabase/serveur";
 
 export const metadata: Metadata = { title: "Analyser une annonce" };
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string; usage?: string }> }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ lien?: string; url?: string; texte?: string; titre?: string; usage?: string; essai?: string }> }) {
   const sp = await searchParams;
   const c = await compteBenef(sp.usage === "benef" ? "/app/analyser?usage=benef" : "/app/analyser");
   // carte « Gratuit » des tarifs Benef : l'usage achat-revente est enregistré (s'il n'est pas déjà choisi),
