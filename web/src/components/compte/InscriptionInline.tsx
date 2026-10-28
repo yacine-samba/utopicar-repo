@@ -81,7 +81,7 @@ export function InscriptionInline({ fournisseurs, suite, onSucces, bouton = "Voi
         </div>
         {mode === "inscription" && (
           <label className="flex items-start gap-2.5 text-sm text-ink-2">
-            <input ref={refCgu} type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} className="mt-0.5 size-5 shrink-0 cursor-pointer accent-[#ff5a1f]" aria-describedby={err} />
+            <input ref={refCgu} type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} className="mt-0.5 size-5 shrink-0 cursor-pointer accent-o" aria-describedby={err} />
             <span>
               J&apos;accepte les{" "}
               <Link href="/legal#conditions" className="underline underline-offset-4">

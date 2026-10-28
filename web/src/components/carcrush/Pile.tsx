@@ -253,7 +253,7 @@ function Bouton({ children, onClick, label, aria, taille, orange, disabled }: {
         className={cx(
           "grid place-items-center rounded-full border transition disabled:opacity-40",
           taille === "grand" ? "size-[68px]" : "size-12",
-          orange ? "border-o bg-o text-[#160904] shadow-[0_12px_34px_-12px_rgb(255_90_31/0.85)] hover:bg-o2" : "border-line-2 bg-glass text-ink hover:border-o/50",
+          orange ? "border-o bg-o text-[#160904] shadow-[0_12px_34px_-12px_rgb(239_98_46/0.85)] hover:bg-o2" : "border-line-2 bg-glass text-ink hover:border-o/50",
         )}
       >
         {children}

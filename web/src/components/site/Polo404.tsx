@@ -34,7 +34,7 @@ export function Polo404({ className }: { className?: string }) {
         <radialGradient id="p404-halo">
           <stop offset="0" stopColor="#ffb14a" stopOpacity="0.95" />
           <stop offset="0.35" stopColor="#ff7a1f" stopOpacity="0.45" />
-          <stop offset="1" stopColor="#ff5a1f" stopOpacity="0" />
+          <stop offset="1" stopColor="#ef622e" stopOpacity="0" />
         </radialGradient>
         <filter id="p404-flou" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="6" />

@@ -107,7 +107,7 @@ export function BilanBalayage({ bilan, cat }: { bilan: Bilan; cat: CatMarque[] }
             </select>
           </label>
           <label className="flex items-center gap-2 pb-2 text-sm text-ink-2">
-            <input type="checkbox" checked={incomplets} onChange={(e) => setIncomplets(e.target.checked)} className="size-4 accent-[#ff5a1f]" /> Incomplets seulement
+            <input type="checkbox" checked={incomplets} onChange={(e) => setIncomplets(e.target.checked)} className="size-4 accent-o" /> Incomplets seulement
           </label>
         </div>
         <div className="overflow-x-auto rounded-xl border border-line">

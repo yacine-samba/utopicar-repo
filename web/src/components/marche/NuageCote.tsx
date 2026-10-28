@@ -10,7 +10,7 @@ export type Repere = { km: number | null; annee: number | null; prix: number; la
 type Axe = "km" | "annee";
 type Couleur = "annee" | "version" | "boite" | "vendeur" | "options";
 
-const PALETTE = ["#ff8a4c", "#3ecb7f", "#5aa9ff", "#ffc53d", "#c084fc", "#ff7a7a", "#2dd4bf", "#9ca3af"];
+const PALETTE = ["#f38f59", "#3ecb7f", "#5aa9ff", "#ffc53d", "#c084fc", "#ff7a7a", "#2dd4bf", "#9ca3af"];
 const W = 800, H = 420, G = 56, D = 16, HT = 14, B = 40;
 const eur = (v: number) => `${Math.round(v).toLocaleString("fr-FR")} €`;
 const kmTxt = (v: number) => `${Math.round(v / 1000).toLocaleString("fr-FR")} k km`;
@@ -100,7 +100,7 @@ export function NuageCote({ points, reperes = [], courbe = [], titre }: { points
           ))}
           <text x={W - D} y={H - 6} textAnchor="end" className="fill-ink-3 text-[11px]">{axe === "km" ? "kilométrage" : "année"}</text>
           {courbeOk && (
-            <polyline fill="none" stroke="#ff5a1f" strokeWidth="2.5" strokeDasharray="6 5" points={courbe.filter((c) => c.P).map((c) => `${px(c.km)},${py(c.P!)}`).join(" ")} />
+            <polyline fill="none" stroke="#ef622e" strokeWidth="2.5" strokeDasharray="6 5" points={courbe.filter((c) => c.P).map((c) => `${px(c.km)},${py(c.P!)}`).join(" ")} />
           )}
           {visibles.map((v, i) => (
             <circle key={i} cx={px(axe === "km" ? v.km : v.annee + ((i % 7) - 3) * 0.05)} cy={py(v.prix)} r={survol === i ? 6 : 3.6} fill={couleurDe(v)} fillOpacity={survol === i ? 1 : 0.7} stroke={survol === i ? "#fff" : "none"} onMouseEnter={() => setSurvol(i)} onClick={() => setSurvol(i)} />
@@ -112,7 +112,7 @@ export function NuageCote({ points, reperes = [], courbe = [], titre }: { points
             return (
               <g key={"r" + i}>
                 {voiture ? (
-                  <path d={`M${px(x)},${py(r.prix) - 11} L${px(x) + 3.5},${py(r.prix) - 3.5} L${px(x) + 11},${py(r.prix) - 3} L${px(x) + 5},${py(r.prix) + 2.5} L${px(x) + 7},${py(r.prix) + 10} L${px(x)},${py(r.prix) + 5.5} L${px(x) - 7},${py(r.prix) + 10} L${px(x) - 5},${py(r.prix) + 2.5} L${px(x) - 11},${py(r.prix) - 3} L${px(x) - 3.5},${py(r.prix) - 3.5} Z`} fill="#fff" stroke="#ff5a1f" strokeWidth="2" />
+                  <path d={`M${px(x)},${py(r.prix) - 11} L${px(x) + 3.5},${py(r.prix) - 3.5} L${px(x) + 11},${py(r.prix) - 3} L${px(x) + 5},${py(r.prix) + 2.5} L${px(x) + 7},${py(r.prix) + 10} L${px(x)},${py(r.prix) + 5.5} L${px(x) - 7},${py(r.prix) + 10} L${px(x) - 5},${py(r.prix) + 2.5} L${px(x) - 11},${py(r.prix) - 3} L${px(x) - 3.5},${py(r.prix) - 3.5} Z`} fill="#fff" stroke="#ef622e" strokeWidth="2" />
                 ) : (
                   <rect x={px(x) - 5} y={py(r.prix) - 5} width="10" height="10" fill="none" stroke="#fff" strokeWidth="2" transform={`rotate(45 ${px(x)} ${py(r.prix)})`} />
                 )}

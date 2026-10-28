@@ -10,8 +10,8 @@ function Chargement() {
   return (
     <figure className="mx-auto w-full max-w-[420px]">
       <figcaption className="sr-only">Analyse de votre annonce en cours…</figcaption>
-      <div className="relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 bg-[radial-gradient(120%_90%_at_30%_10%,#3a2a20,#120d0a)] shadow-[0_40px_100px_-40px_rgb(255_90_31/0.6)]" aria-hidden="true">
-        <div className="balayage-boucle pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(255_90_31/0.28))] shadow-[0_6px_24px_rgb(255_90_31/0.55)]" />
+      <div className="relative isolate aspect-[4/5] overflow-hidden rounded-[30px] border border-line-2 bg-[radial-gradient(120%_90%_at_30%_10%,#3a2a20,#120d0a)] shadow-[0_40px_100px_-40px_rgb(239_98_46/0.6)]" aria-hidden="true">
+        <div className="balayage-boucle pointer-events-none absolute inset-x-0 top-0 h-[38%] border-b-2 border-o bg-[linear-gradient(180deg,transparent,rgb(239_98_46/0.28))] shadow-[0_6px_24px_rgb(239_98_46/0.55)]" />
         <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/20 bg-black/50 py-1.5 pl-2 pr-3 text-sm font-medium text-white backdrop-blur-md">
           <span className="grid size-5 place-items-center rounded-full bg-white text-[9px] font-bold text-black">lbc</span>
           <span className="size-1.5 animate-pulse rounded-full bg-o" /> Analyse en cours…

@@ -304,7 +304,7 @@ export function FormulaireProfilAnalyse() {
           ))}
           {revente && (
             <label className="flex items-start gap-3 text-sm sm:col-span-2">
-              <input type="checkbox" checked={p.negociant} onChange={(e) => maj({ negociant: e.target.checked })} className="mt-1 size-4 accent-[#ff5a1f]" />
+              <input type="checkbox" checked={p.negociant} onChange={(e) => maj({ negociant: e.target.checked })} className="mt-1 size-4 accent-o" />
               <span>
                 Je suis négociant (déclaration d&apos;achat) : pas de carte grise à mon nom à chaque achat.
               </span>

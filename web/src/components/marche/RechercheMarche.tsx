@@ -523,7 +523,7 @@ export function RechercheMarche({ cat, alertes, etatsAlertes = {}, initiales, ou
             </select>
           </label>
           <label className="flex items-center gap-2.5 self-end pb-2.5 text-sm text-ink-2 lg:col-span-2">
-            <input type="checkbox" checked={f.fiables} onChange={maj("fiables")} className="size-5 shrink-0 accent-[#ff5a1f]" /> Masquer les pièges (pour pièces, moteur HS, prix suspects…)
+            <input type="checkbox" checked={f.fiables} onChange={maj("fiables")} className="size-5 shrink-0 accent-o" /> Masquer les pièges (pour pièces, moteur HS, prix suspects…)
           </label>
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-3">

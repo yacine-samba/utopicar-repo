@@ -215,7 +215,7 @@ export function FicheParc({ v, onFini }: { v: Partial<Vehicule>; onFini: () => v
           {DOCS_VENTE.map(([k, l]) => (
             <li key={k}>
               <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-line p-3 text-sm hover:bg-glass">
-                <input type="checkbox" checked={!!docs[k]} onChange={(e) => setDocs((d) => ({ ...d, [k]: e.target.checked }))} className="size-4 accent-[#ff5a1f]" />
+                <input type="checkbox" checked={!!docs[k]} onChange={(e) => setDocs((d) => ({ ...d, [k]: e.target.checked }))} className="size-4 accent-o" />
                 {l}
               </label>
             </li>

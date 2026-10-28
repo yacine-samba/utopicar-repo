@@ -65,6 +65,8 @@ export function Saisie({
   lienInitial,
   enPlus,
   restantes = null,
+  visiteur = false,
+  essai,
   suite,
   visiteur = false,
   essai,
@@ -83,6 +85,10 @@ export function Saisie({
   enPlus?: ReactNode;
   /** Analyses restantes du compte (null : inconnu ou sans limite). À 0, rien n'est envoyé : ni import, ni analyse. */
   restantes?: number | null;
+  /** Visiteur sans compte : au lieu d'analyser, on demande son email (analyse offerte, lien reçu par email). */
+  visiteur?: boolean;
+  /** Annonce gardée par l'analyse offerte (lien reçu par email) : reprise et lancée dès l'ouverture. */
+  essai?: DemandeEssai;
   /** Formule à proposer quand les analyses sont épuisées (null : aucune au-dessus, seulement l'unité). */
   suite?: OffreId | null;
   /** Visiteur sans compte : au lieu d'analyser, on demande son email (analyse offerte, lien reçu par email). */

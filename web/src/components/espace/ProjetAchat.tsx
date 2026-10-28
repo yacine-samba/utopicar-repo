@@ -134,7 +134,7 @@ export function ProjetAchat({ lignes }: { lignes: LigneAnalyse[] }) {
           {VISITE.map(([id, l]) => (
             <li key={id}>
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line p-3 text-sm hover:bg-glass">
-                <input type="checkbox" checked={p.visite.includes(id)} onChange={() => bascule("visite", id)} className="mt-0.5 size-4 shrink-0 accent-[#ff5a1f]" />
+                <input type="checkbox" checked={p.visite.includes(id)} onChange={() => bascule("visite", id)} className="mt-0.5 size-4 shrink-0 accent-o" />
                 <span className={cx(p.visite.includes(id) ? "text-ink-3 line-through" : "text-ink-2")}>{l}</span>
               </label>
             </li>

@@ -234,6 +234,24 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     void apercu(v, null, "texte", origineDepuisExtension(v)?.liens[0] ?? null);
   }
 
+  /** Bouton « Coller » (téléphone surtout) : lit le presse-papiers. Un lien est lu tout de suite, un texte remplit le champ.
+      Presse-papiers refusé ou vide : le champ prend le focus, on colle à la main. */
+  async function coller() {
+    let v = "";
+    try {
+      v = (await navigator.clipboard.readText()).trim();
+    } catch {
+      /* lecture refusée par le navigateur */
+    }
+    if (!v) return champ.current?.focus();
+    setValeur(v);
+    setErreur(null);
+    track("coller_bouton", { lien: !!lienColle(v) });
+    const lien = lienColle(v);
+    if (lien) return void importer(lien);
+    champ.current?.focus();
+  }
+
   function exemple(cle: string) {
     setTexte("");
     setOrigine(null);
@@ -252,7 +270,11 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     setOrigine(null);
     setErreur(null);
     setErreurAnalyse(null);
-    champ.current?.focus();
+    // le champ revient au rendu suivant : le focus attend qu'il soit là
+    setTimeout(() => {
+      champ.current?.focus({ preventScroll: true });
+      champ.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }, 0);
   }
 
   const reel = contenu?.type === "apercu" && fini && !!texte;
@@ -266,13 +288,14 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     );
 
   return (
-    <div id="essai" className="mx-auto grid max-w-2xl scroll-mt-28 gap-5">
+    <div id="essai" className="mx-auto grid max-w-2xl scroll-mt-32 gap-5">
       {etat !== "apercu" && (
         <form method="get" action="/analyse" onSubmit={envoyer} className="grid gap-3">
-          <label htmlFor={`${id}-a`} className="sr-only">
-            Lien ou texte de l&apos;annonce
+          <label htmlFor={`${id}-a`} className="text-left text-base font-medium text-ink">
+            Lien ou texte de l&apos;annonce <span className="font-normal text-ink-3">· Leboncoin, La Centrale, AutoScout24</span>
           </label>
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+            <div className="relative">
             <textarea
               ref={champ}
               id={`${id}-a`}
@@ -289,12 +312,24 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
                 }
               }}
               rows={2}
-              placeholder="Collez le lien Leboncoin, La Centrale, AutoScout24, ou le texte de l'annonce"
+              placeholder="leboncoin.fr/ad/voitures/…"
               aria-describedby={erreur ? `${id}-e` : undefined}
               aria-invalid={!!erreur}
               disabled={etat === "lecture"}
-              className={cx(inputCls, "min-h-14 resize-none text-base leading-snug sm:min-h-[52px]")}
+              spellCheck={false}
+              autoCapitalize="off"
+              autoCorrect="off"
+              className={cx(inputCls, "min-h-14 resize-none text-base leading-snug sm:min-h-[52px]", !valeur && "pr-24")}
             />
+            {!valeur && etat !== "lecture" && (
+              <button type="button" onClick={() => void coller()} className="absolute right-2 top-1/2 inline-flex min-h-9 -translate-y-1/2 items-center gap-1.5 rounded-full bg-o/12 px-3.5 text-sm font-semibold text-o2 transition hover:bg-o/20">
+                <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M9 4h6v3H9zM9 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-3" />
+                </svg>
+                Coller
+              </button>
+            )}
+            </div>
             <button type="submit" disabled={etat === "lecture"} className="btn btn-o sm:self-start">
               {etat === "lecture" ? (
                 <span className="flex items-center justify-center gap-2.5">
@@ -311,14 +346,30 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
               {erreur}
             </p>
           )}
+          {etat === "lecture" && (
+            <p role="status" className="text-left text-sm text-ink-2">
+              Lecture de l&apos;annonce et de ses photos, puis comparaison au marché : quelques secondes.
+            </p>
+          )}
           <p className="flex flex-wrap items-center justify-center gap-2 text-sm text-ink-3">
-            ou essayez :
+            Pas d&apos;annonce sous la main ? Un exemple :
             {CLES_EXEMPLES.map((k) => (
               <button key={k} type="button" onClick={() => exemple(k)} className="rounded-full border border-line-2 bg-glass px-3 py-1 text-ink-2 transition hover:border-o/50 hover:text-ink">
                 {EXEMPLES[k].onglet} <span className="num text-ink-3">· {euros(EXEMPLES[k].prix)}</span>
               </button>
             ))}
           </p>
+          <details className="text-left text-sm text-ink-2">
+            <summary className="w-fit cursor-pointer font-medium text-ink-2 underline-offset-4 hover:text-ink hover:underline">Comment copier le lien d&apos;une annonce ?</summary>
+            <ul className="mt-2 grid list-disc gap-1.5 pl-5">
+              <li>
+                <b className="text-ink">Appli Leboncoin</b> : bouton « Partager », puis « Copier le lien ». Revenez ici et touchez « Coller ».
+              </li>
+              <li>
+                <b className="text-ink">La Centrale, AutoScout24</b> : copiez le texte de la page (appui long, « Tout sélectionner », « Copier ») et collez-le dans le champ.
+              </li>
+            </ul>
+          </details>
         </form>
       )}
 
@@ -326,13 +377,12 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
         <>
           <CarteApercu contenu={contenu} fini={fini} titreRef={titreCarte} />
           {contenu?.type === "exemple" && fini && (
-            <p className="text-sm text-ink-2">
-              C&apos;est un exemple analysé par l&apos;outil.{" "}
-              <button type="button" onClick={nouvelle} className="font-medium text-o2 underline underline-offset-4">
-                Collez la vôtre
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+              <button type="button" onClick={nouvelle} className="btn btn-o">
+                Analyser mon annonce
               </button>
-              , l&apos;aperçu est immédiat.
-            </p>
+              <span className="text-sm text-ink-2">C&apos;était un exemple : la vôtre est lue en 2 secondes.</span>
+            </div>
           )}
           {reel && (
             <section className="carte grid gap-4 p-5 text-left sm:p-6" aria-labelledby={`${id}-s`}>
@@ -355,11 +405,20 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
                 <h2 id={`${id}-s`} className="font-display text-xl font-semibold">
                   Le rapport complet
                 </h2>
-                <p className="mt-1 text-ink-2">
-                  {benef
-                    ? "Coût réel d'achat, prix à proposer, questions au vendeur, points à contrôler sur place. Votre espace s'ouvre en Benef : marge nette après frais, prix d'offre et plafond dès la formule Starter. Première analyse offerte."
-                    : "Coût réel d'achat, prix à proposer, questions au vendeur, lecture des photos, points à contrôler sur place. Première analyse offerte, sans carte bancaire."}
-                </p>
+                <ul className="mt-2 grid gap-1.5 text-ink-2">
+                  {(benef
+                    ? ["Le coût réel d'achat", "Le prix à proposer", "Les questions à poser au vendeur", "Les points à contrôler sur place", "En Benef : marge nette après frais, prix d'offre et plafond dès la formule Starter"]
+                    : ["Le coût réel d'achat", "Le prix à proposer", "Les questions à poser au vendeur", "La lecture des photos", "Les points à contrôler sur place"]
+                  ).map((t) => (
+                    <li key={t} className="flex items-start gap-2">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true" className="mt-1 shrink-0 text-ok">
+                        <path d="m5 12 5 5L20 7" />
+                      </svg>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-sm text-ink-3">{benef ? "Première analyse offerte." : "Première analyse offerte, sans carte bancaire."}</p>
               </div>
               {erreurAnalyse && (
                 <p role="alert" className="rounded-2xl border border-warn/40 bg-warn/10 px-4 py-2.5 text-sm text-warn">

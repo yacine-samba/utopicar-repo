@@ -69,6 +69,10 @@ const NEG2 = /\b(non|jamais|aucun|aucune|pas d'?|pas de|sans|zero|ni|nul|nulle)[
 const REV = /\b(prevoir|a prevoir|a changer|a refaire|a faire)\s*:?\s*(les |le |la |l'|un |une |des )?(pneus|freins|plaquettes|disques|embrayage|distribution|vidange|batterie|amortisseurs)\b/g;
 const REV_KEY: Record<string, string> = { pneus: "pneus", freins: "freins", plaquettes: "freins", disques: "freins", embrayage: "embrayage", distribution: "distri", vidange: "vidange", batterie: "batterie", amortisseurs: "amortisseurs" };
 
+/** Les règles telles qu'on les montre sur le site (libellé, gravité, coût de réparation), sans leurs expressions. */
+export const CATALOGUE_DEFAUTS = DEFAUTS.map(([k, , l, cat, min, max, nc]) => ({ k, l, cat, min, max, nc }));
+export type DefautCatalogue = (typeof CATALOGUE_DEFAUTS)[number];
+
 export function defautsDesc(s: string): Defaut[] {
   const t = flat(s);
   const out: Defaut[] = [];
