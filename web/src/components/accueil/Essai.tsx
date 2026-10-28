@@ -291,7 +291,7 @@ export function Essai({ fournisseurs, depuis, familleInitiale = null, retour }: 
     <div id="essai" className="mx-auto grid max-w-2xl scroll-mt-32 gap-5">
       {etat !== "apercu" && (
         <form method="get" action="/analyse" onSubmit={envoyer} className="grid gap-3">
-          <label htmlFor={`${id}-a`} className="text-left text-[15px] font-medium text-ink">
+          <label htmlFor={`${id}-a`} className="text-left text-base font-medium text-ink">
             Lien ou texte de l&apos;annonce <span className="font-normal text-ink-3">· Leboncoin, La Centrale, AutoScout24</span>
           </label>
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">

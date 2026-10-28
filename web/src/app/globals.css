@@ -378,28 +378,13 @@ select option:disabled {
   }
 }
 
-/* Défilement de l'accueil : barre de lecture sous l'en-tête, et barre du sélecteur des trois actes qui se remplit
-   pendant qu'on lit la section. CSS natif ; absentes là où les frises de défilement n'existent pas, ou en mouvement réduit. */
-.progression,
+/* Barre du sélecteur des trois actes, qui se remplit pendant qu'on lit la section. CSS natif ; absente là où les
+   frises de défilement n'existent pas, ou en mouvement réduit. */
 .actes-barre {
   display: none;
 }
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: scroll()) {
-    .progression {
-      display: block;
-      position: fixed;
-      inset-inline: 0;
-      top: 67px;
-      z-index: 41;
-      height: 2px;
-      background: linear-gradient(90deg, var(--color-o), var(--color-o2));
-      opacity: 0.8;
-      transform-origin: left center;
-      pointer-events: none;
-      animation: remplit linear both;
-      animation-timeline: scroll(root);
-    }
     .actes {
       view-timeline: --actes block;
     }
@@ -634,11 +619,6 @@ select option:disabled {
   }
 }
 
-@keyframes defile {
-  to {
-    transform: translateX(-100%);
-  }
-}
 @keyframes entree {
   from {
     opacity: 0;

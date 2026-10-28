@@ -315,7 +315,7 @@ export function TroisActes() {
                 {/* la phrase dans une petite carte à côté de la fenêtre */}
                 <div className="pas carte p-5 lg:order-1" style={d(0.35)}>
                   <p className="font-display text-lg font-semibold">{titre}</p>
-                  <p className="mt-2 border-t border-line pt-2 text-[15px] leading-relaxed text-ink-2">{texte}</p>
+                  <p className="mt-2 border-t border-line pt-2 text-base leading-relaxed text-ink-2">{texte}</p>
                 </div>
               </div>
             </div>
