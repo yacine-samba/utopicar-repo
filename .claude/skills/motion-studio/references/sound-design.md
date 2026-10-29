@@ -164,3 +164,13 @@ ElevenLabs, ouvertures A et B, même son pour 16:9 et 9:16).
   - le calage mesuré ;
   - la RMS par passage.
 - **Pistes** : voix, musique, bruitages et une version sans musique dans `audio/stems-<projet>/`.
+
+## Vidéos face caméra utopicar : le son v4 (29 oct. 2026)
+
+Pour un montage face caméra (avatar en voiture, Reels, Shorts), le langage sonore v4 remplace les baisses fixes par
+des écarts mesurés : logo sonore « u-to-pi-car » en mi fait de vrais sons de voiture, notes de la pastille, démarrage
+raté pour un « non », voiture qui passe sur une couleur pleine, ambiances ≥ 15 LU sous la voix, 1-4 kHz creusés quand
+elle parle, harmoniques pour le téléphone (test passe-haut 800 Hz), limiteur réglé sur la crête vraie mesurée ×4,
+contrôle après AAC et somme mono. Détail et valeurs : `langage-v4.md` § 5 ; code : skill `montage-viral`,
+`moteur/work/mix4.py`.
+

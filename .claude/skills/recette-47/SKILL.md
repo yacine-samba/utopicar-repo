@@ -48,7 +48,9 @@ Chacun vient du film publié. Le pourquoi compte plus que la lettre : un nouvel 
    **au même exemple**, avec un verdict sur l'annonce du début (« À 3 500, tu passes ton tour. »). C'est ce que le
    spectateur enregistre.
 8. **La boucle.** « La prochaine fois que tu te dis… » enchaîne sur la phrase 1 ; la dernière image est l'image 0.
-9. **Rien à vendre.** Ni produit, ni CTA, ni logo, ni morale, ni « enregistre ». Chaque montant est sourcé dans le
+9. **Rien à vendre, rien à demander.** Ni produit, ni CTA, ni logo, ni morale, ni « enregistre » ; et depuis le
+   29 oct. 2026, aucun appel à l'engagement (abonnement, like, commentaire, partage, mot-clé), ni dit, ni écrit, ni en
+   légende (`references/journal.md` § 6, décision qui remplace celle du 16 oct.). Chaque montant est sourcé dans le
    brief (lien, date) et pris au calcul prudent. L'écran reste propre : ni « exemple » ni source à l'écran depuis le
    14 oct. 2026 (MO5 affichait « Exemple · prix moyens constatés »). L'exemple se dit au « tu », jamais comme un fait
    vécu (grille de scénario, motion-studio `references/scenario.md`).

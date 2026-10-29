@@ -42,7 +42,10 @@ ce skill-ci reste celui de la fabrication.
   pas de production : (1) hook visuel + sonore à l'image 0 (objet + chiffre + perte) ; (2) contexte ≤ 3 s, voix et écran
   (pour qui) ; (3) promesse + structure visible + boucle ouverte ; (4) valeur actionnable (le geste précis, pas seulement
   le quoi) ; (5) relance toutes les 3–4 s ; (6) preuve par le produit (c'est lui qui révèle) ; (7) conversion en lead
-  (mot-clé en commentaire → DM avec lien + code, dit et écrit) ; (8) raison d'enregistrer ou de partager, fin qui relance.
+  (mot-clé en commentaire → DM avec lien + code, dit et écrit) **seulement dans une pub produit demandée comme telle** ;
+  dans une vidéo d'attention, un Reel ou un Short, **aucun appel à l'engagement**, ni abonnement, ni like, ni
+  commentaire, ni partage, ni mot-clé (décision du 29 oct. 2026) : la case 7 devient « ce qui fera commenter sans le
+  demander » (un verdict vrai et modérément débattu) ; (8) raison d'enregistrer ou de partager, fin qui relance.
 - **Vrai avant beau.** Chaque chiffre recalculé avec la formule du produit (hypothèse prudente), chaque fait technique
   vérifié par recherche, chaque verdict cohérent avec les chiffres affichés : `qa-delivery.md` « Vérifications de fond ».
 - **Écran propre.** Pas d'emoji, pas de « exemple », pas de source à l'écran ; l'humour passe par les mots-chocs.
@@ -154,6 +157,7 @@ donne les chiffres mesurés et dis franchement ce qui n'a pas été vérifié (p
 | `references/techniques.md` | Phases 3 et 5 : toutes les recettes de construction (caméra, écriture à la lumière, compteurs, photo réelle, radiographie, raccords, boucle, rendu, voix, son, écrans pleins et sous-titres géants, un film pour deux formats ; présentation : interface recodée, sans cadre, grosse couleur, voiture 3D, nouvelle voix sur un film calé, § 22–28) avec le code de référence |
 | `references/codes-attention.md` | Toute vidéo d'attention (sans produit) : processus en 5 étapes, trouver le concept, chiffres sourcés, DA, mouvement, son |
 | `references/lessons.md` | Avant de construire : erreurs réelles (v1–v10, MO1–MO6) et ce qui a marché |
+| `references/langage-v4.md` | Toute vidéo face caméra utopicar (avatar en voiture, Reels, Shorts) : la flèche à 31,7°, le trait, la couleur pleine, la pastille, l'orange adouci, les sous-titres mesurés et découpés sur la syntaxe, le logo sonore « u-to-pi-car » en mi, les règles de mix mesurées, les contrôles HyperFrames et la série de 10 s (code : skill `montage-viral`, `moteur/scripts/v4.py`, `gen4.py`, `moteur/work/mix4.py`) |
 | `scripts/qa_video.py` | Sur chaque MP4 livré : `python3 scripts/qa_video.py film.mp4 --out renders/qa` |
 | `scripts/music-pick.py` | Choisir une musique générée : `python3 scripts/music-pick.py prises/*.mp3 --bpm 112 --sim 14-24` (tempo réel, stabilité, mesures, coupes possibles) |
 | `scripts/eleven-dl.py` | Télécharger les générations ElevenLabs avant expiration : `python3 scripts/eleven-dl.py statut.json --out dossier --map "fragment=type,…"` |
