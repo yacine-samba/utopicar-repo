@@ -33,7 +33,7 @@ export function Picto({ nom, className, depart = 0.25 }: { nom: NomPicto; classN
 /** Pictogramme dans sa tuile orange, en haut à droite d'une case. */
 export function TuilePicto({ nom, className }: { nom: NomPicto; className?: string }) {
   return (
-    <span className={cx("grid size-11 shrink-0 place-items-center rounded-2xl bg-o/12 text-o2", className)} aria-hidden="true">
+    <span className={cx("grid size-11 shrink-0 place-items-center rounded-2xl border border-line text-ink-3", className)} aria-hidden="true">
       <Picto nom={nom} className="size-6" />
     </span>
   );

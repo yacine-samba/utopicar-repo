@@ -24,7 +24,8 @@
   --font-display: var(--font-clash), "Clash Display", var(--font-satoshi), system-ui, sans-serif;
   --font-body: var(--font-satoshi), "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: var(--font-instrument), "Instrument Serif", Georgia, serif;
-  --ease-ressort: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* sans rebond : une seule courbe douce pour les entrées et les retours (l'ancien ressort dépassait sa cible) */
+  --ease-ressort: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-doux: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -49,7 +50,6 @@ body {
   /* couleur de secours : impression, contraste forcé et outils de mesure ne voient pas les dégradés */
   background-color: var(--color-bg0);
   background-image:
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(255 90 31 / 0.16), transparent 70%),
     linear-gradient(160deg, var(--color-bg0), var(--color-bg1) 60%, var(--color-bg0)) fixed;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
@@ -82,7 +82,6 @@ body {
   --color-champ: #ffffff;
   background-color: var(--color-bg0);
   background-image:
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgb(255 90 31 / 0.1), transparent 70%),
     linear-gradient(160deg, #fbf8f3, var(--color-bg1) 60%, #fbf8f3);
 }
 .cadre-site[data-theme="clair"] .btn-o:hover {
@@ -135,16 +134,13 @@ select option:disabled {
     margin-inline: auto;
     padding-inline: 20px;
   }
-  /* Mot mis en avant dans les titres : italique serif dégradé. */
+  /* Mot mis en avant dans le titre : italique serif, en orange plein (plus de texte en dégradé). */
   .it {
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
     letter-spacing: 0;
-    background: linear-gradient(100deg, var(--color-o2), var(--color-o3) 60%, var(--color-o2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--color-o2);
     padding-right: 0.06em;
   }
   .kicker {
@@ -164,7 +160,6 @@ select option:disabled {
     height: 6px;
     border-radius: 50%;
     background: var(--color-o);
-    box-shadow: 0 0 10px var(--color-o);
   }
   .h-sec {
     font-family: var(--font-display);
@@ -172,6 +167,7 @@ select option:disabled {
     font-size: clamp(30px, 4.6vw, 52px);
     line-height: 1.05;
     letter-spacing: -0.02em;
+    text-wrap: balance;
   }
   .btn {
     display: inline-flex;
@@ -190,20 +186,22 @@ select option:disabled {
     text-decoration: none;
     cursor: pointer;
     transition:
-      transform 0.3s var(--ease-ressort),
-      background 0.2s,
-      border-color 0.2s,
-      box-shadow 0.3s;
+      transform 0.15s var(--ease-ressort),
+      background-color 0.15s var(--ease-ressort),
+      border-color 0.15s var(--ease-ressort);
   }
   .btn:hover {
     border-color: rgb(255 90 31 / 0.5);
-    transform: translateY(-1px);
+  }
+  .btn:active {
+    transform: scale(0.98);
   }
   .btn-o {
     background: var(--color-o);
     border-color: var(--color-o);
     color: #160904;
-    box-shadow: 0 12px 34px -12px rgb(255 90 31 / 0.85);
+    /* relief sans lueur : un liseré clair en haut */
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
   }
   .btn-o:hover {
     background: var(--color-o2);
@@ -231,7 +229,6 @@ select option:disabled {
     border: 1px solid var(--color-line);
     border-radius: 26px;
     background: var(--color-panel);
-    backdrop-filter: blur(10px);
   }
   /* Bloc d'évitement : hors écran, il descend dès qu'un de ses liens reçoit le focus clavier. */
   .evitement {
@@ -330,7 +327,7 @@ select option:disabled {
 @keyframes surgit-vue {
   from {
     opacity: 0;
-    transform: translateY(28px) scale(0.96);
+    transform: translateY(8px);
   }
 }
 /* Barres verticales qui montent (histogrammes du bento). */
@@ -408,11 +405,6 @@ select option:disabled {
   }
 }
 
-@keyframes defile {
-  to {
-    transform: translateX(-100%);
-  }
-}
 @keyframes entree {
   from {
     opacity: 0;

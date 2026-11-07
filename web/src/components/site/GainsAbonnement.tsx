@@ -21,10 +21,10 @@ function cartes(famille: "particulier" | "benef", ids: OffreId[], credits: boole
       return {
         cle: id, nom: o.nom, prix: prixTxt(o.prix), unite: "par mois", fort: o.miseEnAvant,
         gain: `${e(negocie)} négociés`,
-        detail: `Le prix à proposer, comme sur la Clio de l'exemple. Une seule négociation paie ${Math.floor(negocie / o.prix)} mois.`,
+        detail: `Le prix à proposer, comme sur la Clio de l'exemple : avec une seule négociation, vous payez ${Math.floor(negocie / o.prix)} mois.`,
       };
     });
-    if (credits) liste.push({ cle: "credits", nom: "À l'unité", prix: prixTxt(PACKS[0].prix), unite: "l'analyse", gain: "Juste quand il faut", detail: "Sans abonnement : une analyse complète pour l'annonce qui vous plaît." });
+    if (credits) liste.push({ cle: "credits", nom: "À l'unité", prix: prixTxt(PACKS[0].prix), unite: "l'analyse", gain: "Pour une seule annonce", detail: "Sans abonnement : l'analyse complète de l'annonce qui vous plaît." });
     return liste;
   }
   const marge = 6300 - 5000 - 630;
@@ -46,8 +46,8 @@ export function GainsAbonnement({ famille, ids, credits = false, lien }: { famil
     <div className="grid gap-6">
       <ul className={cx("grid gap-3", liste.length === 4 ? "md:grid-cols-2 xl:grid-cols-4" : liste.length >= 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
         {liste.map((c) => (
-          <li key={c.cle} className={cx("vue carte relative flex flex-col p-6", c.fort && "border-o/60 bg-[linear-gradient(160deg,rgb(255_90_31/0.14),transparent_60%),var(--color-panel)]")}>
-            {c.fort && <span className="absolute right-5 top-5 rounded-full bg-o px-2.5 py-0.5 text-xs font-bold text-[#160904]">Conseillé</span>}
+          <li key={c.cle} className={cx("vue carte relative flex flex-col p-6", c.fort && "border-o/60")}>
+            {c.fort && <span className="absolute right-5 top-5 text-sm font-medium text-o2">Conseillé</span>}
             <span className="text-sm font-medium text-ink-2">{c.nom}</span>
             <span className="mt-1 flex items-baseline gap-1.5">
               <span className="num font-display text-3xl font-semibold tracking-tight">{c.prix}</span>

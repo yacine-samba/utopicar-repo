@@ -1,5 +1,4 @@
 import { libelle, listeCotes } from "@/lib/cotes-publiques";
-import { Compteur } from "@/components/site/Compteur";
 
 /** La cote en direct : les modèles les plus suivis de la base, leur prix médian et le nombre d'annonces relevées.
     Vrais chiffres. Le prix médian seulement : la cote détaillée (par année, kilométrage…) est réservée aux abonnés. */
@@ -16,11 +15,10 @@ export async function CoteEnDirect() {
               <span className="font-medium leading-tight">{libelle(c.nom)}</span>
             </span>
             <span className="num font-display text-2xl font-semibold sm:text-3xl">
-              <Compteur valeur={c.mediane} />
-              &nbsp;€
+              {c.mediane.toLocaleString("fr-FR")}&nbsp;€
             </span>
             <span className="h-1.5 rounded-full bg-glass" aria-hidden="true">
-              <span className="block h-full rounded-full bg-o" style={{ width: `${(c.mediane / max) * 100}%` }} />
+              <span className="block h-full rounded-full bg-ink-3/45" style={{ width: `${(c.mediane / max) * 100}%` }} />
             </span>
             <span className="text-xs text-ink-3">
               prix médian · <span className="num">{c.n.toLocaleString("fr-FR")}</span> annonces · {c.y0}–{c.y1}

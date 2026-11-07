@@ -1,5 +1,4 @@
 import { dateTxt, listeCotes } from "@/lib/cotes-publiques";
-import { Compteur } from "./Compteur";
 
 /** Les vrais chiffres de la base du marché (rien d'arrondi à la hausse), qui montent quand ils arrivent à l'écran. */
 export async function ChiffresMarche() {
@@ -21,7 +20,7 @@ export async function ChiffresMarche() {
             {/* le chiffre d'abord à l'écran, l'intitulé d'abord pour les lecteurs d'écran (dt avant dd) */}
             <dt className="order-2 text-xs text-ink-2 sm:text-sm">{l}</dt>
             <dd className="num order-1 font-display text-2xl font-semibold text-ink sm:text-4xl">
-              <Compteur valeur={v} />
+              {v.toLocaleString("fr-FR")}
             </dd>
             {s && <dd className="order-3 mt-0.5 hidden text-xs text-ink-3 sm:block">{s}</dd>}
           </div>
