@@ -44,7 +44,7 @@ export async function Bento() {
         <Case className="sm:col-span-2 lg:col-span-4 lg:row-span-2">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-o2">Comparée à de vraies annonces</p>
+              <p className="text-sm font-medium text-o2">Votre annonce face aux autres</p>
               <h3 className="mt-1 font-display text-2xl font-semibold">La base du marché</h3>
               <p className="text-sm text-ink-3">relevée sur Leboncoin, génération par génération</p>
             </div>
@@ -115,7 +115,7 @@ export async function Bento() {
           </p>
         </div>
         <p className="pas mt-auto text-sm text-ink-3" style={d(0.6)}>
-          Rédigé pour vous, prêt à copier.
+          À copier tel quel dans la messagerie.
         </p>
       </Case>
 

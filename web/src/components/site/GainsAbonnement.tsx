@@ -21,10 +21,10 @@ function cartes(famille: "particulier" | "benef", ids: OffreId[], credits: boole
       return {
         cle: id, nom: o.nom, prix: prixTxt(o.prix), unite: "par mois", fort: o.miseEnAvant,
         gain: `${e(negocie)} négociés`,
-        detail: `Le prix à proposer, comme sur la Clio de l'exemple. Une seule négociation paie ${Math.floor(negocie / o.prix)} mois.`,
+        detail: `Le prix à proposer, comme sur la Clio de l'exemple : avec une seule négociation, vous payez ${Math.floor(negocie / o.prix)} mois.`,
       };
     });
-    if (credits) liste.push({ cle: "credits", nom: "À l'unité", prix: prixTxt(PACKS[0].prix), unite: "l'analyse", gain: "Juste quand il faut", detail: "Sans abonnement : une analyse complète pour l'annonce qui vous plaît." });
+    if (credits) liste.push({ cle: "credits", nom: "À l'unité", prix: prixTxt(PACKS[0].prix), unite: "l'analyse", gain: "Pour une seule annonce", detail: "Sans abonnement : l'analyse complète de l'annonce qui vous plaît." });
     return liste;
   }
   const marge = 6300 - 5000 - 630;

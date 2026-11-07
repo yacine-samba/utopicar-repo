@@ -30,11 +30,11 @@ const MODELES = ["Renault Clio IV", "Peugeot 208", "Toyota Yaris", "Dacia Sander
 
 /** Les questions qui bloquent l'essai, et seulement elles (le texte brut sert aussi aux données structurées). */
 const FAQ: { cat: string; q: string; r: string }[] = [
-  { cat: "Prix", q: "C'est vraiment gratuit ?", r: "Oui. L'aperçu est immédiat sans compte, et la première analyse complète est offerte, sans carte bancaire. Ensuite : 4,99 € par mois sans engagement, ou 2,99 € l'analyse à l'unité." },
+  { cat: "Prix", q: "C'est vraiment gratuit ?", r: "Oui. L'aperçu s'affiche sans compte, et la première analyse complète est offerte, sans carte bancaire. Ensuite : 4,99 € par mois sans engagement, ou 2,99 € l'analyse à l'unité." },
   { cat: "Annonces", q: "Ça marche sur quelles annonces ?", r: "Leboncoin (le lien suffit), La Centrale et AutoScout24 (collez le texte de la page). Voitures particulières, vendeurs particuliers ou professionnels." },
   { cat: "Fiabilité", q: "Ça remplace un garagiste ?", r: "Non : ça vous évite les mauvais déplacements et vous donne un prix de départ. Pour une voiture chère ou un doute mécanique, l'outil conseille une inspection." },
   { cat: "Délai", q: "Combien de temps ça prend ?", r: "L'aperçu (cote, défauts, moteur) s'affiche en 2 secondes. Le rapport complet, photos lues et questions rédigées, en une minute environ." },
-  { cat: "Données", q: "Que faites-vous de mes informations ?", r: "Votre e-mail sert à votre compte, vos analyses restent privées. Pas de revente de données, pas de publicité." },
+  { cat: "Données", q: "Que faites-vous de mes informations ?", r: "Votre e-mail sert à votre compte et vos analyses restent privées. Nous ne revendons aucune donnée et n'affichons aucune publicité." },
 ];
 
 const Coche = () => (
@@ -84,7 +84,7 @@ export default async function Accueil() {
         <div className="wrap">
           <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
             <h2 className="h-sec">
-              3 annonces, <span className="it">3 verdicts</span>
+              Bon prix, trop cher, <span className="it">déconseillée</span>
             </h2>
             <Link href="#essai" className="inline-flex min-h-6 items-center text-sm font-medium text-o2 underline underline-offset-4">
               Essayez la vôtre ↑
@@ -119,9 +119,9 @@ export default async function Accueil() {
         <div className="wrap">
           <div className="apparait mx-auto mb-10 max-w-2xl text-center">
             <h2 className="h-sec">
-              Dans l&apos;app, <span className="it">en vrai</span>
+              Les écrans <span className="it">de l&apos;app</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">Cliquez sur un écran.</p>
+            <p className="mt-3 text-lg text-ink-2">Cliquez sur un onglet. Les chiffres viennent d&apos;une annonce d&apos;exemple.</p>
           </div>
           <div className="mx-auto max-w-4xl">
             <VisiteApp />
@@ -142,7 +142,7 @@ export default async function Accueil() {
         <div className="wrap">
           <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
             <h2 className="h-sec">
-              La cote <span className="it">en direct</span>
+              Prix médians <span className="it">relevés sur Leboncoin</span>
             </h2>
           </div>
           <div className="mx-auto max-w-5xl">
@@ -156,9 +156,9 @@ export default async function Accueil() {
         <div className="wrap">
           <div className="apparait mx-auto mb-10 max-w-2xl text-center">
             <h2 className="h-sec">
-              Pourquoi s&apos;abonner ? <span className="it">Ça se rembourse</span>
+              Vous remboursez l&apos;abonnement <span className="it">à la première négo</span>
             </h2>
-            <p className="mt-3 text-lg text-ink-2">La première analyse est offerte, sans carte. Après, une seule négociation réussie paie des mois d&apos;abonnement.</p>
+            <p className="mt-3 text-lg text-ink-2">Première analyse offerte, sans carte bancaire.</p>
           </div>
           <GainsAbonnement famille="particulier" ids={PARTICULIERS} credits lien="/tarifs" />
         </div>
@@ -177,7 +177,7 @@ export default async function Accueil() {
         <div className="wrap">
           <div className="carte apparait mx-auto max-w-3xl px-6 py-12">
             <h2 className="h-sec">
-              Votre prochaine voiture, <span className="it">au bon prix</span>
+              Collez l&apos;annonce <span className="it">avant d&apos;appeler le vendeur</span>
             </h2>
             <Link href="#essai" className="btn btn-o mt-7">
               Analyser une annonce <span aria-hidden="true">→</span>
