@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { libelle, listeCotes } from "@/lib/cotes-publiques";
 import { EXEMPLES } from "@/lib/demo";
 import { cx } from "@/lib/cx";
-import { Picto, TuilePicto, type NomPicto } from "@/components/site/Picto";
+import { TuilePicto, type NomPicto } from "@/components/site/Picto";
 
 /* Ce que l'outil vérifie, en bento (pages produit d'Apple, sites Framer) : la taille d'une case dit son importance,
    une seule idée par case, et l'action dans sa propre case.
@@ -58,7 +58,7 @@ export async function Bento() {
               <li key={m.cle} className="grid grid-cols-[minmax(0,9.5rem)_1fr_3.5rem] items-center gap-3 text-sm sm:grid-cols-[minmax(0,13rem)_1fr_4rem]">
                 <span className="truncate text-ink-2">{libelle(m.nom)}</span>
                 <span className="relative h-3 rounded-full bg-glass" aria-hidden="true">
-                  <span className="jauge absolute inset-y-0 left-0 rounded-full bg-o/70" style={{ width: `${(m.n / maxN) * 100}%`, ...d(0.15 + k * 0.08) }} />
+                  <span className="jauge absolute inset-y-0 left-0 rounded-full bg-ink-3/45" style={{ width: `${(m.n / maxN) * 100}%`, ...d(0.15 + k * 0.08) }} />
                 </span>
                 <span className="num text-right font-semibold">{m.n.toLocaleString("fr-FR")}</span>
               </li>
@@ -138,10 +138,7 @@ export async function Bento() {
 
       {/* 6. l'action, dans sa propre case */}
       <li className="vue lg:col-span-2" style={{ "--i": 2 } as CSSProperties}>
-        <Link href="#essai" className="reflet isolate group flex h-full min-h-40 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(255_90_31/0.9)]">
-          <span className="pointer-events-none absolute -bottom-6 -right-6 -z-10 text-[#160904]/15" aria-hidden="true">
-            <Picto nom="voiture" className="size-40" />
-          </span>
+        <Link href="#essai" className="group flex h-full min-h-40 flex-col justify-between gap-4 rounded-[26px] bg-o p-6 text-[#160904]">
           <span className="font-display text-2xl font-semibold leading-tight">Et votre annonce, elle vaut quoi ?</span>
           <span className="flex items-center justify-between font-semibold">
             Analyser en 10 secondes

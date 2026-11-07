@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Rotateur } from "@/components/accueil/Rotateur";
-import { Defile } from "@/components/site/Defile";
+import { Etiquettes } from "@/components/site/Etiquettes";
 import { Faq } from "@/components/site/Faq";
 import { Essai } from "@/components/accueil/Essai";
 import { CARTE_ACCUEIL } from "@/components/accueil/PreuveAnimee";
@@ -49,7 +49,6 @@ export default async function Accueil() {
     <>
       {/* ---------------- héros : le champ d'essai à gauche, la preuve qui se joue à droite ---------------- */}
       <section className="relative overflow-hidden pb-12 pt-10 sm:pt-16">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_80%_55%_at_50%_0,#000_25%,transparent_78%)]" aria-hidden="true" />
         <div className="wrap grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
           <div className="text-center lg:text-left lg:[&_p.justify-center]:justify-start">
             <h1 className="arrivee mx-auto max-w-[17ch] font-display text-[clamp(36px,5.6vw,62px)] font-semibold leading-[1.02] tracking-[-0.03em] lg:mx-0">
@@ -77,14 +76,16 @@ export default async function Accueil() {
 
       {/* ---------------- vrais chiffres ---------------- */}
       <ChiffresMarche />
-      <Defile items={MODELES} label="Modèles analysés" />
+      <div className="pb-6 pt-4">
+        <Etiquettes items={MODELES} label="Modèles analysés" intitule />
+      </div>
 
       {/* ---------------- trois vraies annonces, trois verdicts : l'outil sait aussi dire non ---------------- */}
       <section className="py-16">
         <div className="wrap">
           <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
             <h2 className="h-sec">
-              Bon prix, trop cher, <span className="it">déconseillée</span>
+              Bon prix, trop cher, déconseillée
             </h2>
             <Link href="#essai" className="inline-flex min-h-6 items-center text-sm font-medium text-o2 underline underline-offset-4">
               Essayez la vôtre ↑
@@ -100,7 +101,7 @@ export default async function Accueil() {
       <section className="py-16">
         <div className="wrap">
           <h2 className="h-sec mx-auto mb-10 max-w-2xl text-center">
-            Ce qu&apos;on vérifie <span className="it">à votre place</span>
+            Ce qu&apos;on vérifie à votre place
           </h2>
           <div className="mx-auto max-w-5xl">
             <Bento />
@@ -117,9 +118,9 @@ export default async function Accueil() {
       {/* ---------------- visite interactive de l'app ---------------- */}
       <section className="py-16">
         <div className="wrap">
-          <div className="apparait mx-auto mb-10 max-w-2xl text-center">
+          <div className="mx-auto mb-10 max-w-2xl text-center">
             <h2 className="h-sec">
-              Les écrans <span className="it">de l&apos;app</span>
+              Les écrans de l&apos;app
             </h2>
             <p className="mt-3 text-lg text-ink-2">Cliquez sur un onglet. Les chiffres viennent d&apos;une annonce d&apos;exemple.</p>
           </div>
@@ -134,7 +135,7 @@ export default async function Accueil() {
         <h2 id="pieges" className="wrap mb-4 text-center font-display text-xl font-semibold">
           Les pièges qu&apos;on repère <span className="text-ink-3">(38 au total)</span>
         </h2>
-        <Defile items={PIEGES} label="Exemples de pièges repérés" inverse />
+        <Etiquettes items={PIEGES} label="Exemples de pièges repérés" />
       </section>
 
       {/* ---------------- la cote en direct : vrais prix médians de la base ---------------- */}
@@ -142,7 +143,7 @@ export default async function Accueil() {
         <div className="wrap">
           <div className="mx-auto mb-10 flex max-w-5xl flex-wrap items-end justify-between gap-3">
             <h2 className="h-sec">
-              Prix médians <span className="it">relevés sur Leboncoin</span>
+              Prix médians relevés sur Leboncoin
             </h2>
           </div>
           <div className="mx-auto max-w-5xl">
@@ -154,9 +155,9 @@ export default async function Accueil() {
       {/* ---------------- formules ---------------- */}
       <section id="formules" className="scroll-mt-24 py-16">
         <div className="wrap">
-          <div className="apparait mx-auto mb-10 max-w-2xl text-center">
+          <div className="mx-auto mb-10 max-w-2xl text-center">
             <h2 className="h-sec">
-              Vous remboursez l&apos;abonnement <span className="it">à la première négo</span>
+              Vous remboursez l&apos;abonnement à la première négo
             </h2>
             <p className="mt-3 text-lg text-ink-2">Première analyse offerte, sans carte bancaire.</p>
           </div>
@@ -167,7 +168,7 @@ export default async function Accueil() {
       {/* ---------------- questions ---------------- */}
       <section id="faq" className="scroll-mt-24 py-16">
         <div className="wrap">
-          <h2 className="apparait h-sec mx-auto mb-10 max-w-2xl text-center">Vos questions</h2>
+          <h2 className="h-sec mx-auto mb-10 max-w-2xl text-center">Vos questions</h2>
           <Faq questions={FAQ.map((f) => ({ cat: f.cat, q: f.q, r: <p>{f.r}</p> }))} />
         </div>
       </section>
@@ -175,9 +176,9 @@ export default async function Accueil() {
       {/* ---------------- appel final ---------------- */}
       <section id="appel-final" className="py-16 text-center">
         <div className="wrap">
-          <div className="carte apparait mx-auto max-w-3xl px-6 py-12">
+          <div className="carte mx-auto max-w-3xl px-6 py-12">
             <h2 className="h-sec">
-              Collez l&apos;annonce <span className="it">avant d&apos;appeler le vendeur</span>
+              Collez l&apos;annonce avant d&apos;appeler le vendeur
             </h2>
             <Link href="#essai" className="btn btn-o mt-7">
               Analyser une annonce <span aria-hidden="true">→</span>

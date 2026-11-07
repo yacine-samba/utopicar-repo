@@ -12,7 +12,7 @@ export function Faq({ questions, premiereOuverte = true }: { questions: Question
       {questions.map((x, i) => {
         const o = ouverte === i;
         return (
-          <div key={x.q} className={`carte overflow-hidden transition ${o ? "border-o/40" : ""}`}>
+          <div key={x.q} className={`carte overflow-hidden transition-colors ${o ? "border-line-2" : ""}`}>
             <h3 className="m-0">
               <button
                 type="button"
@@ -23,10 +23,10 @@ export function Faq({ questions, premiereOuverte = true }: { questions: Question
                 className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
               >
                 <span className="grid gap-0.5">
-                  {x.cat && <small className="text-xs font-medium uppercase tracking-wider text-o2">{x.cat}</small>}
+                  {x.cat && <small className="text-sm text-ink-3">{x.cat}</small>}
                   <span className="font-display text-lg font-semibold">{x.q}</span>
                 </span>
-                <span className={`grid size-8 shrink-0 place-items-center rounded-full border border-line-2 text-lg transition ${o ? "rotate-45 text-o2" : ""}`} aria-hidden="true">
+                <span className={`grid size-8 shrink-0 place-items-center rounded-full border border-line-2 text-lg transition-transform ${o ? "rotate-45" : ""}`} aria-hidden="true">
                   +
                 </span>
               </button>
